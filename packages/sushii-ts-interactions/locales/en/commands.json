@@ -1,5 +1,15 @@
 {
   "fishy": {
-    "success": "You caught a {{caughtType}} for {{username}} worth {{caughtAmount}} fishies! ({{oldAmount}} → {{newAmount}} total fishies)"
+    "success": "You caught a {{caughtType}} for {{username}} worth {{count}} fishy! ({{oldAmount}} → {{newAmount}} total fishies)",
+    "success_plural": "You caught a {{caughtType}} for {{username}} worth {{count}} fishies! ({{oldAmount}} → {{newAmount}} total fishies)",
+    "cooldown": "You can fishy again in {{duration}}"
+  },
+  "rep": {
+    "success": "You gave {{username}} a rep! ({{oldAmount}} → {{newAmount}} total)",
+    "cooldown": "You can rep again in {{duration}}"
+  },
+  "avatar": {
+    "user_title": "{{username}}'s Avatar",
+    "member_title": "{{username}}'s Server Avatar"
   }
 }

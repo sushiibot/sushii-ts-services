@@ -1,11 +1,21 @@
 import { CDN } from "@discordjs/rest";
-import { APIUser } from "discord-api-types/v9";
+import { APIGuildMember, APIUser } from "discord-api-types/v9";
 
 export default class CDNClient {
   private cdn: CDN;
 
   constructor(cdnBaseURl?: string | undefined) {
     this.cdn = new CDN(cdnBaseURl);
+  }
+
+  public memberFaceURL(
+    guildId: string,
+    member: APIGuildMember,
+    userId: string
+  ): string | null {
+    return member.avatar
+      ? this.cdn.guildMemberAvatar(guildId, userId, member.avatar)
+      : null;
   }
 
   public userFaceURL(user: APIUser): string {

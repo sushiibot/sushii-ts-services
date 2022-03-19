@@ -153,13 +153,9 @@ export default class InteractionClient {
         const checkRes = await command.check(this.context, interaction);
 
         if (!checkRes.pass) {
-          await this.context.REST.interactionReplyMsg(
-            interaction.id,
-            interaction.token,
-            {
-              content: checkRes.message,
-            }
-          );
+          await this.context.REST.interactionReply(interaction, {
+            content: checkRes.message,
+          });
 
           log.info(
             "command %s failed check: %s",
@@ -174,13 +170,9 @@ export default class InteractionClient {
     } catch (e) {
       log.error(e, "error running command %s", interaction.data.name);
 
-      await this.context.REST.interactionReplyMsg(
-        interaction.id,
-        interaction.token,
-        {
-          content: "uh oh something broke",
-        }
-      );
+      await this.context.REST.interactionReply(interaction, {
+        content: "uh oh something broke",
+      });
     }
   }
 

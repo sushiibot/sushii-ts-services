@@ -3,11 +3,10 @@ import dotenv from "dotenv";
 import { AMQPClient } from "@cloudamqp/amqp-client";
 import log from "./logger";
 import InteractionClient from "./interactions/client";
-import UserInfoCommand from "./interactions/user/userinfo";
 import { Config } from "./config";
-import FishyCommand from "./interactions/user/fishy";
 import AmqpGateway from "./gateway/amqp";
 import initI18next from "./i18next";
+import addCommands from "./interactions/commands";
 
 async function main(): Promise<void> {
   dotenv.config();
@@ -20,9 +19,9 @@ async function main(): Promise<void> {
   const rest = new REST({ version: "9" }).setToken(config.token);
 
   const interactionClient = new InteractionClient(rest, config);
-  interactionClient.addCommand(new UserInfoCommand());
-  interactionClient.addCommand(new FishyCommand());
+  addCommands(interactionClient);
 
+  // Register commands to Discord API
   await interactionClient.register();
 
   log.info("connecting to rabbitmq for gateway events");

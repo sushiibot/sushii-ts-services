@@ -6,6 +6,7 @@ import {
   InteractionResponseType,
   RESTGetAPIUserResult,
   RESTGetAPIGuildMemberResult,
+  APIInteraction,
 } from "discord-api-types/v9";
 import { ConfigI } from "./config";
 
@@ -18,12 +19,11 @@ export default class RESTClient {
     }).setToken(config.token);
   }
 
-  public async interactionReplyMsg(
-    interactionId: string,
-    interactionToken: string,
+  public async interactionReply(
+    interaction: APIInteraction,
     msg: APIInteractionResponseCallbackData
   ): Promise<void> {
-    await this.interactionCallback(interactionId, interactionToken, {
+    return this.interactionCallback(interaction.id, interaction.token, {
       type: InteractionResponseType.ChannelMessageWithSource,
       data: msg,
     });
@@ -34,6 +34,7 @@ export default class RESTClient {
     interactionToken: string,
     payload: RESTPostAPIInteractionCallbackJSONBody
   ): Promise<void> {
+    // TODO: Handle errors, determine response type
     await this.rest.post(
       Routes.interactionCallback(interactionId, interactionToken),
       { body: payload }

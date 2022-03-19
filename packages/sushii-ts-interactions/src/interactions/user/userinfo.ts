@@ -63,7 +63,7 @@ export default class UserinfoHandler extends SlashCommandHandler {
     const embed = await getUserinfoEmbed(ctx, interaction, target, member);
     logger.debug("userinfo embed: %o", embed);
 
-    await ctx.REST.interactionReplyMsg(interaction.id, interaction.token, {
+    await ctx.REST.interactionReply(interaction, {
       embeds: [embed],
     });
   }

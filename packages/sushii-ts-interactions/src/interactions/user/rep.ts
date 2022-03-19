@@ -4,18 +4,18 @@ import i18next from "i18next";
 import Context from "../../context";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
-import { fishyForUser } from "./fishy.service";
+import repForUser from "./rep.service";
 
-export default class FishyCommand extends SlashCommandHandler {
+export default class RepCommand extends SlashCommandHandler {
   serverOnly = true;
 
   command = new SlashCommandBuilder()
-    .setName("fishy")
-    .setDescription("Catch some fish!")
+    .setName("rep")
+    .setDescription("Give someone some reputation")
     .addUserOption((o) =>
       o
         .setName("user")
-        .setDescription("Who to fishy for or yourself if you have no friends")
+        .setDescription("Who to give reputation to.")
         .setRequired(true)
     )
     .toJSON();
@@ -39,14 +39,12 @@ export default class FishyCommand extends SlashCommandHandler {
       return;
     }
 
-    const res = await fishyForUser(ctx, interaction, target);
+    const res = await repForUser(ctx, interaction, target);
 
     const embed = new Embed().setDescription(
-      i18next.t("fishy.success", {
+      i18next.t("rep.success", {
         ns: "commands",
-        caughtType: res.caughtType,
         username: target.username,
-        count: res.caughtAmount,
         oldAmount: res.oldAmount,
         newAmount: res.newAmount,
       })

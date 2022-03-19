@@ -206,9 +206,6 @@ export async function fishyForUser(
 
   logger.debug(dbUser, "after");
 
-  // Update user api
-  // await ctx.api.updateUser(dbUser);
-
   await ctx.sushiiAPI.updateUser(dbUser);
 
   return {
