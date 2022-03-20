@@ -1,8 +1,9 @@
 import { Embed } from "@discordjs/builders";
 import dayjs from "dayjs";
 import {
-  APIChatInputApplicationCommandInteraction,
+  APIApplicationCommandInteraction,
   APIGuildMember,
+  APIInteractionDataResolvedGuildMember,
   APIUser,
 } from "discord-api-types/v9";
 import Context from "../../context";
@@ -10,22 +11,24 @@ import { getCreatedTimestampSeconds } from "../../utils/snowflake";
 
 export default async function getUserinfoEmbed(
   ctx: Context,
-  _interaction: APIChatInputApplicationCommandInteraction,
+  _interaction: APIApplicationCommandInteraction,
   user: APIUser,
-  member: APIGuildMember | undefined
+  member: APIGuildMember | APIInteractionDataResolvedGuildMember | undefined
 ): Promise<Embed> {
   let authorName = user.username;
   if (member?.nick) {
     authorName = `${user.username} ~ ${member.nick}`;
   }
 
+  const faceURL = ctx.CDN.userFaceURL(user);
+
   let embed = new Embed()
     .setAuthor({
       name: authorName,
-      iconURL: ctx.CDN.userFaceURL(user),
-      url: ctx.CDN.userFaceURL(user),
+      iconURL: faceURL,
+      url: faceURL,
     })
-    .setThumbnail(ctx.CDN.userFaceURL(user))
+    .setThumbnail(faceURL)
     // Fine if they don't have banner
     .setImage(ctx.CDN.userBannerURL(user))
     .setFooter({

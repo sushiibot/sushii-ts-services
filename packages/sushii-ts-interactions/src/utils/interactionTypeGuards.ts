@@ -1,9 +1,9 @@
 import {
+  APIApplicationCommandInteraction,
   APIChatInputApplicationCommandDMInteraction,
   APIChatInputApplicationCommandGuildInteraction,
   APIChatInputApplicationCommandInteraction,
   APIInteraction,
-  ApplicationCommandType,
   GatewayDispatchEvents,
   GatewayInteractionCreateDispatch,
   GatewayOpcodes,
@@ -40,11 +40,8 @@ export function isGatewayInteractionCreateDispatch(
   );
 }
 
-export function isAPIChatInputApplicationCommandInteraction(
+export function isAPIApplicationCommandInteraction(
   interaction: APIInteraction
-): interaction is APIChatInputApplicationCommandInteraction {
-  return (
-    interaction.type === InteractionType.ApplicationCommand &&
-    interaction.data.type === ApplicationCommandType.ChatInput
-  );
+): interaction is APIApplicationCommandInteraction {
+  return interaction.type === InteractionType.ApplicationCommand;
 }

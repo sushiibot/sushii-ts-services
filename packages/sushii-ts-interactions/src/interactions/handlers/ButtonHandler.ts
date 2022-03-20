@@ -1,13 +1,13 @@
-import { APIMessageComponentInteraction } from "discord-api-types/v9";
+import { APIMessageComponentButtonInteraction } from "discord-api-types/v9";
+import MessageComponentHandler from "./MessageComponentHandler";
 import Context from "../../context";
 
-export default abstract class ButtonHandler {
-  abstract readonly buttonId: string;
+export default abstract class ButtonHandler extends MessageComponentHandler {
   /**
    * Button submit handler function
    */
-  abstract handleButton(
+  abstract handleInteraction(
     ctx: Context,
-    interaction: APIMessageComponentInteraction
+    interaction: APIMessageComponentButtonInteraction
   ): Promise<void>;
 }

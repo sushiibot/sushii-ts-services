@@ -29,6 +29,23 @@ export default class RESTClient {
     });
   }
 
+  /**
+   * Edits the message the component was attached to
+   *
+   * @param interaction
+   * @param msg
+   * @returns
+   */
+  public async interactionEdit(
+    interaction: APIInteraction,
+    msg: APIInteractionResponseCallbackData
+  ): Promise<void> {
+    return this.interactionCallback(interaction.id, interaction.token, {
+      type: InteractionResponseType.UpdateMessage,
+      data: msg,
+    });
+  }
+
   public async interactionCallback(
     interactionId: string,
     interactionToken: string,

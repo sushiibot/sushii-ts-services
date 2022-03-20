@@ -6,20 +6,30 @@ import {
   APIInteraction,
   APIChatInputApplicationCommandInteraction,
   APIModalSubmitInteraction,
-  APIMessageComponentInteraction,
   InteractionType,
-  ApplicationCommandType,
+  APIContextMenuInteraction,
+  MessageFlags,
+  APIMessageComponentButtonInteraction,
+  APIMessageComponentSelectMenuInteraction,
 } from "discord-api-types/v9";
 import { AMQPMessage } from "@cloudamqp/amqp-client";
 import {
   isChatInputApplicationCommandInteraction,
+  isContextMenuApplicationCommandInteraction,
   isMessageComponentButtonInteraction,
+  isMessageComponentSelectMenuInteraction,
 } from "discord-api-types/utils/v9";
 import { ConfigI } from "../config";
 import Context from "../context";
 import log from "../logger";
-import { ButtonHandler, SlashCommandHandler, ModalHandler } from "./handlers";
+import {
+  SlashCommandHandler,
+  ModalHandler,
+  ButtonHandler,
+  SelectMenuHandler,
+} from "./handlers";
 import { isGatewayInteractionCreateDispatch } from "../utils/interactionTypeGuards";
+import ContextMenuHandler from "./handlers/ContextMenuHandler";
 
 export default class InteractionClient {
   /**
@@ -43,6 +53,11 @@ export default class InteractionClient {
   private commands: Collection<string, SlashCommandHandler>;
 
   /**
+   * Context menu handlers
+   */
+  private contextMenuHandlers: Collection<string, ContextMenuHandler>;
+
+  /**
    * Modal handlers. This is only for *pure* handlers, if modals require some
    * side effects or logic, they should be handled in the command handler with
    * await modals.
@@ -50,9 +65,14 @@ export default class InteractionClient {
   private modalHandlers: Collection<string, ModalHandler>;
 
   /**
-   * Button handlers
+   * Button handlers, key is the custom id prefix
    */
   private buttonHandlers: Collection<string, ButtonHandler>;
+
+  /**
+   * select menu handlers, key is the custom id prefix
+   */
+  private selectMenuHandlers: Collection<string, SelectMenuHandler>;
 
   constructor(rest: REST, config: ConfigI) {
     this.rest = rest;
@@ -61,6 +81,8 @@ export default class InteractionClient {
     this.commands = new Collection();
     this.modalHandlers = new Collection();
     this.buttonHandlers = new Collection();
+    this.selectMenuHandlers = new Collection();
+    this.contextMenuHandlers = new Collection();
   }
 
   /**
@@ -73,6 +95,15 @@ export default class InteractionClient {
   }
 
   /**
+   * Add a new context menu handler to register and handle
+   *
+   * @param command ContextMenuHandler to add
+   */
+  public addContextMenu(ctxMenuHandler: ContextMenuHandler): void {
+    this.contextMenuHandlers.set(ctxMenuHandler.command.name, ctxMenuHandler);
+  }
+
+  /**
    * Add a pure modal handler
    *
    * @param modalHandler ModalHandler to add
@@ -82,12 +113,24 @@ export default class InteractionClient {
   }
 
   /**
-   * Add a pure button handler
+   * Add a pure component handler
    *
-   * @param buttonHandler ButtonHandler to add
+   * @param componentHandler ButtonHandler to add
    */
-  public addButton(buttonHandler: ButtonHandler): void {
-    this.buttonHandlers.set(buttonHandler.buttonId, buttonHandler);
+  public addButton(componentHandler: ButtonHandler): void {
+    this.buttonHandlers.set(componentHandler.customIDPrefix, componentHandler);
+  }
+
+  /**
+   * Add a pure component handler
+   *
+   * @param componentHandler SelectMenuHandler to add
+   */
+  public addSelectMenu(componentHandler: SelectMenuHandler): void {
+    this.selectMenuHandlers.set(
+      componentHandler.customIDPrefix,
+      componentHandler
+    );
   }
 
   /**
@@ -95,7 +138,12 @@ export default class InteractionClient {
    * @returns array of commands to register
    */
   private getCommandsArray(): RESTPostAPIApplicationCommandsJSONBody[] {
-    return Array.from(this.commands.values()).map((c) => c.command);
+    const slashCmds = Array.from(this.commands.values()).map((c) => c.command);
+    const contextMenus = Array.from(this.contextMenuHandlers.values()).map(
+      (c) => c.command
+    );
+
+    return [...slashCmds, ...contextMenus];
   }
 
   /**
@@ -130,12 +178,12 @@ export default class InteractionClient {
   }
 
   /**
-   * Handle a slash command
+   * Handle an slash command
    *
    * @param interaction slash command interaction
    * @returns
    */
-  private async handleInteractionCommand(
+  private async handleSlashCommandInteraction(
     interaction: APIChatInputApplicationCommandInteraction
   ): Promise<void> {
     const command = this.commands.get(interaction.data.name);
@@ -148,6 +196,17 @@ export default class InteractionClient {
     log.info("received %s command", interaction.data.name);
 
     try {
+      if (command.serverOnly) {
+        if (interaction.guild_id === undefined) {
+          await this.context.REST.interactionReply(interaction, {
+            content: "This command can only be used in servers.",
+            flags: MessageFlags.Ephemeral,
+          });
+
+          return;
+        }
+      }
+
       // Pre-check
       if (command.check) {
         const checkRes = await command.check(this.context, interaction);
@@ -172,6 +231,66 @@ export default class InteractionClient {
 
       await this.context.REST.interactionReply(interaction, {
         content: "uh oh something broke",
+      });
+    }
+  }
+
+  /**
+   * Handle an application command, this can be a slash command or a context menu interaction
+   *
+   * @param interaction application interaction
+   * @returns
+   */
+  private async handleContextMenuInteraction(
+    interaction: APIContextMenuInteraction
+  ): Promise<void> {
+    const command = this.contextMenuHandlers.get(interaction.data.name);
+
+    if (!command) {
+      log.error(`received unknown command: ${interaction.data.name}`);
+      return;
+    }
+
+    log.info("received %s command", interaction.data.name);
+
+    try {
+      if (command.serverOnly) {
+        if (interaction.guild_id === undefined) {
+          await this.context.REST.interactionReply(interaction, {
+            content: "This command can only be used in servers.",
+            flags: MessageFlags.Ephemeral,
+          });
+
+          return;
+        }
+      }
+
+      // Pre-check
+      if (command.check) {
+        const checkRes = await command.check(this.context, interaction);
+
+        if (!checkRes.pass) {
+          await this.context.REST.interactionReply(interaction, {
+            content: checkRes.message,
+            flags: MessageFlags.Ephemeral,
+          });
+
+          log.info(
+            "command %s failed check: %s",
+            interaction.data.name,
+            checkRes.message
+          );
+          return;
+        }
+      }
+
+      await command.handler(this.context, interaction);
+    } catch (e) {
+      log.error(e, "error running command %s", interaction.data.name);
+
+      await this.context.REST.interactionReply(interaction, {
+        content: "uh oh something broke",
+        flags: MessageFlags.Ephemeral,
       });
     }
   }
@@ -210,9 +329,11 @@ export default class InteractionClient {
    * @param interaction button interaction
    */
   private async handleButtonSubmit(
-    interaction: APIMessageComponentInteraction
+    interaction: APIMessageComponentButtonInteraction
   ): Promise<void> {
-    const buttonHandler = this.buttonHandlers.get(interaction.data.custom_id);
+    const buttonHandler = this.buttonHandlers.find((handler) =>
+      interaction.data.custom_id.startsWith(handler.customIDPrefix)
+    );
 
     if (!buttonHandler) {
       log.error(
@@ -226,9 +347,39 @@ export default class InteractionClient {
     log.info("received %s button", interaction.data.custom_id);
 
     try {
-      await buttonHandler.handleButton(this.context, interaction);
+      await buttonHandler.handleInteraction(this.context, interaction);
     } catch (e) {
       log.error(e, "error handling button %s: %o", interaction.id);
+    }
+  }
+
+  /**
+   * Handle a pure select menu interaction
+   *
+   * @param interaction select menu interaction
+   */
+  private async handleSelectMenuSubmit(
+    interaction: APIMessageComponentSelectMenuInteraction
+  ): Promise<void> {
+    const selectMenuHandler = this.selectMenuHandlers.find((handler) =>
+      interaction.data.custom_id.startsWith(handler.customIDPrefix)
+    );
+
+    if (!selectMenuHandler) {
+      log.error(
+        "received unknown select menu interaction: %s",
+        interaction.data.custom_id
+      );
+
+      return;
+    }
+
+    log.info("received %s select menu", interaction.data.custom_id);
+
+    try {
+      await selectMenuHandler.handleInteraction(this.context, interaction);
+    } catch (e) {
+      log.error(e, "error handling select menu %s: %o", interaction.id);
     }
   }
 
@@ -237,21 +388,21 @@ export default class InteractionClient {
   ): Promise<void> {
     if (interaction.type === InteractionType.ApplicationCommand) {
       if (isChatInputApplicationCommandInteraction(interaction)) {
-        return this.handleInteractionCommand(interaction);
+        return this.handleSlashCommandInteraction(interaction);
       }
 
-      if (interaction.data.type === ApplicationCommandType.User) {
-        // TODO: Handle user commands
-      }
-
-      if (interaction.data.type === ApplicationCommandType.Message) {
-        // TODO: Handle message commands
+      if (isContextMenuApplicationCommandInteraction(interaction)) {
+        return this.handleContextMenuInteraction(interaction);
       }
     }
 
     if (interaction.type === InteractionType.MessageComponent) {
       if (isMessageComponentButtonInteraction(interaction)) {
         return this.handleButtonSubmit(interaction);
+      }
+
+      if (isMessageComponentSelectMenuInteraction(interaction)) {
+        return this.handleSelectMenuSubmit(interaction);
       }
     }
 
