@@ -1,4 +1,4 @@
-import { CDN } from "@discordjs/rest";
+import { CDN, ImageURLOptions } from "@discordjs/rest";
 import { APIGuildMember, APIUser } from "discord-api-types/v9";
 
 export default class CDNClient {
@@ -18,9 +18,9 @@ export default class CDNClient {
       : null;
   }
 
-  public userFaceURL(user: APIUser): string {
+  public userFaceURL(user: APIUser, options?: ImageURLOptions): string {
     return user.avatar
-      ? this.cdn.avatar(user.id, user.avatar)
+      ? this.cdn.avatar(user.id, user.avatar, options)
       : this.cdn.defaultAvatar(parseInt(user.discriminator, 10));
   }
 

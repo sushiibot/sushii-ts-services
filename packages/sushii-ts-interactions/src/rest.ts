@@ -1,4 +1,4 @@
-import { REST } from "@discordjs/rest";
+import { RawFile, REST } from "@discordjs/rest";
 import {
   Routes,
   RESTPostAPIInteractionCallbackJSONBody,
@@ -9,7 +9,6 @@ import {
   APIInteraction,
 } from "discord-api-types/v9";
 import { ConfigI } from "./config";
-import logger from "./logger";
 
 export default class RESTClient {
   private rest: REST;
@@ -22,12 +21,17 @@ export default class RESTClient {
 
   public async interactionReply(
     interaction: APIInteraction,
-    msg: APIInteractionResponseCallbackData
+    msg: APIInteractionResponseCallbackData,
+    files?: RawFile[]
   ): Promise<void> {
-    return this.interactionCallback(interaction.id, interaction.token, {
-      type: InteractionResponseType.ChannelMessageWithSource,
-      data: msg,
-    });
+    return this.interactionCallback(
+      interaction,
+      {
+        type: InteractionResponseType.ChannelMessageWithSource,
+        data: msg,
+      },
+      files
+    );
   }
 
   /**
@@ -41,21 +45,21 @@ export default class RESTClient {
     interaction: APIInteraction,
     msg: APIInteractionResponseCallbackData
   ): Promise<void> {
-    return this.interactionCallback(interaction.id, interaction.token, {
+    return this.interactionCallback(interaction, {
       type: InteractionResponseType.UpdateMessage,
       data: msg,
     });
   }
 
   public async interactionCallback(
-    interactionId: string,
-    interactionToken: string,
-    payload: RESTPostAPIInteractionCallbackJSONBody
+    interaction: APIInteraction,
+    payload: RESTPostAPIInteractionCallbackJSONBody,
+    files?: RawFile[]
   ): Promise<void> {
     // TODO: Handle errors, determine response type
     await this.rest.post(
-      Routes.interactionCallback(interactionId, interactionToken),
-      { body: payload }
+      Routes.interactionCallback(interaction.id, interaction.token),
+      { body: payload, files }
     );
   }
 

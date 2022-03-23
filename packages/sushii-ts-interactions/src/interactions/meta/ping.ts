@@ -29,25 +29,16 @@ export default class PingCommand extends SlashCommandHandler {
     await ctx.sushiiAPI.health();
     const sushiiRestEnd = process.hrtime.bigint();
 
-    const embed = new Embed()
-      .setTitle(
-        t("ping.title", {
-          ns: "commands",
-        })
-      )
-      .setDescription(
-        t("ping.description", {
-          ns: "commands",
-          restMs: (
-            (discordRestEnd - discordRestStart) /
-            BigInt(1e6)
-          ).toString(),
-          sushiiApiMs: (
-            (sushiiRestEnd - sushiiRestStart) /
-            BigInt(1e6)
-          ).toString(),
-        })
-      );
+    const embed = new Embed().setTitle(t("ping.title")).setDescription(
+      t("ping.description", {
+        ns: "commands",
+        restMs: ((discordRestEnd - discordRestStart) / BigInt(1e6)).toString(),
+        sushiiApiMs: (
+          (sushiiRestEnd - sushiiRestStart) /
+          BigInt(1e6)
+        ).toString(),
+      })
+    );
 
     await ctx.REST.interactionEditOriginal(interaction, {
       content: "",

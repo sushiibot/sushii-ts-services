@@ -13,6 +13,7 @@ export interface ConfigI {
   // If using guild commands for testing
   guildId: string | undefined;
   dataApiURL: string;
+  sushiiImageServerURL: string;
   amqpUrl: string;
   amqpQueueName: string;
 
@@ -28,6 +29,8 @@ export class Config implements ConfigI {
 
   public dataApiURL: string;
 
+  public sushiiImageServerURL: string;
+
   public amqpUrl: string;
 
   public amqpQueueName: string;
@@ -39,6 +42,7 @@ export class Config implements ConfigI {
     this.applicationId = requiredEnv("APPLICATION_ID");
     this.guildId = process.env.GUILD_ID;
     this.dataApiURL = requiredEnv("DATA_API_URL");
+    this.sushiiImageServerURL = requiredEnv("SUSHII_IMAGE_SERVER_URL");
     this.amqpUrl = requiredEnv("AMQP_URL");
     this.amqpQueueName = requiredEnv("AMQP_QUEUE_NAME");
     this.proxyUrl = requiredEnv("TWILIGHT_PROXY_URL");
