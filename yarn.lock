@@ -1108,6 +1108,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nestjs/terminus@npm:^8.0.6":
+  version: 8.0.6
+  resolution: "@nestjs/terminus@npm:8.0.6"
+  dependencies:
+    check-disk-space: 3.3.0
+  peerDependencies:
+    "@nestjs/common": 8.x
+    "@nestjs/core": 8.x
+    reflect-metadata: 0.1.x
+    rxjs: 7.x
+  checksum: 15e759c223789e199481e042856492cf7299202e22f0c846554dba6682180eb8ac7cceb8393a81bf908b3435132738ce37d484373ac04c6740004a6a934bcf8b
+  languageName: node
+  linkType: hard
+
 "@nestjs/testing@npm:^8.0.0":
   version: 8.3.1
   resolution: "@nestjs/testing@npm:8.3.1"
@@ -1419,6 +1433,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@sushiibot/sushii-data-client@workspace:packages/sushii-data-client"
   dependencies:
+    "@nestjs/terminus": ^8.0.6
     "@sushiibot/sushii-data": "workspace:*"
     "@types/jest": ^27.4.1
     "@types/node": ^17.0.18
@@ -1456,6 +1471,7 @@ __metadata:
     "@nestjs/platform-express": ^8.0.0
     "@nestjs/schematics": ^8.0.0
     "@nestjs/swagger": ^5.2.0
+    "@nestjs/terminus": ^8.0.6
     "@nestjs/testing": ^8.0.0
     "@prisma/client": ^3.10.0
     "@types/express": ^4.17.13
@@ -2919,6 +2935,13 @@ __metadata:
   version: 0.7.0
   resolution: "chardet@npm:0.7.0"
   checksum: 6fd5da1f5d18ff5712c1e0aed41da200d7c51c28f11b36ee3c7b483f3696dabc08927fc6b227735eb8f0e1215c9a8abd8154637f3eff8cada5959df7f58b024d
+  languageName: node
+  linkType: hard
+
+"check-disk-space@npm:3.3.0":
+  version: 3.3.0
+  resolution: "check-disk-space@npm:3.3.0"
+  checksum: a4f5e06ed1b5b949b8a96c87263102b73683afd3da29434c11395d51ec73502455c32fdf62970fe981e72b933f7bfc47df596ed0375171295239487ea714a8b7
   languageName: node
   linkType: hard
 

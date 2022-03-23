@@ -11,5 +11,9 @@
   "avatar": {
     "user_title": "{{username}}'s Avatar",
     "member_title": "{{username}}'s Server Avatar"
+  },
+  "ping": {
+    "title": "Pong!",
+    "description": "Discord REST API (message send): `{{restMs}}ms`\nsushii API: `{{sushiiApiMs}}ms`"
   }
 }

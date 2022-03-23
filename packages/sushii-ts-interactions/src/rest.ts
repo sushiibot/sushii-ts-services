@@ -9,6 +9,7 @@ import {
   APIInteraction,
 } from "discord-api-types/v9";
 import { ConfigI } from "./config";
+import logger from "./logger";
 
 export default class RESTClient {
   private rest: REST;
@@ -58,6 +59,19 @@ export default class RESTClient {
     );
   }
 
+  public async interactionEditOriginal(
+    interaction: APIInteraction,
+    msg: APIInteractionResponseCallbackData
+  ): Promise<void> {
+    // Webhooks use application id not interaction id
+    await this.rest.patch(
+      Routes.webhookMessage(interaction.application_id, interaction.token),
+      {
+        body: msg,
+      }
+    );
+  }
+
   public getUser(userId: string): Promise<RESTGetAPIUserResult> {
     return this.rest.get(Routes.user(userId)) as Promise<RESTGetAPIUserResult>;
   }
@@ -69,5 +83,13 @@ export default class RESTClient {
     return this.rest.get(
       Routes.guildMember(guildId, userId)
     ) as Promise<RESTGetAPIGuildMemberResult>;
+  }
+
+  public async banUser(
+    guildId: string,
+    userId: string,
+    reason?: string
+  ): Promise<void> {
+    await this.rest.put(Routes.guildBan(guildId, userId), { reason });
   }
 }

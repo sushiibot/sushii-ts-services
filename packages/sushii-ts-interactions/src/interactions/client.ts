@@ -331,6 +331,8 @@ export default class InteractionClient {
   private async handleButtonSubmit(
     interaction: APIMessageComponentButtonInteraction
   ): Promise<void> {
+    // TODO: button / select menu handlers don't really need to be a collection
+    // as we are always iterating through all handlers
     const buttonHandler = this.buttonHandlers.find((handler) =>
       interaction.data.custom_id.startsWith(handler.customIDPrefix)
     );
@@ -432,6 +434,10 @@ export default class InteractionClient {
       return;
     }
 
-    this.handleAPIInteraction(interaction.d);
+    try {
+      this.handleAPIInteraction(interaction.d);
+    } catch (e) {
+      log.error(e, "error handling AMQP message %s", interaction.t);
+    }
   }
 }

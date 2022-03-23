@@ -4,6 +4,7 @@ import FishyCommand from "./user/fishy";
 import RepCommand from "./user/rep";
 import AvatarCommand from "./user/avatar";
 import UserInfoHandler from "./moderation/context_lookup/LookupContextMenuHandler";
+import PingCommand from "./meta/ping";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -14,4 +15,7 @@ export default function addCommands(
   interactionClient.addCommand(new AvatarCommand());
 
   interactionClient.addContextMenu(new UserInfoHandler());
+
+  // Meta
+  interactionClient.addCommand(new PingCommand());
 }

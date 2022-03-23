@@ -21,7 +21,9 @@ module.exports = {
   rules: {
     "quotes": ["error", "double"],
     "consistent-return": "off",
+    "default-case": "off",
     "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/switch-exhaustiveness-check": "error",
   },
   settings: {
     "import/resolver": {
