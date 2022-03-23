@@ -4,6 +4,7 @@ import {
   TransportUser,
   TransportUserModel,
 } from "@sushiibot/sushii-data/src/client";
+import type { HealthCheckResult } from "@nestjs/terminus";
 import { Agent, AgentOptions } from "http";
 import fetch, { RequestInit, Response } from "node-fetch";
 
@@ -35,6 +36,13 @@ export default class ApiClient {
       agent: this.agent,
       ...init,
     });
+  }
+
+  public async health(): Promise<HealthCheckResult> {
+    const res = await this.fetch("/health");
+    await checkErr(res);
+
+    return res.json();
   }
 
   /**

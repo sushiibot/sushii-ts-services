@@ -4,6 +4,7 @@ import { UsersModule } from './users/users.module';
 import { GuildConfigsModule } from './guild-configs/guild-configs.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { RedisModule } from './redis/redis.module';
     GuildConfigsModule,
     PrismaModule,
     RedisModule,
+    HealthModule,
   ],
-  controllers: [],
 })
 export class AppModule {}

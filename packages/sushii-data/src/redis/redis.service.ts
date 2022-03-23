@@ -1,12 +1,15 @@
-import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
-import { doesNotMatch } from 'assert';
 import { createClient, RedisClientType } from 'redis';
 
 @Injectable()
 export class RedisService implements OnModuleInit {
   private readonly logger = new Logger(RedisService.name);
-  public client: RedisClientType | undefined;
+  public client: RedisClientType;
+
+  constructor() {
+    this.client = createClient();
+  }
 
   async onModuleInit() {
     this.client = createClient();
