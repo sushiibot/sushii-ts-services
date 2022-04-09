@@ -5,11 +5,11 @@ generator client {
 generator zod {
   provider              = "zod-prisma"
   output                = "../zod-types"
-  relationModel         = true
-  modelCase             = "PascalCase"
   modelSuffix           = "Model"
-  useDecimalJs          = true
-  prismaJsonNullability = true
+  prismaJsonNullability = "true"
+  relationModel         = "true"
+  modelCase             = "PascalCase"
+  useDecimalJs          = "true"
 }
 
 datasource db {
@@ -32,8 +32,8 @@ model BotStat {
   name      String
   category  String
   count     BigInt
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   @@id([name, category])
   @@index([category])
@@ -47,8 +47,8 @@ model CachedGuild {
   splash    String?
   banner    String?
   features  String[]
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   @@index([features])
   @@map("cached_guilds")
@@ -109,6 +109,9 @@ model GuildConfig {
   leaveMsg         String?  @map("leave_msg")
   leaveMsgEnabled  Boolean  @default(true) @map("leave_msg_enabled")
   msgChannel       BigInt?  @map("msg_channel")
+  role_channel     BigInt?
+  role_config      Json?
+  role_enabled     Boolean  @default(true)
   inviteGuard      Boolean  @default(false) @map("invite_guard")
   logMsg           BigInt?  @map("log_msg")
   logMsgEnabled    Boolean  @default(true) @map("log_msg_enabled")
@@ -124,6 +127,7 @@ model GuildConfig {
   warnDmEnabled    Boolean  @default(true) @map("warn_dm_enabled")
   maxMention       Int?     @map("max_mention")
   disabledChannels BigInt[] @map("disabled_channels")
+  data             Json     @default("{}")
 
   @@map("guild_configs")
 }
@@ -247,16 +251,129 @@ model User {
   @@map("users")
 }
 
-model RoleMenu {
-  messageId BigInt  @id
-  // guildId is just to list all role menus in the server
-  guildId   BigInt
-  channelId BigInt
-  // Only when someone is creating or editing the menu. If null, not editing
-  editorId  BigInt?
+model GuildRuleSetConfig {
+  set_id          BigInt       @id
+  enabled         Boolean
+  config          Json         @db.Json
+  created_at      DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime     @default(now()) @db.Timestamptz(6)
+  guild_rule_sets GuildRuleSet @relation(fields: [set_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  // We want to prevent multiple active menus in the same channel by same user
-  // but composite index of channelId and editorId only allows for 1 role menu
-  // per channel for a user -- active menu check is not contrained by postgres
-  @@index([guildId])
+  @@index([set_id])
+  @@map("guild_rule_set_configs")
+}
+
+model GuildRuleSet {
+  id                     BigInt              @id @default(autoincrement())
+  guild_id               BigInt?
+  name                   String
+  description            String?
+  enabled                Boolean             @default(true)
+  editable               Boolean             @default(true)
+  author                 BigInt?
+  category               String?
+  created_at             DateTime            @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime            @default(now()) @db.Timestamptz(6)
+  guild_rule_set_configs GuildRuleSetConfig?
+  guild_rules            GuildRule[]
+
+  @@index([guild_id])
+  @@map("guild_rule_sets")
+}
+
+model GuildRule {
+  id              BigInt       @id @default(autoincrement())
+  set_id          BigInt
+  name            String
+  enabled         Boolean
+  trigger         Json
+  conditions      Json
+  actions         Json
+  created_at      DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime     @default(now()) @db.Timestamptz(6)
+  guild_rule_sets GuildRuleSet @relation(fields: [set_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([set_id])
+  @@map("guild_rules")
+}
+
+model Member {
+  guild_id  BigInt
+  user_id   BigInt
+  join_time DateTime @db.Timestamp(6)
+
+  @@id([guild_id, user_id])
+  @@map("members")
+}
+
+model RuleCounter {
+  time     DateTime @db.Timestamptz(6)
+  guild_id BigInt
+  name     String
+
+  @@id([time, guild_id, name])
+  @@index([guild_id, name, time])
+  @@index([time])
+  @@map("rule_counters")
+}
+
+model RuleGauge {
+  time     DateTime  @db.Timestamptz(6)
+  guild_id BigInt
+  scope    RuleScope
+  scope_id BigInt
+  name     String
+  value    BigInt
+
+  @@id([time, guild_id, scope, scope_id, name])
+  @@index([guild_id, scope, scope_id, name, time])
+  @@index([time])
+  @@map("rule_gauges")
+}
+
+model RulePersistence {
+  guild_id BigInt
+  scope    RuleScope
+  scope_id BigInt
+  data     Json
+
+  @@id([guild_id, scope, scope_id])
+  @@map("rule_persistence")
+}
+
+model WebGuild {
+  id         BigInt   @id
+  name       String
+  icon       String?
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model WebUserGuild {
+  user_id      BigInt
+  guild_id     BigInt
+  owner        Boolean
+  permissions  BigInt
+  manage_guild Boolean?
+
+  @@id([user_id, guild_id])
+  @@index([guild_id])
+  @@index([user_id])
+}
+
+model WebUser {
+  id            BigInt   @id
+  username      String
+  discriminator Int
+  avatar        String?
+  is_admin      Boolean  @default(false)
+  details       Json     @default("{}")
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+}
+
+enum RuleScope {
+  GUILD
+  CHANNEL
+  USER
 }
