@@ -246,3 +246,17 @@ model User {
 
   @@map("users")
 }
+
+model RoleMenu {
+  messageId BigInt  @id
+  // guildId is just to list all role menus in the server
+  guildId   BigInt
+  channelId BigInt
+  // Only when someone is creating or editing the menu. If null, not editing
+  editorId  BigInt?
+
+  // We want to prevent multiple active menus in the same channel by same user
+  // but composite index of channelId and editorId only allows for 1 role menu
+  // per channel for a user -- active menu check is not contrained by postgres
+  @@index([guildId])
+}
