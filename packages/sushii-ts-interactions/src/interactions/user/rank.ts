@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { isGuildInteraction } from "discord-api-types/utils/v9";
 import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v9";
 import Context from "../../context";
 import getInvokerUser from "../../utils/interactions";
@@ -13,7 +14,7 @@ export default class RankCommand extends SlashCommandHandler {
     .setName("rank")
     .setDescription("View your or another user's rank.")
     .addUserOption((o) =>
-      o.setName("user").setDescription("Who's rank to view.").setRequired(false)
+      o.setName("user").setDescription("Whose rank to view.").setRequired(false)
     )
     .toJSON();
 
@@ -22,6 +23,10 @@ export default class RankCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: APIChatInputApplicationCommandInteraction
   ): Promise<void> {
+    if (!isGuildInteraction(interaction)) {
+      throw new Error("Guild missing");
+    }
+
     const options = new CommandInteractionOptionResolver(
       interaction.data.options,
       interaction.data.resolved
@@ -29,7 +34,12 @@ export default class RankCommand extends SlashCommandHandler {
 
     const target = options.getUser("user") || getInvokerUser(interaction);
 
-    const res = await getUserRank(ctx, interaction, target);
+    const res = await getUserRank(
+      ctx,
+      interaction,
+      target,
+      interaction.guild_id
+    );
 
     await ctx.REST.interactionReply(
       interaction,
@@ -38,6 +48,10 @@ export default class RankCommand extends SlashCommandHandler {
           {
             id: "0",
             filename: "rank.png",
+            description: `${target.username}#${target.discriminator.padStart(
+              4,
+              "0"
+            )}'s rank`,
           },
         ],
       },

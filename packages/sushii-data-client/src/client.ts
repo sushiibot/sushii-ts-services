@@ -3,6 +3,8 @@ import {
   TransportGuildConfigModel,
   TransportUser,
   TransportUserModel,
+  TransportUserLevelRankedModel,
+  TransportUserLevelRanked,
 } from "@sushiibot/sushii-data/src/client";
 import type { HealthCheckResult } from "@nestjs/terminus";
 import { Agent, AgentOptions } from "http";
@@ -105,6 +107,35 @@ export default class ApiClient {
     });
 
     await checkErr(res);
+  }
+
+  /**
+   * Gets a user's rank in a guild
+   *
+   * @param userId
+   * @param guildId
+   * @returns {Promise<TransportUserModel>}
+   */
+  public async getUserRank(
+    userId: string,
+    guildId: string
+  ): Promise<TransportUserLevelRankedModel> {
+    const res = await this.fetch(`/users/${userId}/level/${guildId}`);
+    await checkErr(res);
+    return TransportUserLevelRanked.parse(await res.json());
+  }
+
+  /**
+   * Gets a user's total XP
+   *
+   * @param userId
+   * @param guildId
+   * @returns {Promise<string>}
+   */
+  public async getUserGlobalXP(userId: string): Promise<string> {
+    const res = await this.fetch(`/users/${userId}/global-xp`);
+    await checkErr(res);
+    return res.json();
   }
 }
 

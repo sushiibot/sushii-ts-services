@@ -7,6 +7,8 @@ import {
   RESTGetAPIUserResult,
   RESTGetAPIGuildMemberResult,
   APIInteraction,
+  RESTGetAPIGuildRolesResult,
+  RESTGetAPIChannelMessageResult,
 } from "discord-api-types/v9";
 import { ConfigI } from "./config";
 
@@ -76,6 +78,15 @@ export default class RESTClient {
     );
   }
 
+  public getChannelMessage(
+    channelID: string,
+    messageID: string
+  ): Promise<RESTGetAPIChannelMessageResult> {
+    return this.rest.get(
+      Routes.channelMessage(channelID, messageID)
+    ) as Promise<RESTGetAPIChannelMessageResult>;
+  }
+
   public getUser(userId: string): Promise<RESTGetAPIUserResult> {
     return this.rest.get(Routes.user(userId)) as Promise<RESTGetAPIUserResult>;
   }
@@ -95,5 +106,11 @@ export default class RESTClient {
     reason?: string
   ): Promise<void> {
     await this.rest.put(Routes.guildBan(guildId, userId), { reason });
+  }
+
+  public getGuildRoles(guildId: string): Promise<RESTGetAPIGuildRolesResult> {
+    return this.rest.get(
+      Routes.guildRoles(guildId)
+    ) as Promise<RESTGetAPIGuildRolesResult>;
   }
 }

@@ -3,6 +3,7 @@ import {
   APIUser,
 } from "discord-api-types/v9";
 import Context from "../../context";
+import UserLevelProgress from "./rank.entity";
 
 export interface RankResponse {
   rankBuffer: ArrayBuffer;
@@ -11,9 +12,16 @@ export interface RankResponse {
 export async function getUserRank(
   ctx: Context,
   _interaction: APIChatInputApplicationCommandInteraction,
-  user: APIUser
+  user: APIUser,
+  guildId: string
 ): Promise<RankResponse> {
-  const rankContext = {
+  const userData = await ctx.sushiiAPI.getUser(user.id);
+  const userRank = await ctx.sushiiAPI.getUserRank(user.id, guildId);
+  const userLevel = new UserLevelProgress(parseInt(userRank.msgAllTime, 10));
+  const globalXP = await ctx.sushiiAPI.getUserGlobalXP(user.id);
+  const globalLevel = new UserLevelProgress(parseInt(globalXP, 10));
+
+  const rankContext: Record<string, string | boolean | number> = {
     // BASE_URL: sushii_conf.image_server_url,
     CONTENT_COLOR: "0, 184, 148",
     CONTENT_OPACITY: "1",
@@ -21,37 +29,34 @@ export async function getUserRank(
     USERNAME: user.username,
     DISCRIMINATOR: user.discriminator.padStart(4, "0"),
     AVATAR_URL: ctx.CDN.userFaceURL(user, { forceStatic: true }),
-
-    /*
-      // Rep and fishies
-      "REP": user_data.rep,
-      "REP_LEVEL": user_data.rep_level(),
-      "FISHIES": user_data.fishies,
-      // Emojis
-      "IS_PATRON": user_data.is_patron,
-      "PATRON_EMOJI_URL": user_data.profile_data
-          .and_then(|d| d.0.patron_emoji_url)
-          .unwrap_or_else(|| "https://cdn.discordapp.com/emojis/830976556976963644.png".into()),
-      // levels
-      "LEVEL": level_prog.level,
-      "CURR_XP": level_prog.next_level_xp_progress,
-      "REQ_XP": level_prog.next_level_xp_required,
-      "XP_PROGRESS": level_prog.next_level_xp_percentage,
-      // global
-      "GLOBAL_LEVEL": level_prog_global.level,
-      "GLOBAL_CURR_XP": level_prog_global.next_level_xp_progress,
-      "GLOBAL_REQ_XP": level_prog_global.next_level_xp_required,
-      "GLOBAL_XP_PROGRESS": level_prog_global.next_level_xp_percentage,
-      // ranks
-      "RANK_ALL": rank_all,
-      "RANK_ALL_TOTAL": rank_all_total,
-      "RANK_WEEK": rank_week,
-      "RANK_WEEK_TOTAL": rank_week_total,
-      "RANK_MONTH": rank_month,
-      "RANK_MONTH_TOTAL": rank_month_total,
-      "RANK_DAY": rank_day,
-      "RANK_DAY_TOTAL": rank_day_total,
-      */
+    REP: userData.rep,
+    // REP_LEVEL: userData.rep_level(),
+    FISHIES: userData.fishies,
+    // Rep and fishies
+    // Emojis
+    IS_PATRON: userData.isPatron,
+    // "PATRON_EMOJI_URL": user_data.profile_data
+    //     .and_then(|d| d.0.patron_emoji_url)
+    //     .unwrap_or_else(|| "https://cdn.discordapp.com/emojis/830976556976963644.png".into()),
+    // levels
+    LEVEL: userLevel.level,
+    CURR_XP: userLevel.nextLevelXpProgress,
+    REQ_XP: userLevel.nextLevelXpRequired,
+    XP_PROGRESS: userLevel.nextLevelXpPercentage,
+    // global
+    GLOBAL_LEVEL: globalLevel.level,
+    GLOBAL_CURR_XP: globalLevel.nextLevelXpProgress,
+    GLOBAL_REQ_XP: globalLevel.nextLevelXpRequired,
+    GLOBAL_XP_PROGRESS: globalLevel.nextLevelXpPercentage,
+    // ranks
+    RANK_ALL: userRank.msgAllTimeRank,
+    RANK_ALL_TOTAL: userRank.msgAllTimeTotal,
+    RANK_WEEK: userRank.msgWeekRank,
+    RANK_WEEK_TOTAL: userRank.msgWeekTotal,
+    RANK_MONTH: userRank.msgMonthRank,
+    RANK_MONTH_TOTAL: userRank.msgMonthTotal,
+    RANK_DAY: userRank.msgDayRank,
+    RANK_DAY_TOTAL: userRank.msgDayTotal,
   };
 
   const rankBuffer = await ctx.sushiiImageServer.getUserRank(rankContext);

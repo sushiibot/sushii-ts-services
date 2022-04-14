@@ -32,7 +32,7 @@ export default class SushiiImageServerClient {
   }
 
   public async getUserRank(
-    context: Record<string, string>
+    context: Record<string, string | boolean | number>
   ): Promise<ArrayBuffer> {
     const res = await this.fetch("/template", {
       method: "POST",
