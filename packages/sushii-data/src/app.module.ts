@@ -5,6 +5,7 @@ import { GuildConfigsModule } from './guild-configs/guild-configs.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { HealthModule } from './health/health.module';
+import { RolemenusModule } from './rolemenus/rolemenus.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { HealthModule } from './health/health.module';
     PrismaModule,
     RedisModule,
     HealthModule,
+    RolemenusModule,
   ],
 })
 export class AppModule {}

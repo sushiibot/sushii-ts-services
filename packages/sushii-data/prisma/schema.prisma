@@ -397,4 +397,5 @@ model RoleMenu {
   // but composite index of channelId and editorId only allows for 1 role menu
   // per channel for a user -- active menu check is not contrained by postgres
   @@index([guildId])
+  @@index([channelId, editorId])
 }
