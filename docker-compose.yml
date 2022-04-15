@@ -6,12 +6,44 @@ services:
         restart: unless-stopped
         ports:
             - 3000:3000
-        depends_on:
-            - postgres
+        # in other docker-compose file
+        # depends_on:
+        #     - postgres
         environment:
-            PGRST_DB_URI: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-            PGRST_DB_SCHEMA: public, graphql
-            PGRST_DB_ANON_ROLE: anon
+            # sushii_authenticator can switch to sushii_visitor
+            PGRST_DB_URI: postgres://sushii_authenticator:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+            PGRST_DB_SCHEMAS: app_public
+            PGRST_DB_ANON_ROLE: sushii_visitor
+            PGRST_JWT_SECRET: "@/jwks.json"
+        volumes:
+            - ./ory/oathkeeper/jwks.json:/jwks.json
+        networks:
+            - sushii_net
+    oathkeeper:
+        image: oryd/oathkeeper:v0.38
+        restart: unless-stopped
+        command: serve --config=/etc/config/oathkeeper/config.yaml
+        ports:
+            - "4455:4455"
+            - "4456:4456"
+        environment:
+            - TRACING_PROVIDER=jaeger
+            - TRACING_PROVIDER_JAEGER_SAMPLING_SERVER_URL=http://jaeger:5778/sampling
+            - TRACING_PROVIDER_JAEGER_LOCAL_AGENT_ADDRESS=jaeger:6831
+            - TRACING_PROVIDER_JAEGER_SAMPLING_TYPE=const
+            - TRACING_PROVIDER_JAEGER_SAMPLING_VALUE=1
+        volumes:
+            - ./ory/oathkeeper:/etc/config/oathkeeper
+        networks:
+            - sushii_net
+    jaeger:
+        image: jaegertracing/all-in-one
+        restart: unless-stopped
+        ports:
+            - "16686:16686" # The UI port
+        expose:
+            - "16686"
+            - "5778"
         networks:
             - sushii_net
     twilight-http-proxy:
