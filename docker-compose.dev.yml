@@ -1,13 +1,5 @@
 version: "3.8"
 services:
-    graphiql:
-        container_name: graphiql
-        build:
-            context: ./dockerfiles/graphiql
-        ports:
-            - 4000:8000
-        depends_on:
-            - postgrest
     twilight-http-proxy:
         ports:
             - "3001:80"
