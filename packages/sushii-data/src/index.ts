@@ -41,8 +41,12 @@ async function main() {
         !state.isShuttingDown,
     },
     onShutdown: async () => {
+      logger.info("bye!");
+    },
+    beforeShutdown: async () => {
       logger.info("shutting down");
     },
+    signals: ["SIGINT", "SIGTERM"],
     logger: logger.error,
   });
 
