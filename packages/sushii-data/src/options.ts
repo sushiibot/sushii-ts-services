@@ -4,6 +4,16 @@ import { PostGraphileOptions } from "postgraphile";
 
 const logger = pino({ name: "options" });
 
+function mustGetEnvVar(value: string): string {
+  const val = process.env[value];
+
+  if (!val) {
+    throw new Error(`missing environment variable ${value}`);
+  }
+
+  return val;
+}
+
 // Connection string (or pg.Pool) for PostGraphile to use
 export const database: string | Pool =
   process.env.DATABASE_URL || "postgraphile";
@@ -42,6 +52,13 @@ export const options: PostGraphileOptions = {
   legacyRelations: "omit",
   exportGqlSchemaPath: `${__dirname}/schema.graphql`,
   sortExport: true,
+  jwtPublicKey: mustGetEnvVar("JWT_PUB_KEY"),
+  jwtVerifyOptions: {
+    algorithms: ["RS256", "ES512"],
+    audience: process.env.JWT_VERIFY_AUDIENCE,
+  },
+  // Path in jwt to extract postgres role. All roles will be
+  jwtRole: ["role"],
 };
 
 export const port: number = process.env.PORT
