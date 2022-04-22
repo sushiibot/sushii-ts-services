@@ -1,0 +1,13 @@
+overwrite: true
+schema: http://localhost:8080/graphql
+documents: ./graphql/**/*.graphql
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-resolvers
+      - typescript-operations
+      - typescript-graphql-request
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"

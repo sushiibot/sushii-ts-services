@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "build": "tsc --skipLibCheck",
+    "build:graphql": "graphql-codegen --config codegen.yml",
     "start": "ts-node src/index.ts | pino-pretty -c -t"
   },
   "dependencies": {
@@ -13,19 +14,29 @@
     "@discordjs/builders": "^0.12.0",
     "@discordjs/collection": "^0.5.0",
     "@discordjs/rest": "^0.3.0",
+    "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/typescript-graphql-request": "^4.4.5",
+    "@graphql-codegen/typescript-operations": "^2.3.5",
     "@sapphire/snowflake": "^3.2.0",
     "@sushiibot/sushii-data-client": "workspace:*",
     "dayjs": "^1.10.7",
     "discord-api-types": "^0.29.0",
     "discord.js": "monbrey/discord.js#modals",
     "dotenv": "^16.0.0",
+    "graphql": "^16.3.0",
+    "graphql-request": "^4.2.0",
     "i18next": "^21.6.13",
     "i18next-fs-backend": "^1.1.4",
     "node-fetch": "^3.2.1",
     "pino": "^7.8.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "2.6.2",
+    "@graphql-codegen/introspection": "2.1.1",
+    "@graphql-codegen/typescript": "2.4.8",
+    "@graphql-codegen/typescript-resolvers": "2.6.1",
     "@types/i18next-fs-backend": "^1.1.2",
+    "@types/jest": "^27.4.1",
     "@types/node": "^17.0.18",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
@@ -34,8 +45,10 @@
     "eslint-config-airbnb-typescript": "^16.1.0",
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-import": "^2.25.4",
+    "jest": "^27.5.1",
     "pino-pretty": "^7.5.1",
     "prettier": "^2.5.1",
+    "ts-jest": "^27.1.4",
     "ts-node": "^10.5.0",
     "typescript": "^4.5.5"
   }

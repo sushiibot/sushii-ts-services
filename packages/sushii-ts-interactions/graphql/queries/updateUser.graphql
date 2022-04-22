@@ -1,0 +1,7 @@
+mutation updateUser($id: BigInt!, $userPatch: UserPatch!) {
+  updateUserById(input: { id: $id, userPatch: $userPatch }) {
+    user {
+      ...UserData
+    }
+  }
+}
