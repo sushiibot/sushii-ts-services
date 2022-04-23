@@ -3,12 +3,13 @@ import CDNClient from "./cdn";
 import { ConfigI } from "./config";
 import SushiiImageServerClient from "./image_server";
 import RESTClient from "./rest";
-import { getSdk, Sdk } from "./generated/graphql";
+import { getSdk } from "./generated/graphql";
+import SushiiSDK from "./model/api";
 
 export default class Context {
   public readonly graphQLClient: GraphQLClient;
 
-  public readonly sushiiAPI: Sdk;
+  public readonly sushiiAPI: SushiiSDK;
 
   public readonly sushiiImageServer: SushiiImageServerClient;
 
@@ -17,8 +18,12 @@ export default class Context {
   public readonly CDN: CDNClient;
 
   constructor(config: ConfigI) {
-    this.graphQLClient = new GraphQLClient(config.graphqlApiURL);
-    this.sushiiAPI = getSdk(this.graphQLClient);
+    this.graphQLClient = new GraphQLClient(config.graphqlApiURL, {
+      headers: {
+        Authorization: `Bearer ${config.graphqlApiToken}`,
+      },
+    });
+    this.sushiiAPI = new SushiiSDK(getSdk(this.graphQLClient));
 
     this.sushiiImageServer = new SushiiImageServerClient(config);
     this.REST = new RESTClient(config);

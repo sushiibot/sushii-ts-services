@@ -1,15 +1,18 @@
-import { GraphQLClient } from "graphql-request";
-import { getSdk } from "../generated/graphql";
+import { ClientError } from "graphql-request";
+import dotenv from "dotenv";
+import { Config } from "../config";
+import Context from "../context";
 import SushiiSDK from "./api";
 
 describe("SushiiSDK", () => {
-  let graphqlClient: GraphQLClient;
   let sushiiSDK: SushiiSDK;
 
   beforeEach(() => {
-    graphqlClient = new GraphQLClient("http://localhost:8080/graphql");
+    dotenv.config();
+    const conf = new Config();
+    const ctx = new Context(conf);
 
-    sushiiSDK = new SushiiSDK(getSdk(graphqlClient));
+    sushiiSDK = ctx.sushiiAPI;
   });
 
   it("should create a new user", async () => {
@@ -35,8 +38,8 @@ describe("SushiiSDK", () => {
     expect(userById).toBeNull();
   });
 
-  it("should not throw error creating user already exists", async () => {
+  it("should throw error creating user already exists", async () => {
     const res = sushiiSDK.sdk.createUser({ id: "1234" });
-    return expect(res).rejects.toThrowError();
+    return expect(res).rejects.toThrowError(ClientError);
   });
 });

@@ -27,10 +27,11 @@
     "graphql-request": "^4.2.0",
     "i18next": "^21.6.13",
     "i18next-fs-backend": "^1.1.4",
-    "node-fetch": "^3.2.1",
+    "node-fetch": "2.6.7",
     "pino": "^7.8.0"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.16.7",
     "@graphql-codegen/cli": "2.6.2",
     "@graphql-codegen/introspection": "2.1.1",
     "@graphql-codegen/typescript": "2.4.8",
