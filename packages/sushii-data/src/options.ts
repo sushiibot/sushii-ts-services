@@ -25,20 +25,10 @@ logger.debug("using database schemas: ", schemas);
 
 // PostGraphile options; see https://www.graphile.org/postgraphile/usage-library/#api-postgraphilepgconfig-schemaname-options
 export const options: PostGraphileOptions = {
+  ownerConnectionString: mustGetEnvVar("OWNER_DATABASE_URL"),
   appendPlugins: [],
-  pgSettings(req) {
-    // Adding this to ensure that all servers pass through the request in a
-    // good enough way that we can extract headers.
-    // CREATE FUNCTION current_user_id() RETURNS text AS $$ SELECT current_setting('graphile.test.x-user-id', TRUE); $$ LANGUAGE sql STABLE;
-    return {
-      "graphile.test.x-user-id":
-        req.headers["x-user-id"] ||
-        // `normalizedConnectionParams` comes from websocket connections, where
-        // the headers often cannot be customized by the client.
-        (req as any).normalizedConnectionParams?.["x-user-id"],
-    };
-  },
-  retryOnInitFail: true,
+  // pgSettings assigned in JWT token
+  retryOnInitFail: false,
   watchPg: true,
   graphiql: true,
   enhanceGraphiql: true,
@@ -52,12 +42,13 @@ export const options: PostGraphileOptions = {
   legacyRelations: "omit",
   exportGqlSchemaPath: `${__dirname}/schema.graphql`,
   sortExport: true,
+  pgDefaultRole: mustGetEnvVar("DATABASE_VISITOR"),
   jwtPublicKey: mustGetEnvVar("JWT_PUB_KEY"),
   jwtVerifyOptions: {
     algorithms: ["RS256", "ES512"],
     audience: process.env.JWT_VERIFY_AUDIENCE,
   },
-  // Path in jwt to extract postgres role. All roles will be
+  // Path in jwt to extract postgres role.
   jwtRole: ["role"],
 };
 

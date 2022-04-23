@@ -37,6 +37,7 @@
     "pino": "^7.8.0",
     "pino-http": "^6.6.0",
     "postgraphile": "^4.12.9",
+    "postgraphile-upsert-plugin": "https://github.com/drklee3/postgraphile-upsert#dl-ignore-0-field-tables",
     "redis": "^4.0.4"
   },
   "devDependencies": {
