@@ -26,7 +26,10 @@ export default class PingCommand extends SlashCommandHandler {
     const discordRestEnd = process.hrtime.bigint();
 
     const sushiiRestStart = process.hrtime.bigint();
-    await ctx.sushiiAPI.health();
+    // Doesn't really matter if this is a valid ID or not, just to check latency
+    await ctx.sushiiAPI.sdk.userByID({
+      id: interaction.user?.id || interaction.member?.user.id,
+    });
     const sushiiRestEnd = process.hrtime.bigint();
 
     const embed = new Embed().setTitle(t("ping.title")).setDescription(

@@ -3,7 +3,6 @@ import {
   APIUser,
 } from "discord-api-types/v9";
 import Context from "../../context";
-import { getSdk } from "../../generated/graphql";
 import logger from "../../logger";
 
 /**
@@ -188,13 +187,7 @@ export async function fishyForUser(
   _interaction: APIChatInputApplicationCommandInteraction,
   user: APIUser
 ): Promise<FishyResponse> {
-  const { userById } = await ctx.sushiiAPI.userByID({ id: user.id });
-
-  let dbUser = userById;
-  if (!dbUser) {
-    const { createUser } = await ctx.sushiiAPI.createUser({ id: user.id });
-    dbUser = createUser?.user;
-  }
+  const dbUser = await ctx.sushiiAPI.getOrCreate(user.id);
 
   if (!dbUser) {
     throw new Error("Could not find or create user");
@@ -215,10 +208,11 @@ export async function fishyForUser(
 
   // Update fishies in data
   dbUser.fishies = newFishies.toString();
+  dbUser.lastFishies = new Date().toISOString();
 
   logger.debug(dbUser, "after");
 
-  await ctx.sushiiAPI.updateUser(dbUser);
+  await ctx.sushiiAPI.sdk.updateUser({ id: user.id, userPatch: dbUser });
 
   return {
     caughtAmount: caughtNum,

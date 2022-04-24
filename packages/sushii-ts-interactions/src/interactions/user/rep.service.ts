@@ -17,7 +17,7 @@ export default async function repForUser(
   _interaction: APIChatInputApplicationCommandInteraction,
   user: APIUser
 ): Promise<RepResponse> {
-  const dbUser = await ctx.sushiiAPI.getUser(user.id);
+  const dbUser = await ctx.sushiiAPI.getOrCreate(user.id);
 
   const oldAmount = dbUser.rep;
 
@@ -25,8 +25,9 @@ export default async function repForUser(
 
   // Update rep
   dbUser.rep = newRep.toString();
+  dbUser.lastRep = new Date().toISOString();
 
-  await ctx.sushiiAPI.updateUser(dbUser);
+  await ctx.sushiiAPI.sdk.updateUser({ id: user.id, userPatch: dbUser });
 
   return {
     oldAmount,
