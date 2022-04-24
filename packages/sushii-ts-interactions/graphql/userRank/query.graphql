@@ -1,0 +1,11 @@
+query userGuildLevel($guildId: BigInt!, $userId: BigInt!) {
+  userLevelByUserIdAndGuildId(guildId: $guildId, userId: $userId) {
+    guildId
+    lastMsg
+    msgAllTime
+    msgDay
+    msgMonth
+    msgWeek
+    userId
+  }
+}

@@ -27,9 +27,9 @@ export type Scalars = {
    * A point in time as described by the [ISO
    * 8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
    */
-  Datetime: any;
+  Datetime: string;
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
-  JSON: any;
+  JSON: { [key: string]: any };
   /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: any;
 };
@@ -2281,21 +2281,19 @@ export type Resolvers<ContextType = any> = {
 };
 
 
-export type UserDataFragment = { __typename?: 'User', id: any, isPatron: boolean, rep: any, lastRep?: any | null, fishies: any, lastFishies?: any | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: any | null };
-
 export type CreateUserMutationVariables = Exact<{
   id: Scalars['BigInt'];
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', id: any, isPatron: boolean, rep: any, lastRep?: any | null, fishies: any, lastFishies?: any | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: any | null } | null } | null };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', id: any, isPatron: boolean, rep: any, lastRep?: string | null, fishies: any, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null } | null } | null };
 
 export type UserByIdQueryVariables = Exact<{
   id: Scalars['BigInt'];
 }>;
 
 
-export type UserByIdQuery = { __typename?: 'Query', userById?: { __typename?: 'User', id: any, isPatron: boolean, rep: any, lastRep?: any | null, fishies: any, lastFishies?: any | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: any | null } | null };
+export type UserByIdQuery = { __typename?: 'Query', userById?: { __typename?: 'User', id: any, isPatron: boolean, rep: any, lastRep?: string | null, fishies: any, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null } | null };
 
 export type UpdateUserMutationVariables = Exact<{
   id: Scalars['BigInt'];
@@ -2303,7 +2301,17 @@ export type UpdateUserMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUserById?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', id: any, isPatron: boolean, rep: any, lastRep?: any | null, fishies: any, lastFishies?: any | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: any | null } | null } | null };
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUserById?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', id: any, isPatron: boolean, rep: any, lastRep?: string | null, fishies: any, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null } | null } | null };
+
+export type UserDataFragment = { __typename?: 'User', id: any, isPatron: boolean, rep: any, lastRep?: string | null, fishies: any, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null };
+
+export type UserGuildLevelQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
+}>;
+
+
+export type UserGuildLevelQuery = { __typename?: 'Query', userLevelByUserIdAndGuildId?: { __typename?: 'UserLevel', guildId: any, lastMsg: string, msgAllTime: any, msgDay: any, msgMonth: any, msgWeek: any, userId: any } | null };
 
 export const UserDataFragmentDoc = gql`
     fragment UserData on User {
@@ -2343,6 +2351,19 @@ export const UpdateUserDocument = gql`
   }
 }
     ${UserDataFragmentDoc}`;
+export const UserGuildLevelDocument = gql`
+    query userGuildLevel($guildId: BigInt!, $userId: BigInt!) {
+  userLevelByUserIdAndGuildId(guildId: $guildId, userId: $userId) {
+    guildId
+    lastMsg
+    msgAllTime
+    msgDay
+    msgMonth
+    msgWeek
+    userId
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -2359,6 +2380,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     updateUser(variables: UpdateUserMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateUserMutation>(UpdateUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateUser', 'mutation');
+    },
+    userGuildLevel(variables: UserGuildLevelQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UserGuildLevelQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UserGuildLevelQuery>(UserGuildLevelDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'userGuildLevel', 'query');
     }
   };
 }

@@ -2,9 +2,10 @@ import { SlashCommandBuilder, Embed } from "@discordjs/builders";
 import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v9";
 import i18next from "i18next";
 import Context from "../../context";
+import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
-import { fishyForUser } from "./fishy.service";
+import { fishyForUser, isFishyResponse } from "./fishy.service";
 
 export default class FishyCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -30,6 +31,8 @@ export default class FishyCommand extends SlashCommandHandler {
       interaction.data.resolved
     );
 
+    const invoker = getInvokerUser(interaction);
+
     const target = options.getUser("user");
     if (!target) {
       await ctx.REST.interactionReply(interaction, {
@@ -39,18 +42,28 @@ export default class FishyCommand extends SlashCommandHandler {
       return;
     }
 
-    const res = await fishyForUser(ctx, interaction, target);
+    const res = await fishyForUser(ctx, interaction, invoker, target);
 
-    const embed = new Embed().setDescription(
-      i18next.t("fishy.success", {
-        ns: "commands",
-        caughtType: res.caughtType,
-        username: target.username,
-        count: res.caughtAmount,
-        oldAmount: res.oldAmount,
-        newAmount: res.newAmount,
-      })
-    );
+    let embed;
+    if (isFishyResponse(res)) {
+      embed = new Embed().setDescription(
+        i18next.t("fishy.success", {
+          ns: "commands",
+          caughtType: res.caughtType,
+          username: target.username,
+          count: res.caughtAmount,
+          oldAmount: res.oldAmount,
+          newAmount: res.newAmount,
+        })
+      );
+    } else {
+      embed = new Embed().setDescription(
+        i18next.t("fishy.cooldown", {
+          ns: "commands",
+          nextFishyTimestamp: res.unix(),
+        })
+      );
+    }
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed],

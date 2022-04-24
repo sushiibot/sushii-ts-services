@@ -1,9 +1,13 @@
+import dayjs from "dayjs";
+import durationPlugin from "dayjs/plugin/duration";
 import {
   APIChatInputApplicationCommandInteraction,
   APIUser,
 } from "discord-api-types/v9";
 import Context from "../../context";
 import logger from "../../logger";
+
+dayjs.extend(durationPlugin);
 
 /**
  * Get inclusive random number between min and max
@@ -182,18 +186,31 @@ export interface FishyResponse {
   newAmount: string;
 }
 
+export function isFishyResponse(obj: any): obj is FishyResponse {
+  return (
+    obj.caughtAmount !== undefined &&
+    obj.caughtType !== undefined &&
+    obj.oldAmount !== undefined &&
+    obj.newAmount !== undefined
+  );
+}
+
 export async function fishyForUser(
   ctx: Context,
   _interaction: APIChatInputApplicationCommandInteraction,
-  user: APIUser
-): Promise<FishyResponse> {
-  const dbUser = await ctx.sushiiAPI.getOrCreate(user.id);
+  invoker: APIUser,
+  target: APIUser
+): Promise<FishyResponse | dayjs.Dayjs> {
+  const dbTargetUser = await ctx.sushiiAPI.getOrCreate(target.id);
 
-  if (!dbUser) {
-    throw new Error("Could not find or create user");
+  const lastFishies = dayjs(dbTargetUser.lastFishies);
+  const nextFishies = lastFishies.add(dayjs.duration({ hours: 12 }));
+  if (lastFishies.isBefore(nextFishies)) {
+    // User has already caught fishies today
+    return nextFishies;
   }
 
-  logger.debug(dbUser, "before");
+  logger.debug(dbTargetUser, "before");
 
   // Get new fishy count
   const caughtType = getRandomCatchable();
@@ -202,17 +219,34 @@ export async function fishyForUser(
     randDistNumber(valueRange.min, valueRange.max, valueRange.skew)
   );
 
-  const oldAmount = dbUser.fishies;
+  const oldAmount = dbTargetUser.fishies;
 
-  const newFishies = BigInt(dbUser.fishies) + BigInt(caughtNum);
+  const newFishies = BigInt(dbTargetUser.fishies) + BigInt(caughtNum);
 
   // Update fishies in data
-  dbUser.fishies = newFishies.toString();
-  dbUser.lastFishies = new Date().toISOString();
+  dbTargetUser.fishies = newFishies.toString();
 
-  logger.debug(dbUser, "after");
+  // Update lastFishy timestamp for invoker
+  if (invoker.id !== target.id) {
+    const dbInvokerUser = await ctx.sushiiAPI.getOrCreate(invoker.id);
+    dbInvokerUser.lastFishies = dayjs().toISOString();
+    // Update invoker
+    await ctx.sushiiAPI.sdk.updateUser({
+      id: dbInvokerUser.id,
+      userPatch: dbInvokerUser,
+    });
+  } else {
+    // Invoker is target, update target
+    dbTargetUser.lastFishies = dayjs().toISOString();
+  }
 
-  await ctx.sushiiAPI.sdk.updateUser({ id: user.id, userPatch: dbUser });
+  logger.debug(dbTargetUser, "after");
+
+  // Update target
+  await ctx.sushiiAPI.sdk.updateUser({
+    id: target.id,
+    userPatch: dbTargetUser,
+  });
 
   return {
     caughtAmount: caughtNum,

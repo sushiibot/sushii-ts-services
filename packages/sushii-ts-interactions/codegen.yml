@@ -1,6 +1,10 @@
 overwrite: true
 schema: http://localhost:8080/graphql
 documents: ./graphql/**/*.graphql
+config:
+  scalars:
+    Datetime: "string"
+    JSON: "{ [key: string]: any }"
 generates:
   src/generated/graphql.ts:
     plugins:
