@@ -20,7 +20,7 @@ export type Scalars = {
    * max value for a JavaScript number. Therefore all big integers will be output as
    * strings and not numbers.
    */
-  BigInt: any;
+  BigInt: string;
   /** A location in a connection that can be used for resuming pagination. */
   Cursor: any;
   /**
@@ -6506,9 +6506,9 @@ export type GuildConfigByIdQueryVariables = Exact<{
 }>;
 
 
-export type GuildConfigByIdQuery = { __typename?: 'Query', guildConfigById?: { __typename?: 'GuildConfig', disabledChannels?: Array<any | null> | null, inviteGuard: boolean, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: any | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: any | null, logMsg?: any | null, logMsgEnabled: boolean, maxMention?: number | null, msgChannel?: any | null, muteDmEnabled: boolean, muteDmText?: string | null, muteDuration?: any | null, muteRole?: any | null, prefix?: string | null, roleChannel?: any | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null } | null };
+export type GuildConfigByIdQuery = { __typename?: 'Query', guildConfigById?: { __typename?: 'GuildConfig', disabledChannels?: Array<string | null> | null, inviteGuard: boolean, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: string | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: string | null, logMsg?: string | null, logMsgEnabled: boolean, maxMention?: number | null, msgChannel?: string | null, muteDmEnabled: boolean, muteDmText?: string | null, muteDuration?: string | null, muteRole?: string | null, prefix?: string | null, roleChannel?: string | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null } | null };
 
-export type GuildConfigDataFragment = { __typename?: 'GuildConfig', disabledChannels?: Array<any | null> | null, inviteGuard: boolean, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: any | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: any | null, logMsg?: any | null, logMsgEnabled: boolean, maxMention?: number | null, msgChannel?: any | null, muteDmEnabled: boolean, muteDmText?: string | null, muteDuration?: any | null, muteRole?: any | null, prefix?: string | null, roleChannel?: any | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null };
+export type GuildConfigDataFragment = { __typename?: 'GuildConfig', disabledChannels?: Array<string | null> | null, inviteGuard: boolean, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: string | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: string | null, logMsg?: string | null, logMsgEnabled: boolean, maxMention?: number | null, msgChannel?: string | null, muteDmEnabled: boolean, muteDmText?: string | null, muteDuration?: string | null, muteRole?: string | null, prefix?: string | null, roleChannel?: string | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null };
 
 export type UpdateGuildConfigMutationVariables = Exact<{
   id: Scalars['BigInt'];
@@ -6516,7 +6516,7 @@ export type UpdateGuildConfigMutationVariables = Exact<{
 }>;
 
 
-export type UpdateGuildConfigMutation = { __typename?: 'Mutation', updateGuildConfigById?: { __typename?: 'UpdateGuildConfigPayload', guildConfig?: { __typename?: 'GuildConfig', disabledChannels?: Array<any | null> | null, inviteGuard: boolean, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: any | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: any | null, logMsg?: any | null, logMsgEnabled: boolean, maxMention?: number | null, msgChannel?: any | null, muteDmEnabled: boolean, muteDmText?: string | null, muteDuration?: any | null, muteRole?: any | null, prefix?: string | null, roleChannel?: any | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null } | null } | null };
+export type UpdateGuildConfigMutation = { __typename?: 'Mutation', updateGuildConfigById?: { __typename?: 'UpdateGuildConfigPayload', guildConfig?: { __typename?: 'GuildConfig', disabledChannels?: Array<string | null> | null, inviteGuard: boolean, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: string | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: string | null, logMsg?: string | null, logMsgEnabled: boolean, maxMention?: number | null, msgChannel?: string | null, muteDmEnabled: boolean, muteDmText?: string | null, muteDuration?: string | null, muteRole?: string | null, prefix?: string | null, roleChannel?: string | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null } | null } | null };
 
 export type RoleMenuByChannelAndEditorIdQueryVariables = Exact<{
   channelId: Scalars['BigInt'];
@@ -6524,9 +6524,9 @@ export type RoleMenuByChannelAndEditorIdQueryVariables = Exact<{
 }>;
 
 
-export type RoleMenuByChannelAndEditorIdQuery = { __typename?: 'Query', roleMenuByChannelIdAndEditorId?: { __typename?: 'RoleMenu', messageId: any, guildId: any, channelId: any, editorId: any } | null };
+export type RoleMenuByChannelAndEditorIdQuery = { __typename?: 'Query', roleMenuByChannelIdAndEditorId?: { __typename?: 'RoleMenu', messageId: string, guildId: string, channelId: string, editorId: string } | null };
 
-export type RoleMenuDataFragment = { __typename?: 'RoleMenu', messageId: any, guildId: any, channelId: any, editorId: any };
+export type RoleMenuDataFragment = { __typename?: 'RoleMenu', messageId: string, guildId: string, channelId: string, editorId: string };
 
 export type UpdateRoleMenuMutationVariables = Exact<{
   messageId: Scalars['BigInt'];
@@ -6534,21 +6534,21 @@ export type UpdateRoleMenuMutationVariables = Exact<{
 }>;
 
 
-export type UpdateRoleMenuMutation = { __typename?: 'Mutation', updateRoleMenuByMessageId?: { __typename?: 'UpdateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', messageId: any, guildId: any, channelId: any, editorId: any } | null } | null };
+export type UpdateRoleMenuMutation = { __typename?: 'Mutation', updateRoleMenuByMessageId?: { __typename?: 'UpdateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', messageId: string, guildId: string, channelId: string, editorId: string } | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
   id: Scalars['BigInt'];
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', id: any, isPatron: boolean, rep: any, lastRep?: string | null, fishies: any, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null } | null } | null };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', id: string, isPatron: boolean, rep: string, lastRep?: string | null, fishies: string, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null } | null } | null };
 
 export type UserByIdQueryVariables = Exact<{
   id: Scalars['BigInt'];
 }>;
 
 
-export type UserByIdQuery = { __typename?: 'Query', userById?: { __typename?: 'User', id: any, isPatron: boolean, rep: any, lastRep?: string | null, fishies: any, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null } | null };
+export type UserByIdQuery = { __typename?: 'Query', userById?: { __typename?: 'User', id: string, isPatron: boolean, rep: string, lastRep?: string | null, fishies: string, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null } | null };
 
 export type UpdateUserMutationVariables = Exact<{
   id: Scalars['BigInt'];
@@ -6556,9 +6556,9 @@ export type UpdateUserMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUserById?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', id: any, isPatron: boolean, rep: any, lastRep?: string | null, fishies: any, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null } | null } | null };
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUserById?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', id: string, isPatron: boolean, rep: string, lastRep?: string | null, fishies: string, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null } | null } | null };
 
-export type UserDataFragment = { __typename?: 'User', id: any, isPatron: boolean, rep: any, lastRep?: string | null, fishies: any, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null };
+export type UserDataFragment = { __typename?: 'User', id: string, isPatron: boolean, rep: string, lastRep?: string | null, fishies: string, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null };
 
 export type UserGuildLevelQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -6566,7 +6566,7 @@ export type UserGuildLevelQueryVariables = Exact<{
 }>;
 
 
-export type UserGuildLevelQuery = { __typename?: 'Query', userLevelByUserIdAndGuildId?: { __typename?: 'UserLevel', guildId: any, lastMsg: string, msgAllTime: any, msgDay: any, msgMonth: any, msgWeek: any, userId: any } | null };
+export type UserGuildLevelQuery = { __typename?: 'Query', userLevelByUserIdAndGuildId?: { __typename?: 'UserLevel', guildId: string, lastMsg: string, msgAllTime: string, msgDay: string, msgMonth: string, msgWeek: string, userId: string } | null };
 
 export const GuildConfigDataFragmentDoc = gql`
     fragment GuildConfigData on GuildConfig {

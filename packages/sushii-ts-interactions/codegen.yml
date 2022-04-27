@@ -4,6 +4,7 @@ documents: ./graphql/**/*.graphql
 config:
   scalars:
     Datetime: "string"
+    BigInt: "string"
     JSON: "{ [key: string]: any }"
 generates:
   src/generated/graphql.ts:
