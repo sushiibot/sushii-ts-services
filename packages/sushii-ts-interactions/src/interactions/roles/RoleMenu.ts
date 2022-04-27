@@ -9,12 +9,17 @@ import { isGuildInteraction } from "discord-api-types/utils/v9";
 import {
   APIChatInputApplicationCommandInteraction,
   APIMessage,
+  ComponentType,
 } from "discord-api-types/v9";
 import { t } from "i18next";
 import Context from "../../context";
+import { RoleMenuByChannelAndEditorIdQuery } from "../../generated/graphql";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
+import { getRoleMenuID } from "./ids";
+
+const RE_EMOJI = /(<a?)?:(w+):(d{18}>)/;
 
 export default class RoleMenuCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -142,7 +147,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: APIChatInputApplicationCommandInteraction
@@ -173,12 +177,17 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private async newHandler(
     ctx: Context,
     interaction: APIChatInputApplicationCommandInteraction,
     options: CommandInteractionOptionResolver
   ): Promise<void> {
+    if (!isGuildInteraction(interaction)) {
+      throw new Error("This command can only be used in a server.");
+    }
+
+    const invoker = getInvokerUser(interaction);
+
     const title = options.getString("title");
     if (!title) {
       throw new Error("No title provided.");
@@ -194,9 +203,12 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     const description = options.getString("description");
     const maxRoles = options.getInteger("max_roles") || 25;
+    const requiredRole = options.getRole("required_role");
+
+    const customID = getRoleMenuID(requiredRole?.id);
 
     const selectMenu = new SelectMenuComponent()
-      .setCustomId("rolemenu:")
+      .setCustomId(customID)
       .setMaxValues(maxRoles)
       .setOptions([
         new SelectMenuOption()
@@ -212,13 +224,29 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       .setTitle(title)
       .setDescription(description || null);
 
+    // Send additional message, not interaction response as we don't want the
+    // extra slash command ui thing
+    const message = await ctx.REST.sendChannelMessage(interaction.channel_id, {
+      components: [row],
+      embed,
+    });
+
+    // Save to DB
+    await ctx.sushiiAPI.sdk.createRoleMenu({
+      roleMenu: {
+        channelId: interaction.channel_id,
+        editorId: invoker.id,
+        guildId: interaction.guild_id,
+        messageId: message.id,
+      },
+    });
+
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed],
       components: [row],
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private async editHandler(
     ctx: Context,
     interaction: APIChatInputApplicationCommandInteraction,
@@ -262,7 +290,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private async roleAddHandler(
     ctx: Context,
     interaction: APIChatInputApplicationCommandInteraction,
@@ -280,9 +307,53 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       });
     }
 
+    if (menuMsg.components === undefined) {
+      throw new Error("No components found in message.");
+    }
+
+    const selectMenuRow = menuMsg.components[0];
+    const selectMenu = selectMenuRow.components[0];
+    if (selectMenu.type !== ComponentType.SelectMenu) {
+      throw new Error("No select menu found in message.");
+    }
+
+    // Required
     const label = options.getString("label");
+    if (!label) {
+      throw new Error("No label provided.");
+    }
+
+    // Optional
     const description = options.getString("description");
-    const emoji = options.getString("emoji");
+    const emojiString = options.getString("emoji");
+
+    let newOption = new SelectMenuOption().setLabel(label);
+
+    if (description) {
+      newOption = newOption.setDescription(description);
+    }
+
+    if (emojiString) {
+      const match = RE_EMOJI.exec(emojiString);
+      if (!match) {
+        throw new Error("Invalid emoji.");
+      }
+
+      const animated = match.at(1);
+      const name = match.at(2);
+      const id = match.at(3);
+
+      newOption = newOption.setEmoji({
+        id,
+        name,
+        animated: !!animated,
+      });
+    }
+
+    selectMenu.options.push(newOption);
+
+    // Edit role menu message
+    await ctx.REST.editChannelMessage(menuMsg.channel_id, menuMsg.id, menuMsg);
 
     await ctx.REST.interactionReply(interaction, {
       content: "added role",
@@ -307,21 +378,28 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   private async getActiveMenu(
     ctx: Context,
     interaction: APIChatInputApplicationCommandInteraction
-  ): Promise<RoleMenu | null> {
+  ): Promise<
+    RoleMenuByChannelAndEditorIdQuery["roleMenuByChannelIdAndEditorId"]
+  > {
     const user = getInvokerUser(interaction);
 
-    return ctx.sushiiAPI.getRoleMenuByUserID(user.id);
+    const menu = await ctx.sushiiAPI.sdk.roleMenuByChannelAndEditorID({
+      channelId: interaction.channel_id,
+      editorId: user.id,
+    });
+
+    return menu.roleMenuByChannelIdAndEditorId;
   }
 
   private async getActiveMenuMessage(
     ctx: Context,
     interaction: APIChatInputApplicationCommandInteraction
   ): Promise<APIMessage | null> {
-    const roleMenu = this.getActiveMenu(ctx, interaction);
+    const roleMenu = await this.getActiveMenu(ctx, interaction);
     if (!roleMenu) {
       return null;
     }
 
-    return ctx.REST.getChannelMessage(menu.channelID, menu.messageID);
+    return ctx.REST.getChannelMessage(roleMenu.channelId, roleMenu.messageId);
   }
 }

@@ -9,6 +9,10 @@ import {
   APIInteraction,
   RESTGetAPIGuildRolesResult,
   RESTGetAPIChannelMessageResult,
+  RESTPatchAPIChannelMessageResult,
+  RESTPatchAPIChannelMessageJSONBody,
+  RESTPostAPIChannelMessageResult,
+  RESTPostAPIChannelMessageJSONBody,
 } from "discord-api-types/v9";
 import { ConfigI } from "./config";
 
@@ -78,6 +82,15 @@ export default class RESTClient {
     );
   }
 
+  public sendChannelMessage(
+    channelID: string,
+    data: RESTPostAPIChannelMessageJSONBody
+  ): Promise<RESTPostAPIChannelMessageResult> {
+    return this.rest.post(Routes.channelMessages(channelID), {
+      body: data,
+    }) as Promise<RESTPostAPIChannelMessageResult>;
+  }
+
   public getChannelMessage(
     channelID: string,
     messageID: string
@@ -85,6 +98,16 @@ export default class RESTClient {
     return this.rest.get(
       Routes.channelMessage(channelID, messageID)
     ) as Promise<RESTGetAPIChannelMessageResult>;
+  }
+
+  public editChannelMessage(
+    channelID: string,
+    messageID: string,
+    msg: RESTPatchAPIChannelMessageJSONBody
+  ): Promise<RESTPatchAPIChannelMessageResult> {
+    return this.rest.patch(Routes.channelMessage(channelID, messageID), {
+      body: msg,
+    }) as Promise<RESTPatchAPIChannelMessageResult>;
   }
 
   public getUser(userId: string): Promise<RESTGetAPIUserResult> {

@@ -6518,6 +6518,13 @@ export type UpdateGuildConfigMutationVariables = Exact<{
 
 export type UpdateGuildConfigMutation = { __typename?: 'Mutation', updateGuildConfigById?: { __typename?: 'UpdateGuildConfigPayload', guildConfig?: { __typename?: 'GuildConfig', disabledChannels?: Array<string | null> | null, inviteGuard: boolean, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: string | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: string | null, logMsg?: string | null, logMsgEnabled: boolean, maxMention?: number | null, msgChannel?: string | null, muteDmEnabled: boolean, muteDmText?: string | null, muteDuration?: string | null, muteRole?: string | null, prefix?: string | null, roleChannel?: string | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null } | null } | null };
 
+export type CreateRoleMenuMutationVariables = Exact<{
+  roleMenu: RoleMenuInput;
+}>;
+
+
+export type CreateRoleMenuMutation = { __typename?: 'Mutation', createRoleMenu?: { __typename?: 'CreateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', messageId: string, guildId: string, channelId: string, editorId: string } | null } | null };
+
 export type RoleMenuByChannelAndEditorIdQueryVariables = Exact<{
   channelId: Scalars['BigInt'];
   editorId: Scalars['BigInt'];
@@ -6634,6 +6641,15 @@ export const UpdateGuildConfigDocument = gql`
   }
 }
     ${GuildConfigDataFragmentDoc}`;
+export const CreateRoleMenuDocument = gql`
+    mutation createRoleMenu($roleMenu: RoleMenuInput!) {
+  createRoleMenu(input: {roleMenu: $roleMenu}) {
+    roleMenu {
+      ...RoleMenuData
+    }
+  }
+}
+    ${RoleMenuDataFragmentDoc}`;
 export const RoleMenuByChannelAndEditorIdDocument = gql`
     query roleMenuByChannelAndEditorID($channelId: BigInt!, $editorId: BigInt!) {
   roleMenuByChannelIdAndEditorId(channelId: $channelId, editorId: $editorId) {
@@ -6703,6 +6719,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     updateGuildConfig(variables: UpdateGuildConfigMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateGuildConfigMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateGuildConfigMutation>(UpdateGuildConfigDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateGuildConfig', 'mutation');
+    },
+    createRoleMenu(variables: CreateRoleMenuMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateRoleMenuMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateRoleMenuMutation>(CreateRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createRoleMenu', 'mutation');
     },
     roleMenuByChannelAndEditorID(variables: RoleMenuByChannelAndEditorIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<RoleMenuByChannelAndEditorIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<RoleMenuByChannelAndEditorIdQuery>(RoleMenuByChannelAndEditorIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'roleMenuByChannelAndEditorID', 'query');

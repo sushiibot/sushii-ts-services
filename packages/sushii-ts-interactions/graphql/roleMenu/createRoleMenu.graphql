@@ -1,0 +1,7 @@
+mutation createRoleMenu($roleMenu: RoleMenuInput!) {
+  createRoleMenu(input: { roleMenu: $roleMenu }) {
+    roleMenu {
+      ...RoleMenuData
+    }
+  }
+}
