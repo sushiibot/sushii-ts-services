@@ -1,6 +1,6 @@
-import { SlashCommandBuilder, Embed } from "@discordjs/builders";
-import { isGuildInteraction } from "discord-api-types/utils/v9";
-import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v9";
+import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
+import { isGuildInteraction } from "discord-api-types/utils/v10";
+import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../context";
 import getInvokerUser from "../../utils/interactions";
@@ -35,7 +35,7 @@ export default class AvatarCommand extends SlashCommandHandler {
 
     // User av
     const userFaceURL = ctx.CDN.userFaceURL(target);
-    const userEmbed = new Embed()
+    const userEmbed = new EmbedBuilder()
       .setTitle(
         t("avatar.user_avatar", {
           ns: "commands",
@@ -43,7 +43,8 @@ export default class AvatarCommand extends SlashCommandHandler {
         })
       )
       .setURL(userFaceURL)
-      .setImage(userFaceURL);
+      .setImage(userFaceURL)
+      .toJSON();
     embeds.push(userEmbed);
 
     // Guild av
@@ -55,7 +56,7 @@ export default class AvatarCommand extends SlashCommandHandler {
         member,
         target.id
       );
-      const memberEmbed = new Embed()
+      const memberEmbed = new EmbedBuilder()
         .setTitle(
           t("avatar.member_avatar", {
             ns: "commands",
@@ -63,7 +64,8 @@ export default class AvatarCommand extends SlashCommandHandler {
           })
         )
         .setURL(userFaceURL)
-        .setImage(memberFaceURL);
+        .setImage(memberFaceURL)
+        .toJSON();
 
       embeds.push(memberEmbed);
     }

@@ -1,15 +1,15 @@
 import {
-  ActionRow,
-  ButtonComponent,
+  ActionRowBuilder,
+  ButtonBuilder,
   ContextMenuCommandBuilder,
 } from "@discordjs/builders";
-import { isGuildInteraction } from "discord-api-types/utils/v9";
+import { isGuildInteraction } from "discord-api-types/utils/v10";
 import {
   APIContextMenuInteraction,
   ApplicationCommandType,
   ButtonStyle,
   MessageFlags,
-} from "discord-api-types/v9";
+} from "discord-api-types/v10";
 import Context from "../../../context";
 import ContextMenuHandler from "../../handlers/ContextMenuHandler";
 import getUserinfoEmbed from "../../user/userinfo.service";
@@ -46,44 +46,44 @@ export default class UserInfoHandler extends ContextMenuHandler {
     const targetUser = interaction.data.resolved.users[targetID];
     const targetMember = interaction.data.resolved.members?.[targetID];
 
-    const banButton = new ButtonComponent()
+    const banButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.Ban))
       .setLabel("Ban")
       .setStyle(ButtonStyle.Danger);
 
-    const kickButton = new ButtonComponent()
+    const kickButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.Kick))
       .setLabel("Kick")
       .setStyle(ButtonStyle.Danger);
 
-    const muteButton = new ButtonComponent()
+    const muteButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.Mute))
       .setLabel("Mute")
       .setStyle(ButtonStyle.Danger);
 
-    const warnButton = new ButtonComponent()
+    const warnButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.Warn))
       .setLabel("Mute")
       .setStyle(ButtonStyle.Danger);
 
-    const topRow = new ActionRow().addComponents(
+    const topRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
       banButton,
       kickButton,
       muteButton,
       warnButton
     );
 
-    const historyButton = new ButtonComponent()
+    const historyButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.History))
       .setLabel("History")
       .setStyle(ButtonStyle.Secondary);
 
-    const lookupButton = new ButtonComponent()
+    const lookupButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.Lookup))
       .setLabel("Lookup")
       .setStyle(ButtonStyle.Success);
 
-    const secondRow = new ActionRow().addComponents(
+    const secondRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
       historyButton,
       lookupButton
     );
@@ -98,7 +98,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed],
       flags: MessageFlags.Ephemeral,
-      components: [topRow, secondRow],
+      components: [topRow.toJSON(), secondRow.toJSON()],
     });
   }
 }

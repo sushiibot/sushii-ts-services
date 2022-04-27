@@ -11,14 +11,14 @@ import {
   MessageFlags,
   APIMessageComponentButtonInteraction,
   APIMessageComponentSelectMenuInteraction,
-} from "discord-api-types/v9";
+} from "discord-api-types/v10";
 import { AMQPMessage } from "@cloudamqp/amqp-client";
 import {
   isChatInputApplicationCommandInteraction,
   isContextMenuApplicationCommandInteraction,
   isMessageComponentButtonInteraction,
   isMessageComponentSelectMenuInteraction,
-} from "discord-api-types/utils/v9";
+} from "discord-api-types/utils/v10";
 import { ConfigI } from "../config";
 import Context from "../context";
 import log from "../logger";

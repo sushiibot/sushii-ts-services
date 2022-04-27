@@ -1,11 +1,12 @@
-import { Embed } from "@discordjs/builders";
+import { EmbedBuilder } from "@discordjs/builders";
 import dayjs from "dayjs";
 import {
   APIApplicationCommandInteraction,
+  APIEmbed,
   APIGuildMember,
   APIInteractionDataResolvedGuildMember,
   APIUser,
-} from "discord-api-types/v9";
+} from "discord-api-types/v10";
 import Context from "../../context";
 import { getCreatedTimestampSeconds } from "../../utils/snowflake";
 
@@ -14,7 +15,7 @@ export default async function getUserinfoEmbed(
   _interaction: APIApplicationCommandInteraction,
   user: APIUser,
   member: APIGuildMember | APIInteractionDataResolvedGuildMember | undefined
-): Promise<Embed> {
+): Promise<APIEmbed> {
   let authorName = user.username;
   if (member?.nick) {
     authorName = `${user.username} ~ ${member.nick}`;
@@ -22,7 +23,7 @@ export default async function getUserinfoEmbed(
 
   const faceURL = ctx.CDN.userFaceURL(user);
 
-  let embed = new Embed()
+  let embed = new EmbedBuilder()
     .setAuthor({
       name: authorName,
       iconURL: faceURL,
@@ -38,7 +39,7 @@ export default async function getUserinfoEmbed(
   const createdTimestamp = getCreatedTimestampSeconds(user.id);
 
   // Creation times
-  embed = embed.addField({
+  embed = embed.addFields({
     name: "Account Created",
     value: `<t:${createdTimestamp}:F> (<t:${createdTimestamp}:R>)`,
   });
@@ -46,13 +47,13 @@ export default async function getUserinfoEmbed(
   if (member) {
     const joinedTimestamp = dayjs(member.joined_at);
     embed = embed
-      .addField({
+      .addFields({
         name: "Roles",
         value: member.roles.map((id) => `<@&${id}>`).join(" "),
       })
       // TODO: Display colour requires guild roles to be cached
       // .setColor(member.displayColor)
-      .addField({
+      .addFields({
         name: "Joined Server",
         value: `<t:${joinedTimestamp.unix()}:F> (<t:${joinedTimestamp.unix()}:R>)`,
       });
@@ -60,12 +61,12 @@ export default async function getUserinfoEmbed(
     if (member.premium_since) {
       const premiumSinceTimestamp = dayjs(member.premium_since);
 
-      embed = embed.addField({
+      embed = embed.addFields({
         name: "Boosting Since",
         value: `<t:${premiumSinceTimestamp.unix()}:F> (<t:${premiumSinceTimestamp.unix()}:R>)`,
       });
     }
   }
 
-  return embed;
+  return embed.toJSON();
 }

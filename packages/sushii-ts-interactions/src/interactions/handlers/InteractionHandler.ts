@@ -1,4 +1,4 @@
-import { APIInteraction, Permissions } from "discord-api-types/v9";
+import { APIInteraction, Permissions } from "discord-api-types/v10";
 import Context from "../../context";
 
 /**

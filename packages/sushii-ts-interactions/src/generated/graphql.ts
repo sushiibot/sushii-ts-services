@@ -6518,6 +6518,32 @@ export type UpdateGuildConfigMutationVariables = Exact<{
 
 export type UpdateGuildConfigMutation = { __typename?: 'Mutation', updateGuildConfigById?: { __typename?: 'UpdateGuildConfigPayload', guildConfig?: { __typename?: 'GuildConfig', disabledChannels?: Array<string | null> | null, inviteGuard: boolean, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: string | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: string | null, logMsg?: string | null, logMsgEnabled: boolean, maxMention?: number | null, msgChannel?: string | null, muteDmEnabled: boolean, muteDmText?: string | null, muteDuration?: string | null, muteRole?: string | null, prefix?: string | null, roleChannel?: string | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null } | null } | null };
 
+export type CreateModLogMutationVariables = Exact<{
+  modLog: ModLogInput;
+}>;
+
+
+export type CreateModLogMutation = { __typename?: 'Mutation', createModLog?: { __typename?: 'CreateModLogPayload', modLog?: { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string } | null } | null };
+
+export type GetModLogQueryVariables = Exact<{
+  caseId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+}>;
+
+
+export type GetModLogQuery = { __typename?: 'Query', modLogByGuildIdAndCaseId?: { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string } | null };
+
+export type ModLogDataFragment = { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string };
+
+export type UpdateModLogMutationVariables = Exact<{
+  caseId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+  modLogPatch: ModLogPatch;
+}>;
+
+
+export type UpdateModLogMutation = { __typename?: 'Mutation', updateModLogByGuildIdAndCaseId?: { __typename?: 'UpdateModLogPayload', modLog?: { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string } | null } | null };
+
 export type CreateRoleMenuMutationVariables = Exact<{
   roleMenu: RoleMenuInput;
 }>;
@@ -6604,6 +6630,21 @@ export const GuildConfigDataFragmentDoc = gql`
   warnDmText
 }
     `;
+export const ModLogDataFragmentDoc = gql`
+    fragment ModLogData on ModLog {
+  action
+  actionTime
+  attachments
+  caseId
+  executorId
+  guildId
+  msgId
+  pending
+  reason
+  userId
+  userTag
+}
+    `;
 export const RoleMenuDataFragmentDoc = gql`
     fragment RoleMenuData on RoleMenu {
   messageId
@@ -6641,6 +6682,33 @@ export const UpdateGuildConfigDocument = gql`
   }
 }
     ${GuildConfigDataFragmentDoc}`;
+export const CreateModLogDocument = gql`
+    mutation createModLog($modLog: ModLogInput!) {
+  createModLog(input: {modLog: $modLog}) {
+    modLog {
+      ...ModLogData
+    }
+  }
+}
+    ${ModLogDataFragmentDoc}`;
+export const GetModLogDocument = gql`
+    query getModLog($caseId: BigInt!, $guildId: BigInt!) {
+  modLogByGuildIdAndCaseId(caseId: $caseId, guildId: $guildId) {
+    ...ModLogData
+  }
+}
+    ${ModLogDataFragmentDoc}`;
+export const UpdateModLogDocument = gql`
+    mutation updateModLog($caseId: BigInt!, $guildId: BigInt!, $modLogPatch: ModLogPatch!) {
+  updateModLogByGuildIdAndCaseId(
+    input: {modLogPatch: $modLogPatch, guildId: $guildId, caseId: $caseId}
+  ) {
+    modLog {
+      ...ModLogData
+    }
+  }
+}
+    ${ModLogDataFragmentDoc}`;
 export const CreateRoleMenuDocument = gql`
     mutation createRoleMenu($roleMenu: RoleMenuInput!) {
   createRoleMenu(input: {roleMenu: $roleMenu}) {
@@ -6719,6 +6787,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     updateGuildConfig(variables: UpdateGuildConfigMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateGuildConfigMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateGuildConfigMutation>(UpdateGuildConfigDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateGuildConfig', 'mutation');
+    },
+    createModLog(variables: CreateModLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateModLogMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateModLogMutation>(CreateModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createModLog', 'mutation');
+    },
+    getModLog(variables: GetModLogQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetModLogQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetModLogQuery>(GetModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getModLog', 'query');
+    },
+    updateModLog(variables: UpdateModLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateModLogMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateModLogMutation>(UpdateModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateModLog', 'mutation');
     },
     createRoleMenu(variables: CreateRoleMenuMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateRoleMenuMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateRoleMenuMutation>(CreateRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createRoleMenu', 'mutation');

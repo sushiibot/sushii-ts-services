@@ -1,4 +1,4 @@
-import { APIModalSubmitInteraction } from "discord-api-types/v9";
+import { APIModalSubmitInteraction } from "discord-api-types/v10";
 import Context from "../../context";
 
 export default abstract class ModalHandler {

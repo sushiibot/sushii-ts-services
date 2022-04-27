@@ -13,7 +13,7 @@ import {
   RESTPatchAPIChannelMessageJSONBody,
   RESTPostAPIChannelMessageResult,
   RESTPostAPIChannelMessageJSONBody,
-} from "discord-api-types/v9";
+} from "discord-api-types/v10";
 import { ConfigI } from "./config";
 
 export default class RESTClient {

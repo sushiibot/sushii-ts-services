@@ -8,7 +8,7 @@ import {
   GatewayInteractionCreateDispatch,
   GatewayOpcodes,
   InteractionType,
-} from "discord-api-types/v9";
+} from "discord-api-types/v10";
 
 export function isGuildInteraction(
   interaction: APIChatInputApplicationCommandInteraction

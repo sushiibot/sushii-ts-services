@@ -1,4 +1,4 @@
-import { APIMessageComponentButtonInteraction } from "discord-api-types/v9";
+import { APIMessageComponentButtonInteraction } from "discord-api-types/v10";
 import MessageComponentHandler from "./MessageComponentHandler";
 import Context from "../../context";
 

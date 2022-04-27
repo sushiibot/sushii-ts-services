@@ -1,7 +1,8 @@
-import { SlashCommandBuilder, Embed } from "@discordjs/builders";
-import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v9";
+import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
+import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../context";
+import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 
 export default class PingCommand extends SlashCommandHandler {
@@ -28,11 +29,11 @@ export default class PingCommand extends SlashCommandHandler {
     const sushiiRestStart = process.hrtime.bigint();
     // Doesn't really matter if this is a valid ID or not, just to check latency
     await ctx.sushiiAPI.sdk.userByID({
-      id: interaction.user?.id || interaction.member?.user.id,
+      id: getInvokerUser(interaction).id,
     });
     const sushiiRestEnd = process.hrtime.bigint();
 
-    const embed = new Embed().setTitle(t("ping.title")).setDescription(
+    const embed = new EmbedBuilder().setTitle(t("ping.title")).setDescription(
       t("ping.description", {
         ns: "commands",
         restMs: ((discordRestEnd - discordRestStart) / BigInt(1e6)).toString(),
@@ -45,7 +46,7 @@ export default class PingCommand extends SlashCommandHandler {
 
     await ctx.REST.interactionEditOriginal(interaction, {
       content: "",
-      embeds: [embed],
+      embeds: [embed.toJSON()],
     });
   }
 }

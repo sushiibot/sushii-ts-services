@@ -15,5 +15,9 @@
   "ping": {
     "title": "Pong!",
     "description": "Discord REST API (message send): `{{restMs}}ms`\nsushii API: `{{sushiiApiMs}}ms`"
+  },
+  "kick": {
+    "success": "You kicked <@{{id}}> ({{id}})!",
+    "failure": "Failed to kick <@{{id}}> ({{id}})"
   }
 }

@@ -1,16 +1,16 @@
 import {
   SlashCommandBuilder,
-  Embed,
-  SelectMenuOption,
-  SelectMenuComponent,
-  ActionRow,
+  EmbedBuilder,
+  SelectMenuOptionBuilder,
+  SelectMenuBuilder,
+  ActionRowBuilder,
 } from "@discordjs/builders";
-import { isGuildInteraction } from "discord-api-types/utils/v9";
+import { isGuildInteraction } from "discord-api-types/utils/v10";
 import {
   APIChatInputApplicationCommandInteraction,
   APIMessage,
   ComponentType,
-} from "discord-api-types/v9";
+} from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../context";
 import { RoleMenuByChannelAndEditorIdQuery } from "../../generated/graphql";
@@ -207,20 +207,22 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     const customID = getRoleMenuID(requiredRole?.id);
 
-    const selectMenu = new SelectMenuComponent()
+    const selectMenu = new SelectMenuBuilder()
       .setCustomId(customID)
       .setMaxValues(maxRoles)
-      .setOptions([
-        new SelectMenuOption()
+      .setOptions(
+        new SelectMenuOptionBuilder()
           .setLabel("Rule 1")
           .setValue("rule1")
-          .setDescription("Rule to member"),
-      ])
+          .setDescription("Rule to member")
+      )
       .setPlaceholder("Reason");
 
-    const row = new ActionRow().addComponents(selectMenu);
+    const row = new ActionRowBuilder<SelectMenuBuilder>()
+      .addComponents(selectMenu)
+      .toJSON();
 
-    const embed = new Embed()
+    const embed = new EmbedBuilder()
       .setTitle(title)
       .setDescription(description || null);
 
@@ -228,7 +230,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     // extra slash command ui thing
     const message = await ctx.REST.sendChannelMessage(interaction.channel_id, {
       components: [row],
-      embed,
+      embed: embed.toJSON(),
     });
 
     // Save to DB
@@ -242,7 +244,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     });
 
     await ctx.REST.interactionReply(interaction, {
-      embeds: [embed],
+      embeds: [embed.toJSON()],
       components: [row],
     });
   }
@@ -267,26 +269,28 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const description = options.getString("description");
     const maxRoles = options.getInteger("max_roles") || 25;
 
-    const selectMenu = new SelectMenuComponent()
+    const selectMenu = new SelectMenuBuilder()
       .setCustomId("rolemenu:")
       .setMaxValues(maxRoles)
-      .setOptions([
-        new SelectMenuOption()
+      .setOptions(
+        new SelectMenuOptionBuilder()
           .setLabel("Rule 1")
           .setValue("rule1")
-          .setDescription("Rule to member"),
-      ])
+          .setDescription("Rule to member")
+      )
       .setPlaceholder("Reason");
 
-    const row = new ActionRow().addComponents(selectMenu);
+    const row = new ActionRowBuilder<SelectMenuBuilder>().setComponents(
+      selectMenu
+    );
 
-    const embed = new Embed()
+    const embed = new EmbedBuilder()
       .setTitle(title)
       .setDescription(description || null);
 
     await ctx.REST.interactionReply(interaction, {
-      embeds: [embed],
-      components: [row],
+      components: [row.toJSON()],
+      embeds: [embed.toJSON()],
     });
   }
 
@@ -327,7 +331,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const description = options.getString("description");
     const emojiString = options.getString("emoji");
 
-    let newOption = new SelectMenuOption().setLabel(label);
+    let newOption = new SelectMenuOptionBuilder().setLabel(label);
 
     if (description) {
       newOption = newOption.setDescription(description);
@@ -350,7 +354,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       });
     }
 
-    selectMenu.options.push(newOption);
+    selectMenu.options.push(newOption.toJSON());
 
     // Edit role menu message
     await ctx.REST.editChannelMessage(menuMsg.channel_id, menuMsg.id, menuMsg);

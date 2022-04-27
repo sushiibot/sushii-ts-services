@@ -1,5 +1,5 @@
-import { SlashCommandBuilder, Embed } from "@discordjs/builders";
-import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v9";
+import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
+import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 import i18next from "i18next";
 import Context from "../../context";
 import getInvokerUser from "../../utils/interactions";
@@ -46,7 +46,7 @@ export default class FishyCommand extends SlashCommandHandler {
 
     let embed;
     if (isFishyResponse(res)) {
-      embed = new Embed().setDescription(
+      embed = new EmbedBuilder().setDescription(
         i18next.t("fishy.success", {
           ns: "commands",
           caughtType: res.caughtType,
@@ -57,7 +57,7 @@ export default class FishyCommand extends SlashCommandHandler {
         })
       );
     } else {
-      embed = new Embed().setDescription(
+      embed = new EmbedBuilder().setDescription(
         i18next.t("fishy.cooldown", {
           ns: "commands",
           nextFishyTimestamp: res.unix(),
@@ -66,7 +66,7 @@ export default class FishyCommand extends SlashCommandHandler {
     }
 
     await ctx.REST.interactionReply(interaction, {
-      embeds: [embed],
+      embeds: [embed.toJSON()],
     });
   }
 }

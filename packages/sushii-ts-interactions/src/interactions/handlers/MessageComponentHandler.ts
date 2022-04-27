@@ -1,4 +1,4 @@
-import { APIMessageComponentInteraction } from "discord-api-types/v9";
+import { APIMessageComponentInteraction } from "discord-api-types/v10";
 import Context from "../../context";
 
 export default abstract class MessageComponentHandler {

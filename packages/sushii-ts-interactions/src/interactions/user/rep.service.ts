@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import {
   APIChatInputApplicationCommandInteraction,
   APIUser,
-} from "discord-api-types/v9";
+} from "discord-api-types/v10";
 import Context from "../../context";
 
 /**

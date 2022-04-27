@@ -1,11 +1,11 @@
 import {
   isDMInteraction,
   isGuildInteraction,
-} from "discord-api-types/utils/v9";
+} from "discord-api-types/utils/v10";
 import {
   APIChatInputApplicationCommandInteraction,
   APIUser,
-} from "discord-api-types/v9";
+} from "discord-api-types/v10";
 
 export default function getInvokerUser(
   interaction: APIChatInputApplicationCommandInteraction

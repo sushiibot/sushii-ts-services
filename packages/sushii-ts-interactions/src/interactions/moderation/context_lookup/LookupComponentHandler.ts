@@ -1,14 +1,14 @@
 import {
-  ActionRow,
-  ButtonComponent,
-  SelectMenuComponent,
-  SelectMenuOption,
+  ActionRowBuilder,
+  ButtonBuilder,
+  SelectMenuBuilder,
+  SelectMenuOptionBuilder,
 } from "@discordjs/builders";
-import { isGuildInteraction } from "discord-api-types/utils/v9";
+import { isGuildInteraction } from "discord-api-types/utils/v10";
 import {
   APIMessageComponentButtonInteraction,
   ButtonStyle,
-} from "discord-api-types/v9";
+} from "discord-api-types/v10";
 import Context from "../../../context";
 import { ButtonHandler } from "../../handlers";
 
@@ -94,27 +94,31 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
 
     // TODO: Fetch rules, if empty just add confirm button
 
-    const reasonSelect = new SelectMenuComponent()
+    const reasonSelect = new SelectMenuBuilder()
       .setCustomId(`lookup:select:ban:${target}`)
-      .setOptions([
-        new SelectMenuOption()
+      .setOptions(
+        new SelectMenuOptionBuilder()
           .setLabel("Rule 1")
           .setValue("rule1")
-          .setDescription("Rule to member"),
-      ])
+          .setDescription("Rule to member")
+      )
       .setPlaceholder("Reason");
 
-    const reasonRow = new ActionRow().addComponents(reasonSelect);
+    const reasonRow = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
+      reasonSelect
+    );
 
-    const confirmButton = new ButtonComponent()
+    const confirmButton = new ButtonBuilder()
       .setCustomId(`lookup:button:ban:${target}`)
       .setLabel("Confirm without reason")
       .setStyle(ButtonStyle.Danger);
 
-    const buttonRow = new ActionRow().addComponents(confirmButton);
+    const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+      confirmButton
+    );
 
     ctx.REST.interactionEdit(interaction, {
-      components: [reasonRow, buttonRow],
+      components: [reasonRow.toJSON(), buttonRow.toJSON()],
     });
   }
 }

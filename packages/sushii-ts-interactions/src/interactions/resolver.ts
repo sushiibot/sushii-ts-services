@@ -16,7 +16,7 @@ import {
   APIRole,
   APIInteractionDataResolvedChannel,
   APIInteractionDataResolvedGuildMember,
-} from "discord-api-types/v9";
+} from "discord-api-types/v10";
 
 function isDataBasicOption(
   option: APIApplicationCommandInteractionDataOption
@@ -154,9 +154,9 @@ export default class CommandInteractionOptionResolver {
           this.resolved.roles?.[option.value]) as OptionValue<T>;
       case ApplicationCommandOptionType.Attachment:
         return this.resolved.attachments?.[option.value] as OptionValue<T>;
+      default:
+        return option.value as OptionValue<T>;
     }
-
-    return option.value as OptionValue<T>;
   }
 
   /**
@@ -175,6 +175,18 @@ export default class CommandInteractionOptionResolver {
    */
   getSubcommandGroup(): string | null {
     return this.group;
+  }
+
+  /**
+   * Gets an attachment option.
+   * @param {string} name The name of the option.
+   * @returns The value of the option, or null if not set and not required.
+   */
+  getAttachment(name: string): APIAttachment | undefined {
+    return this.getTypedOptionValue(
+      name,
+      ApplicationCommandOptionType.Attachment
+    );
   }
 
   /**
