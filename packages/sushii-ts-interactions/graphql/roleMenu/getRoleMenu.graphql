@@ -1,0 +1,5 @@
+query roleMenuByChannelAndEditorID($channelId: BigInt!, $editorId: BigInt!) {
+  roleMenuByChannelIdAndEditorId(channelId: $channelId, editorId: $editorId) {
+    ...RoleMenuData
+  }
+}

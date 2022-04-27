@@ -1,0 +1,27 @@
+fragment GuildConfigData on GuildConfig {
+  disabledChannels
+  inviteGuard
+  joinMsg
+  joinMsgEnabled
+  joinReact
+  leaveMsg
+  leaveMsgEnabled
+  logMember
+  logMemberEnabled
+  logModEnabled
+  logMod
+  logMsg
+  logMsgEnabled
+  maxMention
+  msgChannel
+  muteDmEnabled
+  muteDmText
+  muteDuration
+  muteRole
+  prefix
+  roleChannel
+  roleConfig
+  roleEnabled
+  warnDmEnabled
+  warnDmText
+}

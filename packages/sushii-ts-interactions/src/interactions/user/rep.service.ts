@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import {
   APIChatInputApplicationCommandInteraction,
   APIUser,
@@ -15,22 +16,46 @@ export interface RepResponse {
 export default async function repForUser(
   ctx: Context,
   _interaction: APIChatInputApplicationCommandInteraction,
-  user: APIUser
-): Promise<RepResponse> {
-  const dbUser = await ctx.sushiiAPI.getOrCreate(user.id);
+  invoker: APIUser,
+  target: APIUser
+): Promise<RepResponse | dayjs.Dayjs> {
+  // Fetch both target and invoker
+  const [dbUser, dbInvokerUser] = await Promise.all([
+    ctx.sushiiAPI.getOrCreate(target.id),
+    ctx.sushiiAPI.getOrCreate(invoker.id),
+  ]);
+
+  const lastRep = dayjs(dbInvokerUser.lastRep);
+  const nextRep = lastRep.add(dayjs.duration({ hours: 12 }));
+  if (lastRep.isBefore(nextRep)) {
+    // User has already repped today
+    return nextRep;
+  }
 
   const oldAmount = dbUser.rep;
+  const newAmount = BigInt(dbUser.rep) + BigInt(1);
 
-  const newRep = BigInt(dbUser.rep) + BigInt(1);
+  // Update rep for target
+  dbUser.rep = newAmount.toString();
+  // Update lastRep for invoker
+  dbInvokerUser.lastRep = dayjs().toISOString();
 
-  // Update rep
-  dbUser.rep = newRep.toString();
-  dbUser.lastRep = new Date().toISOString();
+  // Update invoker
+  const updateInvokerPromise = ctx.sushiiAPI.sdk.updateUser({
+    id: dbInvokerUser.id,
+    userPatch: dbInvokerUser,
+  });
+  // Update target
+  const updateUserPromise = ctx.sushiiAPI.sdk.updateUser({
+    id: target.id,
+    userPatch: dbUser,
+  });
 
-  await ctx.sushiiAPI.sdk.updateUser({ id: user.id, userPatch: dbUser });
+  // Save to db
+  await Promise.all([updateInvokerPromise, updateUserPromise]);
 
   return {
     oldAmount,
-    newAmount: newRep.toString(),
+    newAmount: newAmount.toString(),
   };
 }

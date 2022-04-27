@@ -1,0 +1,9 @@
+mutation updateRoleMenu($messageId: BigInt!, $roleMenuPatch: RoleMenuPatch!) {
+  updateRoleMenuByMessageId(
+    input: { roleMenuPatch: $roleMenuPatch, messageId: $messageId }
+  ) {
+    roleMenu {
+      ...RoleMenuData
+    }
+  }
+}

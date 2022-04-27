@@ -1,0 +1,6 @@
+fragment RoleMenuData on RoleMenu {
+  messageId
+  guildId
+  channelId
+  editorId
+}

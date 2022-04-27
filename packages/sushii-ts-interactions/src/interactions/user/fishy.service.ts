@@ -203,7 +203,19 @@ export async function fishyForUser(
 ): Promise<FishyResponse | dayjs.Dayjs> {
   const dbTargetUser = await ctx.sushiiAPI.getOrCreate(target.id);
 
-  const lastFishies = dayjs(dbTargetUser.lastFishies);
+  let dbInvokerUser = null;
+  if (invoker.id !== target.id) {
+    dbInvokerUser = await ctx.sushiiAPI.getOrCreate(invoker.id);
+  }
+
+  // Invoker same as target
+  let lastFishies = dayjs(dbTargetUser.lastFishies);
+
+  // If invoker different target
+  if (dbInvokerUser) {
+    lastFishies = dayjs(dbInvokerUser.lastFishies);
+  }
+
   const nextFishies = lastFishies.add(dayjs.duration({ hours: 12 }));
   if (lastFishies.isBefore(nextFishies)) {
     // User has already caught fishies today
@@ -227,8 +239,8 @@ export async function fishyForUser(
   dbTargetUser.fishies = newFishies.toString();
 
   // Update lastFishy timestamp for invoker
-  if (invoker.id !== target.id) {
-    const dbInvokerUser = await ctx.sushiiAPI.getOrCreate(invoker.id);
+  if (dbInvokerUser) {
+    // If invoker different from target, update invoker
     dbInvokerUser.lastFishies = dayjs().toISOString();
     // Update invoker
     await ctx.sushiiAPI.sdk.updateUser({
