@@ -17,7 +17,15 @@
     "description": "Discord REST API (message send): `{{restMs}}ms`\nsushii API: `{{sushiiApiMs}}ms`"
   },
   "kick": {
-    "success": "You kicked <@{{id}}> ({{id}})!",
+    "success": "<@{{id}}> ({{id}}) has been kicked!",
     "failure": "Failed to kick <@{{id}}> ({{id}})"
+  },
+  "ban": {
+    "success": "<@{{id}}> ({{id}}) has been banned!",
+    "failure": "Failed to ban <@{{id}}> ({{id}})"
+  },
+  "timeout": {
+    "success": "<@{{id}}> ({{id}}) has been timed out!",
+    "failure": "Failed to timeout <@{{id}}> ({{id}})"
   }
 }

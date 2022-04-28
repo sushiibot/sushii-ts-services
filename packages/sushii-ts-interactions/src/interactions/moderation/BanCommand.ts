@@ -9,21 +9,21 @@ import Context from "../../context";
 import { SlashCommandHandler } from "../handlers";
 import ModActionData from "./ModActionData";
 
-export default class KickCommand extends SlashCommandHandler {
+export default class BanCommand extends SlashCommandHandler {
   serverOnly = true;
 
-  requiredBotPermissions = PermissionFlagsBits.KickMembers.toString();
+  requiredBotPermissions = PermissionFlagsBits.BanMembers.toString();
 
   command = new SlashCommandBuilder()
-    .setName("kick")
-    .setDescription("Kick a member.")
+    .setName("ban")
+    .setDescription("Ban a member.")
     .addUserOption((o) =>
-      o.setName("user").setDescription("Who to kick.").setRequired(true)
+      o.setName("user").setDescription("Who to ban.").setRequired(true)
     )
     .addStringOption((o) =>
       o
         .setName("reason")
-        .setDescription("Reason for kicking this user.")
+        .setDescription("Reason for banning this user.")
         .setRequired(false)
     )
     .addAttachmentOption((o) =>
@@ -45,7 +45,7 @@ export default class KickCommand extends SlashCommandHandler {
     const userFaceURL = ctx.CDN.userFaceURL(data.target);
     const userEmbed = new EmbedBuilder()
       .setTitle(
-        t("kick.success", {
+        t("ban.success", {
           ns: "commands",
           id: data.target.id,
         })
@@ -57,7 +57,7 @@ export default class KickCommand extends SlashCommandHandler {
       modLog: {
         guildId: interaction.guild_id,
         // TODO: Fetch next caseId: ???,
-        action: "kick",
+        action: "ban",
         pending: true,
         userId: data.target.id,
         userTag: data.target.discriminator,

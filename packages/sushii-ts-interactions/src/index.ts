@@ -1,3 +1,4 @@
+import "./dayjs";
 import { REST } from "@discordjs/rest";
 import dotenv from "dotenv";
 import { AMQPClient } from "@cloudamqp/amqp-client";

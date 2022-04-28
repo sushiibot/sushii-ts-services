@@ -9,27 +9,33 @@ import Context from "../../context";
 import { SlashCommandHandler } from "../handlers";
 import ModActionData from "./ModActionData";
 
-export default class KickCommand extends SlashCommandHandler {
+export default class TimeoutCommand extends SlashCommandHandler {
   serverOnly = true;
 
-  requiredBotPermissions = PermissionFlagsBits.KickMembers.toString();
+  requiredBotPermissions = PermissionFlagsBits.ModerateMembers.toString();
 
   command = new SlashCommandBuilder()
-    .setName("kick")
-    .setDescription("Kick a member.")
+    .setName("timeout")
+    .setDescription("Timeout a member.")
     .addUserOption((o) =>
-      o.setName("user").setDescription("Who to kick.").setRequired(true)
+      o.setName("user").setDescription("Who to timeout.").setRequired(true)
     )
     .addStringOption((o) =>
       o
         .setName("reason")
-        .setDescription("Reason for kicking this user.")
+        .setDescription("Reason for timing out this user.")
         .setRequired(false)
     )
     .addAttachmentOption((o) =>
       o
         .setName("attachment")
         .setDescription("Additional media to attach to the case.")
+        .setRequired(false)
+    )
+    .addStringOption((o) =>
+      o
+        .setName("duration")
+        .setDescription("How long to timeout the user.")
         .setRequired(false)
     )
     .toJSON();
@@ -45,7 +51,7 @@ export default class KickCommand extends SlashCommandHandler {
     const userFaceURL = ctx.CDN.userFaceURL(data.target);
     const userEmbed = new EmbedBuilder()
       .setTitle(
-        t("kick.success", {
+        t("timeout.success", {
           ns: "commands",
           id: data.target.id,
         })
@@ -57,7 +63,7 @@ export default class KickCommand extends SlashCommandHandler {
       modLog: {
         guildId: interaction.guild_id,
         // TODO: Fetch next caseId: ???,
-        action: "kick",
+        action: "ban",
         pending: true,
         userId: data.target.id,
         userTag: data.target.discriminator,

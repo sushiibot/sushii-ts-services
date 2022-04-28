@@ -16,6 +16,7 @@ import { AMQPMessage } from "@cloudamqp/amqp-client";
 import {
   isChatInputApplicationCommandInteraction,
   isContextMenuApplicationCommandInteraction,
+  isGuildInteraction,
   isMessageComponentButtonInteraction,
   isMessageComponentSelectMenuInteraction,
 } from "discord-api-types/utils/v10";
@@ -83,6 +84,15 @@ export default class InteractionClient {
     this.buttonHandlers = new Collection();
     this.selectMenuHandlers = new Collection();
     this.contextMenuHandlers = new Collection();
+  }
+
+  /**
+   * Add multiple commands to register and handle
+   *
+   * @param commands SlashCommands to add
+   */
+  public addCommands(...commands: SlashCommandHandler[]): void {
+    commands.forEach((c) => this.addCommand(c));
   }
 
   /**
@@ -197,7 +207,7 @@ export default class InteractionClient {
 
     try {
       if (command.serverOnly) {
-        if (interaction.guild_id === undefined) {
+        if (!isGuildInteraction(interaction)) {
           await this.context.REST.interactionReply(interaction, {
             content: "This command can only be used in servers.",
             flags: MessageFlags.Ephemeral,
