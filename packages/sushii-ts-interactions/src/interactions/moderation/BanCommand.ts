@@ -57,7 +57,7 @@ export default class BanCommand extends SlashCommandHandler {
       modLog: {
         guildId: interaction.guild_id,
         // TODO: Fetch next caseId: ???,
-        action: "ban",
+        action: "mute",
         pending: true,
         userId: data.target.id,
         userTag: data.target.discriminator,

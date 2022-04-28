@@ -1,13 +1,10 @@
 import dayjs from "dayjs";
-import durationPlugin from "dayjs/plugin/duration";
 import {
   APIChatInputApplicationCommandInteraction,
   APIUser,
 } from "discord-api-types/v10";
 import Context from "../../context";
 import logger from "../../logger";
-
-dayjs.extend(durationPlugin);
 
 /**
  * Get inclusive random number between min and max
@@ -201,11 +198,11 @@ export async function fishyForUser(
   invoker: APIUser,
   target: APIUser
 ): Promise<FishyResponse | dayjs.Dayjs> {
-  const dbTargetUser = await ctx.sushiiAPI.getOrCreate(target.id);
+  const dbTargetUser = await ctx.sushiiAPI.getOrCreateUser(target.id);
 
   let dbInvokerUser = null;
   if (invoker.id !== target.id) {
-    dbInvokerUser = await ctx.sushiiAPI.getOrCreate(invoker.id);
+    dbInvokerUser = await ctx.sushiiAPI.getOrCreateUser(invoker.id);
   }
 
   // Invoker same as target

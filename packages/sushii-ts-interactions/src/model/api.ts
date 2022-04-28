@@ -5,7 +5,7 @@ type DBUser = Omit<User, "nodeId">;
 export default class SushiiSDK {
   constructor(public sdk: Sdk) {}
 
-  async getOrCreate(userId: string): Promise<DBUser> {
+  async getOrCreateUser(userId: string): Promise<DBUser> {
     const { userById } = await this.sdk.userByID({ id: userId });
 
     let dbUser = userById;

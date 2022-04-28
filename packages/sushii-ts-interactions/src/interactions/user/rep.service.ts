@@ -21,8 +21,8 @@ export default async function repForUser(
 ): Promise<RepResponse | dayjs.Dayjs> {
   // Fetch both target and invoker
   const [dbUser, dbInvokerUser] = await Promise.all([
-    ctx.sushiiAPI.getOrCreate(target.id),
-    ctx.sushiiAPI.getOrCreate(invoker.id),
+    ctx.sushiiAPI.getOrCreateUser(target.id),
+    ctx.sushiiAPI.getOrCreateUser(invoker.id),
   ]);
 
   const lastRep = dayjs(dbInvokerUser.lastRep);
