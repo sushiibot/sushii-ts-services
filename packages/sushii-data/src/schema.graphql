@@ -38,6 +38,26 @@ input BotStatCondition {
   updatedAt: Datetime
 }
 
+"""An input for mutations affecting `BotStat`"""
+input BotStatInput {
+  category: String!
+  count: BigInt!
+  createdAt: Datetime
+  name: String!
+  updatedAt: Datetime
+}
+
+"""
+Represents an update to a `BotStat`. Fields that are set will be updated.
+"""
+input BotStatPatch {
+  category: String
+  count: BigInt
+  createdAt: Datetime
+  name: String
+  updatedAt: Datetime
+}
+
 """A connection to a list of `BotStat` values."""
 type BotStatsConnection {
   """
@@ -129,6 +149,64 @@ type CachedGuild implements Node {
   ): WebUserGuildsConnection!
 }
 
+"""An input for mutations affecting `CachedGuild`"""
+input CachedGuildInput {
+  banner: String
+  createdAt: Datetime
+  features: [String]
+  icon: String
+  id: BigInt!
+  name: String!
+  splash: String
+  updatedAt: Datetime
+}
+
+"""
+Represents an update to a `CachedGuild`. Fields that are set will be updated.
+"""
+input CachedGuildPatch {
+  banner: String
+  createdAt: Datetime
+  features: [String]
+  icon: String
+  id: BigInt
+  name: String
+  splash: String
+  updatedAt: Datetime
+}
+
+"""A `CachedGuild` edge in the connection."""
+type CachedGuildsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `CachedGuild` at the end of the edge."""
+  node: CachedGuild!
+}
+
+"""Methods to use when ordering `CachedGuild`."""
+enum CachedGuildsOrderBy {
+  BANNER_ASC
+  BANNER_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  FEATURES_ASC
+  FEATURES_DESC
+  ICON_ASC
+  ICON_DESC
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  SPLASH_ASC
+  SPLASH_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+}
+
 type CachedUser implements Node {
   avatarUrl: String!
   discriminator: Int!
@@ -140,6 +218,551 @@ type CachedUser implements Node {
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
   nodeId: ID!
+}
+
+"""An input for mutations affecting `CachedUser`"""
+input CachedUserInput {
+  avatarUrl: String!
+  discriminator: Int!
+  id: BigInt!
+  lastChecked: Datetime!
+  name: String!
+}
+
+"""
+Represents an update to a `CachedUser`. Fields that are set will be updated.
+"""
+input CachedUserPatch {
+  avatarUrl: String
+  discriminator: Int
+  id: BigInt
+  lastChecked: Datetime
+  name: String
+}
+
+"""A `CachedUser` edge in the connection."""
+type CachedUsersEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `CachedUser` at the end of the edge."""
+  node: CachedUser!
+}
+
+"""Methods to use when ordering `CachedUser`."""
+enum CachedUsersOrderBy {
+  AVATAR_URL_ASC
+  AVATAR_URL_DESC
+  DISCRIMINATOR_ASC
+  DISCRIMINATOR_DESC
+  ID_ASC
+  ID_DESC
+  LAST_CHECKED_ASC
+  LAST_CHECKED_DESC
+  NAME_ASC
+  NAME_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""All input for the create `BotStat` mutation."""
+input CreateBotStatInput {
+  """The `BotStat` to be created by this mutation."""
+  botStat: BotStatInput!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+}
+
+"""The output of our create `BotStat` mutation."""
+type CreateBotStatPayload {
+  """The `BotStat` that was created by this mutation."""
+  botStat: BotStat
+
+  """An edge for our `BotStat`. May be used by Relay 1."""
+  botStatEdge(
+    """The method to use when ordering `BotStat`."""
+    orderBy: [BotStatsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): BotStatsEdge
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `CachedGuild` mutation."""
+input CreateCachedGuildInput {
+  """The `CachedGuild` to be created by this mutation."""
+  cachedGuild: CachedGuildInput!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+}
+
+"""The output of our create `CachedGuild` mutation."""
+type CreateCachedGuildPayload {
+  """The `CachedGuild` that was created by this mutation."""
+  cachedGuild: CachedGuild
+
+  """An edge for our `CachedGuild`. May be used by Relay 1."""
+  cachedGuildEdge(
+    """The method to use when ordering `CachedGuild`."""
+    orderBy: [CachedGuildsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): CachedGuildsEdge
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `CachedUser` mutation."""
+input CreateCachedUserInput {
+  """The `CachedUser` to be created by this mutation."""
+  cachedUser: CachedUserInput!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+}
+
+"""The output of our create `CachedUser` mutation."""
+type CreateCachedUserPayload {
+  """The `CachedUser` that was created by this mutation."""
+  cachedUser: CachedUser
+
+  """An edge for our `CachedUser`. May be used by Relay 1."""
+  cachedUserEdge(
+    """The method to use when ordering `CachedUser`."""
+    orderBy: [CachedUsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): CachedUsersEdge
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `Feed` mutation."""
+input CreateFeedInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Feed` to be created by this mutation."""
+  feed: FeedInput!
+}
+
+"""All input for the create `FeedItem` mutation."""
+input CreateFeedItemInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `FeedItem` to be created by this mutation."""
+  feedItem: FeedItemInput!
+}
+
+"""The output of our create `FeedItem` mutation."""
+type CreateFeedItemPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `FeedItem` that was created by this mutation."""
+  feedItem: FeedItem
+
+  """An edge for our `FeedItem`. May be used by Relay 1."""
+  feedItemEdge(
+    """The method to use when ordering `FeedItem`."""
+    orderBy: [FeedItemsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedItemsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""The output of our create `Feed` mutation."""
+type CreateFeedPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Feed` that was created by this mutation."""
+  feed: Feed
+
+  """An edge for our `Feed`. May be used by Relay 1."""
+  feedEdge(
+    """The method to use when ordering `Feed`."""
+    orderBy: [FeedsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `FeedSubscription` mutation."""
+input CreateFeedSubscriptionInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `FeedSubscription` to be created by this mutation."""
+  feedSubscription: FeedSubscriptionInput!
+}
+
+"""The output of our create `FeedSubscription` mutation."""
+type CreateFeedSubscriptionPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """Reads a single `Feed` that is related to this `FeedSubscription`."""
+  feedByFeedId: Feed
+
+  """The `FeedSubscription` that was created by this mutation."""
+  feedSubscription: FeedSubscription
+
+  """An edge for our `FeedSubscription`. May be used by Relay 1."""
+  feedSubscriptionEdge(
+    """The method to use when ordering `FeedSubscription`."""
+    orderBy: [FeedSubscriptionsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedSubscriptionsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `GuildBan` mutation."""
+input CreateGuildBanInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `GuildBan` to be created by this mutation."""
+  guildBan: GuildBanInput!
+}
+
+"""The output of our create `GuildBan` mutation."""
+type CreateGuildBanPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `GuildBan` that was created by this mutation."""
+  guildBan: GuildBan
+
+  """An edge for our `GuildBan`. May be used by Relay 1."""
+  guildBanEdge(
+    """The method to use when ordering `GuildBan`."""
+    orderBy: [GuildBansOrderBy!] = [PRIMARY_KEY_ASC]
+  ): GuildBansEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `GuildConfig` mutation."""
+input CreateGuildConfigInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `GuildConfig` to be created by this mutation."""
+  guildConfig: GuildConfigInput!
+}
+
+"""The output of our create `GuildConfig` mutation."""
+type CreateGuildConfigPayload {
+  """Reads a single `CachedGuild` that is related to this `GuildConfig`."""
+  cachedGuildById: CachedGuild
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `GuildConfig` that was created by this mutation."""
+  guildConfig: GuildConfig
+
+  """An edge for our `GuildConfig`. May be used by Relay 1."""
+  guildConfigEdge(
+    """The method to use when ordering `GuildConfig`."""
+    orderBy: [GuildConfigsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): GuildConfigsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `Member` mutation."""
+input CreateMemberInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Member` to be created by this mutation."""
+  member: MemberInput!
+}
+
+"""The output of our create `Member` mutation."""
+type CreateMemberPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Member` that was created by this mutation."""
+  member: Member
+
+  """An edge for our `Member`. May be used by Relay 1."""
+  memberEdge(
+    """The method to use when ordering `Member`."""
+    orderBy: [MembersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MembersEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `Message` mutation."""
+input CreateMessageInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Message` to be created by this mutation."""
+  message: MessageInput!
+}
+
+"""The output of our create `Message` mutation."""
+type CreateMessagePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Message` that was created by this mutation."""
+  message: Message
+
+  """An edge for our `Message`. May be used by Relay 1."""
+  messageEdge(
+    """The method to use when ordering `Message`."""
+    orderBy: [MessagesOrderBy!] = [NATURAL]
+  ): MessagesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `ModLog` mutation."""
+input CreateModLogInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `ModLog` to be created by this mutation."""
+  modLog: ModLogInput!
+}
+
+"""The output of our create `ModLog` mutation."""
+type CreateModLogPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `ModLog` that was created by this mutation."""
+  modLog: ModLog
+
+  """An edge for our `ModLog`. May be used by Relay 1."""
+  modLogEdge(
+    """The method to use when ordering `ModLog`."""
+    orderBy: [ModLogsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): ModLogsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `Mute` mutation."""
+input CreateMuteInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Mute` to be created by this mutation."""
+  mute: MuteInput!
+}
+
+"""The output of our create `Mute` mutation."""
+type CreateMutePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """Reads a single `ModLog` that is related to this `Mute`."""
+  modLogByGuildIdAndCaseId: ModLog
+
+  """The `Mute` that was created by this mutation."""
+  mute: Mute
+
+  """An edge for our `Mute`. May be used by Relay 1."""
+  muteEdge(
+    """The method to use when ordering `Mute`."""
+    orderBy: [MutesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MutesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `Notification` mutation."""
+input CreateNotificationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Notification` to be created by this mutation."""
+  notification: NotificationInput!
+}
+
+"""The output of our create `Notification` mutation."""
+type CreateNotificationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Notification` that was created by this mutation."""
+  notification: Notification
+
+  """An edge for our `Notification`. May be used by Relay 1."""
+  notificationEdge(
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): NotificationsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `Reminder` mutation."""
+input CreateReminderInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Reminder` to be created by this mutation."""
+  reminder: ReminderInput!
+}
+
+"""The output of our create `Reminder` mutation."""
+type CreateReminderPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `Reminder` that was created by this mutation."""
+  reminder: Reminder
+
+  """An edge for our `Reminder`. May be used by Relay 1."""
+  reminderEdge(
+    """The method to use when ordering `Reminder`."""
+    orderBy: [RemindersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): RemindersEdge
 }
 
 """All input for the create `RoleMenu` mutation."""
@@ -177,6 +800,41 @@ type CreateRoleMenuPayload {
   ): RoleMenusEdge
 }
 
+"""All input for the create `Tag` mutation."""
+input CreateTagInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Tag` to be created by this mutation."""
+  tag: TagInput!
+}
+
+"""The output of our create `Tag` mutation."""
+type CreateTagPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `Tag` that was created by this mutation."""
+  tag: Tag
+
+  """An edge for our `Tag`. May be used by Relay 1."""
+  tagEdge(
+    """The method to use when ordering `Tag`."""
+    orderBy: [TagsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): TagsEdge
+}
+
 """All input for the create `User` mutation."""
 input CreateUserInput {
   """
@@ -187,6 +845,41 @@ input CreateUserInput {
 
   """The `User` to be created by this mutation."""
   user: UserInput!
+}
+
+"""All input for the create `UserLevel` mutation."""
+input CreateUserLevelInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `UserLevel` to be created by this mutation."""
+  userLevel: UserLevelInput!
+}
+
+"""The output of our create `UserLevel` mutation."""
+type CreateUserLevelPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `UserLevel` that was created by this mutation."""
+  userLevel: UserLevel
+
+  """An edge for our `UserLevel`. May be used by Relay 1."""
+  userLevelEdge(
+    """The method to use when ordering `UserLevel`."""
+    orderBy: [UserLevelsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): UserLevelsEdge
 }
 
 """The output of our create `User` mutation."""
@@ -210,6 +903,82 @@ type CreateUserPayload {
     """The method to use when ordering `User`."""
     orderBy: [UsersOrderBy!] = [PRIMARY_KEY_ASC]
   ): UsersEdge
+}
+
+"""All input for the create `WebUserGuild` mutation."""
+input CreateWebUserGuildInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `WebUserGuild` to be created by this mutation."""
+  webUserGuild: WebUserGuildInput!
+}
+
+"""The output of our create `WebUserGuild` mutation."""
+type CreateWebUserGuildPayload {
+  """Reads a single `CachedGuild` that is related to this `WebUserGuild`."""
+  cachedGuildByGuildId: CachedGuild
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `WebUser` that is related to this `WebUserGuild`."""
+  webUserByUserId: WebUser
+
+  """The `WebUserGuild` that was created by this mutation."""
+  webUserGuild: WebUserGuild
+
+  """An edge for our `WebUserGuild`. May be used by Relay 1."""
+  webUserGuildEdge(
+    """The method to use when ordering `WebUserGuild`."""
+    orderBy: [WebUserGuildsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): WebUserGuildsEdge
+}
+
+"""All input for the create `WebUser` mutation."""
+input CreateWebUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `WebUser` to be created by this mutation."""
+  webUser: WebUserInput!
+}
+
+"""The output of our create `WebUser` mutation."""
+type CreateWebUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `WebUser` that was created by this mutation."""
+  webUser: WebUser
+
+  """An edge for our `WebUser`. May be used by Relay 1."""
+  webUserEdge(
+    """The method to use when ordering `WebUser`."""
+    orderBy: [WebUsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): WebUsersEdge
 }
 
 """A `BigInt` edge in the connection."""
@@ -243,6 +1012,18 @@ A point in time as described by the [ISO
 8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
 """
 scalar Datetime
+
+"""All input for the `deleteRoleMenuByChannelIdAndEditorId` mutation."""
+input DeleteRoleMenuByChannelIdAndEditorIdInput {
+  channelId: BigInt!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  editorId: BigInt!
+}
 
 """All input for the `deleteRoleMenuByMessageId` mutation."""
 input DeleteRoleMenuByMessageIdInput {
@@ -292,6 +1073,272 @@ type DeleteRoleMenuPayload {
   ): RoleMenusEdge
 }
 
+type Feed implements Node {
+  feedId: String!
+
+  """Reads and enables pagination through a set of `FeedSubscription`."""
+  feedSubscriptionsByFeedId(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: FeedSubscriptionCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `FeedSubscription`."""
+    orderBy: [FeedSubscriptionsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedSubscriptionsConnection!
+  metadata: JSON
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+}
+
+"""
+A condition to be used against `Feed` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input FeedCondition {
+  """Checks for equality with the object’s `feedId` field."""
+  feedId: String
+
+  """Checks for equality with the object’s `metadata` field."""
+  metadata: JSON
+}
+
+"""An input for mutations affecting `Feed`"""
+input FeedInput {
+  feedId: String!
+  metadata: JSON
+}
+
+type FeedItem implements Node {
+  feedId: String!
+  itemId: String!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+}
+
+"""
+A condition to be used against `FeedItem` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input FeedItemCondition {
+  """Checks for equality with the object’s `feedId` field."""
+  feedId: String
+
+  """Checks for equality with the object’s `itemId` field."""
+  itemId: String
+}
+
+"""An input for mutations affecting `FeedItem`"""
+input FeedItemInput {
+  feedId: String!
+  itemId: String!
+}
+
+"""
+Represents an update to a `FeedItem`. Fields that are set will be updated.
+"""
+input FeedItemPatch {
+  feedId: String
+  itemId: String
+}
+
+"""A connection to a list of `FeedItem` values."""
+type FeedItemsConnection {
+  """
+  A list of edges which contains the `FeedItem` and cursor to aid in pagination.
+  """
+  edges: [FeedItemsEdge!]!
+
+  """A list of `FeedItem` objects."""
+  nodes: [FeedItem!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `FeedItem` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `FeedItem` edge in the connection."""
+type FeedItemsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `FeedItem` at the end of the edge."""
+  node: FeedItem!
+}
+
+"""Methods to use when ordering `FeedItem`."""
+enum FeedItemsOrderBy {
+  FEED_ID_ASC
+  FEED_ID_DESC
+  ITEM_ID_ASC
+  ITEM_ID_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""Represents an update to a `Feed`. Fields that are set will be updated."""
+input FeedPatch {
+  feedId: String
+  metadata: JSON
+}
+
+type FeedSubscription implements Node {
+  channelId: BigInt!
+
+  """Reads a single `Feed` that is related to this `FeedSubscription`."""
+  feedByFeedId: Feed
+  feedId: String!
+  guildId: BigInt!
+  mentionRole: BigInt
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+}
+
+"""
+A condition to be used against `FeedSubscription` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input FeedSubscriptionCondition {
+  """Checks for equality with the object’s `channelId` field."""
+  channelId: BigInt
+
+  """Checks for equality with the object’s `feedId` field."""
+  feedId: String
+
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `mentionRole` field."""
+  mentionRole: BigInt
+}
+
+"""An input for mutations affecting `FeedSubscription`"""
+input FeedSubscriptionInput {
+  channelId: BigInt!
+  feedId: String!
+  guildId: BigInt!
+  mentionRole: BigInt
+}
+
+"""
+Represents an update to a `FeedSubscription`. Fields that are set will be updated.
+"""
+input FeedSubscriptionPatch {
+  channelId: BigInt
+  feedId: String
+  guildId: BigInt
+  mentionRole: BigInt
+}
+
+"""A connection to a list of `FeedSubscription` values."""
+type FeedSubscriptionsConnection {
+  """
+  A list of edges which contains the `FeedSubscription` and cursor to aid in pagination.
+  """
+  edges: [FeedSubscriptionsEdge!]!
+
+  """A list of `FeedSubscription` objects."""
+  nodes: [FeedSubscription!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """
+  The count of *all* `FeedSubscription` you could get from the connection.
+  """
+  totalCount: Int!
+}
+
+"""A `FeedSubscription` edge in the connection."""
+type FeedSubscriptionsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `FeedSubscription` at the end of the edge."""
+  node: FeedSubscription!
+}
+
+"""Methods to use when ordering `FeedSubscription`."""
+enum FeedSubscriptionsOrderBy {
+  CHANNEL_ID_ASC
+  CHANNEL_ID_DESC
+  FEED_ID_ASC
+  FEED_ID_DESC
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  MENTION_ROLE_ASC
+  MENTION_ROLE_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
+"""A connection to a list of `Feed` values."""
+type FeedsConnection {
+  """
+  A list of edges which contains the `Feed` and cursor to aid in pagination.
+  """
+  edges: [FeedsEdge!]!
+
+  """A list of `Feed` objects."""
+  nodes: [Feed!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Feed` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Feed` edge in the connection."""
+type FeedsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Feed` at the end of the edge."""
+  node: Feed!
+}
+
+"""Methods to use when ordering `Feed`."""
+enum FeedsOrderBy {
+  FEED_ID_ASC
+  FEED_ID_DESC
+  METADATA_ASC
+  METADATA_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
 """All input for the `graphql` mutation."""
 input GraphqlInput {
   """
@@ -318,6 +1365,79 @@ type GraphqlPayload {
   Our root query field type. Allows us to run any query from our mutation payload.
   """
   query: Query
+}
+
+type GuildBan implements Node {
+  guildId: BigInt!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  userId: BigInt!
+}
+
+"""
+A condition to be used against `GuildBan` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input GuildBanCondition {
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: BigInt
+}
+
+"""An input for mutations affecting `GuildBan`"""
+input GuildBanInput {
+  guildId: BigInt!
+  userId: BigInt!
+}
+
+"""
+Represents an update to a `GuildBan`. Fields that are set will be updated.
+"""
+input GuildBanPatch {
+  guildId: BigInt
+  userId: BigInt
+}
+
+"""A connection to a list of `GuildBan` values."""
+type GuildBansConnection {
+  """
+  A list of edges which contains the `GuildBan` and cursor to aid in pagination.
+  """
+  edges: [GuildBansEdge!]!
+
+  """A list of `GuildBan` objects."""
+  nodes: [GuildBan!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `GuildBan` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `GuildBan` edge in the connection."""
+type GuildBansEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `GuildBan` at the end of the edge."""
+  node: GuildBan!
+}
+
+"""Methods to use when ordering `GuildBan`."""
+enum GuildBansOrderBy {
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  USER_ID_ASC
+  USER_ID_DESC
 }
 
 type GuildConfig implements Node {
@@ -444,11 +1564,44 @@ input GuildConfigCondition {
   warnDmText: String
 }
 
+"""An input for mutations affecting `GuildConfig`"""
+input GuildConfigInput {
+  data: JSON
+  disabledChannels: [BigInt]
+  id: BigInt!
+  inviteGuard: Boolean
+  joinMsg: String
+  joinMsgEnabled: Boolean
+  joinReact: String
+  leaveMsg: String
+  leaveMsgEnabled: Boolean
+  logMember: BigInt
+  logMemberEnabled: Boolean
+  logMod: BigInt
+  logModEnabled: Boolean
+  logMsg: BigInt
+  logMsgEnabled: Boolean
+  maxMention: Int
+  msgChannel: BigInt
+  muteDmEnabled: Boolean
+  muteDmText: String
+  muteDuration: BigInt
+  muteRole: BigInt
+  prefix: String
+  roleChannel: BigInt
+  roleConfig: JSON
+  roleEnabled: Boolean
+  warnDmEnabled: Boolean
+  warnDmText: String
+}
+
 """
 Represents an update to a `GuildConfig`. Fields that are set will be updated.
 """
 input GuildConfigPatch {
+  data: JSON
   disabledChannels: [BigInt]
+  id: BigInt
   inviteGuard: Boolean
   joinMsg: String
   joinMsgEnabled: Boolean
@@ -597,10 +1750,467 @@ type LogoutPayload {
   query: Query
 }
 
+type Member implements Node {
+  guildId: BigInt!
+  joinTime: Datetime!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  userId: BigInt!
+}
+
+"""
+A condition to be used against `Member` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input MemberCondition {
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `joinTime` field."""
+  joinTime: Datetime
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: BigInt
+}
+
+"""An input for mutations affecting `Member`"""
+input MemberInput {
+  guildId: BigInt!
+  joinTime: Datetime!
+  userId: BigInt!
+}
+
+"""
+Represents an update to a `Member`. Fields that are set will be updated.
+"""
+input MemberPatch {
+  guildId: BigInt
+  joinTime: Datetime
+  userId: BigInt
+}
+
+"""A connection to a list of `Member` values."""
+type MembersConnection {
+  """
+  A list of edges which contains the `Member` and cursor to aid in pagination.
+  """
+  edges: [MembersEdge!]!
+
+  """A list of `Member` objects."""
+  nodes: [Member!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Member` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Member` edge in the connection."""
+type MembersEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Member` at the end of the edge."""
+  node: Member!
+}
+
+"""Methods to use when ordering `Member`."""
+enum MembersOrderBy {
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  JOIN_TIME_ASC
+  JOIN_TIME_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  USER_ID_ASC
+  USER_ID_DESC
+}
+
+type Message {
+  authorId: BigInt!
+  channelId: BigInt!
+  content: String!
+  created: Datetime!
+  guildId: BigInt!
+  messageId: BigInt!
+  msg: JSON!
+}
+
+"""
+A condition to be used against `Message` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input MessageCondition {
+  """Checks for equality with the object’s `authorId` field."""
+  authorId: BigInt
+
+  """Checks for equality with the object’s `channelId` field."""
+  channelId: BigInt
+
+  """Checks for equality with the object’s `content` field."""
+  content: String
+
+  """Checks for equality with the object’s `created` field."""
+  created: Datetime
+
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `messageId` field."""
+  messageId: BigInt
+
+  """Checks for equality with the object’s `msg` field."""
+  msg: JSON
+}
+
+"""An input for mutations affecting `Message`"""
+input MessageInput {
+  authorId: BigInt!
+  channelId: BigInt!
+  content: String!
+  created: Datetime!
+  guildId: BigInt!
+  messageId: BigInt!
+  msg: JSON!
+}
+
+"""A connection to a list of `Message` values."""
+type MessagesConnection {
+  """
+  A list of edges which contains the `Message` and cursor to aid in pagination.
+  """
+  edges: [MessagesEdge!]!
+
+  """A list of `Message` objects."""
+  nodes: [Message!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Message` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Message` edge in the connection."""
+type MessagesEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Message` at the end of the edge."""
+  node: Message!
+}
+
+"""Methods to use when ordering `Message`."""
+enum MessagesOrderBy {
+  AUTHOR_ID_ASC
+  AUTHOR_ID_DESC
+  CHANNEL_ID_ASC
+  CHANNEL_ID_DESC
+  CONTENT_ASC
+  CONTENT_DESC
+  CREATED_ASC
+  CREATED_DESC
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  MESSAGE_ID_ASC
+  MESSAGE_ID_DESC
+  MSG_ASC
+  MSG_DESC
+  NATURAL
+}
+
+type ModLog implements Node {
+  action: String!
+  actionTime: Datetime!
+  attachments: [String]!
+  caseId: BigInt!
+  executorId: BigInt
+  guildId: BigInt!
+  msgId: BigInt
+
+  """Reads and enables pagination through a set of `Mute`."""
+  mutesByGuildIdAndCaseId(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: MuteCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `Mute`."""
+    orderBy: [MutesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MutesConnection!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  pending: Boolean!
+  reason: String
+  userId: BigInt!
+  userTag: String!
+}
+
+"""
+A condition to be used against `ModLog` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input ModLogCondition {
+  """Checks for equality with the object’s `action` field."""
+  action: String
+
+  """Checks for equality with the object’s `actionTime` field."""
+  actionTime: Datetime
+
+  """Checks for equality with the object’s `attachments` field."""
+  attachments: [String]
+
+  """Checks for equality with the object’s `caseId` field."""
+  caseId: BigInt
+
+  """Checks for equality with the object’s `executorId` field."""
+  executorId: BigInt
+
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `msgId` field."""
+  msgId: BigInt
+
+  """Checks for equality with the object’s `pending` field."""
+  pending: Boolean
+
+  """Checks for equality with the object’s `reason` field."""
+  reason: String
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: BigInt
+
+  """Checks for equality with the object’s `userTag` field."""
+  userTag: String
+}
+
+"""An input for mutations affecting `ModLog`"""
+input ModLogInput {
+  action: String!
+  actionTime: Datetime!
+  attachments: [String]
+  caseId: BigInt!
+  executorId: BigInt
+  guildId: BigInt!
+  msgId: BigInt
+  pending: Boolean!
+  reason: String
+  userId: BigInt!
+  userTag: String!
+}
+
+"""
+Represents an update to a `ModLog`. Fields that are set will be updated.
+"""
+input ModLogPatch {
+  action: String
+  actionTime: Datetime
+  attachments: [String]
+  caseId: BigInt
+  executorId: BigInt
+  guildId: BigInt
+  msgId: BigInt
+  pending: Boolean
+  reason: String
+  userId: BigInt
+  userTag: String
+}
+
+"""A connection to a list of `ModLog` values."""
+type ModLogsConnection {
+  """
+  A list of edges which contains the `ModLog` and cursor to aid in pagination.
+  """
+  edges: [ModLogsEdge!]!
+
+  """A list of `ModLog` objects."""
+  nodes: [ModLog!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `ModLog` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `ModLog` edge in the connection."""
+type ModLogsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `ModLog` at the end of the edge."""
+  node: ModLog!
+}
+
+"""Methods to use when ordering `ModLog`."""
+enum ModLogsOrderBy {
+  ACTION_ASC
+  ACTION_DESC
+  ACTION_TIME_ASC
+  ACTION_TIME_DESC
+  ATTACHMENTS_ASC
+  ATTACHMENTS_DESC
+  CASE_ID_ASC
+  CASE_ID_DESC
+  EXECUTOR_ID_ASC
+  EXECUTOR_ID_DESC
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  MSG_ID_ASC
+  MSG_ID_DESC
+  NATURAL
+  PENDING_ASC
+  PENDING_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  REASON_ASC
+  REASON_DESC
+  USER_ID_ASC
+  USER_ID_DESC
+  USER_TAG_ASC
+  USER_TAG_DESC
+}
+
 """
 The root mutation type which contains root level fields which mutate data.
 """
 type Mutation {
+  """Creates a single `BotStat`."""
+  createBotStat(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateBotStatInput!
+  ): CreateBotStatPayload
+
+  """Creates a single `CachedGuild`."""
+  createCachedGuild(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateCachedGuildInput!
+  ): CreateCachedGuildPayload
+
+  """Creates a single `CachedUser`."""
+  createCachedUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateCachedUserInput!
+  ): CreateCachedUserPayload
+
+  """Creates a single `Feed`."""
+  createFeed(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateFeedInput!
+  ): CreateFeedPayload
+
+  """Creates a single `FeedItem`."""
+  createFeedItem(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateFeedItemInput!
+  ): CreateFeedItemPayload
+
+  """Creates a single `FeedSubscription`."""
+  createFeedSubscription(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateFeedSubscriptionInput!
+  ): CreateFeedSubscriptionPayload
+
+  """Creates a single `GuildBan`."""
+  createGuildBan(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateGuildBanInput!
+  ): CreateGuildBanPayload
+
+  """Creates a single `GuildConfig`."""
+  createGuildConfig(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateGuildConfigInput!
+  ): CreateGuildConfigPayload
+
+  """Creates a single `Member`."""
+  createMember(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateMemberInput!
+  ): CreateMemberPayload
+
+  """Creates a single `Message`."""
+  createMessage(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateMessageInput!
+  ): CreateMessagePayload
+
+  """Creates a single `ModLog`."""
+  createModLog(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateModLogInput!
+  ): CreateModLogPayload
+
+  """Creates a single `Mute`."""
+  createMute(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateMuteInput!
+  ): CreateMutePayload
+
+  """Creates a single `Notification`."""
+  createNotification(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateNotificationInput!
+  ): CreateNotificationPayload
+
+  """Creates a single `Reminder`."""
+  createReminder(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateReminderInput!
+  ): CreateReminderPayload
+
   """Creates a single `RoleMenu`."""
   createRoleMenu(
     """
@@ -608,6 +2218,14 @@ type Mutation {
     """
     input: CreateRoleMenuInput!
   ): CreateRoleMenuPayload
+
+  """Creates a single `Tag`."""
+  createTag(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateTagInput!
+  ): CreateTagPayload
 
   """Creates a single `User`."""
   createUser(
@@ -617,12 +2235,44 @@ type Mutation {
     input: CreateUserInput!
   ): CreateUserPayload
 
+  """Creates a single `UserLevel`."""
+  createUserLevel(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateUserLevelInput!
+  ): CreateUserLevelPayload
+
+  """Creates a single `WebUser`."""
+  createWebUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateWebUserInput!
+  ): CreateWebUserPayload
+
+  """Creates a single `WebUserGuild`."""
+  createWebUserGuild(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateWebUserGuildInput!
+  ): CreateWebUserGuildPayload
+
   """Deletes a single `RoleMenu` using its globally unique id."""
   deleteRoleMenu(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
     input: DeleteRoleMenuInput!
+  ): DeleteRoleMenuPayload
+
+  """Deletes a single `RoleMenu` using a unique key."""
+  deleteRoleMenuByChannelIdAndEditorId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteRoleMenuByChannelIdAndEditorIdInput!
   ): DeleteRoleMenuPayload
 
   """Deletes a single `RoleMenu` using a unique key."""
@@ -645,6 +2295,124 @@ type Mutation {
     input: LogoutInput!
   ): LogoutPayload
 
+  """Updates a single `BotStat` using its globally unique id and a patch."""
+  updateBotStat(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateBotStatInput!
+  ): UpdateBotStatPayload
+
+  """Updates a single `BotStat` using a unique key and a patch."""
+  updateBotStatByNameAndCategory(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateBotStatByNameAndCategoryInput!
+  ): UpdateBotStatPayload
+
+  """
+  Updates a single `CachedGuild` using its globally unique id and a patch.
+  """
+  updateCachedGuild(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateCachedGuildInput!
+  ): UpdateCachedGuildPayload
+
+  """Updates a single `CachedGuild` using a unique key and a patch."""
+  updateCachedGuildById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateCachedGuildByIdInput!
+  ): UpdateCachedGuildPayload
+
+  """
+  Updates a single `CachedUser` using its globally unique id and a patch.
+  """
+  updateCachedUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateCachedUserInput!
+  ): UpdateCachedUserPayload
+
+  """Updates a single `CachedUser` using a unique key and a patch."""
+  updateCachedUserById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateCachedUserByIdInput!
+  ): UpdateCachedUserPayload
+
+  """Updates a single `Feed` using its globally unique id and a patch."""
+  updateFeed(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateFeedInput!
+  ): UpdateFeedPayload
+
+  """Updates a single `Feed` using a unique key and a patch."""
+  updateFeedByFeedId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateFeedByFeedIdInput!
+  ): UpdateFeedPayload
+
+  """Updates a single `FeedItem` using its globally unique id and a patch."""
+  updateFeedItem(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateFeedItemInput!
+  ): UpdateFeedItemPayload
+
+  """Updates a single `FeedItem` using a unique key and a patch."""
+  updateFeedItemByFeedIdAndItemId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateFeedItemByFeedIdAndItemIdInput!
+  ): UpdateFeedItemPayload
+
+  """
+  Updates a single `FeedSubscription` using its globally unique id and a patch.
+  """
+  updateFeedSubscription(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateFeedSubscriptionInput!
+  ): UpdateFeedSubscriptionPayload
+
+  """Updates a single `FeedSubscription` using a unique key and a patch."""
+  updateFeedSubscriptionByFeedIdAndChannelId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateFeedSubscriptionByFeedIdAndChannelIdInput!
+  ): UpdateFeedSubscriptionPayload
+
+  """Updates a single `GuildBan` using its globally unique id and a patch."""
+  updateGuildBan(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateGuildBanInput!
+  ): UpdateGuildBanPayload
+
+  """Updates a single `GuildBan` using a unique key and a patch."""
+  updateGuildBanByGuildIdAndUserId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateGuildBanByGuildIdAndUserIdInput!
+  ): UpdateGuildBanPayload
+
   """
   Updates a single `GuildConfig` using its globally unique id and a patch.
   """
@@ -663,6 +2431,88 @@ type Mutation {
     input: UpdateGuildConfigByIdInput!
   ): UpdateGuildConfigPayload
 
+  """Updates a single `Member` using its globally unique id and a patch."""
+  updateMember(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateMemberInput!
+  ): UpdateMemberPayload
+
+  """Updates a single `Member` using a unique key and a patch."""
+  updateMemberByGuildIdAndUserId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateMemberByGuildIdAndUserIdInput!
+  ): UpdateMemberPayload
+
+  """Updates a single `ModLog` using its globally unique id and a patch."""
+  updateModLog(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateModLogInput!
+  ): UpdateModLogPayload
+
+  """Updates a single `ModLog` using a unique key and a patch."""
+  updateModLogByGuildIdAndCaseId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateModLogByGuildIdAndCaseIdInput!
+  ): UpdateModLogPayload
+
+  """Updates a single `Mute` using its globally unique id and a patch."""
+  updateMute(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateMuteInput!
+  ): UpdateMutePayload
+
+  """Updates a single `Mute` using a unique key and a patch."""
+  updateMuteByGuildIdAndUserId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateMuteByGuildIdAndUserIdInput!
+  ): UpdateMutePayload
+
+  """
+  Updates a single `Notification` using its globally unique id and a patch.
+  """
+  updateNotification(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateNotificationInput!
+  ): UpdateNotificationPayload
+
+  """Updates a single `Notification` using a unique key and a patch."""
+  updateNotificationByUserIdAndGuildIdAndKeyword(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateNotificationByUserIdAndGuildIdAndKeywordInput!
+  ): UpdateNotificationPayload
+
+  """Updates a single `Reminder` using its globally unique id and a patch."""
+  updateReminder(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateReminderInput!
+  ): UpdateReminderPayload
+
+  """Updates a single `Reminder` using a unique key and a patch."""
+  updateReminderByUserIdAndSetAt(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateReminderByUserIdAndSetAtInput!
+  ): UpdateReminderPayload
+
   """Updates a single `RoleMenu` using its globally unique id and a patch."""
   updateRoleMenu(
     """
@@ -672,12 +2522,36 @@ type Mutation {
   ): UpdateRoleMenuPayload
 
   """Updates a single `RoleMenu` using a unique key and a patch."""
+  updateRoleMenuByChannelIdAndEditorId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateRoleMenuByChannelIdAndEditorIdInput!
+  ): UpdateRoleMenuPayload
+
+  """Updates a single `RoleMenu` using a unique key and a patch."""
   updateRoleMenuByMessageId(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
     input: UpdateRoleMenuByMessageIdInput!
   ): UpdateRoleMenuPayload
+
+  """Updates a single `Tag` using its globally unique id and a patch."""
+  updateTag(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateTagInput!
+  ): UpdateTagPayload
+
+  """Updates a single `Tag` using a unique key and a patch."""
+  updateTagByGuildIdAndTagName(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateTagByGuildIdAndTagNameInput!
+  ): UpdateTagPayload
 
   """Updates a single `User` using its globally unique id and a patch."""
   updateUser(
@@ -694,6 +2568,161 @@ type Mutation {
     """
     input: UpdateUserByIdInput!
   ): UpdateUserPayload
+
+  """Updates a single `UserLevel` using its globally unique id and a patch."""
+  updateUserLevel(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateUserLevelInput!
+  ): UpdateUserLevelPayload
+
+  """Updates a single `UserLevel` using a unique key and a patch."""
+  updateUserLevelByUserIdAndGuildId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateUserLevelByUserIdAndGuildIdInput!
+  ): UpdateUserLevelPayload
+
+  """Updates a single `WebUser` using its globally unique id and a patch."""
+  updateWebUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateWebUserInput!
+  ): UpdateWebUserPayload
+
+  """Updates a single `WebUser` using a unique key and a patch."""
+  updateWebUserById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateWebUserByIdInput!
+  ): UpdateWebUserPayload
+
+  """
+  Updates a single `WebUserGuild` using its globally unique id and a patch.
+  """
+  updateWebUserGuild(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateWebUserGuildInput!
+  ): UpdateWebUserGuildPayload
+
+  """Updates a single `WebUserGuild` using a unique key and a patch."""
+  updateWebUserGuildByUserIdAndGuildId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateWebUserGuildByUserIdAndGuildIdInput!
+  ): UpdateWebUserGuildPayload
+}
+
+type Mute implements Node {
+  caseId: BigInt
+  endTime: Datetime
+  guildId: BigInt!
+
+  """Reads a single `ModLog` that is related to this `Mute`."""
+  modLogByGuildIdAndCaseId: ModLog
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  pending: Boolean!
+  startTime: Datetime!
+  userId: BigInt!
+}
+
+"""
+A condition to be used against `Mute` object types. All fields are tested for equality and combined with a logical ‘and.’
+"""
+input MuteCondition {
+  """Checks for equality with the object’s `caseId` field."""
+  caseId: BigInt
+
+  """Checks for equality with the object’s `endTime` field."""
+  endTime: Datetime
+
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `pending` field."""
+  pending: Boolean
+
+  """Checks for equality with the object’s `startTime` field."""
+  startTime: Datetime
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: BigInt
+}
+
+"""An input for mutations affecting `Mute`"""
+input MuteInput {
+  caseId: BigInt
+  endTime: Datetime
+  guildId: BigInt!
+  pending: Boolean
+  startTime: Datetime!
+  userId: BigInt!
+}
+
+"""Represents an update to a `Mute`. Fields that are set will be updated."""
+input MutePatch {
+  caseId: BigInt
+  endTime: Datetime
+  guildId: BigInt
+  pending: Boolean
+  startTime: Datetime
+  userId: BigInt
+}
+
+"""A connection to a list of `Mute` values."""
+type MutesConnection {
+  """
+  A list of edges which contains the `Mute` and cursor to aid in pagination.
+  """
+  edges: [MutesEdge!]!
+
+  """A list of `Mute` objects."""
+  nodes: [Mute!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Mute` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Mute` edge in the connection."""
+type MutesEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Mute` at the end of the edge."""
+  node: Mute!
+}
+
+"""Methods to use when ordering `Mute`."""
+enum MutesOrderBy {
+  CASE_ID_ASC
+  CASE_ID_DESC
+  END_TIME_ASC
+  END_TIME_DESC
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  NATURAL
+  PENDING_ASC
+  PENDING_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  START_TIME_ASC
+  START_TIME_DESC
+  USER_ID_ASC
+  USER_ID_DESC
 }
 
 """An object with a globally unique `ID`."""
@@ -702,6 +2731,87 @@ interface Node {
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
   nodeId: ID!
+}
+
+type Notification implements Node {
+  guildId: BigInt!
+  keyword: String!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  userId: BigInt!
+}
+
+"""
+A condition to be used against `Notification` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input NotificationCondition {
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `keyword` field."""
+  keyword: String
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: BigInt
+}
+
+"""An input for mutations affecting `Notification`"""
+input NotificationInput {
+  guildId: BigInt!
+  keyword: String!
+  userId: BigInt!
+}
+
+"""
+Represents an update to a `Notification`. Fields that are set will be updated.
+"""
+input NotificationPatch {
+  guildId: BigInt
+  keyword: String
+  userId: BigInt
+}
+
+"""A connection to a list of `Notification` values."""
+type NotificationsConnection {
+  """
+  A list of edges which contains the `Notification` and cursor to aid in pagination.
+  """
+  edges: [NotificationsEdge!]!
+
+  """A list of `Notification` objects."""
+  nodes: [Notification!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Notification` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Notification` edge in the connection."""
+type NotificationsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Notification` at the end of the edge."""
+  node: Notification!
+}
+
+"""Methods to use when ordering `Notification`."""
+enum NotificationsOrderBy {
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  KEYWORD_ASC
+  KEYWORD_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  USER_ID_ASC
+  USER_ID_DESC
 }
 
 """Information about pagination in a connection."""
@@ -750,6 +2860,122 @@ type Query implements Node {
     orderBy: [BotStatsOrderBy!] = [PRIMARY_KEY_ASC]
   ): BotStatsConnection
 
+  """Reads and enables pagination through a set of `FeedItem`."""
+  allFeedItems(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: FeedItemCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `FeedItem`."""
+    orderBy: [FeedItemsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedItemsConnection
+
+  """Reads and enables pagination through a set of `FeedSubscription`."""
+  allFeedSubscriptions(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: FeedSubscriptionCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `FeedSubscription`."""
+    orderBy: [FeedSubscriptionsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedSubscriptionsConnection
+
+  """Reads and enables pagination through a set of `Feed`."""
+  allFeeds(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: FeedCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `Feed`."""
+    orderBy: [FeedsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedsConnection
+
+  """Reads and enables pagination through a set of `GuildBan`."""
+  allGuildBans(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: GuildBanCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `GuildBan`."""
+    orderBy: [GuildBansOrderBy!] = [PRIMARY_KEY_ASC]
+  ): GuildBansConnection
+
   """Reads and enables pagination through a set of `GuildConfig`."""
   allGuildConfigs(
     """Read all values in the set after (below) this cursor."""
@@ -778,6 +3004,180 @@ type Query implements Node {
     """The method to use when ordering `GuildConfig`."""
     orderBy: [GuildConfigsOrderBy!] = [PRIMARY_KEY_ASC]
   ): GuildConfigsConnection
+
+  """Reads and enables pagination through a set of `Member`."""
+  allMembers(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: MemberCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `Member`."""
+    orderBy: [MembersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MembersConnection
+
+  """Reads and enables pagination through a set of `Message`."""
+  allMessages(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: MessageCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `Message`."""
+    orderBy: [MessagesOrderBy!] = [NATURAL]
+  ): MessagesConnection
+
+  """Reads and enables pagination through a set of `ModLog`."""
+  allModLogs(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: ModLogCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `ModLog`."""
+    orderBy: [ModLogsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): ModLogsConnection
+
+  """Reads and enables pagination through a set of `Mute`."""
+  allMutes(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: MuteCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `Mute`."""
+    orderBy: [MutesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MutesConnection
+
+  """Reads and enables pagination through a set of `Notification`."""
+  allNotifications(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: NotificationCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): NotificationsConnection
+
+  """Reads and enables pagination through a set of `Reminder`."""
+  allReminders(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: ReminderCondition
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `Reminder`."""
+    orderBy: [RemindersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): RemindersConnection
 
   """Reads and enables pagination through a set of `RoleMenu`."""
   allRoleMenus(
@@ -980,6 +3380,36 @@ type Query implements Node {
     offset: Int
   ): CurrentUserManagedGuildIdsConnection
 
+  """Reads a single `Feed` using its globally unique `ID`."""
+  feed(
+    """The globally unique `ID` to be used in selecting a single `Feed`."""
+    nodeId: ID!
+  ): Feed
+  feedByFeedId(feedId: String!): Feed
+
+  """Reads a single `FeedItem` using its globally unique `ID`."""
+  feedItem(
+    """The globally unique `ID` to be used in selecting a single `FeedItem`."""
+    nodeId: ID!
+  ): FeedItem
+  feedItemByFeedIdAndItemId(feedId: String!, itemId: String!): FeedItem
+
+  """Reads a single `FeedSubscription` using its globally unique `ID`."""
+  feedSubscription(
+    """
+    The globally unique `ID` to be used in selecting a single `FeedSubscription`.
+    """
+    nodeId: ID!
+  ): FeedSubscription
+  feedSubscriptionByFeedIdAndChannelId(channelId: BigInt!, feedId: String!): FeedSubscription
+
+  """Reads a single `GuildBan` using its globally unique `ID`."""
+  guildBan(
+    """The globally unique `ID` to be used in selecting a single `GuildBan`."""
+    nodeId: ID!
+  ): GuildBan
+  guildBanByGuildIdAndUserId(guildId: BigInt!, userId: BigInt!): GuildBan
+
   """Reads a single `GuildConfig` using its globally unique `ID`."""
   guildConfig(
     """
@@ -988,6 +3418,28 @@ type Query implements Node {
     nodeId: ID!
   ): GuildConfig
   guildConfigById(id: BigInt!): GuildConfig
+
+  """Reads a single `Member` using its globally unique `ID`."""
+  member(
+    """The globally unique `ID` to be used in selecting a single `Member`."""
+    nodeId: ID!
+  ): Member
+  memberByGuildIdAndUserId(guildId: BigInt!, userId: BigInt!): Member
+
+  """Reads a single `ModLog` using its globally unique `ID`."""
+  modLog(
+    """The globally unique `ID` to be used in selecting a single `ModLog`."""
+    nodeId: ID!
+  ): ModLog
+  modLogByGuildIdAndCaseId(caseId: BigInt!, guildId: BigInt!): ModLog
+
+  """Reads a single `Mute` using its globally unique `ID`."""
+  mute(
+    """The globally unique `ID` to be used in selecting a single `Mute`."""
+    nodeId: ID!
+  ): Mute
+  muteByGuildIdAndUserId(guildId: BigInt!, userId: BigInt!): Mute
+  nextCaseId(guildId: BigInt): BigInt
 
   """Fetches an object given its globally unique `ID`."""
   node(
@@ -1000,17 +3452,34 @@ type Query implements Node {
   """
   nodeId: ID!
 
+  """Reads a single `Notification` using its globally unique `ID`."""
+  notification(
+    """
+    The globally unique `ID` to be used in selecting a single `Notification`.
+    """
+    nodeId: ID!
+  ): Notification
+  notificationByUserIdAndGuildIdAndKeyword(guildId: BigInt!, keyword: String!, userId: BigInt!): Notification
+
   """
   Exposes the root query type nested one level down. This is helpful for Relay 1
   which can only query top level fields if they are in a particular form.
   """
   query: Query!
 
+  """Reads a single `Reminder` using its globally unique `ID`."""
+  reminder(
+    """The globally unique `ID` to be used in selecting a single `Reminder`."""
+    nodeId: ID!
+  ): Reminder
+  reminderByUserIdAndSetAt(setAt: Datetime!, userId: BigInt!): Reminder
+
   """Reads a single `RoleMenu` using its globally unique `ID`."""
   roleMenu(
     """The globally unique `ID` to be used in selecting a single `RoleMenu`."""
     nodeId: ID!
   ): RoleMenu
+  roleMenuByChannelIdAndEditorId(channelId: BigInt!, editorId: BigInt!): RoleMenu
   roleMenuByMessageId(messageId: BigInt!): RoleMenu
 
   """Reads a single `Tag` using its globally unique `ID`."""
@@ -1076,9 +3545,98 @@ type Query implements Node {
   webUserGuildByUserIdAndGuildId(guildId: BigInt!, userId: BigInt!): WebUserGuild
 }
 
+type Reminder implements Node {
+  description: String!
+  expireAt: Datetime!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  setAt: Datetime!
+  userId: BigInt!
+}
+
+"""
+A condition to be used against `Reminder` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input ReminderCondition {
+  """Checks for equality with the object’s `description` field."""
+  description: String
+
+  """Checks for equality with the object’s `expireAt` field."""
+  expireAt: Datetime
+
+  """Checks for equality with the object’s `setAt` field."""
+  setAt: Datetime
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: BigInt
+}
+
+"""An input for mutations affecting `Reminder`"""
+input ReminderInput {
+  description: String!
+  expireAt: Datetime!
+  setAt: Datetime!
+  userId: BigInt!
+}
+
+"""
+Represents an update to a `Reminder`. Fields that are set will be updated.
+"""
+input ReminderPatch {
+  description: String
+  expireAt: Datetime
+  setAt: Datetime
+  userId: BigInt
+}
+
+"""A connection to a list of `Reminder` values."""
+type RemindersConnection {
+  """
+  A list of edges which contains the `Reminder` and cursor to aid in pagination.
+  """
+  edges: [RemindersEdge!]!
+
+  """A list of `Reminder` objects."""
+  nodes: [Reminder!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Reminder` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Reminder` edge in the connection."""
+type RemindersEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Reminder` at the end of the edge."""
+  node: Reminder!
+}
+
+"""Methods to use when ordering `Reminder`."""
+enum RemindersOrderBy {
+  DESCRIPTION_ASC
+  DESCRIPTION_DESC
+  EXPIRE_AT_ASC
+  EXPIRE_AT_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  SET_AT_ASC
+  SET_AT_DESC
+  USER_ID_ASC
+  USER_ID_DESC
+}
+
 type RoleMenu implements Node {
   channelId: BigInt!
-  editorId: BigInt
+  editorId: BigInt!
   guildId: BigInt!
   messageId: BigInt!
 
@@ -1109,7 +3667,7 @@ input RoleMenuCondition {
 """An input for mutations affecting `RoleMenu`"""
 input RoleMenuInput {
   channelId: BigInt!
-  editorId: BigInt
+  editorId: BigInt!
   guildId: BigInt!
   messageId: BigInt!
 }
@@ -1202,6 +3760,26 @@ input TagCondition {
   useCount: BigInt
 }
 
+"""An input for mutations affecting `Tag`"""
+input TagInput {
+  content: String!
+  created: Datetime!
+  guildId: BigInt!
+  ownerId: BigInt!
+  tagName: String!
+  useCount: BigInt!
+}
+
+"""Represents an update to a `Tag`. Fields that are set will be updated."""
+input TagPatch {
+  content: String
+  created: Datetime
+  guildId: BigInt
+  ownerId: BigInt
+  tagName: String
+  useCount: BigInt
+}
+
 """A connection to a list of `Tag` values."""
 type TagsConnection {
   """
@@ -1291,6 +3869,415 @@ A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/
 """
 scalar UUID
 
+"""All input for the `updateBotStatByNameAndCategory` mutation."""
+input UpdateBotStatByNameAndCategoryInput {
+  """
+  An object where the defined keys will be set on the `BotStat` being updated.
+  """
+  botStatPatch: BotStatPatch!
+  category: String!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  name: String!
+}
+
+"""All input for the `updateBotStat` mutation."""
+input UpdateBotStatInput {
+  """
+  An object where the defined keys will be set on the `BotStat` being updated.
+  """
+  botStatPatch: BotStatPatch!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `BotStat` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `BotStat` mutation."""
+type UpdateBotStatPayload {
+  """The `BotStat` that was updated by this mutation."""
+  botStat: BotStat
+
+  """An edge for our `BotStat`. May be used by Relay 1."""
+  botStatEdge(
+    """The method to use when ordering `BotStat`."""
+    orderBy: [BotStatsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): BotStatsEdge
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `updateCachedGuildById` mutation."""
+input UpdateCachedGuildByIdInput {
+  """
+  An object where the defined keys will be set on the `CachedGuild` being updated.
+  """
+  cachedGuildPatch: CachedGuildPatch!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: BigInt!
+}
+
+"""All input for the `updateCachedGuild` mutation."""
+input UpdateCachedGuildInput {
+  """
+  An object where the defined keys will be set on the `CachedGuild` being updated.
+  """
+  cachedGuildPatch: CachedGuildPatch!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `CachedGuild` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `CachedGuild` mutation."""
+type UpdateCachedGuildPayload {
+  """The `CachedGuild` that was updated by this mutation."""
+  cachedGuild: CachedGuild
+
+  """An edge for our `CachedGuild`. May be used by Relay 1."""
+  cachedGuildEdge(
+    """The method to use when ordering `CachedGuild`."""
+    orderBy: [CachedGuildsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): CachedGuildsEdge
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `updateCachedUserById` mutation."""
+input UpdateCachedUserByIdInput {
+  """
+  An object where the defined keys will be set on the `CachedUser` being updated.
+  """
+  cachedUserPatch: CachedUserPatch!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: BigInt!
+}
+
+"""All input for the `updateCachedUser` mutation."""
+input UpdateCachedUserInput {
+  """
+  An object where the defined keys will be set on the `CachedUser` being updated.
+  """
+  cachedUserPatch: CachedUserPatch!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `CachedUser` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `CachedUser` mutation."""
+type UpdateCachedUserPayload {
+  """The `CachedUser` that was updated by this mutation."""
+  cachedUser: CachedUser
+
+  """An edge for our `CachedUser`. May be used by Relay 1."""
+  cachedUserEdge(
+    """The method to use when ordering `CachedUser`."""
+    orderBy: [CachedUsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): CachedUsersEdge
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `updateFeedByFeedId` mutation."""
+input UpdateFeedByFeedIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  feedId: String!
+
+  """
+  An object where the defined keys will be set on the `Feed` being updated.
+  """
+  feedPatch: FeedPatch!
+}
+
+"""All input for the `updateFeed` mutation."""
+input UpdateFeedInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Feed` being updated.
+  """
+  feedPatch: FeedPatch!
+
+  """
+  The globally unique `ID` which will identify a single `Feed` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `updateFeedItemByFeedIdAndItemId` mutation."""
+input UpdateFeedItemByFeedIdAndItemIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  feedId: String!
+
+  """
+  An object where the defined keys will be set on the `FeedItem` being updated.
+  """
+  feedItemPatch: FeedItemPatch!
+  itemId: String!
+}
+
+"""All input for the `updateFeedItem` mutation."""
+input UpdateFeedItemInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `FeedItem` being updated.
+  """
+  feedItemPatch: FeedItemPatch!
+
+  """
+  The globally unique `ID` which will identify a single `FeedItem` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `FeedItem` mutation."""
+type UpdateFeedItemPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `FeedItem` that was updated by this mutation."""
+  feedItem: FeedItem
+
+  """An edge for our `FeedItem`. May be used by Relay 1."""
+  feedItemEdge(
+    """The method to use when ordering `FeedItem`."""
+    orderBy: [FeedItemsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedItemsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""The output of our update `Feed` mutation."""
+type UpdateFeedPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Feed` that was updated by this mutation."""
+  feed: Feed
+
+  """An edge for our `Feed`. May be used by Relay 1."""
+  feedEdge(
+    """The method to use when ordering `Feed`."""
+    orderBy: [FeedsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""
+All input for the `updateFeedSubscriptionByFeedIdAndChannelId` mutation.
+"""
+input UpdateFeedSubscriptionByFeedIdAndChannelIdInput {
+  channelId: BigInt!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  feedId: String!
+
+  """
+  An object where the defined keys will be set on the `FeedSubscription` being updated.
+  """
+  feedSubscriptionPatch: FeedSubscriptionPatch!
+}
+
+"""All input for the `updateFeedSubscription` mutation."""
+input UpdateFeedSubscriptionInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `FeedSubscription` being updated.
+  """
+  feedSubscriptionPatch: FeedSubscriptionPatch!
+
+  """
+  The globally unique `ID` which will identify a single `FeedSubscription` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `FeedSubscription` mutation."""
+type UpdateFeedSubscriptionPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """Reads a single `Feed` that is related to this `FeedSubscription`."""
+  feedByFeedId: Feed
+
+  """The `FeedSubscription` that was updated by this mutation."""
+  feedSubscription: FeedSubscription
+
+  """An edge for our `FeedSubscription`. May be used by Relay 1."""
+  feedSubscriptionEdge(
+    """The method to use when ordering `FeedSubscription`."""
+    orderBy: [FeedSubscriptionsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedSubscriptionsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `updateGuildBanByGuildIdAndUserId` mutation."""
+input UpdateGuildBanByGuildIdAndUserIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `GuildBan` being updated.
+  """
+  guildBanPatch: GuildBanPatch!
+  guildId: BigInt!
+  userId: BigInt!
+}
+
+"""All input for the `updateGuildBan` mutation."""
+input UpdateGuildBanInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `GuildBan` being updated.
+  """
+  guildBanPatch: GuildBanPatch!
+
+  """
+  The globally unique `ID` which will identify a single `GuildBan` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `GuildBan` mutation."""
+type UpdateGuildBanPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `GuildBan` that was updated by this mutation."""
+  guildBan: GuildBan
+
+  """An edge for our `GuildBan`. May be used by Relay 1."""
+  guildBanEdge(
+    """The method to use when ordering `GuildBan`."""
+    orderBy: [GuildBansOrderBy!] = [PRIMARY_KEY_ASC]
+  ): GuildBansEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the `updateGuildConfigById` mutation."""
 input UpdateGuildConfigByIdInput {
   """
@@ -1351,6 +4338,320 @@ type UpdateGuildConfigPayload {
   query: Query
 }
 
+"""All input for the `updateMemberByGuildIdAndUserId` mutation."""
+input UpdateMemberByGuildIdAndUserIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `Member` being updated.
+  """
+  memberPatch: MemberPatch!
+  userId: BigInt!
+}
+
+"""All input for the `updateMember` mutation."""
+input UpdateMemberInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Member` being updated.
+  """
+  memberPatch: MemberPatch!
+
+  """
+  The globally unique `ID` which will identify a single `Member` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `Member` mutation."""
+type UpdateMemberPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Member` that was updated by this mutation."""
+  member: Member
+
+  """An edge for our `Member`. May be used by Relay 1."""
+  memberEdge(
+    """The method to use when ordering `Member`."""
+    orderBy: [MembersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MembersEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `updateModLogByGuildIdAndCaseId` mutation."""
+input UpdateModLogByGuildIdAndCaseIdInput {
+  caseId: BigInt!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `ModLog` being updated.
+  """
+  modLogPatch: ModLogPatch!
+}
+
+"""All input for the `updateModLog` mutation."""
+input UpdateModLogInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `ModLog` being updated.
+  """
+  modLogPatch: ModLogPatch!
+
+  """
+  The globally unique `ID` which will identify a single `ModLog` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `ModLog` mutation."""
+type UpdateModLogPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `ModLog` that was updated by this mutation."""
+  modLog: ModLog
+
+  """An edge for our `ModLog`. May be used by Relay 1."""
+  modLogEdge(
+    """The method to use when ordering `ModLog`."""
+    orderBy: [ModLogsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): ModLogsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `updateMuteByGuildIdAndUserId` mutation."""
+input UpdateMuteByGuildIdAndUserIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `Mute` being updated.
+  """
+  mutePatch: MutePatch!
+  userId: BigInt!
+}
+
+"""All input for the `updateMute` mutation."""
+input UpdateMuteInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Mute` being updated.
+  """
+  mutePatch: MutePatch!
+
+  """
+  The globally unique `ID` which will identify a single `Mute` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `Mute` mutation."""
+type UpdateMutePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """Reads a single `ModLog` that is related to this `Mute`."""
+  modLogByGuildIdAndCaseId: ModLog
+
+  """The `Mute` that was updated by this mutation."""
+  mute: Mute
+
+  """An edge for our `Mute`. May be used by Relay 1."""
+  muteEdge(
+    """The method to use when ordering `Mute`."""
+    orderBy: [MutesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MutesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""
+All input for the `updateNotificationByUserIdAndGuildIdAndKeyword` mutation.
+"""
+input UpdateNotificationByUserIdAndGuildIdAndKeywordInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  keyword: String!
+
+  """
+  An object where the defined keys will be set on the `Notification` being updated.
+  """
+  notificationPatch: NotificationPatch!
+  userId: BigInt!
+}
+
+"""All input for the `updateNotification` mutation."""
+input UpdateNotificationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Notification` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Notification` being updated.
+  """
+  notificationPatch: NotificationPatch!
+}
+
+"""The output of our update `Notification` mutation."""
+type UpdateNotificationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Notification` that was updated by this mutation."""
+  notification: Notification
+
+  """An edge for our `Notification`. May be used by Relay 1."""
+  notificationEdge(
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): NotificationsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `updateReminderByUserIdAndSetAt` mutation."""
+input UpdateReminderByUserIdAndSetAtInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Reminder` being updated.
+  """
+  reminderPatch: ReminderPatch!
+  setAt: Datetime!
+  userId: BigInt!
+}
+
+"""All input for the `updateReminder` mutation."""
+input UpdateReminderInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Reminder` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Reminder` being updated.
+  """
+  reminderPatch: ReminderPatch!
+}
+
+"""The output of our update `Reminder` mutation."""
+type UpdateReminderPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `Reminder` that was updated by this mutation."""
+  reminder: Reminder
+
+  """An edge for our `Reminder`. May be used by Relay 1."""
+  reminderEdge(
+    """The method to use when ordering `Reminder`."""
+    orderBy: [RemindersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): RemindersEdge
+}
+
+"""All input for the `updateRoleMenuByChannelIdAndEditorId` mutation."""
+input UpdateRoleMenuByChannelIdAndEditorIdInput {
+  channelId: BigInt!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  editorId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `RoleMenu` being updated.
+  """
+  roleMenuPatch: RoleMenuPatch!
+}
+
 """All input for the `updateRoleMenuByMessageId` mutation."""
 input UpdateRoleMenuByMessageIdInput {
   """
@@ -1408,6 +4709,64 @@ type UpdateRoleMenuPayload {
   ): RoleMenusEdge
 }
 
+"""All input for the `updateTagByGuildIdAndTagName` mutation."""
+input UpdateTagByGuildIdAndTagNameInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  tagName: String!
+
+  """
+  An object where the defined keys will be set on the `Tag` being updated.
+  """
+  tagPatch: TagPatch!
+}
+
+"""All input for the `updateTag` mutation."""
+input UpdateTagInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Tag` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `Tag` being updated.
+  """
+  tagPatch: TagPatch!
+}
+
+"""The output of our update `Tag` mutation."""
+type UpdateTagPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `Tag` that was updated by this mutation."""
+  tag: Tag
+
+  """An edge for our `Tag`. May be used by Relay 1."""
+  tagEdge(
+    """The method to use when ordering `Tag`."""
+    orderBy: [TagsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): TagsEdge
+}
+
 """All input for the `updateUserById` mutation."""
 input UpdateUserByIdInput {
   """
@@ -1442,6 +4801,64 @@ input UpdateUserInput {
   userPatch: UserPatch!
 }
 
+"""All input for the `updateUserLevelByUserIdAndGuildId` mutation."""
+input UpdateUserLevelByUserIdAndGuildIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  userId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `UserLevel` being updated.
+  """
+  userLevelPatch: UserLevelPatch!
+}
+
+"""All input for the `updateUserLevel` mutation."""
+input UpdateUserLevelInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `UserLevel` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `UserLevel` being updated.
+  """
+  userLevelPatch: UserLevelPatch!
+}
+
+"""The output of our update `UserLevel` mutation."""
+type UpdateUserLevelPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `UserLevel` that was updated by this mutation."""
+  userLevel: UserLevel
+
+  """An edge for our `UserLevel`. May be used by Relay 1."""
+  userLevelEdge(
+    """The method to use when ordering `UserLevel`."""
+    orderBy: [UserLevelsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): UserLevelsEdge
+}
+
 """The output of our update `User` mutation."""
 type UpdateUserPayload {
   """
@@ -1463,6 +4880,129 @@ type UpdateUserPayload {
     """The method to use when ordering `User`."""
     orderBy: [UsersOrderBy!] = [PRIMARY_KEY_ASC]
   ): UsersEdge
+}
+
+"""All input for the `updateWebUserById` mutation."""
+input UpdateWebUserByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """Unique identifier for the user. This should match their Discord ID."""
+  id: BigInt!
+
+  """
+  An object where the defined keys will be set on the `WebUser` being updated.
+  """
+  webUserPatch: WebUserPatch!
+}
+
+"""All input for the `updateWebUserGuildByUserIdAndGuildId` mutation."""
+input UpdateWebUserGuildByUserIdAndGuildIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  userId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `WebUserGuild` being updated.
+  """
+  webUserGuildPatch: WebUserGuildPatch!
+}
+
+"""All input for the `updateWebUserGuild` mutation."""
+input UpdateWebUserGuildInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `WebUserGuild` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `WebUserGuild` being updated.
+  """
+  webUserGuildPatch: WebUserGuildPatch!
+}
+
+"""The output of our update `WebUserGuild` mutation."""
+type UpdateWebUserGuildPayload {
+  """Reads a single `CachedGuild` that is related to this `WebUserGuild`."""
+  cachedGuildByGuildId: CachedGuild
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `WebUser` that is related to this `WebUserGuild`."""
+  webUserByUserId: WebUser
+
+  """The `WebUserGuild` that was updated by this mutation."""
+  webUserGuild: WebUserGuild
+
+  """An edge for our `WebUserGuild`. May be used by Relay 1."""
+  webUserGuildEdge(
+    """The method to use when ordering `WebUserGuild`."""
+    orderBy: [WebUserGuildsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): WebUserGuildsEdge
+}
+
+"""All input for the `updateWebUser` mutation."""
+input UpdateWebUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `WebUser` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `WebUser` being updated.
+  """
+  webUserPatch: WebUserPatch!
+}
+
+"""The output of our update `WebUser` mutation."""
+type UpdateWebUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `WebUser` that was updated by this mutation."""
+  webUser: WebUser
+
+  """An edge for our `WebUser`. May be used by Relay 1."""
+  webUserEdge(
+    """The method to use when ordering `WebUser`."""
+    orderBy: [WebUsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): WebUsersEdge
 }
 
 type User implements Node {
@@ -1540,6 +5080,60 @@ type UserLevel implements Node {
   """
   nodeId: ID!
   userId: BigInt!
+}
+
+"""An input for mutations affecting `UserLevel`"""
+input UserLevelInput {
+  guildId: BigInt!
+  lastMsg: Datetime!
+  msgAllTime: BigInt!
+  msgDay: BigInt!
+  msgMonth: BigInt!
+  msgWeek: BigInt!
+  userId: BigInt!
+}
+
+"""
+Represents an update to a `UserLevel`. Fields that are set will be updated.
+"""
+input UserLevelPatch {
+  guildId: BigInt
+  lastMsg: Datetime
+  msgAllTime: BigInt
+  msgDay: BigInt
+  msgMonth: BigInt
+  msgWeek: BigInt
+  userId: BigInt
+}
+
+"""A `UserLevel` edge in the connection."""
+type UserLevelsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `UserLevel` at the end of the edge."""
+  node: UserLevel!
+}
+
+"""Methods to use when ordering `UserLevel`."""
+enum UserLevelsOrderBy {
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  LAST_MSG_ASC
+  LAST_MSG_DESC
+  MSG_ALL_TIME_ASC
+  MSG_ALL_TIME_DESC
+  MSG_DAY_ASC
+  MSG_DAY_DESC
+  MSG_MONTH_ASC
+  MSG_MONTH_DESC
+  MSG_WEEK_ASC
+  MSG_WEEK_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  USER_ID_ASC
+  USER_ID_DESC
 }
 
 """Represents an update to a `User`. Fields that are set will be updated."""
@@ -1735,6 +5329,26 @@ input WebUserGuildCondition {
   userId: BigInt
 }
 
+"""An input for mutations affecting `WebUserGuild`"""
+input WebUserGuildInput {
+  guildId: BigInt!
+  manageGuild: Boolean
+  owner: Boolean!
+  permissions: BigInt!
+  userId: BigInt!
+}
+
+"""
+Represents an update to a `WebUserGuild`. Fields that are set will be updated.
+"""
+input WebUserGuildPatch {
+  guildId: BigInt
+  manageGuild: Boolean
+  owner: Boolean
+  permissions: BigInt
+  userId: BigInt
+}
+
 """A connection to a list of `WebUserGuild` values."""
 type WebUserGuildsConnection {
   """
@@ -1776,6 +5390,62 @@ enum WebUserGuildsOrderBy {
   PRIMARY_KEY_DESC
   USER_ID_ASC
   USER_ID_DESC
+}
+
+"""An input for mutations affecting `WebUser`"""
+input WebUserInput {
+  """Discord avatar hash. Null if user does not have one."""
+  avatar: String
+
+  """
+  First registered on the application. Is not when a user created their Discord account.
+  """
+  createdAt: Datetime
+
+  """Additional profile details extracted from Discord oauth"""
+  details: JSON
+
+  """Discord disciminator of the user."""
+  discriminator: Int!
+
+  """Unique identifier for the user. This should match their Discord ID."""
+  id: BigInt!
+
+  """If true, the user has elevated privileges."""
+  isAdmin: Boolean
+  updatedAt: Datetime
+
+  """Discord username of the user."""
+  username: String!
+}
+
+"""
+Represents an update to a `WebUser`. Fields that are set will be updated.
+"""
+input WebUserPatch {
+  """Discord avatar hash. Null if user does not have one."""
+  avatar: String
+
+  """
+  First registered on the application. Is not when a user created their Discord account.
+  """
+  createdAt: Datetime
+
+  """Additional profile details extracted from Discord oauth"""
+  details: JSON
+
+  """Discord disciminator of the user."""
+  discriminator: Int
+
+  """Unique identifier for the user. This should match their Discord ID."""
+  id: BigInt
+
+  """If true, the user has elevated privileges."""
+  isAdmin: Boolean
+  updatedAt: Datetime
+
+  """Discord username of the user."""
+  username: String
 }
 
 """A connection to a list of `WebUser` values."""

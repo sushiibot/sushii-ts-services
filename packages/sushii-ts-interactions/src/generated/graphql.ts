@@ -2638,6 +2638,7 @@ export type Query = Node & {
   /** Reads a single `Mute` using its globally unique `ID`. */
   mute?: Maybe<Mute>;
   muteByGuildIdAndUserId?: Maybe<Mute>;
+  nextCaseId?: Maybe<Scalars['BigInt']>;
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
@@ -3027,6 +3028,12 @@ export type QueryMuteArgs = {
 export type QueryMuteByGuildIdAndUserIdArgs = {
   guildId: Scalars['BigInt'];
   userId: Scalars['BigInt'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryNextCaseIdArgs = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
 };
 
 
@@ -6002,6 +6009,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   modLogByGuildIdAndCaseId?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType, RequireFields<QueryModLogByGuildIdAndCaseIdArgs, 'caseId' | 'guildId'>>;
   mute?: Resolver<Maybe<ResolversTypes['Mute']>, ParentType, ContextType, RequireFields<QueryMuteArgs, 'nodeId'>>;
   muteByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['Mute']>, ParentType, ContextType, RequireFields<QueryMuteByGuildIdAndUserIdArgs, 'guildId' | 'userId'>>;
+  nextCaseId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType, Partial<QueryNextCaseIdArgs>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'nodeId'>>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   notification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<QueryNotificationArgs, 'nodeId'>>;
@@ -6533,6 +6541,13 @@ export type GetModLogQueryVariables = Exact<{
 
 export type GetModLogQuery = { __typename?: 'Query', modLogByGuildIdAndCaseId?: { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string } | null };
 
+export type GetNextCaseIdQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+}>;
+
+
+export type GetNextCaseIdQuery = { __typename?: 'Query', nextCaseId?: string | null };
+
 export type ModLogDataFragment = { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string };
 
 export type UpdateModLogMutationVariables = Exact<{
@@ -6698,6 +6713,11 @@ export const GetModLogDocument = gql`
   }
 }
     ${ModLogDataFragmentDoc}`;
+export const GetNextCaseIdDocument = gql`
+    query getNextCaseID($guildId: BigInt!) {
+  nextCaseId(guildId: $guildId)
+}
+    `;
 export const UpdateModLogDocument = gql`
     mutation updateModLog($caseId: BigInt!, $guildId: BigInt!, $modLogPatch: ModLogPatch!) {
   updateModLogByGuildIdAndCaseId(
@@ -6793,6 +6813,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getModLog(variables: GetModLogQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetModLogQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetModLogQuery>(GetModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getModLog', 'query');
+    },
+    getNextCaseID(variables: GetNextCaseIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetNextCaseIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetNextCaseIdQuery>(GetNextCaseIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getNextCaseID', 'query');
     },
     updateModLog(variables: UpdateModLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateModLogMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateModLogMutation>(UpdateModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateModLog', 'mutation');

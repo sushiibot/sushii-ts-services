@@ -53,10 +53,20 @@ export default class KickCommand extends SlashCommandHandler {
       .setURL(userFaceURL)
       .setImage(userFaceURL);
 
+    const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
+      guildId: interaction.guild_id,
+    });
+
+    if (!nextCaseId) {
+      throw new Error(
+        `Failed to get next case id for guild ${interaction.guild_id}`
+      );
+    }
+
     await ctx.sushiiAPI.sdk.createModLog({
       modLog: {
         guildId: interaction.guild_id,
-        // TODO: Fetch next caseId: ???,
+        caseId: nextCaseId,
         action: "kick",
         pending: true,
         userId: data.target.id,

@@ -962,16 +962,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@discordjs/builders@npm:^0.12.0":
-  version: 0.12.0
-  resolution: "@discordjs/builders@npm:0.12.0"
+"@discordjs/builders@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "@discordjs/builders@npm:0.13.0"
   dependencies:
-    "@sindresorhus/is": ^4.3.0
-    discord-api-types: ^0.26.1
-    ts-mixer: ^6.0.0
+    "@sapphire/shapeshift": ^2.0.0
+    "@sindresorhus/is": ^4.6.0
+    discord-api-types: ^0.31.1
+    fast-deep-equal: ^3.1.3
+    ts-mixer: ^6.0.1
     tslib: ^2.3.1
-    zod: ^3.11.6
-  checksum: 3c4ef256371121938d5d75571e19f0697b1575dd9fb31a7ca47337d00a1ec45b2c1ce19a1261650a5f6393ac4116f8ed9e82120ce5de534be562dde919a2a6d7
+  checksum: 1bce798b8f36b5abb09d8d42a660a5da6a9352ada03e0819d08ae6c98d4d8a556ed86485e252e53c448a40d17bf0d685e7f88f333db76f5b6b3bd562b9759d7c
   languageName: node
   linkType: hard
 
@@ -2153,6 +2154,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sapphire/shapeshift@npm:^2.0.0":
+  version: 2.1.0
+  resolution: "@sapphire/shapeshift@npm:2.1.0"
+  checksum: 74826ed31d26f1d10d2cac8f4736e107947496b7ba8f1b31b79e0e34829f747b236d1ef47e37170ee0166aa4e3e3aaf312323e2742e1e6a67d4b5ec66a90d261
+  languageName: node
+  linkType: hard
+
 "@sapphire/snowflake@npm:^3.0.1":
   version: 3.1.0
   resolution: "@sapphire/snowflake@npm:3.1.0"
@@ -2174,7 +2182,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sindresorhus/is@npm:^4.2.0, @sindresorhus/is@npm:^4.3.0":
+"@sindresorhus/is@npm:^4.2.0, @sindresorhus/is@npm:^4.6.0":
   version: 4.6.0
   resolution: "@sindresorhus/is@npm:4.6.0"
   checksum: 83839f13da2c29d55c97abc3bc2c55b250d33a0447554997a85c539e058e57b8da092da396e252b11ec24a0279a0bed1f537fa26302209327060643e327f81d2
@@ -2273,7 +2281,7 @@ __metadata:
   dependencies:
     "@babel/preset-typescript": ^7.16.7
     "@cloudamqp/amqp-client": ^2.0.2
-    "@discordjs/builders": ^0.12.0
+    "@discordjs/builders": ^0.13.0
     "@discordjs/collection": ^0.5.0
     "@discordjs/rest": ^0.3.0
     "@graphql-codegen/cli": 2.6.2
@@ -2290,7 +2298,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.12.0
     "@typescript-eslint/parser": ^5.12.0
     dayjs: ^1.10.7
-    discord-api-types: ^0.29.0
+    discord-api-types: ^0.32.0
     discord.js: "monbrey/discord.js#modals"
     dotenv: ^16.0.0
     eslint: ^8.9.0
@@ -2300,6 +2308,7 @@ __metadata:
     eslint-plugin-import: ^2.25.4
     graphql: ^16.3.0
     graphql-request: ^4.2.0
+    graphql-tag: ^2.12.6
     i18next: ^21.6.13
     i18next-fs-backend: ^1.1.4
     jest: ^27.5.1
@@ -5670,7 +5679,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-tag@npm:^2.11.0":
+"graphql-tag@npm:^2.11.0, graphql-tag@npm:^2.12.6":
   version: 2.12.6
   resolution: "graphql-tag@npm:2.12.6"
   dependencies:
@@ -10147,6 +10156,13 @@ __metadata:
   version: 6.0.0
   resolution: "ts-mixer@npm:6.0.0"
   checksum: 791a513c9ca318a979928f5265fd6029858fa21595153a9386063c11239a6b1c352db1e277c19f0544d017a67cf78d120a7438b86b2c828b1115eb607538eff8
+  languageName: node
+  linkType: hard
+
+"ts-mixer@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "ts-mixer@npm:6.0.1"
+  checksum: 7050f6e85a24155d18cecdcc0a098d1038991cc498317fcffa9d7a8654c776d417fb97e65de1ce8e7ed54ef4814abd8057d0efb9c3b24e9cc78ac3c0f48bbf53
   languageName: node
   linkType: hard
 
