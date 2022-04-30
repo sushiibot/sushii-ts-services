@@ -11,6 +11,7 @@ import {
   MessageFlags,
   APIMessageComponentButtonInteraction,
   APIMessageComponentSelectMenuInteraction,
+  APIApplicationCommandAutocompleteInteraction,
 } from "discord-api-types/v10";
 import { AMQPMessage } from "@cloudamqp/amqp-client";
 import {
@@ -28,6 +29,7 @@ import {
   ModalHandler,
   ButtonHandler,
   SelectMenuHandler,
+  AutocompleteHandler,
 } from "./handlers";
 import { isGatewayInteractionCreateDispatch } from "../utils/interactionTypeGuards";
 import ContextMenuHandler from "./handlers/ContextMenuHandler";
@@ -52,6 +54,11 @@ export default class InteractionClient {
    * Command handlers
    */
   private commands: Collection<string, SlashCommandHandler>;
+
+  /**
+   * Autocomplete handlers
+   */
+  private autocompleteHandlers: Collection<string, AutocompleteHandler>;
 
   /**
    * Context menu handlers
@@ -80,6 +87,7 @@ export default class InteractionClient {
     this.config = config;
     this.context = new Context(config);
     this.commands = new Collection();
+    this.autocompleteHandlers = new Collection();
     this.modalHandlers = new Collection();
     this.buttonHandlers = new Collection();
     this.selectMenuHandlers = new Collection();
@@ -102,6 +110,15 @@ export default class InteractionClient {
    */
   public addCommand(command: SlashCommandHandler): void {
     this.commands.set(command.command.name, command);
+  }
+
+  /**
+   * Add a new autocomplete to register and handle
+   *
+   * @param handler autocomplete to add
+   */
+  public addAutocomplete(handler: AutocompleteHandler): void {
+    this.autocompleteHandlers.set(handler.commandName, handler);
   }
 
   /**
@@ -242,6 +259,49 @@ export default class InteractionClient {
       await this.context.REST.interactionReply(interaction, {
         content: "uh oh something broke",
       });
+    }
+  }
+
+  /**
+   * Handle an autocomplete interaction
+   *
+   * @param interaction autocomplete interaction
+   * @returns
+   */
+  private async handleAutocompleteInteraction(
+    interaction: APIApplicationCommandAutocompleteInteraction
+  ): Promise<void> {
+    const autocomplete = this.autocompleteHandlers.get(interaction.data.name);
+
+    if (!autocomplete) {
+      log.error(`received unknown autocomplete: ${interaction.data.name}`);
+      return;
+    }
+
+    log.info("received %s autocomplete", interaction.data.name);
+
+    try {
+      // Server only check is not done since that's on the command side
+
+      // Pre-check
+      const checkRes = await autocomplete.check(this.context, interaction);
+
+      if (!checkRes.pass) {
+        await this.context.REST.interactionReply(interaction, {
+          content: checkRes.message,
+        });
+
+        log.info(
+          "autocomplete %s failed check: %s",
+          interaction.data.name,
+          checkRes.message
+        );
+        return;
+      }
+
+      await autocomplete.handler(this.context, interaction);
+    } catch (e) {
+      log.error(e, "error running autocomplete %s", interaction.data.name);
     }
   }
 
@@ -406,6 +466,10 @@ export default class InteractionClient {
       if (isContextMenuApplicationCommandInteraction(interaction)) {
         return this.handleContextMenuInteraction(interaction);
       }
+    }
+
+    if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
+      return this.handleAutocompleteInteraction(interaction);
     }
 
     if (interaction.type === InteractionType.MessageComponent) {

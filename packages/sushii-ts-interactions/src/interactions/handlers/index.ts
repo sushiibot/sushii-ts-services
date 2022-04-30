@@ -1,3 +1,4 @@
+import AutocompleteHandler from "./AutocompleteHandler";
 import MessageComponentHandler from "./MessageComponentHandler";
 import InteractionHandler from "./InteractionHandler";
 import ModalHandler from "./ModalHandler";
@@ -7,6 +8,7 @@ import SelectMenuHandler from "./SelectMenuHandler";
 import ButtonHandler from "./ButtonHandler";
 
 export {
+  AutocompleteHandler,
   MessageComponentHandler,
   InteractionHandler,
   ModalHandler,
