@@ -12,6 +12,8 @@ import {
   APIMessageComponentButtonInteraction,
   APIMessageComponentSelectMenuInteraction,
   APIApplicationCommandAutocompleteInteraction,
+  ApplicationCommandOptionType,
+  APIApplicationCommandInteractionDataOption,
 } from "discord-api-types/v10";
 import { AMQPMessage } from "@cloudamqp/amqp-client";
 import {
@@ -33,6 +35,49 @@ import {
 } from "./handlers";
 import { isGatewayInteractionCreateDispatch } from "../utils/interactionTypeGuards";
 import ContextMenuHandler from "./handlers/ContextMenuHandler";
+import { AutocompleteOption } from "./handlers/AutocompleteHandler";
+
+interface FocusedOption {
+  path: string;
+  option: AutocompleteOption;
+}
+
+function findFocusedOptionRecur(
+  options: APIApplicationCommandInteractionDataOption[],
+  parents: string[]
+): FocusedOption | undefined {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const option of options) {
+    if (
+      (option.type === ApplicationCommandOptionType.String ||
+        option.type === ApplicationCommandOptionType.Integer ||
+        option.type === ApplicationCommandOptionType.Number) &&
+      option.focused
+    ) {
+      return {
+        path: [...parents, option.name].join("."),
+        option,
+      };
+    }
+
+    if (
+      (option.type === ApplicationCommandOptionType.Subcommand ||
+        option.type === ApplicationCommandOptionType.SubcommandGroup) &&
+      option.options
+    ) {
+      return findFocusedOptionRecur(option.options, [...parents, option.name]);
+    }
+  }
+
+  return undefined;
+}
+
+function findFocusedOption(
+  interaction: APIApplicationCommandAutocompleteInteraction
+): FocusedOption | undefined {
+  // eslint-disable-next-line no-restricted-syntax
+  return findFocusedOptionRecur(interaction.data.options, []);
+}
 
 export default class InteractionClient {
   /**
@@ -118,7 +163,7 @@ export default class InteractionClient {
    * @param handler autocomplete to add
    */
   public addAutocomplete(handler: AutocompleteHandler): void {
-    this.autocompleteHandlers.set(handler.commandName, handler);
+    this.autocompleteHandlers.set(handler.fullCommandNamePath, handler);
   }
 
   /**
@@ -271,14 +316,23 @@ export default class InteractionClient {
   private async handleAutocompleteInteraction(
     interaction: APIApplicationCommandAutocompleteInteraction
   ): Promise<void> {
-    const autocomplete = this.autocompleteHandlers.get(interaction.data.name);
+    // Find focused option path, e.g. notification.delete
+    const focusedOption = findFocusedOption(interaction);
+
+    if (!focusedOption) {
+      throw new Error(
+        `no focused option found for autocomplete ${interaction.data.name}`
+      );
+    }
+
+    const autocomplete = this.autocompleteHandlers.get(focusedOption.path);
 
     if (!autocomplete) {
-      log.error(`received unknown autocomplete: ${interaction.data.name}`);
+      log.error(`received unknown autocomplete: ${focusedOption.path}`);
       return;
     }
 
-    log.info("received %s autocomplete", interaction.data.name);
+    log.info("received %s autocomplete", focusedOption.path);
 
     try {
       // Server only check is not done since that's on the command side
@@ -293,13 +347,17 @@ export default class InteractionClient {
 
         log.info(
           "autocomplete %s failed check: %s",
-          interaction.data.name,
+          focusedOption.path,
           checkRes.message
         );
         return;
       }
 
-      await autocomplete.handler(this.context, interaction);
+      await autocomplete.handler(
+        this.context,
+        interaction,
+        focusedOption.option
+      );
     } catch (e) {
       log.error(e, "error running autocomplete %s", interaction.data.name);
     }

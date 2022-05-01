@@ -7,6 +7,7 @@ import {
 } from "@discordjs/builders";
 import { isGuildInteraction } from "discord-api-types/utils/v10";
 import {
+  APIChatInputApplicationCommandGuildInteraction,
   APIChatInputApplicationCommandInteraction,
   APIMessage,
   ComponentType,
@@ -149,12 +150,8 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandInteraction
+    interaction: APIChatInputApplicationCommandGuildInteraction
   ): Promise<void> {
-    if (!isGuildInteraction(interaction)) {
-      throw new Error("This command can only be used in a guild.");
-    }
-
     const options = new CommandInteractionOptionResolver(
       interaction.data.options,
       interaction.data.resolved
@@ -170,7 +167,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       // role subgroup
       case "add":
         return this.roleAddHandler(ctx, interaction, options);
-      case "remote":
+      case "remove":
         return this.roleRemoveHandler(ctx, interaction, options);
       default:
         throw new Error("Invalid subcommand.");
@@ -230,7 +227,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     // extra slash command ui thing
     const message = await ctx.REST.sendChannelMessage(interaction.channel_id, {
       components: [row],
-      embed: embed.toJSON(),
+      embeds: [embed.toJSON()],
     });
 
     // Save to DB

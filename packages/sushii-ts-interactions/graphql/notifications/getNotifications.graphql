@@ -1,0 +1,7 @@
+query getUserNotifications($userId: BigInt!) {
+  allNotifications(condition: { userId: $userId }) {
+    nodes {
+      ...NotificationData
+    }
+  }
+}

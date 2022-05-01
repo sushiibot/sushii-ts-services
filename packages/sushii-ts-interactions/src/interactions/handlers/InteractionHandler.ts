@@ -46,5 +46,9 @@ export default abstract class InteractionHandler {
   /**
    * Interaction handler
    */
-  abstract handler(ctx: Context, interaction: APIInteraction): Promise<void>;
+  abstract handler(
+    ctx: Context,
+    interaction: APIInteraction,
+    data?: any // Any additional data to pass
+  ): Promise<void>;
 }

@@ -1,0 +1,6 @@
+fragment NotificationData on Notification {
+  guildId
+  keyword
+  nodeId
+  userId
+}

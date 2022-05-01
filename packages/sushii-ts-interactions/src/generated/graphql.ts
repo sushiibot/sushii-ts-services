@@ -946,6 +946,594 @@ export type CurrentUserManagedGuildIdsConnection = {
   totalCount: Scalars['Int'];
 };
 
+/** All input for the `deleteBotStatByNameAndCategory` mutation. */
+export type DeleteBotStatByNameAndCategoryInput = {
+  category: Scalars['String'];
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+};
+
+/** All input for the `deleteBotStat` mutation. */
+export type DeleteBotStatInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `BotStat` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `BotStat` mutation. */
+export type DeleteBotStatPayload = {
+  __typename?: 'DeleteBotStatPayload';
+  /** The `BotStat` that was deleted by this mutation. */
+  botStat?: Maybe<BotStat>;
+  /** An edge for our `BotStat`. May be used by Relay 1. */
+  botStatEdge?: Maybe<BotStatsEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedBotStatId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `BotStat` mutation. */
+export type DeleteBotStatPayloadBotStatEdgeArgs = {
+  orderBy?: InputMaybe<Array<BotStatsOrderBy>>;
+};
+
+/** All input for the `deleteCachedGuildById` mutation. */
+export type DeleteCachedGuildByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  id: Scalars['BigInt'];
+};
+
+/** All input for the `deleteCachedGuild` mutation. */
+export type DeleteCachedGuildInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `CachedGuild` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `CachedGuild` mutation. */
+export type DeleteCachedGuildPayload = {
+  __typename?: 'DeleteCachedGuildPayload';
+  /** The `CachedGuild` that was deleted by this mutation. */
+  cachedGuild?: Maybe<CachedGuild>;
+  /** An edge for our `CachedGuild`. May be used by Relay 1. */
+  cachedGuildEdge?: Maybe<CachedGuildsEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedCachedGuildId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `CachedGuild` mutation. */
+export type DeleteCachedGuildPayloadCachedGuildEdgeArgs = {
+  orderBy?: InputMaybe<Array<CachedGuildsOrderBy>>;
+};
+
+/** All input for the `deleteCachedUserById` mutation. */
+export type DeleteCachedUserByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  id: Scalars['BigInt'];
+};
+
+/** All input for the `deleteCachedUser` mutation. */
+export type DeleteCachedUserInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `CachedUser` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `CachedUser` mutation. */
+export type DeleteCachedUserPayload = {
+  __typename?: 'DeleteCachedUserPayload';
+  /** The `CachedUser` that was deleted by this mutation. */
+  cachedUser?: Maybe<CachedUser>;
+  /** An edge for our `CachedUser`. May be used by Relay 1. */
+  cachedUserEdge?: Maybe<CachedUsersEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedCachedUserId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `CachedUser` mutation. */
+export type DeleteCachedUserPayloadCachedUserEdgeArgs = {
+  orderBy?: InputMaybe<Array<CachedUsersOrderBy>>;
+};
+
+/** All input for the `deleteFeedByFeedId` mutation. */
+export type DeleteFeedByFeedIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  feedId: Scalars['String'];
+};
+
+/** All input for the `deleteFeed` mutation. */
+export type DeleteFeedInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Feed` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** All input for the `deleteFeedItemByFeedIdAndItemId` mutation. */
+export type DeleteFeedItemByFeedIdAndItemIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  feedId: Scalars['String'];
+  itemId: Scalars['String'];
+};
+
+/** All input for the `deleteFeedItem` mutation. */
+export type DeleteFeedItemInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `FeedItem` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `FeedItem` mutation. */
+export type DeleteFeedItemPayload = {
+  __typename?: 'DeleteFeedItemPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedFeedItemId?: Maybe<Scalars['ID']>;
+  /** The `FeedItem` that was deleted by this mutation. */
+  feedItem?: Maybe<FeedItem>;
+  /** An edge for our `FeedItem`. May be used by Relay 1. */
+  feedItemEdge?: Maybe<FeedItemsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `FeedItem` mutation. */
+export type DeleteFeedItemPayloadFeedItemEdgeArgs = {
+  orderBy?: InputMaybe<Array<FeedItemsOrderBy>>;
+};
+
+/** The output of our delete `Feed` mutation. */
+export type DeleteFeedPayload = {
+  __typename?: 'DeleteFeedPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedFeedId?: Maybe<Scalars['ID']>;
+  /** The `Feed` that was deleted by this mutation. */
+  feed?: Maybe<Feed>;
+  /** An edge for our `Feed`. May be used by Relay 1. */
+  feedEdge?: Maybe<FeedsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Feed` mutation. */
+export type DeleteFeedPayloadFeedEdgeArgs = {
+  orderBy?: InputMaybe<Array<FeedsOrderBy>>;
+};
+
+/** All input for the `deleteFeedSubscriptionByFeedIdAndChannelId` mutation. */
+export type DeleteFeedSubscriptionByFeedIdAndChannelIdInput = {
+  channelId: Scalars['BigInt'];
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  feedId: Scalars['String'];
+};
+
+/** All input for the `deleteFeedSubscription` mutation. */
+export type DeleteFeedSubscriptionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `FeedSubscription` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `FeedSubscription` mutation. */
+export type DeleteFeedSubscriptionPayload = {
+  __typename?: 'DeleteFeedSubscriptionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedFeedSubscriptionId?: Maybe<Scalars['ID']>;
+  /** Reads a single `Feed` that is related to this `FeedSubscription`. */
+  feedByFeedId?: Maybe<Feed>;
+  /** The `FeedSubscription` that was deleted by this mutation. */
+  feedSubscription?: Maybe<FeedSubscription>;
+  /** An edge for our `FeedSubscription`. May be used by Relay 1. */
+  feedSubscriptionEdge?: Maybe<FeedSubscriptionsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `FeedSubscription` mutation. */
+export type DeleteFeedSubscriptionPayloadFeedSubscriptionEdgeArgs = {
+  orderBy?: InputMaybe<Array<FeedSubscriptionsOrderBy>>;
+};
+
+/** All input for the `deleteGuildBanByGuildIdAndUserId` mutation. */
+export type DeleteGuildBanByGuildIdAndUserIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteGuildBan` mutation. */
+export type DeleteGuildBanInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `GuildBan` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `GuildBan` mutation. */
+export type DeleteGuildBanPayload = {
+  __typename?: 'DeleteGuildBanPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedGuildBanId?: Maybe<Scalars['ID']>;
+  /** The `GuildBan` that was deleted by this mutation. */
+  guildBan?: Maybe<GuildBan>;
+  /** An edge for our `GuildBan`. May be used by Relay 1. */
+  guildBanEdge?: Maybe<GuildBansEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `GuildBan` mutation. */
+export type DeleteGuildBanPayloadGuildBanEdgeArgs = {
+  orderBy?: InputMaybe<Array<GuildBansOrderBy>>;
+};
+
+/** All input for the `deleteGuildConfigById` mutation. */
+export type DeleteGuildConfigByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  id: Scalars['BigInt'];
+};
+
+/** All input for the `deleteGuildConfig` mutation. */
+export type DeleteGuildConfigInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `GuildConfig` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `GuildConfig` mutation. */
+export type DeleteGuildConfigPayload = {
+  __typename?: 'DeleteGuildConfigPayload';
+  /** Reads a single `CachedGuild` that is related to this `GuildConfig`. */
+  cachedGuildById?: Maybe<CachedGuild>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedGuildConfigId?: Maybe<Scalars['ID']>;
+  /** The `GuildConfig` that was deleted by this mutation. */
+  guildConfig?: Maybe<GuildConfig>;
+  /** An edge for our `GuildConfig`. May be used by Relay 1. */
+  guildConfigEdge?: Maybe<GuildConfigsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `GuildConfig` mutation. */
+export type DeleteGuildConfigPayloadGuildConfigEdgeArgs = {
+  orderBy?: InputMaybe<Array<GuildConfigsOrderBy>>;
+};
+
+/** All input for the `deleteMemberByGuildIdAndUserId` mutation. */
+export type DeleteMemberByGuildIdAndUserIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteMember` mutation. */
+export type DeleteMemberInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Member` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `Member` mutation. */
+export type DeleteMemberPayload = {
+  __typename?: 'DeleteMemberPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedMemberId?: Maybe<Scalars['ID']>;
+  /** The `Member` that was deleted by this mutation. */
+  member?: Maybe<Member>;
+  /** An edge for our `Member`. May be used by Relay 1. */
+  memberEdge?: Maybe<MembersEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Member` mutation. */
+export type DeleteMemberPayloadMemberEdgeArgs = {
+  orderBy?: InputMaybe<Array<MembersOrderBy>>;
+};
+
+/** All input for the `deleteModLogByGuildIdAndCaseId` mutation. */
+export type DeleteModLogByGuildIdAndCaseIdInput = {
+  caseId: Scalars['BigInt'];
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteModLog` mutation. */
+export type DeleteModLogInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `ModLog` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `ModLog` mutation. */
+export type DeleteModLogPayload = {
+  __typename?: 'DeleteModLogPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedModLogId?: Maybe<Scalars['ID']>;
+  /** The `ModLog` that was deleted by this mutation. */
+  modLog?: Maybe<ModLog>;
+  /** An edge for our `ModLog`. May be used by Relay 1. */
+  modLogEdge?: Maybe<ModLogsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `ModLog` mutation. */
+export type DeleteModLogPayloadModLogEdgeArgs = {
+  orderBy?: InputMaybe<Array<ModLogsOrderBy>>;
+};
+
+/** All input for the `deleteMuteByGuildIdAndUserId` mutation. */
+export type DeleteMuteByGuildIdAndUserIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteMute` mutation. */
+export type DeleteMuteInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Mute` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `Mute` mutation. */
+export type DeleteMutePayload = {
+  __typename?: 'DeleteMutePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedMuteId?: Maybe<Scalars['ID']>;
+  /** Reads a single `ModLog` that is related to this `Mute`. */
+  modLogByGuildIdAndCaseId?: Maybe<ModLog>;
+  /** The `Mute` that was deleted by this mutation. */
+  mute?: Maybe<Mute>;
+  /** An edge for our `Mute`. May be used by Relay 1. */
+  muteEdge?: Maybe<MutesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Mute` mutation. */
+export type DeleteMutePayloadMuteEdgeArgs = {
+  orderBy?: InputMaybe<Array<MutesOrderBy>>;
+};
+
+/** All input for the `deleteNotificationByUserIdAndGuildIdAndKeyword` mutation. */
+export type DeleteNotificationByUserIdAndGuildIdAndKeywordInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  keyword: Scalars['String'];
+  userId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteNotification` mutation. */
+export type DeleteNotificationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Notification` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `Notification` mutation. */
+export type DeleteNotificationPayload = {
+  __typename?: 'DeleteNotificationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedNotificationId?: Maybe<Scalars['ID']>;
+  /** The `Notification` that was deleted by this mutation. */
+  notification?: Maybe<Notification>;
+  /** An edge for our `Notification`. May be used by Relay 1. */
+  notificationEdge?: Maybe<NotificationsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Notification` mutation. */
+export type DeleteNotificationPayloadNotificationEdgeArgs = {
+  orderBy?: InputMaybe<Array<NotificationsOrderBy>>;
+};
+
+/** All input for the `deleteReminderByUserIdAndSetAt` mutation. */
+export type DeleteReminderByUserIdAndSetAtInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  setAt: Scalars['Datetime'];
+  userId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteReminder` mutation. */
+export type DeleteReminderInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Reminder` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `Reminder` mutation. */
+export type DeleteReminderPayload = {
+  __typename?: 'DeleteReminderPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedReminderId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `Reminder` that was deleted by this mutation. */
+  reminder?: Maybe<Reminder>;
+  /** An edge for our `Reminder`. May be used by Relay 1. */
+  reminderEdge?: Maybe<RemindersEdge>;
+};
+
+
+/** The output of our delete `Reminder` mutation. */
+export type DeleteReminderPayloadReminderEdgeArgs = {
+  orderBy?: InputMaybe<Array<RemindersOrderBy>>;
+};
+
 /** All input for the `deleteRoleMenuByChannelIdAndEditorId` mutation. */
 export type DeleteRoleMenuByChannelIdAndEditorIdInput = {
   channelId: Scalars['BigInt'];
@@ -999,6 +1587,234 @@ export type DeleteRoleMenuPayload = {
 /** The output of our delete `RoleMenu` mutation. */
 export type DeleteRoleMenuPayloadRoleMenuEdgeArgs = {
   orderBy?: InputMaybe<Array<RoleMenusOrderBy>>;
+};
+
+/** All input for the `deleteTagByGuildIdAndTagName` mutation. */
+export type DeleteTagByGuildIdAndTagNameInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  tagName: Scalars['String'];
+};
+
+/** All input for the `deleteTag` mutation. */
+export type DeleteTagInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Tag` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `Tag` mutation. */
+export type DeleteTagPayload = {
+  __typename?: 'DeleteTagPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedTagId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `Tag` that was deleted by this mutation. */
+  tag?: Maybe<Tag>;
+  /** An edge for our `Tag`. May be used by Relay 1. */
+  tagEdge?: Maybe<TagsEdge>;
+};
+
+
+/** The output of our delete `Tag` mutation. */
+export type DeleteTagPayloadTagEdgeArgs = {
+  orderBy?: InputMaybe<Array<TagsOrderBy>>;
+};
+
+/** All input for the `deleteUserById` mutation. */
+export type DeleteUserByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  id: Scalars['BigInt'];
+};
+
+/** All input for the `deleteUser` mutation. */
+export type DeleteUserInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `User` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** All input for the `deleteUserLevelByUserIdAndGuildId` mutation. */
+export type DeleteUserLevelByUserIdAndGuildIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteUserLevel` mutation. */
+export type DeleteUserLevelInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `UserLevel` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `UserLevel` mutation. */
+export type DeleteUserLevelPayload = {
+  __typename?: 'DeleteUserLevelPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedUserLevelId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `UserLevel` that was deleted by this mutation. */
+  userLevel?: Maybe<UserLevel>;
+  /** An edge for our `UserLevel`. May be used by Relay 1. */
+  userLevelEdge?: Maybe<UserLevelsEdge>;
+};
+
+
+/** The output of our delete `UserLevel` mutation. */
+export type DeleteUserLevelPayloadUserLevelEdgeArgs = {
+  orderBy?: InputMaybe<Array<UserLevelsOrderBy>>;
+};
+
+/** The output of our delete `User` mutation. */
+export type DeleteUserPayload = {
+  __typename?: 'DeleteUserPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedUserId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `User` that was deleted by this mutation. */
+  user?: Maybe<User>;
+  /** An edge for our `User`. May be used by Relay 1. */
+  userEdge?: Maybe<UsersEdge>;
+};
+
+
+/** The output of our delete `User` mutation. */
+export type DeleteUserPayloadUserEdgeArgs = {
+  orderBy?: InputMaybe<Array<UsersOrderBy>>;
+};
+
+/** All input for the `deleteWebUserById` mutation. */
+export type DeleteWebUserByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** Unique identifier for the user. This should match their Discord ID. */
+  id: Scalars['BigInt'];
+};
+
+/** All input for the `deleteWebUserGuildByUserIdAndGuildId` mutation. */
+export type DeleteWebUserGuildByUserIdAndGuildIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteWebUserGuild` mutation. */
+export type DeleteWebUserGuildInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `WebUserGuild` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `WebUserGuild` mutation. */
+export type DeleteWebUserGuildPayload = {
+  __typename?: 'DeleteWebUserGuildPayload';
+  /** Reads a single `CachedGuild` that is related to this `WebUserGuild`. */
+  cachedGuildByGuildId?: Maybe<CachedGuild>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedWebUserGuildId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `WebUser` that is related to this `WebUserGuild`. */
+  webUserByUserId?: Maybe<WebUser>;
+  /** The `WebUserGuild` that was deleted by this mutation. */
+  webUserGuild?: Maybe<WebUserGuild>;
+  /** An edge for our `WebUserGuild`. May be used by Relay 1. */
+  webUserGuildEdge?: Maybe<WebUserGuildsEdge>;
+};
+
+
+/** The output of our delete `WebUserGuild` mutation. */
+export type DeleteWebUserGuildPayloadWebUserGuildEdgeArgs = {
+  orderBy?: InputMaybe<Array<WebUserGuildsOrderBy>>;
+};
+
+/** All input for the `deleteWebUser` mutation. */
+export type DeleteWebUserInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `WebUser` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `WebUser` mutation. */
+export type DeleteWebUserPayload = {
+  __typename?: 'DeleteWebUserPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedWebUserId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `WebUser` that was deleted by this mutation. */
+  webUser?: Maybe<WebUser>;
+  /** An edge for our `WebUser`. May be used by Relay 1. */
+  webUserEdge?: Maybe<WebUsersEdge>;
+};
+
+
+/** The output of our delete `WebUser` mutation. */
+export type DeleteWebUserPayloadWebUserEdgeArgs = {
+  orderBy?: InputMaybe<Array<WebUsersOrderBy>>;
 };
 
 export type Feed = Node & {
@@ -1907,12 +2723,84 @@ export type Mutation = {
   createWebUser?: Maybe<CreateWebUserPayload>;
   /** Creates a single `WebUserGuild`. */
   createWebUserGuild?: Maybe<CreateWebUserGuildPayload>;
+  /** Deletes a single `BotStat` using its globally unique id. */
+  deleteBotStat?: Maybe<DeleteBotStatPayload>;
+  /** Deletes a single `BotStat` using a unique key. */
+  deleteBotStatByNameAndCategory?: Maybe<DeleteBotStatPayload>;
+  /** Deletes a single `CachedGuild` using its globally unique id. */
+  deleteCachedGuild?: Maybe<DeleteCachedGuildPayload>;
+  /** Deletes a single `CachedGuild` using a unique key. */
+  deleteCachedGuildById?: Maybe<DeleteCachedGuildPayload>;
+  /** Deletes a single `CachedUser` using its globally unique id. */
+  deleteCachedUser?: Maybe<DeleteCachedUserPayload>;
+  /** Deletes a single `CachedUser` using a unique key. */
+  deleteCachedUserById?: Maybe<DeleteCachedUserPayload>;
+  /** Deletes a single `Feed` using its globally unique id. */
+  deleteFeed?: Maybe<DeleteFeedPayload>;
+  /** Deletes a single `Feed` using a unique key. */
+  deleteFeedByFeedId?: Maybe<DeleteFeedPayload>;
+  /** Deletes a single `FeedItem` using its globally unique id. */
+  deleteFeedItem?: Maybe<DeleteFeedItemPayload>;
+  /** Deletes a single `FeedItem` using a unique key. */
+  deleteFeedItemByFeedIdAndItemId?: Maybe<DeleteFeedItemPayload>;
+  /** Deletes a single `FeedSubscription` using its globally unique id. */
+  deleteFeedSubscription?: Maybe<DeleteFeedSubscriptionPayload>;
+  /** Deletes a single `FeedSubscription` using a unique key. */
+  deleteFeedSubscriptionByFeedIdAndChannelId?: Maybe<DeleteFeedSubscriptionPayload>;
+  /** Deletes a single `GuildBan` using its globally unique id. */
+  deleteGuildBan?: Maybe<DeleteGuildBanPayload>;
+  /** Deletes a single `GuildBan` using a unique key. */
+  deleteGuildBanByGuildIdAndUserId?: Maybe<DeleteGuildBanPayload>;
+  /** Deletes a single `GuildConfig` using its globally unique id. */
+  deleteGuildConfig?: Maybe<DeleteGuildConfigPayload>;
+  /** Deletes a single `GuildConfig` using a unique key. */
+  deleteGuildConfigById?: Maybe<DeleteGuildConfigPayload>;
+  /** Deletes a single `Member` using its globally unique id. */
+  deleteMember?: Maybe<DeleteMemberPayload>;
+  /** Deletes a single `Member` using a unique key. */
+  deleteMemberByGuildIdAndUserId?: Maybe<DeleteMemberPayload>;
+  /** Deletes a single `ModLog` using its globally unique id. */
+  deleteModLog?: Maybe<DeleteModLogPayload>;
+  /** Deletes a single `ModLog` using a unique key. */
+  deleteModLogByGuildIdAndCaseId?: Maybe<DeleteModLogPayload>;
+  /** Deletes a single `Mute` using its globally unique id. */
+  deleteMute?: Maybe<DeleteMutePayload>;
+  /** Deletes a single `Mute` using a unique key. */
+  deleteMuteByGuildIdAndUserId?: Maybe<DeleteMutePayload>;
+  /** Deletes a single `Notification` using its globally unique id. */
+  deleteNotification?: Maybe<DeleteNotificationPayload>;
+  /** Deletes a single `Notification` using a unique key. */
+  deleteNotificationByUserIdAndGuildIdAndKeyword?: Maybe<DeleteNotificationPayload>;
+  /** Deletes a single `Reminder` using its globally unique id. */
+  deleteReminder?: Maybe<DeleteReminderPayload>;
+  /** Deletes a single `Reminder` using a unique key. */
+  deleteReminderByUserIdAndSetAt?: Maybe<DeleteReminderPayload>;
   /** Deletes a single `RoleMenu` using its globally unique id. */
   deleteRoleMenu?: Maybe<DeleteRoleMenuPayload>;
   /** Deletes a single `RoleMenu` using a unique key. */
   deleteRoleMenuByChannelIdAndEditorId?: Maybe<DeleteRoleMenuPayload>;
   /** Deletes a single `RoleMenu` using a unique key. */
   deleteRoleMenuByMessageId?: Maybe<DeleteRoleMenuPayload>;
+  /** Deletes a single `Tag` using its globally unique id. */
+  deleteTag?: Maybe<DeleteTagPayload>;
+  /** Deletes a single `Tag` using a unique key. */
+  deleteTagByGuildIdAndTagName?: Maybe<DeleteTagPayload>;
+  /** Deletes a single `User` using its globally unique id. */
+  deleteUser?: Maybe<DeleteUserPayload>;
+  /** Deletes a single `User` using a unique key. */
+  deleteUserById?: Maybe<DeleteUserPayload>;
+  /** Deletes a single `UserLevel` using its globally unique id. */
+  deleteUserLevel?: Maybe<DeleteUserLevelPayload>;
+  /** Deletes a single `UserLevel` using a unique key. */
+  deleteUserLevelByUserIdAndGuildId?: Maybe<DeleteUserLevelPayload>;
+  /** Deletes a single `WebUser` using its globally unique id. */
+  deleteWebUser?: Maybe<DeleteWebUserPayload>;
+  /** Deletes a single `WebUser` using a unique key. */
+  deleteWebUserById?: Maybe<DeleteWebUserPayload>;
+  /** Deletes a single `WebUserGuild` using its globally unique id. */
+  deleteWebUserGuild?: Maybe<DeleteWebUserGuildPayload>;
+  /** Deletes a single `WebUserGuild` using a unique key. */
+  deleteWebUserGuildByUserIdAndGuildId?: Maybe<DeleteWebUserGuildPayload>;
   graphql?: Maybe<GraphqlPayload>;
   logout?: Maybe<LogoutPayload>;
   /** Updates a single `BotStat` using its globally unique id and a patch. */
@@ -2117,6 +3005,162 @@ export type MutationCreateWebUserGuildArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteBotStatArgs = {
+  input: DeleteBotStatInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteBotStatByNameAndCategoryArgs = {
+  input: DeleteBotStatByNameAndCategoryInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteCachedGuildArgs = {
+  input: DeleteCachedGuildInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteCachedGuildByIdArgs = {
+  input: DeleteCachedGuildByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteCachedUserArgs = {
+  input: DeleteCachedUserInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteCachedUserByIdArgs = {
+  input: DeleteCachedUserByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteFeedArgs = {
+  input: DeleteFeedInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteFeedByFeedIdArgs = {
+  input: DeleteFeedByFeedIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteFeedItemArgs = {
+  input: DeleteFeedItemInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteFeedItemByFeedIdAndItemIdArgs = {
+  input: DeleteFeedItemByFeedIdAndItemIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteFeedSubscriptionArgs = {
+  input: DeleteFeedSubscriptionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteFeedSubscriptionByFeedIdAndChannelIdArgs = {
+  input: DeleteFeedSubscriptionByFeedIdAndChannelIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteGuildBanArgs = {
+  input: DeleteGuildBanInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteGuildBanByGuildIdAndUserIdArgs = {
+  input: DeleteGuildBanByGuildIdAndUserIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteGuildConfigArgs = {
+  input: DeleteGuildConfigInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteGuildConfigByIdArgs = {
+  input: DeleteGuildConfigByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteMemberArgs = {
+  input: DeleteMemberInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteMemberByGuildIdAndUserIdArgs = {
+  input: DeleteMemberByGuildIdAndUserIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteModLogArgs = {
+  input: DeleteModLogInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteModLogByGuildIdAndCaseIdArgs = {
+  input: DeleteModLogByGuildIdAndCaseIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteMuteArgs = {
+  input: DeleteMuteInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteMuteByGuildIdAndUserIdArgs = {
+  input: DeleteMuteByGuildIdAndUserIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteNotificationArgs = {
+  input: DeleteNotificationInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteNotificationByUserIdAndGuildIdAndKeywordArgs = {
+  input: DeleteNotificationByUserIdAndGuildIdAndKeywordInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteReminderArgs = {
+  input: DeleteReminderInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteReminderByUserIdAndSetAtArgs = {
+  input: DeleteReminderByUserIdAndSetAtInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteRoleMenuArgs = {
   input: DeleteRoleMenuInput;
 };
@@ -2131,6 +3175,66 @@ export type MutationDeleteRoleMenuByChannelIdAndEditorIdArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteRoleMenuByMessageIdArgs = {
   input: DeleteRoleMenuByMessageIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTagArgs = {
+  input: DeleteTagInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTagByGuildIdAndTagNameArgs = {
+  input: DeleteTagByGuildIdAndTagNameInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUserArgs = {
+  input: DeleteUserInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUserByIdArgs = {
+  input: DeleteUserByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUserLevelArgs = {
+  input: DeleteUserLevelInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUserLevelByUserIdAndGuildIdArgs = {
+  input: DeleteUserLevelByUserIdAndGuildIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteWebUserArgs = {
+  input: DeleteWebUserInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteWebUserByIdArgs = {
+  input: DeleteWebUserByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteWebUserGuildArgs = {
+  input: DeleteWebUserGuildInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteWebUserGuildByUserIdAndGuildIdArgs = {
+  input: DeleteWebUserGuildByUserIdAndGuildIdInput;
 };
 
 
@@ -2547,6 +3651,26 @@ export enum NotificationsOrderBy {
   UserIdDesc = 'USER_ID_DESC'
 }
 
+/** A connection to a list of `String` values. */
+export type NotificationsStartingWithConnection = {
+  __typename?: 'NotificationsStartingWithConnection';
+  /** A list of edges which contains the `String` and cursor to aid in pagination. */
+  edges: Array<NotificationsStartingWithEdge>;
+  /** A list of `String` objects. */
+  nodes: Array<Maybe<Scalars['String']>>;
+  /** The count of *all* `String` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** A `String` edge in the connection. */
+export type NotificationsStartingWithEdge = {
+  __typename?: 'NotificationsStartingWithEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `String` at the end of the edge. */
+  node?: Maybe<Scalars['String']>;
+};
+
 /** Information about pagination in a connection. */
 export type PageInfo = {
   __typename?: 'PageInfo';
@@ -2646,6 +3770,7 @@ export type Query = Node & {
   /** Reads a single `Notification` using its globally unique `ID`. */
   notification?: Maybe<Notification>;
   notificationByUserIdAndGuildIdAndKeyword?: Maybe<Notification>;
+  notificationsStartingWith?: Maybe<NotificationsStartingWithConnection>;
   /**
    * Exposes the root query type nested one level down. This is helpful for Relay 1
    * which can only query top level fields if they are in a particular form.
@@ -3054,6 +4179,18 @@ export type QueryNotificationByUserIdAndGuildIdAndKeywordArgs = {
   guildId: Scalars['BigInt'];
   keyword: Scalars['String'];
   userId: Scalars['BigInt'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryNotificationsStartingWithArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  query?: InputMaybe<Scalars['String']>;
+  userId?: InputMaybe<Scalars['BigInt']>;
 };
 
 
@@ -4908,10 +6045,64 @@ export type ResolversTypes = {
   CurrentUserManagedGuildIdsConnection: ResolverTypeWrapper<CurrentUserManagedGuildIdsConnection>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   Datetime: ResolverTypeWrapper<Scalars['Datetime']>;
+  DeleteBotStatByNameAndCategoryInput: DeleteBotStatByNameAndCategoryInput;
+  DeleteBotStatInput: DeleteBotStatInput;
+  DeleteBotStatPayload: ResolverTypeWrapper<DeleteBotStatPayload>;
+  DeleteCachedGuildByIdInput: DeleteCachedGuildByIdInput;
+  DeleteCachedGuildInput: DeleteCachedGuildInput;
+  DeleteCachedGuildPayload: ResolverTypeWrapper<DeleteCachedGuildPayload>;
+  DeleteCachedUserByIdInput: DeleteCachedUserByIdInput;
+  DeleteCachedUserInput: DeleteCachedUserInput;
+  DeleteCachedUserPayload: ResolverTypeWrapper<DeleteCachedUserPayload>;
+  DeleteFeedByFeedIdInput: DeleteFeedByFeedIdInput;
+  DeleteFeedInput: DeleteFeedInput;
+  DeleteFeedItemByFeedIdAndItemIdInput: DeleteFeedItemByFeedIdAndItemIdInput;
+  DeleteFeedItemInput: DeleteFeedItemInput;
+  DeleteFeedItemPayload: ResolverTypeWrapper<DeleteFeedItemPayload>;
+  DeleteFeedPayload: ResolverTypeWrapper<DeleteFeedPayload>;
+  DeleteFeedSubscriptionByFeedIdAndChannelIdInput: DeleteFeedSubscriptionByFeedIdAndChannelIdInput;
+  DeleteFeedSubscriptionInput: DeleteFeedSubscriptionInput;
+  DeleteFeedSubscriptionPayload: ResolverTypeWrapper<DeleteFeedSubscriptionPayload>;
+  DeleteGuildBanByGuildIdAndUserIdInput: DeleteGuildBanByGuildIdAndUserIdInput;
+  DeleteGuildBanInput: DeleteGuildBanInput;
+  DeleteGuildBanPayload: ResolverTypeWrapper<DeleteGuildBanPayload>;
+  DeleteGuildConfigByIdInput: DeleteGuildConfigByIdInput;
+  DeleteGuildConfigInput: DeleteGuildConfigInput;
+  DeleteGuildConfigPayload: ResolverTypeWrapper<DeleteGuildConfigPayload>;
+  DeleteMemberByGuildIdAndUserIdInput: DeleteMemberByGuildIdAndUserIdInput;
+  DeleteMemberInput: DeleteMemberInput;
+  DeleteMemberPayload: ResolverTypeWrapper<DeleteMemberPayload>;
+  DeleteModLogByGuildIdAndCaseIdInput: DeleteModLogByGuildIdAndCaseIdInput;
+  DeleteModLogInput: DeleteModLogInput;
+  DeleteModLogPayload: ResolverTypeWrapper<DeleteModLogPayload>;
+  DeleteMuteByGuildIdAndUserIdInput: DeleteMuteByGuildIdAndUserIdInput;
+  DeleteMuteInput: DeleteMuteInput;
+  DeleteMutePayload: ResolverTypeWrapper<DeleteMutePayload>;
+  DeleteNotificationByUserIdAndGuildIdAndKeywordInput: DeleteNotificationByUserIdAndGuildIdAndKeywordInput;
+  DeleteNotificationInput: DeleteNotificationInput;
+  DeleteNotificationPayload: ResolverTypeWrapper<DeleteNotificationPayload>;
+  DeleteReminderByUserIdAndSetAtInput: DeleteReminderByUserIdAndSetAtInput;
+  DeleteReminderInput: DeleteReminderInput;
+  DeleteReminderPayload: ResolverTypeWrapper<DeleteReminderPayload>;
   DeleteRoleMenuByChannelIdAndEditorIdInput: DeleteRoleMenuByChannelIdAndEditorIdInput;
   DeleteRoleMenuByMessageIdInput: DeleteRoleMenuByMessageIdInput;
   DeleteRoleMenuInput: DeleteRoleMenuInput;
   DeleteRoleMenuPayload: ResolverTypeWrapper<DeleteRoleMenuPayload>;
+  DeleteTagByGuildIdAndTagNameInput: DeleteTagByGuildIdAndTagNameInput;
+  DeleteTagInput: DeleteTagInput;
+  DeleteTagPayload: ResolverTypeWrapper<DeleteTagPayload>;
+  DeleteUserByIdInput: DeleteUserByIdInput;
+  DeleteUserInput: DeleteUserInput;
+  DeleteUserLevelByUserIdAndGuildIdInput: DeleteUserLevelByUserIdAndGuildIdInput;
+  DeleteUserLevelInput: DeleteUserLevelInput;
+  DeleteUserLevelPayload: ResolverTypeWrapper<DeleteUserLevelPayload>;
+  DeleteUserPayload: ResolverTypeWrapper<DeleteUserPayload>;
+  DeleteWebUserByIdInput: DeleteWebUserByIdInput;
+  DeleteWebUserGuildByUserIdAndGuildIdInput: DeleteWebUserGuildByUserIdAndGuildIdInput;
+  DeleteWebUserGuildInput: DeleteWebUserGuildInput;
+  DeleteWebUserGuildPayload: ResolverTypeWrapper<DeleteWebUserGuildPayload>;
+  DeleteWebUserInput: DeleteWebUserInput;
+  DeleteWebUserPayload: ResolverTypeWrapper<DeleteWebUserPayload>;
   Feed: ResolverTypeWrapper<Feed>;
   FeedCondition: FeedCondition;
   FeedInput: FeedInput;
@@ -4991,6 +6182,8 @@ export type ResolversTypes = {
   NotificationsConnection: ResolverTypeWrapper<NotificationsConnection>;
   NotificationsEdge: ResolverTypeWrapper<NotificationsEdge>;
   NotificationsOrderBy: NotificationsOrderBy;
+  NotificationsStartingWithConnection: ResolverTypeWrapper<NotificationsStartingWithConnection>;
+  NotificationsStartingWithEdge: ResolverTypeWrapper<NotificationsStartingWithEdge>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
   Reminder: ResolverTypeWrapper<Reminder>;
@@ -5167,10 +6360,64 @@ export type ResolversParentTypes = {
   CurrentUserManagedGuildIdsConnection: CurrentUserManagedGuildIdsConnection;
   Cursor: Scalars['Cursor'];
   Datetime: Scalars['Datetime'];
+  DeleteBotStatByNameAndCategoryInput: DeleteBotStatByNameAndCategoryInput;
+  DeleteBotStatInput: DeleteBotStatInput;
+  DeleteBotStatPayload: DeleteBotStatPayload;
+  DeleteCachedGuildByIdInput: DeleteCachedGuildByIdInput;
+  DeleteCachedGuildInput: DeleteCachedGuildInput;
+  DeleteCachedGuildPayload: DeleteCachedGuildPayload;
+  DeleteCachedUserByIdInput: DeleteCachedUserByIdInput;
+  DeleteCachedUserInput: DeleteCachedUserInput;
+  DeleteCachedUserPayload: DeleteCachedUserPayload;
+  DeleteFeedByFeedIdInput: DeleteFeedByFeedIdInput;
+  DeleteFeedInput: DeleteFeedInput;
+  DeleteFeedItemByFeedIdAndItemIdInput: DeleteFeedItemByFeedIdAndItemIdInput;
+  DeleteFeedItemInput: DeleteFeedItemInput;
+  DeleteFeedItemPayload: DeleteFeedItemPayload;
+  DeleteFeedPayload: DeleteFeedPayload;
+  DeleteFeedSubscriptionByFeedIdAndChannelIdInput: DeleteFeedSubscriptionByFeedIdAndChannelIdInput;
+  DeleteFeedSubscriptionInput: DeleteFeedSubscriptionInput;
+  DeleteFeedSubscriptionPayload: DeleteFeedSubscriptionPayload;
+  DeleteGuildBanByGuildIdAndUserIdInput: DeleteGuildBanByGuildIdAndUserIdInput;
+  DeleteGuildBanInput: DeleteGuildBanInput;
+  DeleteGuildBanPayload: DeleteGuildBanPayload;
+  DeleteGuildConfigByIdInput: DeleteGuildConfigByIdInput;
+  DeleteGuildConfigInput: DeleteGuildConfigInput;
+  DeleteGuildConfigPayload: DeleteGuildConfigPayload;
+  DeleteMemberByGuildIdAndUserIdInput: DeleteMemberByGuildIdAndUserIdInput;
+  DeleteMemberInput: DeleteMemberInput;
+  DeleteMemberPayload: DeleteMemberPayload;
+  DeleteModLogByGuildIdAndCaseIdInput: DeleteModLogByGuildIdAndCaseIdInput;
+  DeleteModLogInput: DeleteModLogInput;
+  DeleteModLogPayload: DeleteModLogPayload;
+  DeleteMuteByGuildIdAndUserIdInput: DeleteMuteByGuildIdAndUserIdInput;
+  DeleteMuteInput: DeleteMuteInput;
+  DeleteMutePayload: DeleteMutePayload;
+  DeleteNotificationByUserIdAndGuildIdAndKeywordInput: DeleteNotificationByUserIdAndGuildIdAndKeywordInput;
+  DeleteNotificationInput: DeleteNotificationInput;
+  DeleteNotificationPayload: DeleteNotificationPayload;
+  DeleteReminderByUserIdAndSetAtInput: DeleteReminderByUserIdAndSetAtInput;
+  DeleteReminderInput: DeleteReminderInput;
+  DeleteReminderPayload: DeleteReminderPayload;
   DeleteRoleMenuByChannelIdAndEditorIdInput: DeleteRoleMenuByChannelIdAndEditorIdInput;
   DeleteRoleMenuByMessageIdInput: DeleteRoleMenuByMessageIdInput;
   DeleteRoleMenuInput: DeleteRoleMenuInput;
   DeleteRoleMenuPayload: DeleteRoleMenuPayload;
+  DeleteTagByGuildIdAndTagNameInput: DeleteTagByGuildIdAndTagNameInput;
+  DeleteTagInput: DeleteTagInput;
+  DeleteTagPayload: DeleteTagPayload;
+  DeleteUserByIdInput: DeleteUserByIdInput;
+  DeleteUserInput: DeleteUserInput;
+  DeleteUserLevelByUserIdAndGuildIdInput: DeleteUserLevelByUserIdAndGuildIdInput;
+  DeleteUserLevelInput: DeleteUserLevelInput;
+  DeleteUserLevelPayload: DeleteUserLevelPayload;
+  DeleteUserPayload: DeleteUserPayload;
+  DeleteWebUserByIdInput: DeleteWebUserByIdInput;
+  DeleteWebUserGuildByUserIdAndGuildIdInput: DeleteWebUserGuildByUserIdAndGuildIdInput;
+  DeleteWebUserGuildInput: DeleteWebUserGuildInput;
+  DeleteWebUserGuildPayload: DeleteWebUserGuildPayload;
+  DeleteWebUserInput: DeleteWebUserInput;
+  DeleteWebUserPayload: DeleteWebUserPayload;
   Feed: Feed;
   FeedCondition: FeedCondition;
   FeedInput: FeedInput;
@@ -5239,6 +6486,8 @@ export type ResolversParentTypes = {
   NotificationPatch: NotificationPatch;
   NotificationsConnection: NotificationsConnection;
   NotificationsEdge: NotificationsEdge;
+  NotificationsStartingWithConnection: NotificationsStartingWithConnection;
+  NotificationsStartingWithEdge: NotificationsStartingWithEdge;
   PageInfo: PageInfo;
   Query: {};
   Reminder: Reminder;
@@ -5597,12 +6846,179 @@ export interface DatetimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'Datetime';
 }
 
+export type DeleteBotStatPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteBotStatPayload'] = ResolversParentTypes['DeleteBotStatPayload']> = {
+  botStat?: Resolver<Maybe<ResolversTypes['BotStat']>, ParentType, ContextType>;
+  botStatEdge?: Resolver<Maybe<ResolversTypes['BotStatsEdge']>, ParentType, ContextType, RequireFields<DeleteBotStatPayloadBotStatEdgeArgs, 'orderBy'>>;
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedBotStatId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteCachedGuildPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteCachedGuildPayload'] = ResolversParentTypes['DeleteCachedGuildPayload']> = {
+  cachedGuild?: Resolver<Maybe<ResolversTypes['CachedGuild']>, ParentType, ContextType>;
+  cachedGuildEdge?: Resolver<Maybe<ResolversTypes['CachedGuildsEdge']>, ParentType, ContextType, RequireFields<DeleteCachedGuildPayloadCachedGuildEdgeArgs, 'orderBy'>>;
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedCachedGuildId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteCachedUserPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteCachedUserPayload'] = ResolversParentTypes['DeleteCachedUserPayload']> = {
+  cachedUser?: Resolver<Maybe<ResolversTypes['CachedUser']>, ParentType, ContextType>;
+  cachedUserEdge?: Resolver<Maybe<ResolversTypes['CachedUsersEdge']>, ParentType, ContextType, RequireFields<DeleteCachedUserPayloadCachedUserEdgeArgs, 'orderBy'>>;
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedCachedUserId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteFeedItemPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteFeedItemPayload'] = ResolversParentTypes['DeleteFeedItemPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedFeedItemId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  feedItem?: Resolver<Maybe<ResolversTypes['FeedItem']>, ParentType, ContextType>;
+  feedItemEdge?: Resolver<Maybe<ResolversTypes['FeedItemsEdge']>, ParentType, ContextType, RequireFields<DeleteFeedItemPayloadFeedItemEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteFeedPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteFeedPayload'] = ResolversParentTypes['DeleteFeedPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedFeedId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  feed?: Resolver<Maybe<ResolversTypes['Feed']>, ParentType, ContextType>;
+  feedEdge?: Resolver<Maybe<ResolversTypes['FeedsEdge']>, ParentType, ContextType, RequireFields<DeleteFeedPayloadFeedEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteFeedSubscriptionPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteFeedSubscriptionPayload'] = ResolversParentTypes['DeleteFeedSubscriptionPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedFeedSubscriptionId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  feedByFeedId?: Resolver<Maybe<ResolversTypes['Feed']>, ParentType, ContextType>;
+  feedSubscription?: Resolver<Maybe<ResolversTypes['FeedSubscription']>, ParentType, ContextType>;
+  feedSubscriptionEdge?: Resolver<Maybe<ResolversTypes['FeedSubscriptionsEdge']>, ParentType, ContextType, RequireFields<DeleteFeedSubscriptionPayloadFeedSubscriptionEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteGuildBanPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteGuildBanPayload'] = ResolversParentTypes['DeleteGuildBanPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedGuildBanId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  guildBan?: Resolver<Maybe<ResolversTypes['GuildBan']>, ParentType, ContextType>;
+  guildBanEdge?: Resolver<Maybe<ResolversTypes['GuildBansEdge']>, ParentType, ContextType, RequireFields<DeleteGuildBanPayloadGuildBanEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteGuildConfigPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteGuildConfigPayload'] = ResolversParentTypes['DeleteGuildConfigPayload']> = {
+  cachedGuildById?: Resolver<Maybe<ResolversTypes['CachedGuild']>, ParentType, ContextType>;
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedGuildConfigId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  guildConfig?: Resolver<Maybe<ResolversTypes['GuildConfig']>, ParentType, ContextType>;
+  guildConfigEdge?: Resolver<Maybe<ResolversTypes['GuildConfigsEdge']>, ParentType, ContextType, RequireFields<DeleteGuildConfigPayloadGuildConfigEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteMemberPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteMemberPayload'] = ResolversParentTypes['DeleteMemberPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedMemberId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType>;
+  memberEdge?: Resolver<Maybe<ResolversTypes['MembersEdge']>, ParentType, ContextType, RequireFields<DeleteMemberPayloadMemberEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteModLogPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteModLogPayload'] = ResolversParentTypes['DeleteModLogPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedModLogId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  modLog?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType>;
+  modLogEdge?: Resolver<Maybe<ResolversTypes['ModLogsEdge']>, ParentType, ContextType, RequireFields<DeleteModLogPayloadModLogEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteMutePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteMutePayload'] = ResolversParentTypes['DeleteMutePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedMuteId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  modLogByGuildIdAndCaseId?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType>;
+  mute?: Resolver<Maybe<ResolversTypes['Mute']>, ParentType, ContextType>;
+  muteEdge?: Resolver<Maybe<ResolversTypes['MutesEdge']>, ParentType, ContextType, RequireFields<DeleteMutePayloadMuteEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteNotificationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteNotificationPayload'] = ResolversParentTypes['DeleteNotificationPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedNotificationId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  notification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType>;
+  notificationEdge?: Resolver<Maybe<ResolversTypes['NotificationsEdge']>, ParentType, ContextType, RequireFields<DeleteNotificationPayloadNotificationEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteReminderPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteReminderPayload'] = ResolversParentTypes['DeleteReminderPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedReminderId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  reminder?: Resolver<Maybe<ResolversTypes['Reminder']>, ParentType, ContextType>;
+  reminderEdge?: Resolver<Maybe<ResolversTypes['RemindersEdge']>, ParentType, ContextType, RequireFields<DeleteReminderPayloadReminderEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type DeleteRoleMenuPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRoleMenuPayload'] = ResolversParentTypes['DeleteRoleMenuPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deletedRoleMenuId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   roleMenu?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType>;
   roleMenuEdge?: Resolver<Maybe<ResolversTypes['RoleMenusEdge']>, ParentType, ContextType, RequireFields<DeleteRoleMenuPayloadRoleMenuEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteTagPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteTagPayload'] = ResolversParentTypes['DeleteTagPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedTagId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType>;
+  tagEdge?: Resolver<Maybe<ResolversTypes['TagsEdge']>, ParentType, ContextType, RequireFields<DeleteTagPayloadTagEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteUserLevelPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteUserLevelPayload'] = ResolversParentTypes['DeleteUserLevelPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedUserLevelId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  userLevel?: Resolver<Maybe<ResolversTypes['UserLevel']>, ParentType, ContextType>;
+  userLevelEdge?: Resolver<Maybe<ResolversTypes['UserLevelsEdge']>, ParentType, ContextType, RequireFields<DeleteUserLevelPayloadUserLevelEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteUserPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteUserPayload'] = ResolversParentTypes['DeleteUserPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedUserId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  userEdge?: Resolver<Maybe<ResolversTypes['UsersEdge']>, ParentType, ContextType, RequireFields<DeleteUserPayloadUserEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteWebUserGuildPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteWebUserGuildPayload'] = ResolversParentTypes['DeleteWebUserGuildPayload']> = {
+  cachedGuildByGuildId?: Resolver<Maybe<ResolversTypes['CachedGuild']>, ParentType, ContextType>;
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedWebUserGuildId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  webUserByUserId?: Resolver<Maybe<ResolversTypes['WebUser']>, ParentType, ContextType>;
+  webUserGuild?: Resolver<Maybe<ResolversTypes['WebUserGuild']>, ParentType, ContextType>;
+  webUserGuildEdge?: Resolver<Maybe<ResolversTypes['WebUserGuildsEdge']>, ParentType, ContextType, RequireFields<DeleteWebUserGuildPayloadWebUserGuildEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteWebUserPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteWebUserPayload'] = ResolversParentTypes['DeleteWebUserPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedWebUserId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  webUser?: Resolver<Maybe<ResolversTypes['WebUser']>, ParentType, ContextType>;
+  webUserEdge?: Resolver<Maybe<ResolversTypes['WebUsersEdge']>, ParentType, ContextType, RequireFields<DeleteWebUserPayloadWebUserEdgeArgs, 'orderBy'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -5857,9 +7273,45 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createUserLevel?: Resolver<Maybe<ResolversTypes['CreateUserLevelPayload']>, ParentType, ContextType, RequireFields<MutationCreateUserLevelArgs, 'input'>>;
   createWebUser?: Resolver<Maybe<ResolversTypes['CreateWebUserPayload']>, ParentType, ContextType, RequireFields<MutationCreateWebUserArgs, 'input'>>;
   createWebUserGuild?: Resolver<Maybe<ResolversTypes['CreateWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationCreateWebUserGuildArgs, 'input'>>;
+  deleteBotStat?: Resolver<Maybe<ResolversTypes['DeleteBotStatPayload']>, ParentType, ContextType, RequireFields<MutationDeleteBotStatArgs, 'input'>>;
+  deleteBotStatByNameAndCategory?: Resolver<Maybe<ResolversTypes['DeleteBotStatPayload']>, ParentType, ContextType, RequireFields<MutationDeleteBotStatByNameAndCategoryArgs, 'input'>>;
+  deleteCachedGuild?: Resolver<Maybe<ResolversTypes['DeleteCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationDeleteCachedGuildArgs, 'input'>>;
+  deleteCachedGuildById?: Resolver<Maybe<ResolversTypes['DeleteCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationDeleteCachedGuildByIdArgs, 'input'>>;
+  deleteCachedUser?: Resolver<Maybe<ResolversTypes['DeleteCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationDeleteCachedUserArgs, 'input'>>;
+  deleteCachedUserById?: Resolver<Maybe<ResolversTypes['DeleteCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationDeleteCachedUserByIdArgs, 'input'>>;
+  deleteFeed?: Resolver<Maybe<ResolversTypes['DeleteFeedPayload']>, ParentType, ContextType, RequireFields<MutationDeleteFeedArgs, 'input'>>;
+  deleteFeedByFeedId?: Resolver<Maybe<ResolversTypes['DeleteFeedPayload']>, ParentType, ContextType, RequireFields<MutationDeleteFeedByFeedIdArgs, 'input'>>;
+  deleteFeedItem?: Resolver<Maybe<ResolversTypes['DeleteFeedItemPayload']>, ParentType, ContextType, RequireFields<MutationDeleteFeedItemArgs, 'input'>>;
+  deleteFeedItemByFeedIdAndItemId?: Resolver<Maybe<ResolversTypes['DeleteFeedItemPayload']>, ParentType, ContextType, RequireFields<MutationDeleteFeedItemByFeedIdAndItemIdArgs, 'input'>>;
+  deleteFeedSubscription?: Resolver<Maybe<ResolversTypes['DeleteFeedSubscriptionPayload']>, ParentType, ContextType, RequireFields<MutationDeleteFeedSubscriptionArgs, 'input'>>;
+  deleteFeedSubscriptionByFeedIdAndChannelId?: Resolver<Maybe<ResolversTypes['DeleteFeedSubscriptionPayload']>, ParentType, ContextType, RequireFields<MutationDeleteFeedSubscriptionByFeedIdAndChannelIdArgs, 'input'>>;
+  deleteGuildBan?: Resolver<Maybe<ResolversTypes['DeleteGuildBanPayload']>, ParentType, ContextType, RequireFields<MutationDeleteGuildBanArgs, 'input'>>;
+  deleteGuildBanByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['DeleteGuildBanPayload']>, ParentType, ContextType, RequireFields<MutationDeleteGuildBanByGuildIdAndUserIdArgs, 'input'>>;
+  deleteGuildConfig?: Resolver<Maybe<ResolversTypes['DeleteGuildConfigPayload']>, ParentType, ContextType, RequireFields<MutationDeleteGuildConfigArgs, 'input'>>;
+  deleteGuildConfigById?: Resolver<Maybe<ResolversTypes['DeleteGuildConfigPayload']>, ParentType, ContextType, RequireFields<MutationDeleteGuildConfigByIdArgs, 'input'>>;
+  deleteMember?: Resolver<Maybe<ResolversTypes['DeleteMemberPayload']>, ParentType, ContextType, RequireFields<MutationDeleteMemberArgs, 'input'>>;
+  deleteMemberByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['DeleteMemberPayload']>, ParentType, ContextType, RequireFields<MutationDeleteMemberByGuildIdAndUserIdArgs, 'input'>>;
+  deleteModLog?: Resolver<Maybe<ResolversTypes['DeleteModLogPayload']>, ParentType, ContextType, RequireFields<MutationDeleteModLogArgs, 'input'>>;
+  deleteModLogByGuildIdAndCaseId?: Resolver<Maybe<ResolversTypes['DeleteModLogPayload']>, ParentType, ContextType, RequireFields<MutationDeleteModLogByGuildIdAndCaseIdArgs, 'input'>>;
+  deleteMute?: Resolver<Maybe<ResolversTypes['DeleteMutePayload']>, ParentType, ContextType, RequireFields<MutationDeleteMuteArgs, 'input'>>;
+  deleteMuteByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['DeleteMutePayload']>, ParentType, ContextType, RequireFields<MutationDeleteMuteByGuildIdAndUserIdArgs, 'input'>>;
+  deleteNotification?: Resolver<Maybe<ResolversTypes['DeleteNotificationPayload']>, ParentType, ContextType, RequireFields<MutationDeleteNotificationArgs, 'input'>>;
+  deleteNotificationByUserIdAndGuildIdAndKeyword?: Resolver<Maybe<ResolversTypes['DeleteNotificationPayload']>, ParentType, ContextType, RequireFields<MutationDeleteNotificationByUserIdAndGuildIdAndKeywordArgs, 'input'>>;
+  deleteReminder?: Resolver<Maybe<ResolversTypes['DeleteReminderPayload']>, ParentType, ContextType, RequireFields<MutationDeleteReminderArgs, 'input'>>;
+  deleteReminderByUserIdAndSetAt?: Resolver<Maybe<ResolversTypes['DeleteReminderPayload']>, ParentType, ContextType, RequireFields<MutationDeleteReminderByUserIdAndSetAtArgs, 'input'>>;
   deleteRoleMenu?: Resolver<Maybe<ResolversTypes['DeleteRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoleMenuArgs, 'input'>>;
   deleteRoleMenuByChannelIdAndEditorId?: Resolver<Maybe<ResolversTypes['DeleteRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoleMenuByChannelIdAndEditorIdArgs, 'input'>>;
   deleteRoleMenuByMessageId?: Resolver<Maybe<ResolversTypes['DeleteRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoleMenuByMessageIdArgs, 'input'>>;
+  deleteTag?: Resolver<Maybe<ResolversTypes['DeleteTagPayload']>, ParentType, ContextType, RequireFields<MutationDeleteTagArgs, 'input'>>;
+  deleteTagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['DeleteTagPayload']>, ParentType, ContextType, RequireFields<MutationDeleteTagByGuildIdAndTagNameArgs, 'input'>>;
+  deleteUser?: Resolver<Maybe<ResolversTypes['DeleteUserPayload']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'input'>>;
+  deleteUserById?: Resolver<Maybe<ResolversTypes['DeleteUserPayload']>, ParentType, ContextType, RequireFields<MutationDeleteUserByIdArgs, 'input'>>;
+  deleteUserLevel?: Resolver<Maybe<ResolversTypes['DeleteUserLevelPayload']>, ParentType, ContextType, RequireFields<MutationDeleteUserLevelArgs, 'input'>>;
+  deleteUserLevelByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['DeleteUserLevelPayload']>, ParentType, ContextType, RequireFields<MutationDeleteUserLevelByUserIdAndGuildIdArgs, 'input'>>;
+  deleteWebUser?: Resolver<Maybe<ResolversTypes['DeleteWebUserPayload']>, ParentType, ContextType, RequireFields<MutationDeleteWebUserArgs, 'input'>>;
+  deleteWebUserById?: Resolver<Maybe<ResolversTypes['DeleteWebUserPayload']>, ParentType, ContextType, RequireFields<MutationDeleteWebUserByIdArgs, 'input'>>;
+  deleteWebUserGuild?: Resolver<Maybe<ResolversTypes['DeleteWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationDeleteWebUserGuildArgs, 'input'>>;
+  deleteWebUserGuildByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['DeleteWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationDeleteWebUserGuildByUserIdAndGuildIdArgs, 'input'>>;
   graphql?: Resolver<Maybe<ResolversTypes['GraphqlPayload']>, ParentType, ContextType, RequireFields<MutationGraphqlArgs, 'input'>>;
   logout?: Resolver<Maybe<ResolversTypes['LogoutPayload']>, ParentType, ContextType, RequireFields<MutationLogoutArgs, 'input'>>;
   updateBotStat?: Resolver<Maybe<ResolversTypes['UpdateBotStatPayload']>, ParentType, ContextType, RequireFields<MutationUpdateBotStatArgs, 'input'>>;
@@ -5956,6 +7408,19 @@ export type NotificationsEdgeResolvers<ContextType = any, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type NotificationsStartingWithConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationsStartingWithConnection'] = ResolversParentTypes['NotificationsStartingWithConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['NotificationsStartingWithEdge']>, ParentType, ContextType>;
+  nodes?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NotificationsStartingWithEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationsStartingWithEdge'] = ResolversParentTypes['NotificationsStartingWithEdge']> = {
+  cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
   endCursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
   hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -6014,6 +7479,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   notification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<QueryNotificationArgs, 'nodeId'>>;
   notificationByUserIdAndGuildIdAndKeyword?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<QueryNotificationByUserIdAndGuildIdAndKeywordArgs, 'guildId' | 'keyword' | 'userId'>>;
+  notificationsStartingWith?: Resolver<Maybe<ResolversTypes['NotificationsStartingWithConnection']>, ParentType, ContextType, Partial<QueryNotificationsStartingWithArgs>>;
   query?: Resolver<ResolversTypes['Query'], ParentType, ContextType>;
   reminder?: Resolver<Maybe<ResolversTypes['Reminder']>, ParentType, ContextType, RequireFields<QueryReminderArgs, 'nodeId'>>;
   reminderByUserIdAndSetAt?: Resolver<Maybe<ResolversTypes['Reminder']>, ParentType, ContextType, RequireFields<QueryReminderByUserIdAndSetAtArgs, 'setAt' | 'userId'>>;
@@ -6425,7 +7891,25 @@ export type Resolvers<ContextType = any> = {
   CurrentUserManagedGuildIdsConnection?: CurrentUserManagedGuildIdsConnectionResolvers<ContextType>;
   Cursor?: GraphQLScalarType;
   Datetime?: GraphQLScalarType;
+  DeleteBotStatPayload?: DeleteBotStatPayloadResolvers<ContextType>;
+  DeleteCachedGuildPayload?: DeleteCachedGuildPayloadResolvers<ContextType>;
+  DeleteCachedUserPayload?: DeleteCachedUserPayloadResolvers<ContextType>;
+  DeleteFeedItemPayload?: DeleteFeedItemPayloadResolvers<ContextType>;
+  DeleteFeedPayload?: DeleteFeedPayloadResolvers<ContextType>;
+  DeleteFeedSubscriptionPayload?: DeleteFeedSubscriptionPayloadResolvers<ContextType>;
+  DeleteGuildBanPayload?: DeleteGuildBanPayloadResolvers<ContextType>;
+  DeleteGuildConfigPayload?: DeleteGuildConfigPayloadResolvers<ContextType>;
+  DeleteMemberPayload?: DeleteMemberPayloadResolvers<ContextType>;
+  DeleteModLogPayload?: DeleteModLogPayloadResolvers<ContextType>;
+  DeleteMutePayload?: DeleteMutePayloadResolvers<ContextType>;
+  DeleteNotificationPayload?: DeleteNotificationPayloadResolvers<ContextType>;
+  DeleteReminderPayload?: DeleteReminderPayloadResolvers<ContextType>;
   DeleteRoleMenuPayload?: DeleteRoleMenuPayloadResolvers<ContextType>;
+  DeleteTagPayload?: DeleteTagPayloadResolvers<ContextType>;
+  DeleteUserLevelPayload?: DeleteUserLevelPayloadResolvers<ContextType>;
+  DeleteUserPayload?: DeleteUserPayloadResolvers<ContextType>;
+  DeleteWebUserGuildPayload?: DeleteWebUserGuildPayloadResolvers<ContextType>;
+  DeleteWebUserPayload?: DeleteWebUserPayloadResolvers<ContextType>;
   Feed?: FeedResolvers<ContextType>;
   FeedItem?: FeedItemResolvers<ContextType>;
   FeedItemsConnection?: FeedItemsConnectionResolvers<ContextType>;
@@ -6461,6 +7945,8 @@ export type Resolvers<ContextType = any> = {
   Notification?: NotificationResolvers<ContextType>;
   NotificationsConnection?: NotificationsConnectionResolvers<ContextType>;
   NotificationsEdge?: NotificationsEdgeResolvers<ContextType>;
+  NotificationsStartingWithConnection?: NotificationsStartingWithConnectionResolvers<ContextType>;
+  NotificationsStartingWithEdge?: NotificationsStartingWithEdgeResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Reminder?: ReminderResolvers<ContextType>;
@@ -6558,6 +8044,39 @@ export type UpdateModLogMutationVariables = Exact<{
 
 
 export type UpdateModLogMutation = { __typename?: 'Mutation', updateModLogByGuildIdAndCaseId?: { __typename?: 'UpdateModLogPayload', modLog?: { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string } | null } | null };
+
+export type CreateNotificationMutationVariables = Exact<{
+  notification: NotificationInput;
+}>;
+
+
+export type CreateNotificationMutation = { __typename?: 'Mutation', createNotification?: { __typename?: 'CreateNotificationPayload', notification?: { __typename?: 'Notification', guildId: string, keyword: string, nodeId: string, userId: string } | null } | null };
+
+export type DeleteNotificationMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
+  keyword: Scalars['String'];
+}>;
+
+
+export type DeleteNotificationMutation = { __typename?: 'Mutation', deleteNotificationByUserIdAndGuildIdAndKeyword?: { __typename?: 'DeleteNotificationPayload', notification?: { __typename?: 'Notification', guildId: string, keyword: string, nodeId: string, userId: string } | null } | null };
+
+export type GetUserNotificationsQueryVariables = Exact<{
+  userId: Scalars['BigInt'];
+}>;
+
+
+export type GetUserNotificationsQuery = { __typename?: 'Query', allNotifications?: { __typename?: 'NotificationsConnection', nodes: Array<{ __typename?: 'Notification', guildId: string, keyword: string, nodeId: string, userId: string }> } | null };
+
+export type NotificationDataFragment = { __typename?: 'Notification', guildId: string, keyword: string, nodeId: string, userId: string };
+
+export type SearchNotificationsStartingWithQueryVariables = Exact<{
+  userId: Scalars['BigInt'];
+  query: Scalars['String'];
+}>;
+
+
+export type SearchNotificationsStartingWithQuery = { __typename?: 'Query', notificationsStartingWith?: { __typename?: 'NotificationsStartingWithConnection', nodes: Array<string | null>, totalCount: number } | null };
 
 export type CreateRoleMenuMutationVariables = Exact<{
   roleMenu: RoleMenuInput;
@@ -6660,6 +8179,14 @@ export const ModLogDataFragmentDoc = gql`
   userTag
 }
     `;
+export const NotificationDataFragmentDoc = gql`
+    fragment NotificationData on Notification {
+  guildId
+  keyword
+  nodeId
+  userId
+}
+    `;
 export const RoleMenuDataFragmentDoc = gql`
     fragment RoleMenuData on RoleMenu {
   messageId
@@ -6729,6 +8256,43 @@ export const UpdateModLogDocument = gql`
   }
 }
     ${ModLogDataFragmentDoc}`;
+export const CreateNotificationDocument = gql`
+    mutation createNotification($notification: NotificationInput!) {
+  createNotification(input: {notification: $notification}) {
+    notification {
+      ...NotificationData
+    }
+  }
+}
+    ${NotificationDataFragmentDoc}`;
+export const DeleteNotificationDocument = gql`
+    mutation deleteNotification($guildId: BigInt!, $userId: BigInt!, $keyword: String!) {
+  deleteNotificationByUserIdAndGuildIdAndKeyword(
+    input: {userId: $userId, guildId: $guildId, keyword: $keyword}
+  ) {
+    notification {
+      ...NotificationData
+    }
+  }
+}
+    ${NotificationDataFragmentDoc}`;
+export const GetUserNotificationsDocument = gql`
+    query getUserNotifications($userId: BigInt!) {
+  allNotifications(condition: {userId: $userId}) {
+    nodes {
+      ...NotificationData
+    }
+  }
+}
+    ${NotificationDataFragmentDoc}`;
+export const SearchNotificationsStartingWithDocument = gql`
+    query searchNotificationsStartingWith($userId: BigInt!, $query: String!) {
+  notificationsStartingWith(userId: $userId, query: $query) {
+    nodes
+    totalCount
+  }
+}
+    `;
 export const CreateRoleMenuDocument = gql`
     mutation createRoleMenu($roleMenu: RoleMenuInput!) {
   createRoleMenu(input: {roleMenu: $roleMenu}) {
@@ -6819,6 +8383,18 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     updateModLog(variables: UpdateModLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateModLogMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateModLogMutation>(UpdateModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateModLog', 'mutation');
+    },
+    createNotification(variables: CreateNotificationMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateNotificationMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateNotificationMutation>(CreateNotificationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createNotification', 'mutation');
+    },
+    deleteNotification(variables: DeleteNotificationMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteNotificationMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteNotificationMutation>(DeleteNotificationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteNotification', 'mutation');
+    },
+    getUserNotifications(variables: GetUserNotificationsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserNotificationsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetUserNotificationsQuery>(GetUserNotificationsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getUserNotifications', 'query');
+    },
+    searchNotificationsStartingWith(variables: SearchNotificationsStartingWithQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchNotificationsStartingWithQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<SearchNotificationsStartingWithQuery>(SearchNotificationsStartingWithDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'searchNotificationsStartingWith', 'query');
     },
     createRoleMenu(variables: CreateRoleMenuMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateRoleMenuMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateRoleMenuMutation>(CreateRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createRoleMenu', 'mutation');

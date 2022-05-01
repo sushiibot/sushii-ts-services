@@ -1,0 +1,13 @@
+mutation deleteNotification(
+  $guildId: BigInt!
+  $userId: BigInt!
+  $keyword: String!
+) {
+  deleteNotificationByUserIdAndGuildIdAndKeyword(
+    input: { userId: $userId, guildId: $guildId, keyword: $keyword }
+  ) {
+    notification {
+      ...NotificationData
+    }
+  }
+}

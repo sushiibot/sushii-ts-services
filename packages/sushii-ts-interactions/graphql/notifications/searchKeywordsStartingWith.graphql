@@ -1,0 +1,6 @@
+query searchNotificationsStartingWith($userId: BigInt!, $query: String!) {
+  notificationsStartingWith(userId: $userId, query: $query) {
+    nodes
+    totalCount
+  }
+}

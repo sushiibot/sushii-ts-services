@@ -27,5 +27,15 @@
   "timeout": {
     "success": "<@{{id}}> ({{id}}) has been timed out!",
     "failure": "Failed to timeout <@{{id}}> ({{id}})"
+  },
+  "notification": {
+    "list": {
+      "success": "Your Notifications",
+      "empty": "You have no notifications set"
+    },
+    "delete": {
+      "success": "Notification {{keyword}} deleted!",
+      "not_found": "Notification with keyword {{keyword}} was not found!"
+    }
   }
 }
