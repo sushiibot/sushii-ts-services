@@ -5,6 +5,7 @@ import {
 } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../context";
+import Color from "../../utils/colors";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
@@ -92,7 +93,7 @@ export default class NotificationCommand extends SlashCommandHandler {
     const embed = new EmbedBuilder()
       .setTitle("Added notification.")
       .setFields({ name: "Keyword", value: keyword })
-      .setColor(0xb5e8e0);
+      .setColor(Color.Success);
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed.toJSON()],
@@ -128,7 +129,7 @@ export default class NotificationCommand extends SlashCommandHandler {
     const embed = new EmbedBuilder()
       .setTitle(t("notification.list.title", { ns: "commands" }))
       .setDescription(keywords.join("\n"))
-      .setColor(0xb5e8e0);
+      .setColor(Color.Info);
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed.toJSON()],

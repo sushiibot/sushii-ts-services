@@ -7,6 +7,8 @@ import UserInfoHandler from "./moderation/context_lookup/LookupContextMenuHandle
 import PingCommand from "./meta/ping";
 import BanCommand from "./moderation/BanCommand";
 import KickCommand from "./moderation/KickCommand";
+import NotificationCommand from "./notifications/NotificationCommand";
+import NotificationListAutocomplete from "./notifications/Autocomplete";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -22,8 +24,12 @@ export default function addCommands(
 
     // Moderation
     new BanCommand(),
-    new KickCommand()
+    new KickCommand(),
+
+    new NotificationCommand()
   );
 
   interactionClient.addContextMenu(new UserInfoHandler());
+
+  interactionClient.addAutocomplete(new NotificationListAutocomplete());
 }
