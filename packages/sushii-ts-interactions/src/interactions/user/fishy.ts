@@ -1,11 +1,12 @@
 import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
+import { isDayjs } from "dayjs";
 import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 import i18next from "i18next";
 import Context from "../../context";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
-import { fishyForUser, isFishyResponse } from "./fishy.service";
+import { fishyForUser } from "./fishy.service";
 
 export default class FishyCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -45,7 +46,14 @@ export default class FishyCommand extends SlashCommandHandler {
     const res = await fishyForUser(ctx, interaction, invoker, target);
 
     let embed;
-    if (isFishyResponse(res)) {
+    if (isDayjs(res)) {
+      embed = new EmbedBuilder().setDescription(
+        i18next.t("fishy.cooldown", {
+          ns: "commands",
+          nextFishyTimestamp: res.unix(),
+        })
+      );
+    } else {
       embed = new EmbedBuilder().setDescription(
         i18next.t("fishy.success", {
           ns: "commands",
@@ -54,13 +62,6 @@ export default class FishyCommand extends SlashCommandHandler {
           count: res.caughtAmount,
           oldAmount: res.oldAmount,
           newAmount: res.newAmount,
-        })
-      );
-    } else {
-      embed = new EmbedBuilder().setDescription(
-        i18next.t("fishy.cooldown", {
-          ns: "commands",
-          nextFishyTimestamp: res.unix(),
         })
       );
     }

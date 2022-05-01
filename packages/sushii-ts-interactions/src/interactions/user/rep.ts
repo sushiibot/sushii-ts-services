@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
+import { isDayjs } from "dayjs";
 import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 import i18next from "i18next";
 import Context from "../../context";
@@ -47,14 +48,25 @@ export default class RepCommand extends SlashCommandHandler {
       target
     );
 
-    const embed = new EmbedBuilder().setDescription(
-      i18next.t("rep.success", {
-        ns: "commands",
-        username: target.username,
-        oldAmount: res.oldAmount,
-        newAmount: res.newAmount,
-      })
-    );
+    let embed;
+
+    if (isDayjs(res)) {
+      embed = new EmbedBuilder().setDescription(
+        i18next.t("fishy.cooldown", {
+          ns: "commands",
+          nextFishyTimestamp: res.unix(),
+        })
+      );
+    } else {
+      embed = new EmbedBuilder().setDescription(
+        i18next.t("rep.success", {
+          ns: "commands",
+          username: target.username,
+          oldAmount: res.oldAmount,
+          newAmount: res.newAmount,
+        })
+      );
+    }
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed.toJSON()],

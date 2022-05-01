@@ -183,15 +183,6 @@ export interface FishyResponse {
   newAmount: string;
 }
 
-export function isFishyResponse(obj: any): obj is FishyResponse {
-  return (
-    obj.caughtAmount !== undefined &&
-    obj.caughtType !== undefined &&
-    obj.oldAmount !== undefined &&
-    obj.newAmount !== undefined
-  );
-}
-
 export async function fishyForUser(
   ctx: Context,
   _interaction: APIChatInputApplicationCommandInteraction,
