@@ -63,7 +63,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
 
     const warnButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.Warn))
-      .setLabel("Mute")
+      .setLabel("Warn")
       .setStyle(ButtonStyle.Danger);
 
     const topRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -81,7 +81,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
     const lookupButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.Lookup))
       .setLabel("Lookup")
-      .setStyle(ButtonStyle.Success);
+      .setStyle(ButtonStyle.Primary);
 
     const secondRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
       historyButton,

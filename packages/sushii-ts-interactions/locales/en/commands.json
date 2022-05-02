@@ -30,12 +30,13 @@
   },
   "notification": {
     "list": {
-      "success": "Your Notifications",
+      "title": "Your Notifications",
       "empty": "You have no notifications set"
     },
     "delete": {
-      "success": "Notification {{keyword}} deleted!",
-      "not_found": "Notification with keyword {{keyword}} was not found!"
+      "title": "Notification deleted!",
+      "field_title": "Keyword",
+      "not_found": "Notification keyword \"{{keyword}}\" was not found!"
     }
   }
 }

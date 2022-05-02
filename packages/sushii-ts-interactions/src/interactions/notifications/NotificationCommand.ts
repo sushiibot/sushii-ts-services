@@ -6,6 +6,7 @@ import {
 import { t } from "i18next";
 import Context from "../../context";
 import Color from "../../utils/colors";
+import { isNoValuesDeletedError } from "../../utils/graphqlError";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
@@ -149,17 +150,22 @@ export default class NotificationCommand extends SlashCommandHandler {
 
     const invoker = getInvokerUser(interaction);
 
-    const deletedRes = await ctx.sushiiAPI.sdk.deleteNotification({
-      guildId: interaction.guild_id,
-      userId: invoker.id,
-      keyword,
-    });
+    try {
+      await ctx.sushiiAPI.sdk.deleteNotification({
+        guildId: interaction.guild_id,
+        userId: invoker.id,
+        keyword,
+      });
+    } catch (err) {
+      if (!isNoValuesDeletedError(err)) {
+        throw err;
+      }
 
-    if (deletedRes.deleteNotificationByUserIdAndGuildIdAndKeyword === null) {
+      // Returns correct error
       await ctx.REST.interactionReply(interaction, {
         content: t("notification.delete.not_found", {
           ns: "commands",
-          username: keyword,
+          keyword,
         }),
         flags: MessageFlags.Ephemeral,
       });
@@ -167,11 +173,16 @@ export default class NotificationCommand extends SlashCommandHandler {
       return;
     }
 
+    const embed = new EmbedBuilder()
+      .setTitle(t("notification.delete.title", { ns: "commands" }))
+      .setFields({
+        name: t("notification.delete.field_title", { ns: "commands" }),
+        value: keyword,
+      })
+      .setColor(Color.Success);
+
     await ctx.REST.interactionReply(interaction, {
-      content: t("notification.delete.success", {
-        ns: "commands",
-        username: keyword,
-      }),
+      embeds: [embed.toJSON()],
       flags: MessageFlags.Ephemeral,
     });
   }

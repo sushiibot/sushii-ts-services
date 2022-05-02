@@ -55,7 +55,8 @@ function findFocusedOptionRecur(
       option.focused
     ) {
       return {
-        path: [...parents, option.name].join("."),
+        // Don't include option name, only command and group names
+        path: parents.join("."),
         option,
       };
     }
@@ -76,7 +77,9 @@ function findFocusedOption(
   interaction: APIApplicationCommandAutocompleteInteraction
 ): FocusedOption | undefined {
   // eslint-disable-next-line no-restricted-syntax
-  return findFocusedOptionRecur(interaction.data.options, []);
+  return findFocusedOptionRecur(interaction.data.options, [
+    interaction.data.name,
+  ]);
 }
 
 export default class InteractionClient {
