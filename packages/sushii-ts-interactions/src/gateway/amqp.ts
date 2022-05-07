@@ -1,5 +1,5 @@
 import { AMQPClient, AMQPConsumer, AMQPMessage } from "@cloudamqp/amqp-client";
-import { ConfigI } from "../config";
+import { ConfigI } from "../model/config";
 
 export default class AmqpGateway {
   consumer?: AMQPConsumer;

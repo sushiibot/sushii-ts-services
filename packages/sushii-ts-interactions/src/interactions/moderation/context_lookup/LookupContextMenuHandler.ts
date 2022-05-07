@@ -10,7 +10,7 @@ import {
   ButtonStyle,
   MessageFlags,
 } from "discord-api-types/v10";
-import Context from "../../../context";
+import Context from "../../../model/context";
 import ContextMenuHandler from "../../handlers/ContextMenuHandler";
 import getUserinfoEmbed from "../../user/userinfo.service";
 import { lookupButtonCustomIDPrefix, Action } from "./LookupComponentHandler";

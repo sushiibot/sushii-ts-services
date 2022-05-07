@@ -1,5 +1,5 @@
 import { APIInteraction, Permissions } from "discord-api-types/v10";
-import Context from "../../context";
+import Context from "../../model/context";
 
 /**
  * Response of a command check, a message will only exist on pass = false

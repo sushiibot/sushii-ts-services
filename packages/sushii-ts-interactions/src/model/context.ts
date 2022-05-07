@@ -3,8 +3,8 @@ import CDNClient from "./cdn";
 import { ConfigI } from "./config";
 import SushiiImageServerClient from "./image_server";
 import RESTClient from "./rest";
-import { getSdk } from "./generated/graphql";
-import SushiiSDK from "./model/api";
+import { getSdk } from "../generated/graphql";
+import SushiiSDK from "./api";
 
 export default class Context {
   public readonly graphQLClient: GraphQLClient;

@@ -2,7 +2,7 @@ import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
 import { isDayjs } from "dayjs";
 import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 import i18next from "i18next";
-import Context from "../../context";
+import Context from "../../model/context";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";

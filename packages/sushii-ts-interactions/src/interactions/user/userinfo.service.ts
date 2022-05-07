@@ -7,7 +7,7 @@ import {
   APIInteractionDataResolvedGuildMember,
   APIUser,
 } from "discord-api-types/v10";
-import Context from "../../context";
+import Context from "../../model/context";
 import { getCreatedTimestampSeconds } from "../../utils/snowflake";
 
 export default async function getUserinfoEmbed(

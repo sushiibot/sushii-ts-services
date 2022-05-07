@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
 import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 import { t } from "i18next";
-import Context from "../../context";
+import Context from "../../model/context";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 

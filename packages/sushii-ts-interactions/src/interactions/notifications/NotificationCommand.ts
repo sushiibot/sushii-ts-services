@@ -4,7 +4,7 @@ import {
   MessageFlags,
 } from "discord-api-types/v10";
 import { t } from "i18next";
-import Context from "../../context";
+import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { isNoValuesDeletedError } from "../../utils/graphqlError";
 import getInvokerUser from "../../utils/interactions";

@@ -23,8 +23,8 @@ import {
   isMessageComponentButtonInteraction,
   isMessageComponentSelectMenuInteraction,
 } from "discord-api-types/utils/v10";
-import { ConfigI } from "../config";
-import Context from "../context";
+import { ConfigI } from "../model/config";
+import Context from "../model/context";
 import log from "../logger";
 import {
   SlashCommandHandler,

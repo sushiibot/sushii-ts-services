@@ -4,7 +4,7 @@ import {
   isGuildInteraction,
 } from "discord-api-types/utils/v10";
 import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
-import Context from "../../context";
+import Context from "../../model/context";
 import logger from "../../logger";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";

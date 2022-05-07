@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import { AMQPClient } from "@cloudamqp/amqp-client";
 import log from "./logger";
 import InteractionClient from "./interactions/client";
-import { Config } from "./config";
+import { Config } from "./model/config";
 import AmqpGateway from "./gateway/amqp";
 import initI18next from "./i18next";
 import addCommands from "./interactions/commands";

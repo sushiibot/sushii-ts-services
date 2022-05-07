@@ -5,7 +5,7 @@ import {
   PermissionFlagsBits,
 } from "discord-api-types/v10";
 import { t } from "i18next";
-import Context from "../../context";
+import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import ModActionData from "./ModActionData";
 

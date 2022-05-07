@@ -1,7 +1,7 @@
 import { ClientError } from "graphql-request";
 import dotenv from "dotenv";
-import { Config } from "../config";
-import Context from "../context";
+import { Config } from "./config";
+import Context from "./context";
 import SushiiSDK from "./api";
 
 describe("SushiiSDK", () => {

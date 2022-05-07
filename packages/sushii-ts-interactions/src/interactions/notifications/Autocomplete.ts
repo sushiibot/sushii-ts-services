@@ -3,7 +3,7 @@ import {
   ApplicationCommandOptionType,
   InteractionResponseType,
 } from "discord-api-types/v10";
-import Context from "../../context";
+import Context from "../../model/context";
 import getInvokerUser from "../../utils/interactions";
 import { AutocompleteHandler } from "../handlers";
 import { AutocompleteOption } from "../handlers/AutocompleteHandler";

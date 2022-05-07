@@ -13,7 +13,7 @@ import {
   ComponentType,
 } from "discord-api-types/v10";
 import { t } from "i18next";
-import Context from "../../context";
+import Context from "../../model/context";
 import { RoleMenuByChannelAndEditorIdQuery } from "../../generated/graphql";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
