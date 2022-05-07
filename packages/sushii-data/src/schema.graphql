@@ -1013,6 +1013,656 @@ A point in time as described by the [ISO
 """
 scalar Datetime
 
+"""All input for the `deleteBotStatByNameAndCategory` mutation."""
+input DeleteBotStatByNameAndCategoryInput {
+  category: String!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  name: String!
+}
+
+"""All input for the `deleteBotStat` mutation."""
+input DeleteBotStatInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `BotStat` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `BotStat` mutation."""
+type DeleteBotStatPayload {
+  """The `BotStat` that was deleted by this mutation."""
+  botStat: BotStat
+
+  """An edge for our `BotStat`. May be used by Relay 1."""
+  botStatEdge(
+    """The method to use when ordering `BotStat`."""
+    orderBy: [BotStatsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): BotStatsEdge
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedBotStatId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteCachedGuildById` mutation."""
+input DeleteCachedGuildByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: BigInt!
+}
+
+"""All input for the `deleteCachedGuild` mutation."""
+input DeleteCachedGuildInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `CachedGuild` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `CachedGuild` mutation."""
+type DeleteCachedGuildPayload {
+  """The `CachedGuild` that was deleted by this mutation."""
+  cachedGuild: CachedGuild
+
+  """An edge for our `CachedGuild`. May be used by Relay 1."""
+  cachedGuildEdge(
+    """The method to use when ordering `CachedGuild`."""
+    orderBy: [CachedGuildsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): CachedGuildsEdge
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedCachedGuildId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteCachedUserById` mutation."""
+input DeleteCachedUserByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: BigInt!
+}
+
+"""All input for the `deleteCachedUser` mutation."""
+input DeleteCachedUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `CachedUser` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `CachedUser` mutation."""
+type DeleteCachedUserPayload {
+  """The `CachedUser` that was deleted by this mutation."""
+  cachedUser: CachedUser
+
+  """An edge for our `CachedUser`. May be used by Relay 1."""
+  cachedUserEdge(
+    """The method to use when ordering `CachedUser`."""
+    orderBy: [CachedUsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): CachedUsersEdge
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedCachedUserId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteFeedByFeedId` mutation."""
+input DeleteFeedByFeedIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  feedId: String!
+}
+
+"""All input for the `deleteFeed` mutation."""
+input DeleteFeedInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Feed` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteFeedItemByFeedIdAndItemId` mutation."""
+input DeleteFeedItemByFeedIdAndItemIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  feedId: String!
+  itemId: String!
+}
+
+"""All input for the `deleteFeedItem` mutation."""
+input DeleteFeedItemInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `FeedItem` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `FeedItem` mutation."""
+type DeleteFeedItemPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedFeedItemId: ID
+
+  """The `FeedItem` that was deleted by this mutation."""
+  feedItem: FeedItem
+
+  """An edge for our `FeedItem`. May be used by Relay 1."""
+  feedItemEdge(
+    """The method to use when ordering `FeedItem`."""
+    orderBy: [FeedItemsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedItemsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""The output of our delete `Feed` mutation."""
+type DeleteFeedPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedFeedId: ID
+
+  """The `Feed` that was deleted by this mutation."""
+  feed: Feed
+
+  """An edge for our `Feed`. May be used by Relay 1."""
+  feedEdge(
+    """The method to use when ordering `Feed`."""
+    orderBy: [FeedsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""
+All input for the `deleteFeedSubscriptionByFeedIdAndChannelId` mutation.
+"""
+input DeleteFeedSubscriptionByFeedIdAndChannelIdInput {
+  channelId: BigInt!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  feedId: String!
+}
+
+"""All input for the `deleteFeedSubscription` mutation."""
+input DeleteFeedSubscriptionInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `FeedSubscription` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `FeedSubscription` mutation."""
+type DeleteFeedSubscriptionPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedFeedSubscriptionId: ID
+
+  """Reads a single `Feed` that is related to this `FeedSubscription`."""
+  feedByFeedId: Feed
+
+  """The `FeedSubscription` that was deleted by this mutation."""
+  feedSubscription: FeedSubscription
+
+  """An edge for our `FeedSubscription`. May be used by Relay 1."""
+  feedSubscriptionEdge(
+    """The method to use when ordering `FeedSubscription`."""
+    orderBy: [FeedSubscriptionsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedSubscriptionsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteGuildBanByGuildIdAndUserId` mutation."""
+input DeleteGuildBanByGuildIdAndUserIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  userId: BigInt!
+}
+
+"""All input for the `deleteGuildBan` mutation."""
+input DeleteGuildBanInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `GuildBan` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `GuildBan` mutation."""
+type DeleteGuildBanPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedGuildBanId: ID
+
+  """The `GuildBan` that was deleted by this mutation."""
+  guildBan: GuildBan
+
+  """An edge for our `GuildBan`. May be used by Relay 1."""
+  guildBanEdge(
+    """The method to use when ordering `GuildBan`."""
+    orderBy: [GuildBansOrderBy!] = [PRIMARY_KEY_ASC]
+  ): GuildBansEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteGuildConfigById` mutation."""
+input DeleteGuildConfigByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: BigInt!
+}
+
+"""All input for the `deleteGuildConfig` mutation."""
+input DeleteGuildConfigInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `GuildConfig` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `GuildConfig` mutation."""
+type DeleteGuildConfigPayload {
+  """Reads a single `CachedGuild` that is related to this `GuildConfig`."""
+  cachedGuildById: CachedGuild
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedGuildConfigId: ID
+
+  """The `GuildConfig` that was deleted by this mutation."""
+  guildConfig: GuildConfig
+
+  """An edge for our `GuildConfig`. May be used by Relay 1."""
+  guildConfigEdge(
+    """The method to use when ordering `GuildConfig`."""
+    orderBy: [GuildConfigsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): GuildConfigsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteMemberByGuildIdAndUserId` mutation."""
+input DeleteMemberByGuildIdAndUserIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  userId: BigInt!
+}
+
+"""All input for the `deleteMember` mutation."""
+input DeleteMemberInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Member` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `Member` mutation."""
+type DeleteMemberPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedMemberId: ID
+
+  """The `Member` that was deleted by this mutation."""
+  member: Member
+
+  """An edge for our `Member`. May be used by Relay 1."""
+  memberEdge(
+    """The method to use when ordering `Member`."""
+    orderBy: [MembersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MembersEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteModLogByGuildIdAndCaseId` mutation."""
+input DeleteModLogByGuildIdAndCaseIdInput {
+  caseId: BigInt!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+}
+
+"""All input for the `deleteModLog` mutation."""
+input DeleteModLogInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `ModLog` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `ModLog` mutation."""
+type DeleteModLogPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedModLogId: ID
+
+  """The `ModLog` that was deleted by this mutation."""
+  modLog: ModLog
+
+  """An edge for our `ModLog`. May be used by Relay 1."""
+  modLogEdge(
+    """The method to use when ordering `ModLog`."""
+    orderBy: [ModLogsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): ModLogsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteMuteByGuildIdAndUserId` mutation."""
+input DeleteMuteByGuildIdAndUserIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  userId: BigInt!
+}
+
+"""All input for the `deleteMute` mutation."""
+input DeleteMuteInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Mute` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `Mute` mutation."""
+type DeleteMutePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedMuteId: ID
+
+  """Reads a single `ModLog` that is related to this `Mute`."""
+  modLogByGuildIdAndCaseId: ModLog
+
+  """The `Mute` that was deleted by this mutation."""
+  mute: Mute
+
+  """An edge for our `Mute`. May be used by Relay 1."""
+  muteEdge(
+    """The method to use when ordering `Mute`."""
+    orderBy: [MutesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MutesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""
+All input for the `deleteNotificationByUserIdAndGuildIdAndKeyword` mutation.
+"""
+input DeleteNotificationByUserIdAndGuildIdAndKeywordInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  keyword: String!
+  userId: BigInt!
+}
+
+"""All input for the `deleteNotification` mutation."""
+input DeleteNotificationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Notification` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `Notification` mutation."""
+type DeleteNotificationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedNotificationId: ID
+
+  """The `Notification` that was deleted by this mutation."""
+  notification: Notification
+
+  """An edge for our `Notification`. May be used by Relay 1."""
+  notificationEdge(
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): NotificationsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteReminderByUserIdAndSetAt` mutation."""
+input DeleteReminderByUserIdAndSetAtInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  setAt: Datetime!
+  userId: BigInt!
+}
+
+"""All input for the `deleteReminder` mutation."""
+input DeleteReminderInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Reminder` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `Reminder` mutation."""
+type DeleteReminderPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedReminderId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `Reminder` that was deleted by this mutation."""
+  reminder: Reminder
+
+  """An edge for our `Reminder`. May be used by Relay 1."""
+  reminderEdge(
+    """The method to use when ordering `Reminder`."""
+    orderBy: [RemindersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): RemindersEdge
+}
+
 """All input for the `deleteRoleMenuByChannelIdAndEditorId` mutation."""
 input DeleteRoleMenuByChannelIdAndEditorIdInput {
   channelId: BigInt!
@@ -1071,6 +1721,257 @@ type DeleteRoleMenuPayload {
     """The method to use when ordering `RoleMenu`."""
     orderBy: [RoleMenusOrderBy!] = [PRIMARY_KEY_ASC]
   ): RoleMenusEdge
+}
+
+"""All input for the `deleteTagByGuildIdAndTagName` mutation."""
+input DeleteTagByGuildIdAndTagNameInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  tagName: String!
+}
+
+"""All input for the `deleteTag` mutation."""
+input DeleteTagInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Tag` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `Tag` mutation."""
+type DeleteTagPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedTagId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `Tag` that was deleted by this mutation."""
+  tag: Tag
+
+  """An edge for our `Tag`. May be used by Relay 1."""
+  tagEdge(
+    """The method to use when ordering `Tag`."""
+    orderBy: [TagsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): TagsEdge
+}
+
+"""All input for the `deleteUserById` mutation."""
+input DeleteUserByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  id: BigInt!
+}
+
+"""All input for the `deleteUser` mutation."""
+input DeleteUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `User` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""All input for the `deleteUserLevelByUserIdAndGuildId` mutation."""
+input DeleteUserLevelByUserIdAndGuildIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  userId: BigInt!
+}
+
+"""All input for the `deleteUserLevel` mutation."""
+input DeleteUserLevelInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `UserLevel` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `UserLevel` mutation."""
+type DeleteUserLevelPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedUserLevelId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `UserLevel` that was deleted by this mutation."""
+  userLevel: UserLevel
+
+  """An edge for our `UserLevel`. May be used by Relay 1."""
+  userLevelEdge(
+    """The method to use when ordering `UserLevel`."""
+    orderBy: [UserLevelsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): UserLevelsEdge
+}
+
+"""The output of our delete `User` mutation."""
+type DeleteUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedUserId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `User` that was deleted by this mutation."""
+  user: User
+
+  """An edge for our `User`. May be used by Relay 1."""
+  userEdge(
+    """The method to use when ordering `User`."""
+    orderBy: [UsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): UsersEdge
+}
+
+"""All input for the `deleteWebUserById` mutation."""
+input DeleteWebUserByIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """Unique identifier for the user. This should match their Discord ID."""
+  id: BigInt!
+}
+
+"""All input for the `deleteWebUserGuildByUserIdAndGuildId` mutation."""
+input DeleteWebUserGuildByUserIdAndGuildIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  userId: BigInt!
+}
+
+"""All input for the `deleteWebUserGuild` mutation."""
+input DeleteWebUserGuildInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `WebUserGuild` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `WebUserGuild` mutation."""
+type DeleteWebUserGuildPayload {
+  """Reads a single `CachedGuild` that is related to this `WebUserGuild`."""
+  cachedGuildByGuildId: CachedGuild
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedWebUserGuildId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `WebUser` that is related to this `WebUserGuild`."""
+  webUserByUserId: WebUser
+
+  """The `WebUserGuild` that was deleted by this mutation."""
+  webUserGuild: WebUserGuild
+
+  """An edge for our `WebUserGuild`. May be used by Relay 1."""
+  webUserGuildEdge(
+    """The method to use when ordering `WebUserGuild`."""
+    orderBy: [WebUserGuildsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): WebUserGuildsEdge
+}
+
+"""All input for the `deleteWebUser` mutation."""
+input DeleteWebUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `WebUser` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `WebUser` mutation."""
+type DeleteWebUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedWebUserId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `WebUser` that was deleted by this mutation."""
+  webUser: WebUser
+
+  """An edge for our `WebUser`. May be used by Relay 1."""
+  webUserEdge(
+    """The method to use when ordering `WebUser`."""
+    orderBy: [WebUsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): WebUsersEdge
 }
 
 type Feed implements Node {
@@ -2259,6 +3160,214 @@ type Mutation {
     input: CreateWebUserGuildInput!
   ): CreateWebUserGuildPayload
 
+  """Deletes a single `BotStat` using its globally unique id."""
+  deleteBotStat(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteBotStatInput!
+  ): DeleteBotStatPayload
+
+  """Deletes a single `BotStat` using a unique key."""
+  deleteBotStatByNameAndCategory(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteBotStatByNameAndCategoryInput!
+  ): DeleteBotStatPayload
+
+  """Deletes a single `CachedGuild` using its globally unique id."""
+  deleteCachedGuild(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteCachedGuildInput!
+  ): DeleteCachedGuildPayload
+
+  """Deletes a single `CachedGuild` using a unique key."""
+  deleteCachedGuildById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteCachedGuildByIdInput!
+  ): DeleteCachedGuildPayload
+
+  """Deletes a single `CachedUser` using its globally unique id."""
+  deleteCachedUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteCachedUserInput!
+  ): DeleteCachedUserPayload
+
+  """Deletes a single `CachedUser` using a unique key."""
+  deleteCachedUserById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteCachedUserByIdInput!
+  ): DeleteCachedUserPayload
+
+  """Deletes a single `Feed` using its globally unique id."""
+  deleteFeed(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteFeedInput!
+  ): DeleteFeedPayload
+
+  """Deletes a single `Feed` using a unique key."""
+  deleteFeedByFeedId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteFeedByFeedIdInput!
+  ): DeleteFeedPayload
+
+  """Deletes a single `FeedItem` using its globally unique id."""
+  deleteFeedItem(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteFeedItemInput!
+  ): DeleteFeedItemPayload
+
+  """Deletes a single `FeedItem` using a unique key."""
+  deleteFeedItemByFeedIdAndItemId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteFeedItemByFeedIdAndItemIdInput!
+  ): DeleteFeedItemPayload
+
+  """Deletes a single `FeedSubscription` using its globally unique id."""
+  deleteFeedSubscription(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteFeedSubscriptionInput!
+  ): DeleteFeedSubscriptionPayload
+
+  """Deletes a single `FeedSubscription` using a unique key."""
+  deleteFeedSubscriptionByFeedIdAndChannelId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteFeedSubscriptionByFeedIdAndChannelIdInput!
+  ): DeleteFeedSubscriptionPayload
+
+  """Deletes a single `GuildBan` using its globally unique id."""
+  deleteGuildBan(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteGuildBanInput!
+  ): DeleteGuildBanPayload
+
+  """Deletes a single `GuildBan` using a unique key."""
+  deleteGuildBanByGuildIdAndUserId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteGuildBanByGuildIdAndUserIdInput!
+  ): DeleteGuildBanPayload
+
+  """Deletes a single `GuildConfig` using its globally unique id."""
+  deleteGuildConfig(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteGuildConfigInput!
+  ): DeleteGuildConfigPayload
+
+  """Deletes a single `GuildConfig` using a unique key."""
+  deleteGuildConfigById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteGuildConfigByIdInput!
+  ): DeleteGuildConfigPayload
+
+  """Deletes a single `Member` using its globally unique id."""
+  deleteMember(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteMemberInput!
+  ): DeleteMemberPayload
+
+  """Deletes a single `Member` using a unique key."""
+  deleteMemberByGuildIdAndUserId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteMemberByGuildIdAndUserIdInput!
+  ): DeleteMemberPayload
+
+  """Deletes a single `ModLog` using its globally unique id."""
+  deleteModLog(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteModLogInput!
+  ): DeleteModLogPayload
+
+  """Deletes a single `ModLog` using a unique key."""
+  deleteModLogByGuildIdAndCaseId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteModLogByGuildIdAndCaseIdInput!
+  ): DeleteModLogPayload
+
+  """Deletes a single `Mute` using its globally unique id."""
+  deleteMute(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteMuteInput!
+  ): DeleteMutePayload
+
+  """Deletes a single `Mute` using a unique key."""
+  deleteMuteByGuildIdAndUserId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteMuteByGuildIdAndUserIdInput!
+  ): DeleteMutePayload
+
+  """Deletes a single `Notification` using its globally unique id."""
+  deleteNotification(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteNotificationInput!
+  ): DeleteNotificationPayload
+
+  """Deletes a single `Notification` using a unique key."""
+  deleteNotificationByUserIdAndGuildIdAndKeyword(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteNotificationByUserIdAndGuildIdAndKeywordInput!
+  ): DeleteNotificationPayload
+
+  """Deletes a single `Reminder` using its globally unique id."""
+  deleteReminder(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteReminderInput!
+  ): DeleteReminderPayload
+
+  """Deletes a single `Reminder` using a unique key."""
+  deleteReminderByUserIdAndSetAt(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteReminderByUserIdAndSetAtInput!
+  ): DeleteReminderPayload
+
   """Deletes a single `RoleMenu` using its globally unique id."""
   deleteRoleMenu(
     """
@@ -2282,6 +3391,86 @@ type Mutation {
     """
     input: DeleteRoleMenuByMessageIdInput!
   ): DeleteRoleMenuPayload
+
+  """Deletes a single `Tag` using its globally unique id."""
+  deleteTag(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteTagInput!
+  ): DeleteTagPayload
+
+  """Deletes a single `Tag` using a unique key."""
+  deleteTagByGuildIdAndTagName(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteTagByGuildIdAndTagNameInput!
+  ): DeleteTagPayload
+
+  """Deletes a single `User` using its globally unique id."""
+  deleteUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteUserInput!
+  ): DeleteUserPayload
+
+  """Deletes a single `User` using a unique key."""
+  deleteUserById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteUserByIdInput!
+  ): DeleteUserPayload
+
+  """Deletes a single `UserLevel` using its globally unique id."""
+  deleteUserLevel(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteUserLevelInput!
+  ): DeleteUserLevelPayload
+
+  """Deletes a single `UserLevel` using a unique key."""
+  deleteUserLevelByUserIdAndGuildId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteUserLevelByUserIdAndGuildIdInput!
+  ): DeleteUserLevelPayload
+
+  """Deletes a single `WebUser` using its globally unique id."""
+  deleteWebUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteWebUserInput!
+  ): DeleteWebUserPayload
+
+  """Deletes a single `WebUser` using a unique key."""
+  deleteWebUserById(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteWebUserByIdInput!
+  ): DeleteWebUserPayload
+
+  """Deletes a single `WebUserGuild` using its globally unique id."""
+  deleteWebUserGuild(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteWebUserGuildInput!
+  ): DeleteWebUserGuildPayload
+
+  """Deletes a single `WebUserGuild` using a unique key."""
+  deleteWebUserGuildByUserIdAndGuildId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteWebUserGuildByUserIdAndGuildIdInput!
+  ): DeleteWebUserGuildPayload
   graphql(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -2812,6 +4001,29 @@ enum NotificationsOrderBy {
   PRIMARY_KEY_DESC
   USER_ID_ASC
   USER_ID_DESC
+}
+
+"""A connection to a list of `String` values."""
+type NotificationsStartingWithConnection {
+  """
+  A list of edges which contains the `String` and cursor to aid in pagination.
+  """
+  edges: [NotificationsStartingWithEdge!]!
+
+  """A list of `String` objects."""
+  nodes: [String]!
+
+  """The count of *all* `String` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `String` edge in the connection."""
+type NotificationsStartingWithEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `String` at the end of the edge."""
+  node: String
 }
 
 """Information about pagination in a connection."""
@@ -3460,6 +4672,27 @@ type Query implements Node {
     nodeId: ID!
   ): Notification
   notificationByUserIdAndGuildIdAndKeyword(guildId: BigInt!, keyword: String!, userId: BigInt!): Notification
+  notificationsStartingWith(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+    query: String
+    userId: BigInt
+  ): NotificationsStartingWithConnection
 
   """
   Exposes the root query type nested one level down. This is helpful for Relay 1

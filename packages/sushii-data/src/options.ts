@@ -25,7 +25,7 @@ logger.debug("using database schemas: ", schemas);
 
 // PostGraphile options; see https://www.graphile.org/postgraphile/usage-library/#api-postgraphilepgconfig-schemaname-options
 export const options: PostGraphileOptions = {
-  ownerConnectionString: mustGetEnvVar("OWNER_DATABASE_URL"),
+  ownerConnectionString: process.env.OWNER_DATABASE_URL,
   appendPlugins: [],
   // pgSettings assigned in JWT token
   retryOnInitFail: false,
