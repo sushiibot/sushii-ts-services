@@ -1224,37 +1224,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-codegen/typescript-graphql-request@npm:^4.4.5":
-  version: 4.4.5
-  resolution: "@graphql-codegen/typescript-graphql-request@npm:4.4.5"
-  dependencies:
-    "@graphql-codegen/plugin-helpers": ^2.4.0
-    "@graphql-codegen/visitor-plugin-common": 2.7.4
-    auto-bind: ~4.0.0
-    tslib: ~2.3.0
-  peerDependencies:
-    graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    graphql-request: ^3.4.0 || ^4.0.0
-    graphql-tag: ^2.0.0
-  checksum: c65abee2708205a2e4b1e7ac830e3d94522470695b915eff3d4f883bbe94b4b4f1c75d899afc8e1ec7f439721353c856805be4415ee5f2e26c1b00d7de9d32fc
-  languageName: node
-  linkType: hard
-
-"@graphql-codegen/typescript-operations@npm:^2.3.5":
-  version: 2.3.5
-  resolution: "@graphql-codegen/typescript-operations@npm:2.3.5"
-  dependencies:
-    "@graphql-codegen/plugin-helpers": ^2.4.0
-    "@graphql-codegen/typescript": ^2.4.8
-    "@graphql-codegen/visitor-plugin-common": 2.7.4
-    auto-bind: ~4.0.0
-    tslib: ~2.3.0
-  peerDependencies:
-    graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: 0ded3d55358fddc0c9151ea66006422520d05c02083d26af6bdbfbd06a3f668a3f6e359c6a5287d7eabe6694090531bfc609c222d79a8f6822e9e0feaae69d64
-  languageName: node
-  linkType: hard
-
 "@graphql-codegen/typescript-resolvers@npm:2.6.1":
   version: 2.6.1
   resolution: "@graphql-codegen/typescript-resolvers@npm:2.6.1"
@@ -1935,20 +1904,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/terminus@npm:^8.0.6":
-  version: 8.0.6
-  resolution: "@nestjs/terminus@npm:8.0.6"
-  dependencies:
-    check-disk-space: 3.3.0
-  peerDependencies:
-    "@nestjs/common": 8.x
-    "@nestjs/core": 8.x
-    reflect-metadata: 0.1.x
-    rxjs: 7.x
-  checksum: 15e759c223789e199481e042856492cf7299202e22f0c846554dba6682180eb8ac7cceb8393a81bf908b3435132738ce37d484373ac04c6740004a6a934bcf8b
-  languageName: node
-  linkType: hard
-
 "@node-redis/bloom@npm:1.0.1":
   version: 1.0.1
   resolution: "@node-redis/bloom@npm:1.0.1"
@@ -2207,34 +2162,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sushiibot/sushii-data-client@workspace:*, @sushiibot/sushii-data-client@workspace:packages/sushii-data-client":
-  version: 0.0.0-use.local
-  resolution: "@sushiibot/sushii-data-client@workspace:packages/sushii-data-client"
-  dependencies:
-    "@nestjs/terminus": ^8.0.6
-    "@sushiibot/sushii-data": "workspace:*"
-    "@types/jest": ^27.4.1
-    "@types/node": ^17.0.18
-    "@typescript-eslint/eslint-plugin": ^5.12.0
-    "@typescript-eslint/parser": ^5.12.0
-    dotenv: ^16.0.0
-    eslint: ^8.9.0
-    eslint-config-airbnb-base: ^15.0.0
-    eslint-config-airbnb-typescript: ^16.1.0
-    eslint-config-prettier: ^8.4.0
-    eslint-plugin-import: ^2.25.4
-    jest: ^27.5.1
-    node-fetch: 2.6.7
-    pino: ^7.8.0
-    pino-pretty: ^7.5.1
-    prettier: ^2.5.1
-    ts-jest: ^27.1.3
-    ts-node: ^10.5.0
-    typescript: ^4.5.5
-  languageName: unknown
-  linkType: soft
-
-"@sushiibot/sushii-data@workspace:*, @sushiibot/sushii-data@workspace:packages/sushii-data":
+"@sushiibot/sushii-data@workspace:packages/sushii-data":
   version: 0.0.0-use.local
   resolution: "@sushiibot/sushii-data@workspace:packages/sushii-data"
   dependencies:
@@ -2287,11 +2215,8 @@ __metadata:
     "@graphql-codegen/cli": 2.6.2
     "@graphql-codegen/introspection": 2.1.1
     "@graphql-codegen/typescript": 2.4.8
-    "@graphql-codegen/typescript-graphql-request": ^4.4.5
-    "@graphql-codegen/typescript-operations": ^2.3.5
     "@graphql-codegen/typescript-resolvers": 2.6.1
     "@sapphire/snowflake": ^3.2.0
-    "@sushiibot/sushii-data-client": "workspace:*"
     "@types/i18next-fs-backend": ^1.1.2
     "@types/jest": ^27.4.1
     "@types/node": ^17.0.18
@@ -3708,13 +3633,6 @@ __metadata:
   version: 0.7.0
   resolution: "chardet@npm:0.7.0"
   checksum: 6fd5da1f5d18ff5712c1e0aed41da200d7c51c28f11b36ee3c7b483f3696dabc08927fc6b227735eb8f0e1215c9a8abd8154637f3eff8cada5959df7f58b024d
-  languageName: node
-  linkType: hard
-
-"check-disk-space@npm:3.3.0":
-  version: 3.3.0
-  resolution: "check-disk-space@npm:3.3.0"
-  checksum: a4f5e06ed1b5b949b8a96c87263102b73683afd3da29434c11395d51ec73502455c32fdf62970fe981e72b933f7bfc47df596ed0375171295239487ea714a8b7
   languageName: node
   linkType: hard
 
@@ -10063,7 +9981,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^27.0.3, ts-jest@npm:^27.1.3":
+"ts-jest@npm:^27.0.3":
   version: 27.1.3
   resolution: "ts-jest@npm:27.1.3"
   dependencies:
