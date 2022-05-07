@@ -241,7 +241,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     });
 
     await ctx.REST.interactionReply(interaction, {
-      embeds: [embed.toJSON()],
+      content: t("rolemenu.new.created"),
       components: [row],
     });
   }

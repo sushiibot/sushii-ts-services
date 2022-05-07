@@ -35,4 +35,4 @@ edit roleMenuMessageID with new role
 
 /rolemenu role remove:
 
-/rolemenu edit messageId:
+/rolemenu edit messageId: channel: description: max:
