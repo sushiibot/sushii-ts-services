@@ -1,0 +1,9 @@
+mutation deleteTag($guildId: BigInt!, $tagName: String!) {
+  deleteTagByGuildIdAndTagName(
+    input: { guildId: $guildId, tagName: $tagName }
+  ) {
+    tag {
+      ...TagData
+    }
+  }
+}

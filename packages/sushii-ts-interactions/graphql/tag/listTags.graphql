@@ -1,0 +1,17 @@
+query listGuildTags($guildId: BigInt!) {
+  allTags(condition: { guildId: $guildId }, orderBy: TAG_NAME_ASC) {
+    edges {
+      node {
+        ...TagData
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+    totalCount
+  }
+}

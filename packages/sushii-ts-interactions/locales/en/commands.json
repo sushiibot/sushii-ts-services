@@ -44,5 +44,44 @@
       "created": "New role menu created!",
       "already_active": "You are already editing a role menu! Use `/rolemenu role add` or `/rolemenu role remove` to edit the menu."
     }
+  },
+  "tag": {
+    "add": {
+      "missing_content_and_attachment": "You must provide either a content or an attachment to add a tag!",
+      "success_title": "Created a new tag {{tagName}}"
+    },
+    "get": {
+      "not_found": "Tag {{tagName}} was not found!"
+    },
+    "info": {
+      "error": {
+        "not_found": "Tag {{tagName}} was not found!"
+      },
+      "success": {
+        "title": "Tag {{tagName}}",
+        "content": "Content",
+        "owner": "Owner",
+        "use_count": "Use Count"
+      }
+    },
+    "fulllist": {
+      "success": {
+        "message_content": "Here are all {{count}} tags in this server!",
+        "file_name": "tags.txt",
+        "file_description": "All tags in this server."
+      }
+    },
+    "delete": {
+      "error": {
+        "not_found": "Tag {{tagName}} was not found!",
+        "not_owner": "You do not own the tag {{tagName}} so you cannot delete it :("
+      },
+      "success": {
+        "title": "Deleted tag {{tagName}}",
+        "content": "Content",
+        "owner": "Owner",
+        "use_count": "Use Count"
+      }
+    }
   }
 }

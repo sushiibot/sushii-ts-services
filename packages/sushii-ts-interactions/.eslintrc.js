@@ -24,6 +24,7 @@ module.exports = {
     "default-case": "off",
     "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/switch-exhaustiveness-check": "error",
+    "no-bitwise": "off",
   },
   settings: {
     "import/resolver": {

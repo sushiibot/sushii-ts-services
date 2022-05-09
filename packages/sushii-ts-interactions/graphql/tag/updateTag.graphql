@@ -1,0 +1,9 @@
+mutation updateTag($guildId: BigInt!, $tagName: String!, $tagPatch: TagPatch!) {
+  updateTagByGuildIdAndTagName(
+    input: { tagPatch: $tagPatch, guildId: $guildId, tagName: $tagName }
+  ) {
+    tag {
+      ...TagData
+    }
+  }
+}

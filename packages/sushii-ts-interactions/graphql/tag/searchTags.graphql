@@ -1,0 +1,24 @@
+query searchTags(
+  $guildId: BigInt
+  $ownerId: BigInt
+  $includesInsensitive: String
+  $startsWithInsensitive: String
+) {
+  allTags(
+    filter: {
+      tagName: {
+        includesInsensitive: $includesInsensitive
+        startsWithInsensitive: $startsWithInsensitive
+      }
+    }
+    condition: { guildId: $guildId, ownerId: $ownerId }
+    orderBy: TAG_NAME_ASC
+  ) {
+    edges {
+      node {
+        ...TagData
+      }
+    }
+    totalCount
+  }
+}

@@ -15,6 +15,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A floating point number that requires more precision than IEEE 754 binary 64 */
+  BigFloat: any;
   /**
    * A signed eight-byte integer. The upper big integer values are greater than the
    * max value for a JavaScript number. Therefore all big integers will be output as
@@ -34,6 +36,98 @@ export type Scalars = {
   UUID: any;
 };
 
+/** A filter to be used against BigInt fields. All fields are combined with a logical ‘and.’ */
+export type BigIntFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['BigInt']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['BigInt']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['BigInt']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['BigInt']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['BigInt']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['BigInt']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['BigInt']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['BigInt']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['BigInt']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['BigInt']>>;
+};
+
+/** A filter to be used against BigInt List fields. All fields are combined with a logical ‘and.’ */
+export type BigIntListFilter = {
+  /** Any array item is equal to the specified value. */
+  anyEqualTo?: InputMaybe<Scalars['BigInt']>;
+  /** Any array item is greater than the specified value. */
+  anyGreaterThan?: InputMaybe<Scalars['BigInt']>;
+  /** Any array item is greater than or equal to the specified value. */
+  anyGreaterThanOrEqualTo?: InputMaybe<Scalars['BigInt']>;
+  /** Any array item is less than the specified value. */
+  anyLessThan?: InputMaybe<Scalars['BigInt']>;
+  /** Any array item is less than or equal to the specified value. */
+  anyLessThanOrEqualTo?: InputMaybe<Scalars['BigInt']>;
+  /** Any array item is not equal to the specified value. */
+  anyNotEqualTo?: InputMaybe<Scalars['BigInt']>;
+  /** Contained by the specified list of values. */
+  containedBy?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+  /** Contains the specified list of values. */
+  contains?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+  /** Overlaps the specified list of values. */
+  overlaps?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+};
+
+/** A filter to be used against Boolean fields. All fields are combined with a logical ‘and.’ */
+export type BooleanFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['Boolean']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['Boolean']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['Boolean']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['Boolean']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['Boolean']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['Boolean']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['Boolean']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['Boolean']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['Boolean']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['Boolean']>>;
+};
+
 export type BotStat = Node & {
   __typename?: 'BotStat';
   category: Scalars['String'];
@@ -43,6 +137,35 @@ export type BotStat = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
   updatedAt: Scalars['Datetime'];
+};
+
+export type BotStatAggregates = {
+  __typename?: 'BotStatAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<BotStatAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<BotStatDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<BotStatMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<BotStatMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<BotStatStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<BotStatStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<BotStatSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<BotStatVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<BotStatVarianceSampleAggregates>;
+};
+
+export type BotStatAverageAggregates = {
+  __typename?: 'BotStatAverageAggregates';
+  /** Mean average of count across the matching connection */
+  count?: Maybe<Scalars['BigFloat']>;
 };
 
 /** A condition to be used against `BotStat` object types. All fields are tested for equality and combined with a logical ‘and.’ */
@@ -59,6 +182,40 @@ export type BotStatCondition = {
   updatedAt?: InputMaybe<Scalars['Datetime']>;
 };
 
+export type BotStatDistinctCountAggregates = {
+  __typename?: 'BotStatDistinctCountAggregates';
+  /** Distinct count of category across the matching connection */
+  category?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of count across the matching connection */
+  count?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of name across the matching connection */
+  name?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `BotStat` object types. All fields are combined with a logical ‘and.’ */
+export type BotStatFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<BotStatFilter>>;
+  /** Filter by the object’s `category` field. */
+  category?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `count` field. */
+  count?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `name` field. */
+  name?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<BotStatFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<BotStatFilter>>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
 /** An input for mutations affecting `BotStat` */
 export type BotStatInput = {
   category: Scalars['String'];
@@ -66,6 +223,18 @@ export type BotStatInput = {
   createdAt?: InputMaybe<Scalars['Datetime']>;
   name: Scalars['String'];
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+};
+
+export type BotStatMaxAggregates = {
+  __typename?: 'BotStatMaxAggregates';
+  /** Maximum of count across the matching connection */
+  count?: Maybe<Scalars['BigInt']>;
+};
+
+export type BotStatMinAggregates = {
+  __typename?: 'BotStatMinAggregates';
+  /** Minimum of count across the matching connection */
+  count?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `BotStat`. Fields that are set will be updated. */
@@ -77,17 +246,58 @@ export type BotStatPatch = {
   updatedAt?: InputMaybe<Scalars['Datetime']>;
 };
 
+export type BotStatStddevPopulationAggregates = {
+  __typename?: 'BotStatStddevPopulationAggregates';
+  /** Population standard deviation of count across the matching connection */
+  count?: Maybe<Scalars['BigFloat']>;
+};
+
+export type BotStatStddevSampleAggregates = {
+  __typename?: 'BotStatStddevSampleAggregates';
+  /** Sample standard deviation of count across the matching connection */
+  count?: Maybe<Scalars['BigFloat']>;
+};
+
+export type BotStatSumAggregates = {
+  __typename?: 'BotStatSumAggregates';
+  /** Sum of count across the matching connection */
+  count: Scalars['BigFloat'];
+};
+
+export type BotStatVariancePopulationAggregates = {
+  __typename?: 'BotStatVariancePopulationAggregates';
+  /** Population variance of count across the matching connection */
+  count?: Maybe<Scalars['BigFloat']>;
+};
+
+export type BotStatVarianceSampleAggregates = {
+  __typename?: 'BotStatVarianceSampleAggregates';
+  /** Sample variance of count across the matching connection */
+  count?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `BotStat` values. */
 export type BotStatsConnection = {
   __typename?: 'BotStatsConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<BotStatAggregates>;
   /** A list of edges which contains the `BotStat` and cursor to aid in pagination. */
   edges: Array<BotStatsEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<BotStatAggregates>>;
   /** A list of `BotStat` objects. */
   nodes: Array<BotStat>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `BotStat` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `BotStat` values. */
+export type BotStatsConnectionGroupedAggregatesArgs = {
+  groupBy: Array<BotStatsGroupBy>;
+  having?: InputMaybe<BotStatsHavingInput>;
 };
 
 /** A `BotStat` edge in the connection. */
@@ -97,6 +307,88 @@ export type BotStatsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `BotStat` at the end of the edge. */
   node: BotStat;
+};
+
+/** Grouping methods for `BotStat` for usage during aggregation. */
+export enum BotStatsGroupBy {
+  Category = 'CATEGORY',
+  Count = 'COUNT',
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Name = 'NAME',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type BotStatsHavingAverageInput = {
+  count?: InputMaybe<HavingBigintFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type BotStatsHavingDistinctCountInput = {
+  count?: InputMaybe<HavingBigintFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `BotStat` aggregates. */
+export type BotStatsHavingInput = {
+  AND?: InputMaybe<Array<BotStatsHavingInput>>;
+  OR?: InputMaybe<Array<BotStatsHavingInput>>;
+  average?: InputMaybe<BotStatsHavingAverageInput>;
+  distinctCount?: InputMaybe<BotStatsHavingDistinctCountInput>;
+  max?: InputMaybe<BotStatsHavingMaxInput>;
+  min?: InputMaybe<BotStatsHavingMinInput>;
+  stddevPopulation?: InputMaybe<BotStatsHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<BotStatsHavingStddevSampleInput>;
+  sum?: InputMaybe<BotStatsHavingSumInput>;
+  variancePopulation?: InputMaybe<BotStatsHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<BotStatsHavingVarianceSampleInput>;
+};
+
+export type BotStatsHavingMaxInput = {
+  count?: InputMaybe<HavingBigintFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type BotStatsHavingMinInput = {
+  count?: InputMaybe<HavingBigintFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type BotStatsHavingStddevPopulationInput = {
+  count?: InputMaybe<HavingBigintFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type BotStatsHavingStddevSampleInput = {
+  count?: InputMaybe<HavingBigintFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type BotStatsHavingSumInput = {
+  count?: InputMaybe<HavingBigintFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type BotStatsHavingVariancePopulationInput = {
+  count?: InputMaybe<HavingBigintFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type BotStatsHavingVarianceSampleInput = {
+  count?: InputMaybe<HavingBigintFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 /** Methods to use when ordering `BotStat`. */
@@ -139,6 +431,7 @@ export type CachedGuildWebUserGuildsByGuildIdArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<WebUserGuildCondition>;
+  filter?: InputMaybe<WebUserGuildFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -198,7 +491,99 @@ export enum CachedGuildsOrderBy {
   SplashAsc = 'SPLASH_ASC',
   SplashDesc = 'SPLASH_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC'
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  WebUserGuildsByGuildIdAverageGuildIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_GUILD_ID_ASC',
+  WebUserGuildsByGuildIdAverageGuildIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_GUILD_ID_DESC',
+  WebUserGuildsByGuildIdAverageManageGuildAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_MANAGE_GUILD_ASC',
+  WebUserGuildsByGuildIdAverageManageGuildDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_MANAGE_GUILD_DESC',
+  WebUserGuildsByGuildIdAverageOwnerAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_OWNER_ASC',
+  WebUserGuildsByGuildIdAverageOwnerDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_OWNER_DESC',
+  WebUserGuildsByGuildIdAveragePermissionsAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_PERMISSIONS_ASC',
+  WebUserGuildsByGuildIdAveragePermissionsDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_PERMISSIONS_DESC',
+  WebUserGuildsByGuildIdAverageUserIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_USER_ID_ASC',
+  WebUserGuildsByGuildIdAverageUserIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_USER_ID_DESC',
+  WebUserGuildsByGuildIdCountAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_COUNT_ASC',
+  WebUserGuildsByGuildIdCountDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_COUNT_DESC',
+  WebUserGuildsByGuildIdDistinctCountGuildIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_GUILD_ID_ASC',
+  WebUserGuildsByGuildIdDistinctCountGuildIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_GUILD_ID_DESC',
+  WebUserGuildsByGuildIdDistinctCountManageGuildAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_MANAGE_GUILD_ASC',
+  WebUserGuildsByGuildIdDistinctCountManageGuildDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_MANAGE_GUILD_DESC',
+  WebUserGuildsByGuildIdDistinctCountOwnerAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_OWNER_ASC',
+  WebUserGuildsByGuildIdDistinctCountOwnerDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_OWNER_DESC',
+  WebUserGuildsByGuildIdDistinctCountPermissionsAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_PERMISSIONS_ASC',
+  WebUserGuildsByGuildIdDistinctCountPermissionsDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_PERMISSIONS_DESC',
+  WebUserGuildsByGuildIdDistinctCountUserIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_USER_ID_ASC',
+  WebUserGuildsByGuildIdDistinctCountUserIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_USER_ID_DESC',
+  WebUserGuildsByGuildIdMaxGuildIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_MAX_GUILD_ID_ASC',
+  WebUserGuildsByGuildIdMaxGuildIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_MAX_GUILD_ID_DESC',
+  WebUserGuildsByGuildIdMaxManageGuildAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_MAX_MANAGE_GUILD_ASC',
+  WebUserGuildsByGuildIdMaxManageGuildDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_MAX_MANAGE_GUILD_DESC',
+  WebUserGuildsByGuildIdMaxOwnerAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_MAX_OWNER_ASC',
+  WebUserGuildsByGuildIdMaxOwnerDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_MAX_OWNER_DESC',
+  WebUserGuildsByGuildIdMaxPermissionsAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_MAX_PERMISSIONS_ASC',
+  WebUserGuildsByGuildIdMaxPermissionsDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_MAX_PERMISSIONS_DESC',
+  WebUserGuildsByGuildIdMaxUserIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_MAX_USER_ID_ASC',
+  WebUserGuildsByGuildIdMaxUserIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_MAX_USER_ID_DESC',
+  WebUserGuildsByGuildIdMinGuildIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_MIN_GUILD_ID_ASC',
+  WebUserGuildsByGuildIdMinGuildIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_MIN_GUILD_ID_DESC',
+  WebUserGuildsByGuildIdMinManageGuildAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_MIN_MANAGE_GUILD_ASC',
+  WebUserGuildsByGuildIdMinManageGuildDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_MIN_MANAGE_GUILD_DESC',
+  WebUserGuildsByGuildIdMinOwnerAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_MIN_OWNER_ASC',
+  WebUserGuildsByGuildIdMinOwnerDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_MIN_OWNER_DESC',
+  WebUserGuildsByGuildIdMinPermissionsAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_MIN_PERMISSIONS_ASC',
+  WebUserGuildsByGuildIdMinPermissionsDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_MIN_PERMISSIONS_DESC',
+  WebUserGuildsByGuildIdMinUserIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_MIN_USER_ID_ASC',
+  WebUserGuildsByGuildIdMinUserIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_MIN_USER_ID_DESC',
+  WebUserGuildsByGuildIdStddevPopulationGuildIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_GUILD_ID_ASC',
+  WebUserGuildsByGuildIdStddevPopulationGuildIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_GUILD_ID_DESC',
+  WebUserGuildsByGuildIdStddevPopulationManageGuildAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_MANAGE_GUILD_ASC',
+  WebUserGuildsByGuildIdStddevPopulationManageGuildDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_MANAGE_GUILD_DESC',
+  WebUserGuildsByGuildIdStddevPopulationOwnerAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_OWNER_ASC',
+  WebUserGuildsByGuildIdStddevPopulationOwnerDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_OWNER_DESC',
+  WebUserGuildsByGuildIdStddevPopulationPermissionsAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_PERMISSIONS_ASC',
+  WebUserGuildsByGuildIdStddevPopulationPermissionsDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_PERMISSIONS_DESC',
+  WebUserGuildsByGuildIdStddevPopulationUserIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_USER_ID_ASC',
+  WebUserGuildsByGuildIdStddevPopulationUserIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_USER_ID_DESC',
+  WebUserGuildsByGuildIdStddevSampleGuildIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_GUILD_ID_ASC',
+  WebUserGuildsByGuildIdStddevSampleGuildIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_GUILD_ID_DESC',
+  WebUserGuildsByGuildIdStddevSampleManageGuildAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_MANAGE_GUILD_ASC',
+  WebUserGuildsByGuildIdStddevSampleManageGuildDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_MANAGE_GUILD_DESC',
+  WebUserGuildsByGuildIdStddevSampleOwnerAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_OWNER_ASC',
+  WebUserGuildsByGuildIdStddevSampleOwnerDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_OWNER_DESC',
+  WebUserGuildsByGuildIdStddevSamplePermissionsAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_PERMISSIONS_ASC',
+  WebUserGuildsByGuildIdStddevSamplePermissionsDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_PERMISSIONS_DESC',
+  WebUserGuildsByGuildIdStddevSampleUserIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_USER_ID_ASC',
+  WebUserGuildsByGuildIdStddevSampleUserIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_USER_ID_DESC',
+  WebUserGuildsByGuildIdSumGuildIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_SUM_GUILD_ID_ASC',
+  WebUserGuildsByGuildIdSumGuildIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_SUM_GUILD_ID_DESC',
+  WebUserGuildsByGuildIdSumManageGuildAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_SUM_MANAGE_GUILD_ASC',
+  WebUserGuildsByGuildIdSumManageGuildDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_SUM_MANAGE_GUILD_DESC',
+  WebUserGuildsByGuildIdSumOwnerAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_SUM_OWNER_ASC',
+  WebUserGuildsByGuildIdSumOwnerDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_SUM_OWNER_DESC',
+  WebUserGuildsByGuildIdSumPermissionsAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_SUM_PERMISSIONS_ASC',
+  WebUserGuildsByGuildIdSumPermissionsDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_SUM_PERMISSIONS_DESC',
+  WebUserGuildsByGuildIdSumUserIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_SUM_USER_ID_ASC',
+  WebUserGuildsByGuildIdSumUserIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_SUM_USER_ID_DESC',
+  WebUserGuildsByGuildIdVariancePopulationGuildIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_GUILD_ID_ASC',
+  WebUserGuildsByGuildIdVariancePopulationGuildIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_GUILD_ID_DESC',
+  WebUserGuildsByGuildIdVariancePopulationManageGuildAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_MANAGE_GUILD_ASC',
+  WebUserGuildsByGuildIdVariancePopulationManageGuildDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_MANAGE_GUILD_DESC',
+  WebUserGuildsByGuildIdVariancePopulationOwnerAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_OWNER_ASC',
+  WebUserGuildsByGuildIdVariancePopulationOwnerDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_OWNER_DESC',
+  WebUserGuildsByGuildIdVariancePopulationPermissionsAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_PERMISSIONS_ASC',
+  WebUserGuildsByGuildIdVariancePopulationPermissionsDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_PERMISSIONS_DESC',
+  WebUserGuildsByGuildIdVariancePopulationUserIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_USER_ID_ASC',
+  WebUserGuildsByGuildIdVariancePopulationUserIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_USER_ID_DESC',
+  WebUserGuildsByGuildIdVarianceSampleGuildIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_GUILD_ID_ASC',
+  WebUserGuildsByGuildIdVarianceSampleGuildIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_GUILD_ID_DESC',
+  WebUserGuildsByGuildIdVarianceSampleManageGuildAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_MANAGE_GUILD_ASC',
+  WebUserGuildsByGuildIdVarianceSampleManageGuildDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_MANAGE_GUILD_DESC',
+  WebUserGuildsByGuildIdVarianceSampleOwnerAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_OWNER_ASC',
+  WebUserGuildsByGuildIdVarianceSampleOwnerDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_OWNER_DESC',
+  WebUserGuildsByGuildIdVarianceSamplePermissionsAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_PERMISSIONS_ASC',
+  WebUserGuildsByGuildIdVarianceSamplePermissionsDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_PERMISSIONS_DESC',
+  WebUserGuildsByGuildIdVarianceSampleUserIdAsc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_USER_ID_ASC',
+  WebUserGuildsByGuildIdVarianceSampleUserIdDesc = 'WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_USER_ID_DESC'
 }
 
 export type CachedUser = Node & {
@@ -944,6 +1329,32 @@ export type CurrentUserManagedGuildIdsConnection = {
   nodes: Array<Maybe<Scalars['BigInt']>>;
   /** The count of *all* `BigInt` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+/** A filter to be used against Datetime fields. All fields are combined with a logical ‘and.’ */
+export type DatetimeFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['Datetime']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['Datetime']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['Datetime']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['Datetime']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['Datetime']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['Datetime']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['Datetime']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['Datetime']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['Datetime']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['Datetime']>>;
 };
 
 /** All input for the `deleteBotStatByNameAndCategory` mutation. */
@@ -1832,10 +2243,18 @@ export type FeedFeedSubscriptionsByFeedIdArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<FeedSubscriptionCondition>;
+  filter?: InputMaybe<FeedSubscriptionFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<FeedSubscriptionsOrderBy>>;
+};
+
+export type FeedAggregates = {
+  __typename?: 'FeedAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<FeedDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
 };
 
 /** A condition to be used against `Feed` object types. All fields are tested for equality and combined with a logical ‘and.’ */
@@ -1844,6 +2263,28 @@ export type FeedCondition = {
   feedId?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `metadata` field. */
   metadata?: InputMaybe<Scalars['JSON']>;
+};
+
+export type FeedDistinctCountAggregates = {
+  __typename?: 'FeedDistinctCountAggregates';
+  /** Distinct count of feedId across the matching connection */
+  feedId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of metadata across the matching connection */
+  metadata?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `Feed` object types. All fields are combined with a logical ‘and.’ */
+export type FeedFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<FeedFilter>>;
+  /** Filter by the object’s `feedId` field. */
+  feedId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `metadata` field. */
+  metadata?: InputMaybe<JsonFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<FeedFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<FeedFilter>>;
 };
 
 /** An input for mutations affecting `Feed` */
@@ -1860,6 +2301,13 @@ export type FeedItem = Node & {
   nodeId: Scalars['ID'];
 };
 
+export type FeedItemAggregates = {
+  __typename?: 'FeedItemAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<FeedItemDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+};
+
 /**
  * A condition to be used against `FeedItem` object types. All fields are tested
  * for equality and combined with a logical ‘and.’
@@ -1869,6 +2317,28 @@ export type FeedItemCondition = {
   feedId?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `itemId` field. */
   itemId?: InputMaybe<Scalars['String']>;
+};
+
+export type FeedItemDistinctCountAggregates = {
+  __typename?: 'FeedItemDistinctCountAggregates';
+  /** Distinct count of feedId across the matching connection */
+  feedId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of itemId across the matching connection */
+  itemId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `FeedItem` object types. All fields are combined with a logical ‘and.’ */
+export type FeedItemFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<FeedItemFilter>>;
+  /** Filter by the object’s `feedId` field. */
+  feedId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `itemId` field. */
+  itemId?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<FeedItemFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<FeedItemFilter>>;
 };
 
 /** An input for mutations affecting `FeedItem` */
@@ -1886,14 +2356,25 @@ export type FeedItemPatch = {
 /** A connection to a list of `FeedItem` values. */
 export type FeedItemsConnection = {
   __typename?: 'FeedItemsConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<FeedItemAggregates>;
   /** A list of edges which contains the `FeedItem` and cursor to aid in pagination. */
   edges: Array<FeedItemsEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<FeedItemAggregates>>;
   /** A list of `FeedItem` objects. */
   nodes: Array<FeedItem>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `FeedItem` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `FeedItem` values. */
+export type FeedItemsConnectionGroupedAggregatesArgs = {
+  groupBy: Array<FeedItemsGroupBy>;
+  having?: InputMaybe<FeedItemsHavingInput>;
 };
 
 /** A `FeedItem` edge in the connection. */
@@ -1903,6 +2384,18 @@ export type FeedItemsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `FeedItem` at the end of the edge. */
   node: FeedItem;
+};
+
+/** Grouping methods for `FeedItem` for usage during aggregation. */
+export enum FeedItemsGroupBy {
+  FeedId = 'FEED_ID',
+  ItemId = 'ITEM_ID'
+}
+
+/** Conditions for `FeedItem` aggregates. */
+export type FeedItemsHavingInput = {
+  AND?: InputMaybe<Array<FeedItemsHavingInput>>;
+  OR?: InputMaybe<Array<FeedItemsHavingInput>>;
 };
 
 /** Methods to use when ordering `FeedItem`. */
@@ -1934,6 +2427,39 @@ export type FeedSubscription = Node & {
   nodeId: Scalars['ID'];
 };
 
+export type FeedSubscriptionAggregates = {
+  __typename?: 'FeedSubscriptionAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<FeedSubscriptionAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<FeedSubscriptionDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<FeedSubscriptionMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<FeedSubscriptionMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<FeedSubscriptionStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<FeedSubscriptionStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<FeedSubscriptionSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<FeedSubscriptionVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<FeedSubscriptionVarianceSampleAggregates>;
+};
+
+export type FeedSubscriptionAverageAggregates = {
+  __typename?: 'FeedSubscriptionAverageAggregates';
+  /** Mean average of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of mentionRole across the matching connection */
+  mentionRole?: Maybe<Scalars['BigFloat']>;
+};
+
 /**
  * A condition to be used against `FeedSubscription` object types. All fields are
  * tested for equality and combined with a logical ‘and.’
@@ -1949,12 +2475,62 @@ export type FeedSubscriptionCondition = {
   mentionRole?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type FeedSubscriptionDistinctCountAggregates = {
+  __typename?: 'FeedSubscriptionDistinctCountAggregates';
+  /** Distinct count of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of feedId across the matching connection */
+  feedId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of mentionRole across the matching connection */
+  mentionRole?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `FeedSubscription` object types. All fields are combined with a logical ‘and.’ */
+export type FeedSubscriptionFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<FeedSubscriptionFilter>>;
+  /** Filter by the object’s `channelId` field. */
+  channelId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `feedId` field. */
+  feedId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `mentionRole` field. */
+  mentionRole?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<FeedSubscriptionFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<FeedSubscriptionFilter>>;
+};
+
 /** An input for mutations affecting `FeedSubscription` */
 export type FeedSubscriptionInput = {
   channelId: Scalars['BigInt'];
   feedId: Scalars['String'];
   guildId: Scalars['BigInt'];
   mentionRole?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type FeedSubscriptionMaxAggregates = {
+  __typename?: 'FeedSubscriptionMaxAggregates';
+  /** Maximum of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of mentionRole across the matching connection */
+  mentionRole?: Maybe<Scalars['BigInt']>;
+};
+
+export type FeedSubscriptionMinAggregates = {
+  __typename?: 'FeedSubscriptionMinAggregates';
+  /** Minimum of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of mentionRole across the matching connection */
+  mentionRole?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `FeedSubscription`. Fields that are set will be updated. */
@@ -1965,17 +2541,78 @@ export type FeedSubscriptionPatch = {
   mentionRole?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type FeedSubscriptionStddevPopulationAggregates = {
+  __typename?: 'FeedSubscriptionStddevPopulationAggregates';
+  /** Population standard deviation of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of mentionRole across the matching connection */
+  mentionRole?: Maybe<Scalars['BigFloat']>;
+};
+
+export type FeedSubscriptionStddevSampleAggregates = {
+  __typename?: 'FeedSubscriptionStddevSampleAggregates';
+  /** Sample standard deviation of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of mentionRole across the matching connection */
+  mentionRole?: Maybe<Scalars['BigFloat']>;
+};
+
+export type FeedSubscriptionSumAggregates = {
+  __typename?: 'FeedSubscriptionSumAggregates';
+  /** Sum of channelId across the matching connection */
+  channelId: Scalars['BigFloat'];
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of mentionRole across the matching connection */
+  mentionRole: Scalars['BigFloat'];
+};
+
+export type FeedSubscriptionVariancePopulationAggregates = {
+  __typename?: 'FeedSubscriptionVariancePopulationAggregates';
+  /** Population variance of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of mentionRole across the matching connection */
+  mentionRole?: Maybe<Scalars['BigFloat']>;
+};
+
+export type FeedSubscriptionVarianceSampleAggregates = {
+  __typename?: 'FeedSubscriptionVarianceSampleAggregates';
+  /** Sample variance of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of mentionRole across the matching connection */
+  mentionRole?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `FeedSubscription` values. */
 export type FeedSubscriptionsConnection = {
   __typename?: 'FeedSubscriptionsConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<FeedSubscriptionAggregates>;
   /** A list of edges which contains the `FeedSubscription` and cursor to aid in pagination. */
   edges: Array<FeedSubscriptionsEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<FeedSubscriptionAggregates>>;
   /** A list of `FeedSubscription` objects. */
   nodes: Array<FeedSubscription>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `FeedSubscription` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `FeedSubscription` values. */
+export type FeedSubscriptionsConnectionGroupedAggregatesArgs = {
+  groupBy: Array<FeedSubscriptionsGroupBy>;
+  having?: InputMaybe<FeedSubscriptionsHavingInput>;
 };
 
 /** A `FeedSubscription` edge in the connection. */
@@ -1985,6 +2622,83 @@ export type FeedSubscriptionsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `FeedSubscription` at the end of the edge. */
   node: FeedSubscription;
+};
+
+/** Grouping methods for `FeedSubscription` for usage during aggregation. */
+export enum FeedSubscriptionsGroupBy {
+  ChannelId = 'CHANNEL_ID',
+  FeedId = 'FEED_ID',
+  GuildId = 'GUILD_ID',
+  MentionRole = 'MENTION_ROLE'
+}
+
+export type FeedSubscriptionsHavingAverageInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  mentionRole?: InputMaybe<HavingBigintFilter>;
+};
+
+export type FeedSubscriptionsHavingDistinctCountInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  mentionRole?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `FeedSubscription` aggregates. */
+export type FeedSubscriptionsHavingInput = {
+  AND?: InputMaybe<Array<FeedSubscriptionsHavingInput>>;
+  OR?: InputMaybe<Array<FeedSubscriptionsHavingInput>>;
+  average?: InputMaybe<FeedSubscriptionsHavingAverageInput>;
+  distinctCount?: InputMaybe<FeedSubscriptionsHavingDistinctCountInput>;
+  max?: InputMaybe<FeedSubscriptionsHavingMaxInput>;
+  min?: InputMaybe<FeedSubscriptionsHavingMinInput>;
+  stddevPopulation?: InputMaybe<FeedSubscriptionsHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<FeedSubscriptionsHavingStddevSampleInput>;
+  sum?: InputMaybe<FeedSubscriptionsHavingSumInput>;
+  variancePopulation?: InputMaybe<FeedSubscriptionsHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<FeedSubscriptionsHavingVarianceSampleInput>;
+};
+
+export type FeedSubscriptionsHavingMaxInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  mentionRole?: InputMaybe<HavingBigintFilter>;
+};
+
+export type FeedSubscriptionsHavingMinInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  mentionRole?: InputMaybe<HavingBigintFilter>;
+};
+
+export type FeedSubscriptionsHavingStddevPopulationInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  mentionRole?: InputMaybe<HavingBigintFilter>;
+};
+
+export type FeedSubscriptionsHavingStddevSampleInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  mentionRole?: InputMaybe<HavingBigintFilter>;
+};
+
+export type FeedSubscriptionsHavingSumInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  mentionRole?: InputMaybe<HavingBigintFilter>;
+};
+
+export type FeedSubscriptionsHavingVariancePopulationInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  mentionRole?: InputMaybe<HavingBigintFilter>;
+};
+
+export type FeedSubscriptionsHavingVarianceSampleInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  mentionRole?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `FeedSubscription`. */
@@ -2005,14 +2719,25 @@ export enum FeedSubscriptionsOrderBy {
 /** A connection to a list of `Feed` values. */
 export type FeedsConnection = {
   __typename?: 'FeedsConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<FeedAggregates>;
   /** A list of edges which contains the `Feed` and cursor to aid in pagination. */
   edges: Array<FeedsEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<FeedAggregates>>;
   /** A list of `Feed` objects. */
   nodes: Array<Feed>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Feed` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `Feed` values. */
+export type FeedsConnectionGroupedAggregatesArgs = {
+  groupBy: Array<FeedsGroupBy>;
+  having?: InputMaybe<FeedsHavingInput>;
 };
 
 /** A `Feed` edge in the connection. */
@@ -2024,10 +2749,95 @@ export type FeedsEdge = {
   node: Feed;
 };
 
+/** Grouping methods for `Feed` for usage during aggregation. */
+export enum FeedsGroupBy {
+  Metadata = 'METADATA'
+}
+
+/** Conditions for `Feed` aggregates. */
+export type FeedsHavingInput = {
+  AND?: InputMaybe<Array<FeedsHavingInput>>;
+  OR?: InputMaybe<Array<FeedsHavingInput>>;
+};
+
 /** Methods to use when ordering `Feed`. */
 export enum FeedsOrderBy {
   FeedIdAsc = 'FEED_ID_ASC',
   FeedIdDesc = 'FEED_ID_DESC',
+  FeedSubscriptionsByFeedIdAverageChannelIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_CHANNEL_ID_ASC',
+  FeedSubscriptionsByFeedIdAverageChannelIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_CHANNEL_ID_DESC',
+  FeedSubscriptionsByFeedIdAverageFeedIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_FEED_ID_ASC',
+  FeedSubscriptionsByFeedIdAverageFeedIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_FEED_ID_DESC',
+  FeedSubscriptionsByFeedIdAverageGuildIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_GUILD_ID_ASC',
+  FeedSubscriptionsByFeedIdAverageGuildIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_GUILD_ID_DESC',
+  FeedSubscriptionsByFeedIdAverageMentionRoleAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_MENTION_ROLE_ASC',
+  FeedSubscriptionsByFeedIdAverageMentionRoleDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_MENTION_ROLE_DESC',
+  FeedSubscriptionsByFeedIdCountAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_COUNT_ASC',
+  FeedSubscriptionsByFeedIdCountDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_COUNT_DESC',
+  FeedSubscriptionsByFeedIdDistinctCountChannelIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_CHANNEL_ID_ASC',
+  FeedSubscriptionsByFeedIdDistinctCountChannelIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_CHANNEL_ID_DESC',
+  FeedSubscriptionsByFeedIdDistinctCountFeedIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_FEED_ID_ASC',
+  FeedSubscriptionsByFeedIdDistinctCountFeedIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_FEED_ID_DESC',
+  FeedSubscriptionsByFeedIdDistinctCountGuildIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_GUILD_ID_ASC',
+  FeedSubscriptionsByFeedIdDistinctCountGuildIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_GUILD_ID_DESC',
+  FeedSubscriptionsByFeedIdDistinctCountMentionRoleAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_MENTION_ROLE_ASC',
+  FeedSubscriptionsByFeedIdDistinctCountMentionRoleDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_MENTION_ROLE_DESC',
+  FeedSubscriptionsByFeedIdMaxChannelIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_CHANNEL_ID_ASC',
+  FeedSubscriptionsByFeedIdMaxChannelIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_CHANNEL_ID_DESC',
+  FeedSubscriptionsByFeedIdMaxFeedIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_FEED_ID_ASC',
+  FeedSubscriptionsByFeedIdMaxFeedIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_FEED_ID_DESC',
+  FeedSubscriptionsByFeedIdMaxGuildIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_GUILD_ID_ASC',
+  FeedSubscriptionsByFeedIdMaxGuildIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_GUILD_ID_DESC',
+  FeedSubscriptionsByFeedIdMaxMentionRoleAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_MENTION_ROLE_ASC',
+  FeedSubscriptionsByFeedIdMaxMentionRoleDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_MENTION_ROLE_DESC',
+  FeedSubscriptionsByFeedIdMinChannelIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_CHANNEL_ID_ASC',
+  FeedSubscriptionsByFeedIdMinChannelIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_CHANNEL_ID_DESC',
+  FeedSubscriptionsByFeedIdMinFeedIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_FEED_ID_ASC',
+  FeedSubscriptionsByFeedIdMinFeedIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_FEED_ID_DESC',
+  FeedSubscriptionsByFeedIdMinGuildIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_GUILD_ID_ASC',
+  FeedSubscriptionsByFeedIdMinGuildIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_GUILD_ID_DESC',
+  FeedSubscriptionsByFeedIdMinMentionRoleAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_MENTION_ROLE_ASC',
+  FeedSubscriptionsByFeedIdMinMentionRoleDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_MENTION_ROLE_DESC',
+  FeedSubscriptionsByFeedIdStddevPopulationChannelIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_CHANNEL_ID_ASC',
+  FeedSubscriptionsByFeedIdStddevPopulationChannelIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_CHANNEL_ID_DESC',
+  FeedSubscriptionsByFeedIdStddevPopulationFeedIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_FEED_ID_ASC',
+  FeedSubscriptionsByFeedIdStddevPopulationFeedIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_FEED_ID_DESC',
+  FeedSubscriptionsByFeedIdStddevPopulationGuildIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_GUILD_ID_ASC',
+  FeedSubscriptionsByFeedIdStddevPopulationGuildIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_GUILD_ID_DESC',
+  FeedSubscriptionsByFeedIdStddevPopulationMentionRoleAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_MENTION_ROLE_ASC',
+  FeedSubscriptionsByFeedIdStddevPopulationMentionRoleDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_MENTION_ROLE_DESC',
+  FeedSubscriptionsByFeedIdStddevSampleChannelIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_CHANNEL_ID_ASC',
+  FeedSubscriptionsByFeedIdStddevSampleChannelIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_CHANNEL_ID_DESC',
+  FeedSubscriptionsByFeedIdStddevSampleFeedIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_FEED_ID_ASC',
+  FeedSubscriptionsByFeedIdStddevSampleFeedIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_FEED_ID_DESC',
+  FeedSubscriptionsByFeedIdStddevSampleGuildIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_GUILD_ID_ASC',
+  FeedSubscriptionsByFeedIdStddevSampleGuildIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_GUILD_ID_DESC',
+  FeedSubscriptionsByFeedIdStddevSampleMentionRoleAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_MENTION_ROLE_ASC',
+  FeedSubscriptionsByFeedIdStddevSampleMentionRoleDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_MENTION_ROLE_DESC',
+  FeedSubscriptionsByFeedIdSumChannelIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_CHANNEL_ID_ASC',
+  FeedSubscriptionsByFeedIdSumChannelIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_CHANNEL_ID_DESC',
+  FeedSubscriptionsByFeedIdSumFeedIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_FEED_ID_ASC',
+  FeedSubscriptionsByFeedIdSumFeedIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_FEED_ID_DESC',
+  FeedSubscriptionsByFeedIdSumGuildIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_GUILD_ID_ASC',
+  FeedSubscriptionsByFeedIdSumGuildIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_GUILD_ID_DESC',
+  FeedSubscriptionsByFeedIdSumMentionRoleAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_MENTION_ROLE_ASC',
+  FeedSubscriptionsByFeedIdSumMentionRoleDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_MENTION_ROLE_DESC',
+  FeedSubscriptionsByFeedIdVariancePopulationChannelIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_CHANNEL_ID_ASC',
+  FeedSubscriptionsByFeedIdVariancePopulationChannelIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_CHANNEL_ID_DESC',
+  FeedSubscriptionsByFeedIdVariancePopulationFeedIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_FEED_ID_ASC',
+  FeedSubscriptionsByFeedIdVariancePopulationFeedIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_FEED_ID_DESC',
+  FeedSubscriptionsByFeedIdVariancePopulationGuildIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_GUILD_ID_ASC',
+  FeedSubscriptionsByFeedIdVariancePopulationGuildIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_GUILD_ID_DESC',
+  FeedSubscriptionsByFeedIdVariancePopulationMentionRoleAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_MENTION_ROLE_ASC',
+  FeedSubscriptionsByFeedIdVariancePopulationMentionRoleDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_MENTION_ROLE_DESC',
+  FeedSubscriptionsByFeedIdVarianceSampleChannelIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_CHANNEL_ID_ASC',
+  FeedSubscriptionsByFeedIdVarianceSampleChannelIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_CHANNEL_ID_DESC',
+  FeedSubscriptionsByFeedIdVarianceSampleFeedIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_FEED_ID_ASC',
+  FeedSubscriptionsByFeedIdVarianceSampleFeedIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_FEED_ID_DESC',
+  FeedSubscriptionsByFeedIdVarianceSampleGuildIdAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_GUILD_ID_ASC',
+  FeedSubscriptionsByFeedIdVarianceSampleGuildIdDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_GUILD_ID_DESC',
+  FeedSubscriptionsByFeedIdVarianceSampleMentionRoleAsc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_MENTION_ROLE_ASC',
+  FeedSubscriptionsByFeedIdVarianceSampleMentionRoleDesc = 'FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_MENTION_ROLE_DESC',
   MetadataAsc = 'METADATA_ASC',
   MetadataDesc = 'METADATA_DESC',
   Natural = 'NATURAL',
@@ -2069,6 +2879,37 @@ export type GuildBan = Node & {
   userId: Scalars['BigInt'];
 };
 
+export type GuildBanAggregates = {
+  __typename?: 'GuildBanAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<GuildBanAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<GuildBanDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<GuildBanMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<GuildBanMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<GuildBanStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<GuildBanStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<GuildBanSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<GuildBanVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<GuildBanVarianceSampleAggregates>;
+};
+
+export type GuildBanAverageAggregates = {
+  __typename?: 'GuildBanAverageAggregates';
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
 /**
  * A condition to be used against `GuildBan` object types. All fields are tested
  * for equality and combined with a logical ‘and.’
@@ -2080,10 +2921,48 @@ export type GuildBanCondition = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type GuildBanDistinctCountAggregates = {
+  __typename?: 'GuildBanDistinctCountAggregates';
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `GuildBan` object types. All fields are combined with a logical ‘and.’ */
+export type GuildBanFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<GuildBanFilter>>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<GuildBanFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<GuildBanFilter>>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<BigIntFilter>;
+};
+
 /** An input for mutations affecting `GuildBan` */
 export type GuildBanInput = {
   guildId: Scalars['BigInt'];
   userId: Scalars['BigInt'];
+};
+
+export type GuildBanMaxAggregates = {
+  __typename?: 'GuildBanMaxAggregates';
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+export type GuildBanMinAggregates = {
+  __typename?: 'GuildBanMinAggregates';
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `GuildBan`. Fields that are set will be updated. */
@@ -2092,17 +2971,68 @@ export type GuildBanPatch = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type GuildBanStddevPopulationAggregates = {
+  __typename?: 'GuildBanStddevPopulationAggregates';
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type GuildBanStddevSampleAggregates = {
+  __typename?: 'GuildBanStddevSampleAggregates';
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type GuildBanSumAggregates = {
+  __typename?: 'GuildBanSumAggregates';
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of userId across the matching connection */
+  userId: Scalars['BigFloat'];
+};
+
+export type GuildBanVariancePopulationAggregates = {
+  __typename?: 'GuildBanVariancePopulationAggregates';
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type GuildBanVarianceSampleAggregates = {
+  __typename?: 'GuildBanVarianceSampleAggregates';
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `GuildBan` values. */
 export type GuildBansConnection = {
   __typename?: 'GuildBansConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<GuildBanAggregates>;
   /** A list of edges which contains the `GuildBan` and cursor to aid in pagination. */
   edges: Array<GuildBansEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<GuildBanAggregates>>;
   /** A list of `GuildBan` objects. */
   nodes: Array<GuildBan>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `GuildBan` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `GuildBan` values. */
+export type GuildBansConnectionGroupedAggregatesArgs = {
+  groupBy: Array<GuildBansGroupBy>;
+  having?: InputMaybe<GuildBansHavingInput>;
 };
 
 /** A `GuildBan` edge in the connection. */
@@ -2112,6 +3042,72 @@ export type GuildBansEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `GuildBan` at the end of the edge. */
   node: GuildBan;
+};
+
+/** Grouping methods for `GuildBan` for usage during aggregation. */
+export enum GuildBansGroupBy {
+  GuildId = 'GUILD_ID',
+  UserId = 'USER_ID'
+}
+
+export type GuildBansHavingAverageInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildBansHavingDistinctCountInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `GuildBan` aggregates. */
+export type GuildBansHavingInput = {
+  AND?: InputMaybe<Array<GuildBansHavingInput>>;
+  OR?: InputMaybe<Array<GuildBansHavingInput>>;
+  average?: InputMaybe<GuildBansHavingAverageInput>;
+  distinctCount?: InputMaybe<GuildBansHavingDistinctCountInput>;
+  max?: InputMaybe<GuildBansHavingMaxInput>;
+  min?: InputMaybe<GuildBansHavingMinInput>;
+  stddevPopulation?: InputMaybe<GuildBansHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<GuildBansHavingStddevSampleInput>;
+  sum?: InputMaybe<GuildBansHavingSumInput>;
+  variancePopulation?: InputMaybe<GuildBansHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<GuildBansHavingVarianceSampleInput>;
+};
+
+export type GuildBansHavingMaxInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildBansHavingMinInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildBansHavingStddevPopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildBansHavingStddevSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildBansHavingSumInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildBansHavingVariancePopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildBansHavingVarianceSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `GuildBan`. */
@@ -2158,6 +3154,51 @@ export type GuildConfig = Node & {
   roleEnabled: Scalars['Boolean'];
   warnDmEnabled: Scalars['Boolean'];
   warnDmText?: Maybe<Scalars['String']>;
+};
+
+export type GuildConfigAggregates = {
+  __typename?: 'GuildConfigAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<GuildConfigAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<GuildConfigDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<GuildConfigMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<GuildConfigMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<GuildConfigStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<GuildConfigStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<GuildConfigSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<GuildConfigVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<GuildConfigVarianceSampleAggregates>;
+};
+
+export type GuildConfigAverageAggregates = {
+  __typename?: 'GuildConfigAverageAggregates';
+  /** Mean average of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of logMember across the matching connection */
+  logMember?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of logMod across the matching connection */
+  logMod?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of logMsg across the matching connection */
+  logMsg?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of maxMention across the matching connection */
+  maxMention?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of msgChannel across the matching connection */
+  msgChannel?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of muteDuration across the matching connection */
+  muteDuration?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of muteRole across the matching connection */
+  muteRole?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of roleChannel across the matching connection */
+  roleChannel?: Maybe<Scalars['BigFloat']>;
 };
 
 /**
@@ -2221,6 +3262,128 @@ export type GuildConfigCondition = {
   warnDmText?: InputMaybe<Scalars['String']>;
 };
 
+export type GuildConfigDistinctCountAggregates = {
+  __typename?: 'GuildConfigDistinctCountAggregates';
+  /** Distinct count of data across the matching connection */
+  data?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of disabledChannels across the matching connection */
+  disabledChannels?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of id across the matching connection */
+  id?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of inviteGuard across the matching connection */
+  inviteGuard?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of joinMsg across the matching connection */
+  joinMsg?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of joinMsgEnabled across the matching connection */
+  joinMsgEnabled?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of joinReact across the matching connection */
+  joinReact?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of leaveMsg across the matching connection */
+  leaveMsg?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of leaveMsgEnabled across the matching connection */
+  leaveMsgEnabled?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of logMember across the matching connection */
+  logMember?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of logMemberEnabled across the matching connection */
+  logMemberEnabled?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of logMod across the matching connection */
+  logMod?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of logModEnabled across the matching connection */
+  logModEnabled?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of logMsg across the matching connection */
+  logMsg?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of logMsgEnabled across the matching connection */
+  logMsgEnabled?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of maxMention across the matching connection */
+  maxMention?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of msgChannel across the matching connection */
+  msgChannel?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of muteDmEnabled across the matching connection */
+  muteDmEnabled?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of muteDmText across the matching connection */
+  muteDmText?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of muteDuration across the matching connection */
+  muteDuration?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of muteRole across the matching connection */
+  muteRole?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of prefix across the matching connection */
+  prefix?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of roleChannel across the matching connection */
+  roleChannel?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of roleConfig across the matching connection */
+  roleConfig?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of roleEnabled across the matching connection */
+  roleEnabled?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of warnDmEnabled across the matching connection */
+  warnDmEnabled?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of warnDmText across the matching connection */
+  warnDmText?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `GuildConfig` object types. All fields are combined with a logical ‘and.’ */
+export type GuildConfigFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<GuildConfigFilter>>;
+  /** Filter by the object’s `data` field. */
+  data?: InputMaybe<JsonFilter>;
+  /** Filter by the object’s `disabledChannels` field. */
+  disabledChannels?: InputMaybe<BigIntListFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `inviteGuard` field. */
+  inviteGuard?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `joinMsg` field. */
+  joinMsg?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `joinMsgEnabled` field. */
+  joinMsgEnabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `joinReact` field. */
+  joinReact?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `leaveMsg` field. */
+  leaveMsg?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `leaveMsgEnabled` field. */
+  leaveMsgEnabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `logMember` field. */
+  logMember?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `logMemberEnabled` field. */
+  logMemberEnabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `logMod` field. */
+  logMod?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `logModEnabled` field. */
+  logModEnabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `logMsg` field. */
+  logMsg?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `logMsgEnabled` field. */
+  logMsgEnabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `maxMention` field. */
+  maxMention?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `msgChannel` field. */
+  msgChannel?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `muteDmEnabled` field. */
+  muteDmEnabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `muteDmText` field. */
+  muteDmText?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `muteDuration` field. */
+  muteDuration?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `muteRole` field. */
+  muteRole?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<GuildConfigFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<GuildConfigFilter>>;
+  /** Filter by the object’s `prefix` field. */
+  prefix?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `roleChannel` field. */
+  roleChannel?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `roleConfig` field. */
+  roleConfig?: InputMaybe<JsonFilter>;
+  /** Filter by the object’s `roleEnabled` field. */
+  roleEnabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `warnDmEnabled` field. */
+  warnDmEnabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `warnDmText` field. */
+  warnDmText?: InputMaybe<StringFilter>;
+};
+
 /** An input for mutations affecting `GuildConfig` */
 export type GuildConfigInput = {
   data?: InputMaybe<Scalars['JSON']>;
@@ -2250,6 +3413,50 @@ export type GuildConfigInput = {
   roleEnabled?: InputMaybe<Scalars['Boolean']>;
   warnDmEnabled?: InputMaybe<Scalars['Boolean']>;
   warnDmText?: InputMaybe<Scalars['String']>;
+};
+
+export type GuildConfigMaxAggregates = {
+  __typename?: 'GuildConfigMaxAggregates';
+  /** Maximum of id across the matching connection */
+  id?: Maybe<Scalars['BigInt']>;
+  /** Maximum of logMember across the matching connection */
+  logMember?: Maybe<Scalars['BigInt']>;
+  /** Maximum of logMod across the matching connection */
+  logMod?: Maybe<Scalars['BigInt']>;
+  /** Maximum of logMsg across the matching connection */
+  logMsg?: Maybe<Scalars['BigInt']>;
+  /** Maximum of maxMention across the matching connection */
+  maxMention?: Maybe<Scalars['Int']>;
+  /** Maximum of msgChannel across the matching connection */
+  msgChannel?: Maybe<Scalars['BigInt']>;
+  /** Maximum of muteDuration across the matching connection */
+  muteDuration?: Maybe<Scalars['BigInt']>;
+  /** Maximum of muteRole across the matching connection */
+  muteRole?: Maybe<Scalars['BigInt']>;
+  /** Maximum of roleChannel across the matching connection */
+  roleChannel?: Maybe<Scalars['BigInt']>;
+};
+
+export type GuildConfigMinAggregates = {
+  __typename?: 'GuildConfigMinAggregates';
+  /** Minimum of id across the matching connection */
+  id?: Maybe<Scalars['BigInt']>;
+  /** Minimum of logMember across the matching connection */
+  logMember?: Maybe<Scalars['BigInt']>;
+  /** Minimum of logMod across the matching connection */
+  logMod?: Maybe<Scalars['BigInt']>;
+  /** Minimum of logMsg across the matching connection */
+  logMsg?: Maybe<Scalars['BigInt']>;
+  /** Minimum of maxMention across the matching connection */
+  maxMention?: Maybe<Scalars['Int']>;
+  /** Minimum of msgChannel across the matching connection */
+  msgChannel?: Maybe<Scalars['BigInt']>;
+  /** Minimum of muteDuration across the matching connection */
+  muteDuration?: Maybe<Scalars['BigInt']>;
+  /** Minimum of muteRole across the matching connection */
+  muteRole?: Maybe<Scalars['BigInt']>;
+  /** Minimum of roleChannel across the matching connection */
+  roleChannel?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `GuildConfig`. Fields that are set will be updated. */
@@ -2283,17 +3490,138 @@ export type GuildConfigPatch = {
   warnDmText?: InputMaybe<Scalars['String']>;
 };
 
+export type GuildConfigStddevPopulationAggregates = {
+  __typename?: 'GuildConfigStddevPopulationAggregates';
+  /** Population standard deviation of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of logMember across the matching connection */
+  logMember?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of logMod across the matching connection */
+  logMod?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of logMsg across the matching connection */
+  logMsg?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of maxMention across the matching connection */
+  maxMention?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of msgChannel across the matching connection */
+  msgChannel?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of muteDuration across the matching connection */
+  muteDuration?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of muteRole across the matching connection */
+  muteRole?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of roleChannel across the matching connection */
+  roleChannel?: Maybe<Scalars['BigFloat']>;
+};
+
+export type GuildConfigStddevSampleAggregates = {
+  __typename?: 'GuildConfigStddevSampleAggregates';
+  /** Sample standard deviation of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of logMember across the matching connection */
+  logMember?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of logMod across the matching connection */
+  logMod?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of logMsg across the matching connection */
+  logMsg?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of maxMention across the matching connection */
+  maxMention?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of msgChannel across the matching connection */
+  msgChannel?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of muteDuration across the matching connection */
+  muteDuration?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of muteRole across the matching connection */
+  muteRole?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of roleChannel across the matching connection */
+  roleChannel?: Maybe<Scalars['BigFloat']>;
+};
+
+export type GuildConfigSumAggregates = {
+  __typename?: 'GuildConfigSumAggregates';
+  /** Sum of id across the matching connection */
+  id: Scalars['BigFloat'];
+  /** Sum of logMember across the matching connection */
+  logMember: Scalars['BigFloat'];
+  /** Sum of logMod across the matching connection */
+  logMod: Scalars['BigFloat'];
+  /** Sum of logMsg across the matching connection */
+  logMsg: Scalars['BigFloat'];
+  /** Sum of maxMention across the matching connection */
+  maxMention: Scalars['BigInt'];
+  /** Sum of msgChannel across the matching connection */
+  msgChannel: Scalars['BigFloat'];
+  /** Sum of muteDuration across the matching connection */
+  muteDuration: Scalars['BigFloat'];
+  /** Sum of muteRole across the matching connection */
+  muteRole: Scalars['BigFloat'];
+  /** Sum of roleChannel across the matching connection */
+  roleChannel: Scalars['BigFloat'];
+};
+
+export type GuildConfigVariancePopulationAggregates = {
+  __typename?: 'GuildConfigVariancePopulationAggregates';
+  /** Population variance of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of logMember across the matching connection */
+  logMember?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of logMod across the matching connection */
+  logMod?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of logMsg across the matching connection */
+  logMsg?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of maxMention across the matching connection */
+  maxMention?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of msgChannel across the matching connection */
+  msgChannel?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of muteDuration across the matching connection */
+  muteDuration?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of muteRole across the matching connection */
+  muteRole?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of roleChannel across the matching connection */
+  roleChannel?: Maybe<Scalars['BigFloat']>;
+};
+
+export type GuildConfigVarianceSampleAggregates = {
+  __typename?: 'GuildConfigVarianceSampleAggregates';
+  /** Sample variance of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of logMember across the matching connection */
+  logMember?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of logMod across the matching connection */
+  logMod?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of logMsg across the matching connection */
+  logMsg?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of maxMention across the matching connection */
+  maxMention?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of msgChannel across the matching connection */
+  msgChannel?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of muteDuration across the matching connection */
+  muteDuration?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of muteRole across the matching connection */
+  muteRole?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of roleChannel across the matching connection */
+  roleChannel?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `GuildConfig` values. */
 export type GuildConfigsConnection = {
   __typename?: 'GuildConfigsConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<GuildConfigAggregates>;
   /** A list of edges which contains the `GuildConfig` and cursor to aid in pagination. */
   edges: Array<GuildConfigsEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<GuildConfigAggregates>>;
   /** A list of `GuildConfig` objects. */
   nodes: Array<GuildConfig>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `GuildConfig` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `GuildConfig` values. */
+export type GuildConfigsConnectionGroupedAggregatesArgs = {
+  groupBy: Array<GuildConfigsGroupBy>;
+  having?: InputMaybe<GuildConfigsHavingInput>;
 };
 
 /** A `GuildConfig` edge in the connection. */
@@ -2303,6 +3631,159 @@ export type GuildConfigsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `GuildConfig` at the end of the edge. */
   node: GuildConfig;
+};
+
+/** Grouping methods for `GuildConfig` for usage during aggregation. */
+export enum GuildConfigsGroupBy {
+  Data = 'DATA',
+  DisabledChannels = 'DISABLED_CHANNELS',
+  InviteGuard = 'INVITE_GUARD',
+  JoinMsg = 'JOIN_MSG',
+  JoinMsgEnabled = 'JOIN_MSG_ENABLED',
+  JoinReact = 'JOIN_REACT',
+  LeaveMsg = 'LEAVE_MSG',
+  LeaveMsgEnabled = 'LEAVE_MSG_ENABLED',
+  LogMember = 'LOG_MEMBER',
+  LogMemberEnabled = 'LOG_MEMBER_ENABLED',
+  LogMod = 'LOG_MOD',
+  LogModEnabled = 'LOG_MOD_ENABLED',
+  LogMsg = 'LOG_MSG',
+  LogMsgEnabled = 'LOG_MSG_ENABLED',
+  MaxMention = 'MAX_MENTION',
+  MsgChannel = 'MSG_CHANNEL',
+  MuteDmEnabled = 'MUTE_DM_ENABLED',
+  MuteDmText = 'MUTE_DM_TEXT',
+  MuteDuration = 'MUTE_DURATION',
+  MuteRole = 'MUTE_ROLE',
+  Prefix = 'PREFIX',
+  RoleChannel = 'ROLE_CHANNEL',
+  RoleConfig = 'ROLE_CONFIG',
+  RoleEnabled = 'ROLE_ENABLED',
+  WarnDmEnabled = 'WARN_DM_ENABLED',
+  WarnDmText = 'WARN_DM_TEXT'
+}
+
+export type GuildConfigsHavingAverageInput = {
+  id?: InputMaybe<HavingBigintFilter>;
+  logMember?: InputMaybe<HavingBigintFilter>;
+  logMod?: InputMaybe<HavingBigintFilter>;
+  logMsg?: InputMaybe<HavingBigintFilter>;
+  maxMention?: InputMaybe<HavingIntFilter>;
+  msgChannel?: InputMaybe<HavingBigintFilter>;
+  muteDuration?: InputMaybe<HavingBigintFilter>;
+  muteRole?: InputMaybe<HavingBigintFilter>;
+  roleChannel?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildConfigsHavingDistinctCountInput = {
+  id?: InputMaybe<HavingBigintFilter>;
+  logMember?: InputMaybe<HavingBigintFilter>;
+  logMod?: InputMaybe<HavingBigintFilter>;
+  logMsg?: InputMaybe<HavingBigintFilter>;
+  maxMention?: InputMaybe<HavingIntFilter>;
+  msgChannel?: InputMaybe<HavingBigintFilter>;
+  muteDuration?: InputMaybe<HavingBigintFilter>;
+  muteRole?: InputMaybe<HavingBigintFilter>;
+  roleChannel?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `GuildConfig` aggregates. */
+export type GuildConfigsHavingInput = {
+  AND?: InputMaybe<Array<GuildConfigsHavingInput>>;
+  OR?: InputMaybe<Array<GuildConfigsHavingInput>>;
+  average?: InputMaybe<GuildConfigsHavingAverageInput>;
+  distinctCount?: InputMaybe<GuildConfigsHavingDistinctCountInput>;
+  max?: InputMaybe<GuildConfigsHavingMaxInput>;
+  min?: InputMaybe<GuildConfigsHavingMinInput>;
+  stddevPopulation?: InputMaybe<GuildConfigsHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<GuildConfigsHavingStddevSampleInput>;
+  sum?: InputMaybe<GuildConfigsHavingSumInput>;
+  variancePopulation?: InputMaybe<GuildConfigsHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<GuildConfigsHavingVarianceSampleInput>;
+};
+
+export type GuildConfigsHavingMaxInput = {
+  id?: InputMaybe<HavingBigintFilter>;
+  logMember?: InputMaybe<HavingBigintFilter>;
+  logMod?: InputMaybe<HavingBigintFilter>;
+  logMsg?: InputMaybe<HavingBigintFilter>;
+  maxMention?: InputMaybe<HavingIntFilter>;
+  msgChannel?: InputMaybe<HavingBigintFilter>;
+  muteDuration?: InputMaybe<HavingBigintFilter>;
+  muteRole?: InputMaybe<HavingBigintFilter>;
+  roleChannel?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildConfigsHavingMinInput = {
+  id?: InputMaybe<HavingBigintFilter>;
+  logMember?: InputMaybe<HavingBigintFilter>;
+  logMod?: InputMaybe<HavingBigintFilter>;
+  logMsg?: InputMaybe<HavingBigintFilter>;
+  maxMention?: InputMaybe<HavingIntFilter>;
+  msgChannel?: InputMaybe<HavingBigintFilter>;
+  muteDuration?: InputMaybe<HavingBigintFilter>;
+  muteRole?: InputMaybe<HavingBigintFilter>;
+  roleChannel?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildConfigsHavingStddevPopulationInput = {
+  id?: InputMaybe<HavingBigintFilter>;
+  logMember?: InputMaybe<HavingBigintFilter>;
+  logMod?: InputMaybe<HavingBigintFilter>;
+  logMsg?: InputMaybe<HavingBigintFilter>;
+  maxMention?: InputMaybe<HavingIntFilter>;
+  msgChannel?: InputMaybe<HavingBigintFilter>;
+  muteDuration?: InputMaybe<HavingBigintFilter>;
+  muteRole?: InputMaybe<HavingBigintFilter>;
+  roleChannel?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildConfigsHavingStddevSampleInput = {
+  id?: InputMaybe<HavingBigintFilter>;
+  logMember?: InputMaybe<HavingBigintFilter>;
+  logMod?: InputMaybe<HavingBigintFilter>;
+  logMsg?: InputMaybe<HavingBigintFilter>;
+  maxMention?: InputMaybe<HavingIntFilter>;
+  msgChannel?: InputMaybe<HavingBigintFilter>;
+  muteDuration?: InputMaybe<HavingBigintFilter>;
+  muteRole?: InputMaybe<HavingBigintFilter>;
+  roleChannel?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildConfigsHavingSumInput = {
+  id?: InputMaybe<HavingBigintFilter>;
+  logMember?: InputMaybe<HavingBigintFilter>;
+  logMod?: InputMaybe<HavingBigintFilter>;
+  logMsg?: InputMaybe<HavingBigintFilter>;
+  maxMention?: InputMaybe<HavingIntFilter>;
+  msgChannel?: InputMaybe<HavingBigintFilter>;
+  muteDuration?: InputMaybe<HavingBigintFilter>;
+  muteRole?: InputMaybe<HavingBigintFilter>;
+  roleChannel?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildConfigsHavingVariancePopulationInput = {
+  id?: InputMaybe<HavingBigintFilter>;
+  logMember?: InputMaybe<HavingBigintFilter>;
+  logMod?: InputMaybe<HavingBigintFilter>;
+  logMsg?: InputMaybe<HavingBigintFilter>;
+  maxMention?: InputMaybe<HavingIntFilter>;
+  msgChannel?: InputMaybe<HavingBigintFilter>;
+  muteDuration?: InputMaybe<HavingBigintFilter>;
+  muteRole?: InputMaybe<HavingBigintFilter>;
+  roleChannel?: InputMaybe<HavingBigintFilter>;
+};
+
+export type GuildConfigsHavingVarianceSampleInput = {
+  id?: InputMaybe<HavingBigintFilter>;
+  logMember?: InputMaybe<HavingBigintFilter>;
+  logMod?: InputMaybe<HavingBigintFilter>;
+  logMsg?: InputMaybe<HavingBigintFilter>;
+  maxMention?: InputMaybe<HavingIntFilter>;
+  msgChannel?: InputMaybe<HavingBigintFilter>;
+  muteDuration?: InputMaybe<HavingBigintFilter>;
+  muteRole?: InputMaybe<HavingBigintFilter>;
+  roleChannel?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `GuildConfig`. */
@@ -2366,6 +3847,95 @@ export enum GuildConfigsOrderBy {
   WarnDmTextDesc = 'WARN_DM_TEXT_DESC'
 }
 
+export type HavingBigintFilter = {
+  equalTo?: InputMaybe<Scalars['BigInt']>;
+  greaterThan?: InputMaybe<Scalars['BigInt']>;
+  greaterThanOrEqualTo?: InputMaybe<Scalars['BigInt']>;
+  lessThan?: InputMaybe<Scalars['BigInt']>;
+  lessThanOrEqualTo?: InputMaybe<Scalars['BigInt']>;
+  notEqualTo?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type HavingDatetimeFilter = {
+  equalTo?: InputMaybe<Scalars['Datetime']>;
+  greaterThan?: InputMaybe<Scalars['Datetime']>;
+  greaterThanOrEqualTo?: InputMaybe<Scalars['Datetime']>;
+  lessThan?: InputMaybe<Scalars['Datetime']>;
+  lessThanOrEqualTo?: InputMaybe<Scalars['Datetime']>;
+  notEqualTo?: InputMaybe<Scalars['Datetime']>;
+};
+
+export type HavingIntFilter = {
+  equalTo?: InputMaybe<Scalars['Int']>;
+  greaterThan?: InputMaybe<Scalars['Int']>;
+  greaterThanOrEqualTo?: InputMaybe<Scalars['Int']>;
+  lessThan?: InputMaybe<Scalars['Int']>;
+  lessThanOrEqualTo?: InputMaybe<Scalars['Int']>;
+  notEqualTo?: InputMaybe<Scalars['Int']>;
+};
+
+/** A filter to be used against Int fields. All fields are combined with a logical ‘and.’ */
+export type IntFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['Int']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['Int']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['Int']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['Int']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['Int']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['Int']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['Int']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['Int']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['Int']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['Int']>>;
+};
+
+/** A filter to be used against JSON fields. All fields are combined with a logical ‘and.’ */
+export type JsonFilter = {
+  /** Contained by the specified JSON. */
+  containedBy?: InputMaybe<Scalars['JSON']>;
+  /** Contains the specified JSON. */
+  contains?: InputMaybe<Scalars['JSON']>;
+  /** Contains all of the specified keys. */
+  containsAllKeys?: InputMaybe<Array<Scalars['String']>>;
+  /** Contains any of the specified keys. */
+  containsAnyKeys?: InputMaybe<Array<Scalars['String']>>;
+  /** Contains the specified key. */
+  containsKey?: InputMaybe<Scalars['String']>;
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['JSON']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['JSON']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['JSON']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['JSON']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['JSON']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['JSON']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['JSON']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['JSON']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['JSON']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['JSON']>>;
+};
+
 export enum LevelTimeframe {
   AllTime = 'ALL_TIME',
   Day = 'DAY',
@@ -2403,6 +3973,37 @@ export type Member = Node & {
   userId: Scalars['BigInt'];
 };
 
+export type MemberAggregates = {
+  __typename?: 'MemberAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<MemberAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<MemberDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<MemberMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<MemberMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<MemberStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<MemberStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<MemberSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<MemberVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<MemberVarianceSampleAggregates>;
+};
+
+export type MemberAverageAggregates = {
+  __typename?: 'MemberAverageAggregates';
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A condition to be used against `Member` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type MemberCondition = {
   /** Checks for equality with the object’s `guildId` field. */
@@ -2413,11 +4014,53 @@ export type MemberCondition = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type MemberDistinctCountAggregates = {
+  __typename?: 'MemberDistinctCountAggregates';
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of joinTime across the matching connection */
+  joinTime?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `Member` object types. All fields are combined with a logical ‘and.’ */
+export type MemberFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<MemberFilter>>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `joinTime` field. */
+  joinTime?: InputMaybe<DatetimeFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<MemberFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<MemberFilter>>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<BigIntFilter>;
+};
+
 /** An input for mutations affecting `Member` */
 export type MemberInput = {
   guildId: Scalars['BigInt'];
   joinTime: Scalars['Datetime'];
   userId: Scalars['BigInt'];
+};
+
+export type MemberMaxAggregates = {
+  __typename?: 'MemberMaxAggregates';
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+export type MemberMinAggregates = {
+  __typename?: 'MemberMinAggregates';
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `Member`. Fields that are set will be updated. */
@@ -2427,17 +4070,68 @@ export type MemberPatch = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type MemberStddevPopulationAggregates = {
+  __typename?: 'MemberStddevPopulationAggregates';
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type MemberStddevSampleAggregates = {
+  __typename?: 'MemberStddevSampleAggregates';
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type MemberSumAggregates = {
+  __typename?: 'MemberSumAggregates';
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of userId across the matching connection */
+  userId: Scalars['BigFloat'];
+};
+
+export type MemberVariancePopulationAggregates = {
+  __typename?: 'MemberVariancePopulationAggregates';
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type MemberVarianceSampleAggregates = {
+  __typename?: 'MemberVarianceSampleAggregates';
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `Member` values. */
 export type MembersConnection = {
   __typename?: 'MembersConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<MemberAggregates>;
   /** A list of edges which contains the `Member` and cursor to aid in pagination. */
   edges: Array<MembersEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<MemberAggregates>>;
   /** A list of `Member` objects. */
   nodes: Array<Member>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Member` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `Member` values. */
+export type MembersConnectionGroupedAggregatesArgs = {
+  groupBy: Array<MembersGroupBy>;
+  having?: InputMaybe<MembersHavingInput>;
 };
 
 /** A `Member` edge in the connection. */
@@ -2447,6 +4141,84 @@ export type MembersEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `Member` at the end of the edge. */
   node: Member;
+};
+
+/** Grouping methods for `Member` for usage during aggregation. */
+export enum MembersGroupBy {
+  GuildId = 'GUILD_ID',
+  JoinTime = 'JOIN_TIME',
+  JoinTimeTruncatedToDay = 'JOIN_TIME_TRUNCATED_TO_DAY',
+  JoinTimeTruncatedToHour = 'JOIN_TIME_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type MembersHavingAverageInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  joinTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MembersHavingDistinctCountInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  joinTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `Member` aggregates. */
+export type MembersHavingInput = {
+  AND?: InputMaybe<Array<MembersHavingInput>>;
+  OR?: InputMaybe<Array<MembersHavingInput>>;
+  average?: InputMaybe<MembersHavingAverageInput>;
+  distinctCount?: InputMaybe<MembersHavingDistinctCountInput>;
+  max?: InputMaybe<MembersHavingMaxInput>;
+  min?: InputMaybe<MembersHavingMinInput>;
+  stddevPopulation?: InputMaybe<MembersHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<MembersHavingStddevSampleInput>;
+  sum?: InputMaybe<MembersHavingSumInput>;
+  variancePopulation?: InputMaybe<MembersHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<MembersHavingVarianceSampleInput>;
+};
+
+export type MembersHavingMaxInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  joinTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MembersHavingMinInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  joinTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MembersHavingStddevPopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  joinTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MembersHavingStddevSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  joinTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MembersHavingSumInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  joinTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MembersHavingVariancePopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  joinTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MembersHavingVarianceSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  joinTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `Member`. */
@@ -2473,6 +4245,41 @@ export type Message = {
   msg: Scalars['JSON'];
 };
 
+export type MessageAggregates = {
+  __typename?: 'MessageAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<MessageAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<MessageDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<MessageMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<MessageMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<MessageStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<MessageStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<MessageSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<MessageVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<MessageVarianceSampleAggregates>;
+};
+
+export type MessageAverageAggregates = {
+  __typename?: 'MessageAverageAggregates';
+  /** Mean average of authorId across the matching connection */
+  authorId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A condition to be used against `Message` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type MessageCondition = {
   /** Checks for equality with the object’s `authorId` field. */
@@ -2491,6 +4298,48 @@ export type MessageCondition = {
   msg?: InputMaybe<Scalars['JSON']>;
 };
 
+export type MessageDistinctCountAggregates = {
+  __typename?: 'MessageDistinctCountAggregates';
+  /** Distinct count of authorId across the matching connection */
+  authorId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of content across the matching connection */
+  content?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of created across the matching connection */
+  created?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of msg across the matching connection */
+  msg?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `Message` object types. All fields are combined with a logical ‘and.’ */
+export type MessageFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<MessageFilter>>;
+  /** Filter by the object’s `authorId` field. */
+  authorId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `channelId` field. */
+  channelId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `content` field. */
+  content?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `created` field. */
+  created?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `messageId` field. */
+  messageId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `msg` field. */
+  msg?: InputMaybe<JsonFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<MessageFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<MessageFilter>>;
+};
+
 /** An input for mutations affecting `Message` */
 export type MessageInput = {
   authorId: Scalars['BigInt'];
@@ -2502,17 +4351,112 @@ export type MessageInput = {
   msg: Scalars['JSON'];
 };
 
+export type MessageMaxAggregates = {
+  __typename?: 'MessageMaxAggregates';
+  /** Maximum of authorId across the matching connection */
+  authorId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigInt']>;
+};
+
+export type MessageMinAggregates = {
+  __typename?: 'MessageMinAggregates';
+  /** Minimum of authorId across the matching connection */
+  authorId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigInt']>;
+};
+
+export type MessageStddevPopulationAggregates = {
+  __typename?: 'MessageStddevPopulationAggregates';
+  /** Population standard deviation of authorId across the matching connection */
+  authorId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type MessageStddevSampleAggregates = {
+  __typename?: 'MessageStddevSampleAggregates';
+  /** Sample standard deviation of authorId across the matching connection */
+  authorId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type MessageSumAggregates = {
+  __typename?: 'MessageSumAggregates';
+  /** Sum of authorId across the matching connection */
+  authorId: Scalars['BigFloat'];
+  /** Sum of channelId across the matching connection */
+  channelId: Scalars['BigFloat'];
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of messageId across the matching connection */
+  messageId: Scalars['BigFloat'];
+};
+
+export type MessageVariancePopulationAggregates = {
+  __typename?: 'MessageVariancePopulationAggregates';
+  /** Population variance of authorId across the matching connection */
+  authorId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type MessageVarianceSampleAggregates = {
+  __typename?: 'MessageVarianceSampleAggregates';
+  /** Sample variance of authorId across the matching connection */
+  authorId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `Message` values. */
 export type MessagesConnection = {
   __typename?: 'MessagesConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<MessageAggregates>;
   /** A list of edges which contains the `Message` and cursor to aid in pagination. */
   edges: Array<MessagesEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<MessageAggregates>>;
   /** A list of `Message` objects. */
   nodes: Array<Message>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Message` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `Message` values. */
+export type MessagesConnectionGroupedAggregatesArgs = {
+  groupBy: Array<MessagesGroupBy>;
+  having?: InputMaybe<MessagesHavingInput>;
 };
 
 /** A `Message` edge in the connection. */
@@ -2522,6 +4466,106 @@ export type MessagesEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `Message` at the end of the edge. */
   node: Message;
+};
+
+/** Grouping methods for `Message` for usage during aggregation. */
+export enum MessagesGroupBy {
+  AuthorId = 'AUTHOR_ID',
+  ChannelId = 'CHANNEL_ID',
+  Content = 'CONTENT',
+  Created = 'CREATED',
+  CreatedTruncatedToDay = 'CREATED_TRUNCATED_TO_DAY',
+  CreatedTruncatedToHour = 'CREATED_TRUNCATED_TO_HOUR',
+  GuildId = 'GUILD_ID',
+  MessageId = 'MESSAGE_ID',
+  Msg = 'MSG'
+}
+
+export type MessagesHavingAverageInput = {
+  authorId?: InputMaybe<HavingBigintFilter>;
+  channelId?: InputMaybe<HavingBigintFilter>;
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MessagesHavingDistinctCountInput = {
+  authorId?: InputMaybe<HavingBigintFilter>;
+  channelId?: InputMaybe<HavingBigintFilter>;
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `Message` aggregates. */
+export type MessagesHavingInput = {
+  AND?: InputMaybe<Array<MessagesHavingInput>>;
+  OR?: InputMaybe<Array<MessagesHavingInput>>;
+  average?: InputMaybe<MessagesHavingAverageInput>;
+  distinctCount?: InputMaybe<MessagesHavingDistinctCountInput>;
+  max?: InputMaybe<MessagesHavingMaxInput>;
+  min?: InputMaybe<MessagesHavingMinInput>;
+  stddevPopulation?: InputMaybe<MessagesHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<MessagesHavingStddevSampleInput>;
+  sum?: InputMaybe<MessagesHavingSumInput>;
+  variancePopulation?: InputMaybe<MessagesHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<MessagesHavingVarianceSampleInput>;
+};
+
+export type MessagesHavingMaxInput = {
+  authorId?: InputMaybe<HavingBigintFilter>;
+  channelId?: InputMaybe<HavingBigintFilter>;
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MessagesHavingMinInput = {
+  authorId?: InputMaybe<HavingBigintFilter>;
+  channelId?: InputMaybe<HavingBigintFilter>;
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MessagesHavingStddevPopulationInput = {
+  authorId?: InputMaybe<HavingBigintFilter>;
+  channelId?: InputMaybe<HavingBigintFilter>;
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MessagesHavingStddevSampleInput = {
+  authorId?: InputMaybe<HavingBigintFilter>;
+  channelId?: InputMaybe<HavingBigintFilter>;
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MessagesHavingSumInput = {
+  authorId?: InputMaybe<HavingBigintFilter>;
+  channelId?: InputMaybe<HavingBigintFilter>;
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MessagesHavingVariancePopulationInput = {
+  authorId?: InputMaybe<HavingBigintFilter>;
+  channelId?: InputMaybe<HavingBigintFilter>;
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MessagesHavingVarianceSampleInput = {
+  authorId?: InputMaybe<HavingBigintFilter>;
+  channelId?: InputMaybe<HavingBigintFilter>;
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `Message`. */
@@ -2567,10 +4611,48 @@ export type ModLogMutesByGuildIdAndCaseIdArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<MuteCondition>;
+  filter?: InputMaybe<MuteFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<MutesOrderBy>>;
+};
+
+export type ModLogAggregates = {
+  __typename?: 'ModLogAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<ModLogAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<ModLogDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<ModLogMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<ModLogMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<ModLogStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<ModLogStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<ModLogSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<ModLogVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<ModLogVarianceSampleAggregates>;
+};
+
+export type ModLogAverageAggregates = {
+  __typename?: 'ModLogAverageAggregates';
+  /** Mean average of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of executorId across the matching connection */
+  executorId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of msgId across the matching connection */
+  msgId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
 };
 
 /** A condition to be used against `ModLog` object types. All fields are tested for equality and combined with a logical ‘and.’ */
@@ -2599,6 +4681,64 @@ export type ModLogCondition = {
   userTag?: InputMaybe<Scalars['String']>;
 };
 
+export type ModLogDistinctCountAggregates = {
+  __typename?: 'ModLogDistinctCountAggregates';
+  /** Distinct count of action across the matching connection */
+  action?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of actionTime across the matching connection */
+  actionTime?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of attachments across the matching connection */
+  attachments?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of executorId across the matching connection */
+  executorId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of msgId across the matching connection */
+  msgId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of pending across the matching connection */
+  pending?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of reason across the matching connection */
+  reason?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of userTag across the matching connection */
+  userTag?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `ModLog` object types. All fields are combined with a logical ‘and.’ */
+export type ModLogFilter = {
+  /** Filter by the object’s `action` field. */
+  action?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `actionTime` field. */
+  actionTime?: InputMaybe<DatetimeFilter>;
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<ModLogFilter>>;
+  /** Filter by the object’s `attachments` field. */
+  attachments?: InputMaybe<StringListFilter>;
+  /** Filter by the object’s `caseId` field. */
+  caseId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `executorId` field. */
+  executorId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `msgId` field. */
+  msgId?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<ModLogFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<ModLogFilter>>;
+  /** Filter by the object’s `pending` field. */
+  pending?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `reason` field. */
+  reason?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `userTag` field. */
+  userTag?: InputMaybe<StringFilter>;
+};
+
 /** An input for mutations affecting `ModLog` */
 export type ModLogInput = {
   action: Scalars['String'];
@@ -2612,6 +4752,34 @@ export type ModLogInput = {
   reason?: InputMaybe<Scalars['String']>;
   userId: Scalars['BigInt'];
   userTag: Scalars['String'];
+};
+
+export type ModLogMaxAggregates = {
+  __typename?: 'ModLogMaxAggregates';
+  /** Maximum of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of executorId across the matching connection */
+  executorId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of msgId across the matching connection */
+  msgId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+export type ModLogMinAggregates = {
+  __typename?: 'ModLogMinAggregates';
+  /** Minimum of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of executorId across the matching connection */
+  executorId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of msgId across the matching connection */
+  msgId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `ModLog`. Fields that are set will be updated. */
@@ -2629,17 +4797,98 @@ export type ModLogPatch = {
   userTag?: InputMaybe<Scalars['String']>;
 };
 
+export type ModLogStddevPopulationAggregates = {
+  __typename?: 'ModLogStddevPopulationAggregates';
+  /** Population standard deviation of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of executorId across the matching connection */
+  executorId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of msgId across the matching connection */
+  msgId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type ModLogStddevSampleAggregates = {
+  __typename?: 'ModLogStddevSampleAggregates';
+  /** Sample standard deviation of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of executorId across the matching connection */
+  executorId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of msgId across the matching connection */
+  msgId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type ModLogSumAggregates = {
+  __typename?: 'ModLogSumAggregates';
+  /** Sum of caseId across the matching connection */
+  caseId: Scalars['BigFloat'];
+  /** Sum of executorId across the matching connection */
+  executorId: Scalars['BigFloat'];
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of msgId across the matching connection */
+  msgId: Scalars['BigFloat'];
+  /** Sum of userId across the matching connection */
+  userId: Scalars['BigFloat'];
+};
+
+export type ModLogVariancePopulationAggregates = {
+  __typename?: 'ModLogVariancePopulationAggregates';
+  /** Population variance of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of executorId across the matching connection */
+  executorId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of msgId across the matching connection */
+  msgId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type ModLogVarianceSampleAggregates = {
+  __typename?: 'ModLogVarianceSampleAggregates';
+  /** Sample variance of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of executorId across the matching connection */
+  executorId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of msgId across the matching connection */
+  msgId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `ModLog` values. */
 export type ModLogsConnection = {
   __typename?: 'ModLogsConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<ModLogAggregates>;
   /** A list of edges which contains the `ModLog` and cursor to aid in pagination. */
   edges: Array<ModLogsEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<ModLogAggregates>>;
   /** A list of `ModLog` objects. */
   nodes: Array<ModLog>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `ModLog` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `ModLog` values. */
+export type ModLogsConnectionGroupedAggregatesArgs = {
+  groupBy: Array<ModLogsGroupBy>;
+  having?: InputMaybe<ModLogsHavingInput>;
 };
 
 /** A `ModLog` edge in the connection. */
@@ -2649,6 +4898,119 @@ export type ModLogsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `ModLog` at the end of the edge. */
   node: ModLog;
+};
+
+/** Grouping methods for `ModLog` for usage during aggregation. */
+export enum ModLogsGroupBy {
+  Action = 'ACTION',
+  ActionTime = 'ACTION_TIME',
+  ActionTimeTruncatedToDay = 'ACTION_TIME_TRUNCATED_TO_DAY',
+  ActionTimeTruncatedToHour = 'ACTION_TIME_TRUNCATED_TO_HOUR',
+  Attachments = 'ATTACHMENTS',
+  CaseId = 'CASE_ID',
+  ExecutorId = 'EXECUTOR_ID',
+  GuildId = 'GUILD_ID',
+  MsgId = 'MSG_ID',
+  Pending = 'PENDING',
+  Reason = 'REASON',
+  UserId = 'USER_ID',
+  UserTag = 'USER_TAG'
+}
+
+export type ModLogsHavingAverageInput = {
+  actionTime?: InputMaybe<HavingDatetimeFilter>;
+  caseId?: InputMaybe<HavingBigintFilter>;
+  executorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  msgId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type ModLogsHavingDistinctCountInput = {
+  actionTime?: InputMaybe<HavingDatetimeFilter>;
+  caseId?: InputMaybe<HavingBigintFilter>;
+  executorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  msgId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `ModLog` aggregates. */
+export type ModLogsHavingInput = {
+  AND?: InputMaybe<Array<ModLogsHavingInput>>;
+  OR?: InputMaybe<Array<ModLogsHavingInput>>;
+  average?: InputMaybe<ModLogsHavingAverageInput>;
+  distinctCount?: InputMaybe<ModLogsHavingDistinctCountInput>;
+  max?: InputMaybe<ModLogsHavingMaxInput>;
+  min?: InputMaybe<ModLogsHavingMinInput>;
+  stddevPopulation?: InputMaybe<ModLogsHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<ModLogsHavingStddevSampleInput>;
+  sum?: InputMaybe<ModLogsHavingSumInput>;
+  variancePopulation?: InputMaybe<ModLogsHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<ModLogsHavingVarianceSampleInput>;
+};
+
+export type ModLogsHavingMaxInput = {
+  actionTime?: InputMaybe<HavingDatetimeFilter>;
+  caseId?: InputMaybe<HavingBigintFilter>;
+  executorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  msgId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type ModLogsHavingMinInput = {
+  actionTime?: InputMaybe<HavingDatetimeFilter>;
+  caseId?: InputMaybe<HavingBigintFilter>;
+  executorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  msgId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type ModLogsHavingStddevPopulationInput = {
+  actionTime?: InputMaybe<HavingDatetimeFilter>;
+  caseId?: InputMaybe<HavingBigintFilter>;
+  executorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  msgId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type ModLogsHavingStddevSampleInput = {
+  actionTime?: InputMaybe<HavingDatetimeFilter>;
+  caseId?: InputMaybe<HavingBigintFilter>;
+  executorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  msgId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type ModLogsHavingSumInput = {
+  actionTime?: InputMaybe<HavingDatetimeFilter>;
+  caseId?: InputMaybe<HavingBigintFilter>;
+  executorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  msgId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type ModLogsHavingVariancePopulationInput = {
+  actionTime?: InputMaybe<HavingDatetimeFilter>;
+  caseId?: InputMaybe<HavingBigintFilter>;
+  executorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  msgId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type ModLogsHavingVarianceSampleInput = {
+  actionTime?: InputMaybe<HavingDatetimeFilter>;
+  caseId?: InputMaybe<HavingBigintFilter>;
+  executorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  msgId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `ModLog`. */
@@ -2667,6 +5029,116 @@ export enum ModLogsOrderBy {
   GuildIdDesc = 'GUILD_ID_DESC',
   MsgIdAsc = 'MSG_ID_ASC',
   MsgIdDesc = 'MSG_ID_DESC',
+  MutesByGuildIdAndCaseIdAverageCaseIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_CASE_ID_ASC',
+  MutesByGuildIdAndCaseIdAverageCaseIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_CASE_ID_DESC',
+  MutesByGuildIdAndCaseIdAverageEndTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_END_TIME_ASC',
+  MutesByGuildIdAndCaseIdAverageEndTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_END_TIME_DESC',
+  MutesByGuildIdAndCaseIdAverageGuildIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_GUILD_ID_ASC',
+  MutesByGuildIdAndCaseIdAverageGuildIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_GUILD_ID_DESC',
+  MutesByGuildIdAndCaseIdAveragePendingAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_PENDING_ASC',
+  MutesByGuildIdAndCaseIdAveragePendingDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_PENDING_DESC',
+  MutesByGuildIdAndCaseIdAverageStartTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_START_TIME_ASC',
+  MutesByGuildIdAndCaseIdAverageStartTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_START_TIME_DESC',
+  MutesByGuildIdAndCaseIdAverageUserIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_USER_ID_ASC',
+  MutesByGuildIdAndCaseIdAverageUserIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_USER_ID_DESC',
+  MutesByGuildIdAndCaseIdCountAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_COUNT_ASC',
+  MutesByGuildIdAndCaseIdCountDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_COUNT_DESC',
+  MutesByGuildIdAndCaseIdDistinctCountCaseIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_CASE_ID_ASC',
+  MutesByGuildIdAndCaseIdDistinctCountCaseIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_CASE_ID_DESC',
+  MutesByGuildIdAndCaseIdDistinctCountEndTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_END_TIME_ASC',
+  MutesByGuildIdAndCaseIdDistinctCountEndTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_END_TIME_DESC',
+  MutesByGuildIdAndCaseIdDistinctCountGuildIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_GUILD_ID_ASC',
+  MutesByGuildIdAndCaseIdDistinctCountGuildIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_GUILD_ID_DESC',
+  MutesByGuildIdAndCaseIdDistinctCountPendingAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_PENDING_ASC',
+  MutesByGuildIdAndCaseIdDistinctCountPendingDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_PENDING_DESC',
+  MutesByGuildIdAndCaseIdDistinctCountStartTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_START_TIME_ASC',
+  MutesByGuildIdAndCaseIdDistinctCountStartTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_START_TIME_DESC',
+  MutesByGuildIdAndCaseIdDistinctCountUserIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_USER_ID_ASC',
+  MutesByGuildIdAndCaseIdDistinctCountUserIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_USER_ID_DESC',
+  MutesByGuildIdAndCaseIdMaxCaseIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_CASE_ID_ASC',
+  MutesByGuildIdAndCaseIdMaxCaseIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_CASE_ID_DESC',
+  MutesByGuildIdAndCaseIdMaxEndTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_END_TIME_ASC',
+  MutesByGuildIdAndCaseIdMaxEndTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_END_TIME_DESC',
+  MutesByGuildIdAndCaseIdMaxGuildIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_GUILD_ID_ASC',
+  MutesByGuildIdAndCaseIdMaxGuildIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_GUILD_ID_DESC',
+  MutesByGuildIdAndCaseIdMaxPendingAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_PENDING_ASC',
+  MutesByGuildIdAndCaseIdMaxPendingDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_PENDING_DESC',
+  MutesByGuildIdAndCaseIdMaxStartTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_START_TIME_ASC',
+  MutesByGuildIdAndCaseIdMaxStartTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_START_TIME_DESC',
+  MutesByGuildIdAndCaseIdMaxUserIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_USER_ID_ASC',
+  MutesByGuildIdAndCaseIdMaxUserIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_USER_ID_DESC',
+  MutesByGuildIdAndCaseIdMinCaseIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_CASE_ID_ASC',
+  MutesByGuildIdAndCaseIdMinCaseIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_CASE_ID_DESC',
+  MutesByGuildIdAndCaseIdMinEndTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_END_TIME_ASC',
+  MutesByGuildIdAndCaseIdMinEndTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_END_TIME_DESC',
+  MutesByGuildIdAndCaseIdMinGuildIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_GUILD_ID_ASC',
+  MutesByGuildIdAndCaseIdMinGuildIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_GUILD_ID_DESC',
+  MutesByGuildIdAndCaseIdMinPendingAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_PENDING_ASC',
+  MutesByGuildIdAndCaseIdMinPendingDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_PENDING_DESC',
+  MutesByGuildIdAndCaseIdMinStartTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_START_TIME_ASC',
+  MutesByGuildIdAndCaseIdMinStartTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_START_TIME_DESC',
+  MutesByGuildIdAndCaseIdMinUserIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_USER_ID_ASC',
+  MutesByGuildIdAndCaseIdMinUserIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_USER_ID_DESC',
+  MutesByGuildIdAndCaseIdStddevPopulationCaseIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_CASE_ID_ASC',
+  MutesByGuildIdAndCaseIdStddevPopulationCaseIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_CASE_ID_DESC',
+  MutesByGuildIdAndCaseIdStddevPopulationEndTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_END_TIME_ASC',
+  MutesByGuildIdAndCaseIdStddevPopulationEndTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_END_TIME_DESC',
+  MutesByGuildIdAndCaseIdStddevPopulationGuildIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_GUILD_ID_ASC',
+  MutesByGuildIdAndCaseIdStddevPopulationGuildIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_GUILD_ID_DESC',
+  MutesByGuildIdAndCaseIdStddevPopulationPendingAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_PENDING_ASC',
+  MutesByGuildIdAndCaseIdStddevPopulationPendingDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_PENDING_DESC',
+  MutesByGuildIdAndCaseIdStddevPopulationStartTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_START_TIME_ASC',
+  MutesByGuildIdAndCaseIdStddevPopulationStartTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_START_TIME_DESC',
+  MutesByGuildIdAndCaseIdStddevPopulationUserIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_USER_ID_ASC',
+  MutesByGuildIdAndCaseIdStddevPopulationUserIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_USER_ID_DESC',
+  MutesByGuildIdAndCaseIdStddevSampleCaseIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_CASE_ID_ASC',
+  MutesByGuildIdAndCaseIdStddevSampleCaseIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_CASE_ID_DESC',
+  MutesByGuildIdAndCaseIdStddevSampleEndTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_END_TIME_ASC',
+  MutesByGuildIdAndCaseIdStddevSampleEndTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_END_TIME_DESC',
+  MutesByGuildIdAndCaseIdStddevSampleGuildIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_GUILD_ID_ASC',
+  MutesByGuildIdAndCaseIdStddevSampleGuildIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_GUILD_ID_DESC',
+  MutesByGuildIdAndCaseIdStddevSamplePendingAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_PENDING_ASC',
+  MutesByGuildIdAndCaseIdStddevSamplePendingDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_PENDING_DESC',
+  MutesByGuildIdAndCaseIdStddevSampleStartTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_START_TIME_ASC',
+  MutesByGuildIdAndCaseIdStddevSampleStartTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_START_TIME_DESC',
+  MutesByGuildIdAndCaseIdStddevSampleUserIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_USER_ID_ASC',
+  MutesByGuildIdAndCaseIdStddevSampleUserIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_USER_ID_DESC',
+  MutesByGuildIdAndCaseIdSumCaseIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_CASE_ID_ASC',
+  MutesByGuildIdAndCaseIdSumCaseIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_CASE_ID_DESC',
+  MutesByGuildIdAndCaseIdSumEndTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_END_TIME_ASC',
+  MutesByGuildIdAndCaseIdSumEndTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_END_TIME_DESC',
+  MutesByGuildIdAndCaseIdSumGuildIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_GUILD_ID_ASC',
+  MutesByGuildIdAndCaseIdSumGuildIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_GUILD_ID_DESC',
+  MutesByGuildIdAndCaseIdSumPendingAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_PENDING_ASC',
+  MutesByGuildIdAndCaseIdSumPendingDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_PENDING_DESC',
+  MutesByGuildIdAndCaseIdSumStartTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_START_TIME_ASC',
+  MutesByGuildIdAndCaseIdSumStartTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_START_TIME_DESC',
+  MutesByGuildIdAndCaseIdSumUserIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_USER_ID_ASC',
+  MutesByGuildIdAndCaseIdSumUserIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_USER_ID_DESC',
+  MutesByGuildIdAndCaseIdVariancePopulationCaseIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_CASE_ID_ASC',
+  MutesByGuildIdAndCaseIdVariancePopulationCaseIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_CASE_ID_DESC',
+  MutesByGuildIdAndCaseIdVariancePopulationEndTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_END_TIME_ASC',
+  MutesByGuildIdAndCaseIdVariancePopulationEndTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_END_TIME_DESC',
+  MutesByGuildIdAndCaseIdVariancePopulationGuildIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_GUILD_ID_ASC',
+  MutesByGuildIdAndCaseIdVariancePopulationGuildIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_GUILD_ID_DESC',
+  MutesByGuildIdAndCaseIdVariancePopulationPendingAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_PENDING_ASC',
+  MutesByGuildIdAndCaseIdVariancePopulationPendingDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_PENDING_DESC',
+  MutesByGuildIdAndCaseIdVariancePopulationStartTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_START_TIME_ASC',
+  MutesByGuildIdAndCaseIdVariancePopulationStartTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_START_TIME_DESC',
+  MutesByGuildIdAndCaseIdVariancePopulationUserIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_USER_ID_ASC',
+  MutesByGuildIdAndCaseIdVariancePopulationUserIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_USER_ID_DESC',
+  MutesByGuildIdAndCaseIdVarianceSampleCaseIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_CASE_ID_ASC',
+  MutesByGuildIdAndCaseIdVarianceSampleCaseIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_CASE_ID_DESC',
+  MutesByGuildIdAndCaseIdVarianceSampleEndTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_END_TIME_ASC',
+  MutesByGuildIdAndCaseIdVarianceSampleEndTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_END_TIME_DESC',
+  MutesByGuildIdAndCaseIdVarianceSampleGuildIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_GUILD_ID_ASC',
+  MutesByGuildIdAndCaseIdVarianceSampleGuildIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_GUILD_ID_DESC',
+  MutesByGuildIdAndCaseIdVarianceSamplePendingAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_PENDING_ASC',
+  MutesByGuildIdAndCaseIdVarianceSamplePendingDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_PENDING_DESC',
+  MutesByGuildIdAndCaseIdVarianceSampleStartTimeAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_START_TIME_ASC',
+  MutesByGuildIdAndCaseIdVarianceSampleStartTimeDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_START_TIME_DESC',
+  MutesByGuildIdAndCaseIdVarianceSampleUserIdAsc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_USER_ID_ASC',
+  MutesByGuildIdAndCaseIdVarianceSampleUserIdDesc = 'MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_USER_ID_DESC',
   Natural = 'NATURAL',
   PendingAsc = 'PENDING_ASC',
   PendingDesc = 'PENDING_DESC',
@@ -3497,6 +5969,39 @@ export type Mute = Node & {
   userId: Scalars['BigInt'];
 };
 
+export type MuteAggregates = {
+  __typename?: 'MuteAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<MuteAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<MuteDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<MuteMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<MuteMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<MuteStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<MuteStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<MuteSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<MuteVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<MuteVarianceSampleAggregates>;
+};
+
+export type MuteAverageAggregates = {
+  __typename?: 'MuteAverageAggregates';
+  /** Mean average of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A condition to be used against `Mute` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type MuteCondition = {
   /** Checks for equality with the object’s `caseId` field. */
@@ -3513,6 +6018,44 @@ export type MuteCondition = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type MuteDistinctCountAggregates = {
+  __typename?: 'MuteDistinctCountAggregates';
+  /** Distinct count of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of endTime across the matching connection */
+  endTime?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of pending across the matching connection */
+  pending?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of startTime across the matching connection */
+  startTime?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `Mute` object types. All fields are combined with a logical ‘and.’ */
+export type MuteFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<MuteFilter>>;
+  /** Filter by the object’s `caseId` field. */
+  caseId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `endTime` field. */
+  endTime?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<MuteFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<MuteFilter>>;
+  /** Filter by the object’s `pending` field. */
+  pending?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `startTime` field. */
+  startTime?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<BigIntFilter>;
+};
+
 /** An input for mutations affecting `Mute` */
 export type MuteInput = {
   caseId?: InputMaybe<Scalars['BigInt']>;
@@ -3521,6 +6064,26 @@ export type MuteInput = {
   pending?: InputMaybe<Scalars['Boolean']>;
   startTime: Scalars['Datetime'];
   userId: Scalars['BigInt'];
+};
+
+export type MuteMaxAggregates = {
+  __typename?: 'MuteMaxAggregates';
+  /** Maximum of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+export type MuteMinAggregates = {
+  __typename?: 'MuteMinAggregates';
+  /** Minimum of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `Mute`. Fields that are set will be updated. */
@@ -3533,17 +6096,78 @@ export type MutePatch = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type MuteStddevPopulationAggregates = {
+  __typename?: 'MuteStddevPopulationAggregates';
+  /** Population standard deviation of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type MuteStddevSampleAggregates = {
+  __typename?: 'MuteStddevSampleAggregates';
+  /** Sample standard deviation of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type MuteSumAggregates = {
+  __typename?: 'MuteSumAggregates';
+  /** Sum of caseId across the matching connection */
+  caseId: Scalars['BigFloat'];
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of userId across the matching connection */
+  userId: Scalars['BigFloat'];
+};
+
+export type MuteVariancePopulationAggregates = {
+  __typename?: 'MuteVariancePopulationAggregates';
+  /** Population variance of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type MuteVarianceSampleAggregates = {
+  __typename?: 'MuteVarianceSampleAggregates';
+  /** Sample variance of caseId across the matching connection */
+  caseId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `Mute` values. */
 export type MutesConnection = {
   __typename?: 'MutesConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<MuteAggregates>;
   /** A list of edges which contains the `Mute` and cursor to aid in pagination. */
   edges: Array<MutesEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<MuteAggregates>>;
   /** A list of `Mute` objects. */
   nodes: Array<Mute>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Mute` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `Mute` values. */
+export type MutesConnectionGroupedAggregatesArgs = {
+  groupBy: Array<MutesGroupBy>;
+  having?: InputMaybe<MutesHavingInput>;
 };
 
 /** A `Mute` edge in the connection. */
@@ -3553,6 +6177,107 @@ export type MutesEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `Mute` at the end of the edge. */
   node: Mute;
+};
+
+/** Grouping methods for `Mute` for usage during aggregation. */
+export enum MutesGroupBy {
+  CaseId = 'CASE_ID',
+  EndTime = 'END_TIME',
+  EndTimeTruncatedToDay = 'END_TIME_TRUNCATED_TO_DAY',
+  EndTimeTruncatedToHour = 'END_TIME_TRUNCATED_TO_HOUR',
+  GuildId = 'GUILD_ID',
+  Pending = 'PENDING',
+  StartTime = 'START_TIME',
+  StartTimeTruncatedToDay = 'START_TIME_TRUNCATED_TO_DAY',
+  StartTimeTruncatedToHour = 'START_TIME_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type MutesHavingAverageInput = {
+  caseId?: InputMaybe<HavingBigintFilter>;
+  endTime?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  startTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MutesHavingDistinctCountInput = {
+  caseId?: InputMaybe<HavingBigintFilter>;
+  endTime?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  startTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `Mute` aggregates. */
+export type MutesHavingInput = {
+  AND?: InputMaybe<Array<MutesHavingInput>>;
+  OR?: InputMaybe<Array<MutesHavingInput>>;
+  average?: InputMaybe<MutesHavingAverageInput>;
+  distinctCount?: InputMaybe<MutesHavingDistinctCountInput>;
+  max?: InputMaybe<MutesHavingMaxInput>;
+  min?: InputMaybe<MutesHavingMinInput>;
+  stddevPopulation?: InputMaybe<MutesHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<MutesHavingStddevSampleInput>;
+  sum?: InputMaybe<MutesHavingSumInput>;
+  variancePopulation?: InputMaybe<MutesHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<MutesHavingVarianceSampleInput>;
+};
+
+export type MutesHavingMaxInput = {
+  caseId?: InputMaybe<HavingBigintFilter>;
+  endTime?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  startTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MutesHavingMinInput = {
+  caseId?: InputMaybe<HavingBigintFilter>;
+  endTime?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  startTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MutesHavingStddevPopulationInput = {
+  caseId?: InputMaybe<HavingBigintFilter>;
+  endTime?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  startTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MutesHavingStddevSampleInput = {
+  caseId?: InputMaybe<HavingBigintFilter>;
+  endTime?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  startTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MutesHavingSumInput = {
+  caseId?: InputMaybe<HavingBigintFilter>;
+  endTime?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  startTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MutesHavingVariancePopulationInput = {
+  caseId?: InputMaybe<HavingBigintFilter>;
+  endTime?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  startTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MutesHavingVarianceSampleInput = {
+  caseId?: InputMaybe<HavingBigintFilter>;
+  endTime?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  startTime?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `Mute`. */
@@ -3589,6 +6314,37 @@ export type Notification = Node & {
   userId: Scalars['BigInt'];
 };
 
+export type NotificationAggregates = {
+  __typename?: 'NotificationAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<NotificationAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<NotificationDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<NotificationMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<NotificationMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<NotificationStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<NotificationStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<NotificationSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<NotificationVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<NotificationVarianceSampleAggregates>;
+};
+
+export type NotificationAverageAggregates = {
+  __typename?: 'NotificationAverageAggregates';
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
 /**
  * A condition to be used against `Notification` object types. All fields are
  * tested for equality and combined with a logical ‘and.’
@@ -3602,11 +6358,53 @@ export type NotificationCondition = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type NotificationDistinctCountAggregates = {
+  __typename?: 'NotificationDistinctCountAggregates';
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of keyword across the matching connection */
+  keyword?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `Notification` object types. All fields are combined with a logical ‘and.’ */
+export type NotificationFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<NotificationFilter>>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `keyword` field. */
+  keyword?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<NotificationFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<NotificationFilter>>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<BigIntFilter>;
+};
+
 /** An input for mutations affecting `Notification` */
 export type NotificationInput = {
   guildId: Scalars['BigInt'];
   keyword: Scalars['String'];
   userId: Scalars['BigInt'];
+};
+
+export type NotificationMaxAggregates = {
+  __typename?: 'NotificationMaxAggregates';
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+export type NotificationMinAggregates = {
+  __typename?: 'NotificationMinAggregates';
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `Notification`. Fields that are set will be updated. */
@@ -3616,17 +6414,68 @@ export type NotificationPatch = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type NotificationStddevPopulationAggregates = {
+  __typename?: 'NotificationStddevPopulationAggregates';
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type NotificationStddevSampleAggregates = {
+  __typename?: 'NotificationStddevSampleAggregates';
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type NotificationSumAggregates = {
+  __typename?: 'NotificationSumAggregates';
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of userId across the matching connection */
+  userId: Scalars['BigFloat'];
+};
+
+export type NotificationVariancePopulationAggregates = {
+  __typename?: 'NotificationVariancePopulationAggregates';
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type NotificationVarianceSampleAggregates = {
+  __typename?: 'NotificationVarianceSampleAggregates';
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `Notification` values. */
 export type NotificationsConnection = {
   __typename?: 'NotificationsConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<NotificationAggregates>;
   /** A list of edges which contains the `Notification` and cursor to aid in pagination. */
   edges: Array<NotificationsEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<NotificationAggregates>>;
   /** A list of `Notification` objects. */
   nodes: Array<Notification>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Notification` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `Notification` values. */
+export type NotificationsConnectionGroupedAggregatesArgs = {
+  groupBy: Array<NotificationsGroupBy>;
+  having?: InputMaybe<NotificationsHavingInput>;
 };
 
 /** A `Notification` edge in the connection. */
@@ -3636,6 +6485,73 @@ export type NotificationsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `Notification` at the end of the edge. */
   node: Notification;
+};
+
+/** Grouping methods for `Notification` for usage during aggregation. */
+export enum NotificationsGroupBy {
+  GuildId = 'GUILD_ID',
+  Keyword = 'KEYWORD',
+  UserId = 'USER_ID'
+}
+
+export type NotificationsHavingAverageInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type NotificationsHavingDistinctCountInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `Notification` aggregates. */
+export type NotificationsHavingInput = {
+  AND?: InputMaybe<Array<NotificationsHavingInput>>;
+  OR?: InputMaybe<Array<NotificationsHavingInput>>;
+  average?: InputMaybe<NotificationsHavingAverageInput>;
+  distinctCount?: InputMaybe<NotificationsHavingDistinctCountInput>;
+  max?: InputMaybe<NotificationsHavingMaxInput>;
+  min?: InputMaybe<NotificationsHavingMinInput>;
+  stddevPopulation?: InputMaybe<NotificationsHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<NotificationsHavingStddevSampleInput>;
+  sum?: InputMaybe<NotificationsHavingSumInput>;
+  variancePopulation?: InputMaybe<NotificationsHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<NotificationsHavingVarianceSampleInput>;
+};
+
+export type NotificationsHavingMaxInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type NotificationsHavingMinInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type NotificationsHavingStddevPopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type NotificationsHavingStddevSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type NotificationsHavingSumInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type NotificationsHavingVariancePopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type NotificationsHavingVarianceSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `Notification`. */
@@ -3786,6 +6702,10 @@ export type Query = Node & {
   /** Reads a single `Tag` using its globally unique `ID`. */
   tag?: Maybe<Tag>;
   tagByGuildIdAndTagName?: Maybe<Tag>;
+  /** Reads and enables pagination through a set of `Tag`. */
+  tagSearch?: Maybe<TagsConnection>;
+  /** Reads and enables pagination through a set of `Tag`. */
+  tagsStartingWith?: Maybe<TagsConnection>;
   /** Leaderboard for given timeframe and optional guild. If guild is null, it is the global leaderboard */
   timeframeUserLevels?: Maybe<TimeframeUserLevelsConnection>;
   /** Reads a single `User` using its globally unique `ID`. */
@@ -3808,6 +6728,7 @@ export type QueryAllBotStatsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<BotStatCondition>;
+  filter?: InputMaybe<BotStatFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3820,6 +6741,7 @@ export type QueryAllFeedItemsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<FeedItemCondition>;
+  filter?: InputMaybe<FeedItemFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3832,6 +6754,7 @@ export type QueryAllFeedSubscriptionsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<FeedSubscriptionCondition>;
+  filter?: InputMaybe<FeedSubscriptionFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3844,6 +6767,7 @@ export type QueryAllFeedsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<FeedCondition>;
+  filter?: InputMaybe<FeedFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3856,6 +6780,7 @@ export type QueryAllGuildBansArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<GuildBanCondition>;
+  filter?: InputMaybe<GuildBanFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3868,6 +6793,7 @@ export type QueryAllGuildConfigsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<GuildConfigCondition>;
+  filter?: InputMaybe<GuildConfigFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3880,6 +6806,7 @@ export type QueryAllMembersArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<MemberCondition>;
+  filter?: InputMaybe<MemberFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3892,6 +6819,7 @@ export type QueryAllMessagesArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<MessageCondition>;
+  filter?: InputMaybe<MessageFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3904,6 +6832,7 @@ export type QueryAllModLogsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<ModLogCondition>;
+  filter?: InputMaybe<ModLogFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3916,6 +6845,7 @@ export type QueryAllMutesArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<MuteCondition>;
+  filter?: InputMaybe<MuteFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3928,6 +6858,7 @@ export type QueryAllNotificationsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<NotificationCondition>;
+  filter?: InputMaybe<NotificationFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3940,6 +6871,7 @@ export type QueryAllRemindersArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<ReminderCondition>;
+  filter?: InputMaybe<ReminderFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3952,6 +6884,7 @@ export type QueryAllRoleMenusArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<RoleMenuCondition>;
+  filter?: InputMaybe<RoleMenuFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3964,6 +6897,7 @@ export type QueryAllTagsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<TagCondition>;
+  filter?: InputMaybe<TagFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3976,6 +6910,7 @@ export type QueryAllUsersArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<UserCondition>;
+  filter?: InputMaybe<UserFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -3988,6 +6923,7 @@ export type QueryAllWebUserGuildsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<WebUserGuildCondition>;
+  filter?: InputMaybe<WebUserGuildFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -4000,6 +6936,7 @@ export type QueryAllWebUsersArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<WebUserCondition>;
+  filter?: InputMaybe<WebUserFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -4048,6 +6985,7 @@ export type QueryCachedUserByIdArgs = {
 export type QueryCurrentUserManagedGuildIdsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<BigIntFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -4186,6 +7124,7 @@ export type QueryNotificationByUserIdAndGuildIdAndKeywordArgs = {
 export type QueryNotificationsStartingWithArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<StringFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -4240,9 +7179,36 @@ export type QueryTagByGuildIdAndTagNameArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryTagSearchArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<TagFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  query?: InputMaybe<Scalars['String']>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTagsStartingWithArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<TagFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  query?: InputMaybe<Scalars['String']>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryTimeframeUserLevelsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<TimeframeUserLevelsRecordFilter>;
   first?: InputMaybe<Scalars['Int']>;
   guildId?: InputMaybe<Scalars['BigInt']>;
   last?: InputMaybe<Scalars['Int']>;
@@ -4310,6 +7276,35 @@ export type Reminder = Node & {
   userId: Scalars['BigInt'];
 };
 
+export type ReminderAggregates = {
+  __typename?: 'ReminderAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<ReminderAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<ReminderDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<ReminderMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<ReminderMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<ReminderStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<ReminderStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<ReminderSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<ReminderVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<ReminderVarianceSampleAggregates>;
+};
+
+export type ReminderAverageAggregates = {
+  __typename?: 'ReminderAverageAggregates';
+  /** Mean average of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
 /**
  * A condition to be used against `Reminder` object types. All fields are tested
  * for equality and combined with a logical ‘and.’
@@ -4325,12 +7320,54 @@ export type ReminderCondition = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type ReminderDistinctCountAggregates = {
+  __typename?: 'ReminderDistinctCountAggregates';
+  /** Distinct count of description across the matching connection */
+  description?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of expireAt across the matching connection */
+  expireAt?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of setAt across the matching connection */
+  setAt?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `Reminder` object types. All fields are combined with a logical ‘and.’ */
+export type ReminderFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<ReminderFilter>>;
+  /** Filter by the object’s `description` field. */
+  description?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `expireAt` field. */
+  expireAt?: InputMaybe<DatetimeFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<ReminderFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<ReminderFilter>>;
+  /** Filter by the object’s `setAt` field. */
+  setAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<BigIntFilter>;
+};
+
 /** An input for mutations affecting `Reminder` */
 export type ReminderInput = {
   description: Scalars['String'];
   expireAt: Scalars['Datetime'];
   setAt: Scalars['Datetime'];
   userId: Scalars['BigInt'];
+};
+
+export type ReminderMaxAggregates = {
+  __typename?: 'ReminderMaxAggregates';
+  /** Maximum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+export type ReminderMinAggregates = {
+  __typename?: 'ReminderMinAggregates';
+  /** Minimum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `Reminder`. Fields that are set will be updated. */
@@ -4341,17 +7378,58 @@ export type ReminderPatch = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type ReminderStddevPopulationAggregates = {
+  __typename?: 'ReminderStddevPopulationAggregates';
+  /** Population standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type ReminderStddevSampleAggregates = {
+  __typename?: 'ReminderStddevSampleAggregates';
+  /** Sample standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type ReminderSumAggregates = {
+  __typename?: 'ReminderSumAggregates';
+  /** Sum of userId across the matching connection */
+  userId: Scalars['BigFloat'];
+};
+
+export type ReminderVariancePopulationAggregates = {
+  __typename?: 'ReminderVariancePopulationAggregates';
+  /** Population variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type ReminderVarianceSampleAggregates = {
+  __typename?: 'ReminderVarianceSampleAggregates';
+  /** Sample variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `Reminder` values. */
 export type RemindersConnection = {
   __typename?: 'RemindersConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<ReminderAggregates>;
   /** A list of edges which contains the `Reminder` and cursor to aid in pagination. */
   edges: Array<RemindersEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<ReminderAggregates>>;
   /** A list of `Reminder` objects. */
   nodes: Array<Reminder>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Reminder` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `Reminder` values. */
+export type RemindersConnectionGroupedAggregatesArgs = {
+  groupBy: Array<RemindersGroupBy>;
+  having?: InputMaybe<RemindersHavingInput>;
 };
 
 /** A `Reminder` edge in the connection. */
@@ -4361,6 +7439,87 @@ export type RemindersEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `Reminder` at the end of the edge. */
   node: Reminder;
+};
+
+/** Grouping methods for `Reminder` for usage during aggregation. */
+export enum RemindersGroupBy {
+  Description = 'DESCRIPTION',
+  ExpireAt = 'EXPIRE_AT',
+  ExpireAtTruncatedToDay = 'EXPIRE_AT_TRUNCATED_TO_DAY',
+  ExpireAtTruncatedToHour = 'EXPIRE_AT_TRUNCATED_TO_HOUR',
+  SetAt = 'SET_AT',
+  SetAtTruncatedToDay = 'SET_AT_TRUNCATED_TO_DAY',
+  SetAtTruncatedToHour = 'SET_AT_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type RemindersHavingAverageInput = {
+  expireAt?: InputMaybe<HavingDatetimeFilter>;
+  setAt?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RemindersHavingDistinctCountInput = {
+  expireAt?: InputMaybe<HavingDatetimeFilter>;
+  setAt?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `Reminder` aggregates. */
+export type RemindersHavingInput = {
+  AND?: InputMaybe<Array<RemindersHavingInput>>;
+  OR?: InputMaybe<Array<RemindersHavingInput>>;
+  average?: InputMaybe<RemindersHavingAverageInput>;
+  distinctCount?: InputMaybe<RemindersHavingDistinctCountInput>;
+  max?: InputMaybe<RemindersHavingMaxInput>;
+  min?: InputMaybe<RemindersHavingMinInput>;
+  stddevPopulation?: InputMaybe<RemindersHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<RemindersHavingStddevSampleInput>;
+  sum?: InputMaybe<RemindersHavingSumInput>;
+  variancePopulation?: InputMaybe<RemindersHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<RemindersHavingVarianceSampleInput>;
+};
+
+export type RemindersHavingMaxInput = {
+  expireAt?: InputMaybe<HavingDatetimeFilter>;
+  setAt?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RemindersHavingMinInput = {
+  expireAt?: InputMaybe<HavingDatetimeFilter>;
+  setAt?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RemindersHavingStddevPopulationInput = {
+  expireAt?: InputMaybe<HavingDatetimeFilter>;
+  setAt?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RemindersHavingStddevSampleInput = {
+  expireAt?: InputMaybe<HavingDatetimeFilter>;
+  setAt?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RemindersHavingSumInput = {
+  expireAt?: InputMaybe<HavingDatetimeFilter>;
+  setAt?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RemindersHavingVariancePopulationInput = {
+  expireAt?: InputMaybe<HavingDatetimeFilter>;
+  setAt?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RemindersHavingVarianceSampleInput = {
+  expireAt?: InputMaybe<HavingDatetimeFilter>;
+  setAt?: InputMaybe<HavingDatetimeFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `Reminder`. */
@@ -4388,6 +7547,41 @@ export type RoleMenu = Node & {
   nodeId: Scalars['ID'];
 };
 
+export type RoleMenuAggregates = {
+  __typename?: 'RoleMenuAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<RoleMenuAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<RoleMenuDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<RoleMenuMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<RoleMenuMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<RoleMenuStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<RoleMenuStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<RoleMenuSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<RoleMenuVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<RoleMenuVarianceSampleAggregates>;
+};
+
+export type RoleMenuAverageAggregates = {
+  __typename?: 'RoleMenuAverageAggregates';
+  /** Mean average of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of editorId across the matching connection */
+  editorId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigFloat']>;
+};
+
 /**
  * A condition to be used against `RoleMenu` object types. All fields are tested
  * for equality and combined with a logical ‘and.’
@@ -4403,12 +7597,66 @@ export type RoleMenuCondition = {
   messageId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type RoleMenuDistinctCountAggregates = {
+  __typename?: 'RoleMenuDistinctCountAggregates';
+  /** Distinct count of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of editorId across the matching connection */
+  editorId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `RoleMenu` object types. All fields are combined with a logical ‘and.’ */
+export type RoleMenuFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<RoleMenuFilter>>;
+  /** Filter by the object’s `channelId` field. */
+  channelId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `editorId` field. */
+  editorId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `messageId` field. */
+  messageId?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<RoleMenuFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<RoleMenuFilter>>;
+};
+
 /** An input for mutations affecting `RoleMenu` */
 export type RoleMenuInput = {
   channelId: Scalars['BigInt'];
   editorId: Scalars['BigInt'];
   guildId: Scalars['BigInt'];
   messageId: Scalars['BigInt'];
+};
+
+export type RoleMenuMaxAggregates = {
+  __typename?: 'RoleMenuMaxAggregates';
+  /** Maximum of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of editorId across the matching connection */
+  editorId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigInt']>;
+};
+
+export type RoleMenuMinAggregates = {
+  __typename?: 'RoleMenuMinAggregates';
+  /** Minimum of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of editorId across the matching connection */
+  editorId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `RoleMenu`. Fields that are set will be updated. */
@@ -4419,17 +7667,88 @@ export type RoleMenuPatch = {
   messageId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type RoleMenuStddevPopulationAggregates = {
+  __typename?: 'RoleMenuStddevPopulationAggregates';
+  /** Population standard deviation of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of editorId across the matching connection */
+  editorId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type RoleMenuStddevSampleAggregates = {
+  __typename?: 'RoleMenuStddevSampleAggregates';
+  /** Sample standard deviation of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of editorId across the matching connection */
+  editorId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type RoleMenuSumAggregates = {
+  __typename?: 'RoleMenuSumAggregates';
+  /** Sum of channelId across the matching connection */
+  channelId: Scalars['BigFloat'];
+  /** Sum of editorId across the matching connection */
+  editorId: Scalars['BigFloat'];
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of messageId across the matching connection */
+  messageId: Scalars['BigFloat'];
+};
+
+export type RoleMenuVariancePopulationAggregates = {
+  __typename?: 'RoleMenuVariancePopulationAggregates';
+  /** Population variance of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of editorId across the matching connection */
+  editorId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type RoleMenuVarianceSampleAggregates = {
+  __typename?: 'RoleMenuVarianceSampleAggregates';
+  /** Sample variance of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of editorId across the matching connection */
+  editorId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of messageId across the matching connection */
+  messageId?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `RoleMenu` values. */
 export type RoleMenusConnection = {
   __typename?: 'RoleMenusConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<RoleMenuAggregates>;
   /** A list of edges which contains the `RoleMenu` and cursor to aid in pagination. */
   edges: Array<RoleMenusEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<RoleMenuAggregates>>;
   /** A list of `RoleMenu` objects. */
   nodes: Array<RoleMenu>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `RoleMenu` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `RoleMenu` values. */
+export type RoleMenusConnectionGroupedAggregatesArgs = {
+  groupBy: Array<RoleMenusGroupBy>;
+  having?: InputMaybe<RoleMenusHavingInput>;
 };
 
 /** A `RoleMenu` edge in the connection. */
@@ -4439,6 +7758,91 @@ export type RoleMenusEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `RoleMenu` at the end of the edge. */
   node: RoleMenu;
+};
+
+/** Grouping methods for `RoleMenu` for usage during aggregation. */
+export enum RoleMenusGroupBy {
+  ChannelId = 'CHANNEL_ID',
+  EditorId = 'EDITOR_ID',
+  GuildId = 'GUILD_ID'
+}
+
+export type RoleMenusHavingAverageInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  editorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenusHavingDistinctCountInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  editorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `RoleMenu` aggregates. */
+export type RoleMenusHavingInput = {
+  AND?: InputMaybe<Array<RoleMenusHavingInput>>;
+  OR?: InputMaybe<Array<RoleMenusHavingInput>>;
+  average?: InputMaybe<RoleMenusHavingAverageInput>;
+  distinctCount?: InputMaybe<RoleMenusHavingDistinctCountInput>;
+  max?: InputMaybe<RoleMenusHavingMaxInput>;
+  min?: InputMaybe<RoleMenusHavingMinInput>;
+  stddevPopulation?: InputMaybe<RoleMenusHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<RoleMenusHavingStddevSampleInput>;
+  sum?: InputMaybe<RoleMenusHavingSumInput>;
+  variancePopulation?: InputMaybe<RoleMenusHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<RoleMenusHavingVarianceSampleInput>;
+};
+
+export type RoleMenusHavingMaxInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  editorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenusHavingMinInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  editorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenusHavingStddevPopulationInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  editorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenusHavingStddevSampleInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  editorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenusHavingSumInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  editorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenusHavingVariancePopulationInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  editorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenusHavingVarianceSampleInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  editorId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  messageId?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `RoleMenu`. */
@@ -4456,6 +7860,124 @@ export enum RoleMenusOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
+/** A filter to be used against String fields. All fields are combined with a logical ‘and.’ */
+export type StringFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['String']>;
+  /** Not equal to the specified value, treating null like an ordinary value (case-insensitive). */
+  distinctFromInsensitive?: InputMaybe<Scalars['String']>;
+  /** Ends with the specified string (case-sensitive). */
+  endsWith?: InputMaybe<Scalars['String']>;
+  /** Ends with the specified string (case-insensitive). */
+  endsWithInsensitive?: InputMaybe<Scalars['String']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['String']>;
+  /** Equal to the specified value (case-insensitive). */
+  equalToInsensitive?: InputMaybe<Scalars['String']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['String']>;
+  /** Greater than the specified value (case-insensitive). */
+  greaterThanInsensitive?: InputMaybe<Scalars['String']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['String']>;
+  /** Greater than or equal to the specified value (case-insensitive). */
+  greaterThanOrEqualToInsensitive?: InputMaybe<Scalars['String']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['String']>>;
+  /** Included in the specified list (case-insensitive). */
+  inInsensitive?: InputMaybe<Array<Scalars['String']>>;
+  /** Contains the specified string (case-sensitive). */
+  includes?: InputMaybe<Scalars['String']>;
+  /** Contains the specified string (case-insensitive). */
+  includesInsensitive?: InputMaybe<Scalars['String']>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['String']>;
+  /** Less than the specified value (case-insensitive). */
+  lessThanInsensitive?: InputMaybe<Scalars['String']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['String']>;
+  /** Less than or equal to the specified value (case-insensitive). */
+  lessThanOrEqualToInsensitive?: InputMaybe<Scalars['String']>;
+  /** Matches the specified pattern (case-sensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters. */
+  like?: InputMaybe<Scalars['String']>;
+  /** Matches the specified pattern (case-insensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters. */
+  likeInsensitive?: InputMaybe<Scalars['String']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['String']>;
+  /** Equal to the specified value, treating null like an ordinary value (case-insensitive). */
+  notDistinctFromInsensitive?: InputMaybe<Scalars['String']>;
+  /** Does not end with the specified string (case-sensitive). */
+  notEndsWith?: InputMaybe<Scalars['String']>;
+  /** Does not end with the specified string (case-insensitive). */
+  notEndsWithInsensitive?: InputMaybe<Scalars['String']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['String']>;
+  /** Not equal to the specified value (case-insensitive). */
+  notEqualToInsensitive?: InputMaybe<Scalars['String']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['String']>>;
+  /** Not included in the specified list (case-insensitive). */
+  notInInsensitive?: InputMaybe<Array<Scalars['String']>>;
+  /** Does not contain the specified string (case-sensitive). */
+  notIncludes?: InputMaybe<Scalars['String']>;
+  /** Does not contain the specified string (case-insensitive). */
+  notIncludesInsensitive?: InputMaybe<Scalars['String']>;
+  /** Does not match the specified pattern (case-sensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters. */
+  notLike?: InputMaybe<Scalars['String']>;
+  /** Does not match the specified pattern (case-insensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters. */
+  notLikeInsensitive?: InputMaybe<Scalars['String']>;
+  /** Does not start with the specified string (case-sensitive). */
+  notStartsWith?: InputMaybe<Scalars['String']>;
+  /** Does not start with the specified string (case-insensitive). */
+  notStartsWithInsensitive?: InputMaybe<Scalars['String']>;
+  /** Starts with the specified string (case-sensitive). */
+  startsWith?: InputMaybe<Scalars['String']>;
+  /** Starts with the specified string (case-insensitive). */
+  startsWithInsensitive?: InputMaybe<Scalars['String']>;
+};
+
+/** A filter to be used against String List fields. All fields are combined with a logical ‘and.’ */
+export type StringListFilter = {
+  /** Any array item is equal to the specified value. */
+  anyEqualTo?: InputMaybe<Scalars['String']>;
+  /** Any array item is greater than the specified value. */
+  anyGreaterThan?: InputMaybe<Scalars['String']>;
+  /** Any array item is greater than or equal to the specified value. */
+  anyGreaterThanOrEqualTo?: InputMaybe<Scalars['String']>;
+  /** Any array item is less than the specified value. */
+  anyLessThan?: InputMaybe<Scalars['String']>;
+  /** Any array item is less than or equal to the specified value. */
+  anyLessThanOrEqualTo?: InputMaybe<Scalars['String']>;
+  /** Any array item is not equal to the specified value. */
+  anyNotEqualTo?: InputMaybe<Scalars['String']>;
+  /** Contained by the specified list of values. */
+  containedBy?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** Contains the specified list of values. */
+  contains?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** Overlaps the specified list of values. */
+  overlaps?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
 export type Tag = Node & {
   __typename?: 'Tag';
   content: Scalars['String'];
@@ -4466,6 +7988,39 @@ export type Tag = Node & {
   ownerId: Scalars['BigInt'];
   tagName: Scalars['String'];
   useCount: Scalars['BigInt'];
+};
+
+export type TagAggregates = {
+  __typename?: 'TagAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<TagAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<TagDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<TagMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<TagMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<TagStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<TagStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<TagSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<TagVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<TagVarianceSampleAggregates>;
+};
+
+export type TagAverageAggregates = {
+  __typename?: 'TagAverageAggregates';
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of ownerId across the matching connection */
+  ownerId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of useCount across the matching connection */
+  useCount?: Maybe<Scalars['BigFloat']>;
 };
 
 /** A condition to be used against `Tag` object types. All fields are tested for equality and combined with a logical ‘and.’ */
@@ -4484,6 +8039,44 @@ export type TagCondition = {
   useCount?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type TagDistinctCountAggregates = {
+  __typename?: 'TagDistinctCountAggregates';
+  /** Distinct count of content across the matching connection */
+  content?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of created across the matching connection */
+  created?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of ownerId across the matching connection */
+  ownerId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of tagName across the matching connection */
+  tagName?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of useCount across the matching connection */
+  useCount?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `Tag` object types. All fields are combined with a logical ‘and.’ */
+export type TagFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<TagFilter>>;
+  /** Filter by the object’s `content` field. */
+  content?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `created` field. */
+  created?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<TagFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<TagFilter>>;
+  /** Filter by the object’s `ownerId` field. */
+  ownerId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `tagName` field. */
+  tagName?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `useCount` field. */
+  useCount?: InputMaybe<BigIntFilter>;
+};
+
 /** An input for mutations affecting `Tag` */
 export type TagInput = {
   content: Scalars['String'];
@@ -4492,6 +8085,26 @@ export type TagInput = {
   ownerId: Scalars['BigInt'];
   tagName: Scalars['String'];
   useCount: Scalars['BigInt'];
+};
+
+export type TagMaxAggregates = {
+  __typename?: 'TagMaxAggregates';
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of ownerId across the matching connection */
+  ownerId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of useCount across the matching connection */
+  useCount?: Maybe<Scalars['BigInt']>;
+};
+
+export type TagMinAggregates = {
+  __typename?: 'TagMinAggregates';
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of ownerId across the matching connection */
+  ownerId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of useCount across the matching connection */
+  useCount?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `Tag`. Fields that are set will be updated. */
@@ -4504,17 +8117,78 @@ export type TagPatch = {
   useCount?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type TagStddevPopulationAggregates = {
+  __typename?: 'TagStddevPopulationAggregates';
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of ownerId across the matching connection */
+  ownerId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of useCount across the matching connection */
+  useCount?: Maybe<Scalars['BigFloat']>;
+};
+
+export type TagStddevSampleAggregates = {
+  __typename?: 'TagStddevSampleAggregates';
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of ownerId across the matching connection */
+  ownerId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of useCount across the matching connection */
+  useCount?: Maybe<Scalars['BigFloat']>;
+};
+
+export type TagSumAggregates = {
+  __typename?: 'TagSumAggregates';
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of ownerId across the matching connection */
+  ownerId: Scalars['BigFloat'];
+  /** Sum of useCount across the matching connection */
+  useCount: Scalars['BigFloat'];
+};
+
+export type TagVariancePopulationAggregates = {
+  __typename?: 'TagVariancePopulationAggregates';
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of ownerId across the matching connection */
+  ownerId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of useCount across the matching connection */
+  useCount?: Maybe<Scalars['BigFloat']>;
+};
+
+export type TagVarianceSampleAggregates = {
+  __typename?: 'TagVarianceSampleAggregates';
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of ownerId across the matching connection */
+  ownerId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of useCount across the matching connection */
+  useCount?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `Tag` values. */
 export type TagsConnection = {
   __typename?: 'TagsConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<TagAggregates>;
   /** A list of edges which contains the `Tag` and cursor to aid in pagination. */
   edges: Array<TagsEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<TagAggregates>>;
   /** A list of `Tag` objects. */
   nodes: Array<Tag>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Tag` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `Tag` values. */
+export type TagsConnectionGroupedAggregatesArgs = {
+  groupBy: Array<TagsGroupBy>;
+  having?: InputMaybe<TagsHavingInput>;
 };
 
 /** A `Tag` edge in the connection. */
@@ -4524,6 +8198,96 @@ export type TagsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `Tag` at the end of the edge. */
   node: Tag;
+};
+
+/** Grouping methods for `Tag` for usage during aggregation. */
+export enum TagsGroupBy {
+  Content = 'CONTENT',
+  Created = 'CREATED',
+  CreatedTruncatedToDay = 'CREATED_TRUNCATED_TO_DAY',
+  CreatedTruncatedToHour = 'CREATED_TRUNCATED_TO_HOUR',
+  GuildId = 'GUILD_ID',
+  OwnerId = 'OWNER_ID',
+  TagName = 'TAG_NAME',
+  UseCount = 'USE_COUNT'
+}
+
+export type TagsHavingAverageInput = {
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  ownerId?: InputMaybe<HavingBigintFilter>;
+  useCount?: InputMaybe<HavingBigintFilter>;
+};
+
+export type TagsHavingDistinctCountInput = {
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  ownerId?: InputMaybe<HavingBigintFilter>;
+  useCount?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `Tag` aggregates. */
+export type TagsHavingInput = {
+  AND?: InputMaybe<Array<TagsHavingInput>>;
+  OR?: InputMaybe<Array<TagsHavingInput>>;
+  average?: InputMaybe<TagsHavingAverageInput>;
+  distinctCount?: InputMaybe<TagsHavingDistinctCountInput>;
+  max?: InputMaybe<TagsHavingMaxInput>;
+  min?: InputMaybe<TagsHavingMinInput>;
+  stddevPopulation?: InputMaybe<TagsHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<TagsHavingStddevSampleInput>;
+  sum?: InputMaybe<TagsHavingSumInput>;
+  variancePopulation?: InputMaybe<TagsHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<TagsHavingVarianceSampleInput>;
+};
+
+export type TagsHavingMaxInput = {
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  ownerId?: InputMaybe<HavingBigintFilter>;
+  useCount?: InputMaybe<HavingBigintFilter>;
+};
+
+export type TagsHavingMinInput = {
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  ownerId?: InputMaybe<HavingBigintFilter>;
+  useCount?: InputMaybe<HavingBigintFilter>;
+};
+
+export type TagsHavingStddevPopulationInput = {
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  ownerId?: InputMaybe<HavingBigintFilter>;
+  useCount?: InputMaybe<HavingBigintFilter>;
+};
+
+export type TagsHavingStddevSampleInput = {
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  ownerId?: InputMaybe<HavingBigintFilter>;
+  useCount?: InputMaybe<HavingBigintFilter>;
+};
+
+export type TagsHavingSumInput = {
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  ownerId?: InputMaybe<HavingBigintFilter>;
+  useCount?: InputMaybe<HavingBigintFilter>;
+};
+
+export type TagsHavingVariancePopulationInput = {
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  ownerId?: InputMaybe<HavingBigintFilter>;
+  useCount?: InputMaybe<HavingBigintFilter>;
+};
+
+export type TagsHavingVarianceSampleInput = {
+  created?: InputMaybe<HavingDatetimeFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  ownerId?: InputMaybe<HavingBigintFilter>;
+  useCount?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `Tag`. */
@@ -4578,6 +8342,36 @@ export type TimeframeUserLevelsRecord = {
   username?: Maybe<Scalars['String']>;
   xp?: Maybe<Scalars['BigInt']>;
   xpDiff?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `TimeframeUserLevelsRecord` object types. All fields are combined with a logical ‘and.’ */
+export type TimeframeUserLevelsRecordFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<TimeframeUserLevelsRecordFilter>>;
+  /** Filter by the object’s `avatarUrl` field. */
+  avatarUrl?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `currentLevel` field. */
+  currentLevel?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `discriminator` field. */
+  discriminator?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `gainedLevels` field. */
+  gainedLevels?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `nextLevelXpProgress` field. */
+  nextLevelXpProgress?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `nextLevelXpRequired` field. */
+  nextLevelXpRequired?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<TimeframeUserLevelsRecordFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<TimeframeUserLevelsRecordFilter>>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `username` field. */
+  username?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `xp` field. */
+  xp?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `xpDiff` field. */
+  xpDiff?: InputMaybe<BigIntFilter>;
 };
 
 /** All input for the `updateBotStatByNameAndCategory` mutation. */
@@ -5525,6 +9319,39 @@ export type User = Node & {
   rep: Scalars['BigInt'];
 };
 
+export type UserAggregates = {
+  __typename?: 'UserAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<UserAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<UserDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<UserMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<UserMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<UserStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<UserStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<UserSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<UserVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<UserVarianceSampleAggregates>;
+};
+
+export type UserAverageAggregates = {
+  __typename?: 'UserAverageAggregates';
+  /** Mean average of fishies across the matching connection */
+  fishies?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of rep across the matching connection */
+  rep?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A condition to be used against `User` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type UserCondition = {
   /** Checks for equality with the object’s `fishies` field. */
@@ -5545,6 +9372,56 @@ export type UserCondition = {
   profileData?: InputMaybe<Scalars['JSON']>;
   /** Checks for equality with the object’s `rep` field. */
   rep?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type UserDistinctCountAggregates = {
+  __typename?: 'UserDistinctCountAggregates';
+  /** Distinct count of fishies across the matching connection */
+  fishies?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of id across the matching connection */
+  id?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of isPatron across the matching connection */
+  isPatron?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of lastFishies across the matching connection */
+  lastFishies?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of lastRep across the matching connection */
+  lastRep?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of lastfmUsername across the matching connection */
+  lastfmUsername?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of patronEmoji across the matching connection */
+  patronEmoji?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of profileData across the matching connection */
+  profileData?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of rep across the matching connection */
+  rep?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `User` object types. All fields are combined with a logical ‘and.’ */
+export type UserFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<UserFilter>>;
+  /** Filter by the object’s `fishies` field. */
+  fishies?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `isPatron` field. */
+  isPatron?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `lastFishies` field. */
+  lastFishies?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `lastRep` field. */
+  lastRep?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `lastfmUsername` field. */
+  lastfmUsername?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<UserFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<UserFilter>>;
+  /** Filter by the object’s `patronEmoji` field. */
+  patronEmoji?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `profileData` field. */
+  profileData?: InputMaybe<JsonFilter>;
+  /** Filter by the object’s `rep` field. */
+  rep?: InputMaybe<BigIntFilter>;
 };
 
 /** An input for mutations affecting `User` */
@@ -5625,6 +9502,26 @@ export enum UserLevelsOrderBy {
   UserIdDesc = 'USER_ID_DESC'
 }
 
+export type UserMaxAggregates = {
+  __typename?: 'UserMaxAggregates';
+  /** Maximum of fishies across the matching connection */
+  fishies?: Maybe<Scalars['BigInt']>;
+  /** Maximum of id across the matching connection */
+  id?: Maybe<Scalars['BigInt']>;
+  /** Maximum of rep across the matching connection */
+  rep?: Maybe<Scalars['BigInt']>;
+};
+
+export type UserMinAggregates = {
+  __typename?: 'UserMinAggregates';
+  /** Minimum of fishies across the matching connection */
+  fishies?: Maybe<Scalars['BigInt']>;
+  /** Minimum of id across the matching connection */
+  id?: Maybe<Scalars['BigInt']>;
+  /** Minimum of rep across the matching connection */
+  rep?: Maybe<Scalars['BigInt']>;
+};
+
 /** Represents an update to a `User`. Fields that are set will be updated. */
 export type UserPatch = {
   fishies?: InputMaybe<Scalars['BigInt']>;
@@ -5638,17 +9535,78 @@ export type UserPatch = {
   rep?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type UserStddevPopulationAggregates = {
+  __typename?: 'UserStddevPopulationAggregates';
+  /** Population standard deviation of fishies across the matching connection */
+  fishies?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of rep across the matching connection */
+  rep?: Maybe<Scalars['BigFloat']>;
+};
+
+export type UserStddevSampleAggregates = {
+  __typename?: 'UserStddevSampleAggregates';
+  /** Sample standard deviation of fishies across the matching connection */
+  fishies?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of rep across the matching connection */
+  rep?: Maybe<Scalars['BigFloat']>;
+};
+
+export type UserSumAggregates = {
+  __typename?: 'UserSumAggregates';
+  /** Sum of fishies across the matching connection */
+  fishies: Scalars['BigFloat'];
+  /** Sum of id across the matching connection */
+  id: Scalars['BigFloat'];
+  /** Sum of rep across the matching connection */
+  rep: Scalars['BigFloat'];
+};
+
+export type UserVariancePopulationAggregates = {
+  __typename?: 'UserVariancePopulationAggregates';
+  /** Population variance of fishies across the matching connection */
+  fishies?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of rep across the matching connection */
+  rep?: Maybe<Scalars['BigFloat']>;
+};
+
+export type UserVarianceSampleAggregates = {
+  __typename?: 'UserVarianceSampleAggregates';
+  /** Sample variance of fishies across the matching connection */
+  fishies?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of rep across the matching connection */
+  rep?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `User` values. */
 export type UsersConnection = {
   __typename?: 'UsersConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<UserAggregates>;
   /** A list of edges which contains the `User` and cursor to aid in pagination. */
   edges: Array<UsersEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<UserAggregates>>;
   /** A list of `User` objects. */
   nodes: Array<User>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `User` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `User` values. */
+export type UsersConnectionGroupedAggregatesArgs = {
+  groupBy: Array<UsersGroupBy>;
+  having?: InputMaybe<UsersHavingInput>;
 };
 
 /** A `User` edge in the connection. */
@@ -5658,6 +9616,109 @@ export type UsersEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `User` at the end of the edge. */
   node: User;
+};
+
+/** Grouping methods for `User` for usage during aggregation. */
+export enum UsersGroupBy {
+  Fishies = 'FISHIES',
+  IsPatron = 'IS_PATRON',
+  LastfmUsername = 'LASTFM_USERNAME',
+  LastFishies = 'LAST_FISHIES',
+  LastFishiesTruncatedToDay = 'LAST_FISHIES_TRUNCATED_TO_DAY',
+  LastFishiesTruncatedToHour = 'LAST_FISHIES_TRUNCATED_TO_HOUR',
+  LastRep = 'LAST_REP',
+  LastRepTruncatedToDay = 'LAST_REP_TRUNCATED_TO_DAY',
+  LastRepTruncatedToHour = 'LAST_REP_TRUNCATED_TO_HOUR',
+  PatronEmoji = 'PATRON_EMOJI',
+  ProfileData = 'PROFILE_DATA',
+  Rep = 'REP'
+}
+
+export type UsersHavingAverageInput = {
+  fishies?: InputMaybe<HavingBigintFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  lastFishies?: InputMaybe<HavingDatetimeFilter>;
+  lastRep?: InputMaybe<HavingDatetimeFilter>;
+  rep?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UsersHavingDistinctCountInput = {
+  fishies?: InputMaybe<HavingBigintFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  lastFishies?: InputMaybe<HavingDatetimeFilter>;
+  lastRep?: InputMaybe<HavingDatetimeFilter>;
+  rep?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `User` aggregates. */
+export type UsersHavingInput = {
+  AND?: InputMaybe<Array<UsersHavingInput>>;
+  OR?: InputMaybe<Array<UsersHavingInput>>;
+  average?: InputMaybe<UsersHavingAverageInput>;
+  distinctCount?: InputMaybe<UsersHavingDistinctCountInput>;
+  max?: InputMaybe<UsersHavingMaxInput>;
+  min?: InputMaybe<UsersHavingMinInput>;
+  stddevPopulation?: InputMaybe<UsersHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<UsersHavingStddevSampleInput>;
+  sum?: InputMaybe<UsersHavingSumInput>;
+  variancePopulation?: InputMaybe<UsersHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<UsersHavingVarianceSampleInput>;
+};
+
+export type UsersHavingMaxInput = {
+  fishies?: InputMaybe<HavingBigintFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  lastFishies?: InputMaybe<HavingDatetimeFilter>;
+  lastRep?: InputMaybe<HavingDatetimeFilter>;
+  rep?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UsersHavingMinInput = {
+  fishies?: InputMaybe<HavingBigintFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  lastFishies?: InputMaybe<HavingDatetimeFilter>;
+  lastRep?: InputMaybe<HavingDatetimeFilter>;
+  rep?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UsersHavingStddevPopulationInput = {
+  fishies?: InputMaybe<HavingBigintFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  lastFishies?: InputMaybe<HavingDatetimeFilter>;
+  lastRep?: InputMaybe<HavingDatetimeFilter>;
+  rep?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UsersHavingStddevSampleInput = {
+  fishies?: InputMaybe<HavingBigintFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  lastFishies?: InputMaybe<HavingDatetimeFilter>;
+  lastRep?: InputMaybe<HavingDatetimeFilter>;
+  rep?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UsersHavingSumInput = {
+  fishies?: InputMaybe<HavingBigintFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  lastFishies?: InputMaybe<HavingDatetimeFilter>;
+  lastRep?: InputMaybe<HavingDatetimeFilter>;
+  rep?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UsersHavingVariancePopulationInput = {
+  fishies?: InputMaybe<HavingBigintFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  lastFishies?: InputMaybe<HavingDatetimeFilter>;
+  lastRep?: InputMaybe<HavingDatetimeFilter>;
+  rep?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UsersHavingVarianceSampleInput = {
+  fishies?: InputMaybe<HavingBigintFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  lastFishies?: InputMaybe<HavingDatetimeFilter>;
+  lastRep?: InputMaybe<HavingDatetimeFilter>;
+  rep?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `User`. */
@@ -5715,10 +9776,42 @@ export type WebUserWebUserGuildsByUserIdArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<WebUserGuildCondition>;
+  filter?: InputMaybe<WebUserGuildFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<WebUserGuildsOrderBy>>;
+};
+
+export type WebUserAggregates = {
+  __typename?: 'WebUserAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<WebUserAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<WebUserDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<WebUserMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<WebUserMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<WebUserStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<WebUserStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<WebUserSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<WebUserVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<WebUserVarianceSampleAggregates>;
+};
+
+export type WebUserAverageAggregates = {
+  __typename?: 'WebUserAverageAggregates';
+  /** Mean average of discriminator across the matching connection */
+  discriminator?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
 };
 
 /** A condition to be used against `WebUser` object types. All fields are tested for equality and combined with a logical ‘and.’ */
@@ -5741,6 +9834,52 @@ export type WebUserCondition = {
   username?: InputMaybe<Scalars['String']>;
 };
 
+export type WebUserDistinctCountAggregates = {
+  __typename?: 'WebUserDistinctCountAggregates';
+  /** Distinct count of avatar across the matching connection */
+  avatar?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of details across the matching connection */
+  details?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of discriminator across the matching connection */
+  discriminator?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of id across the matching connection */
+  id?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of isAdmin across the matching connection */
+  isAdmin?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of username across the matching connection */
+  username?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `WebUser` object types. All fields are combined with a logical ‘and.’ */
+export type WebUserFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<WebUserFilter>>;
+  /** Filter by the object’s `avatar` field. */
+  avatar?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `details` field. */
+  details?: InputMaybe<JsonFilter>;
+  /** Filter by the object’s `discriminator` field. */
+  discriminator?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `isAdmin` field. */
+  isAdmin?: InputMaybe<BooleanFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<WebUserFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<WebUserFilter>>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `username` field. */
+  username?: InputMaybe<StringFilter>;
+};
+
 export type WebUserGuild = Node & {
   __typename?: 'WebUserGuild';
   /** Reads a single `CachedGuild` that is related to this `WebUserGuild`. */
@@ -5754,6 +9893,39 @@ export type WebUserGuild = Node & {
   userId: Scalars['BigInt'];
   /** Reads a single `WebUser` that is related to this `WebUserGuild`. */
   webUserByUserId?: Maybe<WebUser>;
+};
+
+export type WebUserGuildAggregates = {
+  __typename?: 'WebUserGuildAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<WebUserGuildAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<WebUserGuildDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<WebUserGuildMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<WebUserGuildMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<WebUserGuildStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<WebUserGuildStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<WebUserGuildSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<WebUserGuildVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<WebUserGuildVarianceSampleAggregates>;
+};
+
+export type WebUserGuildAverageAggregates = {
+  __typename?: 'WebUserGuildAverageAggregates';
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of permissions across the matching connection */
+  permissions?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
 };
 
 /**
@@ -5773,6 +9945,40 @@ export type WebUserGuildCondition = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type WebUserGuildDistinctCountAggregates = {
+  __typename?: 'WebUserGuildDistinctCountAggregates';
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of manageGuild across the matching connection */
+  manageGuild?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of owner across the matching connection */
+  owner?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of permissions across the matching connection */
+  permissions?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `WebUserGuild` object types. All fields are combined with a logical ‘and.’ */
+export type WebUserGuildFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<WebUserGuildFilter>>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `manageGuild` field. */
+  manageGuild?: InputMaybe<BooleanFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<WebUserGuildFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<WebUserGuildFilter>>;
+  /** Filter by the object’s `owner` field. */
+  owner?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `permissions` field. */
+  permissions?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<BigIntFilter>;
+};
+
 /** An input for mutations affecting `WebUserGuild` */
 export type WebUserGuildInput = {
   guildId: Scalars['BigInt'];
@@ -5780,6 +9986,26 @@ export type WebUserGuildInput = {
   owner: Scalars['Boolean'];
   permissions: Scalars['BigInt'];
   userId: Scalars['BigInt'];
+};
+
+export type WebUserGuildMaxAggregates = {
+  __typename?: 'WebUserGuildMaxAggregates';
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of permissions across the matching connection */
+  permissions?: Maybe<Scalars['BigInt']>;
+  /** Maximum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+export type WebUserGuildMinAggregates = {
+  __typename?: 'WebUserGuildMinAggregates';
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of permissions across the matching connection */
+  permissions?: Maybe<Scalars['BigInt']>;
+  /** Minimum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `WebUserGuild`. Fields that are set will be updated. */
@@ -5791,17 +10017,78 @@ export type WebUserGuildPatch = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type WebUserGuildStddevPopulationAggregates = {
+  __typename?: 'WebUserGuildStddevPopulationAggregates';
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of permissions across the matching connection */
+  permissions?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type WebUserGuildStddevSampleAggregates = {
+  __typename?: 'WebUserGuildStddevSampleAggregates';
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of permissions across the matching connection */
+  permissions?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type WebUserGuildSumAggregates = {
+  __typename?: 'WebUserGuildSumAggregates';
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of permissions across the matching connection */
+  permissions: Scalars['BigFloat'];
+  /** Sum of userId across the matching connection */
+  userId: Scalars['BigFloat'];
+};
+
+export type WebUserGuildVariancePopulationAggregates = {
+  __typename?: 'WebUserGuildVariancePopulationAggregates';
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of permissions across the matching connection */
+  permissions?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type WebUserGuildVarianceSampleAggregates = {
+  __typename?: 'WebUserGuildVarianceSampleAggregates';
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of permissions across the matching connection */
+  permissions?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `WebUserGuild` values. */
 export type WebUserGuildsConnection = {
   __typename?: 'WebUserGuildsConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<WebUserGuildAggregates>;
   /** A list of edges which contains the `WebUserGuild` and cursor to aid in pagination. */
   edges: Array<WebUserGuildsEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<WebUserGuildAggregates>>;
   /** A list of `WebUserGuild` objects. */
   nodes: Array<WebUserGuild>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `WebUserGuild` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `WebUserGuild` values. */
+export type WebUserGuildsConnectionGroupedAggregatesArgs = {
+  groupBy: Array<WebUserGuildsGroupBy>;
+  having?: InputMaybe<WebUserGuildsHavingInput>;
 };
 
 /** A `WebUserGuild` edge in the connection. */
@@ -5811,6 +10098,84 @@ export type WebUserGuildsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `WebUserGuild` at the end of the edge. */
   node: WebUserGuild;
+};
+
+/** Grouping methods for `WebUserGuild` for usage during aggregation. */
+export enum WebUserGuildsGroupBy {
+  GuildId = 'GUILD_ID',
+  ManageGuild = 'MANAGE_GUILD',
+  Owner = 'OWNER',
+  Permissions = 'PERMISSIONS',
+  UserId = 'USER_ID'
+}
+
+export type WebUserGuildsHavingAverageInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  permissions?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type WebUserGuildsHavingDistinctCountInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  permissions?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `WebUserGuild` aggregates. */
+export type WebUserGuildsHavingInput = {
+  AND?: InputMaybe<Array<WebUserGuildsHavingInput>>;
+  OR?: InputMaybe<Array<WebUserGuildsHavingInput>>;
+  average?: InputMaybe<WebUserGuildsHavingAverageInput>;
+  distinctCount?: InputMaybe<WebUserGuildsHavingDistinctCountInput>;
+  max?: InputMaybe<WebUserGuildsHavingMaxInput>;
+  min?: InputMaybe<WebUserGuildsHavingMinInput>;
+  stddevPopulation?: InputMaybe<WebUserGuildsHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<WebUserGuildsHavingStddevSampleInput>;
+  sum?: InputMaybe<WebUserGuildsHavingSumInput>;
+  variancePopulation?: InputMaybe<WebUserGuildsHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<WebUserGuildsHavingVarianceSampleInput>;
+};
+
+export type WebUserGuildsHavingMaxInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  permissions?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type WebUserGuildsHavingMinInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  permissions?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type WebUserGuildsHavingStddevPopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  permissions?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type WebUserGuildsHavingStddevSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  permissions?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type WebUserGuildsHavingSumInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  permissions?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type WebUserGuildsHavingVariancePopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  permissions?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type WebUserGuildsHavingVarianceSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  permissions?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `WebUserGuild`. */
@@ -5849,6 +10214,22 @@ export type WebUserInput = {
   username: Scalars['String'];
 };
 
+export type WebUserMaxAggregates = {
+  __typename?: 'WebUserMaxAggregates';
+  /** Maximum of discriminator across the matching connection */
+  discriminator?: Maybe<Scalars['Int']>;
+  /** Maximum of id across the matching connection */
+  id?: Maybe<Scalars['BigInt']>;
+};
+
+export type WebUserMinAggregates = {
+  __typename?: 'WebUserMinAggregates';
+  /** Minimum of discriminator across the matching connection */
+  discriminator?: Maybe<Scalars['Int']>;
+  /** Minimum of id across the matching connection */
+  id?: Maybe<Scalars['BigInt']>;
+};
+
 /** Represents an update to a `WebUser`. Fields that are set will be updated. */
 export type WebUserPatch = {
   /** Discord avatar hash. Null if user does not have one. */
@@ -5868,17 +10249,68 @@ export type WebUserPatch = {
   username?: InputMaybe<Scalars['String']>;
 };
 
+export type WebUserStddevPopulationAggregates = {
+  __typename?: 'WebUserStddevPopulationAggregates';
+  /** Population standard deviation of discriminator across the matching connection */
+  discriminator?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+};
+
+export type WebUserStddevSampleAggregates = {
+  __typename?: 'WebUserStddevSampleAggregates';
+  /** Sample standard deviation of discriminator across the matching connection */
+  discriminator?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+};
+
+export type WebUserSumAggregates = {
+  __typename?: 'WebUserSumAggregates';
+  /** Sum of discriminator across the matching connection */
+  discriminator: Scalars['BigInt'];
+  /** Sum of id across the matching connection */
+  id: Scalars['BigFloat'];
+};
+
+export type WebUserVariancePopulationAggregates = {
+  __typename?: 'WebUserVariancePopulationAggregates';
+  /** Population variance of discriminator across the matching connection */
+  discriminator?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+};
+
+export type WebUserVarianceSampleAggregates = {
+  __typename?: 'WebUserVarianceSampleAggregates';
+  /** Sample variance of discriminator across the matching connection */
+  discriminator?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of id across the matching connection */
+  id?: Maybe<Scalars['BigFloat']>;
+};
+
 /** A connection to a list of `WebUser` values. */
 export type WebUsersConnection = {
   __typename?: 'WebUsersConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<WebUserAggregates>;
   /** A list of edges which contains the `WebUser` and cursor to aid in pagination. */
   edges: Array<WebUsersEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<WebUserAggregates>>;
   /** A list of `WebUser` objects. */
   nodes: Array<WebUser>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `WebUser` you could get from the connection. */
   totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `WebUser` values. */
+export type WebUsersConnectionGroupedAggregatesArgs = {
+  groupBy: Array<WebUsersGroupBy>;
+  having?: InputMaybe<WebUsersHavingInput>;
 };
 
 /** A `WebUser` edge in the connection. */
@@ -5888,6 +10320,99 @@ export type WebUsersEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `WebUser` at the end of the edge. */
   node: WebUser;
+};
+
+/** Grouping methods for `WebUser` for usage during aggregation. */
+export enum WebUsersGroupBy {
+  Avatar = 'AVATAR',
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Details = 'DETAILS',
+  Discriminator = 'DISCRIMINATOR',
+  IsAdmin = 'IS_ADMIN',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  Username = 'USERNAME'
+}
+
+export type WebUsersHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  discriminator?: InputMaybe<HavingIntFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type WebUsersHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  discriminator?: InputMaybe<HavingIntFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `WebUser` aggregates. */
+export type WebUsersHavingInput = {
+  AND?: InputMaybe<Array<WebUsersHavingInput>>;
+  OR?: InputMaybe<Array<WebUsersHavingInput>>;
+  average?: InputMaybe<WebUsersHavingAverageInput>;
+  distinctCount?: InputMaybe<WebUsersHavingDistinctCountInput>;
+  max?: InputMaybe<WebUsersHavingMaxInput>;
+  min?: InputMaybe<WebUsersHavingMinInput>;
+  stddevPopulation?: InputMaybe<WebUsersHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<WebUsersHavingStddevSampleInput>;
+  sum?: InputMaybe<WebUsersHavingSumInput>;
+  variancePopulation?: InputMaybe<WebUsersHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<WebUsersHavingVarianceSampleInput>;
+};
+
+export type WebUsersHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  discriminator?: InputMaybe<HavingIntFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type WebUsersHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  discriminator?: InputMaybe<HavingIntFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type WebUsersHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  discriminator?: InputMaybe<HavingIntFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type WebUsersHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  discriminator?: InputMaybe<HavingIntFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type WebUsersHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  discriminator?: InputMaybe<HavingIntFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type WebUsersHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  discriminator?: InputMaybe<HavingIntFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type WebUsersHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  discriminator?: InputMaybe<HavingIntFilter>;
+  id?: InputMaybe<HavingBigintFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 /** Methods to use when ordering `WebUser`. */
@@ -5910,7 +10435,99 @@ export enum WebUsersOrderBy {
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   UsernameAsc = 'USERNAME_ASC',
-  UsernameDesc = 'USERNAME_DESC'
+  UsernameDesc = 'USERNAME_DESC',
+  WebUserGuildsByUserIdAverageGuildIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_AVERAGE_GUILD_ID_ASC',
+  WebUserGuildsByUserIdAverageGuildIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_AVERAGE_GUILD_ID_DESC',
+  WebUserGuildsByUserIdAverageManageGuildAsc = 'WEB_USER_GUILDS_BY_USER_ID_AVERAGE_MANAGE_GUILD_ASC',
+  WebUserGuildsByUserIdAverageManageGuildDesc = 'WEB_USER_GUILDS_BY_USER_ID_AVERAGE_MANAGE_GUILD_DESC',
+  WebUserGuildsByUserIdAverageOwnerAsc = 'WEB_USER_GUILDS_BY_USER_ID_AVERAGE_OWNER_ASC',
+  WebUserGuildsByUserIdAverageOwnerDesc = 'WEB_USER_GUILDS_BY_USER_ID_AVERAGE_OWNER_DESC',
+  WebUserGuildsByUserIdAveragePermissionsAsc = 'WEB_USER_GUILDS_BY_USER_ID_AVERAGE_PERMISSIONS_ASC',
+  WebUserGuildsByUserIdAveragePermissionsDesc = 'WEB_USER_GUILDS_BY_USER_ID_AVERAGE_PERMISSIONS_DESC',
+  WebUserGuildsByUserIdAverageUserIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_AVERAGE_USER_ID_ASC',
+  WebUserGuildsByUserIdAverageUserIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_AVERAGE_USER_ID_DESC',
+  WebUserGuildsByUserIdCountAsc = 'WEB_USER_GUILDS_BY_USER_ID_COUNT_ASC',
+  WebUserGuildsByUserIdCountDesc = 'WEB_USER_GUILDS_BY_USER_ID_COUNT_DESC',
+  WebUserGuildsByUserIdDistinctCountGuildIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_GUILD_ID_ASC',
+  WebUserGuildsByUserIdDistinctCountGuildIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_GUILD_ID_DESC',
+  WebUserGuildsByUserIdDistinctCountManageGuildAsc = 'WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_MANAGE_GUILD_ASC',
+  WebUserGuildsByUserIdDistinctCountManageGuildDesc = 'WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_MANAGE_GUILD_DESC',
+  WebUserGuildsByUserIdDistinctCountOwnerAsc = 'WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_OWNER_ASC',
+  WebUserGuildsByUserIdDistinctCountOwnerDesc = 'WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_OWNER_DESC',
+  WebUserGuildsByUserIdDistinctCountPermissionsAsc = 'WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_PERMISSIONS_ASC',
+  WebUserGuildsByUserIdDistinctCountPermissionsDesc = 'WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_PERMISSIONS_DESC',
+  WebUserGuildsByUserIdDistinctCountUserIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_USER_ID_ASC',
+  WebUserGuildsByUserIdDistinctCountUserIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_USER_ID_DESC',
+  WebUserGuildsByUserIdMaxGuildIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_MAX_GUILD_ID_ASC',
+  WebUserGuildsByUserIdMaxGuildIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_MAX_GUILD_ID_DESC',
+  WebUserGuildsByUserIdMaxManageGuildAsc = 'WEB_USER_GUILDS_BY_USER_ID_MAX_MANAGE_GUILD_ASC',
+  WebUserGuildsByUserIdMaxManageGuildDesc = 'WEB_USER_GUILDS_BY_USER_ID_MAX_MANAGE_GUILD_DESC',
+  WebUserGuildsByUserIdMaxOwnerAsc = 'WEB_USER_GUILDS_BY_USER_ID_MAX_OWNER_ASC',
+  WebUserGuildsByUserIdMaxOwnerDesc = 'WEB_USER_GUILDS_BY_USER_ID_MAX_OWNER_DESC',
+  WebUserGuildsByUserIdMaxPermissionsAsc = 'WEB_USER_GUILDS_BY_USER_ID_MAX_PERMISSIONS_ASC',
+  WebUserGuildsByUserIdMaxPermissionsDesc = 'WEB_USER_GUILDS_BY_USER_ID_MAX_PERMISSIONS_DESC',
+  WebUserGuildsByUserIdMaxUserIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_MAX_USER_ID_ASC',
+  WebUserGuildsByUserIdMaxUserIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_MAX_USER_ID_DESC',
+  WebUserGuildsByUserIdMinGuildIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_MIN_GUILD_ID_ASC',
+  WebUserGuildsByUserIdMinGuildIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_MIN_GUILD_ID_DESC',
+  WebUserGuildsByUserIdMinManageGuildAsc = 'WEB_USER_GUILDS_BY_USER_ID_MIN_MANAGE_GUILD_ASC',
+  WebUserGuildsByUserIdMinManageGuildDesc = 'WEB_USER_GUILDS_BY_USER_ID_MIN_MANAGE_GUILD_DESC',
+  WebUserGuildsByUserIdMinOwnerAsc = 'WEB_USER_GUILDS_BY_USER_ID_MIN_OWNER_ASC',
+  WebUserGuildsByUserIdMinOwnerDesc = 'WEB_USER_GUILDS_BY_USER_ID_MIN_OWNER_DESC',
+  WebUserGuildsByUserIdMinPermissionsAsc = 'WEB_USER_GUILDS_BY_USER_ID_MIN_PERMISSIONS_ASC',
+  WebUserGuildsByUserIdMinPermissionsDesc = 'WEB_USER_GUILDS_BY_USER_ID_MIN_PERMISSIONS_DESC',
+  WebUserGuildsByUserIdMinUserIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_MIN_USER_ID_ASC',
+  WebUserGuildsByUserIdMinUserIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_MIN_USER_ID_DESC',
+  WebUserGuildsByUserIdStddevPopulationGuildIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_GUILD_ID_ASC',
+  WebUserGuildsByUserIdStddevPopulationGuildIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_GUILD_ID_DESC',
+  WebUserGuildsByUserIdStddevPopulationManageGuildAsc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_MANAGE_GUILD_ASC',
+  WebUserGuildsByUserIdStddevPopulationManageGuildDesc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_MANAGE_GUILD_DESC',
+  WebUserGuildsByUserIdStddevPopulationOwnerAsc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_OWNER_ASC',
+  WebUserGuildsByUserIdStddevPopulationOwnerDesc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_OWNER_DESC',
+  WebUserGuildsByUserIdStddevPopulationPermissionsAsc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_PERMISSIONS_ASC',
+  WebUserGuildsByUserIdStddevPopulationPermissionsDesc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_PERMISSIONS_DESC',
+  WebUserGuildsByUserIdStddevPopulationUserIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_USER_ID_ASC',
+  WebUserGuildsByUserIdStddevPopulationUserIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_USER_ID_DESC',
+  WebUserGuildsByUserIdStddevSampleGuildIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_GUILD_ID_ASC',
+  WebUserGuildsByUserIdStddevSampleGuildIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_GUILD_ID_DESC',
+  WebUserGuildsByUserIdStddevSampleManageGuildAsc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_MANAGE_GUILD_ASC',
+  WebUserGuildsByUserIdStddevSampleManageGuildDesc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_MANAGE_GUILD_DESC',
+  WebUserGuildsByUserIdStddevSampleOwnerAsc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_OWNER_ASC',
+  WebUserGuildsByUserIdStddevSampleOwnerDesc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_OWNER_DESC',
+  WebUserGuildsByUserIdStddevSamplePermissionsAsc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_PERMISSIONS_ASC',
+  WebUserGuildsByUserIdStddevSamplePermissionsDesc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_PERMISSIONS_DESC',
+  WebUserGuildsByUserIdStddevSampleUserIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_USER_ID_ASC',
+  WebUserGuildsByUserIdStddevSampleUserIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_USER_ID_DESC',
+  WebUserGuildsByUserIdSumGuildIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_SUM_GUILD_ID_ASC',
+  WebUserGuildsByUserIdSumGuildIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_SUM_GUILD_ID_DESC',
+  WebUserGuildsByUserIdSumManageGuildAsc = 'WEB_USER_GUILDS_BY_USER_ID_SUM_MANAGE_GUILD_ASC',
+  WebUserGuildsByUserIdSumManageGuildDesc = 'WEB_USER_GUILDS_BY_USER_ID_SUM_MANAGE_GUILD_DESC',
+  WebUserGuildsByUserIdSumOwnerAsc = 'WEB_USER_GUILDS_BY_USER_ID_SUM_OWNER_ASC',
+  WebUserGuildsByUserIdSumOwnerDesc = 'WEB_USER_GUILDS_BY_USER_ID_SUM_OWNER_DESC',
+  WebUserGuildsByUserIdSumPermissionsAsc = 'WEB_USER_GUILDS_BY_USER_ID_SUM_PERMISSIONS_ASC',
+  WebUserGuildsByUserIdSumPermissionsDesc = 'WEB_USER_GUILDS_BY_USER_ID_SUM_PERMISSIONS_DESC',
+  WebUserGuildsByUserIdSumUserIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_SUM_USER_ID_ASC',
+  WebUserGuildsByUserIdSumUserIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_SUM_USER_ID_DESC',
+  WebUserGuildsByUserIdVariancePopulationGuildIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_GUILD_ID_ASC',
+  WebUserGuildsByUserIdVariancePopulationGuildIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_GUILD_ID_DESC',
+  WebUserGuildsByUserIdVariancePopulationManageGuildAsc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_MANAGE_GUILD_ASC',
+  WebUserGuildsByUserIdVariancePopulationManageGuildDesc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_MANAGE_GUILD_DESC',
+  WebUserGuildsByUserIdVariancePopulationOwnerAsc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_OWNER_ASC',
+  WebUserGuildsByUserIdVariancePopulationOwnerDesc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_OWNER_DESC',
+  WebUserGuildsByUserIdVariancePopulationPermissionsAsc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_PERMISSIONS_ASC',
+  WebUserGuildsByUserIdVariancePopulationPermissionsDesc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_PERMISSIONS_DESC',
+  WebUserGuildsByUserIdVariancePopulationUserIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_USER_ID_ASC',
+  WebUserGuildsByUserIdVariancePopulationUserIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_USER_ID_DESC',
+  WebUserGuildsByUserIdVarianceSampleGuildIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_GUILD_ID_ASC',
+  WebUserGuildsByUserIdVarianceSampleGuildIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_GUILD_ID_DESC',
+  WebUserGuildsByUserIdVarianceSampleManageGuildAsc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_MANAGE_GUILD_ASC',
+  WebUserGuildsByUserIdVarianceSampleManageGuildDesc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_MANAGE_GUILD_DESC',
+  WebUserGuildsByUserIdVarianceSampleOwnerAsc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_OWNER_ASC',
+  WebUserGuildsByUserIdVarianceSampleOwnerDesc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_OWNER_DESC',
+  WebUserGuildsByUserIdVarianceSamplePermissionsAsc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_PERMISSIONS_ASC',
+  WebUserGuildsByUserIdVarianceSamplePermissionsDesc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_PERMISSIONS_DESC',
+  WebUserGuildsByUserIdVarianceSampleUserIdAsc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_USER_ID_ASC',
+  WebUserGuildsByUserIdVarianceSampleUserIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_USER_ID_DESC'
 }
 
 
@@ -5982,14 +10599,40 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  BigFloat: ResolverTypeWrapper<Scalars['BigFloat']>;
   BigInt: ResolverTypeWrapper<Scalars['BigInt']>;
+  BigIntFilter: BigIntFilter;
+  BigIntListFilter: BigIntListFilter;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  BooleanFilter: BooleanFilter;
   BotStat: ResolverTypeWrapper<BotStat>;
+  BotStatAggregates: ResolverTypeWrapper<BotStatAggregates>;
+  BotStatAverageAggregates: ResolverTypeWrapper<BotStatAverageAggregates>;
   BotStatCondition: BotStatCondition;
+  BotStatDistinctCountAggregates: ResolverTypeWrapper<BotStatDistinctCountAggregates>;
+  BotStatFilter: BotStatFilter;
   BotStatInput: BotStatInput;
+  BotStatMaxAggregates: ResolverTypeWrapper<BotStatMaxAggregates>;
+  BotStatMinAggregates: ResolverTypeWrapper<BotStatMinAggregates>;
   BotStatPatch: BotStatPatch;
+  BotStatStddevPopulationAggregates: ResolverTypeWrapper<BotStatStddevPopulationAggregates>;
+  BotStatStddevSampleAggregates: ResolverTypeWrapper<BotStatStddevSampleAggregates>;
+  BotStatSumAggregates: ResolverTypeWrapper<BotStatSumAggregates>;
+  BotStatVariancePopulationAggregates: ResolverTypeWrapper<BotStatVariancePopulationAggregates>;
+  BotStatVarianceSampleAggregates: ResolverTypeWrapper<BotStatVarianceSampleAggregates>;
   BotStatsConnection: ResolverTypeWrapper<BotStatsConnection>;
   BotStatsEdge: ResolverTypeWrapper<BotStatsEdge>;
+  BotStatsGroupBy: BotStatsGroupBy;
+  BotStatsHavingAverageInput: BotStatsHavingAverageInput;
+  BotStatsHavingDistinctCountInput: BotStatsHavingDistinctCountInput;
+  BotStatsHavingInput: BotStatsHavingInput;
+  BotStatsHavingMaxInput: BotStatsHavingMaxInput;
+  BotStatsHavingMinInput: BotStatsHavingMinInput;
+  BotStatsHavingStddevPopulationInput: BotStatsHavingStddevPopulationInput;
+  BotStatsHavingStddevSampleInput: BotStatsHavingStddevSampleInput;
+  BotStatsHavingSumInput: BotStatsHavingSumInput;
+  BotStatsHavingVariancePopulationInput: BotStatsHavingVariancePopulationInput;
+  BotStatsHavingVarianceSampleInput: BotStatsHavingVarianceSampleInput;
   BotStatsOrderBy: BotStatsOrderBy;
   CachedGuild: ResolverTypeWrapper<CachedGuild>;
   CachedGuildInput: CachedGuildInput;
@@ -6045,6 +10688,7 @@ export type ResolversTypes = {
   CurrentUserManagedGuildIdsConnection: ResolverTypeWrapper<CurrentUserManagedGuildIdsConnection>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
   Datetime: ResolverTypeWrapper<Scalars['Datetime']>;
+  DatetimeFilter: DatetimeFilter;
   DeleteBotStatByNameAndCategoryInput: DeleteBotStatByNameAndCategoryInput;
   DeleteBotStatInput: DeleteBotStatInput;
   DeleteBotStatPayload: ResolverTypeWrapper<DeleteBotStatPayload>;
@@ -6104,113 +10748,373 @@ export type ResolversTypes = {
   DeleteWebUserInput: DeleteWebUserInput;
   DeleteWebUserPayload: ResolverTypeWrapper<DeleteWebUserPayload>;
   Feed: ResolverTypeWrapper<Feed>;
+  FeedAggregates: ResolverTypeWrapper<FeedAggregates>;
   FeedCondition: FeedCondition;
+  FeedDistinctCountAggregates: ResolverTypeWrapper<FeedDistinctCountAggregates>;
+  FeedFilter: FeedFilter;
   FeedInput: FeedInput;
   FeedItem: ResolverTypeWrapper<FeedItem>;
+  FeedItemAggregates: ResolverTypeWrapper<FeedItemAggregates>;
   FeedItemCondition: FeedItemCondition;
+  FeedItemDistinctCountAggregates: ResolverTypeWrapper<FeedItemDistinctCountAggregates>;
+  FeedItemFilter: FeedItemFilter;
   FeedItemInput: FeedItemInput;
   FeedItemPatch: FeedItemPatch;
   FeedItemsConnection: ResolverTypeWrapper<FeedItemsConnection>;
   FeedItemsEdge: ResolverTypeWrapper<FeedItemsEdge>;
+  FeedItemsGroupBy: FeedItemsGroupBy;
+  FeedItemsHavingInput: FeedItemsHavingInput;
   FeedItemsOrderBy: FeedItemsOrderBy;
   FeedPatch: FeedPatch;
   FeedSubscription: ResolverTypeWrapper<FeedSubscription>;
+  FeedSubscriptionAggregates: ResolverTypeWrapper<FeedSubscriptionAggregates>;
+  FeedSubscriptionAverageAggregates: ResolverTypeWrapper<FeedSubscriptionAverageAggregates>;
   FeedSubscriptionCondition: FeedSubscriptionCondition;
+  FeedSubscriptionDistinctCountAggregates: ResolverTypeWrapper<FeedSubscriptionDistinctCountAggregates>;
+  FeedSubscriptionFilter: FeedSubscriptionFilter;
   FeedSubscriptionInput: FeedSubscriptionInput;
+  FeedSubscriptionMaxAggregates: ResolverTypeWrapper<FeedSubscriptionMaxAggregates>;
+  FeedSubscriptionMinAggregates: ResolverTypeWrapper<FeedSubscriptionMinAggregates>;
   FeedSubscriptionPatch: FeedSubscriptionPatch;
+  FeedSubscriptionStddevPopulationAggregates: ResolverTypeWrapper<FeedSubscriptionStddevPopulationAggregates>;
+  FeedSubscriptionStddevSampleAggregates: ResolverTypeWrapper<FeedSubscriptionStddevSampleAggregates>;
+  FeedSubscriptionSumAggregates: ResolverTypeWrapper<FeedSubscriptionSumAggregates>;
+  FeedSubscriptionVariancePopulationAggregates: ResolverTypeWrapper<FeedSubscriptionVariancePopulationAggregates>;
+  FeedSubscriptionVarianceSampleAggregates: ResolverTypeWrapper<FeedSubscriptionVarianceSampleAggregates>;
   FeedSubscriptionsConnection: ResolverTypeWrapper<FeedSubscriptionsConnection>;
   FeedSubscriptionsEdge: ResolverTypeWrapper<FeedSubscriptionsEdge>;
+  FeedSubscriptionsGroupBy: FeedSubscriptionsGroupBy;
+  FeedSubscriptionsHavingAverageInput: FeedSubscriptionsHavingAverageInput;
+  FeedSubscriptionsHavingDistinctCountInput: FeedSubscriptionsHavingDistinctCountInput;
+  FeedSubscriptionsHavingInput: FeedSubscriptionsHavingInput;
+  FeedSubscriptionsHavingMaxInput: FeedSubscriptionsHavingMaxInput;
+  FeedSubscriptionsHavingMinInput: FeedSubscriptionsHavingMinInput;
+  FeedSubscriptionsHavingStddevPopulationInput: FeedSubscriptionsHavingStddevPopulationInput;
+  FeedSubscriptionsHavingStddevSampleInput: FeedSubscriptionsHavingStddevSampleInput;
+  FeedSubscriptionsHavingSumInput: FeedSubscriptionsHavingSumInput;
+  FeedSubscriptionsHavingVariancePopulationInput: FeedSubscriptionsHavingVariancePopulationInput;
+  FeedSubscriptionsHavingVarianceSampleInput: FeedSubscriptionsHavingVarianceSampleInput;
   FeedSubscriptionsOrderBy: FeedSubscriptionsOrderBy;
   FeedsConnection: ResolverTypeWrapper<FeedsConnection>;
   FeedsEdge: ResolverTypeWrapper<FeedsEdge>;
+  FeedsGroupBy: FeedsGroupBy;
+  FeedsHavingInput: FeedsHavingInput;
   FeedsOrderBy: FeedsOrderBy;
   GraphqlInput: GraphqlInput;
   GraphqlPayload: ResolverTypeWrapper<GraphqlPayload>;
   GuildBan: ResolverTypeWrapper<GuildBan>;
+  GuildBanAggregates: ResolverTypeWrapper<GuildBanAggregates>;
+  GuildBanAverageAggregates: ResolverTypeWrapper<GuildBanAverageAggregates>;
   GuildBanCondition: GuildBanCondition;
+  GuildBanDistinctCountAggregates: ResolverTypeWrapper<GuildBanDistinctCountAggregates>;
+  GuildBanFilter: GuildBanFilter;
   GuildBanInput: GuildBanInput;
+  GuildBanMaxAggregates: ResolverTypeWrapper<GuildBanMaxAggregates>;
+  GuildBanMinAggregates: ResolverTypeWrapper<GuildBanMinAggregates>;
   GuildBanPatch: GuildBanPatch;
+  GuildBanStddevPopulationAggregates: ResolverTypeWrapper<GuildBanStddevPopulationAggregates>;
+  GuildBanStddevSampleAggregates: ResolverTypeWrapper<GuildBanStddevSampleAggregates>;
+  GuildBanSumAggregates: ResolverTypeWrapper<GuildBanSumAggregates>;
+  GuildBanVariancePopulationAggregates: ResolverTypeWrapper<GuildBanVariancePopulationAggregates>;
+  GuildBanVarianceSampleAggregates: ResolverTypeWrapper<GuildBanVarianceSampleAggregates>;
   GuildBansConnection: ResolverTypeWrapper<GuildBansConnection>;
   GuildBansEdge: ResolverTypeWrapper<GuildBansEdge>;
+  GuildBansGroupBy: GuildBansGroupBy;
+  GuildBansHavingAverageInput: GuildBansHavingAverageInput;
+  GuildBansHavingDistinctCountInput: GuildBansHavingDistinctCountInput;
+  GuildBansHavingInput: GuildBansHavingInput;
+  GuildBansHavingMaxInput: GuildBansHavingMaxInput;
+  GuildBansHavingMinInput: GuildBansHavingMinInput;
+  GuildBansHavingStddevPopulationInput: GuildBansHavingStddevPopulationInput;
+  GuildBansHavingStddevSampleInput: GuildBansHavingStddevSampleInput;
+  GuildBansHavingSumInput: GuildBansHavingSumInput;
+  GuildBansHavingVariancePopulationInput: GuildBansHavingVariancePopulationInput;
+  GuildBansHavingVarianceSampleInput: GuildBansHavingVarianceSampleInput;
   GuildBansOrderBy: GuildBansOrderBy;
   GuildConfig: ResolverTypeWrapper<GuildConfig>;
+  GuildConfigAggregates: ResolverTypeWrapper<GuildConfigAggregates>;
+  GuildConfigAverageAggregates: ResolverTypeWrapper<GuildConfigAverageAggregates>;
   GuildConfigCondition: GuildConfigCondition;
+  GuildConfigDistinctCountAggregates: ResolverTypeWrapper<GuildConfigDistinctCountAggregates>;
+  GuildConfigFilter: GuildConfigFilter;
   GuildConfigInput: GuildConfigInput;
+  GuildConfigMaxAggregates: ResolverTypeWrapper<GuildConfigMaxAggregates>;
+  GuildConfigMinAggregates: ResolverTypeWrapper<GuildConfigMinAggregates>;
   GuildConfigPatch: GuildConfigPatch;
+  GuildConfigStddevPopulationAggregates: ResolverTypeWrapper<GuildConfigStddevPopulationAggregates>;
+  GuildConfigStddevSampleAggregates: ResolverTypeWrapper<GuildConfigStddevSampleAggregates>;
+  GuildConfigSumAggregates: ResolverTypeWrapper<GuildConfigSumAggregates>;
+  GuildConfigVariancePopulationAggregates: ResolverTypeWrapper<GuildConfigVariancePopulationAggregates>;
+  GuildConfigVarianceSampleAggregates: ResolverTypeWrapper<GuildConfigVarianceSampleAggregates>;
   GuildConfigsConnection: ResolverTypeWrapper<GuildConfigsConnection>;
   GuildConfigsEdge: ResolverTypeWrapper<GuildConfigsEdge>;
+  GuildConfigsGroupBy: GuildConfigsGroupBy;
+  GuildConfigsHavingAverageInput: GuildConfigsHavingAverageInput;
+  GuildConfigsHavingDistinctCountInput: GuildConfigsHavingDistinctCountInput;
+  GuildConfigsHavingInput: GuildConfigsHavingInput;
+  GuildConfigsHavingMaxInput: GuildConfigsHavingMaxInput;
+  GuildConfigsHavingMinInput: GuildConfigsHavingMinInput;
+  GuildConfigsHavingStddevPopulationInput: GuildConfigsHavingStddevPopulationInput;
+  GuildConfigsHavingStddevSampleInput: GuildConfigsHavingStddevSampleInput;
+  GuildConfigsHavingSumInput: GuildConfigsHavingSumInput;
+  GuildConfigsHavingVariancePopulationInput: GuildConfigsHavingVariancePopulationInput;
+  GuildConfigsHavingVarianceSampleInput: GuildConfigsHavingVarianceSampleInput;
   GuildConfigsOrderBy: GuildConfigsOrderBy;
+  HavingBigintFilter: HavingBigintFilter;
+  HavingDatetimeFilter: HavingDatetimeFilter;
+  HavingIntFilter: HavingIntFilter;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  IntFilter: IntFilter;
   JSON: ResolverTypeWrapper<Scalars['JSON']>;
+  JSONFilter: JsonFilter;
   LevelTimeframe: LevelTimeframe;
   LogoutInput: LogoutInput;
   LogoutPayload: ResolverTypeWrapper<LogoutPayload>;
   Member: ResolverTypeWrapper<Member>;
+  MemberAggregates: ResolverTypeWrapper<MemberAggregates>;
+  MemberAverageAggregates: ResolverTypeWrapper<MemberAverageAggregates>;
   MemberCondition: MemberCondition;
+  MemberDistinctCountAggregates: ResolverTypeWrapper<MemberDistinctCountAggregates>;
+  MemberFilter: MemberFilter;
   MemberInput: MemberInput;
+  MemberMaxAggregates: ResolverTypeWrapper<MemberMaxAggregates>;
+  MemberMinAggregates: ResolverTypeWrapper<MemberMinAggregates>;
   MemberPatch: MemberPatch;
+  MemberStddevPopulationAggregates: ResolverTypeWrapper<MemberStddevPopulationAggregates>;
+  MemberStddevSampleAggregates: ResolverTypeWrapper<MemberStddevSampleAggregates>;
+  MemberSumAggregates: ResolverTypeWrapper<MemberSumAggregates>;
+  MemberVariancePopulationAggregates: ResolverTypeWrapper<MemberVariancePopulationAggregates>;
+  MemberVarianceSampleAggregates: ResolverTypeWrapper<MemberVarianceSampleAggregates>;
   MembersConnection: ResolverTypeWrapper<MembersConnection>;
   MembersEdge: ResolverTypeWrapper<MembersEdge>;
+  MembersGroupBy: MembersGroupBy;
+  MembersHavingAverageInput: MembersHavingAverageInput;
+  MembersHavingDistinctCountInput: MembersHavingDistinctCountInput;
+  MembersHavingInput: MembersHavingInput;
+  MembersHavingMaxInput: MembersHavingMaxInput;
+  MembersHavingMinInput: MembersHavingMinInput;
+  MembersHavingStddevPopulationInput: MembersHavingStddevPopulationInput;
+  MembersHavingStddevSampleInput: MembersHavingStddevSampleInput;
+  MembersHavingSumInput: MembersHavingSumInput;
+  MembersHavingVariancePopulationInput: MembersHavingVariancePopulationInput;
+  MembersHavingVarianceSampleInput: MembersHavingVarianceSampleInput;
   MembersOrderBy: MembersOrderBy;
   Message: ResolverTypeWrapper<Message>;
+  MessageAggregates: ResolverTypeWrapper<MessageAggregates>;
+  MessageAverageAggregates: ResolverTypeWrapper<MessageAverageAggregates>;
   MessageCondition: MessageCondition;
+  MessageDistinctCountAggregates: ResolverTypeWrapper<MessageDistinctCountAggregates>;
+  MessageFilter: MessageFilter;
   MessageInput: MessageInput;
+  MessageMaxAggregates: ResolverTypeWrapper<MessageMaxAggregates>;
+  MessageMinAggregates: ResolverTypeWrapper<MessageMinAggregates>;
+  MessageStddevPopulationAggregates: ResolverTypeWrapper<MessageStddevPopulationAggregates>;
+  MessageStddevSampleAggregates: ResolverTypeWrapper<MessageStddevSampleAggregates>;
+  MessageSumAggregates: ResolverTypeWrapper<MessageSumAggregates>;
+  MessageVariancePopulationAggregates: ResolverTypeWrapper<MessageVariancePopulationAggregates>;
+  MessageVarianceSampleAggregates: ResolverTypeWrapper<MessageVarianceSampleAggregates>;
   MessagesConnection: ResolverTypeWrapper<MessagesConnection>;
   MessagesEdge: ResolverTypeWrapper<MessagesEdge>;
+  MessagesGroupBy: MessagesGroupBy;
+  MessagesHavingAverageInput: MessagesHavingAverageInput;
+  MessagesHavingDistinctCountInput: MessagesHavingDistinctCountInput;
+  MessagesHavingInput: MessagesHavingInput;
+  MessagesHavingMaxInput: MessagesHavingMaxInput;
+  MessagesHavingMinInput: MessagesHavingMinInput;
+  MessagesHavingStddevPopulationInput: MessagesHavingStddevPopulationInput;
+  MessagesHavingStddevSampleInput: MessagesHavingStddevSampleInput;
+  MessagesHavingSumInput: MessagesHavingSumInput;
+  MessagesHavingVariancePopulationInput: MessagesHavingVariancePopulationInput;
+  MessagesHavingVarianceSampleInput: MessagesHavingVarianceSampleInput;
   MessagesOrderBy: MessagesOrderBy;
   ModLog: ResolverTypeWrapper<ModLog>;
+  ModLogAggregates: ResolverTypeWrapper<ModLogAggregates>;
+  ModLogAverageAggregates: ResolverTypeWrapper<ModLogAverageAggregates>;
   ModLogCondition: ModLogCondition;
+  ModLogDistinctCountAggregates: ResolverTypeWrapper<ModLogDistinctCountAggregates>;
+  ModLogFilter: ModLogFilter;
   ModLogInput: ModLogInput;
+  ModLogMaxAggregates: ResolverTypeWrapper<ModLogMaxAggregates>;
+  ModLogMinAggregates: ResolverTypeWrapper<ModLogMinAggregates>;
   ModLogPatch: ModLogPatch;
+  ModLogStddevPopulationAggregates: ResolverTypeWrapper<ModLogStddevPopulationAggregates>;
+  ModLogStddevSampleAggregates: ResolverTypeWrapper<ModLogStddevSampleAggregates>;
+  ModLogSumAggregates: ResolverTypeWrapper<ModLogSumAggregates>;
+  ModLogVariancePopulationAggregates: ResolverTypeWrapper<ModLogVariancePopulationAggregates>;
+  ModLogVarianceSampleAggregates: ResolverTypeWrapper<ModLogVarianceSampleAggregates>;
   ModLogsConnection: ResolverTypeWrapper<ModLogsConnection>;
   ModLogsEdge: ResolverTypeWrapper<ModLogsEdge>;
+  ModLogsGroupBy: ModLogsGroupBy;
+  ModLogsHavingAverageInput: ModLogsHavingAverageInput;
+  ModLogsHavingDistinctCountInput: ModLogsHavingDistinctCountInput;
+  ModLogsHavingInput: ModLogsHavingInput;
+  ModLogsHavingMaxInput: ModLogsHavingMaxInput;
+  ModLogsHavingMinInput: ModLogsHavingMinInput;
+  ModLogsHavingStddevPopulationInput: ModLogsHavingStddevPopulationInput;
+  ModLogsHavingStddevSampleInput: ModLogsHavingStddevSampleInput;
+  ModLogsHavingSumInput: ModLogsHavingSumInput;
+  ModLogsHavingVariancePopulationInput: ModLogsHavingVariancePopulationInput;
+  ModLogsHavingVarianceSampleInput: ModLogsHavingVarianceSampleInput;
   ModLogsOrderBy: ModLogsOrderBy;
   Mutation: ResolverTypeWrapper<{}>;
   Mute: ResolverTypeWrapper<Mute>;
+  MuteAggregates: ResolverTypeWrapper<MuteAggregates>;
+  MuteAverageAggregates: ResolverTypeWrapper<MuteAverageAggregates>;
   MuteCondition: MuteCondition;
+  MuteDistinctCountAggregates: ResolverTypeWrapper<MuteDistinctCountAggregates>;
+  MuteFilter: MuteFilter;
   MuteInput: MuteInput;
+  MuteMaxAggregates: ResolverTypeWrapper<MuteMaxAggregates>;
+  MuteMinAggregates: ResolverTypeWrapper<MuteMinAggregates>;
   MutePatch: MutePatch;
+  MuteStddevPopulationAggregates: ResolverTypeWrapper<MuteStddevPopulationAggregates>;
+  MuteStddevSampleAggregates: ResolverTypeWrapper<MuteStddevSampleAggregates>;
+  MuteSumAggregates: ResolverTypeWrapper<MuteSumAggregates>;
+  MuteVariancePopulationAggregates: ResolverTypeWrapper<MuteVariancePopulationAggregates>;
+  MuteVarianceSampleAggregates: ResolverTypeWrapper<MuteVarianceSampleAggregates>;
   MutesConnection: ResolverTypeWrapper<MutesConnection>;
   MutesEdge: ResolverTypeWrapper<MutesEdge>;
+  MutesGroupBy: MutesGroupBy;
+  MutesHavingAverageInput: MutesHavingAverageInput;
+  MutesHavingDistinctCountInput: MutesHavingDistinctCountInput;
+  MutesHavingInput: MutesHavingInput;
+  MutesHavingMaxInput: MutesHavingMaxInput;
+  MutesHavingMinInput: MutesHavingMinInput;
+  MutesHavingStddevPopulationInput: MutesHavingStddevPopulationInput;
+  MutesHavingStddevSampleInput: MutesHavingStddevSampleInput;
+  MutesHavingSumInput: MutesHavingSumInput;
+  MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
+  MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
   MutesOrderBy: MutesOrderBy;
   Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['Member'] | ResolversTypes['ModLog'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'];
   Notification: ResolverTypeWrapper<Notification>;
+  NotificationAggregates: ResolverTypeWrapper<NotificationAggregates>;
+  NotificationAverageAggregates: ResolverTypeWrapper<NotificationAverageAggregates>;
   NotificationCondition: NotificationCondition;
+  NotificationDistinctCountAggregates: ResolverTypeWrapper<NotificationDistinctCountAggregates>;
+  NotificationFilter: NotificationFilter;
   NotificationInput: NotificationInput;
+  NotificationMaxAggregates: ResolverTypeWrapper<NotificationMaxAggregates>;
+  NotificationMinAggregates: ResolverTypeWrapper<NotificationMinAggregates>;
   NotificationPatch: NotificationPatch;
+  NotificationStddevPopulationAggregates: ResolverTypeWrapper<NotificationStddevPopulationAggregates>;
+  NotificationStddevSampleAggregates: ResolverTypeWrapper<NotificationStddevSampleAggregates>;
+  NotificationSumAggregates: ResolverTypeWrapper<NotificationSumAggregates>;
+  NotificationVariancePopulationAggregates: ResolverTypeWrapper<NotificationVariancePopulationAggregates>;
+  NotificationVarianceSampleAggregates: ResolverTypeWrapper<NotificationVarianceSampleAggregates>;
   NotificationsConnection: ResolverTypeWrapper<NotificationsConnection>;
   NotificationsEdge: ResolverTypeWrapper<NotificationsEdge>;
+  NotificationsGroupBy: NotificationsGroupBy;
+  NotificationsHavingAverageInput: NotificationsHavingAverageInput;
+  NotificationsHavingDistinctCountInput: NotificationsHavingDistinctCountInput;
+  NotificationsHavingInput: NotificationsHavingInput;
+  NotificationsHavingMaxInput: NotificationsHavingMaxInput;
+  NotificationsHavingMinInput: NotificationsHavingMinInput;
+  NotificationsHavingStddevPopulationInput: NotificationsHavingStddevPopulationInput;
+  NotificationsHavingStddevSampleInput: NotificationsHavingStddevSampleInput;
+  NotificationsHavingSumInput: NotificationsHavingSumInput;
+  NotificationsHavingVariancePopulationInput: NotificationsHavingVariancePopulationInput;
+  NotificationsHavingVarianceSampleInput: NotificationsHavingVarianceSampleInput;
   NotificationsOrderBy: NotificationsOrderBy;
   NotificationsStartingWithConnection: ResolverTypeWrapper<NotificationsStartingWithConnection>;
   NotificationsStartingWithEdge: ResolverTypeWrapper<NotificationsStartingWithEdge>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
   Reminder: ResolverTypeWrapper<Reminder>;
+  ReminderAggregates: ResolverTypeWrapper<ReminderAggregates>;
+  ReminderAverageAggregates: ResolverTypeWrapper<ReminderAverageAggregates>;
   ReminderCondition: ReminderCondition;
+  ReminderDistinctCountAggregates: ResolverTypeWrapper<ReminderDistinctCountAggregates>;
+  ReminderFilter: ReminderFilter;
   ReminderInput: ReminderInput;
+  ReminderMaxAggregates: ResolverTypeWrapper<ReminderMaxAggregates>;
+  ReminderMinAggregates: ResolverTypeWrapper<ReminderMinAggregates>;
   ReminderPatch: ReminderPatch;
+  ReminderStddevPopulationAggregates: ResolverTypeWrapper<ReminderStddevPopulationAggregates>;
+  ReminderStddevSampleAggregates: ResolverTypeWrapper<ReminderStddevSampleAggregates>;
+  ReminderSumAggregates: ResolverTypeWrapper<ReminderSumAggregates>;
+  ReminderVariancePopulationAggregates: ResolverTypeWrapper<ReminderVariancePopulationAggregates>;
+  ReminderVarianceSampleAggregates: ResolverTypeWrapper<ReminderVarianceSampleAggregates>;
   RemindersConnection: ResolverTypeWrapper<RemindersConnection>;
   RemindersEdge: ResolverTypeWrapper<RemindersEdge>;
+  RemindersGroupBy: RemindersGroupBy;
+  RemindersHavingAverageInput: RemindersHavingAverageInput;
+  RemindersHavingDistinctCountInput: RemindersHavingDistinctCountInput;
+  RemindersHavingInput: RemindersHavingInput;
+  RemindersHavingMaxInput: RemindersHavingMaxInput;
+  RemindersHavingMinInput: RemindersHavingMinInput;
+  RemindersHavingStddevPopulationInput: RemindersHavingStddevPopulationInput;
+  RemindersHavingStddevSampleInput: RemindersHavingStddevSampleInput;
+  RemindersHavingSumInput: RemindersHavingSumInput;
+  RemindersHavingVariancePopulationInput: RemindersHavingVariancePopulationInput;
+  RemindersHavingVarianceSampleInput: RemindersHavingVarianceSampleInput;
   RemindersOrderBy: RemindersOrderBy;
   RoleMenu: ResolverTypeWrapper<RoleMenu>;
+  RoleMenuAggregates: ResolverTypeWrapper<RoleMenuAggregates>;
+  RoleMenuAverageAggregates: ResolverTypeWrapper<RoleMenuAverageAggregates>;
   RoleMenuCondition: RoleMenuCondition;
+  RoleMenuDistinctCountAggregates: ResolverTypeWrapper<RoleMenuDistinctCountAggregates>;
+  RoleMenuFilter: RoleMenuFilter;
   RoleMenuInput: RoleMenuInput;
+  RoleMenuMaxAggregates: ResolverTypeWrapper<RoleMenuMaxAggregates>;
+  RoleMenuMinAggregates: ResolverTypeWrapper<RoleMenuMinAggregates>;
   RoleMenuPatch: RoleMenuPatch;
+  RoleMenuStddevPopulationAggregates: ResolverTypeWrapper<RoleMenuStddevPopulationAggregates>;
+  RoleMenuStddevSampleAggregates: ResolverTypeWrapper<RoleMenuStddevSampleAggregates>;
+  RoleMenuSumAggregates: ResolverTypeWrapper<RoleMenuSumAggregates>;
+  RoleMenuVariancePopulationAggregates: ResolverTypeWrapper<RoleMenuVariancePopulationAggregates>;
+  RoleMenuVarianceSampleAggregates: ResolverTypeWrapper<RoleMenuVarianceSampleAggregates>;
   RoleMenusConnection: ResolverTypeWrapper<RoleMenusConnection>;
   RoleMenusEdge: ResolverTypeWrapper<RoleMenusEdge>;
+  RoleMenusGroupBy: RoleMenusGroupBy;
+  RoleMenusHavingAverageInput: RoleMenusHavingAverageInput;
+  RoleMenusHavingDistinctCountInput: RoleMenusHavingDistinctCountInput;
+  RoleMenusHavingInput: RoleMenusHavingInput;
+  RoleMenusHavingMaxInput: RoleMenusHavingMaxInput;
+  RoleMenusHavingMinInput: RoleMenusHavingMinInput;
+  RoleMenusHavingStddevPopulationInput: RoleMenusHavingStddevPopulationInput;
+  RoleMenusHavingStddevSampleInput: RoleMenusHavingStddevSampleInput;
+  RoleMenusHavingSumInput: RoleMenusHavingSumInput;
+  RoleMenusHavingVariancePopulationInput: RoleMenusHavingVariancePopulationInput;
+  RoleMenusHavingVarianceSampleInput: RoleMenusHavingVarianceSampleInput;
   RoleMenusOrderBy: RoleMenusOrderBy;
   String: ResolverTypeWrapper<Scalars['String']>;
+  StringFilter: StringFilter;
+  StringListFilter: StringListFilter;
   Tag: ResolverTypeWrapper<Tag>;
+  TagAggregates: ResolverTypeWrapper<TagAggregates>;
+  TagAverageAggregates: ResolverTypeWrapper<TagAverageAggregates>;
   TagCondition: TagCondition;
+  TagDistinctCountAggregates: ResolverTypeWrapper<TagDistinctCountAggregates>;
+  TagFilter: TagFilter;
   TagInput: TagInput;
+  TagMaxAggregates: ResolverTypeWrapper<TagMaxAggregates>;
+  TagMinAggregates: ResolverTypeWrapper<TagMinAggregates>;
   TagPatch: TagPatch;
+  TagStddevPopulationAggregates: ResolverTypeWrapper<TagStddevPopulationAggregates>;
+  TagStddevSampleAggregates: ResolverTypeWrapper<TagStddevSampleAggregates>;
+  TagSumAggregates: ResolverTypeWrapper<TagSumAggregates>;
+  TagVariancePopulationAggregates: ResolverTypeWrapper<TagVariancePopulationAggregates>;
+  TagVarianceSampleAggregates: ResolverTypeWrapper<TagVarianceSampleAggregates>;
   TagsConnection: ResolverTypeWrapper<TagsConnection>;
   TagsEdge: ResolverTypeWrapper<TagsEdge>;
+  TagsGroupBy: TagsGroupBy;
+  TagsHavingAverageInput: TagsHavingAverageInput;
+  TagsHavingDistinctCountInput: TagsHavingDistinctCountInput;
+  TagsHavingInput: TagsHavingInput;
+  TagsHavingMaxInput: TagsHavingMaxInput;
+  TagsHavingMinInput: TagsHavingMinInput;
+  TagsHavingStddevPopulationInput: TagsHavingStddevPopulationInput;
+  TagsHavingStddevSampleInput: TagsHavingStddevSampleInput;
+  TagsHavingSumInput: TagsHavingSumInput;
+  TagsHavingVariancePopulationInput: TagsHavingVariancePopulationInput;
+  TagsHavingVarianceSampleInput: TagsHavingVarianceSampleInput;
   TagsOrderBy: TagsOrderBy;
   TimeframeUserLevelEdge: ResolverTypeWrapper<TimeframeUserLevelEdge>;
   TimeframeUserLevelsConnection: ResolverTypeWrapper<TimeframeUserLevelsConnection>;
   TimeframeUserLevelsRecord: ResolverTypeWrapper<TimeframeUserLevelsRecord>;
+  TimeframeUserLevelsRecordFilter: TimeframeUserLevelsRecordFilter;
   UUID: ResolverTypeWrapper<Scalars['UUID']>;
   UpdateBotStatByNameAndCategoryInput: UpdateBotStatByNameAndCategoryInput;
   UpdateBotStatInput: UpdateBotStatInput;
@@ -6271,43 +11175,134 @@ export type ResolversTypes = {
   UpdateWebUserInput: UpdateWebUserInput;
   UpdateWebUserPayload: ResolverTypeWrapper<UpdateWebUserPayload>;
   User: ResolverTypeWrapper<User>;
+  UserAggregates: ResolverTypeWrapper<UserAggregates>;
+  UserAverageAggregates: ResolverTypeWrapper<UserAverageAggregates>;
   UserCondition: UserCondition;
+  UserDistinctCountAggregates: ResolverTypeWrapper<UserDistinctCountAggregates>;
+  UserFilter: UserFilter;
   UserInput: UserInput;
   UserLevel: ResolverTypeWrapper<UserLevel>;
   UserLevelInput: UserLevelInput;
   UserLevelPatch: UserLevelPatch;
   UserLevelsEdge: ResolverTypeWrapper<UserLevelsEdge>;
   UserLevelsOrderBy: UserLevelsOrderBy;
+  UserMaxAggregates: ResolverTypeWrapper<UserMaxAggregates>;
+  UserMinAggregates: ResolverTypeWrapper<UserMinAggregates>;
   UserPatch: UserPatch;
+  UserStddevPopulationAggregates: ResolverTypeWrapper<UserStddevPopulationAggregates>;
+  UserStddevSampleAggregates: ResolverTypeWrapper<UserStddevSampleAggregates>;
+  UserSumAggregates: ResolverTypeWrapper<UserSumAggregates>;
+  UserVariancePopulationAggregates: ResolverTypeWrapper<UserVariancePopulationAggregates>;
+  UserVarianceSampleAggregates: ResolverTypeWrapper<UserVarianceSampleAggregates>;
   UsersConnection: ResolverTypeWrapper<UsersConnection>;
   UsersEdge: ResolverTypeWrapper<UsersEdge>;
+  UsersGroupBy: UsersGroupBy;
+  UsersHavingAverageInput: UsersHavingAverageInput;
+  UsersHavingDistinctCountInput: UsersHavingDistinctCountInput;
+  UsersHavingInput: UsersHavingInput;
+  UsersHavingMaxInput: UsersHavingMaxInput;
+  UsersHavingMinInput: UsersHavingMinInput;
+  UsersHavingStddevPopulationInput: UsersHavingStddevPopulationInput;
+  UsersHavingStddevSampleInput: UsersHavingStddevSampleInput;
+  UsersHavingSumInput: UsersHavingSumInput;
+  UsersHavingVariancePopulationInput: UsersHavingVariancePopulationInput;
+  UsersHavingVarianceSampleInput: UsersHavingVarianceSampleInput;
   UsersOrderBy: UsersOrderBy;
   WebUser: ResolverTypeWrapper<WebUser>;
+  WebUserAggregates: ResolverTypeWrapper<WebUserAggregates>;
+  WebUserAverageAggregates: ResolverTypeWrapper<WebUserAverageAggregates>;
   WebUserCondition: WebUserCondition;
+  WebUserDistinctCountAggregates: ResolverTypeWrapper<WebUserDistinctCountAggregates>;
+  WebUserFilter: WebUserFilter;
   WebUserGuild: ResolverTypeWrapper<WebUserGuild>;
+  WebUserGuildAggregates: ResolverTypeWrapper<WebUserGuildAggregates>;
+  WebUserGuildAverageAggregates: ResolverTypeWrapper<WebUserGuildAverageAggregates>;
   WebUserGuildCondition: WebUserGuildCondition;
+  WebUserGuildDistinctCountAggregates: ResolverTypeWrapper<WebUserGuildDistinctCountAggregates>;
+  WebUserGuildFilter: WebUserGuildFilter;
   WebUserGuildInput: WebUserGuildInput;
+  WebUserGuildMaxAggregates: ResolverTypeWrapper<WebUserGuildMaxAggregates>;
+  WebUserGuildMinAggregates: ResolverTypeWrapper<WebUserGuildMinAggregates>;
   WebUserGuildPatch: WebUserGuildPatch;
+  WebUserGuildStddevPopulationAggregates: ResolverTypeWrapper<WebUserGuildStddevPopulationAggregates>;
+  WebUserGuildStddevSampleAggregates: ResolverTypeWrapper<WebUserGuildStddevSampleAggregates>;
+  WebUserGuildSumAggregates: ResolverTypeWrapper<WebUserGuildSumAggregates>;
+  WebUserGuildVariancePopulationAggregates: ResolverTypeWrapper<WebUserGuildVariancePopulationAggregates>;
+  WebUserGuildVarianceSampleAggregates: ResolverTypeWrapper<WebUserGuildVarianceSampleAggregates>;
   WebUserGuildsConnection: ResolverTypeWrapper<WebUserGuildsConnection>;
   WebUserGuildsEdge: ResolverTypeWrapper<WebUserGuildsEdge>;
+  WebUserGuildsGroupBy: WebUserGuildsGroupBy;
+  WebUserGuildsHavingAverageInput: WebUserGuildsHavingAverageInput;
+  WebUserGuildsHavingDistinctCountInput: WebUserGuildsHavingDistinctCountInput;
+  WebUserGuildsHavingInput: WebUserGuildsHavingInput;
+  WebUserGuildsHavingMaxInput: WebUserGuildsHavingMaxInput;
+  WebUserGuildsHavingMinInput: WebUserGuildsHavingMinInput;
+  WebUserGuildsHavingStddevPopulationInput: WebUserGuildsHavingStddevPopulationInput;
+  WebUserGuildsHavingStddevSampleInput: WebUserGuildsHavingStddevSampleInput;
+  WebUserGuildsHavingSumInput: WebUserGuildsHavingSumInput;
+  WebUserGuildsHavingVariancePopulationInput: WebUserGuildsHavingVariancePopulationInput;
+  WebUserGuildsHavingVarianceSampleInput: WebUserGuildsHavingVarianceSampleInput;
   WebUserGuildsOrderBy: WebUserGuildsOrderBy;
   WebUserInput: WebUserInput;
+  WebUserMaxAggregates: ResolverTypeWrapper<WebUserMaxAggregates>;
+  WebUserMinAggregates: ResolverTypeWrapper<WebUserMinAggregates>;
   WebUserPatch: WebUserPatch;
+  WebUserStddevPopulationAggregates: ResolverTypeWrapper<WebUserStddevPopulationAggregates>;
+  WebUserStddevSampleAggregates: ResolverTypeWrapper<WebUserStddevSampleAggregates>;
+  WebUserSumAggregates: ResolverTypeWrapper<WebUserSumAggregates>;
+  WebUserVariancePopulationAggregates: ResolverTypeWrapper<WebUserVariancePopulationAggregates>;
+  WebUserVarianceSampleAggregates: ResolverTypeWrapper<WebUserVarianceSampleAggregates>;
   WebUsersConnection: ResolverTypeWrapper<WebUsersConnection>;
   WebUsersEdge: ResolverTypeWrapper<WebUsersEdge>;
+  WebUsersGroupBy: WebUsersGroupBy;
+  WebUsersHavingAverageInput: WebUsersHavingAverageInput;
+  WebUsersHavingDistinctCountInput: WebUsersHavingDistinctCountInput;
+  WebUsersHavingInput: WebUsersHavingInput;
+  WebUsersHavingMaxInput: WebUsersHavingMaxInput;
+  WebUsersHavingMinInput: WebUsersHavingMinInput;
+  WebUsersHavingStddevPopulationInput: WebUsersHavingStddevPopulationInput;
+  WebUsersHavingStddevSampleInput: WebUsersHavingStddevSampleInput;
+  WebUsersHavingSumInput: WebUsersHavingSumInput;
+  WebUsersHavingVariancePopulationInput: WebUsersHavingVariancePopulationInput;
+  WebUsersHavingVarianceSampleInput: WebUsersHavingVarianceSampleInput;
   WebUsersOrderBy: WebUsersOrderBy;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  BigFloat: Scalars['BigFloat'];
   BigInt: Scalars['BigInt'];
+  BigIntFilter: BigIntFilter;
+  BigIntListFilter: BigIntListFilter;
   Boolean: Scalars['Boolean'];
+  BooleanFilter: BooleanFilter;
   BotStat: BotStat;
+  BotStatAggregates: BotStatAggregates;
+  BotStatAverageAggregates: BotStatAverageAggregates;
   BotStatCondition: BotStatCondition;
+  BotStatDistinctCountAggregates: BotStatDistinctCountAggregates;
+  BotStatFilter: BotStatFilter;
   BotStatInput: BotStatInput;
+  BotStatMaxAggregates: BotStatMaxAggregates;
+  BotStatMinAggregates: BotStatMinAggregates;
   BotStatPatch: BotStatPatch;
+  BotStatStddevPopulationAggregates: BotStatStddevPopulationAggregates;
+  BotStatStddevSampleAggregates: BotStatStddevSampleAggregates;
+  BotStatSumAggregates: BotStatSumAggregates;
+  BotStatVariancePopulationAggregates: BotStatVariancePopulationAggregates;
+  BotStatVarianceSampleAggregates: BotStatVarianceSampleAggregates;
   BotStatsConnection: BotStatsConnection;
   BotStatsEdge: BotStatsEdge;
+  BotStatsHavingAverageInput: BotStatsHavingAverageInput;
+  BotStatsHavingDistinctCountInput: BotStatsHavingDistinctCountInput;
+  BotStatsHavingInput: BotStatsHavingInput;
+  BotStatsHavingMaxInput: BotStatsHavingMaxInput;
+  BotStatsHavingMinInput: BotStatsHavingMinInput;
+  BotStatsHavingStddevPopulationInput: BotStatsHavingStddevPopulationInput;
+  BotStatsHavingStddevSampleInput: BotStatsHavingStddevSampleInput;
+  BotStatsHavingSumInput: BotStatsHavingSumInput;
+  BotStatsHavingVariancePopulationInput: BotStatsHavingVariancePopulationInput;
+  BotStatsHavingVarianceSampleInput: BotStatsHavingVarianceSampleInput;
   CachedGuild: CachedGuild;
   CachedGuildInput: CachedGuildInput;
   CachedGuildPatch: CachedGuildPatch;
@@ -6360,6 +11355,7 @@ export type ResolversParentTypes = {
   CurrentUserManagedGuildIdsConnection: CurrentUserManagedGuildIdsConnection;
   Cursor: Scalars['Cursor'];
   Datetime: Scalars['Datetime'];
+  DatetimeFilter: DatetimeFilter;
   DeleteBotStatByNameAndCategoryInput: DeleteBotStatByNameAndCategoryInput;
   DeleteBotStatInput: DeleteBotStatInput;
   DeleteBotStatPayload: DeleteBotStatPayload;
@@ -6419,99 +11415,346 @@ export type ResolversParentTypes = {
   DeleteWebUserInput: DeleteWebUserInput;
   DeleteWebUserPayload: DeleteWebUserPayload;
   Feed: Feed;
+  FeedAggregates: FeedAggregates;
   FeedCondition: FeedCondition;
+  FeedDistinctCountAggregates: FeedDistinctCountAggregates;
+  FeedFilter: FeedFilter;
   FeedInput: FeedInput;
   FeedItem: FeedItem;
+  FeedItemAggregates: FeedItemAggregates;
   FeedItemCondition: FeedItemCondition;
+  FeedItemDistinctCountAggregates: FeedItemDistinctCountAggregates;
+  FeedItemFilter: FeedItemFilter;
   FeedItemInput: FeedItemInput;
   FeedItemPatch: FeedItemPatch;
   FeedItemsConnection: FeedItemsConnection;
   FeedItemsEdge: FeedItemsEdge;
+  FeedItemsHavingInput: FeedItemsHavingInput;
   FeedPatch: FeedPatch;
   FeedSubscription: FeedSubscription;
+  FeedSubscriptionAggregates: FeedSubscriptionAggregates;
+  FeedSubscriptionAverageAggregates: FeedSubscriptionAverageAggregates;
   FeedSubscriptionCondition: FeedSubscriptionCondition;
+  FeedSubscriptionDistinctCountAggregates: FeedSubscriptionDistinctCountAggregates;
+  FeedSubscriptionFilter: FeedSubscriptionFilter;
   FeedSubscriptionInput: FeedSubscriptionInput;
+  FeedSubscriptionMaxAggregates: FeedSubscriptionMaxAggregates;
+  FeedSubscriptionMinAggregates: FeedSubscriptionMinAggregates;
   FeedSubscriptionPatch: FeedSubscriptionPatch;
+  FeedSubscriptionStddevPopulationAggregates: FeedSubscriptionStddevPopulationAggregates;
+  FeedSubscriptionStddevSampleAggregates: FeedSubscriptionStddevSampleAggregates;
+  FeedSubscriptionSumAggregates: FeedSubscriptionSumAggregates;
+  FeedSubscriptionVariancePopulationAggregates: FeedSubscriptionVariancePopulationAggregates;
+  FeedSubscriptionVarianceSampleAggregates: FeedSubscriptionVarianceSampleAggregates;
   FeedSubscriptionsConnection: FeedSubscriptionsConnection;
   FeedSubscriptionsEdge: FeedSubscriptionsEdge;
+  FeedSubscriptionsHavingAverageInput: FeedSubscriptionsHavingAverageInput;
+  FeedSubscriptionsHavingDistinctCountInput: FeedSubscriptionsHavingDistinctCountInput;
+  FeedSubscriptionsHavingInput: FeedSubscriptionsHavingInput;
+  FeedSubscriptionsHavingMaxInput: FeedSubscriptionsHavingMaxInput;
+  FeedSubscriptionsHavingMinInput: FeedSubscriptionsHavingMinInput;
+  FeedSubscriptionsHavingStddevPopulationInput: FeedSubscriptionsHavingStddevPopulationInput;
+  FeedSubscriptionsHavingStddevSampleInput: FeedSubscriptionsHavingStddevSampleInput;
+  FeedSubscriptionsHavingSumInput: FeedSubscriptionsHavingSumInput;
+  FeedSubscriptionsHavingVariancePopulationInput: FeedSubscriptionsHavingVariancePopulationInput;
+  FeedSubscriptionsHavingVarianceSampleInput: FeedSubscriptionsHavingVarianceSampleInput;
   FeedsConnection: FeedsConnection;
   FeedsEdge: FeedsEdge;
+  FeedsHavingInput: FeedsHavingInput;
   GraphqlInput: GraphqlInput;
   GraphqlPayload: GraphqlPayload;
   GuildBan: GuildBan;
+  GuildBanAggregates: GuildBanAggregates;
+  GuildBanAverageAggregates: GuildBanAverageAggregates;
   GuildBanCondition: GuildBanCondition;
+  GuildBanDistinctCountAggregates: GuildBanDistinctCountAggregates;
+  GuildBanFilter: GuildBanFilter;
   GuildBanInput: GuildBanInput;
+  GuildBanMaxAggregates: GuildBanMaxAggregates;
+  GuildBanMinAggregates: GuildBanMinAggregates;
   GuildBanPatch: GuildBanPatch;
+  GuildBanStddevPopulationAggregates: GuildBanStddevPopulationAggregates;
+  GuildBanStddevSampleAggregates: GuildBanStddevSampleAggregates;
+  GuildBanSumAggregates: GuildBanSumAggregates;
+  GuildBanVariancePopulationAggregates: GuildBanVariancePopulationAggregates;
+  GuildBanVarianceSampleAggregates: GuildBanVarianceSampleAggregates;
   GuildBansConnection: GuildBansConnection;
   GuildBansEdge: GuildBansEdge;
+  GuildBansHavingAverageInput: GuildBansHavingAverageInput;
+  GuildBansHavingDistinctCountInput: GuildBansHavingDistinctCountInput;
+  GuildBansHavingInput: GuildBansHavingInput;
+  GuildBansHavingMaxInput: GuildBansHavingMaxInput;
+  GuildBansHavingMinInput: GuildBansHavingMinInput;
+  GuildBansHavingStddevPopulationInput: GuildBansHavingStddevPopulationInput;
+  GuildBansHavingStddevSampleInput: GuildBansHavingStddevSampleInput;
+  GuildBansHavingSumInput: GuildBansHavingSumInput;
+  GuildBansHavingVariancePopulationInput: GuildBansHavingVariancePopulationInput;
+  GuildBansHavingVarianceSampleInput: GuildBansHavingVarianceSampleInput;
   GuildConfig: GuildConfig;
+  GuildConfigAggregates: GuildConfigAggregates;
+  GuildConfigAverageAggregates: GuildConfigAverageAggregates;
   GuildConfigCondition: GuildConfigCondition;
+  GuildConfigDistinctCountAggregates: GuildConfigDistinctCountAggregates;
+  GuildConfigFilter: GuildConfigFilter;
   GuildConfigInput: GuildConfigInput;
+  GuildConfigMaxAggregates: GuildConfigMaxAggregates;
+  GuildConfigMinAggregates: GuildConfigMinAggregates;
   GuildConfigPatch: GuildConfigPatch;
+  GuildConfigStddevPopulationAggregates: GuildConfigStddevPopulationAggregates;
+  GuildConfigStddevSampleAggregates: GuildConfigStddevSampleAggregates;
+  GuildConfigSumAggregates: GuildConfigSumAggregates;
+  GuildConfigVariancePopulationAggregates: GuildConfigVariancePopulationAggregates;
+  GuildConfigVarianceSampleAggregates: GuildConfigVarianceSampleAggregates;
   GuildConfigsConnection: GuildConfigsConnection;
   GuildConfigsEdge: GuildConfigsEdge;
+  GuildConfigsHavingAverageInput: GuildConfigsHavingAverageInput;
+  GuildConfigsHavingDistinctCountInput: GuildConfigsHavingDistinctCountInput;
+  GuildConfigsHavingInput: GuildConfigsHavingInput;
+  GuildConfigsHavingMaxInput: GuildConfigsHavingMaxInput;
+  GuildConfigsHavingMinInput: GuildConfigsHavingMinInput;
+  GuildConfigsHavingStddevPopulationInput: GuildConfigsHavingStddevPopulationInput;
+  GuildConfigsHavingStddevSampleInput: GuildConfigsHavingStddevSampleInput;
+  GuildConfigsHavingSumInput: GuildConfigsHavingSumInput;
+  GuildConfigsHavingVariancePopulationInput: GuildConfigsHavingVariancePopulationInput;
+  GuildConfigsHavingVarianceSampleInput: GuildConfigsHavingVarianceSampleInput;
+  HavingBigintFilter: HavingBigintFilter;
+  HavingDatetimeFilter: HavingDatetimeFilter;
+  HavingIntFilter: HavingIntFilter;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
+  IntFilter: IntFilter;
   JSON: Scalars['JSON'];
+  JSONFilter: JsonFilter;
   LogoutInput: LogoutInput;
   LogoutPayload: LogoutPayload;
   Member: Member;
+  MemberAggregates: MemberAggregates;
+  MemberAverageAggregates: MemberAverageAggregates;
   MemberCondition: MemberCondition;
+  MemberDistinctCountAggregates: MemberDistinctCountAggregates;
+  MemberFilter: MemberFilter;
   MemberInput: MemberInput;
+  MemberMaxAggregates: MemberMaxAggregates;
+  MemberMinAggregates: MemberMinAggregates;
   MemberPatch: MemberPatch;
+  MemberStddevPopulationAggregates: MemberStddevPopulationAggregates;
+  MemberStddevSampleAggregates: MemberStddevSampleAggregates;
+  MemberSumAggregates: MemberSumAggregates;
+  MemberVariancePopulationAggregates: MemberVariancePopulationAggregates;
+  MemberVarianceSampleAggregates: MemberVarianceSampleAggregates;
   MembersConnection: MembersConnection;
   MembersEdge: MembersEdge;
+  MembersHavingAverageInput: MembersHavingAverageInput;
+  MembersHavingDistinctCountInput: MembersHavingDistinctCountInput;
+  MembersHavingInput: MembersHavingInput;
+  MembersHavingMaxInput: MembersHavingMaxInput;
+  MembersHavingMinInput: MembersHavingMinInput;
+  MembersHavingStddevPopulationInput: MembersHavingStddevPopulationInput;
+  MembersHavingStddevSampleInput: MembersHavingStddevSampleInput;
+  MembersHavingSumInput: MembersHavingSumInput;
+  MembersHavingVariancePopulationInput: MembersHavingVariancePopulationInput;
+  MembersHavingVarianceSampleInput: MembersHavingVarianceSampleInput;
   Message: Message;
+  MessageAggregates: MessageAggregates;
+  MessageAverageAggregates: MessageAverageAggregates;
   MessageCondition: MessageCondition;
+  MessageDistinctCountAggregates: MessageDistinctCountAggregates;
+  MessageFilter: MessageFilter;
   MessageInput: MessageInput;
+  MessageMaxAggregates: MessageMaxAggregates;
+  MessageMinAggregates: MessageMinAggregates;
+  MessageStddevPopulationAggregates: MessageStddevPopulationAggregates;
+  MessageStddevSampleAggregates: MessageStddevSampleAggregates;
+  MessageSumAggregates: MessageSumAggregates;
+  MessageVariancePopulationAggregates: MessageVariancePopulationAggregates;
+  MessageVarianceSampleAggregates: MessageVarianceSampleAggregates;
   MessagesConnection: MessagesConnection;
   MessagesEdge: MessagesEdge;
+  MessagesHavingAverageInput: MessagesHavingAverageInput;
+  MessagesHavingDistinctCountInput: MessagesHavingDistinctCountInput;
+  MessagesHavingInput: MessagesHavingInput;
+  MessagesHavingMaxInput: MessagesHavingMaxInput;
+  MessagesHavingMinInput: MessagesHavingMinInput;
+  MessagesHavingStddevPopulationInput: MessagesHavingStddevPopulationInput;
+  MessagesHavingStddevSampleInput: MessagesHavingStddevSampleInput;
+  MessagesHavingSumInput: MessagesHavingSumInput;
+  MessagesHavingVariancePopulationInput: MessagesHavingVariancePopulationInput;
+  MessagesHavingVarianceSampleInput: MessagesHavingVarianceSampleInput;
   ModLog: ModLog;
+  ModLogAggregates: ModLogAggregates;
+  ModLogAverageAggregates: ModLogAverageAggregates;
   ModLogCondition: ModLogCondition;
+  ModLogDistinctCountAggregates: ModLogDistinctCountAggregates;
+  ModLogFilter: ModLogFilter;
   ModLogInput: ModLogInput;
+  ModLogMaxAggregates: ModLogMaxAggregates;
+  ModLogMinAggregates: ModLogMinAggregates;
   ModLogPatch: ModLogPatch;
+  ModLogStddevPopulationAggregates: ModLogStddevPopulationAggregates;
+  ModLogStddevSampleAggregates: ModLogStddevSampleAggregates;
+  ModLogSumAggregates: ModLogSumAggregates;
+  ModLogVariancePopulationAggregates: ModLogVariancePopulationAggregates;
+  ModLogVarianceSampleAggregates: ModLogVarianceSampleAggregates;
   ModLogsConnection: ModLogsConnection;
   ModLogsEdge: ModLogsEdge;
+  ModLogsHavingAverageInput: ModLogsHavingAverageInput;
+  ModLogsHavingDistinctCountInput: ModLogsHavingDistinctCountInput;
+  ModLogsHavingInput: ModLogsHavingInput;
+  ModLogsHavingMaxInput: ModLogsHavingMaxInput;
+  ModLogsHavingMinInput: ModLogsHavingMinInput;
+  ModLogsHavingStddevPopulationInput: ModLogsHavingStddevPopulationInput;
+  ModLogsHavingStddevSampleInput: ModLogsHavingStddevSampleInput;
+  ModLogsHavingSumInput: ModLogsHavingSumInput;
+  ModLogsHavingVariancePopulationInput: ModLogsHavingVariancePopulationInput;
+  ModLogsHavingVarianceSampleInput: ModLogsHavingVarianceSampleInput;
   Mutation: {};
   Mute: Mute;
+  MuteAggregates: MuteAggregates;
+  MuteAverageAggregates: MuteAverageAggregates;
   MuteCondition: MuteCondition;
+  MuteDistinctCountAggregates: MuteDistinctCountAggregates;
+  MuteFilter: MuteFilter;
   MuteInput: MuteInput;
+  MuteMaxAggregates: MuteMaxAggregates;
+  MuteMinAggregates: MuteMinAggregates;
   MutePatch: MutePatch;
+  MuteStddevPopulationAggregates: MuteStddevPopulationAggregates;
+  MuteStddevSampleAggregates: MuteStddevSampleAggregates;
+  MuteSumAggregates: MuteSumAggregates;
+  MuteVariancePopulationAggregates: MuteVariancePopulationAggregates;
+  MuteVarianceSampleAggregates: MuteVarianceSampleAggregates;
   MutesConnection: MutesConnection;
   MutesEdge: MutesEdge;
+  MutesHavingAverageInput: MutesHavingAverageInput;
+  MutesHavingDistinctCountInput: MutesHavingDistinctCountInput;
+  MutesHavingInput: MutesHavingInput;
+  MutesHavingMaxInput: MutesHavingMaxInput;
+  MutesHavingMinInput: MutesHavingMinInput;
+  MutesHavingStddevPopulationInput: MutesHavingStddevPopulationInput;
+  MutesHavingStddevSampleInput: MutesHavingStddevSampleInput;
+  MutesHavingSumInput: MutesHavingSumInput;
+  MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
+  MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
   Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['Member'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'];
   Notification: Notification;
+  NotificationAggregates: NotificationAggregates;
+  NotificationAverageAggregates: NotificationAverageAggregates;
   NotificationCondition: NotificationCondition;
+  NotificationDistinctCountAggregates: NotificationDistinctCountAggregates;
+  NotificationFilter: NotificationFilter;
   NotificationInput: NotificationInput;
+  NotificationMaxAggregates: NotificationMaxAggregates;
+  NotificationMinAggregates: NotificationMinAggregates;
   NotificationPatch: NotificationPatch;
+  NotificationStddevPopulationAggregates: NotificationStddevPopulationAggregates;
+  NotificationStddevSampleAggregates: NotificationStddevSampleAggregates;
+  NotificationSumAggregates: NotificationSumAggregates;
+  NotificationVariancePopulationAggregates: NotificationVariancePopulationAggregates;
+  NotificationVarianceSampleAggregates: NotificationVarianceSampleAggregates;
   NotificationsConnection: NotificationsConnection;
   NotificationsEdge: NotificationsEdge;
+  NotificationsHavingAverageInput: NotificationsHavingAverageInput;
+  NotificationsHavingDistinctCountInput: NotificationsHavingDistinctCountInput;
+  NotificationsHavingInput: NotificationsHavingInput;
+  NotificationsHavingMaxInput: NotificationsHavingMaxInput;
+  NotificationsHavingMinInput: NotificationsHavingMinInput;
+  NotificationsHavingStddevPopulationInput: NotificationsHavingStddevPopulationInput;
+  NotificationsHavingStddevSampleInput: NotificationsHavingStddevSampleInput;
+  NotificationsHavingSumInput: NotificationsHavingSumInput;
+  NotificationsHavingVariancePopulationInput: NotificationsHavingVariancePopulationInput;
+  NotificationsHavingVarianceSampleInput: NotificationsHavingVarianceSampleInput;
   NotificationsStartingWithConnection: NotificationsStartingWithConnection;
   NotificationsStartingWithEdge: NotificationsStartingWithEdge;
   PageInfo: PageInfo;
   Query: {};
   Reminder: Reminder;
+  ReminderAggregates: ReminderAggregates;
+  ReminderAverageAggregates: ReminderAverageAggregates;
   ReminderCondition: ReminderCondition;
+  ReminderDistinctCountAggregates: ReminderDistinctCountAggregates;
+  ReminderFilter: ReminderFilter;
   ReminderInput: ReminderInput;
+  ReminderMaxAggregates: ReminderMaxAggregates;
+  ReminderMinAggregates: ReminderMinAggregates;
   ReminderPatch: ReminderPatch;
+  ReminderStddevPopulationAggregates: ReminderStddevPopulationAggregates;
+  ReminderStddevSampleAggregates: ReminderStddevSampleAggregates;
+  ReminderSumAggregates: ReminderSumAggregates;
+  ReminderVariancePopulationAggregates: ReminderVariancePopulationAggregates;
+  ReminderVarianceSampleAggregates: ReminderVarianceSampleAggregates;
   RemindersConnection: RemindersConnection;
   RemindersEdge: RemindersEdge;
+  RemindersHavingAverageInput: RemindersHavingAverageInput;
+  RemindersHavingDistinctCountInput: RemindersHavingDistinctCountInput;
+  RemindersHavingInput: RemindersHavingInput;
+  RemindersHavingMaxInput: RemindersHavingMaxInput;
+  RemindersHavingMinInput: RemindersHavingMinInput;
+  RemindersHavingStddevPopulationInput: RemindersHavingStddevPopulationInput;
+  RemindersHavingStddevSampleInput: RemindersHavingStddevSampleInput;
+  RemindersHavingSumInput: RemindersHavingSumInput;
+  RemindersHavingVariancePopulationInput: RemindersHavingVariancePopulationInput;
+  RemindersHavingVarianceSampleInput: RemindersHavingVarianceSampleInput;
   RoleMenu: RoleMenu;
+  RoleMenuAggregates: RoleMenuAggregates;
+  RoleMenuAverageAggregates: RoleMenuAverageAggregates;
   RoleMenuCondition: RoleMenuCondition;
+  RoleMenuDistinctCountAggregates: RoleMenuDistinctCountAggregates;
+  RoleMenuFilter: RoleMenuFilter;
   RoleMenuInput: RoleMenuInput;
+  RoleMenuMaxAggregates: RoleMenuMaxAggregates;
+  RoleMenuMinAggregates: RoleMenuMinAggregates;
   RoleMenuPatch: RoleMenuPatch;
+  RoleMenuStddevPopulationAggregates: RoleMenuStddevPopulationAggregates;
+  RoleMenuStddevSampleAggregates: RoleMenuStddevSampleAggregates;
+  RoleMenuSumAggregates: RoleMenuSumAggregates;
+  RoleMenuVariancePopulationAggregates: RoleMenuVariancePopulationAggregates;
+  RoleMenuVarianceSampleAggregates: RoleMenuVarianceSampleAggregates;
   RoleMenusConnection: RoleMenusConnection;
   RoleMenusEdge: RoleMenusEdge;
+  RoleMenusHavingAverageInput: RoleMenusHavingAverageInput;
+  RoleMenusHavingDistinctCountInput: RoleMenusHavingDistinctCountInput;
+  RoleMenusHavingInput: RoleMenusHavingInput;
+  RoleMenusHavingMaxInput: RoleMenusHavingMaxInput;
+  RoleMenusHavingMinInput: RoleMenusHavingMinInput;
+  RoleMenusHavingStddevPopulationInput: RoleMenusHavingStddevPopulationInput;
+  RoleMenusHavingStddevSampleInput: RoleMenusHavingStddevSampleInput;
+  RoleMenusHavingSumInput: RoleMenusHavingSumInput;
+  RoleMenusHavingVariancePopulationInput: RoleMenusHavingVariancePopulationInput;
+  RoleMenusHavingVarianceSampleInput: RoleMenusHavingVarianceSampleInput;
   String: Scalars['String'];
+  StringFilter: StringFilter;
+  StringListFilter: StringListFilter;
   Tag: Tag;
+  TagAggregates: TagAggregates;
+  TagAverageAggregates: TagAverageAggregates;
   TagCondition: TagCondition;
+  TagDistinctCountAggregates: TagDistinctCountAggregates;
+  TagFilter: TagFilter;
   TagInput: TagInput;
+  TagMaxAggregates: TagMaxAggregates;
+  TagMinAggregates: TagMinAggregates;
   TagPatch: TagPatch;
+  TagStddevPopulationAggregates: TagStddevPopulationAggregates;
+  TagStddevSampleAggregates: TagStddevSampleAggregates;
+  TagSumAggregates: TagSumAggregates;
+  TagVariancePopulationAggregates: TagVariancePopulationAggregates;
+  TagVarianceSampleAggregates: TagVarianceSampleAggregates;
   TagsConnection: TagsConnection;
   TagsEdge: TagsEdge;
+  TagsHavingAverageInput: TagsHavingAverageInput;
+  TagsHavingDistinctCountInput: TagsHavingDistinctCountInput;
+  TagsHavingInput: TagsHavingInput;
+  TagsHavingMaxInput: TagsHavingMaxInput;
+  TagsHavingMinInput: TagsHavingMinInput;
+  TagsHavingStddevPopulationInput: TagsHavingStddevPopulationInput;
+  TagsHavingStddevSampleInput: TagsHavingStddevSampleInput;
+  TagsHavingSumInput: TagsHavingSumInput;
+  TagsHavingVariancePopulationInput: TagsHavingVariancePopulationInput;
+  TagsHavingVarianceSampleInput: TagsHavingVarianceSampleInput;
   TimeframeUserLevelEdge: TimeframeUserLevelEdge;
   TimeframeUserLevelsConnection: TimeframeUserLevelsConnection;
   TimeframeUserLevelsRecord: TimeframeUserLevelsRecord;
+  TimeframeUserLevelsRecordFilter: TimeframeUserLevelsRecordFilter;
   UUID: Scalars['UUID'];
   UpdateBotStatByNameAndCategoryInput: UpdateBotStatByNameAndCategoryInput;
   UpdateBotStatInput: UpdateBotStatInput;
@@ -6572,28 +11815,95 @@ export type ResolversParentTypes = {
   UpdateWebUserInput: UpdateWebUserInput;
   UpdateWebUserPayload: UpdateWebUserPayload;
   User: User;
+  UserAggregates: UserAggregates;
+  UserAverageAggregates: UserAverageAggregates;
   UserCondition: UserCondition;
+  UserDistinctCountAggregates: UserDistinctCountAggregates;
+  UserFilter: UserFilter;
   UserInput: UserInput;
   UserLevel: UserLevel;
   UserLevelInput: UserLevelInput;
   UserLevelPatch: UserLevelPatch;
   UserLevelsEdge: UserLevelsEdge;
+  UserMaxAggregates: UserMaxAggregates;
+  UserMinAggregates: UserMinAggregates;
   UserPatch: UserPatch;
+  UserStddevPopulationAggregates: UserStddevPopulationAggregates;
+  UserStddevSampleAggregates: UserStddevSampleAggregates;
+  UserSumAggregates: UserSumAggregates;
+  UserVariancePopulationAggregates: UserVariancePopulationAggregates;
+  UserVarianceSampleAggregates: UserVarianceSampleAggregates;
   UsersConnection: UsersConnection;
   UsersEdge: UsersEdge;
+  UsersHavingAverageInput: UsersHavingAverageInput;
+  UsersHavingDistinctCountInput: UsersHavingDistinctCountInput;
+  UsersHavingInput: UsersHavingInput;
+  UsersHavingMaxInput: UsersHavingMaxInput;
+  UsersHavingMinInput: UsersHavingMinInput;
+  UsersHavingStddevPopulationInput: UsersHavingStddevPopulationInput;
+  UsersHavingStddevSampleInput: UsersHavingStddevSampleInput;
+  UsersHavingSumInput: UsersHavingSumInput;
+  UsersHavingVariancePopulationInput: UsersHavingVariancePopulationInput;
+  UsersHavingVarianceSampleInput: UsersHavingVarianceSampleInput;
   WebUser: WebUser;
+  WebUserAggregates: WebUserAggregates;
+  WebUserAverageAggregates: WebUserAverageAggregates;
   WebUserCondition: WebUserCondition;
+  WebUserDistinctCountAggregates: WebUserDistinctCountAggregates;
+  WebUserFilter: WebUserFilter;
   WebUserGuild: WebUserGuild;
+  WebUserGuildAggregates: WebUserGuildAggregates;
+  WebUserGuildAverageAggregates: WebUserGuildAverageAggregates;
   WebUserGuildCondition: WebUserGuildCondition;
+  WebUserGuildDistinctCountAggregates: WebUserGuildDistinctCountAggregates;
+  WebUserGuildFilter: WebUserGuildFilter;
   WebUserGuildInput: WebUserGuildInput;
+  WebUserGuildMaxAggregates: WebUserGuildMaxAggregates;
+  WebUserGuildMinAggregates: WebUserGuildMinAggregates;
   WebUserGuildPatch: WebUserGuildPatch;
+  WebUserGuildStddevPopulationAggregates: WebUserGuildStddevPopulationAggregates;
+  WebUserGuildStddevSampleAggregates: WebUserGuildStddevSampleAggregates;
+  WebUserGuildSumAggregates: WebUserGuildSumAggregates;
+  WebUserGuildVariancePopulationAggregates: WebUserGuildVariancePopulationAggregates;
+  WebUserGuildVarianceSampleAggregates: WebUserGuildVarianceSampleAggregates;
   WebUserGuildsConnection: WebUserGuildsConnection;
   WebUserGuildsEdge: WebUserGuildsEdge;
+  WebUserGuildsHavingAverageInput: WebUserGuildsHavingAverageInput;
+  WebUserGuildsHavingDistinctCountInput: WebUserGuildsHavingDistinctCountInput;
+  WebUserGuildsHavingInput: WebUserGuildsHavingInput;
+  WebUserGuildsHavingMaxInput: WebUserGuildsHavingMaxInput;
+  WebUserGuildsHavingMinInput: WebUserGuildsHavingMinInput;
+  WebUserGuildsHavingStddevPopulationInput: WebUserGuildsHavingStddevPopulationInput;
+  WebUserGuildsHavingStddevSampleInput: WebUserGuildsHavingStddevSampleInput;
+  WebUserGuildsHavingSumInput: WebUserGuildsHavingSumInput;
+  WebUserGuildsHavingVariancePopulationInput: WebUserGuildsHavingVariancePopulationInput;
+  WebUserGuildsHavingVarianceSampleInput: WebUserGuildsHavingVarianceSampleInput;
   WebUserInput: WebUserInput;
+  WebUserMaxAggregates: WebUserMaxAggregates;
+  WebUserMinAggregates: WebUserMinAggregates;
   WebUserPatch: WebUserPatch;
+  WebUserStddevPopulationAggregates: WebUserStddevPopulationAggregates;
+  WebUserStddevSampleAggregates: WebUserStddevSampleAggregates;
+  WebUserSumAggregates: WebUserSumAggregates;
+  WebUserVariancePopulationAggregates: WebUserVariancePopulationAggregates;
+  WebUserVarianceSampleAggregates: WebUserVarianceSampleAggregates;
   WebUsersConnection: WebUsersConnection;
   WebUsersEdge: WebUsersEdge;
+  WebUsersHavingAverageInput: WebUsersHavingAverageInput;
+  WebUsersHavingDistinctCountInput: WebUsersHavingDistinctCountInput;
+  WebUsersHavingInput: WebUsersHavingInput;
+  WebUsersHavingMaxInput: WebUsersHavingMaxInput;
+  WebUsersHavingMinInput: WebUsersHavingMinInput;
+  WebUsersHavingStddevPopulationInput: WebUsersHavingStddevPopulationInput;
+  WebUsersHavingStddevSampleInput: WebUsersHavingStddevSampleInput;
+  WebUsersHavingSumInput: WebUsersHavingSumInput;
+  WebUsersHavingVariancePopulationInput: WebUsersHavingVariancePopulationInput;
+  WebUsersHavingVarianceSampleInput: WebUsersHavingVarianceSampleInput;
 };
+
+export interface BigFloatScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['BigFloat'], any> {
+  name: 'BigFloat';
+}
 
 export interface BigIntScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['BigInt'], any> {
   name: 'BigInt';
@@ -6609,8 +11919,73 @@ export type BotStatResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type BotStatAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatAggregates'] = ResolversParentTypes['BotStatAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['BotStatAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['BotStatDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['BotStatMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['BotStatMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['BotStatStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['BotStatStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['BotStatSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['BotStatVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['BotStatVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BotStatAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatAverageAggregates'] = ResolversParentTypes['BotStatAverageAggregates']> = {
+  count?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BotStatDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatDistinctCountAggregates'] = ResolversParentTypes['BotStatDistinctCountAggregates']> = {
+  category?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  count?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  createdAt?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BotStatMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatMaxAggregates'] = ResolversParentTypes['BotStatMaxAggregates']> = {
+  count?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BotStatMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatMinAggregates'] = ResolversParentTypes['BotStatMinAggregates']> = {
+  count?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BotStatStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatStddevPopulationAggregates'] = ResolversParentTypes['BotStatStddevPopulationAggregates']> = {
+  count?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BotStatStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatStddevSampleAggregates'] = ResolversParentTypes['BotStatStddevSampleAggregates']> = {
+  count?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BotStatSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatSumAggregates'] = ResolversParentTypes['BotStatSumAggregates']> = {
+  count?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BotStatVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatVariancePopulationAggregates'] = ResolversParentTypes['BotStatVariancePopulationAggregates']> = {
+  count?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BotStatVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatVarianceSampleAggregates'] = ResolversParentTypes['BotStatVarianceSampleAggregates']> = {
+  count?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type BotStatsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatsConnection'] = ResolversParentTypes['BotStatsConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['BotStatAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['BotStatsEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['BotStatAggregates']>>, ParentType, ContextType, RequireFields<BotStatsConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['BotStat']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7030,6 +12405,18 @@ export type FeedResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type FeedAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedAggregates'] = ResolversParentTypes['FeedAggregates']> = {
+  distinctCount?: Resolver<Maybe<ResolversTypes['FeedDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FeedDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedDistinctCountAggregates'] = ResolversParentTypes['FeedDistinctCountAggregates']> = {
+  feedId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  metadata?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type FeedItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedItem'] = ResolversParentTypes['FeedItem']> = {
   feedId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   itemId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -7037,8 +12424,22 @@ export type FeedItemResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type FeedItemAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedItemAggregates'] = ResolversParentTypes['FeedItemAggregates']> = {
+  distinctCount?: Resolver<Maybe<ResolversTypes['FeedItemDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FeedItemDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedItemDistinctCountAggregates'] = ResolversParentTypes['FeedItemDistinctCountAggregates']> = {
+  feedId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  itemId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type FeedItemsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedItemsConnection'] = ResolversParentTypes['FeedItemsConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['FeedItemAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['FeedItemsEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['FeedItemAggregates']>>, ParentType, ContextType, RequireFields<FeedItemsConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['FeedItem']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7061,8 +12462,88 @@ export type FeedSubscriptionResolvers<ContextType = any, ParentType extends Reso
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type FeedSubscriptionAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedSubscriptionAggregates'] = ResolversParentTypes['FeedSubscriptionAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['FeedSubscriptionAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['FeedSubscriptionDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['FeedSubscriptionMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['FeedSubscriptionMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['FeedSubscriptionStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['FeedSubscriptionStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['FeedSubscriptionSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['FeedSubscriptionVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['FeedSubscriptionVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FeedSubscriptionAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedSubscriptionAverageAggregates'] = ResolversParentTypes['FeedSubscriptionAverageAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  mentionRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FeedSubscriptionDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedSubscriptionDistinctCountAggregates'] = ResolversParentTypes['FeedSubscriptionDistinctCountAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  feedId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  mentionRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FeedSubscriptionMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedSubscriptionMaxAggregates'] = ResolversParentTypes['FeedSubscriptionMaxAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  mentionRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FeedSubscriptionMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedSubscriptionMinAggregates'] = ResolversParentTypes['FeedSubscriptionMinAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  mentionRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FeedSubscriptionStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedSubscriptionStddevPopulationAggregates'] = ResolversParentTypes['FeedSubscriptionStddevPopulationAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  mentionRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FeedSubscriptionStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedSubscriptionStddevSampleAggregates'] = ResolversParentTypes['FeedSubscriptionStddevSampleAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  mentionRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FeedSubscriptionSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedSubscriptionSumAggregates'] = ResolversParentTypes['FeedSubscriptionSumAggregates']> = {
+  channelId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  mentionRole?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FeedSubscriptionVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedSubscriptionVariancePopulationAggregates'] = ResolversParentTypes['FeedSubscriptionVariancePopulationAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  mentionRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FeedSubscriptionVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedSubscriptionVarianceSampleAggregates'] = ResolversParentTypes['FeedSubscriptionVarianceSampleAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  mentionRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type FeedSubscriptionsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedSubscriptionsConnection'] = ResolversParentTypes['FeedSubscriptionsConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['FeedSubscriptionAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['FeedSubscriptionsEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['FeedSubscriptionAggregates']>>, ParentType, ContextType, RequireFields<FeedSubscriptionsConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['FeedSubscription']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7076,7 +12557,9 @@ export type FeedSubscriptionsEdgeResolvers<ContextType = any, ParentType extends
 };
 
 export type FeedsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['FeedsConnection'] = ResolversParentTypes['FeedsConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['FeedAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['FeedsEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['FeedAggregates']>>, ParentType, ContextType, RequireFields<FeedsConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['Feed']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7103,8 +12586,78 @@ export type GuildBanResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GuildBanAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildBanAggregates'] = ResolversParentTypes['GuildBanAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['GuildBanAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['GuildBanDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['GuildBanMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['GuildBanMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['GuildBanStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['GuildBanStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['GuildBanSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['GuildBanVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['GuildBanVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildBanAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildBanAverageAggregates'] = ResolversParentTypes['GuildBanAverageAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildBanDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildBanDistinctCountAggregates'] = ResolversParentTypes['GuildBanDistinctCountAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildBanMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildBanMaxAggregates'] = ResolversParentTypes['GuildBanMaxAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildBanMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildBanMinAggregates'] = ResolversParentTypes['GuildBanMinAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildBanStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildBanStddevPopulationAggregates'] = ResolversParentTypes['GuildBanStddevPopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildBanStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildBanStddevSampleAggregates'] = ResolversParentTypes['GuildBanStddevSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildBanSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildBanSumAggregates'] = ResolversParentTypes['GuildBanSumAggregates']> = {
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildBanVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildBanVariancePopulationAggregates'] = ResolversParentTypes['GuildBanVariancePopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildBanVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildBanVarianceSampleAggregates'] = ResolversParentTypes['GuildBanVarianceSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GuildBansConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildBansConnection'] = ResolversParentTypes['GuildBansConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['GuildBanAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['GuildBansEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['GuildBanAggregates']>>, ParentType, ContextType, RequireFields<GuildBansConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['GuildBan']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7150,8 +12703,159 @@ export type GuildConfigResolvers<ContextType = any, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GuildConfigAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildConfigAggregates'] = ResolversParentTypes['GuildConfigAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['GuildConfigAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['GuildConfigDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['GuildConfigMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['GuildConfigMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['GuildConfigStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['GuildConfigStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['GuildConfigSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['GuildConfigVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['GuildConfigVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildConfigAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildConfigAverageAggregates'] = ResolversParentTypes['GuildConfigAverageAggregates']> = {
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMember?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMod?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMsg?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  maxMention?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  muteDuration?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  muteRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildConfigDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildConfigDistinctCountAggregates'] = ResolversParentTypes['GuildConfigDistinctCountAggregates']> = {
+  data?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  disabledChannels?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  inviteGuard?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  joinMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  joinMsgEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  joinReact?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  leaveMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  leaveMsgEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  logMember?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  logMemberEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  logMod?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  logModEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  logMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  logMsgEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  maxMention?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  muteDmEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  muteDmText?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  muteDuration?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  muteRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  prefix?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleConfig?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  warnDmEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  warnDmText?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildConfigMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildConfigMaxAggregates'] = ResolversParentTypes['GuildConfigMaxAggregates']> = {
+  id?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  logMember?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  logMod?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  logMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  maxMention?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  msgChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  muteDuration?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  muteRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildConfigMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildConfigMinAggregates'] = ResolversParentTypes['GuildConfigMinAggregates']> = {
+  id?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  logMember?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  logMod?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  logMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  maxMention?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  msgChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  muteDuration?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  muteRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildConfigStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildConfigStddevPopulationAggregates'] = ResolversParentTypes['GuildConfigStddevPopulationAggregates']> = {
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMember?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMod?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMsg?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  maxMention?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  muteDuration?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  muteRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildConfigStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildConfigStddevSampleAggregates'] = ResolversParentTypes['GuildConfigStddevSampleAggregates']> = {
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMember?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMod?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMsg?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  maxMention?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  muteDuration?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  muteRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildConfigSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildConfigSumAggregates'] = ResolversParentTypes['GuildConfigSumAggregates']> = {
+  id?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  logMember?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  logMod?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  logMsg?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  maxMention?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  msgChannel?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  muteDuration?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  muteRole?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  roleChannel?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildConfigVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildConfigVariancePopulationAggregates'] = ResolversParentTypes['GuildConfigVariancePopulationAggregates']> = {
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMember?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMod?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMsg?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  maxMention?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  muteDuration?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  muteRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GuildConfigVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildConfigVarianceSampleAggregates'] = ResolversParentTypes['GuildConfigVarianceSampleAggregates']> = {
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMember?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMod?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  logMsg?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  maxMention?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  muteDuration?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  muteRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GuildConfigsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildConfigsConnection'] = ResolversParentTypes['GuildConfigsConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['GuildConfigAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['GuildConfigsEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['GuildConfigAggregates']>>, ParentType, ContextType, RequireFields<GuildConfigsConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['GuildConfig']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7182,8 +12886,79 @@ export type MemberResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MemberAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MemberAggregates'] = ResolversParentTypes['MemberAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['MemberAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['MemberDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['MemberMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['MemberMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['MemberStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['MemberStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['MemberSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['MemberVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['MemberVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MemberAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MemberAverageAggregates'] = ResolversParentTypes['MemberAverageAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MemberDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MemberDistinctCountAggregates'] = ResolversParentTypes['MemberDistinctCountAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  joinTime?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MemberMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MemberMaxAggregates'] = ResolversParentTypes['MemberMaxAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MemberMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MemberMinAggregates'] = ResolversParentTypes['MemberMinAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MemberStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MemberStddevPopulationAggregates'] = ResolversParentTypes['MemberStddevPopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MemberStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MemberStddevSampleAggregates'] = ResolversParentTypes['MemberStddevSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MemberSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MemberSumAggregates'] = ResolversParentTypes['MemberSumAggregates']> = {
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MemberVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MemberVariancePopulationAggregates'] = ResolversParentTypes['MemberVariancePopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MemberVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MemberVarianceSampleAggregates'] = ResolversParentTypes['MemberVarianceSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MembersConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['MembersConnection'] = ResolversParentTypes['MembersConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['MemberAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['MembersEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['MemberAggregates']>>, ParentType, ContextType, RequireFields<MembersConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['Member']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7207,8 +12982,99 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MessageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageAggregates'] = ResolversParentTypes['MessageAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['MessageAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['MessageDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['MessageMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['MessageMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['MessageStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['MessageStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['MessageSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['MessageVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['MessageVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MessageAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageAverageAggregates'] = ResolversParentTypes['MessageAverageAggregates']> = {
+  authorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MessageDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageDistinctCountAggregates'] = ResolversParentTypes['MessageDistinctCountAggregates']> = {
+  authorId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  content?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  created?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MessageMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageMaxAggregates'] = ResolversParentTypes['MessageMaxAggregates']> = {
+  authorId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MessageMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageMinAggregates'] = ResolversParentTypes['MessageMinAggregates']> = {
+  authorId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MessageStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageStddevPopulationAggregates'] = ResolversParentTypes['MessageStddevPopulationAggregates']> = {
+  authorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MessageStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageStddevSampleAggregates'] = ResolversParentTypes['MessageStddevSampleAggregates']> = {
+  authorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MessageSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageSumAggregates'] = ResolversParentTypes['MessageSumAggregates']> = {
+  authorId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  channelId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  messageId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MessageVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageVariancePopulationAggregates'] = ResolversParentTypes['MessageVariancePopulationAggregates']> = {
+  authorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MessageVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageVarianceSampleAggregates'] = ResolversParentTypes['MessageVarianceSampleAggregates']> = {
+  authorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MessagesConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessagesConnection'] = ResolversParentTypes['MessagesConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['MessageAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['MessagesEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['MessageAggregates']>>, ParentType, ContextType, RequireFields<MessagesConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['Message']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7238,8 +13104,111 @@ export type ModLogResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ModLogAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModLogAggregates'] = ResolversParentTypes['ModLogAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['ModLogAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['ModLogDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['ModLogMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['ModLogMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['ModLogStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['ModLogStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['ModLogSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['ModLogVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['ModLogVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ModLogAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModLogAverageAggregates'] = ResolversParentTypes['ModLogAverageAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  executorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ModLogDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModLogDistinctCountAggregates'] = ResolversParentTypes['ModLogDistinctCountAggregates']> = {
+  action?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  actionTime?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  attachments?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  caseId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  executorId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  pending?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  reason?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userTag?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ModLogMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModLogMaxAggregates'] = ResolversParentTypes['ModLogMaxAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  executorId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ModLogMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModLogMinAggregates'] = ResolversParentTypes['ModLogMinAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  executorId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ModLogStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModLogStddevPopulationAggregates'] = ResolversParentTypes['ModLogStddevPopulationAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  executorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ModLogStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModLogStddevSampleAggregates'] = ResolversParentTypes['ModLogStddevSampleAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  executorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ModLogSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModLogSumAggregates'] = ResolversParentTypes['ModLogSumAggregates']> = {
+  caseId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  executorId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  msgId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ModLogVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModLogVariancePopulationAggregates'] = ResolversParentTypes['ModLogVariancePopulationAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  executorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ModLogVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModLogVarianceSampleAggregates'] = ResolversParentTypes['ModLogVarianceSampleAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  executorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ModLogsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['ModLogsConnection'] = ResolversParentTypes['ModLogsConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['ModLogAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['ModLogsEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['ModLogAggregates']>>, ParentType, ContextType, RequireFields<ModLogsConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['ModLog']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7367,8 +13336,90 @@ export type MuteResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MuteAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MuteAggregates'] = ResolversParentTypes['MuteAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['MuteAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['MuteDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['MuteMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['MuteMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['MuteStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['MuteStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['MuteSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['MuteVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['MuteVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MuteAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MuteAverageAggregates'] = ResolversParentTypes['MuteAverageAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MuteDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MuteDistinctCountAggregates'] = ResolversParentTypes['MuteDistinctCountAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  endTime?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  pending?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  startTime?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MuteMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MuteMaxAggregates'] = ResolversParentTypes['MuteMaxAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MuteMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MuteMinAggregates'] = ResolversParentTypes['MuteMinAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MuteStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MuteStddevPopulationAggregates'] = ResolversParentTypes['MuteStddevPopulationAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MuteStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MuteStddevSampleAggregates'] = ResolversParentTypes['MuteStddevSampleAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MuteSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MuteSumAggregates'] = ResolversParentTypes['MuteSumAggregates']> = {
+  caseId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MuteVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MuteVariancePopulationAggregates'] = ResolversParentTypes['MuteVariancePopulationAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MuteVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MuteVarianceSampleAggregates'] = ResolversParentTypes['MuteVarianceSampleAggregates']> = {
+  caseId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutesConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['MutesConnection'] = ResolversParentTypes['MutesConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['MuteAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['MutesEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['MuteAggregates']>>, ParentType, ContextType, RequireFields<MutesConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['Mute']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7394,8 +13445,79 @@ export type NotificationResolvers<ContextType = any, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type NotificationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationAggregates'] = ResolversParentTypes['NotificationAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['NotificationAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['NotificationDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['NotificationMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['NotificationMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['NotificationStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['NotificationStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['NotificationSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['NotificationVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['NotificationVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NotificationAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationAverageAggregates'] = ResolversParentTypes['NotificationAverageAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NotificationDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationDistinctCountAggregates'] = ResolversParentTypes['NotificationDistinctCountAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  keyword?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NotificationMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationMaxAggregates'] = ResolversParentTypes['NotificationMaxAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NotificationMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationMinAggregates'] = ResolversParentTypes['NotificationMinAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NotificationStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationStddevPopulationAggregates'] = ResolversParentTypes['NotificationStddevPopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NotificationStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationStddevSampleAggregates'] = ResolversParentTypes['NotificationStddevSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NotificationSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationSumAggregates'] = ResolversParentTypes['NotificationSumAggregates']> = {
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NotificationVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationVariancePopulationAggregates'] = ResolversParentTypes['NotificationVariancePopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NotificationVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationVarianceSampleAggregates'] = ResolversParentTypes['NotificationVarianceSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type NotificationsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['NotificationsConnection'] = ResolversParentTypes['NotificationsConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['NotificationAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['NotificationsEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['NotificationAggregates']>>, ParentType, ContextType, RequireFields<NotificationsConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['Notification']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7488,6 +13610,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   roleMenuByMessageId?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuByMessageIdArgs, 'messageId'>>;
   tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'nodeId'>>;
   tagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagByGuildIdAndTagNameArgs, 'guildId' | 'tagName'>>;
+  tagSearch?: Resolver<Maybe<ResolversTypes['TagsConnection']>, ParentType, ContextType, Partial<QueryTagSearchArgs>>;
+  tagsStartingWith?: Resolver<Maybe<ResolversTypes['TagsConnection']>, ParentType, ContextType, Partial<QueryTagsStartingWithArgs>>;
   timeframeUserLevels?: Resolver<Maybe<ResolversTypes['TimeframeUserLevelsConnection']>, ParentType, ContextType, Partial<QueryTimeframeUserLevelsArgs>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'nodeId'>>;
   userById?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserByIdArgs, 'id'>>;
@@ -7508,8 +13632,72 @@ export type ReminderResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ReminderAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReminderAggregates'] = ResolversParentTypes['ReminderAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['ReminderAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['ReminderDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['ReminderMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['ReminderMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['ReminderStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['ReminderStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['ReminderSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['ReminderVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['ReminderVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ReminderAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReminderAverageAggregates'] = ResolversParentTypes['ReminderAverageAggregates']> = {
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ReminderDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReminderDistinctCountAggregates'] = ResolversParentTypes['ReminderDistinctCountAggregates']> = {
+  description?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  expireAt?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  setAt?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ReminderMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReminderMaxAggregates'] = ResolversParentTypes['ReminderMaxAggregates']> = {
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ReminderMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReminderMinAggregates'] = ResolversParentTypes['ReminderMinAggregates']> = {
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ReminderStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReminderStddevPopulationAggregates'] = ResolversParentTypes['ReminderStddevPopulationAggregates']> = {
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ReminderStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReminderStddevSampleAggregates'] = ResolversParentTypes['ReminderStddevSampleAggregates']> = {
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ReminderSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReminderSumAggregates'] = ResolversParentTypes['ReminderSumAggregates']> = {
+  userId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ReminderVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReminderVariancePopulationAggregates'] = ResolversParentTypes['ReminderVariancePopulationAggregates']> = {
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ReminderVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReminderVarianceSampleAggregates'] = ResolversParentTypes['ReminderVarianceSampleAggregates']> = {
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type RemindersConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RemindersConnection'] = ResolversParentTypes['RemindersConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['ReminderAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['RemindersEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['ReminderAggregates']>>, ParentType, ContextType, RequireFields<RemindersConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['Reminder']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7531,8 +13719,96 @@ export type RoleMenuResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type RoleMenuAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuAggregates'] = ResolversParentTypes['RoleMenuAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['RoleMenuAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['RoleMenuDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['RoleMenuMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['RoleMenuMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['RoleMenuStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['RoleMenuStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['RoleMenuSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['RoleMenuVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['RoleMenuVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuAverageAggregates'] = ResolversParentTypes['RoleMenuAverageAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  editorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuDistinctCountAggregates'] = ResolversParentTypes['RoleMenuDistinctCountAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  editorId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuMaxAggregates'] = ResolversParentTypes['RoleMenuMaxAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  editorId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuMinAggregates'] = ResolversParentTypes['RoleMenuMinAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  editorId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuStddevPopulationAggregates'] = ResolversParentTypes['RoleMenuStddevPopulationAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  editorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuStddevSampleAggregates'] = ResolversParentTypes['RoleMenuStddevSampleAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  editorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuSumAggregates'] = ResolversParentTypes['RoleMenuSumAggregates']> = {
+  channelId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  editorId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  messageId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuVariancePopulationAggregates'] = ResolversParentTypes['RoleMenuVariancePopulationAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  editorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuVarianceSampleAggregates'] = ResolversParentTypes['RoleMenuVarianceSampleAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  editorId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type RoleMenusConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenusConnection'] = ResolversParentTypes['RoleMenusConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['RoleMenuAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['RoleMenusEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['RoleMenuAggregates']>>, ParentType, ContextType, RequireFields<RoleMenusConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['RoleMenu']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7556,8 +13832,90 @@ export type TagResolvers<ContextType = any, ParentType extends ResolversParentTy
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TagAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagAggregates'] = ResolversParentTypes['TagAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['TagAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['TagDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['TagMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['TagMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['TagStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['TagStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['TagSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['TagVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['TagVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagAverageAggregates'] = ResolversParentTypes['TagAverageAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  ownerId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  useCount?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagDistinctCountAggregates'] = ResolversParentTypes['TagDistinctCountAggregates']> = {
+  content?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  created?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  ownerId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  tagName?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  useCount?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagMaxAggregates'] = ResolversParentTypes['TagMaxAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  ownerId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  useCount?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagMinAggregates'] = ResolversParentTypes['TagMinAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  ownerId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  useCount?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagStddevPopulationAggregates'] = ResolversParentTypes['TagStddevPopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  ownerId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  useCount?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagStddevSampleAggregates'] = ResolversParentTypes['TagStddevSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  ownerId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  useCount?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagSumAggregates'] = ResolversParentTypes['TagSumAggregates']> = {
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  ownerId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  useCount?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagVariancePopulationAggregates'] = ResolversParentTypes['TagVariancePopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  ownerId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  useCount?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagVarianceSampleAggregates'] = ResolversParentTypes['TagVarianceSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  ownerId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  useCount?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TagsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagsConnection'] = ResolversParentTypes['TagsConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['TagAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['TagsEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['TagAggregates']>>, ParentType, ContextType, RequireFields<TagsConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7772,6 +14130,40 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserAggregates'] = ResolversParentTypes['UserAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['UserAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['UserDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['UserMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['UserMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['UserStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['UserStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['UserSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['UserVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['UserVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserAverageAggregates'] = ResolversParentTypes['UserAverageAggregates']> = {
+  fishies?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  rep?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserDistinctCountAggregates'] = ResolversParentTypes['UserDistinctCountAggregates']> = {
+  fishies?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  isPatron?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  lastFishies?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  lastRep?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  lastfmUsername?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  patronEmoji?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  profileData?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  rep?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UserLevelResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevel'] = ResolversParentTypes['UserLevel']> = {
   guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   lastMsg?: Resolver<ResolversTypes['Datetime'], ParentType, ContextType>;
@@ -7790,8 +14182,59 @@ export type UserLevelsEdgeResolvers<ContextType = any, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserMaxAggregates'] = ResolversParentTypes['UserMaxAggregates']> = {
+  fishies?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  rep?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserMinAggregates'] = ResolversParentTypes['UserMinAggregates']> = {
+  fishies?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  rep?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserStddevPopulationAggregates'] = ResolversParentTypes['UserStddevPopulationAggregates']> = {
+  fishies?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  rep?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserStddevSampleAggregates'] = ResolversParentTypes['UserStddevSampleAggregates']> = {
+  fishies?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  rep?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserSumAggregates'] = ResolversParentTypes['UserSumAggregates']> = {
+  fishies?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  rep?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserVariancePopulationAggregates'] = ResolversParentTypes['UserVariancePopulationAggregates']> = {
+  fishies?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  rep?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserVarianceSampleAggregates'] = ResolversParentTypes['UserVarianceSampleAggregates']> = {
+  fishies?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  rep?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UsersConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['UsersConnection'] = ResolversParentTypes['UsersConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['UserAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['UsersEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['UserAggregates']>>, ParentType, ContextType, RequireFields<UsersConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7818,6 +14261,38 @@ export type WebUserResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type WebUserAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserAggregates'] = ResolversParentTypes['WebUserAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['WebUserAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['WebUserDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['WebUserMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['WebUserMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['WebUserStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['WebUserStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['WebUserSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['WebUserVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['WebUserVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserAverageAggregates'] = ResolversParentTypes['WebUserAverageAggregates']> = {
+  discriminator?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserDistinctCountAggregates'] = ResolversParentTypes['WebUserDistinctCountAggregates']> = {
+  avatar?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  createdAt?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  details?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  discriminator?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  isAdmin?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  username?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type WebUserGuildResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserGuild'] = ResolversParentTypes['WebUserGuild']> = {
   cachedGuildByGuildId?: Resolver<Maybe<ResolversTypes['CachedGuild']>, ParentType, ContextType>;
   guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
@@ -7830,8 +14305,89 @@ export type WebUserGuildResolvers<ContextType = any, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type WebUserGuildAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserGuildAggregates'] = ResolversParentTypes['WebUserGuildAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['WebUserGuildAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['WebUserGuildDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['WebUserGuildMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['WebUserGuildMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['WebUserGuildStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['WebUserGuildStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['WebUserGuildSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['WebUserGuildVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['WebUserGuildVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserGuildAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserGuildAverageAggregates'] = ResolversParentTypes['WebUserGuildAverageAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  permissions?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserGuildDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserGuildDistinctCountAggregates'] = ResolversParentTypes['WebUserGuildDistinctCountAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  manageGuild?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  owner?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  permissions?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserGuildMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserGuildMaxAggregates'] = ResolversParentTypes['WebUserGuildMaxAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  permissions?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserGuildMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserGuildMinAggregates'] = ResolversParentTypes['WebUserGuildMinAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  permissions?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserGuildStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserGuildStddevPopulationAggregates'] = ResolversParentTypes['WebUserGuildStddevPopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  permissions?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserGuildStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserGuildStddevSampleAggregates'] = ResolversParentTypes['WebUserGuildStddevSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  permissions?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserGuildSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserGuildSumAggregates'] = ResolversParentTypes['WebUserGuildSumAggregates']> = {
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  permissions?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserGuildVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserGuildVariancePopulationAggregates'] = ResolversParentTypes['WebUserGuildVariancePopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  permissions?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserGuildVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserGuildVarianceSampleAggregates'] = ResolversParentTypes['WebUserGuildVarianceSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  permissions?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type WebUserGuildsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserGuildsConnection'] = ResolversParentTypes['WebUserGuildsConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['WebUserGuildAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['WebUserGuildsEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['WebUserGuildAggregates']>>, ParentType, ContextType, RequireFields<WebUserGuildsConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['WebUserGuild']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7844,8 +14400,52 @@ export type WebUserGuildsEdgeResolvers<ContextType = any, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type WebUserMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserMaxAggregates'] = ResolversParentTypes['WebUserMaxAggregates']> = {
+  discriminator?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserMinAggregates'] = ResolversParentTypes['WebUserMinAggregates']> = {
+  discriminator?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserStddevPopulationAggregates'] = ResolversParentTypes['WebUserStddevPopulationAggregates']> = {
+  discriminator?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserStddevSampleAggregates'] = ResolversParentTypes['WebUserStddevSampleAggregates']> = {
+  discriminator?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserSumAggregates'] = ResolversParentTypes['WebUserSumAggregates']> = {
+  discriminator?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserVariancePopulationAggregates'] = ResolversParentTypes['WebUserVariancePopulationAggregates']> = {
+  discriminator?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WebUserVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUserVarianceSampleAggregates'] = ResolversParentTypes['WebUserVarianceSampleAggregates']> = {
+  discriminator?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type WebUsersConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['WebUsersConnection'] = ResolversParentTypes['WebUsersConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['WebUserAggregates']>, ParentType, ContextType>;
   edges?: Resolver<Array<ResolversTypes['WebUsersEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['WebUserAggregates']>>, ParentType, ContextType, RequireFields<WebUsersConnectionGroupedAggregatesArgs, 'groupBy'>>;
   nodes?: Resolver<Array<ResolversTypes['WebUser']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -7859,8 +14459,19 @@ export type WebUsersEdgeResolvers<ContextType = any, ParentType extends Resolver
 };
 
 export type Resolvers<ContextType = any> = {
+  BigFloat?: GraphQLScalarType;
   BigInt?: GraphQLScalarType;
   BotStat?: BotStatResolvers<ContextType>;
+  BotStatAggregates?: BotStatAggregatesResolvers<ContextType>;
+  BotStatAverageAggregates?: BotStatAverageAggregatesResolvers<ContextType>;
+  BotStatDistinctCountAggregates?: BotStatDistinctCountAggregatesResolvers<ContextType>;
+  BotStatMaxAggregates?: BotStatMaxAggregatesResolvers<ContextType>;
+  BotStatMinAggregates?: BotStatMinAggregatesResolvers<ContextType>;
+  BotStatStddevPopulationAggregates?: BotStatStddevPopulationAggregatesResolvers<ContextType>;
+  BotStatStddevSampleAggregates?: BotStatStddevSampleAggregatesResolvers<ContextType>;
+  BotStatSumAggregates?: BotStatSumAggregatesResolvers<ContextType>;
+  BotStatVariancePopulationAggregates?: BotStatVariancePopulationAggregatesResolvers<ContextType>;
+  BotStatVarianceSampleAggregates?: BotStatVarianceSampleAggregatesResolvers<ContextType>;
   BotStatsConnection?: BotStatsConnectionResolvers<ContextType>;
   BotStatsEdge?: BotStatsEdgeResolvers<ContextType>;
   CachedGuild?: CachedGuildResolvers<ContextType>;
@@ -7911,38 +14522,122 @@ export type Resolvers<ContextType = any> = {
   DeleteWebUserGuildPayload?: DeleteWebUserGuildPayloadResolvers<ContextType>;
   DeleteWebUserPayload?: DeleteWebUserPayloadResolvers<ContextType>;
   Feed?: FeedResolvers<ContextType>;
+  FeedAggregates?: FeedAggregatesResolvers<ContextType>;
+  FeedDistinctCountAggregates?: FeedDistinctCountAggregatesResolvers<ContextType>;
   FeedItem?: FeedItemResolvers<ContextType>;
+  FeedItemAggregates?: FeedItemAggregatesResolvers<ContextType>;
+  FeedItemDistinctCountAggregates?: FeedItemDistinctCountAggregatesResolvers<ContextType>;
   FeedItemsConnection?: FeedItemsConnectionResolvers<ContextType>;
   FeedItemsEdge?: FeedItemsEdgeResolvers<ContextType>;
   FeedSubscription?: FeedSubscriptionResolvers<ContextType>;
+  FeedSubscriptionAggregates?: FeedSubscriptionAggregatesResolvers<ContextType>;
+  FeedSubscriptionAverageAggregates?: FeedSubscriptionAverageAggregatesResolvers<ContextType>;
+  FeedSubscriptionDistinctCountAggregates?: FeedSubscriptionDistinctCountAggregatesResolvers<ContextType>;
+  FeedSubscriptionMaxAggregates?: FeedSubscriptionMaxAggregatesResolvers<ContextType>;
+  FeedSubscriptionMinAggregates?: FeedSubscriptionMinAggregatesResolvers<ContextType>;
+  FeedSubscriptionStddevPopulationAggregates?: FeedSubscriptionStddevPopulationAggregatesResolvers<ContextType>;
+  FeedSubscriptionStddevSampleAggregates?: FeedSubscriptionStddevSampleAggregatesResolvers<ContextType>;
+  FeedSubscriptionSumAggregates?: FeedSubscriptionSumAggregatesResolvers<ContextType>;
+  FeedSubscriptionVariancePopulationAggregates?: FeedSubscriptionVariancePopulationAggregatesResolvers<ContextType>;
+  FeedSubscriptionVarianceSampleAggregates?: FeedSubscriptionVarianceSampleAggregatesResolvers<ContextType>;
   FeedSubscriptionsConnection?: FeedSubscriptionsConnectionResolvers<ContextType>;
   FeedSubscriptionsEdge?: FeedSubscriptionsEdgeResolvers<ContextType>;
   FeedsConnection?: FeedsConnectionResolvers<ContextType>;
   FeedsEdge?: FeedsEdgeResolvers<ContextType>;
   GraphqlPayload?: GraphqlPayloadResolvers<ContextType>;
   GuildBan?: GuildBanResolvers<ContextType>;
+  GuildBanAggregates?: GuildBanAggregatesResolvers<ContextType>;
+  GuildBanAverageAggregates?: GuildBanAverageAggregatesResolvers<ContextType>;
+  GuildBanDistinctCountAggregates?: GuildBanDistinctCountAggregatesResolvers<ContextType>;
+  GuildBanMaxAggregates?: GuildBanMaxAggregatesResolvers<ContextType>;
+  GuildBanMinAggregates?: GuildBanMinAggregatesResolvers<ContextType>;
+  GuildBanStddevPopulationAggregates?: GuildBanStddevPopulationAggregatesResolvers<ContextType>;
+  GuildBanStddevSampleAggregates?: GuildBanStddevSampleAggregatesResolvers<ContextType>;
+  GuildBanSumAggregates?: GuildBanSumAggregatesResolvers<ContextType>;
+  GuildBanVariancePopulationAggregates?: GuildBanVariancePopulationAggregatesResolvers<ContextType>;
+  GuildBanVarianceSampleAggregates?: GuildBanVarianceSampleAggregatesResolvers<ContextType>;
   GuildBansConnection?: GuildBansConnectionResolvers<ContextType>;
   GuildBansEdge?: GuildBansEdgeResolvers<ContextType>;
   GuildConfig?: GuildConfigResolvers<ContextType>;
+  GuildConfigAggregates?: GuildConfigAggregatesResolvers<ContextType>;
+  GuildConfigAverageAggregates?: GuildConfigAverageAggregatesResolvers<ContextType>;
+  GuildConfigDistinctCountAggregates?: GuildConfigDistinctCountAggregatesResolvers<ContextType>;
+  GuildConfigMaxAggregates?: GuildConfigMaxAggregatesResolvers<ContextType>;
+  GuildConfigMinAggregates?: GuildConfigMinAggregatesResolvers<ContextType>;
+  GuildConfigStddevPopulationAggregates?: GuildConfigStddevPopulationAggregatesResolvers<ContextType>;
+  GuildConfigStddevSampleAggregates?: GuildConfigStddevSampleAggregatesResolvers<ContextType>;
+  GuildConfigSumAggregates?: GuildConfigSumAggregatesResolvers<ContextType>;
+  GuildConfigVariancePopulationAggregates?: GuildConfigVariancePopulationAggregatesResolvers<ContextType>;
+  GuildConfigVarianceSampleAggregates?: GuildConfigVarianceSampleAggregatesResolvers<ContextType>;
   GuildConfigsConnection?: GuildConfigsConnectionResolvers<ContextType>;
   GuildConfigsEdge?: GuildConfigsEdgeResolvers<ContextType>;
   JSON?: GraphQLScalarType;
   LogoutPayload?: LogoutPayloadResolvers<ContextType>;
   Member?: MemberResolvers<ContextType>;
+  MemberAggregates?: MemberAggregatesResolvers<ContextType>;
+  MemberAverageAggregates?: MemberAverageAggregatesResolvers<ContextType>;
+  MemberDistinctCountAggregates?: MemberDistinctCountAggregatesResolvers<ContextType>;
+  MemberMaxAggregates?: MemberMaxAggregatesResolvers<ContextType>;
+  MemberMinAggregates?: MemberMinAggregatesResolvers<ContextType>;
+  MemberStddevPopulationAggregates?: MemberStddevPopulationAggregatesResolvers<ContextType>;
+  MemberStddevSampleAggregates?: MemberStddevSampleAggregatesResolvers<ContextType>;
+  MemberSumAggregates?: MemberSumAggregatesResolvers<ContextType>;
+  MemberVariancePopulationAggregates?: MemberVariancePopulationAggregatesResolvers<ContextType>;
+  MemberVarianceSampleAggregates?: MemberVarianceSampleAggregatesResolvers<ContextType>;
   MembersConnection?: MembersConnectionResolvers<ContextType>;
   MembersEdge?: MembersEdgeResolvers<ContextType>;
   Message?: MessageResolvers<ContextType>;
+  MessageAggregates?: MessageAggregatesResolvers<ContextType>;
+  MessageAverageAggregates?: MessageAverageAggregatesResolvers<ContextType>;
+  MessageDistinctCountAggregates?: MessageDistinctCountAggregatesResolvers<ContextType>;
+  MessageMaxAggregates?: MessageMaxAggregatesResolvers<ContextType>;
+  MessageMinAggregates?: MessageMinAggregatesResolvers<ContextType>;
+  MessageStddevPopulationAggregates?: MessageStddevPopulationAggregatesResolvers<ContextType>;
+  MessageStddevSampleAggregates?: MessageStddevSampleAggregatesResolvers<ContextType>;
+  MessageSumAggregates?: MessageSumAggregatesResolvers<ContextType>;
+  MessageVariancePopulationAggregates?: MessageVariancePopulationAggregatesResolvers<ContextType>;
+  MessageVarianceSampleAggregates?: MessageVarianceSampleAggregatesResolvers<ContextType>;
   MessagesConnection?: MessagesConnectionResolvers<ContextType>;
   MessagesEdge?: MessagesEdgeResolvers<ContextType>;
   ModLog?: ModLogResolvers<ContextType>;
+  ModLogAggregates?: ModLogAggregatesResolvers<ContextType>;
+  ModLogAverageAggregates?: ModLogAverageAggregatesResolvers<ContextType>;
+  ModLogDistinctCountAggregates?: ModLogDistinctCountAggregatesResolvers<ContextType>;
+  ModLogMaxAggregates?: ModLogMaxAggregatesResolvers<ContextType>;
+  ModLogMinAggregates?: ModLogMinAggregatesResolvers<ContextType>;
+  ModLogStddevPopulationAggregates?: ModLogStddevPopulationAggregatesResolvers<ContextType>;
+  ModLogStddevSampleAggregates?: ModLogStddevSampleAggregatesResolvers<ContextType>;
+  ModLogSumAggregates?: ModLogSumAggregatesResolvers<ContextType>;
+  ModLogVariancePopulationAggregates?: ModLogVariancePopulationAggregatesResolvers<ContextType>;
+  ModLogVarianceSampleAggregates?: ModLogVarianceSampleAggregatesResolvers<ContextType>;
   ModLogsConnection?: ModLogsConnectionResolvers<ContextType>;
   ModLogsEdge?: ModLogsEdgeResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Mute?: MuteResolvers<ContextType>;
+  MuteAggregates?: MuteAggregatesResolvers<ContextType>;
+  MuteAverageAggregates?: MuteAverageAggregatesResolvers<ContextType>;
+  MuteDistinctCountAggregates?: MuteDistinctCountAggregatesResolvers<ContextType>;
+  MuteMaxAggregates?: MuteMaxAggregatesResolvers<ContextType>;
+  MuteMinAggregates?: MuteMinAggregatesResolvers<ContextType>;
+  MuteStddevPopulationAggregates?: MuteStddevPopulationAggregatesResolvers<ContextType>;
+  MuteStddevSampleAggregates?: MuteStddevSampleAggregatesResolvers<ContextType>;
+  MuteSumAggregates?: MuteSumAggregatesResolvers<ContextType>;
+  MuteVariancePopulationAggregates?: MuteVariancePopulationAggregatesResolvers<ContextType>;
+  MuteVarianceSampleAggregates?: MuteVarianceSampleAggregatesResolvers<ContextType>;
   MutesConnection?: MutesConnectionResolvers<ContextType>;
   MutesEdge?: MutesEdgeResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
   Notification?: NotificationResolvers<ContextType>;
+  NotificationAggregates?: NotificationAggregatesResolvers<ContextType>;
+  NotificationAverageAggregates?: NotificationAverageAggregatesResolvers<ContextType>;
+  NotificationDistinctCountAggregates?: NotificationDistinctCountAggregatesResolvers<ContextType>;
+  NotificationMaxAggregates?: NotificationMaxAggregatesResolvers<ContextType>;
+  NotificationMinAggregates?: NotificationMinAggregatesResolvers<ContextType>;
+  NotificationStddevPopulationAggregates?: NotificationStddevPopulationAggregatesResolvers<ContextType>;
+  NotificationStddevSampleAggregates?: NotificationStddevSampleAggregatesResolvers<ContextType>;
+  NotificationSumAggregates?: NotificationSumAggregatesResolvers<ContextType>;
+  NotificationVariancePopulationAggregates?: NotificationVariancePopulationAggregatesResolvers<ContextType>;
+  NotificationVarianceSampleAggregates?: NotificationVarianceSampleAggregatesResolvers<ContextType>;
   NotificationsConnection?: NotificationsConnectionResolvers<ContextType>;
   NotificationsEdge?: NotificationsEdgeResolvers<ContextType>;
   NotificationsStartingWithConnection?: NotificationsStartingWithConnectionResolvers<ContextType>;
@@ -7950,12 +14645,42 @@ export type Resolvers<ContextType = any> = {
   PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Reminder?: ReminderResolvers<ContextType>;
+  ReminderAggregates?: ReminderAggregatesResolvers<ContextType>;
+  ReminderAverageAggregates?: ReminderAverageAggregatesResolvers<ContextType>;
+  ReminderDistinctCountAggregates?: ReminderDistinctCountAggregatesResolvers<ContextType>;
+  ReminderMaxAggregates?: ReminderMaxAggregatesResolvers<ContextType>;
+  ReminderMinAggregates?: ReminderMinAggregatesResolvers<ContextType>;
+  ReminderStddevPopulationAggregates?: ReminderStddevPopulationAggregatesResolvers<ContextType>;
+  ReminderStddevSampleAggregates?: ReminderStddevSampleAggregatesResolvers<ContextType>;
+  ReminderSumAggregates?: ReminderSumAggregatesResolvers<ContextType>;
+  ReminderVariancePopulationAggregates?: ReminderVariancePopulationAggregatesResolvers<ContextType>;
+  ReminderVarianceSampleAggregates?: ReminderVarianceSampleAggregatesResolvers<ContextType>;
   RemindersConnection?: RemindersConnectionResolvers<ContextType>;
   RemindersEdge?: RemindersEdgeResolvers<ContextType>;
   RoleMenu?: RoleMenuResolvers<ContextType>;
+  RoleMenuAggregates?: RoleMenuAggregatesResolvers<ContextType>;
+  RoleMenuAverageAggregates?: RoleMenuAverageAggregatesResolvers<ContextType>;
+  RoleMenuDistinctCountAggregates?: RoleMenuDistinctCountAggregatesResolvers<ContextType>;
+  RoleMenuMaxAggregates?: RoleMenuMaxAggregatesResolvers<ContextType>;
+  RoleMenuMinAggregates?: RoleMenuMinAggregatesResolvers<ContextType>;
+  RoleMenuStddevPopulationAggregates?: RoleMenuStddevPopulationAggregatesResolvers<ContextType>;
+  RoleMenuStddevSampleAggregates?: RoleMenuStddevSampleAggregatesResolvers<ContextType>;
+  RoleMenuSumAggregates?: RoleMenuSumAggregatesResolvers<ContextType>;
+  RoleMenuVariancePopulationAggregates?: RoleMenuVariancePopulationAggregatesResolvers<ContextType>;
+  RoleMenuVarianceSampleAggregates?: RoleMenuVarianceSampleAggregatesResolvers<ContextType>;
   RoleMenusConnection?: RoleMenusConnectionResolvers<ContextType>;
   RoleMenusEdge?: RoleMenusEdgeResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
+  TagAggregates?: TagAggregatesResolvers<ContextType>;
+  TagAverageAggregates?: TagAverageAggregatesResolvers<ContextType>;
+  TagDistinctCountAggregates?: TagDistinctCountAggregatesResolvers<ContextType>;
+  TagMaxAggregates?: TagMaxAggregatesResolvers<ContextType>;
+  TagMinAggregates?: TagMinAggregatesResolvers<ContextType>;
+  TagStddevPopulationAggregates?: TagStddevPopulationAggregatesResolvers<ContextType>;
+  TagStddevSampleAggregates?: TagStddevSampleAggregatesResolvers<ContextType>;
+  TagSumAggregates?: TagSumAggregatesResolvers<ContextType>;
+  TagVariancePopulationAggregates?: TagVariancePopulationAggregatesResolvers<ContextType>;
+  TagVarianceSampleAggregates?: TagVarianceSampleAggregatesResolvers<ContextType>;
   TagsConnection?: TagsConnectionResolvers<ContextType>;
   TagsEdge?: TagsEdgeResolvers<ContextType>;
   TimeframeUserLevelEdge?: TimeframeUserLevelEdgeResolvers<ContextType>;
@@ -7982,14 +14707,44 @@ export type Resolvers<ContextType = any> = {
   UpdateWebUserGuildPayload?: UpdateWebUserGuildPayloadResolvers<ContextType>;
   UpdateWebUserPayload?: UpdateWebUserPayloadResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  UserAggregates?: UserAggregatesResolvers<ContextType>;
+  UserAverageAggregates?: UserAverageAggregatesResolvers<ContextType>;
+  UserDistinctCountAggregates?: UserDistinctCountAggregatesResolvers<ContextType>;
   UserLevel?: UserLevelResolvers<ContextType>;
   UserLevelsEdge?: UserLevelsEdgeResolvers<ContextType>;
+  UserMaxAggregates?: UserMaxAggregatesResolvers<ContextType>;
+  UserMinAggregates?: UserMinAggregatesResolvers<ContextType>;
+  UserStddevPopulationAggregates?: UserStddevPopulationAggregatesResolvers<ContextType>;
+  UserStddevSampleAggregates?: UserStddevSampleAggregatesResolvers<ContextType>;
+  UserSumAggregates?: UserSumAggregatesResolvers<ContextType>;
+  UserVariancePopulationAggregates?: UserVariancePopulationAggregatesResolvers<ContextType>;
+  UserVarianceSampleAggregates?: UserVarianceSampleAggregatesResolvers<ContextType>;
   UsersConnection?: UsersConnectionResolvers<ContextType>;
   UsersEdge?: UsersEdgeResolvers<ContextType>;
   WebUser?: WebUserResolvers<ContextType>;
+  WebUserAggregates?: WebUserAggregatesResolvers<ContextType>;
+  WebUserAverageAggregates?: WebUserAverageAggregatesResolvers<ContextType>;
+  WebUserDistinctCountAggregates?: WebUserDistinctCountAggregatesResolvers<ContextType>;
   WebUserGuild?: WebUserGuildResolvers<ContextType>;
+  WebUserGuildAggregates?: WebUserGuildAggregatesResolvers<ContextType>;
+  WebUserGuildAverageAggregates?: WebUserGuildAverageAggregatesResolvers<ContextType>;
+  WebUserGuildDistinctCountAggregates?: WebUserGuildDistinctCountAggregatesResolvers<ContextType>;
+  WebUserGuildMaxAggregates?: WebUserGuildMaxAggregatesResolvers<ContextType>;
+  WebUserGuildMinAggregates?: WebUserGuildMinAggregatesResolvers<ContextType>;
+  WebUserGuildStddevPopulationAggregates?: WebUserGuildStddevPopulationAggregatesResolvers<ContextType>;
+  WebUserGuildStddevSampleAggregates?: WebUserGuildStddevSampleAggregatesResolvers<ContextType>;
+  WebUserGuildSumAggregates?: WebUserGuildSumAggregatesResolvers<ContextType>;
+  WebUserGuildVariancePopulationAggregates?: WebUserGuildVariancePopulationAggregatesResolvers<ContextType>;
+  WebUserGuildVarianceSampleAggregates?: WebUserGuildVarianceSampleAggregatesResolvers<ContextType>;
   WebUserGuildsConnection?: WebUserGuildsConnectionResolvers<ContextType>;
   WebUserGuildsEdge?: WebUserGuildsEdgeResolvers<ContextType>;
+  WebUserMaxAggregates?: WebUserMaxAggregatesResolvers<ContextType>;
+  WebUserMinAggregates?: WebUserMinAggregatesResolvers<ContextType>;
+  WebUserStddevPopulationAggregates?: WebUserStddevPopulationAggregatesResolvers<ContextType>;
+  WebUserStddevSampleAggregates?: WebUserStddevSampleAggregatesResolvers<ContextType>;
+  WebUserSumAggregates?: WebUserSumAggregatesResolvers<ContextType>;
+  WebUserVariancePopulationAggregates?: WebUserVariancePopulationAggregatesResolvers<ContextType>;
+  WebUserVarianceSampleAggregates?: WebUserVarianceSampleAggregatesResolvers<ContextType>;
   WebUsersConnection?: WebUsersConnectionResolvers<ContextType>;
   WebUsersEdge?: WebUsersEdgeResolvers<ContextType>;
 };
@@ -8103,6 +14858,81 @@ export type UpdateRoleMenuMutationVariables = Exact<{
 
 export type UpdateRoleMenuMutation = { __typename?: 'Mutation', updateRoleMenuByMessageId?: { __typename?: 'UpdateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', messageId: string, guildId: string, channelId: string, editorId: string } | null } | null };
 
+export type CreateTagMutationVariables = Exact<{
+  tag: TagInput;
+}>;
+
+
+export type CreateTagMutation = { __typename?: 'Mutation', createTag?: { __typename?: 'CreateTagPayload', tag?: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null } | null };
+
+export type DeleteTagMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  tagName: Scalars['String'];
+}>;
+
+
+export type DeleteTagMutation = { __typename?: 'Mutation', deleteTagByGuildIdAndTagName?: { __typename?: 'DeleteTagPayload', tag?: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null } | null };
+
+export type GetTagQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  tagName: Scalars['String'];
+}>;
+
+
+export type GetTagQuery = { __typename?: 'Query', tagByGuildIdAndTagName?: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null };
+
+export type GetGuildTagsIncludingQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  includesInsensitive: Scalars['String'];
+}>;
+
+
+export type GetGuildTagsIncludingQuery = { __typename?: 'Query', allTags?: { __typename?: 'TagsConnection', totalCount: number, edges: Array<{ __typename?: 'TagsEdge', node: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } }> } | null };
+
+export type GetGuildTagsOwnedByQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  ownerId: Scalars['BigInt'];
+}>;
+
+
+export type GetGuildTagsOwnedByQuery = { __typename?: 'Query', allTags?: { __typename?: 'TagsConnection', totalCount: number, edges: Array<{ __typename?: 'TagsEdge', node: { __typename?: 'Tag', content: string, guildId: string, created: string } }> } | null };
+
+export type GetGuildTagsStartingWithQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  startsWithInsensitive: Scalars['String'];
+}>;
+
+
+export type GetGuildTagsStartingWithQuery = { __typename?: 'Query', allTags?: { __typename?: 'TagsConnection', totalCount: number, edges: Array<{ __typename?: 'TagsEdge', node: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } }> } | null };
+
+export type ListGuildTagsQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+}>;
+
+
+export type ListGuildTagsQuery = { __typename?: 'Query', allTags?: { __typename?: 'TagsConnection', totalCount: number, edges: Array<{ __typename?: 'TagsEdge', cursor?: any | null, node: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } }>, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null } } | null };
+
+export type SearchTagsQueryVariables = Exact<{
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  ownerId?: InputMaybe<Scalars['BigInt']>;
+  includesInsensitive?: InputMaybe<Scalars['String']>;
+  startsWithInsensitive?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type SearchTagsQuery = { __typename?: 'Query', allTags?: { __typename?: 'TagsConnection', totalCount: number, edges: Array<{ __typename?: 'TagsEdge', node: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } }> } | null };
+
+export type TagDataFragment = { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string };
+
+export type UpdateTagMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  tagName: Scalars['String'];
+  tagPatch: TagPatch;
+}>;
+
+
+export type UpdateTagMutation = { __typename?: 'Mutation', updateTagByGuildIdAndTagName?: { __typename?: 'UpdateTagPayload', tag?: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null } | null };
+
 export type CreateUserMutationVariables = Exact<{
   id: Scalars['BigInt'];
 }>;
@@ -8193,6 +15023,16 @@ export const RoleMenuDataFragmentDoc = gql`
   guildId
   channelId
   editorId
+}
+    `;
+export const TagDataFragmentDoc = gql`
+    fragment TagData on Tag {
+  content
+  created
+  guildId
+  tagName
+  ownerId
+  useCount
 }
     `;
 export const UserDataFragmentDoc = gql`
@@ -8320,6 +15160,120 @@ export const UpdateRoleMenuDocument = gql`
   }
 }
     ${RoleMenuDataFragmentDoc}`;
+export const CreateTagDocument = gql`
+    mutation createTag($tag: TagInput!) {
+  createTag(input: {tag: $tag}) {
+    tag {
+      ...TagData
+    }
+  }
+}
+    ${TagDataFragmentDoc}`;
+export const DeleteTagDocument = gql`
+    mutation deleteTag($guildId: BigInt!, $tagName: String!) {
+  deleteTagByGuildIdAndTagName(input: {guildId: $guildId, tagName: $tagName}) {
+    tag {
+      ...TagData
+    }
+  }
+}
+    ${TagDataFragmentDoc}`;
+export const GetTagDocument = gql`
+    query getTag($guildId: BigInt!, $tagName: String!) {
+  tagByGuildIdAndTagName(guildId: $guildId, tagName: $tagName) {
+    ...TagData
+  }
+}
+    ${TagDataFragmentDoc}`;
+export const GetGuildTagsIncludingDocument = gql`
+    query getGuildTagsIncluding($guildId: BigInt!, $includesInsensitive: String!) {
+  allTags(
+    filter: {tagName: {includesInsensitive: $includesInsensitive}}
+    condition: {guildId: $guildId}
+  ) {
+    edges {
+      node {
+        ...TagData
+      }
+    }
+    totalCount
+  }
+}
+    ${TagDataFragmentDoc}`;
+export const GetGuildTagsOwnedByDocument = gql`
+    query getGuildTagsOwnedBy($guildId: BigInt!, $ownerId: BigInt!) {
+  allTags(condition: {guildId: $guildId, ownerId: $ownerId}) {
+    edges {
+      node {
+        content
+        guildId
+        created
+      }
+    }
+    totalCount
+  }
+}
+    `;
+export const GetGuildTagsStartingWithDocument = gql`
+    query getGuildTagsStartingWith($guildId: BigInt!, $startsWithInsensitive: String!) {
+  allTags(
+    filter: {tagName: {startsWithInsensitive: $startsWithInsensitive}}
+    condition: {guildId: $guildId}
+  ) {
+    edges {
+      node {
+        ...TagData
+      }
+    }
+    totalCount
+  }
+}
+    ${TagDataFragmentDoc}`;
+export const ListGuildTagsDocument = gql`
+    query listGuildTags($guildId: BigInt!) {
+  allTags(condition: {guildId: $guildId}) {
+    edges {
+      node {
+        ...TagData
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+    totalCount
+  }
+}
+    ${TagDataFragmentDoc}`;
+export const SearchTagsDocument = gql`
+    query searchTags($guildId: BigInt, $ownerId: BigInt, $includesInsensitive: String, $startsWithInsensitive: String) {
+  allTags(
+    filter: {tagName: {includesInsensitive: $includesInsensitive, startsWithInsensitive: $startsWithInsensitive}}
+    condition: {guildId: $guildId, ownerId: $ownerId}
+  ) {
+    edges {
+      node {
+        ...TagData
+      }
+    }
+    totalCount
+  }
+}
+    ${TagDataFragmentDoc}`;
+export const UpdateTagDocument = gql`
+    mutation updateTag($guildId: BigInt!, $tagName: String!, $tagPatch: TagPatch!) {
+  updateTagByGuildIdAndTagName(
+    input: {tagPatch: $tagPatch, guildId: $guildId, tagName: $tagName}
+  ) {
+    tag {
+      ...TagData
+    }
+  }
+}
+    ${TagDataFragmentDoc}`;
 export const CreateUserDocument = gql`
     mutation createUser($id: BigInt!) {
   createUser(input: {user: {id: $id, fishies: "0", isPatron: false, rep: "0"}}) {
@@ -8404,6 +15358,33 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     updateRoleMenu(variables: UpdateRoleMenuMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateRoleMenuMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateRoleMenuMutation>(UpdateRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateRoleMenu', 'mutation');
+    },
+    createTag(variables: CreateTagMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateTagMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateTagMutation>(CreateTagDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createTag', 'mutation');
+    },
+    deleteTag(variables: DeleteTagMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteTagMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteTagMutation>(DeleteTagDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteTag', 'mutation');
+    },
+    getTag(variables: GetTagQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetTagQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetTagQuery>(GetTagDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getTag', 'query');
+    },
+    getGuildTagsIncluding(variables: GetGuildTagsIncludingQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetGuildTagsIncludingQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetGuildTagsIncludingQuery>(GetGuildTagsIncludingDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getGuildTagsIncluding', 'query');
+    },
+    getGuildTagsOwnedBy(variables: GetGuildTagsOwnedByQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetGuildTagsOwnedByQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetGuildTagsOwnedByQuery>(GetGuildTagsOwnedByDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getGuildTagsOwnedBy', 'query');
+    },
+    getGuildTagsStartingWith(variables: GetGuildTagsStartingWithQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetGuildTagsStartingWithQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetGuildTagsStartingWithQuery>(GetGuildTagsStartingWithDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getGuildTagsStartingWith', 'query');
+    },
+    listGuildTags(variables: ListGuildTagsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ListGuildTagsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ListGuildTagsQuery>(ListGuildTagsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'listGuildTags', 'query');
+    },
+    searchTags(variables?: SearchTagsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchTagsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<SearchTagsQuery>(SearchTagsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'searchTags', 'query');
+    },
+    updateTag(variables: UpdateTagMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateTagMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateTagMutation>(UpdateTagDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateTag', 'mutation');
     },
     createUser(variables: CreateUserMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateUserMutation>(CreateUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createUser', 'mutation');

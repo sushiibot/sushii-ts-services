@@ -1,0 +1,8 @@
+fragment TagData on Tag {
+  content
+  created
+  guildId
+  tagName
+  ownerId
+  useCount
+}
