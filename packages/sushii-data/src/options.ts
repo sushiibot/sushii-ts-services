@@ -1,6 +1,8 @@
 import type { Pool } from "pg";
 import pino from "pino";
 import { PostGraphileOptions } from "postgraphile";
+import PgAggregatesPlugin from "@graphile/pg-aggregates";
+import ConnectionFilterPlugin from "postgraphile-plugin-connection-filter";
 
 const logger = pino({ name: "options" });
 
@@ -26,7 +28,7 @@ logger.debug("using database schemas: ", schemas);
 // PostGraphile options; see https://www.graphile.org/postgraphile/usage-library/#api-postgraphilepgconfig-schemaname-options
 export const options: PostGraphileOptions = {
   ownerConnectionString: process.env.OWNER_DATABASE_URL,
-  appendPlugins: [],
+  appendPlugins: [ConnectionFilterPlugin, PgAggregatesPlugin],
   // pgSettings assigned in JWT token
   retryOnInitFail: false,
   watchPg: true,

@@ -1,9 +1,161 @@
 """
+A floating point number that requires more precision than IEEE 754 binary 64
+"""
+scalar BigFloat
+
+"""
 A signed eight-byte integer. The upper big integer values are greater than the
 max value for a JavaScript number. Therefore all big integers will be output as
 strings and not numbers.
 """
 scalar BigInt
+
+"""
+A filter to be used against BigInt fields. All fields are combined with a logical ‘and.’
+"""
+input BigIntFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: BigInt
+
+  """Equal to the specified value."""
+  equalTo: BigInt
+
+  """Greater than the specified value."""
+  greaterThan: BigInt
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: BigInt
+
+  """Included in the specified list."""
+  in: [BigInt!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: BigInt
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: BigInt
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: BigInt
+
+  """Not equal to the specified value."""
+  notEqualTo: BigInt
+
+  """Not included in the specified list."""
+  notIn: [BigInt!]
+}
+
+"""
+A filter to be used against BigInt List fields. All fields are combined with a logical ‘and.’
+"""
+input BigIntListFilter {
+  """Any array item is equal to the specified value."""
+  anyEqualTo: BigInt
+
+  """Any array item is greater than the specified value."""
+  anyGreaterThan: BigInt
+
+  """Any array item is greater than or equal to the specified value."""
+  anyGreaterThanOrEqualTo: BigInt
+
+  """Any array item is less than the specified value."""
+  anyLessThan: BigInt
+
+  """Any array item is less than or equal to the specified value."""
+  anyLessThanOrEqualTo: BigInt
+
+  """Any array item is not equal to the specified value."""
+  anyNotEqualTo: BigInt
+
+  """Contained by the specified list of values."""
+  containedBy: [BigInt]
+
+  """Contains the specified list of values."""
+  contains: [BigInt]
+
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: [BigInt]
+
+  """Equal to the specified value."""
+  equalTo: [BigInt]
+
+  """Greater than the specified value."""
+  greaterThan: [BigInt]
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: [BigInt]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: [BigInt]
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: [BigInt]
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: [BigInt]
+
+  """Not equal to the specified value."""
+  notEqualTo: [BigInt]
+
+  """Overlaps the specified list of values."""
+  overlaps: [BigInt]
+}
+
+"""
+A filter to be used against Boolean fields. All fields are combined with a logical ‘and.’
+"""
+input BooleanFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: Boolean
+
+  """Equal to the specified value."""
+  equalTo: Boolean
+
+  """Greater than the specified value."""
+  greaterThan: Boolean
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: Boolean
+
+  """Included in the specified list."""
+  in: [Boolean!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: Boolean
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: Boolean
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: Boolean
+
+  """Not equal to the specified value."""
+  notEqualTo: Boolean
+
+  """Not included in the specified list."""
+  notIn: [Boolean!]
+}
 
 type BotStat implements Node {
   category: String!
@@ -16,6 +168,59 @@ type BotStat implements Node {
   """
   nodeId: ID!
   updatedAt: Datetime!
+}
+
+type BotStatAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: BotStatAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: BotStatDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: BotStatMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: BotStatMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: BotStatStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: BotStatStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: BotStatSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: BotStatVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: BotStatVarianceSampleAggregates
+}
+
+type BotStatAverageAggregates {
+  """Mean average of count across the matching connection"""
+  count: BigFloat
 }
 
 """
@@ -38,6 +243,52 @@ input BotStatCondition {
   updatedAt: Datetime
 }
 
+type BotStatDistinctCountAggregates {
+  """Distinct count of category across the matching connection"""
+  category: BigInt
+
+  """Distinct count of count across the matching connection"""
+  count: BigInt
+
+  """Distinct count of createdAt across the matching connection"""
+  createdAt: BigInt
+
+  """Distinct count of name across the matching connection"""
+  name: BigInt
+
+  """Distinct count of updatedAt across the matching connection"""
+  updatedAt: BigInt
+}
+
+"""
+A filter to be used against `BotStat` object types. All fields are combined with a logical ‘and.’
+"""
+input BotStatFilter {
+  """Checks for all expressions in this list."""
+  and: [BotStatFilter!]
+
+  """Filter by the object’s `category` field."""
+  category: StringFilter
+
+  """Filter by the object’s `count` field."""
+  count: BigIntFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `name` field."""
+  name: StringFilter
+
+  """Negates the expression."""
+  not: BotStatFilter
+
+  """Checks for any expressions in this list."""
+  or: [BotStatFilter!]
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+}
+
 """An input for mutations affecting `BotStat`"""
 input BotStatInput {
   category: String!
@@ -45,6 +296,16 @@ input BotStatInput {
   createdAt: Datetime
   name: String!
   updatedAt: Datetime
+}
+
+type BotStatMaxAggregates {
+  """Maximum of count across the matching connection"""
+  count: BigInt
+}
+
+type BotStatMinAggregates {
+  """Minimum of count across the matching connection"""
+  count: BigInt
 }
 
 """
@@ -58,12 +319,53 @@ input BotStatPatch {
   updatedAt: Datetime
 }
 
+type BotStatStddevPopulationAggregates {
+  """Population standard deviation of count across the matching connection"""
+  count: BigFloat
+}
+
+type BotStatStddevSampleAggregates {
+  """Sample standard deviation of count across the matching connection"""
+  count: BigFloat
+}
+
+type BotStatSumAggregates {
+  """Sum of count across the matching connection"""
+  count: BigFloat!
+}
+
+type BotStatVariancePopulationAggregates {
+  """Population variance of count across the matching connection"""
+  count: BigFloat
+}
+
+type BotStatVarianceSampleAggregates {
+  """Sample variance of count across the matching connection"""
+  count: BigFloat
+}
+
 """A connection to a list of `BotStat` values."""
 type BotStatsConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: BotStatAggregates
+
   """
   A list of edges which contains the `BotStat` and cursor to aid in pagination.
   """
   edges: [BotStatsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `BotStat` for these aggregates."""
+    groupBy: [BotStatsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: BotStatsHavingInput
+  ): [BotStatAggregates!]
 
   """A list of `BotStat` objects."""
   nodes: [BotStat!]!
@@ -82,6 +384,88 @@ type BotStatsEdge {
 
   """The `BotStat` at the end of the edge."""
   node: BotStat!
+}
+
+"""Grouping methods for `BotStat` for usage during aggregation."""
+enum BotStatsGroupBy {
+  CATEGORY
+  COUNT
+  CREATED_AT
+  CREATED_AT_TRUNCATED_TO_DAY
+  CREATED_AT_TRUNCATED_TO_HOUR
+  NAME
+  UPDATED_AT
+  UPDATED_AT_TRUNCATED_TO_DAY
+  UPDATED_AT_TRUNCATED_TO_HOUR
+}
+
+input BotStatsHavingAverageInput {
+  count: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input BotStatsHavingDistinctCountInput {
+  count: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+"""Conditions for `BotStat` aggregates."""
+input BotStatsHavingInput {
+  AND: [BotStatsHavingInput!]
+  OR: [BotStatsHavingInput!]
+  average: BotStatsHavingAverageInput
+  distinctCount: BotStatsHavingDistinctCountInput
+  max: BotStatsHavingMaxInput
+  min: BotStatsHavingMinInput
+  stddevPopulation: BotStatsHavingStddevPopulationInput
+  stddevSample: BotStatsHavingStddevSampleInput
+  sum: BotStatsHavingSumInput
+  variancePopulation: BotStatsHavingVariancePopulationInput
+  varianceSample: BotStatsHavingVarianceSampleInput
+}
+
+input BotStatsHavingMaxInput {
+  count: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input BotStatsHavingMinInput {
+  count: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input BotStatsHavingStddevPopulationInput {
+  count: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input BotStatsHavingStddevSampleInput {
+  count: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input BotStatsHavingSumInput {
+  count: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input BotStatsHavingVariancePopulationInput {
+  count: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input BotStatsHavingVarianceSampleInput {
+  count: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  updatedAt: HavingDatetimeFilter
 }
 
 """Methods to use when ordering `BotStat`."""
@@ -131,6 +515,11 @@ type CachedGuild implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: WebUserGuildCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: WebUserGuildFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -205,6 +594,98 @@ enum CachedGuildsOrderBy {
   SPLASH_DESC
   UPDATED_AT_ASC
   UPDATED_AT_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_OWNER_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_OWNER_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_USER_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_AVERAGE_USER_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_COUNT_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_COUNT_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_OWNER_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_OWNER_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_USER_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_DISTINCT_COUNT_USER_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_MAX_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_MAX_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_MAX_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_MAX_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_MAX_OWNER_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_MAX_OWNER_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_MAX_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_MAX_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_MAX_USER_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_MAX_USER_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_MIN_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_MIN_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_MIN_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_MIN_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_MIN_OWNER_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_MIN_OWNER_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_MIN_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_MIN_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_MIN_USER_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_MIN_USER_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_OWNER_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_OWNER_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_USER_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_POPULATION_USER_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_OWNER_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_OWNER_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_USER_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_STDDEV_SAMPLE_USER_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_SUM_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_SUM_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_SUM_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_SUM_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_SUM_OWNER_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_SUM_OWNER_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_SUM_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_SUM_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_SUM_USER_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_SUM_USER_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_OWNER_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_OWNER_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_USER_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_POPULATION_USER_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_OWNER_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_OWNER_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_USER_ID_ASC
+  WEB_USER_GUILDS_BY_GUILD_ID_VARIANCE_SAMPLE_USER_ID_DESC
 }
 
 type CachedUser implements Node {
@@ -1012,6 +1493,48 @@ A point in time as described by the [ISO
 8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
 """
 scalar Datetime
+
+"""
+A filter to be used against Datetime fields. All fields are combined with a logical ‘and.’
+"""
+input DatetimeFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: Datetime
+
+  """Equal to the specified value."""
+  equalTo: Datetime
+
+  """Greater than the specified value."""
+  greaterThan: Datetime
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: Datetime
+
+  """Included in the specified list."""
+  in: [Datetime!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: Datetime
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: Datetime
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: Datetime
+
+  """Not equal to the specified value."""
+  notEqualTo: Datetime
+
+  """Not included in the specified list."""
+  notIn: [Datetime!]
+}
 
 """All input for the `deleteBotStatByNameAndCategory` mutation."""
 input DeleteBotStatByNameAndCategoryInput {
@@ -1990,6 +2513,11 @@ type Feed implements Node {
     """
     condition: FeedSubscriptionCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: FeedSubscriptionFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -2013,6 +2541,14 @@ type Feed implements Node {
   nodeId: ID!
 }
 
+type FeedAggregates {
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: FeedDistinctCountAggregates
+  keys: [String!]
+}
+
 """
 A condition to be used against `Feed` object types. All fields are tested for equality and combined with a logical ‘and.’
 """
@@ -2022,6 +2558,34 @@ input FeedCondition {
 
   """Checks for equality with the object’s `metadata` field."""
   metadata: JSON
+}
+
+type FeedDistinctCountAggregates {
+  """Distinct count of feedId across the matching connection"""
+  feedId: BigInt
+
+  """Distinct count of metadata across the matching connection"""
+  metadata: BigInt
+}
+
+"""
+A filter to be used against `Feed` object types. All fields are combined with a logical ‘and.’
+"""
+input FeedFilter {
+  """Checks for all expressions in this list."""
+  and: [FeedFilter!]
+
+  """Filter by the object’s `feedId` field."""
+  feedId: StringFilter
+
+  """Filter by the object’s `metadata` field."""
+  metadata: JSONFilter
+
+  """Negates the expression."""
+  not: FeedFilter
+
+  """Checks for any expressions in this list."""
+  or: [FeedFilter!]
 }
 
 """An input for mutations affecting `Feed`"""
@@ -2040,6 +2604,14 @@ type FeedItem implements Node {
   nodeId: ID!
 }
 
+type FeedItemAggregates {
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: FeedItemDistinctCountAggregates
+  keys: [String!]
+}
+
 """
 A condition to be used against `FeedItem` object types. All fields are tested
 for equality and combined with a logical ‘and.’
@@ -2050,6 +2622,34 @@ input FeedItemCondition {
 
   """Checks for equality with the object’s `itemId` field."""
   itemId: String
+}
+
+type FeedItemDistinctCountAggregates {
+  """Distinct count of feedId across the matching connection"""
+  feedId: BigInt
+
+  """Distinct count of itemId across the matching connection"""
+  itemId: BigInt
+}
+
+"""
+A filter to be used against `FeedItem` object types. All fields are combined with a logical ‘and.’
+"""
+input FeedItemFilter {
+  """Checks for all expressions in this list."""
+  and: [FeedItemFilter!]
+
+  """Filter by the object’s `feedId` field."""
+  feedId: StringFilter
+
+  """Filter by the object’s `itemId` field."""
+  itemId: StringFilter
+
+  """Negates the expression."""
+  not: FeedItemFilter
+
+  """Checks for any expressions in this list."""
+  or: [FeedItemFilter!]
 }
 
 """An input for mutations affecting `FeedItem`"""
@@ -2069,9 +2669,25 @@ input FeedItemPatch {
 """A connection to a list of `FeedItem` values."""
 type FeedItemsConnection {
   """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: FeedItemAggregates
+
+  """
   A list of edges which contains the `FeedItem` and cursor to aid in pagination.
   """
   edges: [FeedItemsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `FeedItem` for these aggregates."""
+    groupBy: [FeedItemsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: FeedItemsHavingInput
+  ): [FeedItemAggregates!]
 
   """A list of `FeedItem` objects."""
   nodes: [FeedItem!]!
@@ -2090,6 +2706,18 @@ type FeedItemsEdge {
 
   """The `FeedItem` at the end of the edge."""
   node: FeedItem!
+}
+
+"""Grouping methods for `FeedItem` for usage during aggregation."""
+enum FeedItemsGroupBy {
+  FEED_ID
+  ITEM_ID
+}
+
+"""Conditions for `FeedItem` aggregates."""
+input FeedItemsHavingInput {
+  AND: [FeedItemsHavingInput!]
+  OR: [FeedItemsHavingInput!]
 }
 
 """Methods to use when ordering `FeedItem`."""
@@ -2124,6 +2752,65 @@ type FeedSubscription implements Node {
   nodeId: ID!
 }
 
+type FeedSubscriptionAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: FeedSubscriptionAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: FeedSubscriptionDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: FeedSubscriptionMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: FeedSubscriptionMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: FeedSubscriptionStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: FeedSubscriptionStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: FeedSubscriptionSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: FeedSubscriptionVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: FeedSubscriptionVarianceSampleAggregates
+}
+
+type FeedSubscriptionAverageAggregates {
+  """Mean average of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of mentionRole across the matching connection"""
+  mentionRole: BigFloat
+}
+
 """
 A condition to be used against `FeedSubscription` object types. All fields are
 tested for equality and combined with a logical ‘and.’
@@ -2142,11 +2829,73 @@ input FeedSubscriptionCondition {
   mentionRole: BigInt
 }
 
+type FeedSubscriptionDistinctCountAggregates {
+  """Distinct count of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Distinct count of feedId across the matching connection"""
+  feedId: BigInt
+
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of mentionRole across the matching connection"""
+  mentionRole: BigInt
+}
+
+"""
+A filter to be used against `FeedSubscription` object types. All fields are combined with a logical ‘and.’
+"""
+input FeedSubscriptionFilter {
+  """Checks for all expressions in this list."""
+  and: [FeedSubscriptionFilter!]
+
+  """Filter by the object’s `channelId` field."""
+  channelId: BigIntFilter
+
+  """Filter by the object’s `feedId` field."""
+  feedId: StringFilter
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Filter by the object’s `mentionRole` field."""
+  mentionRole: BigIntFilter
+
+  """Negates the expression."""
+  not: FeedSubscriptionFilter
+
+  """Checks for any expressions in this list."""
+  or: [FeedSubscriptionFilter!]
+}
+
 """An input for mutations affecting `FeedSubscription`"""
 input FeedSubscriptionInput {
   channelId: BigInt!
   feedId: String!
   guildId: BigInt!
+  mentionRole: BigInt
+}
+
+type FeedSubscriptionMaxAggregates {
+  """Maximum of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of mentionRole across the matching connection"""
+  mentionRole: BigInt
+}
+
+type FeedSubscriptionMinAggregates {
+  """Minimum of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of mentionRole across the matching connection"""
   mentionRole: BigInt
 }
 
@@ -2160,12 +2909,93 @@ input FeedSubscriptionPatch {
   mentionRole: BigInt
 }
 
+type FeedSubscriptionStddevPopulationAggregates {
+  """
+  Population standard deviation of channelId across the matching connection
+  """
+  channelId: BigFloat
+
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """
+  Population standard deviation of mentionRole across the matching connection
+  """
+  mentionRole: BigFloat
+}
+
+type FeedSubscriptionStddevSampleAggregates {
+  """Sample standard deviation of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """
+  Sample standard deviation of mentionRole across the matching connection
+  """
+  mentionRole: BigFloat
+}
+
+type FeedSubscriptionSumAggregates {
+  """Sum of channelId across the matching connection"""
+  channelId: BigFloat!
+
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of mentionRole across the matching connection"""
+  mentionRole: BigFloat!
+}
+
+type FeedSubscriptionVariancePopulationAggregates {
+  """Population variance of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of mentionRole across the matching connection"""
+  mentionRole: BigFloat
+}
+
+type FeedSubscriptionVarianceSampleAggregates {
+  """Sample variance of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of mentionRole across the matching connection"""
+  mentionRole: BigFloat
+}
+
 """A connection to a list of `FeedSubscription` values."""
 type FeedSubscriptionsConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: FeedSubscriptionAggregates
+
   """
   A list of edges which contains the `FeedSubscription` and cursor to aid in pagination.
   """
   edges: [FeedSubscriptionsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """
+    The method to use when grouping `FeedSubscription` for these aggregates.
+    """
+    groupBy: [FeedSubscriptionsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: FeedSubscriptionsHavingInput
+  ): [FeedSubscriptionAggregates!]
 
   """A list of `FeedSubscription` objects."""
   nodes: [FeedSubscription!]!
@@ -2188,6 +3018,83 @@ type FeedSubscriptionsEdge {
   node: FeedSubscription!
 }
 
+"""Grouping methods for `FeedSubscription` for usage during aggregation."""
+enum FeedSubscriptionsGroupBy {
+  CHANNEL_ID
+  FEED_ID
+  GUILD_ID
+  MENTION_ROLE
+}
+
+input FeedSubscriptionsHavingAverageInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  mentionRole: HavingBigintFilter
+}
+
+input FeedSubscriptionsHavingDistinctCountInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  mentionRole: HavingBigintFilter
+}
+
+"""Conditions for `FeedSubscription` aggregates."""
+input FeedSubscriptionsHavingInput {
+  AND: [FeedSubscriptionsHavingInput!]
+  OR: [FeedSubscriptionsHavingInput!]
+  average: FeedSubscriptionsHavingAverageInput
+  distinctCount: FeedSubscriptionsHavingDistinctCountInput
+  max: FeedSubscriptionsHavingMaxInput
+  min: FeedSubscriptionsHavingMinInput
+  stddevPopulation: FeedSubscriptionsHavingStddevPopulationInput
+  stddevSample: FeedSubscriptionsHavingStddevSampleInput
+  sum: FeedSubscriptionsHavingSumInput
+  variancePopulation: FeedSubscriptionsHavingVariancePopulationInput
+  varianceSample: FeedSubscriptionsHavingVarianceSampleInput
+}
+
+input FeedSubscriptionsHavingMaxInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  mentionRole: HavingBigintFilter
+}
+
+input FeedSubscriptionsHavingMinInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  mentionRole: HavingBigintFilter
+}
+
+input FeedSubscriptionsHavingStddevPopulationInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  mentionRole: HavingBigintFilter
+}
+
+input FeedSubscriptionsHavingStddevSampleInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  mentionRole: HavingBigintFilter
+}
+
+input FeedSubscriptionsHavingSumInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  mentionRole: HavingBigintFilter
+}
+
+input FeedSubscriptionsHavingVariancePopulationInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  mentionRole: HavingBigintFilter
+}
+
+input FeedSubscriptionsHavingVarianceSampleInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  mentionRole: HavingBigintFilter
+}
+
 """Methods to use when ordering `FeedSubscription`."""
 enum FeedSubscriptionsOrderBy {
   CHANNEL_ID_ASC
@@ -2206,9 +3113,25 @@ enum FeedSubscriptionsOrderBy {
 """A connection to a list of `Feed` values."""
 type FeedsConnection {
   """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: FeedAggregates
+
+  """
   A list of edges which contains the `Feed` and cursor to aid in pagination.
   """
   edges: [FeedsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `Feed` for these aggregates."""
+    groupBy: [FeedsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: FeedsHavingInput
+  ): [FeedAggregates!]
 
   """A list of `Feed` objects."""
   nodes: [Feed!]!
@@ -2229,10 +3152,95 @@ type FeedsEdge {
   node: Feed!
 }
 
+"""Grouping methods for `Feed` for usage during aggregation."""
+enum FeedsGroupBy {
+  METADATA
+}
+
+"""Conditions for `Feed` aggregates."""
+input FeedsHavingInput {
+  AND: [FeedsHavingInput!]
+  OR: [FeedsHavingInput!]
+}
+
 """Methods to use when ordering `Feed`."""
 enum FeedsOrderBy {
   FEED_ID_ASC
   FEED_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_CHANNEL_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_CHANNEL_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_FEED_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_FEED_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_GUILD_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_GUILD_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_MENTION_ROLE_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_AVERAGE_MENTION_ROLE_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_COUNT_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_COUNT_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_CHANNEL_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_CHANNEL_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_FEED_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_FEED_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_GUILD_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_GUILD_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_MENTION_ROLE_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_DISTINCT_COUNT_MENTION_ROLE_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_CHANNEL_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_CHANNEL_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_FEED_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_FEED_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_GUILD_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_GUILD_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_MENTION_ROLE_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MAX_MENTION_ROLE_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_CHANNEL_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_CHANNEL_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_FEED_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_FEED_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_GUILD_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_GUILD_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_MENTION_ROLE_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_MIN_MENTION_ROLE_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_CHANNEL_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_CHANNEL_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_FEED_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_FEED_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_GUILD_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_GUILD_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_MENTION_ROLE_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_POPULATION_MENTION_ROLE_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_CHANNEL_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_CHANNEL_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_FEED_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_FEED_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_GUILD_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_GUILD_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_MENTION_ROLE_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_STDDEV_SAMPLE_MENTION_ROLE_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_CHANNEL_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_CHANNEL_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_FEED_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_FEED_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_GUILD_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_GUILD_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_MENTION_ROLE_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_SUM_MENTION_ROLE_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_CHANNEL_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_CHANNEL_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_FEED_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_FEED_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_GUILD_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_GUILD_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_MENTION_ROLE_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_POPULATION_MENTION_ROLE_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_CHANNEL_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_CHANNEL_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_FEED_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_FEED_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_GUILD_ID_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_GUILD_ID_DESC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_MENTION_ROLE_ASC
+  FEED_SUBSCRIPTIONS_BY_FEED_ID_VARIANCE_SAMPLE_MENTION_ROLE_DESC
   METADATA_ASC
   METADATA_DESC
   NATURAL
@@ -2278,6 +3286,62 @@ type GuildBan implements Node {
   userId: BigInt!
 }
 
+type GuildBanAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: GuildBanAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: GuildBanDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: GuildBanMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: GuildBanMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: GuildBanStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: GuildBanStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: GuildBanSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: GuildBanVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: GuildBanVarianceSampleAggregates
+}
+
+type GuildBanAverageAggregates {
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of userId across the matching connection"""
+  userId: BigFloat
+}
+
 """
 A condition to be used against `GuildBan` object types. All fields are tested
 for equality and combined with a logical ‘and.’
@@ -2290,10 +3354,54 @@ input GuildBanCondition {
   userId: BigInt
 }
 
+type GuildBanDistinctCountAggregates {
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of userId across the matching connection"""
+  userId: BigInt
+}
+
+"""
+A filter to be used against `GuildBan` object types. All fields are combined with a logical ‘and.’
+"""
+input GuildBanFilter {
+  """Checks for all expressions in this list."""
+  and: [GuildBanFilter!]
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Negates the expression."""
+  not: GuildBanFilter
+
+  """Checks for any expressions in this list."""
+  or: [GuildBanFilter!]
+
+  """Filter by the object’s `userId` field."""
+  userId: BigIntFilter
+}
+
 """An input for mutations affecting `GuildBan`"""
 input GuildBanInput {
   guildId: BigInt!
   userId: BigInt!
+}
+
+type GuildBanMaxAggregates {
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of userId across the matching connection"""
+  userId: BigInt
+}
+
+type GuildBanMinAggregates {
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of userId across the matching connection"""
+  userId: BigInt
 }
 
 """
@@ -2304,12 +3412,70 @@ input GuildBanPatch {
   userId: BigInt
 }
 
+type GuildBanStddevPopulationAggregates {
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """Population standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type GuildBanStddevSampleAggregates {
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type GuildBanSumAggregates {
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of userId across the matching connection"""
+  userId: BigFloat!
+}
+
+type GuildBanVariancePopulationAggregates {
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type GuildBanVarianceSampleAggregates {
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
 """A connection to a list of `GuildBan` values."""
 type GuildBansConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: GuildBanAggregates
+
   """
   A list of edges which contains the `GuildBan` and cursor to aid in pagination.
   """
   edges: [GuildBansEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `GuildBan` for these aggregates."""
+    groupBy: [GuildBansGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: GuildBansHavingInput
+  ): [GuildBanAggregates!]
 
   """A list of `GuildBan` objects."""
   nodes: [GuildBan!]!
@@ -2328,6 +3494,72 @@ type GuildBansEdge {
 
   """The `GuildBan` at the end of the edge."""
   node: GuildBan!
+}
+
+"""Grouping methods for `GuildBan` for usage during aggregation."""
+enum GuildBansGroupBy {
+  GUILD_ID
+  USER_ID
+}
+
+input GuildBansHavingAverageInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input GuildBansHavingDistinctCountInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+"""Conditions for `GuildBan` aggregates."""
+input GuildBansHavingInput {
+  AND: [GuildBansHavingInput!]
+  OR: [GuildBansHavingInput!]
+  average: GuildBansHavingAverageInput
+  distinctCount: GuildBansHavingDistinctCountInput
+  max: GuildBansHavingMaxInput
+  min: GuildBansHavingMinInput
+  stddevPopulation: GuildBansHavingStddevPopulationInput
+  stddevSample: GuildBansHavingStddevSampleInput
+  sum: GuildBansHavingSumInput
+  variancePopulation: GuildBansHavingVariancePopulationInput
+  varianceSample: GuildBansHavingVarianceSampleInput
+}
+
+input GuildBansHavingMaxInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input GuildBansHavingMinInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input GuildBansHavingStddevPopulationInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input GuildBansHavingStddevSampleInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input GuildBansHavingSumInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input GuildBansHavingVariancePopulationInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input GuildBansHavingVarianceSampleInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
 }
 
 """Methods to use when ordering `GuildBan`."""
@@ -2376,6 +3608,83 @@ type GuildConfig implements Node {
   roleEnabled: Boolean!
   warnDmEnabled: Boolean!
   warnDmText: String
+}
+
+type GuildConfigAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: GuildConfigAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: GuildConfigDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: GuildConfigMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: GuildConfigMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: GuildConfigStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: GuildConfigStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: GuildConfigSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: GuildConfigVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: GuildConfigVarianceSampleAggregates
+}
+
+type GuildConfigAverageAggregates {
+  """Mean average of id across the matching connection"""
+  id: BigFloat
+
+  """Mean average of logMember across the matching connection"""
+  logMember: BigFloat
+
+  """Mean average of logMod across the matching connection"""
+  logMod: BigFloat
+
+  """Mean average of logMsg across the matching connection"""
+  logMsg: BigFloat
+
+  """Mean average of maxMention across the matching connection"""
+  maxMention: BigFloat
+
+  """Mean average of msgChannel across the matching connection"""
+  msgChannel: BigFloat
+
+  """Mean average of muteDuration across the matching connection"""
+  muteDuration: BigFloat
+
+  """Mean average of muteRole across the matching connection"""
+  muteRole: BigFloat
+
+  """Mean average of roleChannel across the matching connection"""
+  roleChannel: BigFloat
 }
 
 """
@@ -2465,6 +3774,184 @@ input GuildConfigCondition {
   warnDmText: String
 }
 
+type GuildConfigDistinctCountAggregates {
+  """Distinct count of data across the matching connection"""
+  data: BigInt
+
+  """Distinct count of disabledChannels across the matching connection"""
+  disabledChannels: BigInt
+
+  """Distinct count of id across the matching connection"""
+  id: BigInt
+
+  """Distinct count of inviteGuard across the matching connection"""
+  inviteGuard: BigInt
+
+  """Distinct count of joinMsg across the matching connection"""
+  joinMsg: BigInt
+
+  """Distinct count of joinMsgEnabled across the matching connection"""
+  joinMsgEnabled: BigInt
+
+  """Distinct count of joinReact across the matching connection"""
+  joinReact: BigInt
+
+  """Distinct count of leaveMsg across the matching connection"""
+  leaveMsg: BigInt
+
+  """Distinct count of leaveMsgEnabled across the matching connection"""
+  leaveMsgEnabled: BigInt
+
+  """Distinct count of logMember across the matching connection"""
+  logMember: BigInt
+
+  """Distinct count of logMemberEnabled across the matching connection"""
+  logMemberEnabled: BigInt
+
+  """Distinct count of logMod across the matching connection"""
+  logMod: BigInt
+
+  """Distinct count of logModEnabled across the matching connection"""
+  logModEnabled: BigInt
+
+  """Distinct count of logMsg across the matching connection"""
+  logMsg: BigInt
+
+  """Distinct count of logMsgEnabled across the matching connection"""
+  logMsgEnabled: BigInt
+
+  """Distinct count of maxMention across the matching connection"""
+  maxMention: BigInt
+
+  """Distinct count of msgChannel across the matching connection"""
+  msgChannel: BigInt
+
+  """Distinct count of muteDmEnabled across the matching connection"""
+  muteDmEnabled: BigInt
+
+  """Distinct count of muteDmText across the matching connection"""
+  muteDmText: BigInt
+
+  """Distinct count of muteDuration across the matching connection"""
+  muteDuration: BigInt
+
+  """Distinct count of muteRole across the matching connection"""
+  muteRole: BigInt
+
+  """Distinct count of prefix across the matching connection"""
+  prefix: BigInt
+
+  """Distinct count of roleChannel across the matching connection"""
+  roleChannel: BigInt
+
+  """Distinct count of roleConfig across the matching connection"""
+  roleConfig: BigInt
+
+  """Distinct count of roleEnabled across the matching connection"""
+  roleEnabled: BigInt
+
+  """Distinct count of warnDmEnabled across the matching connection"""
+  warnDmEnabled: BigInt
+
+  """Distinct count of warnDmText across the matching connection"""
+  warnDmText: BigInt
+}
+
+"""
+A filter to be used against `GuildConfig` object types. All fields are combined with a logical ‘and.’
+"""
+input GuildConfigFilter {
+  """Checks for all expressions in this list."""
+  and: [GuildConfigFilter!]
+
+  """Filter by the object’s `data` field."""
+  data: JSONFilter
+
+  """Filter by the object’s `disabledChannels` field."""
+  disabledChannels: BigIntListFilter
+
+  """Filter by the object’s `id` field."""
+  id: BigIntFilter
+
+  """Filter by the object’s `inviteGuard` field."""
+  inviteGuard: BooleanFilter
+
+  """Filter by the object’s `joinMsg` field."""
+  joinMsg: StringFilter
+
+  """Filter by the object’s `joinMsgEnabled` field."""
+  joinMsgEnabled: BooleanFilter
+
+  """Filter by the object’s `joinReact` field."""
+  joinReact: StringFilter
+
+  """Filter by the object’s `leaveMsg` field."""
+  leaveMsg: StringFilter
+
+  """Filter by the object’s `leaveMsgEnabled` field."""
+  leaveMsgEnabled: BooleanFilter
+
+  """Filter by the object’s `logMember` field."""
+  logMember: BigIntFilter
+
+  """Filter by the object’s `logMemberEnabled` field."""
+  logMemberEnabled: BooleanFilter
+
+  """Filter by the object’s `logMod` field."""
+  logMod: BigIntFilter
+
+  """Filter by the object’s `logModEnabled` field."""
+  logModEnabled: BooleanFilter
+
+  """Filter by the object’s `logMsg` field."""
+  logMsg: BigIntFilter
+
+  """Filter by the object’s `logMsgEnabled` field."""
+  logMsgEnabled: BooleanFilter
+
+  """Filter by the object’s `maxMention` field."""
+  maxMention: IntFilter
+
+  """Filter by the object’s `msgChannel` field."""
+  msgChannel: BigIntFilter
+
+  """Filter by the object’s `muteDmEnabled` field."""
+  muteDmEnabled: BooleanFilter
+
+  """Filter by the object’s `muteDmText` field."""
+  muteDmText: StringFilter
+
+  """Filter by the object’s `muteDuration` field."""
+  muteDuration: BigIntFilter
+
+  """Filter by the object’s `muteRole` field."""
+  muteRole: BigIntFilter
+
+  """Negates the expression."""
+  not: GuildConfigFilter
+
+  """Checks for any expressions in this list."""
+  or: [GuildConfigFilter!]
+
+  """Filter by the object’s `prefix` field."""
+  prefix: StringFilter
+
+  """Filter by the object’s `roleChannel` field."""
+  roleChannel: BigIntFilter
+
+  """Filter by the object’s `roleConfig` field."""
+  roleConfig: JSONFilter
+
+  """Filter by the object’s `roleEnabled` field."""
+  roleEnabled: BooleanFilter
+
+  """Filter by the object’s `warnDmEnabled` field."""
+  warnDmEnabled: BooleanFilter
+
+  """Filter by the object’s `warnDmText` field."""
+  warnDmText: StringFilter
+}
+
 """An input for mutations affecting `GuildConfig`"""
 input GuildConfigInput {
   data: JSON
@@ -2494,6 +3981,64 @@ input GuildConfigInput {
   roleEnabled: Boolean
   warnDmEnabled: Boolean
   warnDmText: String
+}
+
+type GuildConfigMaxAggregates {
+  """Maximum of id across the matching connection"""
+  id: BigInt
+
+  """Maximum of logMember across the matching connection"""
+  logMember: BigInt
+
+  """Maximum of logMod across the matching connection"""
+  logMod: BigInt
+
+  """Maximum of logMsg across the matching connection"""
+  logMsg: BigInt
+
+  """Maximum of maxMention across the matching connection"""
+  maxMention: Int
+
+  """Maximum of msgChannel across the matching connection"""
+  msgChannel: BigInt
+
+  """Maximum of muteDuration across the matching connection"""
+  muteDuration: BigInt
+
+  """Maximum of muteRole across the matching connection"""
+  muteRole: BigInt
+
+  """Maximum of roleChannel across the matching connection"""
+  roleChannel: BigInt
+}
+
+type GuildConfigMinAggregates {
+  """Minimum of id across the matching connection"""
+  id: BigInt
+
+  """Minimum of logMember across the matching connection"""
+  logMember: BigInt
+
+  """Minimum of logMod across the matching connection"""
+  logMod: BigInt
+
+  """Minimum of logMsg across the matching connection"""
+  logMsg: BigInt
+
+  """Minimum of maxMention across the matching connection"""
+  maxMention: Int
+
+  """Minimum of msgChannel across the matching connection"""
+  msgChannel: BigInt
+
+  """Minimum of muteDuration across the matching connection"""
+  muteDuration: BigInt
+
+  """Minimum of muteRole across the matching connection"""
+  muteRole: BigInt
+
+  """Minimum of roleChannel across the matching connection"""
+  roleChannel: BigInt
 }
 
 """
@@ -2529,12 +4074,189 @@ input GuildConfigPatch {
   warnDmText: String
 }
 
+type GuildConfigStddevPopulationAggregates {
+  """Population standard deviation of id across the matching connection"""
+  id: BigFloat
+
+  """
+  Population standard deviation of logMember across the matching connection
+  """
+  logMember: BigFloat
+
+  """Population standard deviation of logMod across the matching connection"""
+  logMod: BigFloat
+
+  """Population standard deviation of logMsg across the matching connection"""
+  logMsg: BigFloat
+
+  """
+  Population standard deviation of maxMention across the matching connection
+  """
+  maxMention: BigFloat
+
+  """
+  Population standard deviation of msgChannel across the matching connection
+  """
+  msgChannel: BigFloat
+
+  """
+  Population standard deviation of muteDuration across the matching connection
+  """
+  muteDuration: BigFloat
+
+  """
+  Population standard deviation of muteRole across the matching connection
+  """
+  muteRole: BigFloat
+
+  """
+  Population standard deviation of roleChannel across the matching connection
+  """
+  roleChannel: BigFloat
+}
+
+type GuildConfigStddevSampleAggregates {
+  """Sample standard deviation of id across the matching connection"""
+  id: BigFloat
+
+  """Sample standard deviation of logMember across the matching connection"""
+  logMember: BigFloat
+
+  """Sample standard deviation of logMod across the matching connection"""
+  logMod: BigFloat
+
+  """Sample standard deviation of logMsg across the matching connection"""
+  logMsg: BigFloat
+
+  """Sample standard deviation of maxMention across the matching connection"""
+  maxMention: BigFloat
+
+  """Sample standard deviation of msgChannel across the matching connection"""
+  msgChannel: BigFloat
+
+  """
+  Sample standard deviation of muteDuration across the matching connection
+  """
+  muteDuration: BigFloat
+
+  """Sample standard deviation of muteRole across the matching connection"""
+  muteRole: BigFloat
+
+  """
+  Sample standard deviation of roleChannel across the matching connection
+  """
+  roleChannel: BigFloat
+}
+
+type GuildConfigSumAggregates {
+  """Sum of id across the matching connection"""
+  id: BigFloat!
+
+  """Sum of logMember across the matching connection"""
+  logMember: BigFloat!
+
+  """Sum of logMod across the matching connection"""
+  logMod: BigFloat!
+
+  """Sum of logMsg across the matching connection"""
+  logMsg: BigFloat!
+
+  """Sum of maxMention across the matching connection"""
+  maxMention: BigInt!
+
+  """Sum of msgChannel across the matching connection"""
+  msgChannel: BigFloat!
+
+  """Sum of muteDuration across the matching connection"""
+  muteDuration: BigFloat!
+
+  """Sum of muteRole across the matching connection"""
+  muteRole: BigFloat!
+
+  """Sum of roleChannel across the matching connection"""
+  roleChannel: BigFloat!
+}
+
+type GuildConfigVariancePopulationAggregates {
+  """Population variance of id across the matching connection"""
+  id: BigFloat
+
+  """Population variance of logMember across the matching connection"""
+  logMember: BigFloat
+
+  """Population variance of logMod across the matching connection"""
+  logMod: BigFloat
+
+  """Population variance of logMsg across the matching connection"""
+  logMsg: BigFloat
+
+  """Population variance of maxMention across the matching connection"""
+  maxMention: BigFloat
+
+  """Population variance of msgChannel across the matching connection"""
+  msgChannel: BigFloat
+
+  """Population variance of muteDuration across the matching connection"""
+  muteDuration: BigFloat
+
+  """Population variance of muteRole across the matching connection"""
+  muteRole: BigFloat
+
+  """Population variance of roleChannel across the matching connection"""
+  roleChannel: BigFloat
+}
+
+type GuildConfigVarianceSampleAggregates {
+  """Sample variance of id across the matching connection"""
+  id: BigFloat
+
+  """Sample variance of logMember across the matching connection"""
+  logMember: BigFloat
+
+  """Sample variance of logMod across the matching connection"""
+  logMod: BigFloat
+
+  """Sample variance of logMsg across the matching connection"""
+  logMsg: BigFloat
+
+  """Sample variance of maxMention across the matching connection"""
+  maxMention: BigFloat
+
+  """Sample variance of msgChannel across the matching connection"""
+  msgChannel: BigFloat
+
+  """Sample variance of muteDuration across the matching connection"""
+  muteDuration: BigFloat
+
+  """Sample variance of muteRole across the matching connection"""
+  muteRole: BigFloat
+
+  """Sample variance of roleChannel across the matching connection"""
+  roleChannel: BigFloat
+}
+
 """A connection to a list of `GuildConfig` values."""
 type GuildConfigsConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: GuildConfigAggregates
+
   """
   A list of edges which contains the `GuildConfig` and cursor to aid in pagination.
   """
   edges: [GuildConfigsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `GuildConfig` for these aggregates."""
+    groupBy: [GuildConfigsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: GuildConfigsHavingInput
+  ): [GuildConfigAggregates!]
 
   """A list of `GuildConfig` objects."""
   nodes: [GuildConfig!]!
@@ -2553,6 +4275,159 @@ type GuildConfigsEdge {
 
   """The `GuildConfig` at the end of the edge."""
   node: GuildConfig!
+}
+
+"""Grouping methods for `GuildConfig` for usage during aggregation."""
+enum GuildConfigsGroupBy {
+  DATA
+  DISABLED_CHANNELS
+  INVITE_GUARD
+  JOIN_MSG
+  JOIN_MSG_ENABLED
+  JOIN_REACT
+  LEAVE_MSG
+  LEAVE_MSG_ENABLED
+  LOG_MEMBER
+  LOG_MEMBER_ENABLED
+  LOG_MOD
+  LOG_MOD_ENABLED
+  LOG_MSG
+  LOG_MSG_ENABLED
+  MAX_MENTION
+  MSG_CHANNEL
+  MUTE_DM_ENABLED
+  MUTE_DM_TEXT
+  MUTE_DURATION
+  MUTE_ROLE
+  PREFIX
+  ROLE_CHANNEL
+  ROLE_CONFIG
+  ROLE_ENABLED
+  WARN_DM_ENABLED
+  WARN_DM_TEXT
+}
+
+input GuildConfigsHavingAverageInput {
+  id: HavingBigintFilter
+  logMember: HavingBigintFilter
+  logMod: HavingBigintFilter
+  logMsg: HavingBigintFilter
+  maxMention: HavingIntFilter
+  msgChannel: HavingBigintFilter
+  muteDuration: HavingBigintFilter
+  muteRole: HavingBigintFilter
+  roleChannel: HavingBigintFilter
+}
+
+input GuildConfigsHavingDistinctCountInput {
+  id: HavingBigintFilter
+  logMember: HavingBigintFilter
+  logMod: HavingBigintFilter
+  logMsg: HavingBigintFilter
+  maxMention: HavingIntFilter
+  msgChannel: HavingBigintFilter
+  muteDuration: HavingBigintFilter
+  muteRole: HavingBigintFilter
+  roleChannel: HavingBigintFilter
+}
+
+"""Conditions for `GuildConfig` aggregates."""
+input GuildConfigsHavingInput {
+  AND: [GuildConfigsHavingInput!]
+  OR: [GuildConfigsHavingInput!]
+  average: GuildConfigsHavingAverageInput
+  distinctCount: GuildConfigsHavingDistinctCountInput
+  max: GuildConfigsHavingMaxInput
+  min: GuildConfigsHavingMinInput
+  stddevPopulation: GuildConfigsHavingStddevPopulationInput
+  stddevSample: GuildConfigsHavingStddevSampleInput
+  sum: GuildConfigsHavingSumInput
+  variancePopulation: GuildConfigsHavingVariancePopulationInput
+  varianceSample: GuildConfigsHavingVarianceSampleInput
+}
+
+input GuildConfigsHavingMaxInput {
+  id: HavingBigintFilter
+  logMember: HavingBigintFilter
+  logMod: HavingBigintFilter
+  logMsg: HavingBigintFilter
+  maxMention: HavingIntFilter
+  msgChannel: HavingBigintFilter
+  muteDuration: HavingBigintFilter
+  muteRole: HavingBigintFilter
+  roleChannel: HavingBigintFilter
+}
+
+input GuildConfigsHavingMinInput {
+  id: HavingBigintFilter
+  logMember: HavingBigintFilter
+  logMod: HavingBigintFilter
+  logMsg: HavingBigintFilter
+  maxMention: HavingIntFilter
+  msgChannel: HavingBigintFilter
+  muteDuration: HavingBigintFilter
+  muteRole: HavingBigintFilter
+  roleChannel: HavingBigintFilter
+}
+
+input GuildConfigsHavingStddevPopulationInput {
+  id: HavingBigintFilter
+  logMember: HavingBigintFilter
+  logMod: HavingBigintFilter
+  logMsg: HavingBigintFilter
+  maxMention: HavingIntFilter
+  msgChannel: HavingBigintFilter
+  muteDuration: HavingBigintFilter
+  muteRole: HavingBigintFilter
+  roleChannel: HavingBigintFilter
+}
+
+input GuildConfigsHavingStddevSampleInput {
+  id: HavingBigintFilter
+  logMember: HavingBigintFilter
+  logMod: HavingBigintFilter
+  logMsg: HavingBigintFilter
+  maxMention: HavingIntFilter
+  msgChannel: HavingBigintFilter
+  muteDuration: HavingBigintFilter
+  muteRole: HavingBigintFilter
+  roleChannel: HavingBigintFilter
+}
+
+input GuildConfigsHavingSumInput {
+  id: HavingBigintFilter
+  logMember: HavingBigintFilter
+  logMod: HavingBigintFilter
+  logMsg: HavingBigintFilter
+  maxMention: HavingIntFilter
+  msgChannel: HavingBigintFilter
+  muteDuration: HavingBigintFilter
+  muteRole: HavingBigintFilter
+  roleChannel: HavingBigintFilter
+}
+
+input GuildConfigsHavingVariancePopulationInput {
+  id: HavingBigintFilter
+  logMember: HavingBigintFilter
+  logMod: HavingBigintFilter
+  logMsg: HavingBigintFilter
+  maxMention: HavingIntFilter
+  msgChannel: HavingBigintFilter
+  muteDuration: HavingBigintFilter
+  muteRole: HavingBigintFilter
+  roleChannel: HavingBigintFilter
+}
+
+input GuildConfigsHavingVarianceSampleInput {
+  id: HavingBigintFilter
+  logMember: HavingBigintFilter
+  logMod: HavingBigintFilter
+  logMsg: HavingBigintFilter
+  maxMention: HavingIntFilter
+  msgChannel: HavingBigintFilter
+  muteDuration: HavingBigintFilter
+  muteRole: HavingBigintFilter
+  roleChannel: HavingBigintFilter
 }
 
 """Methods to use when ordering `GuildConfig`."""
@@ -2616,10 +4491,136 @@ enum GuildConfigsOrderBy {
   WARN_DM_TEXT_DESC
 }
 
+input HavingBigintFilter {
+  equalTo: BigInt
+  greaterThan: BigInt
+  greaterThanOrEqualTo: BigInt
+  lessThan: BigInt
+  lessThanOrEqualTo: BigInt
+  notEqualTo: BigInt
+}
+
+input HavingDatetimeFilter {
+  equalTo: Datetime
+  greaterThan: Datetime
+  greaterThanOrEqualTo: Datetime
+  lessThan: Datetime
+  lessThanOrEqualTo: Datetime
+  notEqualTo: Datetime
+}
+
+input HavingIntFilter {
+  equalTo: Int
+  greaterThan: Int
+  greaterThanOrEqualTo: Int
+  lessThan: Int
+  lessThanOrEqualTo: Int
+  notEqualTo: Int
+}
+
+"""
+A filter to be used against Int fields. All fields are combined with a logical ‘and.’
+"""
+input IntFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: Int
+
+  """Equal to the specified value."""
+  equalTo: Int
+
+  """Greater than the specified value."""
+  greaterThan: Int
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: Int
+
+  """Included in the specified list."""
+  in: [Int!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: Int
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: Int
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: Int
+
+  """Not equal to the specified value."""
+  notEqualTo: Int
+
+  """Not included in the specified list."""
+  notIn: [Int!]
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
+
+"""
+A filter to be used against JSON fields. All fields are combined with a logical ‘and.’
+"""
+input JSONFilter {
+  """Contained by the specified JSON."""
+  containedBy: JSON
+
+  """Contains the specified JSON."""
+  contains: JSON
+
+  """Contains all of the specified keys."""
+  containsAllKeys: [String!]
+
+  """Contains any of the specified keys."""
+  containsAnyKeys: [String!]
+
+  """Contains the specified key."""
+  containsKey: String
+
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: JSON
+
+  """Equal to the specified value."""
+  equalTo: JSON
+
+  """Greater than the specified value."""
+  greaterThan: JSON
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: JSON
+
+  """Included in the specified list."""
+  in: [JSON!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: JSON
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: JSON
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: JSON
+
+  """Not equal to the specified value."""
+  notEqualTo: JSON
+
+  """Not included in the specified list."""
+  notIn: [JSON!]
+}
 
 enum LevelTimeframe {
   ALL_TIME
@@ -2662,6 +4663,62 @@ type Member implements Node {
   userId: BigInt!
 }
 
+type MemberAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: MemberAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: MemberDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: MemberMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: MemberMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: MemberStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: MemberStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: MemberSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: MemberVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: MemberVarianceSampleAggregates
+}
+
+type MemberAverageAggregates {
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of userId across the matching connection"""
+  userId: BigFloat
+}
+
 """
 A condition to be used against `Member` object types. All fields are tested for equality and combined with a logical ‘and.’
 """
@@ -2676,11 +4733,61 @@ input MemberCondition {
   userId: BigInt
 }
 
+type MemberDistinctCountAggregates {
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of joinTime across the matching connection"""
+  joinTime: BigInt
+
+  """Distinct count of userId across the matching connection"""
+  userId: BigInt
+}
+
+"""
+A filter to be used against `Member` object types. All fields are combined with a logical ‘and.’
+"""
+input MemberFilter {
+  """Checks for all expressions in this list."""
+  and: [MemberFilter!]
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Filter by the object’s `joinTime` field."""
+  joinTime: DatetimeFilter
+
+  """Negates the expression."""
+  not: MemberFilter
+
+  """Checks for any expressions in this list."""
+  or: [MemberFilter!]
+
+  """Filter by the object’s `userId` field."""
+  userId: BigIntFilter
+}
+
 """An input for mutations affecting `Member`"""
 input MemberInput {
   guildId: BigInt!
   joinTime: Datetime!
   userId: BigInt!
+}
+
+type MemberMaxAggregates {
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of userId across the matching connection"""
+  userId: BigInt
+}
+
+type MemberMinAggregates {
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of userId across the matching connection"""
+  userId: BigInt
 }
 
 """
@@ -2692,12 +4799,70 @@ input MemberPatch {
   userId: BigInt
 }
 
+type MemberStddevPopulationAggregates {
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """Population standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type MemberStddevSampleAggregates {
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type MemberSumAggregates {
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of userId across the matching connection"""
+  userId: BigFloat!
+}
+
+type MemberVariancePopulationAggregates {
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type MemberVarianceSampleAggregates {
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
 """A connection to a list of `Member` values."""
 type MembersConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: MemberAggregates
+
   """
   A list of edges which contains the `Member` and cursor to aid in pagination.
   """
   edges: [MembersEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `Member` for these aggregates."""
+    groupBy: [MembersGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: MembersHavingInput
+  ): [MemberAggregates!]
 
   """A list of `Member` objects."""
   nodes: [Member!]!
@@ -2716,6 +4881,84 @@ type MembersEdge {
 
   """The `Member` at the end of the edge."""
   node: Member!
+}
+
+"""Grouping methods for `Member` for usage during aggregation."""
+enum MembersGroupBy {
+  GUILD_ID
+  JOIN_TIME
+  JOIN_TIME_TRUNCATED_TO_DAY
+  JOIN_TIME_TRUNCATED_TO_HOUR
+  USER_ID
+}
+
+input MembersHavingAverageInput {
+  guildId: HavingBigintFilter
+  joinTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MembersHavingDistinctCountInput {
+  guildId: HavingBigintFilter
+  joinTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+"""Conditions for `Member` aggregates."""
+input MembersHavingInput {
+  AND: [MembersHavingInput!]
+  OR: [MembersHavingInput!]
+  average: MembersHavingAverageInput
+  distinctCount: MembersHavingDistinctCountInput
+  max: MembersHavingMaxInput
+  min: MembersHavingMinInput
+  stddevPopulation: MembersHavingStddevPopulationInput
+  stddevSample: MembersHavingStddevSampleInput
+  sum: MembersHavingSumInput
+  variancePopulation: MembersHavingVariancePopulationInput
+  varianceSample: MembersHavingVarianceSampleInput
+}
+
+input MembersHavingMaxInput {
+  guildId: HavingBigintFilter
+  joinTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MembersHavingMinInput {
+  guildId: HavingBigintFilter
+  joinTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MembersHavingStddevPopulationInput {
+  guildId: HavingBigintFilter
+  joinTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MembersHavingStddevSampleInput {
+  guildId: HavingBigintFilter
+  joinTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MembersHavingSumInput {
+  guildId: HavingBigintFilter
+  joinTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MembersHavingVariancePopulationInput {
+  guildId: HavingBigintFilter
+  joinTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MembersHavingVarianceSampleInput {
+  guildId: HavingBigintFilter
+  joinTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
 }
 
 """Methods to use when ordering `Member`."""
@@ -2739,6 +4982,68 @@ type Message {
   guildId: BigInt!
   messageId: BigInt!
   msg: JSON!
+}
+
+type MessageAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: MessageAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: MessageDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: MessageMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: MessageMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: MessageStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: MessageStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: MessageSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: MessageVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: MessageVarianceSampleAggregates
+}
+
+type MessageAverageAggregates {
+  """Mean average of authorId across the matching connection"""
+  authorId: BigFloat
+
+  """Mean average of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of messageId across the matching connection"""
+  messageId: BigFloat
 }
 
 """
@@ -2767,6 +5072,64 @@ input MessageCondition {
   msg: JSON
 }
 
+type MessageDistinctCountAggregates {
+  """Distinct count of authorId across the matching connection"""
+  authorId: BigInt
+
+  """Distinct count of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Distinct count of content across the matching connection"""
+  content: BigInt
+
+  """Distinct count of created across the matching connection"""
+  created: BigInt
+
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of messageId across the matching connection"""
+  messageId: BigInt
+
+  """Distinct count of msg across the matching connection"""
+  msg: BigInt
+}
+
+"""
+A filter to be used against `Message` object types. All fields are combined with a logical ‘and.’
+"""
+input MessageFilter {
+  """Checks for all expressions in this list."""
+  and: [MessageFilter!]
+
+  """Filter by the object’s `authorId` field."""
+  authorId: BigIntFilter
+
+  """Filter by the object’s `channelId` field."""
+  channelId: BigIntFilter
+
+  """Filter by the object’s `content` field."""
+  content: StringFilter
+
+  """Filter by the object’s `created` field."""
+  created: DatetimeFilter
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Filter by the object’s `messageId` field."""
+  messageId: BigIntFilter
+
+  """Filter by the object’s `msg` field."""
+  msg: JSONFilter
+
+  """Negates the expression."""
+  not: MessageFilter
+
+  """Checks for any expressions in this list."""
+  or: [MessageFilter!]
+}
+
 """An input for mutations affecting `Message`"""
 input MessageInput {
   authorId: BigInt!
@@ -2778,12 +5141,134 @@ input MessageInput {
   msg: JSON!
 }
 
+type MessageMaxAggregates {
+  """Maximum of authorId across the matching connection"""
+  authorId: BigInt
+
+  """Maximum of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of messageId across the matching connection"""
+  messageId: BigInt
+}
+
+type MessageMinAggregates {
+  """Minimum of authorId across the matching connection"""
+  authorId: BigInt
+
+  """Minimum of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of messageId across the matching connection"""
+  messageId: BigInt
+}
+
+type MessageStddevPopulationAggregates {
+  """
+  Population standard deviation of authorId across the matching connection
+  """
+  authorId: BigFloat
+
+  """
+  Population standard deviation of channelId across the matching connection
+  """
+  channelId: BigFloat
+
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """
+  Population standard deviation of messageId across the matching connection
+  """
+  messageId: BigFloat
+}
+
+type MessageStddevSampleAggregates {
+  """Sample standard deviation of authorId across the matching connection"""
+  authorId: BigFloat
+
+  """Sample standard deviation of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample standard deviation of messageId across the matching connection"""
+  messageId: BigFloat
+}
+
+type MessageSumAggregates {
+  """Sum of authorId across the matching connection"""
+  authorId: BigFloat!
+
+  """Sum of channelId across the matching connection"""
+  channelId: BigFloat!
+
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of messageId across the matching connection"""
+  messageId: BigFloat!
+}
+
+type MessageVariancePopulationAggregates {
+  """Population variance of authorId across the matching connection"""
+  authorId: BigFloat
+
+  """Population variance of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of messageId across the matching connection"""
+  messageId: BigFloat
+}
+
+type MessageVarianceSampleAggregates {
+  """Sample variance of authorId across the matching connection"""
+  authorId: BigFloat
+
+  """Sample variance of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of messageId across the matching connection"""
+  messageId: BigFloat
+}
+
 """A connection to a list of `Message` values."""
 type MessagesConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: MessageAggregates
+
   """
   A list of edges which contains the `Message` and cursor to aid in pagination.
   """
   edges: [MessagesEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `Message` for these aggregates."""
+    groupBy: [MessagesGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: MessagesHavingInput
+  ): [MessageAggregates!]
 
   """A list of `Message` objects."""
   nodes: [Message!]!
@@ -2802,6 +5287,106 @@ type MessagesEdge {
 
   """The `Message` at the end of the edge."""
   node: Message!
+}
+
+"""Grouping methods for `Message` for usage during aggregation."""
+enum MessagesGroupBy {
+  AUTHOR_ID
+  CHANNEL_ID
+  CONTENT
+  CREATED
+  CREATED_TRUNCATED_TO_DAY
+  CREATED_TRUNCATED_TO_HOUR
+  GUILD_ID
+  MESSAGE_ID
+  MSG
+}
+
+input MessagesHavingAverageInput {
+  authorId: HavingBigintFilter
+  channelId: HavingBigintFilter
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input MessagesHavingDistinctCountInput {
+  authorId: HavingBigintFilter
+  channelId: HavingBigintFilter
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+"""Conditions for `Message` aggregates."""
+input MessagesHavingInput {
+  AND: [MessagesHavingInput!]
+  OR: [MessagesHavingInput!]
+  average: MessagesHavingAverageInput
+  distinctCount: MessagesHavingDistinctCountInput
+  max: MessagesHavingMaxInput
+  min: MessagesHavingMinInput
+  stddevPopulation: MessagesHavingStddevPopulationInput
+  stddevSample: MessagesHavingStddevSampleInput
+  sum: MessagesHavingSumInput
+  variancePopulation: MessagesHavingVariancePopulationInput
+  varianceSample: MessagesHavingVarianceSampleInput
+}
+
+input MessagesHavingMaxInput {
+  authorId: HavingBigintFilter
+  channelId: HavingBigintFilter
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input MessagesHavingMinInput {
+  authorId: HavingBigintFilter
+  channelId: HavingBigintFilter
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input MessagesHavingStddevPopulationInput {
+  authorId: HavingBigintFilter
+  channelId: HavingBigintFilter
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input MessagesHavingStddevSampleInput {
+  authorId: HavingBigintFilter
+  channelId: HavingBigintFilter
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input MessagesHavingSumInput {
+  authorId: HavingBigintFilter
+  channelId: HavingBigintFilter
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input MessagesHavingVariancePopulationInput {
+  authorId: HavingBigintFilter
+  channelId: HavingBigintFilter
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input MessagesHavingVarianceSampleInput {
+  authorId: HavingBigintFilter
+  channelId: HavingBigintFilter
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
 }
 
 """Methods to use when ordering `Message`."""
@@ -2845,6 +5430,11 @@ type ModLog implements Node {
     """
     condition: MuteCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: MuteFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -2869,6 +5459,71 @@ type ModLog implements Node {
   reason: String
   userId: BigInt!
   userTag: String!
+}
+
+type ModLogAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: ModLogAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: ModLogDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: ModLogMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: ModLogMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: ModLogStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: ModLogStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: ModLogSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: ModLogVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: ModLogVarianceSampleAggregates
+}
+
+type ModLogAverageAggregates {
+  """Mean average of caseId across the matching connection"""
+  caseId: BigFloat
+
+  """Mean average of executorId across the matching connection"""
+  executorId: BigFloat
+
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of msgId across the matching connection"""
+  msgId: BigFloat
+
+  """Mean average of userId across the matching connection"""
+  userId: BigFloat
 }
 
 """
@@ -2909,6 +5564,88 @@ input ModLogCondition {
   userTag: String
 }
 
+type ModLogDistinctCountAggregates {
+  """Distinct count of action across the matching connection"""
+  action: BigInt
+
+  """Distinct count of actionTime across the matching connection"""
+  actionTime: BigInt
+
+  """Distinct count of attachments across the matching connection"""
+  attachments: BigInt
+
+  """Distinct count of caseId across the matching connection"""
+  caseId: BigInt
+
+  """Distinct count of executorId across the matching connection"""
+  executorId: BigInt
+
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of msgId across the matching connection"""
+  msgId: BigInt
+
+  """Distinct count of pending across the matching connection"""
+  pending: BigInt
+
+  """Distinct count of reason across the matching connection"""
+  reason: BigInt
+
+  """Distinct count of userId across the matching connection"""
+  userId: BigInt
+
+  """Distinct count of userTag across the matching connection"""
+  userTag: BigInt
+}
+
+"""
+A filter to be used against `ModLog` object types. All fields are combined with a logical ‘and.’
+"""
+input ModLogFilter {
+  """Filter by the object’s `action` field."""
+  action: StringFilter
+
+  """Filter by the object’s `actionTime` field."""
+  actionTime: DatetimeFilter
+
+  """Checks for all expressions in this list."""
+  and: [ModLogFilter!]
+
+  """Filter by the object’s `attachments` field."""
+  attachments: StringListFilter
+
+  """Filter by the object’s `caseId` field."""
+  caseId: BigIntFilter
+
+  """Filter by the object’s `executorId` field."""
+  executorId: BigIntFilter
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Filter by the object’s `msgId` field."""
+  msgId: BigIntFilter
+
+  """Negates the expression."""
+  not: ModLogFilter
+
+  """Checks for any expressions in this list."""
+  or: [ModLogFilter!]
+
+  """Filter by the object’s `pending` field."""
+  pending: BooleanFilter
+
+  """Filter by the object’s `reason` field."""
+  reason: StringFilter
+
+  """Filter by the object’s `userId` field."""
+  userId: BigIntFilter
+
+  """Filter by the object’s `userTag` field."""
+  userTag: StringFilter
+}
+
 """An input for mutations affecting `ModLog`"""
 input ModLogInput {
   action: String!
@@ -2922,6 +5659,40 @@ input ModLogInput {
   reason: String
   userId: BigInt!
   userTag: String!
+}
+
+type ModLogMaxAggregates {
+  """Maximum of caseId across the matching connection"""
+  caseId: BigInt
+
+  """Maximum of executorId across the matching connection"""
+  executorId: BigInt
+
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of msgId across the matching connection"""
+  msgId: BigInt
+
+  """Maximum of userId across the matching connection"""
+  userId: BigInt
+}
+
+type ModLogMinAggregates {
+  """Minimum of caseId across the matching connection"""
+  caseId: BigInt
+
+  """Minimum of executorId across the matching connection"""
+  executorId: BigInt
+
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of msgId across the matching connection"""
+  msgId: BigInt
+
+  """Minimum of userId across the matching connection"""
+  userId: BigInt
 }
 
 """
@@ -2941,12 +5712,117 @@ input ModLogPatch {
   userTag: String
 }
 
+type ModLogStddevPopulationAggregates {
+  """Population standard deviation of caseId across the matching connection"""
+  caseId: BigFloat
+
+  """
+  Population standard deviation of executorId across the matching connection
+  """
+  executorId: BigFloat
+
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """Population standard deviation of msgId across the matching connection"""
+  msgId: BigFloat
+
+  """Population standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type ModLogStddevSampleAggregates {
+  """Sample standard deviation of caseId across the matching connection"""
+  caseId: BigFloat
+
+  """Sample standard deviation of executorId across the matching connection"""
+  executorId: BigFloat
+
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample standard deviation of msgId across the matching connection"""
+  msgId: BigFloat
+
+  """Sample standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type ModLogSumAggregates {
+  """Sum of caseId across the matching connection"""
+  caseId: BigFloat!
+
+  """Sum of executorId across the matching connection"""
+  executorId: BigFloat!
+
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of msgId across the matching connection"""
+  msgId: BigFloat!
+
+  """Sum of userId across the matching connection"""
+  userId: BigFloat!
+}
+
+type ModLogVariancePopulationAggregates {
+  """Population variance of caseId across the matching connection"""
+  caseId: BigFloat
+
+  """Population variance of executorId across the matching connection"""
+  executorId: BigFloat
+
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of msgId across the matching connection"""
+  msgId: BigFloat
+
+  """Population variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type ModLogVarianceSampleAggregates {
+  """Sample variance of caseId across the matching connection"""
+  caseId: BigFloat
+
+  """Sample variance of executorId across the matching connection"""
+  executorId: BigFloat
+
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of msgId across the matching connection"""
+  msgId: BigFloat
+
+  """Sample variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
 """A connection to a list of `ModLog` values."""
 type ModLogsConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: ModLogAggregates
+
   """
   A list of edges which contains the `ModLog` and cursor to aid in pagination.
   """
   edges: [ModLogsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `ModLog` for these aggregates."""
+    groupBy: [ModLogsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: ModLogsHavingInput
+  ): [ModLogAggregates!]
 
   """A list of `ModLog` objects."""
   nodes: [ModLog!]!
@@ -2967,6 +5843,119 @@ type ModLogsEdge {
   node: ModLog!
 }
 
+"""Grouping methods for `ModLog` for usage during aggregation."""
+enum ModLogsGroupBy {
+  ACTION
+  ACTION_TIME
+  ACTION_TIME_TRUNCATED_TO_DAY
+  ACTION_TIME_TRUNCATED_TO_HOUR
+  ATTACHMENTS
+  CASE_ID
+  EXECUTOR_ID
+  GUILD_ID
+  MSG_ID
+  PENDING
+  REASON
+  USER_ID
+  USER_TAG
+}
+
+input ModLogsHavingAverageInput {
+  actionTime: HavingDatetimeFilter
+  caseId: HavingBigintFilter
+  executorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  msgId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input ModLogsHavingDistinctCountInput {
+  actionTime: HavingDatetimeFilter
+  caseId: HavingBigintFilter
+  executorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  msgId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+"""Conditions for `ModLog` aggregates."""
+input ModLogsHavingInput {
+  AND: [ModLogsHavingInput!]
+  OR: [ModLogsHavingInput!]
+  average: ModLogsHavingAverageInput
+  distinctCount: ModLogsHavingDistinctCountInput
+  max: ModLogsHavingMaxInput
+  min: ModLogsHavingMinInput
+  stddevPopulation: ModLogsHavingStddevPopulationInput
+  stddevSample: ModLogsHavingStddevSampleInput
+  sum: ModLogsHavingSumInput
+  variancePopulation: ModLogsHavingVariancePopulationInput
+  varianceSample: ModLogsHavingVarianceSampleInput
+}
+
+input ModLogsHavingMaxInput {
+  actionTime: HavingDatetimeFilter
+  caseId: HavingBigintFilter
+  executorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  msgId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input ModLogsHavingMinInput {
+  actionTime: HavingDatetimeFilter
+  caseId: HavingBigintFilter
+  executorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  msgId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input ModLogsHavingStddevPopulationInput {
+  actionTime: HavingDatetimeFilter
+  caseId: HavingBigintFilter
+  executorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  msgId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input ModLogsHavingStddevSampleInput {
+  actionTime: HavingDatetimeFilter
+  caseId: HavingBigintFilter
+  executorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  msgId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input ModLogsHavingSumInput {
+  actionTime: HavingDatetimeFilter
+  caseId: HavingBigintFilter
+  executorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  msgId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input ModLogsHavingVariancePopulationInput {
+  actionTime: HavingDatetimeFilter
+  caseId: HavingBigintFilter
+  executorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  msgId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input ModLogsHavingVarianceSampleInput {
+  actionTime: HavingDatetimeFilter
+  caseId: HavingBigintFilter
+  executorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  msgId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
 """Methods to use when ordering `ModLog`."""
 enum ModLogsOrderBy {
   ACTION_ASC
@@ -2983,6 +5972,116 @@ enum ModLogsOrderBy {
   GUILD_ID_DESC
   MSG_ID_ASC
   MSG_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_CASE_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_CASE_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_END_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_END_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_GUILD_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_GUILD_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_PENDING_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_PENDING_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_START_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_START_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_USER_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_AVERAGE_USER_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_COUNT_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_COUNT_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_CASE_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_CASE_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_END_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_END_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_GUILD_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_GUILD_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_PENDING_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_PENDING_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_START_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_START_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_USER_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_DISTINCT_COUNT_USER_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_CASE_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_CASE_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_END_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_END_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_GUILD_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_GUILD_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_PENDING_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_PENDING_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_START_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_START_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_USER_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MAX_USER_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_CASE_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_CASE_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_END_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_END_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_GUILD_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_GUILD_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_PENDING_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_PENDING_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_START_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_START_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_USER_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_MIN_USER_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_CASE_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_CASE_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_END_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_END_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_GUILD_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_GUILD_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_PENDING_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_PENDING_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_START_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_START_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_USER_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_POPULATION_USER_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_CASE_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_CASE_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_END_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_END_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_GUILD_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_GUILD_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_PENDING_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_PENDING_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_START_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_START_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_USER_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_STDDEV_SAMPLE_USER_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_CASE_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_CASE_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_END_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_END_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_GUILD_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_GUILD_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_PENDING_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_PENDING_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_START_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_START_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_USER_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_SUM_USER_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_CASE_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_CASE_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_END_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_END_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_GUILD_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_GUILD_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_PENDING_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_PENDING_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_START_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_START_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_USER_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_POPULATION_USER_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_CASE_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_CASE_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_END_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_END_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_GUILD_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_GUILD_ID_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_PENDING_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_PENDING_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_START_TIME_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_START_TIME_DESC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_USER_ID_ASC
+  MUTES_BY_GUILD_ID_AND_CASE_ID_VARIANCE_SAMPLE_USER_ID_DESC
   NATURAL
   PENDING_ASC
   PENDING_DESC
@@ -3826,6 +6925,65 @@ type Mute implements Node {
   userId: BigInt!
 }
 
+type MuteAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: MuteAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: MuteDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: MuteMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: MuteMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: MuteStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: MuteStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: MuteSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: MuteVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: MuteVarianceSampleAggregates
+}
+
+type MuteAverageAggregates {
+  """Mean average of caseId across the matching connection"""
+  caseId: BigFloat
+
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of userId across the matching connection"""
+  userId: BigFloat
+}
+
 """
 A condition to be used against `Mute` object types. All fields are tested for equality and combined with a logical ‘and.’
 """
@@ -3849,6 +7007,58 @@ input MuteCondition {
   userId: BigInt
 }
 
+type MuteDistinctCountAggregates {
+  """Distinct count of caseId across the matching connection"""
+  caseId: BigInt
+
+  """Distinct count of endTime across the matching connection"""
+  endTime: BigInt
+
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of pending across the matching connection"""
+  pending: BigInt
+
+  """Distinct count of startTime across the matching connection"""
+  startTime: BigInt
+
+  """Distinct count of userId across the matching connection"""
+  userId: BigInt
+}
+
+"""
+A filter to be used against `Mute` object types. All fields are combined with a logical ‘and.’
+"""
+input MuteFilter {
+  """Checks for all expressions in this list."""
+  and: [MuteFilter!]
+
+  """Filter by the object’s `caseId` field."""
+  caseId: BigIntFilter
+
+  """Filter by the object’s `endTime` field."""
+  endTime: DatetimeFilter
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Negates the expression."""
+  not: MuteFilter
+
+  """Checks for any expressions in this list."""
+  or: [MuteFilter!]
+
+  """Filter by the object’s `pending` field."""
+  pending: BooleanFilter
+
+  """Filter by the object’s `startTime` field."""
+  startTime: DatetimeFilter
+
+  """Filter by the object’s `userId` field."""
+  userId: BigIntFilter
+}
+
 """An input for mutations affecting `Mute`"""
 input MuteInput {
   caseId: BigInt
@@ -3857,6 +7067,28 @@ input MuteInput {
   pending: Boolean
   startTime: Datetime!
   userId: BigInt!
+}
+
+type MuteMaxAggregates {
+  """Maximum of caseId across the matching connection"""
+  caseId: BigInt
+
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of userId across the matching connection"""
+  userId: BigInt
+}
+
+type MuteMinAggregates {
+  """Minimum of caseId across the matching connection"""
+  caseId: BigInt
+
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of userId across the matching connection"""
+  userId: BigInt
 }
 
 """Represents an update to a `Mute`. Fields that are set will be updated."""
@@ -3869,12 +7101,85 @@ input MutePatch {
   userId: BigInt
 }
 
+type MuteStddevPopulationAggregates {
+  """Population standard deviation of caseId across the matching connection"""
+  caseId: BigFloat
+
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """Population standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type MuteStddevSampleAggregates {
+  """Sample standard deviation of caseId across the matching connection"""
+  caseId: BigFloat
+
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type MuteSumAggregates {
+  """Sum of caseId across the matching connection"""
+  caseId: BigFloat!
+
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of userId across the matching connection"""
+  userId: BigFloat!
+}
+
+type MuteVariancePopulationAggregates {
+  """Population variance of caseId across the matching connection"""
+  caseId: BigFloat
+
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type MuteVarianceSampleAggregates {
+  """Sample variance of caseId across the matching connection"""
+  caseId: BigFloat
+
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
 """A connection to a list of `Mute` values."""
 type MutesConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: MuteAggregates
+
   """
   A list of edges which contains the `Mute` and cursor to aid in pagination.
   """
   edges: [MutesEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `Mute` for these aggregates."""
+    groupBy: [MutesGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: MutesHavingInput
+  ): [MuteAggregates!]
 
   """A list of `Mute` objects."""
   nodes: [Mute!]!
@@ -3893,6 +7198,107 @@ type MutesEdge {
 
   """The `Mute` at the end of the edge."""
   node: Mute!
+}
+
+"""Grouping methods for `Mute` for usage during aggregation."""
+enum MutesGroupBy {
+  CASE_ID
+  END_TIME
+  END_TIME_TRUNCATED_TO_DAY
+  END_TIME_TRUNCATED_TO_HOUR
+  GUILD_ID
+  PENDING
+  START_TIME
+  START_TIME_TRUNCATED_TO_DAY
+  START_TIME_TRUNCATED_TO_HOUR
+  USER_ID
+}
+
+input MutesHavingAverageInput {
+  caseId: HavingBigintFilter
+  endTime: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  startTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MutesHavingDistinctCountInput {
+  caseId: HavingBigintFilter
+  endTime: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  startTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+"""Conditions for `Mute` aggregates."""
+input MutesHavingInput {
+  AND: [MutesHavingInput!]
+  OR: [MutesHavingInput!]
+  average: MutesHavingAverageInput
+  distinctCount: MutesHavingDistinctCountInput
+  max: MutesHavingMaxInput
+  min: MutesHavingMinInput
+  stddevPopulation: MutesHavingStddevPopulationInput
+  stddevSample: MutesHavingStddevSampleInput
+  sum: MutesHavingSumInput
+  variancePopulation: MutesHavingVariancePopulationInput
+  varianceSample: MutesHavingVarianceSampleInput
+}
+
+input MutesHavingMaxInput {
+  caseId: HavingBigintFilter
+  endTime: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  startTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MutesHavingMinInput {
+  caseId: HavingBigintFilter
+  endTime: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  startTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MutesHavingStddevPopulationInput {
+  caseId: HavingBigintFilter
+  endTime: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  startTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MutesHavingStddevSampleInput {
+  caseId: HavingBigintFilter
+  endTime: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  startTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MutesHavingSumInput {
+  caseId: HavingBigintFilter
+  endTime: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  startTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MutesHavingVariancePopulationInput {
+  caseId: HavingBigintFilter
+  endTime: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  startTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input MutesHavingVarianceSampleInput {
+  caseId: HavingBigintFilter
+  endTime: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  startTime: HavingDatetimeFilter
+  userId: HavingBigintFilter
 }
 
 """Methods to use when ordering `Mute`."""
@@ -3933,6 +7339,62 @@ type Notification implements Node {
   userId: BigInt!
 }
 
+type NotificationAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: NotificationAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: NotificationDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: NotificationMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: NotificationMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: NotificationStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: NotificationStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: NotificationSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: NotificationVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: NotificationVarianceSampleAggregates
+}
+
+type NotificationAverageAggregates {
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of userId across the matching connection"""
+  userId: BigFloat
+}
+
 """
 A condition to be used against `Notification` object types. All fields are
 tested for equality and combined with a logical ‘and.’
@@ -3948,11 +7410,61 @@ input NotificationCondition {
   userId: BigInt
 }
 
+type NotificationDistinctCountAggregates {
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of keyword across the matching connection"""
+  keyword: BigInt
+
+  """Distinct count of userId across the matching connection"""
+  userId: BigInt
+}
+
+"""
+A filter to be used against `Notification` object types. All fields are combined with a logical ‘and.’
+"""
+input NotificationFilter {
+  """Checks for all expressions in this list."""
+  and: [NotificationFilter!]
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Filter by the object’s `keyword` field."""
+  keyword: StringFilter
+
+  """Negates the expression."""
+  not: NotificationFilter
+
+  """Checks for any expressions in this list."""
+  or: [NotificationFilter!]
+
+  """Filter by the object’s `userId` field."""
+  userId: BigIntFilter
+}
+
 """An input for mutations affecting `Notification`"""
 input NotificationInput {
   guildId: BigInt!
   keyword: String!
   userId: BigInt!
+}
+
+type NotificationMaxAggregates {
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of userId across the matching connection"""
+  userId: BigInt
+}
+
+type NotificationMinAggregates {
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of userId across the matching connection"""
+  userId: BigInt
 }
 
 """
@@ -3964,12 +7476,70 @@ input NotificationPatch {
   userId: BigInt
 }
 
+type NotificationStddevPopulationAggregates {
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """Population standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type NotificationStddevSampleAggregates {
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type NotificationSumAggregates {
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of userId across the matching connection"""
+  userId: BigFloat!
+}
+
+type NotificationVariancePopulationAggregates {
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type NotificationVarianceSampleAggregates {
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
 """A connection to a list of `Notification` values."""
 type NotificationsConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: NotificationAggregates
+
   """
   A list of edges which contains the `Notification` and cursor to aid in pagination.
   """
   edges: [NotificationsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `Notification` for these aggregates."""
+    groupBy: [NotificationsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: NotificationsHavingInput
+  ): [NotificationAggregates!]
 
   """A list of `Notification` objects."""
   nodes: [Notification!]!
@@ -3988,6 +7558,73 @@ type NotificationsEdge {
 
   """The `Notification` at the end of the edge."""
   node: Notification!
+}
+
+"""Grouping methods for `Notification` for usage during aggregation."""
+enum NotificationsGroupBy {
+  GUILD_ID
+  KEYWORD
+  USER_ID
+}
+
+input NotificationsHavingAverageInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input NotificationsHavingDistinctCountInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+"""Conditions for `Notification` aggregates."""
+input NotificationsHavingInput {
+  AND: [NotificationsHavingInput!]
+  OR: [NotificationsHavingInput!]
+  average: NotificationsHavingAverageInput
+  distinctCount: NotificationsHavingDistinctCountInput
+  max: NotificationsHavingMaxInput
+  min: NotificationsHavingMinInput
+  stddevPopulation: NotificationsHavingStddevPopulationInput
+  stddevSample: NotificationsHavingStddevSampleInput
+  sum: NotificationsHavingSumInput
+  variancePopulation: NotificationsHavingVariancePopulationInput
+  varianceSample: NotificationsHavingVarianceSampleInput
+}
+
+input NotificationsHavingMaxInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input NotificationsHavingMinInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input NotificationsHavingStddevPopulationInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input NotificationsHavingStddevSampleInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input NotificationsHavingSumInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input NotificationsHavingVariancePopulationInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input NotificationsHavingVarianceSampleInput {
+  guildId: HavingBigintFilter
+  userId: HavingBigintFilter
 }
 
 """Methods to use when ordering `Notification`."""
@@ -4056,6 +7693,11 @@ type Query implements Node {
     """
     condition: BotStatCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: BotStatFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -4084,6 +7726,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: FeedItemCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: FeedItemFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -4114,6 +7761,11 @@ type Query implements Node {
     """
     condition: FeedSubscriptionCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: FeedSubscriptionFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -4142,6 +7794,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: FeedCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: FeedFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -4172,6 +7829,11 @@ type Query implements Node {
     """
     condition: GuildBanCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: GuildBanFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -4200,6 +7862,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: GuildConfigCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: GuildConfigFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -4230,6 +7897,11 @@ type Query implements Node {
     """
     condition: MemberCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: MemberFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -4258,6 +7930,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: MessageCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: MessageFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -4288,6 +7965,11 @@ type Query implements Node {
     """
     condition: ModLogCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: ModLogFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -4316,6 +7998,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: MuteCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: MuteFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -4346,6 +8033,11 @@ type Query implements Node {
     """
     condition: NotificationCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: NotificationFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -4374,6 +8066,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: ReminderCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: ReminderFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -4404,6 +8101,11 @@ type Query implements Node {
     """
     condition: RoleMenuCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: RoleMenuFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -4432,6 +8134,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: TagCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: TagFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -4462,6 +8169,11 @@ type Query implements Node {
     """
     condition: UserCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: UserFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -4491,6 +8203,11 @@ type Query implements Node {
     """
     condition: WebUserGuildCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: WebUserGuildFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -4519,6 +8236,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: WebUserCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: WebUserFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -4578,6 +8300,11 @@ type Query implements Node {
 
     """Read all values in the set before (above) this cursor."""
     before: Cursor
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: BigIntFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -4679,6 +8406,11 @@ type Query implements Node {
     """Read all values in the set before (above) this cursor."""
     before: Cursor
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: StringFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -4722,6 +8454,62 @@ type Query implements Node {
   ): Tag
   tagByGuildIdAndTagName(guildId: BigInt!, tagName: String!): Tag
 
+  """Reads and enables pagination through a set of `Tag`."""
+  tagSearch(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: TagFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+    guildId: BigInt
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+    query: String
+  ): TagsConnection
+
+  """Reads and enables pagination through a set of `Tag`."""
+  tagsStartingWith(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: TagFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+    guildId: BigInt
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+    query: String
+  ): TagsConnection
+
   """
   Leaderboard for given timeframe and optional guild. If guild is null, it is the global leaderboard
   """
@@ -4731,6 +8519,11 @@ type Query implements Node {
 
     """Read all values in the set before (above) this cursor."""
     before: Cursor
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: TimeframeUserLevelsRecordFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -4790,6 +8583,59 @@ type Reminder implements Node {
   userId: BigInt!
 }
 
+type ReminderAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: ReminderAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: ReminderDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: ReminderMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: ReminderMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: ReminderStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: ReminderStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: ReminderSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: ReminderVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: ReminderVarianceSampleAggregates
+}
+
+type ReminderAverageAggregates {
+  """Mean average of userId across the matching connection"""
+  userId: BigFloat
+}
+
 """
 A condition to be used against `Reminder` object types. All fields are tested
 for equality and combined with a logical ‘and.’
@@ -4808,12 +8654,62 @@ input ReminderCondition {
   userId: BigInt
 }
 
+type ReminderDistinctCountAggregates {
+  """Distinct count of description across the matching connection"""
+  description: BigInt
+
+  """Distinct count of expireAt across the matching connection"""
+  expireAt: BigInt
+
+  """Distinct count of setAt across the matching connection"""
+  setAt: BigInt
+
+  """Distinct count of userId across the matching connection"""
+  userId: BigInt
+}
+
+"""
+A filter to be used against `Reminder` object types. All fields are combined with a logical ‘and.’
+"""
+input ReminderFilter {
+  """Checks for all expressions in this list."""
+  and: [ReminderFilter!]
+
+  """Filter by the object’s `description` field."""
+  description: StringFilter
+
+  """Filter by the object’s `expireAt` field."""
+  expireAt: DatetimeFilter
+
+  """Negates the expression."""
+  not: ReminderFilter
+
+  """Checks for any expressions in this list."""
+  or: [ReminderFilter!]
+
+  """Filter by the object’s `setAt` field."""
+  setAt: DatetimeFilter
+
+  """Filter by the object’s `userId` field."""
+  userId: BigIntFilter
+}
+
 """An input for mutations affecting `Reminder`"""
 input ReminderInput {
   description: String!
   expireAt: Datetime!
   setAt: Datetime!
   userId: BigInt!
+}
+
+type ReminderMaxAggregates {
+  """Maximum of userId across the matching connection"""
+  userId: BigInt
+}
+
+type ReminderMinAggregates {
+  """Minimum of userId across the matching connection"""
+  userId: BigInt
 }
 
 """
@@ -4826,12 +8722,53 @@ input ReminderPatch {
   userId: BigInt
 }
 
+type ReminderStddevPopulationAggregates {
+  """Population standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type ReminderStddevSampleAggregates {
+  """Sample standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type ReminderSumAggregates {
+  """Sum of userId across the matching connection"""
+  userId: BigFloat!
+}
+
+type ReminderVariancePopulationAggregates {
+  """Population variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type ReminderVarianceSampleAggregates {
+  """Sample variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
 """A connection to a list of `Reminder` values."""
 type RemindersConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: ReminderAggregates
+
   """
   A list of edges which contains the `Reminder` and cursor to aid in pagination.
   """
   edges: [RemindersEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `Reminder` for these aggregates."""
+    groupBy: [RemindersGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: RemindersHavingInput
+  ): [ReminderAggregates!]
 
   """A list of `Reminder` objects."""
   nodes: [Reminder!]!
@@ -4850,6 +8787,87 @@ type RemindersEdge {
 
   """The `Reminder` at the end of the edge."""
   node: Reminder!
+}
+
+"""Grouping methods for `Reminder` for usage during aggregation."""
+enum RemindersGroupBy {
+  DESCRIPTION
+  EXPIRE_AT
+  EXPIRE_AT_TRUNCATED_TO_DAY
+  EXPIRE_AT_TRUNCATED_TO_HOUR
+  SET_AT
+  SET_AT_TRUNCATED_TO_DAY
+  SET_AT_TRUNCATED_TO_HOUR
+  USER_ID
+}
+
+input RemindersHavingAverageInput {
+  expireAt: HavingDatetimeFilter
+  setAt: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input RemindersHavingDistinctCountInput {
+  expireAt: HavingDatetimeFilter
+  setAt: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+"""Conditions for `Reminder` aggregates."""
+input RemindersHavingInput {
+  AND: [RemindersHavingInput!]
+  OR: [RemindersHavingInput!]
+  average: RemindersHavingAverageInput
+  distinctCount: RemindersHavingDistinctCountInput
+  max: RemindersHavingMaxInput
+  min: RemindersHavingMinInput
+  stddevPopulation: RemindersHavingStddevPopulationInput
+  stddevSample: RemindersHavingStddevSampleInput
+  sum: RemindersHavingSumInput
+  variancePopulation: RemindersHavingVariancePopulationInput
+  varianceSample: RemindersHavingVarianceSampleInput
+}
+
+input RemindersHavingMaxInput {
+  expireAt: HavingDatetimeFilter
+  setAt: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input RemindersHavingMinInput {
+  expireAt: HavingDatetimeFilter
+  setAt: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input RemindersHavingStddevPopulationInput {
+  expireAt: HavingDatetimeFilter
+  setAt: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input RemindersHavingStddevSampleInput {
+  expireAt: HavingDatetimeFilter
+  setAt: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input RemindersHavingSumInput {
+  expireAt: HavingDatetimeFilter
+  setAt: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input RemindersHavingVariancePopulationInput {
+  expireAt: HavingDatetimeFilter
+  setAt: HavingDatetimeFilter
+  userId: HavingBigintFilter
+}
+
+input RemindersHavingVarianceSampleInput {
+  expireAt: HavingDatetimeFilter
+  setAt: HavingDatetimeFilter
+  userId: HavingBigintFilter
 }
 
 """Methods to use when ordering `Reminder`."""
@@ -4879,6 +8897,68 @@ type RoleMenu implements Node {
   nodeId: ID!
 }
 
+type RoleMenuAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: RoleMenuAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: RoleMenuDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: RoleMenuMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: RoleMenuMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: RoleMenuStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: RoleMenuStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: RoleMenuSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: RoleMenuVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: RoleMenuVarianceSampleAggregates
+}
+
+type RoleMenuAverageAggregates {
+  """Mean average of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Mean average of editorId across the matching connection"""
+  editorId: BigFloat
+
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of messageId across the matching connection"""
+  messageId: BigFloat
+}
+
 """
 A condition to be used against `RoleMenu` object types. All fields are tested
 for equality and combined with a logical ‘and.’
@@ -4897,12 +8977,80 @@ input RoleMenuCondition {
   messageId: BigInt
 }
 
+type RoleMenuDistinctCountAggregates {
+  """Distinct count of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Distinct count of editorId across the matching connection"""
+  editorId: BigInt
+
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of messageId across the matching connection"""
+  messageId: BigInt
+}
+
+"""
+A filter to be used against `RoleMenu` object types. All fields are combined with a logical ‘and.’
+"""
+input RoleMenuFilter {
+  """Checks for all expressions in this list."""
+  and: [RoleMenuFilter!]
+
+  """Filter by the object’s `channelId` field."""
+  channelId: BigIntFilter
+
+  """Filter by the object’s `editorId` field."""
+  editorId: BigIntFilter
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Filter by the object’s `messageId` field."""
+  messageId: BigIntFilter
+
+  """Negates the expression."""
+  not: RoleMenuFilter
+
+  """Checks for any expressions in this list."""
+  or: [RoleMenuFilter!]
+}
+
 """An input for mutations affecting `RoleMenu`"""
 input RoleMenuInput {
   channelId: BigInt!
   editorId: BigInt!
   guildId: BigInt!
   messageId: BigInt!
+}
+
+type RoleMenuMaxAggregates {
+  """Maximum of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Maximum of editorId across the matching connection"""
+  editorId: BigInt
+
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of messageId across the matching connection"""
+  messageId: BigInt
+}
+
+type RoleMenuMinAggregates {
+  """Minimum of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Minimum of editorId across the matching connection"""
+  editorId: BigInt
+
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of messageId across the matching connection"""
+  messageId: BigInt
 }
 
 """
@@ -4915,12 +9063,106 @@ input RoleMenuPatch {
   messageId: BigInt
 }
 
+type RoleMenuStddevPopulationAggregates {
+  """
+  Population standard deviation of channelId across the matching connection
+  """
+  channelId: BigFloat
+
+  """
+  Population standard deviation of editorId across the matching connection
+  """
+  editorId: BigFloat
+
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """
+  Population standard deviation of messageId across the matching connection
+  """
+  messageId: BigFloat
+}
+
+type RoleMenuStddevSampleAggregates {
+  """Sample standard deviation of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Sample standard deviation of editorId across the matching connection"""
+  editorId: BigFloat
+
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample standard deviation of messageId across the matching connection"""
+  messageId: BigFloat
+}
+
+type RoleMenuSumAggregates {
+  """Sum of channelId across the matching connection"""
+  channelId: BigFloat!
+
+  """Sum of editorId across the matching connection"""
+  editorId: BigFloat!
+
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of messageId across the matching connection"""
+  messageId: BigFloat!
+}
+
+type RoleMenuVariancePopulationAggregates {
+  """Population variance of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Population variance of editorId across the matching connection"""
+  editorId: BigFloat
+
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of messageId across the matching connection"""
+  messageId: BigFloat
+}
+
+type RoleMenuVarianceSampleAggregates {
+  """Sample variance of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Sample variance of editorId across the matching connection"""
+  editorId: BigFloat
+
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of messageId across the matching connection"""
+  messageId: BigFloat
+}
+
 """A connection to a list of `RoleMenu` values."""
 type RoleMenusConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: RoleMenuAggregates
+
   """
   A list of edges which contains the `RoleMenu` and cursor to aid in pagination.
   """
   edges: [RoleMenusEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `RoleMenu` for these aggregates."""
+    groupBy: [RoleMenusGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: RoleMenusHavingInput
+  ): [RoleMenuAggregates!]
 
   """A list of `RoleMenu` objects."""
   nodes: [RoleMenu!]!
@@ -4941,6 +9183,91 @@ type RoleMenusEdge {
   node: RoleMenu!
 }
 
+"""Grouping methods for `RoleMenu` for usage during aggregation."""
+enum RoleMenusGroupBy {
+  CHANNEL_ID
+  EDITOR_ID
+  GUILD_ID
+}
+
+input RoleMenusHavingAverageInput {
+  channelId: HavingBigintFilter
+  editorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input RoleMenusHavingDistinctCountInput {
+  channelId: HavingBigintFilter
+  editorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+"""Conditions for `RoleMenu` aggregates."""
+input RoleMenusHavingInput {
+  AND: [RoleMenusHavingInput!]
+  OR: [RoleMenusHavingInput!]
+  average: RoleMenusHavingAverageInput
+  distinctCount: RoleMenusHavingDistinctCountInput
+  max: RoleMenusHavingMaxInput
+  min: RoleMenusHavingMinInput
+  stddevPopulation: RoleMenusHavingStddevPopulationInput
+  stddevSample: RoleMenusHavingStddevSampleInput
+  sum: RoleMenusHavingSumInput
+  variancePopulation: RoleMenusHavingVariancePopulationInput
+  varianceSample: RoleMenusHavingVarianceSampleInput
+}
+
+input RoleMenusHavingMaxInput {
+  channelId: HavingBigintFilter
+  editorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input RoleMenusHavingMinInput {
+  channelId: HavingBigintFilter
+  editorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input RoleMenusHavingStddevPopulationInput {
+  channelId: HavingBigintFilter
+  editorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input RoleMenusHavingStddevSampleInput {
+  channelId: HavingBigintFilter
+  editorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input RoleMenusHavingSumInput {
+  channelId: HavingBigintFilter
+  editorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input RoleMenusHavingVariancePopulationInput {
+  channelId: HavingBigintFilter
+  editorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
+input RoleMenusHavingVarianceSampleInput {
+  channelId: HavingBigintFilter
+  editorId: HavingBigintFilter
+  guildId: HavingBigintFilter
+  messageId: HavingBigintFilter
+}
+
 """Methods to use when ordering `RoleMenu`."""
 enum RoleMenusOrderBy {
   CHANNEL_ID_ASC
@@ -4956,6 +9283,201 @@ enum RoleMenusOrderBy {
   PRIMARY_KEY_DESC
 }
 
+"""
+A filter to be used against String fields. All fields are combined with a logical ‘and.’
+"""
+input StringFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: String
+
+  """
+  Not equal to the specified value, treating null like an ordinary value (case-insensitive).
+  """
+  distinctFromInsensitive: String
+
+  """Ends with the specified string (case-sensitive)."""
+  endsWith: String
+
+  """Ends with the specified string (case-insensitive)."""
+  endsWithInsensitive: String
+
+  """Equal to the specified value."""
+  equalTo: String
+
+  """Equal to the specified value (case-insensitive)."""
+  equalToInsensitive: String
+
+  """Greater than the specified value."""
+  greaterThan: String
+
+  """Greater than the specified value (case-insensitive)."""
+  greaterThanInsensitive: String
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: String
+
+  """Greater than or equal to the specified value (case-insensitive)."""
+  greaterThanOrEqualToInsensitive: String
+
+  """Included in the specified list."""
+  in: [String!]
+
+  """Included in the specified list (case-insensitive)."""
+  inInsensitive: [String!]
+
+  """Contains the specified string (case-sensitive)."""
+  includes: String
+
+  """Contains the specified string (case-insensitive)."""
+  includesInsensitive: String
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: String
+
+  """Less than the specified value (case-insensitive)."""
+  lessThanInsensitive: String
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: String
+
+  """Less than or equal to the specified value (case-insensitive)."""
+  lessThanOrEqualToInsensitive: String
+
+  """
+  Matches the specified pattern (case-sensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters.
+  """
+  like: String
+
+  """
+  Matches the specified pattern (case-insensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters.
+  """
+  likeInsensitive: String
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: String
+
+  """
+  Equal to the specified value, treating null like an ordinary value (case-insensitive).
+  """
+  notDistinctFromInsensitive: String
+
+  """Does not end with the specified string (case-sensitive)."""
+  notEndsWith: String
+
+  """Does not end with the specified string (case-insensitive)."""
+  notEndsWithInsensitive: String
+
+  """Not equal to the specified value."""
+  notEqualTo: String
+
+  """Not equal to the specified value (case-insensitive)."""
+  notEqualToInsensitive: String
+
+  """Not included in the specified list."""
+  notIn: [String!]
+
+  """Not included in the specified list (case-insensitive)."""
+  notInInsensitive: [String!]
+
+  """Does not contain the specified string (case-sensitive)."""
+  notIncludes: String
+
+  """Does not contain the specified string (case-insensitive)."""
+  notIncludesInsensitive: String
+
+  """
+  Does not match the specified pattern (case-sensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters.
+  """
+  notLike: String
+
+  """
+  Does not match the specified pattern (case-insensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters.
+  """
+  notLikeInsensitive: String
+
+  """Does not start with the specified string (case-sensitive)."""
+  notStartsWith: String
+
+  """Does not start with the specified string (case-insensitive)."""
+  notStartsWithInsensitive: String
+
+  """Starts with the specified string (case-sensitive)."""
+  startsWith: String
+
+  """Starts with the specified string (case-insensitive)."""
+  startsWithInsensitive: String
+}
+
+"""
+A filter to be used against String List fields. All fields are combined with a logical ‘and.’
+"""
+input StringListFilter {
+  """Any array item is equal to the specified value."""
+  anyEqualTo: String
+
+  """Any array item is greater than the specified value."""
+  anyGreaterThan: String
+
+  """Any array item is greater than or equal to the specified value."""
+  anyGreaterThanOrEqualTo: String
+
+  """Any array item is less than the specified value."""
+  anyLessThan: String
+
+  """Any array item is less than or equal to the specified value."""
+  anyLessThanOrEqualTo: String
+
+  """Any array item is not equal to the specified value."""
+  anyNotEqualTo: String
+
+  """Contained by the specified list of values."""
+  containedBy: [String]
+
+  """Contains the specified list of values."""
+  contains: [String]
+
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: [String]
+
+  """Equal to the specified value."""
+  equalTo: [String]
+
+  """Greater than the specified value."""
+  greaterThan: [String]
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: [String]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: [String]
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: [String]
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: [String]
+
+  """Not equal to the specified value."""
+  notEqualTo: [String]
+
+  """Overlaps the specified list of values."""
+  overlaps: [String]
+}
+
 type Tag implements Node {
   content: String!
   created: Datetime!
@@ -4968,6 +9490,65 @@ type Tag implements Node {
   ownerId: BigInt!
   tagName: String!
   useCount: BigInt!
+}
+
+type TagAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: TagAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: TagDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: TagMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: TagMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: TagStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: TagStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: TagSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: TagVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: TagVarianceSampleAggregates
+}
+
+type TagAverageAggregates {
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of ownerId across the matching connection"""
+  ownerId: BigFloat
+
+  """Mean average of useCount across the matching connection"""
+  useCount: BigFloat
 }
 
 """
@@ -4993,6 +9574,58 @@ input TagCondition {
   useCount: BigInt
 }
 
+type TagDistinctCountAggregates {
+  """Distinct count of content across the matching connection"""
+  content: BigInt
+
+  """Distinct count of created across the matching connection"""
+  created: BigInt
+
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of ownerId across the matching connection"""
+  ownerId: BigInt
+
+  """Distinct count of tagName across the matching connection"""
+  tagName: BigInt
+
+  """Distinct count of useCount across the matching connection"""
+  useCount: BigInt
+}
+
+"""
+A filter to be used against `Tag` object types. All fields are combined with a logical ‘and.’
+"""
+input TagFilter {
+  """Checks for all expressions in this list."""
+  and: [TagFilter!]
+
+  """Filter by the object’s `content` field."""
+  content: StringFilter
+
+  """Filter by the object’s `created` field."""
+  created: DatetimeFilter
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Negates the expression."""
+  not: TagFilter
+
+  """Checks for any expressions in this list."""
+  or: [TagFilter!]
+
+  """Filter by the object’s `ownerId` field."""
+  ownerId: BigIntFilter
+
+  """Filter by the object’s `tagName` field."""
+  tagName: StringFilter
+
+  """Filter by the object’s `useCount` field."""
+  useCount: BigIntFilter
+}
+
 """An input for mutations affecting `Tag`"""
 input TagInput {
   content: String!
@@ -5001,6 +9634,28 @@ input TagInput {
   ownerId: BigInt!
   tagName: String!
   useCount: BigInt!
+}
+
+type TagMaxAggregates {
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of ownerId across the matching connection"""
+  ownerId: BigInt
+
+  """Maximum of useCount across the matching connection"""
+  useCount: BigInt
+}
+
+type TagMinAggregates {
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of ownerId across the matching connection"""
+  ownerId: BigInt
+
+  """Minimum of useCount across the matching connection"""
+  useCount: BigInt
 }
 
 """Represents an update to a `Tag`. Fields that are set will be updated."""
@@ -5013,12 +9668,89 @@ input TagPatch {
   useCount: BigInt
 }
 
+type TagStddevPopulationAggregates {
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """
+  Population standard deviation of ownerId across the matching connection
+  """
+  ownerId: BigFloat
+
+  """
+  Population standard deviation of useCount across the matching connection
+  """
+  useCount: BigFloat
+}
+
+type TagStddevSampleAggregates {
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample standard deviation of ownerId across the matching connection"""
+  ownerId: BigFloat
+
+  """Sample standard deviation of useCount across the matching connection"""
+  useCount: BigFloat
+}
+
+type TagSumAggregates {
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of ownerId across the matching connection"""
+  ownerId: BigFloat!
+
+  """Sum of useCount across the matching connection"""
+  useCount: BigFloat!
+}
+
+type TagVariancePopulationAggregates {
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of ownerId across the matching connection"""
+  ownerId: BigFloat
+
+  """Population variance of useCount across the matching connection"""
+  useCount: BigFloat
+}
+
+type TagVarianceSampleAggregates {
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of ownerId across the matching connection"""
+  ownerId: BigFloat
+
+  """Sample variance of useCount across the matching connection"""
+  useCount: BigFloat
+}
+
 """A connection to a list of `Tag` values."""
 type TagsConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: TagAggregates
+
   """
   A list of edges which contains the `Tag` and cursor to aid in pagination.
   """
   edges: [TagsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `Tag` for these aggregates."""
+    groupBy: [TagsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: TagsHavingInput
+  ): [TagAggregates!]
 
   """A list of `Tag` objects."""
   nodes: [Tag!]!
@@ -5037,6 +9769,96 @@ type TagsEdge {
 
   """The `Tag` at the end of the edge."""
   node: Tag!
+}
+
+"""Grouping methods for `Tag` for usage during aggregation."""
+enum TagsGroupBy {
+  CONTENT
+  CREATED
+  CREATED_TRUNCATED_TO_DAY
+  CREATED_TRUNCATED_TO_HOUR
+  GUILD_ID
+  OWNER_ID
+  TAG_NAME
+  USE_COUNT
+}
+
+input TagsHavingAverageInput {
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  ownerId: HavingBigintFilter
+  useCount: HavingBigintFilter
+}
+
+input TagsHavingDistinctCountInput {
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  ownerId: HavingBigintFilter
+  useCount: HavingBigintFilter
+}
+
+"""Conditions for `Tag` aggregates."""
+input TagsHavingInput {
+  AND: [TagsHavingInput!]
+  OR: [TagsHavingInput!]
+  average: TagsHavingAverageInput
+  distinctCount: TagsHavingDistinctCountInput
+  max: TagsHavingMaxInput
+  min: TagsHavingMinInput
+  stddevPopulation: TagsHavingStddevPopulationInput
+  stddevSample: TagsHavingStddevSampleInput
+  sum: TagsHavingSumInput
+  variancePopulation: TagsHavingVariancePopulationInput
+  varianceSample: TagsHavingVarianceSampleInput
+}
+
+input TagsHavingMaxInput {
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  ownerId: HavingBigintFilter
+  useCount: HavingBigintFilter
+}
+
+input TagsHavingMinInput {
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  ownerId: HavingBigintFilter
+  useCount: HavingBigintFilter
+}
+
+input TagsHavingStddevPopulationInput {
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  ownerId: HavingBigintFilter
+  useCount: HavingBigintFilter
+}
+
+input TagsHavingStddevSampleInput {
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  ownerId: HavingBigintFilter
+  useCount: HavingBigintFilter
+}
+
+input TagsHavingSumInput {
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  ownerId: HavingBigintFilter
+  useCount: HavingBigintFilter
+}
+
+input TagsHavingVariancePopulationInput {
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  ownerId: HavingBigintFilter
+  useCount: HavingBigintFilter
+}
+
+input TagsHavingVarianceSampleInput {
+  created: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  ownerId: HavingBigintFilter
+  useCount: HavingBigintFilter
 }
 
 """Methods to use when ordering `Tag`."""
@@ -5095,6 +9917,50 @@ type TimeframeUserLevelsRecord {
   username: String
   xp: BigInt
   xpDiff: BigInt
+}
+
+"""
+A filter to be used against `TimeframeUserLevelsRecord` object types. All fields are combined with a logical ‘and.’
+"""
+input TimeframeUserLevelsRecordFilter {
+  """Checks for all expressions in this list."""
+  and: [TimeframeUserLevelsRecordFilter!]
+
+  """Filter by the object’s `avatarUrl` field."""
+  avatarUrl: StringFilter
+
+  """Filter by the object’s `currentLevel` field."""
+  currentLevel: BigIntFilter
+
+  """Filter by the object’s `discriminator` field."""
+  discriminator: IntFilter
+
+  """Filter by the object’s `gainedLevels` field."""
+  gainedLevels: BigIntFilter
+
+  """Filter by the object’s `nextLevelXpProgress` field."""
+  nextLevelXpProgress: BigIntFilter
+
+  """Filter by the object’s `nextLevelXpRequired` field."""
+  nextLevelXpRequired: BigIntFilter
+
+  """Negates the expression."""
+  not: TimeframeUserLevelsRecordFilter
+
+  """Checks for any expressions in this list."""
+  or: [TimeframeUserLevelsRecordFilter!]
+
+  """Filter by the object’s `userId` field."""
+  userId: BigIntFilter
+
+  """Filter by the object’s `username` field."""
+  username: StringFilter
+
+  """Filter by the object’s `xp` field."""
+  xp: BigIntFilter
+
+  """Filter by the object’s `xpDiff` field."""
+  xpDiff: BigIntFilter
 }
 
 """
@@ -6255,6 +11121,65 @@ type User implements Node {
   rep: BigInt!
 }
 
+type UserAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: UserAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: UserDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: UserMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: UserMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: UserStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: UserStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: UserSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: UserVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: UserVarianceSampleAggregates
+}
+
+type UserAverageAggregates {
+  """Mean average of fishies across the matching connection"""
+  fishies: BigFloat
+
+  """Mean average of id across the matching connection"""
+  id: BigFloat
+
+  """Mean average of rep across the matching connection"""
+  rep: BigFloat
+}
+
 """
 A condition to be used against `User` object types. All fields are tested for equality and combined with a logical ‘and.’
 """
@@ -6285,6 +11210,76 @@ input UserCondition {
 
   """Checks for equality with the object’s `rep` field."""
   rep: BigInt
+}
+
+type UserDistinctCountAggregates {
+  """Distinct count of fishies across the matching connection"""
+  fishies: BigInt
+
+  """Distinct count of id across the matching connection"""
+  id: BigInt
+
+  """Distinct count of isPatron across the matching connection"""
+  isPatron: BigInt
+
+  """Distinct count of lastFishies across the matching connection"""
+  lastFishies: BigInt
+
+  """Distinct count of lastRep across the matching connection"""
+  lastRep: BigInt
+
+  """Distinct count of lastfmUsername across the matching connection"""
+  lastfmUsername: BigInt
+
+  """Distinct count of patronEmoji across the matching connection"""
+  patronEmoji: BigInt
+
+  """Distinct count of profileData across the matching connection"""
+  profileData: BigInt
+
+  """Distinct count of rep across the matching connection"""
+  rep: BigInt
+}
+
+"""
+A filter to be used against `User` object types. All fields are combined with a logical ‘and.’
+"""
+input UserFilter {
+  """Checks for all expressions in this list."""
+  and: [UserFilter!]
+
+  """Filter by the object’s `fishies` field."""
+  fishies: BigIntFilter
+
+  """Filter by the object’s `id` field."""
+  id: BigIntFilter
+
+  """Filter by the object’s `isPatron` field."""
+  isPatron: BooleanFilter
+
+  """Filter by the object’s `lastFishies` field."""
+  lastFishies: DatetimeFilter
+
+  """Filter by the object’s `lastRep` field."""
+  lastRep: DatetimeFilter
+
+  """Filter by the object’s `lastfmUsername` field."""
+  lastfmUsername: StringFilter
+
+  """Negates the expression."""
+  not: UserFilter
+
+  """Checks for any expressions in this list."""
+  or: [UserFilter!]
+
+  """Filter by the object’s `patronEmoji` field."""
+  patronEmoji: StringFilter
+
+  """Filter by the object’s `profileData` field."""
+  profileData: JSONFilter
+
+  """Filter by the object’s `rep` field."""
+  rep: BigIntFilter
 }
 
 """An input for mutations affecting `User`"""
@@ -6369,6 +11364,28 @@ enum UserLevelsOrderBy {
   USER_ID_DESC
 }
 
+type UserMaxAggregates {
+  """Maximum of fishies across the matching connection"""
+  fishies: BigInt
+
+  """Maximum of id across the matching connection"""
+  id: BigInt
+
+  """Maximum of rep across the matching connection"""
+  rep: BigInt
+}
+
+type UserMinAggregates {
+  """Minimum of fishies across the matching connection"""
+  fishies: BigInt
+
+  """Minimum of id across the matching connection"""
+  id: BigInt
+
+  """Minimum of rep across the matching connection"""
+  rep: BigInt
+}
+
 """Represents an update to a `User`. Fields that are set will be updated."""
 input UserPatch {
   fishies: BigInt
@@ -6382,12 +11399,85 @@ input UserPatch {
   rep: BigInt
 }
 
+type UserStddevPopulationAggregates {
+  """
+  Population standard deviation of fishies across the matching connection
+  """
+  fishies: BigFloat
+
+  """Population standard deviation of id across the matching connection"""
+  id: BigFloat
+
+  """Population standard deviation of rep across the matching connection"""
+  rep: BigFloat
+}
+
+type UserStddevSampleAggregates {
+  """Sample standard deviation of fishies across the matching connection"""
+  fishies: BigFloat
+
+  """Sample standard deviation of id across the matching connection"""
+  id: BigFloat
+
+  """Sample standard deviation of rep across the matching connection"""
+  rep: BigFloat
+}
+
+type UserSumAggregates {
+  """Sum of fishies across the matching connection"""
+  fishies: BigFloat!
+
+  """Sum of id across the matching connection"""
+  id: BigFloat!
+
+  """Sum of rep across the matching connection"""
+  rep: BigFloat!
+}
+
+type UserVariancePopulationAggregates {
+  """Population variance of fishies across the matching connection"""
+  fishies: BigFloat
+
+  """Population variance of id across the matching connection"""
+  id: BigFloat
+
+  """Population variance of rep across the matching connection"""
+  rep: BigFloat
+}
+
+type UserVarianceSampleAggregates {
+  """Sample variance of fishies across the matching connection"""
+  fishies: BigFloat
+
+  """Sample variance of id across the matching connection"""
+  id: BigFloat
+
+  """Sample variance of rep across the matching connection"""
+  rep: BigFloat
+}
+
 """A connection to a list of `User` values."""
 type UsersConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: UserAggregates
+
   """
   A list of edges which contains the `User` and cursor to aid in pagination.
   """
   edges: [UsersEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `User` for these aggregates."""
+    groupBy: [UsersGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: UsersHavingInput
+  ): [UserAggregates!]
 
   """A list of `User` objects."""
   nodes: [User!]!
@@ -6406,6 +11496,109 @@ type UsersEdge {
 
   """The `User` at the end of the edge."""
   node: User!
+}
+
+"""Grouping methods for `User` for usage during aggregation."""
+enum UsersGroupBy {
+  FISHIES
+  IS_PATRON
+  LASTFM_USERNAME
+  LAST_FISHIES
+  LAST_FISHIES_TRUNCATED_TO_DAY
+  LAST_FISHIES_TRUNCATED_TO_HOUR
+  LAST_REP
+  LAST_REP_TRUNCATED_TO_DAY
+  LAST_REP_TRUNCATED_TO_HOUR
+  PATRON_EMOJI
+  PROFILE_DATA
+  REP
+}
+
+input UsersHavingAverageInput {
+  fishies: HavingBigintFilter
+  id: HavingBigintFilter
+  lastFishies: HavingDatetimeFilter
+  lastRep: HavingDatetimeFilter
+  rep: HavingBigintFilter
+}
+
+input UsersHavingDistinctCountInput {
+  fishies: HavingBigintFilter
+  id: HavingBigintFilter
+  lastFishies: HavingDatetimeFilter
+  lastRep: HavingDatetimeFilter
+  rep: HavingBigintFilter
+}
+
+"""Conditions for `User` aggregates."""
+input UsersHavingInput {
+  AND: [UsersHavingInput!]
+  OR: [UsersHavingInput!]
+  average: UsersHavingAverageInput
+  distinctCount: UsersHavingDistinctCountInput
+  max: UsersHavingMaxInput
+  min: UsersHavingMinInput
+  stddevPopulation: UsersHavingStddevPopulationInput
+  stddevSample: UsersHavingStddevSampleInput
+  sum: UsersHavingSumInput
+  variancePopulation: UsersHavingVariancePopulationInput
+  varianceSample: UsersHavingVarianceSampleInput
+}
+
+input UsersHavingMaxInput {
+  fishies: HavingBigintFilter
+  id: HavingBigintFilter
+  lastFishies: HavingDatetimeFilter
+  lastRep: HavingDatetimeFilter
+  rep: HavingBigintFilter
+}
+
+input UsersHavingMinInput {
+  fishies: HavingBigintFilter
+  id: HavingBigintFilter
+  lastFishies: HavingDatetimeFilter
+  lastRep: HavingDatetimeFilter
+  rep: HavingBigintFilter
+}
+
+input UsersHavingStddevPopulationInput {
+  fishies: HavingBigintFilter
+  id: HavingBigintFilter
+  lastFishies: HavingDatetimeFilter
+  lastRep: HavingDatetimeFilter
+  rep: HavingBigintFilter
+}
+
+input UsersHavingStddevSampleInput {
+  fishies: HavingBigintFilter
+  id: HavingBigintFilter
+  lastFishies: HavingDatetimeFilter
+  lastRep: HavingDatetimeFilter
+  rep: HavingBigintFilter
+}
+
+input UsersHavingSumInput {
+  fishies: HavingBigintFilter
+  id: HavingBigintFilter
+  lastFishies: HavingDatetimeFilter
+  lastRep: HavingDatetimeFilter
+  rep: HavingBigintFilter
+}
+
+input UsersHavingVariancePopulationInput {
+  fishies: HavingBigintFilter
+  id: HavingBigintFilter
+  lastFishies: HavingDatetimeFilter
+  lastRep: HavingDatetimeFilter
+  rep: HavingBigintFilter
+}
+
+input UsersHavingVarianceSampleInput {
+  fishies: HavingBigintFilter
+  id: HavingBigintFilter
+  lastFishies: HavingDatetimeFilter
+  lastRep: HavingDatetimeFilter
+  rep: HavingBigintFilter
 }
 
 """Methods to use when ordering `User`."""
@@ -6477,6 +11670,11 @@ type WebUser implements Node {
     """
     condition: WebUserGuildCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: WebUserGuildFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -6492,6 +11690,62 @@ type WebUser implements Node {
     """The method to use when ordering `WebUserGuild`."""
     orderBy: [WebUserGuildsOrderBy!] = [PRIMARY_KEY_ASC]
   ): WebUserGuildsConnection!
+}
+
+type WebUserAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: WebUserAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: WebUserDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: WebUserMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: WebUserMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: WebUserStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: WebUserStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: WebUserSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: WebUserVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: WebUserVarianceSampleAggregates
+}
+
+type WebUserAverageAggregates {
+  """Mean average of discriminator across the matching connection"""
+  discriminator: BigFloat
+
+  """Mean average of id across the matching connection"""
+  id: BigFloat
 }
 
 """
@@ -6523,6 +11777,70 @@ input WebUserCondition {
   username: String
 }
 
+type WebUserDistinctCountAggregates {
+  """Distinct count of avatar across the matching connection"""
+  avatar: BigInt
+
+  """Distinct count of createdAt across the matching connection"""
+  createdAt: BigInt
+
+  """Distinct count of details across the matching connection"""
+  details: BigInt
+
+  """Distinct count of discriminator across the matching connection"""
+  discriminator: BigInt
+
+  """Distinct count of id across the matching connection"""
+  id: BigInt
+
+  """Distinct count of isAdmin across the matching connection"""
+  isAdmin: BigInt
+
+  """Distinct count of updatedAt across the matching connection"""
+  updatedAt: BigInt
+
+  """Distinct count of username across the matching connection"""
+  username: BigInt
+}
+
+"""
+A filter to be used against `WebUser` object types. All fields are combined with a logical ‘and.’
+"""
+input WebUserFilter {
+  """Checks for all expressions in this list."""
+  and: [WebUserFilter!]
+
+  """Filter by the object’s `avatar` field."""
+  avatar: StringFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `details` field."""
+  details: JSONFilter
+
+  """Filter by the object’s `discriminator` field."""
+  discriminator: IntFilter
+
+  """Filter by the object’s `id` field."""
+  id: BigIntFilter
+
+  """Filter by the object’s `isAdmin` field."""
+  isAdmin: BooleanFilter
+
+  """Negates the expression."""
+  not: WebUserFilter
+
+  """Checks for any expressions in this list."""
+  or: [WebUserFilter!]
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `username` field."""
+  username: StringFilter
+}
+
 type WebUserGuild implements Node {
   """Reads a single `CachedGuild` that is related to this `WebUserGuild`."""
   cachedGuildByGuildId: CachedGuild
@@ -6539,6 +11857,65 @@ type WebUserGuild implements Node {
 
   """Reads a single `WebUser` that is related to this `WebUserGuild`."""
   webUserByUserId: WebUser
+}
+
+type WebUserGuildAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: WebUserGuildAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: WebUserGuildDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: WebUserGuildMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: WebUserGuildMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: WebUserGuildStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: WebUserGuildStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: WebUserGuildSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: WebUserGuildVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: WebUserGuildVarianceSampleAggregates
+}
+
+type WebUserGuildAverageAggregates {
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of permissions across the matching connection"""
+  permissions: BigFloat
+
+  """Mean average of userId across the matching connection"""
+  userId: BigFloat
 }
 
 """
@@ -6562,6 +11939,52 @@ input WebUserGuildCondition {
   userId: BigInt
 }
 
+type WebUserGuildDistinctCountAggregates {
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of manageGuild across the matching connection"""
+  manageGuild: BigInt
+
+  """Distinct count of owner across the matching connection"""
+  owner: BigInt
+
+  """Distinct count of permissions across the matching connection"""
+  permissions: BigInt
+
+  """Distinct count of userId across the matching connection"""
+  userId: BigInt
+}
+
+"""
+A filter to be used against `WebUserGuild` object types. All fields are combined with a logical ‘and.’
+"""
+input WebUserGuildFilter {
+  """Checks for all expressions in this list."""
+  and: [WebUserGuildFilter!]
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Filter by the object’s `manageGuild` field."""
+  manageGuild: BooleanFilter
+
+  """Negates the expression."""
+  not: WebUserGuildFilter
+
+  """Checks for any expressions in this list."""
+  or: [WebUserGuildFilter!]
+
+  """Filter by the object’s `owner` field."""
+  owner: BooleanFilter
+
+  """Filter by the object’s `permissions` field."""
+  permissions: BigIntFilter
+
+  """Filter by the object’s `userId` field."""
+  userId: BigIntFilter
+}
+
 """An input for mutations affecting `WebUserGuild`"""
 input WebUserGuildInput {
   guildId: BigInt!
@@ -6569,6 +11992,28 @@ input WebUserGuildInput {
   owner: Boolean!
   permissions: BigInt!
   userId: BigInt!
+}
+
+type WebUserGuildMaxAggregates {
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of permissions across the matching connection"""
+  permissions: BigInt
+
+  """Maximum of userId across the matching connection"""
+  userId: BigInt
+}
+
+type WebUserGuildMinAggregates {
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of permissions across the matching connection"""
+  permissions: BigInt
+
+  """Minimum of userId across the matching connection"""
+  userId: BigInt
 }
 
 """
@@ -6582,12 +12027,89 @@ input WebUserGuildPatch {
   userId: BigInt
 }
 
+type WebUserGuildStddevPopulationAggregates {
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """
+  Population standard deviation of permissions across the matching connection
+  """
+  permissions: BigFloat
+
+  """Population standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type WebUserGuildStddevSampleAggregates {
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """
+  Sample standard deviation of permissions across the matching connection
+  """
+  permissions: BigFloat
+
+  """Sample standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type WebUserGuildSumAggregates {
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of permissions across the matching connection"""
+  permissions: BigFloat!
+
+  """Sum of userId across the matching connection"""
+  userId: BigFloat!
+}
+
+type WebUserGuildVariancePopulationAggregates {
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of permissions across the matching connection"""
+  permissions: BigFloat
+
+  """Population variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type WebUserGuildVarianceSampleAggregates {
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of permissions across the matching connection"""
+  permissions: BigFloat
+
+  """Sample variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
 """A connection to a list of `WebUserGuild` values."""
 type WebUserGuildsConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: WebUserGuildAggregates
+
   """
   A list of edges which contains the `WebUserGuild` and cursor to aid in pagination.
   """
   edges: [WebUserGuildsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `WebUserGuild` for these aggregates."""
+    groupBy: [WebUserGuildsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: WebUserGuildsHavingInput
+  ): [WebUserGuildAggregates!]
 
   """A list of `WebUserGuild` objects."""
   nodes: [WebUserGuild!]!
@@ -6606,6 +12128,84 @@ type WebUserGuildsEdge {
 
   """The `WebUserGuild` at the end of the edge."""
   node: WebUserGuild!
+}
+
+"""Grouping methods for `WebUserGuild` for usage during aggregation."""
+enum WebUserGuildsGroupBy {
+  GUILD_ID
+  MANAGE_GUILD
+  OWNER
+  PERMISSIONS
+  USER_ID
+}
+
+input WebUserGuildsHavingAverageInput {
+  guildId: HavingBigintFilter
+  permissions: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input WebUserGuildsHavingDistinctCountInput {
+  guildId: HavingBigintFilter
+  permissions: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+"""Conditions for `WebUserGuild` aggregates."""
+input WebUserGuildsHavingInput {
+  AND: [WebUserGuildsHavingInput!]
+  OR: [WebUserGuildsHavingInput!]
+  average: WebUserGuildsHavingAverageInput
+  distinctCount: WebUserGuildsHavingDistinctCountInput
+  max: WebUserGuildsHavingMaxInput
+  min: WebUserGuildsHavingMinInput
+  stddevPopulation: WebUserGuildsHavingStddevPopulationInput
+  stddevSample: WebUserGuildsHavingStddevSampleInput
+  sum: WebUserGuildsHavingSumInput
+  variancePopulation: WebUserGuildsHavingVariancePopulationInput
+  varianceSample: WebUserGuildsHavingVarianceSampleInput
+}
+
+input WebUserGuildsHavingMaxInput {
+  guildId: HavingBigintFilter
+  permissions: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input WebUserGuildsHavingMinInput {
+  guildId: HavingBigintFilter
+  permissions: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input WebUserGuildsHavingStddevPopulationInput {
+  guildId: HavingBigintFilter
+  permissions: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input WebUserGuildsHavingStddevSampleInput {
+  guildId: HavingBigintFilter
+  permissions: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input WebUserGuildsHavingSumInput {
+  guildId: HavingBigintFilter
+  permissions: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input WebUserGuildsHavingVariancePopulationInput {
+  guildId: HavingBigintFilter
+  permissions: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input WebUserGuildsHavingVarianceSampleInput {
+  guildId: HavingBigintFilter
+  permissions: HavingBigintFilter
+  userId: HavingBigintFilter
 }
 
 """Methods to use when ordering `WebUserGuild`."""
@@ -6652,6 +12252,22 @@ input WebUserInput {
   username: String!
 }
 
+type WebUserMaxAggregates {
+  """Maximum of discriminator across the matching connection"""
+  discriminator: Int
+
+  """Maximum of id across the matching connection"""
+  id: BigInt
+}
+
+type WebUserMinAggregates {
+  """Minimum of discriminator across the matching connection"""
+  discriminator: Int
+
+  """Minimum of id across the matching connection"""
+  id: BigInt
+}
+
 """
 Represents an update to a `WebUser`. Fields that are set will be updated.
 """
@@ -6681,12 +12297,72 @@ input WebUserPatch {
   username: String
 }
 
+type WebUserStddevPopulationAggregates {
+  """
+  Population standard deviation of discriminator across the matching connection
+  """
+  discriminator: BigFloat
+
+  """Population standard deviation of id across the matching connection"""
+  id: BigFloat
+}
+
+type WebUserStddevSampleAggregates {
+  """
+  Sample standard deviation of discriminator across the matching connection
+  """
+  discriminator: BigFloat
+
+  """Sample standard deviation of id across the matching connection"""
+  id: BigFloat
+}
+
+type WebUserSumAggregates {
+  """Sum of discriminator across the matching connection"""
+  discriminator: BigInt!
+
+  """Sum of id across the matching connection"""
+  id: BigFloat!
+}
+
+type WebUserVariancePopulationAggregates {
+  """Population variance of discriminator across the matching connection"""
+  discriminator: BigFloat
+
+  """Population variance of id across the matching connection"""
+  id: BigFloat
+}
+
+type WebUserVarianceSampleAggregates {
+  """Sample variance of discriminator across the matching connection"""
+  discriminator: BigFloat
+
+  """Sample variance of id across the matching connection"""
+  id: BigFloat
+}
+
 """A connection to a list of `WebUser` values."""
 type WebUsersConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: WebUserAggregates
+
   """
   A list of edges which contains the `WebUser` and cursor to aid in pagination.
   """
   edges: [WebUsersEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `WebUser` for these aggregates."""
+    groupBy: [WebUsersGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: WebUsersHavingInput
+  ): [WebUserAggregates!]
 
   """A list of `WebUser` objects."""
   nodes: [WebUser!]!
@@ -6705,6 +12381,99 @@ type WebUsersEdge {
 
   """The `WebUser` at the end of the edge."""
   node: WebUser!
+}
+
+"""Grouping methods for `WebUser` for usage during aggregation."""
+enum WebUsersGroupBy {
+  AVATAR
+  CREATED_AT
+  CREATED_AT_TRUNCATED_TO_DAY
+  CREATED_AT_TRUNCATED_TO_HOUR
+  DETAILS
+  DISCRIMINATOR
+  IS_ADMIN
+  UPDATED_AT
+  UPDATED_AT_TRUNCATED_TO_DAY
+  UPDATED_AT_TRUNCATED_TO_HOUR
+  USERNAME
+}
+
+input WebUsersHavingAverageInput {
+  createdAt: HavingDatetimeFilter
+  discriminator: HavingIntFilter
+  id: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input WebUsersHavingDistinctCountInput {
+  createdAt: HavingDatetimeFilter
+  discriminator: HavingIntFilter
+  id: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+"""Conditions for `WebUser` aggregates."""
+input WebUsersHavingInput {
+  AND: [WebUsersHavingInput!]
+  OR: [WebUsersHavingInput!]
+  average: WebUsersHavingAverageInput
+  distinctCount: WebUsersHavingDistinctCountInput
+  max: WebUsersHavingMaxInput
+  min: WebUsersHavingMinInput
+  stddevPopulation: WebUsersHavingStddevPopulationInput
+  stddevSample: WebUsersHavingStddevSampleInput
+  sum: WebUsersHavingSumInput
+  variancePopulation: WebUsersHavingVariancePopulationInput
+  varianceSample: WebUsersHavingVarianceSampleInput
+}
+
+input WebUsersHavingMaxInput {
+  createdAt: HavingDatetimeFilter
+  discriminator: HavingIntFilter
+  id: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input WebUsersHavingMinInput {
+  createdAt: HavingDatetimeFilter
+  discriminator: HavingIntFilter
+  id: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input WebUsersHavingStddevPopulationInput {
+  createdAt: HavingDatetimeFilter
+  discriminator: HavingIntFilter
+  id: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input WebUsersHavingStddevSampleInput {
+  createdAt: HavingDatetimeFilter
+  discriminator: HavingIntFilter
+  id: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input WebUsersHavingSumInput {
+  createdAt: HavingDatetimeFilter
+  discriminator: HavingIntFilter
+  id: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input WebUsersHavingVariancePopulationInput {
+  createdAt: HavingDatetimeFilter
+  discriminator: HavingIntFilter
+  id: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input WebUsersHavingVarianceSampleInput {
+  createdAt: HavingDatetimeFilter
+  discriminator: HavingIntFilter
+  id: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
 }
 
 """Methods to use when ordering `WebUser`."""
@@ -6728,4 +12497,96 @@ enum WebUsersOrderBy {
   UPDATED_AT_DESC
   USERNAME_ASC
   USERNAME_DESC
+  WEB_USER_GUILDS_BY_USER_ID_AVERAGE_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_AVERAGE_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_AVERAGE_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_USER_ID_AVERAGE_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_USER_ID_AVERAGE_OWNER_ASC
+  WEB_USER_GUILDS_BY_USER_ID_AVERAGE_OWNER_DESC
+  WEB_USER_GUILDS_BY_USER_ID_AVERAGE_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_USER_ID_AVERAGE_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_USER_ID_AVERAGE_USER_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_AVERAGE_USER_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_COUNT_ASC
+  WEB_USER_GUILDS_BY_USER_ID_COUNT_DESC
+  WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_OWNER_ASC
+  WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_OWNER_DESC
+  WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_USER_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_DISTINCT_COUNT_USER_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_MAX_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_MAX_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_MAX_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_USER_ID_MAX_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_USER_ID_MAX_OWNER_ASC
+  WEB_USER_GUILDS_BY_USER_ID_MAX_OWNER_DESC
+  WEB_USER_GUILDS_BY_USER_ID_MAX_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_USER_ID_MAX_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_USER_ID_MAX_USER_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_MAX_USER_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_MIN_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_MIN_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_MIN_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_USER_ID_MIN_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_USER_ID_MIN_OWNER_ASC
+  WEB_USER_GUILDS_BY_USER_ID_MIN_OWNER_DESC
+  WEB_USER_GUILDS_BY_USER_ID_MIN_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_USER_ID_MIN_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_USER_ID_MIN_USER_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_MIN_USER_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_OWNER_ASC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_OWNER_DESC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_USER_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_POPULATION_USER_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_OWNER_ASC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_OWNER_DESC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_USER_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_STDDEV_SAMPLE_USER_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_SUM_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_SUM_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_SUM_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_USER_ID_SUM_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_USER_ID_SUM_OWNER_ASC
+  WEB_USER_GUILDS_BY_USER_ID_SUM_OWNER_DESC
+  WEB_USER_GUILDS_BY_USER_ID_SUM_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_USER_ID_SUM_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_USER_ID_SUM_USER_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_SUM_USER_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_OWNER_ASC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_OWNER_DESC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_USER_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_POPULATION_USER_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_GUILD_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_GUILD_ID_DESC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_MANAGE_GUILD_ASC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_MANAGE_GUILD_DESC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_OWNER_ASC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_OWNER_DESC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_PERMISSIONS_ASC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_PERMISSIONS_DESC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_USER_ID_ASC
+  WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_USER_ID_DESC
 }
