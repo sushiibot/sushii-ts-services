@@ -81,6 +81,13 @@
         "message_content": "Tag search results"
       }
     },
+    "random": {
+      "error": {
+        "title": "Random tag failed",
+        "no_options": "You must provide at least one search option.",
+        "starts_with_contains_xor": "You can only use *one* of the options `name starts with` or `name contains`, not both."
+      }
+    },
     "edit": {
       "error": {
         "title": "Tag edit failed",
@@ -95,7 +102,7 @@
     },
     "rename": {
       "error": {
-        "already_exists": "Tag {{tagName}} already exists, please choose another name!"
+        "already_exists": "Tag {{tagName}} already exists, please choose another name."
       },
       "success": {
         "title": "Renamed tag {{tagName}}",

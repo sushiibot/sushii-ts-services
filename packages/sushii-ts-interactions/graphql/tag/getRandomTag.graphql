@@ -1,0 +1,15 @@
+query getRandomTag(
+  $guildId: BigInt!
+  $ownerId: BigInt
+  $query: String
+  $startsWith: Boolean
+) {
+  randomTag(
+    guildId: $guildId
+    query: $query
+    startsWith: $startsWith
+    ownerId: $ownerId
+  ) {
+    ...TagData
+  }
+}

@@ -1,15 +1,13 @@
 import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import {
   APIChatInputApplicationCommandGuildInteraction,
-  MessageFlags,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
 import { t } from "i18next";
 import { Tag } from "../../generated/graphql";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import { isNoValuesDeletedError } from "../../utils/graphqlError";
 import getInvokerUser from "../../utils/interactions";
 import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
@@ -102,7 +100,7 @@ export default class TagCommand extends SlashCommandHandler {
         .addStringOption((o) =>
           o
             .setName("name contains")
-            .setDescription("Filter tags name containg this text.")
+            .setDescription("Filter tags name containing this text.")
             .setRequired(false)
         )
         .addUserOption((o) =>
@@ -327,6 +325,79 @@ export default class TagCommand extends SlashCommandHandler {
     let { content } = tag.tagByGuildIdAndTagName;
     if (tag.tagByGuildIdAndTagName.attachment) {
       content += tag.tagByGuildIdAndTagName.attachment;
+    }
+
+    await ctx.REST.interactionReply(interaction, {
+      content,
+      // No pings in tags
+      allowed_mentions: {
+        parse: [],
+      },
+    });
+  }
+
+  static async randomHandler(
+    ctx: Context,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: CommandInteractionOptionResolver
+  ): Promise<void> {
+    const startsWith = options.getString("name starts with");
+    const contains = options.getString("name contains");
+    const owner = options.getUser("owner");
+
+    if (!startsWith && !contains && !owner) {
+      return ctx.REST.interactionReply(interaction, {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(t("tag.random.error.title", { ns: "commands" }))
+            .setDescription(
+              t("tag.random.error.no_options", { ns: "commands" })
+            )
+            .setColor(Color.Error)
+            .toJSON(),
+        ],
+      });
+    }
+
+    // startsWith xor contains
+    if (startsWith && contains) {
+      return ctx.REST.interactionReply(interaction, {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(t("tag.random.error.title", { ns: "commands" }))
+            .setDescription(
+              t("tag.random.error.starts_with_contains_xor", { ns: "commands" })
+            )
+            .setColor(Color.Error)
+            .toJSON(),
+        ],
+      });
+    }
+
+    const tag = await ctx.sushiiAPI.sdk.getRandomTag({
+      guildId: interaction.guild_id,
+      ownerId: owner?.id,
+      startsWith: !!startsWith,
+      query: startsWith || contains,
+    });
+
+    if (!tag.randomTag) {
+      return ctx.REST.interactionReply(interaction, {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(t("tag.random.error.title", { ns: "commands" }))
+            .setDescription(t("tag.random.error.not_found", { ns: "commands" }))
+            .setColor(Color.Error)
+            .toJSON(),
+        ],
+      });
+    }
+
+    let { content } = tag.randomTag;
+    const { attachment } = tag.randomTag;
+
+    if (attachment) {
+      content += attachment;
     }
 
     await ctx.REST.interactionReply(interaction, {

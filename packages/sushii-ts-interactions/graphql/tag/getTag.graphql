@@ -1,9 +1,5 @@
 query getTag($guildId: BigInt!, $tagName: String!) {
-  tagByGuildIdAndTagName(
-    guildId: $guildId
-    tagName: $tagName
-    orderBy: TAG_NAME_ASC
-  ) {
+  tagByGuildIdAndTagName(guildId: $guildId, tagName: $tagName) {
     ...TagData
   }
 }

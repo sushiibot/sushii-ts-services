@@ -1,5 +1,6 @@
 fragment TagData on Tag {
   content
+  attachment
   created
   guildId
   tagName

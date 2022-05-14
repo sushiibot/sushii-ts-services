@@ -6692,6 +6692,7 @@ export type Query = Node & {
    * which can only query top level fields if they are in a particular form.
    */
   query: Query;
+  randomTag?: Maybe<Tag>;
   /** Reads a single `Reminder` using its globally unique `ID`. */
   reminder?: Maybe<Reminder>;
   reminderByUserIdAndSetAt?: Maybe<Reminder>;
@@ -7126,6 +7127,15 @@ export type QueryNotificationsStartingWithArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   query?: InputMaybe<Scalars['String']>;
   userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryRandomTagArgs = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  ownerId?: InputMaybe<Scalars['BigInt']>;
+  query?: InputMaybe<Scalars['String']>;
+  startsWith?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -13585,6 +13595,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   notificationByUserIdAndGuildIdAndKeyword?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType, RequireFields<QueryNotificationByUserIdAndGuildIdAndKeywordArgs, 'guildId' | 'keyword' | 'userId'>>;
   notificationsStartingWith?: Resolver<Maybe<ResolversTypes['NotificationsStartingWithConnection']>, ParentType, ContextType, Partial<QueryNotificationsStartingWithArgs>>;
   query?: Resolver<ResolversTypes['Query'], ParentType, ContextType>;
+  randomTag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, Partial<QueryRandomTagArgs>>;
   reminder?: Resolver<Maybe<ResolversTypes['Reminder']>, ParentType, ContextType, RequireFields<QueryReminderArgs, 'nodeId'>>;
   reminderByUserIdAndSetAt?: Resolver<Maybe<ResolversTypes['Reminder']>, ParentType, ContextType, RequireFields<QueryReminderByUserIdAndSetAtArgs, 'setAt' | 'userId'>>;
   roleMenu?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuArgs, 'nodeId'>>;
@@ -14855,6 +14866,16 @@ export type DeleteTagMutationVariables = Exact<{
 
 export type DeleteTagMutation = { __typename?: 'Mutation', deleteTagByGuildIdAndTagName?: { __typename?: 'DeleteTagPayload', tag?: { __typename?: 'Tag', content: string, attachment?: string | null, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null } | null };
 
+export type GetRandomTagQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  ownerId?: InputMaybe<Scalars['BigInt']>;
+  query?: InputMaybe<Scalars['String']>;
+  startsWith?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+
+export type GetRandomTagQuery = { __typename?: 'Query', randomTag?: { __typename?: 'Tag', content: string, attachment?: string | null, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null };
+
 export type GetTagQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
   tagName: Scalars['String'];
@@ -15137,6 +15158,18 @@ export const DeleteTagDocument = gql`
   }
 }
     ${TagDataFragmentDoc}`;
+export const GetRandomTagDocument = gql`
+    query getRandomTag($guildId: BigInt!, $ownerId: BigInt, $query: String, $startsWith: Boolean) {
+  randomTag(
+    guildId: $guildId
+    query: $query
+    startsWith: $startsWith
+    ownerId: $ownerId
+  ) {
+    ...TagData
+  }
+}
+    ${TagDataFragmentDoc}`;
 export const GetTagDocument = gql`
     query getTag($guildId: BigInt!, $tagName: String!) {
   tagByGuildIdAndTagName(guildId: $guildId, tagName: $tagName) {
@@ -15280,6 +15313,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     deleteTag(variables: DeleteTagMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteTagMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeleteTagMutation>(DeleteTagDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteTag', 'mutation');
+    },
+    getRandomTag(variables: GetRandomTagQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetRandomTagQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetRandomTagQuery>(GetRandomTagDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getRandomTag', 'query');
     },
     getTag(variables: GetTagQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetTagQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetTagQuery>(GetTagDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getTag', 'query');
