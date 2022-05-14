@@ -2,6 +2,8 @@ name: docker
 
 on:
   push:
+    branch:
+      - main
     tags:
       - 'v*'
 
@@ -23,12 +25,12 @@ jobs:
         with:
           images: ghcr.io/sushiibot/${{matrix.app}}
 
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
         uses: docker/build-push-action@v3
