@@ -6702,10 +6702,6 @@ export type Query = Node & {
   /** Reads a single `Tag` using its globally unique `ID`. */
   tag?: Maybe<Tag>;
   tagByGuildIdAndTagName?: Maybe<Tag>;
-  /** Reads and enables pagination through a set of `Tag`. */
-  tagSearch?: Maybe<TagsConnection>;
-  /** Reads and enables pagination through a set of `Tag`. */
-  tagsStartingWith?: Maybe<TagsConnection>;
   /** Leaderboard for given timeframe and optional guild. If guild is null, it is the global leaderboard */
   timeframeUserLevels?: Maybe<TimeframeUserLevelsConnection>;
   /** Reads a single `User` using its globally unique `ID`. */
@@ -7175,32 +7171,6 @@ export type QueryTagArgs = {
 export type QueryTagByGuildIdAndTagNameArgs = {
   guildId: Scalars['BigInt'];
   tagName: Scalars['String'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryTagSearchArgs = {
-  after?: InputMaybe<Scalars['Cursor']>;
-  before?: InputMaybe<Scalars['Cursor']>;
-  filter?: InputMaybe<TagFilter>;
-  first?: InputMaybe<Scalars['Int']>;
-  guildId?: InputMaybe<Scalars['BigInt']>;
-  last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  query?: InputMaybe<Scalars['String']>;
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryTagsStartingWithArgs = {
-  after?: InputMaybe<Scalars['Cursor']>;
-  before?: InputMaybe<Scalars['Cursor']>;
-  filter?: InputMaybe<TagFilter>;
-  first?: InputMaybe<Scalars['Int']>;
-  guildId?: InputMaybe<Scalars['BigInt']>;
-  last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  query?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -7980,6 +7950,7 @@ export type StringListFilter = {
 
 export type Tag = Node & {
   __typename?: 'Tag';
+  attachment?: Maybe<Scalars['String']>;
   content: Scalars['String'];
   created: Scalars['Datetime'];
   guildId: Scalars['BigInt'];
@@ -8025,6 +7996,8 @@ export type TagAverageAggregates = {
 
 /** A condition to be used against `Tag` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type TagCondition = {
+  /** Checks for equality with the object’s `attachment` field. */
+  attachment?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `content` field. */
   content?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `created` field. */
@@ -8041,6 +8014,8 @@ export type TagCondition = {
 
 export type TagDistinctCountAggregates = {
   __typename?: 'TagDistinctCountAggregates';
+  /** Distinct count of attachment across the matching connection */
+  attachment?: Maybe<Scalars['BigInt']>;
   /** Distinct count of content across the matching connection */
   content?: Maybe<Scalars['BigInt']>;
   /** Distinct count of created across the matching connection */
@@ -8059,6 +8034,8 @@ export type TagDistinctCountAggregates = {
 export type TagFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<TagFilter>>;
+  /** Filter by the object’s `attachment` field. */
+  attachment?: InputMaybe<StringFilter>;
   /** Filter by the object’s `content` field. */
   content?: InputMaybe<StringFilter>;
   /** Filter by the object’s `created` field. */
@@ -8079,6 +8056,7 @@ export type TagFilter = {
 
 /** An input for mutations affecting `Tag` */
 export type TagInput = {
+  attachment?: InputMaybe<Scalars['String']>;
   content: Scalars['String'];
   created: Scalars['Datetime'];
   guildId: Scalars['BigInt'];
@@ -8109,6 +8087,7 @@ export type TagMinAggregates = {
 
 /** Represents an update to a `Tag`. Fields that are set will be updated. */
 export type TagPatch = {
+  attachment?: InputMaybe<Scalars['String']>;
   content?: InputMaybe<Scalars['String']>;
   created?: InputMaybe<Scalars['Datetime']>;
   guildId?: InputMaybe<Scalars['BigInt']>;
@@ -8202,6 +8181,7 @@ export type TagsEdge = {
 
 /** Grouping methods for `Tag` for usage during aggregation. */
 export enum TagsGroupBy {
+  Attachment = 'ATTACHMENT',
   Content = 'CONTENT',
   Created = 'CREATED',
   CreatedTruncatedToDay = 'CREATED_TRUNCATED_TO_DAY',
@@ -8292,6 +8272,8 @@ export type TagsHavingVarianceSampleInput = {
 
 /** Methods to use when ordering `Tag`. */
 export enum TagsOrderBy {
+  AttachmentAsc = 'ATTACHMENT_ASC',
+  AttachmentDesc = 'ATTACHMENT_DESC',
   ContentAsc = 'CONTENT_ASC',
   ContentDesc = 'CONTENT_DESC',
   CreatedAsc = 'CREATED_ASC',
@@ -13610,8 +13592,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   roleMenuByMessageId?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuByMessageIdArgs, 'messageId'>>;
   tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'nodeId'>>;
   tagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagByGuildIdAndTagNameArgs, 'guildId' | 'tagName'>>;
-  tagSearch?: Resolver<Maybe<ResolversTypes['TagsConnection']>, ParentType, ContextType, Partial<QueryTagSearchArgs>>;
-  tagsStartingWith?: Resolver<Maybe<ResolversTypes['TagsConnection']>, ParentType, ContextType, Partial<QueryTagsStartingWithArgs>>;
   timeframeUserLevels?: Resolver<Maybe<ResolversTypes['TimeframeUserLevelsConnection']>, ParentType, ContextType, Partial<QueryTimeframeUserLevelsArgs>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'nodeId'>>;
   userById?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserByIdArgs, 'id'>>;
@@ -13822,6 +13802,7 @@ export type RoleMenusEdgeResolvers<ContextType = any, ParentType extends Resolve
 };
 
 export type TagResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tag'] = ResolversParentTypes['Tag']> = {
+  attachment?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   created?: Resolver<ResolversTypes['Datetime'], ParentType, ContextType>;
   guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
@@ -13854,6 +13835,7 @@ export type TagAverageAggregatesResolvers<ContextType = any, ParentType extends 
 };
 
 export type TagDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagDistinctCountAggregates'] = ResolversParentTypes['TagDistinctCountAggregates']> = {
+  attachment?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   content?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   created?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
@@ -14863,7 +14845,7 @@ export type CreateTagMutationVariables = Exact<{
 }>;
 
 
-export type CreateTagMutation = { __typename?: 'Mutation', createTag?: { __typename?: 'CreateTagPayload', tag?: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null } | null };
+export type CreateTagMutation = { __typename?: 'Mutation', createTag?: { __typename?: 'CreateTagPayload', tag?: { __typename?: 'Tag', content: string, attachment?: string | null, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null } | null };
 
 export type DeleteTagMutationVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -14871,7 +14853,7 @@ export type DeleteTagMutationVariables = Exact<{
 }>;
 
 
-export type DeleteTagMutation = { __typename?: 'Mutation', deleteTagByGuildIdAndTagName?: { __typename?: 'DeleteTagPayload', tag?: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null } | null };
+export type DeleteTagMutation = { __typename?: 'Mutation', deleteTagByGuildIdAndTagName?: { __typename?: 'DeleteTagPayload', tag?: { __typename?: 'Tag', content: string, attachment?: string | null, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null } | null };
 
 export type GetTagQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -14879,38 +14861,14 @@ export type GetTagQueryVariables = Exact<{
 }>;
 
 
-export type GetTagQuery = { __typename?: 'Query', tagByGuildIdAndTagName?: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null };
-
-export type GetGuildTagsIncludingQueryVariables = Exact<{
-  guildId: Scalars['BigInt'];
-  includesInsensitive: Scalars['String'];
-}>;
-
-
-export type GetGuildTagsIncludingQuery = { __typename?: 'Query', allTags?: { __typename?: 'TagsConnection', totalCount: number, edges: Array<{ __typename?: 'TagsEdge', node: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } }> } | null };
-
-export type GetGuildTagsOwnedByQueryVariables = Exact<{
-  guildId: Scalars['BigInt'];
-  ownerId: Scalars['BigInt'];
-}>;
-
-
-export type GetGuildTagsOwnedByQuery = { __typename?: 'Query', allTags?: { __typename?: 'TagsConnection', totalCount: number, edges: Array<{ __typename?: 'TagsEdge', node: { __typename?: 'Tag', content: string, guildId: string, created: string } }> } | null };
-
-export type GetGuildTagsStartingWithQueryVariables = Exact<{
-  guildId: Scalars['BigInt'];
-  startsWithInsensitive: Scalars['String'];
-}>;
-
-
-export type GetGuildTagsStartingWithQuery = { __typename?: 'Query', allTags?: { __typename?: 'TagsConnection', totalCount: number, edges: Array<{ __typename?: 'TagsEdge', node: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } }> } | null };
+export type GetTagQuery = { __typename?: 'Query', tagByGuildIdAndTagName?: { __typename?: 'Tag', content: string, attachment?: string | null, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null };
 
 export type ListGuildTagsQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
 }>;
 
 
-export type ListGuildTagsQuery = { __typename?: 'Query', allTags?: { __typename?: 'TagsConnection', totalCount: number, edges: Array<{ __typename?: 'TagsEdge', cursor?: any | null, node: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } }>, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null } } | null };
+export type ListGuildTagsQuery = { __typename?: 'Query', allTags?: { __typename?: 'TagsConnection', totalCount: number, edges: Array<{ __typename?: 'TagsEdge', cursor?: any | null, node: { __typename?: 'Tag', content: string, attachment?: string | null, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } }>, pageInfo: { __typename?: 'PageInfo', endCursor?: any | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: any | null } } | null };
 
 export type SearchTagsQueryVariables = Exact<{
   guildId?: InputMaybe<Scalars['BigInt']>;
@@ -14920,9 +14878,9 @@ export type SearchTagsQueryVariables = Exact<{
 }>;
 
 
-export type SearchTagsQuery = { __typename?: 'Query', allTags?: { __typename?: 'TagsConnection', totalCount: number, edges: Array<{ __typename?: 'TagsEdge', node: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } }> } | null };
+export type SearchTagsQuery = { __typename?: 'Query', allTags?: { __typename?: 'TagsConnection', totalCount: number, edges: Array<{ __typename?: 'TagsEdge', node: { __typename?: 'Tag', content: string, attachment?: string | null, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } }> } | null };
 
-export type TagDataFragment = { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string };
+export type TagDataFragment = { __typename?: 'Tag', content: string, attachment?: string | null, created: string, guildId: string, tagName: string, ownerId: string, useCount: string };
 
 export type UpdateTagMutationVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -14931,7 +14889,7 @@ export type UpdateTagMutationVariables = Exact<{
 }>;
 
 
-export type UpdateTagMutation = { __typename?: 'Mutation', updateTagByGuildIdAndTagName?: { __typename?: 'UpdateTagPayload', tag?: { __typename?: 'Tag', content: string, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null } | null };
+export type UpdateTagMutation = { __typename?: 'Mutation', updateTagByGuildIdAndTagName?: { __typename?: 'UpdateTagPayload', tag?: { __typename?: 'Tag', content: string, attachment?: string | null, created: string, guildId: string, tagName: string, ownerId: string, useCount: string } | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
   id: Scalars['BigInt'];
@@ -15028,6 +14986,7 @@ export const RoleMenuDataFragmentDoc = gql`
 export const TagDataFragmentDoc = gql`
     fragment TagData on Tag {
   content
+  attachment
   created
   guildId
   tagName
@@ -15185,53 +15144,9 @@ export const GetTagDocument = gql`
   }
 }
     ${TagDataFragmentDoc}`;
-export const GetGuildTagsIncludingDocument = gql`
-    query getGuildTagsIncluding($guildId: BigInt!, $includesInsensitive: String!) {
-  allTags(
-    filter: {tagName: {includesInsensitive: $includesInsensitive}}
-    condition: {guildId: $guildId}
-  ) {
-    edges {
-      node {
-        ...TagData
-      }
-    }
-    totalCount
-  }
-}
-    ${TagDataFragmentDoc}`;
-export const GetGuildTagsOwnedByDocument = gql`
-    query getGuildTagsOwnedBy($guildId: BigInt!, $ownerId: BigInt!) {
-  allTags(condition: {guildId: $guildId, ownerId: $ownerId}) {
-    edges {
-      node {
-        content
-        guildId
-        created
-      }
-    }
-    totalCount
-  }
-}
-    `;
-export const GetGuildTagsStartingWithDocument = gql`
-    query getGuildTagsStartingWith($guildId: BigInt!, $startsWithInsensitive: String!) {
-  allTags(
-    filter: {tagName: {startsWithInsensitive: $startsWithInsensitive}}
-    condition: {guildId: $guildId}
-  ) {
-    edges {
-      node {
-        ...TagData
-      }
-    }
-    totalCount
-  }
-}
-    ${TagDataFragmentDoc}`;
 export const ListGuildTagsDocument = gql`
     query listGuildTags($guildId: BigInt!) {
-  allTags(condition: {guildId: $guildId}) {
+  allTags(condition: {guildId: $guildId}, orderBy: TAG_NAME_ASC) {
     edges {
       node {
         ...TagData
@@ -15253,6 +15168,7 @@ export const SearchTagsDocument = gql`
   allTags(
     filter: {tagName: {includesInsensitive: $includesInsensitive, startsWithInsensitive: $startsWithInsensitive}}
     condition: {guildId: $guildId, ownerId: $ownerId}
+    orderBy: TAG_NAME_ASC
   ) {
     edges {
       node {
@@ -15367,15 +15283,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getTag(variables: GetTagQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetTagQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetTagQuery>(GetTagDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getTag', 'query');
-    },
-    getGuildTagsIncluding(variables: GetGuildTagsIncludingQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetGuildTagsIncludingQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetGuildTagsIncludingQuery>(GetGuildTagsIncludingDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getGuildTagsIncluding', 'query');
-    },
-    getGuildTagsOwnedBy(variables: GetGuildTagsOwnedByQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetGuildTagsOwnedByQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetGuildTagsOwnedByQuery>(GetGuildTagsOwnedByDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getGuildTagsOwnedBy', 'query');
-    },
-    getGuildTagsStartingWith(variables: GetGuildTagsStartingWithQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetGuildTagsStartingWithQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetGuildTagsStartingWithQuery>(GetGuildTagsStartingWithDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getGuildTagsStartingWith', 'query');
     },
     listGuildTags(variables: ListGuildTagsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ListGuildTagsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ListGuildTagsQuery>(ListGuildTagsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'listGuildTags', 'query');

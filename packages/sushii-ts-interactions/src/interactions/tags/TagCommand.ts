@@ -49,7 +49,7 @@ export default class TagCommand extends SlashCommandHandler {
   // /tag list     -- paginated embed
   // /tag fulllist -- full option sends a file with all tag names
   //
-  // /tag search :contains (autocomplete?) :author -- paginated embed (same as tag list)
+  // /tag search :contains (autocomplete?) :owner -- paginated embed (same as tag list)
   // /tag edit :name :newcontent :newattachment?
   // /tag rename :name :newname
   // /tag delete :name
@@ -107,7 +107,7 @@ export default class TagCommand extends SlashCommandHandler {
         )
         .addUserOption((o) =>
           o
-            .setName("author")
+            .setName("owner")
             .setDescription("Filter tags created by this user.")
             .setRequired(false)
         )
@@ -124,17 +124,20 @@ export default class TagCommand extends SlashCommandHandler {
             .setAutocomplete(true)
         )
     )
-    .addSubcommand((c) => c.setName("list").setDescription("List server tags."))
     .addSubcommand((c) =>
-      c
-        .setName("fulllist")
-        .setDescription("Get a file containing all server tags.")
+      c.setName("list").setDescription("Get all server tags.")
     )
     .addSubcommand((c) =>
       c
         .setName("search")
         .setDescription("Search for tags.")
-        // Both optional
+        // All optional but requires at least one
+        .addStringOption((o) =>
+          o
+            .setName("name starts with")
+            .setDescription("Filter tags name starting with this text.")
+            .setRequired(false)
+        )
         .addStringOption((o) =>
           o
             .setName("name contains")
@@ -143,7 +146,7 @@ export default class TagCommand extends SlashCommandHandler {
         )
         .addUserOption((o) =>
           o
-            .setName("author")
+            .setName("owner")
             .setDescription("Filter tags created by this user.")
             .setRequired(false)
         )
@@ -159,11 +162,12 @@ export default class TagCommand extends SlashCommandHandler {
             .setRequired(true)
             .setAutocomplete(true)
         )
+        // Requires at least one
         .addStringOption((o) =>
           o
             .setName("content")
             .setDescription("The new content of the tag.")
-            .setRequired(true)
+            .setRequired(false)
         )
         .addAttachmentOption((o) =>
           o
@@ -185,7 +189,7 @@ export default class TagCommand extends SlashCommandHandler {
         )
         .addStringOption((o) =>
           o
-            .setName("new_name")
+            .setName("new name")
             .setDescription("The new name of the tag.")
             .setRequired(true)
         )
@@ -225,8 +229,6 @@ export default class TagCommand extends SlashCommandHandler {
       case "info":
         return TagCommand.infoHandler(ctx, interaction, options);
       case "list":
-        return TagCommand.listHandler(ctx, interaction);
-      case "fulllist":
         return TagCommand.fulllistHandler(ctx, interaction);
       case "search":
         return TagCommand.searchHandler(ctx, interaction, options);
@@ -322,8 +324,13 @@ export default class TagCommand extends SlashCommandHandler {
       });
     }
 
+    let { content } = tag.tagByGuildIdAndTagName;
+    if (tag.tagByGuildIdAndTagName.attachment) {
+      content += tag.tagByGuildIdAndTagName.attachment;
+    }
+
     await ctx.REST.interactionReply(interaction, {
-      content: tag.tagByGuildIdAndTagName.content,
+      content,
       // No pings in tags
       allowed_mentions: {
         parse: [],
@@ -426,6 +433,247 @@ export default class TagCommand extends SlashCommandHandler {
     );
   }
 
+  static async searchHandler(
+    ctx: Context,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: CommandInteractionOptionResolver
+  ): Promise<void> {
+    const startsWith = options.getString("name starts with");
+    const contains = options.getString("name contains");
+    const owner = options.getUser("owner");
+
+    if (!startsWith && !contains && !owner) {
+      return ctx.REST.interactionReply(interaction, {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(t("tag.search.error.title", { ns: "commands" }))
+            .setDescription(
+              t("tag.search.error.no_options", { ns: "commands" })
+            )
+            .setColor(Color.Error)
+            .toJSON(),
+        ],
+      });
+    }
+
+    // startsWith xor contains
+    if (startsWith && contains) {
+      return ctx.REST.interactionReply(interaction, {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(t("tag.search.error.title", { ns: "commands" }))
+            .setDescription(
+              t("tag.search.error.starts_with_contains_xor", { ns: "commands" })
+            )
+            .setColor(Color.Error)
+            .toJSON(),
+        ],
+      });
+    }
+
+    const tags = await ctx.sushiiAPI.sdk.searchTags({
+      guildId: interaction.guild_id,
+      ownerId: owner?.id,
+      includesInsensitive: contains,
+      startsWithInsensitive: startsWith,
+    });
+
+    if (!tags.allTags) {
+      // Empty tags should still return empty array
+      throw new Error("Failed to fetch tags.");
+    }
+
+    const { edges, totalCount } = tags.allTags;
+
+    const tagNames = edges.map((edge) => edge.node.tagName);
+
+    await ctx.REST.interactionReply(
+      interaction,
+      {
+        content: t("tag.search.message_content", {
+          ns: "commands",
+          count: totalCount,
+        }),
+        attachments: [
+          {
+            id: "0",
+            description: t("tag.fulllist.file_description", {
+              ns: "commands",
+            }),
+            filename: t("tag.fulllist.file_name", { ns: "commands" }),
+          },
+        ],
+      },
+      [
+        {
+          fileName: t("tag.fulllist.file_name", { ns: "commands" }),
+          fileData: tagNames.join("\n"),
+        },
+      ]
+    );
+  }
+
+  static async editHandler(
+    ctx: Context,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: CommandInteractionOptionResolver
+  ): Promise<void> {
+    const tagName = options.getString("name");
+    if (!tagName) {
+      throw new Error("Missing tag name.");
+    }
+
+    const tag = await ctx.sushiiAPI.sdk.getTag({
+      guildId: interaction.guild_id,
+      tagName,
+    });
+
+    // Check if tag exists
+    if (!tag.tagByGuildIdAndTagName) {
+      return ctx.REST.interactionReply(interaction, {
+        content: t("tag.edit.error.not_found", {
+          ns: "commands",
+          tagName,
+        }),
+      });
+    }
+
+    const invoker = getInvokerUser(interaction);
+
+    // Check if owner or manage guild perms
+    if (
+      await deniedTagPermission(
+        ctx,
+        interaction,
+        tag.tagByGuildIdAndTagName,
+        invoker.id,
+        interaction.member.permissions
+      )
+    ) {
+      return;
+    }
+
+    const newContent = options.getString("content");
+    const newAttachment = options.getAttachment("attachment");
+
+    if (!newContent && !newAttachment) {
+      return ctx.REST.interactionReply(interaction, {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(t("tag.edit.error.title", { ns: "commands" }))
+            .setDescription(t("tag.edit.error.no_options", { ns: "commands" }))
+            .setColor(Color.Error)
+            .toJSON(),
+        ],
+      });
+    }
+
+    await ctx.sushiiAPI.sdk.updateTag({
+      tagPatch: {
+        content: newContent,
+        attachment: newAttachment?.url,
+      },
+      guildId: interaction.guild_id,
+      tagName,
+    });
+
+    const embed = new EmbedBuilder()
+      .setTitle(t("tag.edit.success.title", { ns: "commands", tagName }))
+      .setFields({
+        name: t("tag.edit.success.content", { ns: "commands" }),
+        value: tag.tagByGuildIdAndTagName.content,
+      })
+      .setImage(newAttachment?.url || null)
+      .setColor(Color.Success);
+
+    await ctx.REST.interactionReply(interaction, {
+      embeds: [embed.toJSON()],
+    });
+  }
+
+  static async renameHandler(
+    ctx: Context,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: CommandInteractionOptionResolver
+  ): Promise<void> {
+    const tagName = options.getString("name");
+    if (!tagName) {
+      throw new Error("Missing tag name.");
+    }
+
+    const tag = await ctx.sushiiAPI.sdk.getTag({
+      guildId: interaction.guild_id,
+      tagName,
+    });
+
+    // Check if tag exists
+    if (!tag.tagByGuildIdAndTagName) {
+      return ctx.REST.interactionReply(interaction, {
+        content: t("tag.edit.error.not_found", {
+          ns: "commands",
+          tagName,
+        }),
+      });
+    }
+
+    const invoker = getInvokerUser(interaction);
+
+    // Check if owner or manage guild perms
+    if (
+      await deniedTagPermission(
+        ctx,
+        interaction,
+        tag.tagByGuildIdAndTagName,
+        invoker.id,
+        interaction.member.permissions
+      )
+    ) {
+      return;
+    }
+
+    const newName = options.getString("new name");
+    if (!newName) {
+      throw new Error("Missing new tag name.");
+    }
+
+    // Check if new name tag already exists
+    const tagExists = await ctx.sushiiAPI.sdk.getTag({
+      guildId: interaction.guild_id,
+      tagName: newName,
+    });
+
+    if (tagExists.tagByGuildIdAndTagName) {
+      return ctx.REST.interactionReply(interaction, {
+        content: t("tag.rename.error.already_exists", {
+          ns: "commands",
+          tagName,
+        }),
+      });
+    }
+
+    // Rename tag, possible failure if tag name already exists, but rare enough
+    // race condition to ignore -- should error anyways.
+    await ctx.sushiiAPI.sdk.updateTag({
+      tagPatch: {
+        tagName: newName,
+      },
+      guildId: interaction.guild_id,
+      tagName,
+    });
+
+    const embed = new EmbedBuilder()
+      .setTitle(t("tag.rename.success.title", { ns: "commands", tagName }))
+      .setFields({
+        name: t("tag.rename.success.new_name", { ns: "commands" }),
+        value: newName,
+      })
+      .setColor(Color.Success);
+
+    await ctx.REST.interactionReply(interaction, {
+      embeds: [embed.toJSON()],
+    });
+  }
+
   static async deleteHandler(
     ctx: Context,
     interaction: APIChatInputApplicationCommandGuildInteraction,
@@ -475,15 +723,15 @@ export default class TagCommand extends SlashCommandHandler {
       .setTitle(t("tag.delete.title", { ns: "commands", tagName }))
       .setFields(
         {
-          name: t("tag.info.success.content", { ns: "commands" }),
+          name: t("tag.delete.success.content", { ns: "commands" }),
           value: tag.tagByGuildIdAndTagName.content,
         },
         {
-          name: t("tag.info.success.owner", { ns: "commands" }),
+          name: t("tag.delete.success.owner", { ns: "commands" }),
           value: tag.tagByGuildIdAndTagName.ownerId,
         },
         {
-          name: t("tag.info.success.use_count", { ns: "commands" }),
+          name: t("tag.delete.success.use_count", { ns: "commands" }),
           value: tag.tagByGuildIdAndTagName.useCount,
         }
       )
@@ -491,7 +739,6 @@ export default class TagCommand extends SlashCommandHandler {
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed.toJSON()],
-      flags: MessageFlags.Ephemeral,
     });
   }
 }

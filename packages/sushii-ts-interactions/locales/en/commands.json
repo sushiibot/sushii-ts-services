@@ -71,6 +71,37 @@
         "file_description": "All tags in this server."
       }
     },
+    "search": {
+      "error": {
+        "title": "Tag search failed",
+        "no_options": "You must provide at least one search option.",
+        "starts_with_contains_xor": "You can only use *one* of the options `name starts with` or `name contains`, not both."
+      },
+      "success": {
+        "message_content": "Tag search results"
+      }
+    },
+    "edit": {
+      "error": {
+        "title": "Tag edit failed",
+        "not_found": "Tag {{tagName}} was not found!",
+        "not_owner": "You do not own the tag {{tagName}} so you cannot edit it :(",
+        "no_options": "You must provide at least one option `content` or `attachment`."
+      },
+      "success": {
+        "title": "Edited tag {{tagName}}",
+        "content": "Content"
+      }
+    },
+    "rename": {
+      "error": {
+        "already_exists": "Tag {{tagName}} already exists, please choose another name!"
+      },
+      "success": {
+        "title": "Renamed tag {{tagName}}",
+        "new_name": "New Name"
+      }
+    },
     "delete": {
       "error": {
         "not_found": "Tag {{tagName}} was not found!",
