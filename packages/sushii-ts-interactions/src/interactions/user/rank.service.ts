@@ -15,11 +15,31 @@ export async function getUserRank(
   user: APIUser,
   guildId: string
 ): Promise<RankResponse> {
-  const userData = await ctx.sushiiAPI.getUser(user.id);
-  const userRank = await ctx.sushiiAPI.getUserRank(user.id, guildId);
-  const userLevel = new UserLevelProgress(parseInt(userRank.msgAllTime, 10));
-  const globalXP = await ctx.sushiiAPI.getUserGlobalXP(user.id);
-  const globalLevel = new UserLevelProgress(parseInt(globalXP, 10));
+  const { userById: userData } = await ctx.sushiiAPI.sdk.userByID({
+    id: user.id,
+  });
+  if (!userData) {
+    throw new Error("User not found");
+  }
+
+  const { userLevelByUserIdAndGuildId: userGuildLevel } =
+    await ctx.sushiiAPI.sdk.userGuildLevel({
+      guildId,
+      userId: user.id,
+    });
+  if (!userGuildLevel) {
+    throw new Error("User has no server XP");
+  }
+
+  const userLevel = new UserLevelProgress(
+    parseInt(userGuildLevel.msgAllTime, 10)
+  );
+  const { allUserLevels: globalXP } = await ctx.sushiiAPI.sdk.userGlobalLevel({
+    userId: user.id,
+  });
+  const globalLevel = new UserLevelProgress(
+    parseInt(globalXP?.aggregates?.sum?.msgAllTime || 0, 10)
+  );
 
   const rankContext: Record<string, string | boolean | number> = {
     // BASE_URL: sushii_conf.image_server_url,

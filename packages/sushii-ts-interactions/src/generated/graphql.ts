@@ -6631,6 +6631,8 @@ export type Query = Node & {
   allRoleMenus?: Maybe<RoleMenusConnection>;
   /** Reads and enables pagination through a set of `Tag`. */
   allTags?: Maybe<TagsConnection>;
+  /** Reads and enables pagination through a set of `UserLevel`. */
+  allUserLevels?: Maybe<UserLevelsConnection>;
   /** Reads and enables pagination through a set of `User`. */
   allUsers?: Maybe<UsersConnection>;
   /** Reads and enables pagination through a set of `WebUserGuild`. */
@@ -6899,6 +6901,19 @@ export type QueryAllTagsArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<TagsOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllUserLevelsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<UserLevelCondition>;
+  filter?: InputMaybe<UserLevelFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<UserLevelsOrderBy>>;
 };
 
 
@@ -9442,6 +9457,108 @@ export type UserLevel = Node & {
   userId: Scalars['BigInt'];
 };
 
+export type UserLevelAggregates = {
+  __typename?: 'UserLevelAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<UserLevelAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<UserLevelDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<UserLevelMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<UserLevelMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<UserLevelStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<UserLevelStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<UserLevelSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<UserLevelVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<UserLevelVarianceSampleAggregates>;
+};
+
+export type UserLevelAverageAggregates = {
+  __typename?: 'UserLevelAverageAggregates';
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of msgAllTime across the matching connection */
+  msgAllTime?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of msgDay across the matching connection */
+  msgDay?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of msgMonth across the matching connection */
+  msgMonth?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of msgWeek across the matching connection */
+  msgWeek?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+/**
+ * A condition to be used against `UserLevel` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type UserLevelCondition = {
+  /** Checks for equality with the object’s `guildId` field. */
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `lastMsg` field. */
+  lastMsg?: InputMaybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `msgAllTime` field. */
+  msgAllTime?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `msgDay` field. */
+  msgDay?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `msgMonth` field. */
+  msgMonth?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `msgWeek` field. */
+  msgWeek?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type UserLevelDistinctCountAggregates = {
+  __typename?: 'UserLevelDistinctCountAggregates';
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of lastMsg across the matching connection */
+  lastMsg?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of msgAllTime across the matching connection */
+  msgAllTime?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of msgDay across the matching connection */
+  msgDay?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of msgMonth across the matching connection */
+  msgMonth?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of msgWeek across the matching connection */
+  msgWeek?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `UserLevel` object types. All fields are combined with a logical ‘and.’ */
+export type UserLevelFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<UserLevelFilter>>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `lastMsg` field. */
+  lastMsg?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `msgAllTime` field. */
+  msgAllTime?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `msgDay` field. */
+  msgDay?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `msgMonth` field. */
+  msgMonth?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `msgWeek` field. */
+  msgWeek?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<UserLevelFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<UserLevelFilter>>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<BigIntFilter>;
+};
+
 /** An input for mutations affecting `UserLevel` */
 export type UserLevelInput = {
   guildId: Scalars['BigInt'];
@@ -9451,6 +9568,38 @@ export type UserLevelInput = {
   msgMonth: Scalars['BigInt'];
   msgWeek: Scalars['BigInt'];
   userId: Scalars['BigInt'];
+};
+
+export type UserLevelMaxAggregates = {
+  __typename?: 'UserLevelMaxAggregates';
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of msgAllTime across the matching connection */
+  msgAllTime?: Maybe<Scalars['BigInt']>;
+  /** Maximum of msgDay across the matching connection */
+  msgDay?: Maybe<Scalars['BigInt']>;
+  /** Maximum of msgMonth across the matching connection */
+  msgMonth?: Maybe<Scalars['BigInt']>;
+  /** Maximum of msgWeek across the matching connection */
+  msgWeek?: Maybe<Scalars['BigInt']>;
+  /** Maximum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+export type UserLevelMinAggregates = {
+  __typename?: 'UserLevelMinAggregates';
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of msgAllTime across the matching connection */
+  msgAllTime?: Maybe<Scalars['BigInt']>;
+  /** Minimum of msgDay across the matching connection */
+  msgDay?: Maybe<Scalars['BigInt']>;
+  /** Minimum of msgMonth across the matching connection */
+  msgMonth?: Maybe<Scalars['BigInt']>;
+  /** Minimum of msgWeek across the matching connection */
+  msgWeek?: Maybe<Scalars['BigInt']>;
+  /** Minimum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `UserLevel`. Fields that are set will be updated. */
@@ -9464,6 +9613,110 @@ export type UserLevelPatch = {
   userId?: InputMaybe<Scalars['BigInt']>;
 };
 
+export type UserLevelStddevPopulationAggregates = {
+  __typename?: 'UserLevelStddevPopulationAggregates';
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of msgAllTime across the matching connection */
+  msgAllTime?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of msgDay across the matching connection */
+  msgDay?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of msgMonth across the matching connection */
+  msgMonth?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of msgWeek across the matching connection */
+  msgWeek?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type UserLevelStddevSampleAggregates = {
+  __typename?: 'UserLevelStddevSampleAggregates';
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of msgAllTime across the matching connection */
+  msgAllTime?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of msgDay across the matching connection */
+  msgDay?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of msgMonth across the matching connection */
+  msgMonth?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of msgWeek across the matching connection */
+  msgWeek?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type UserLevelSumAggregates = {
+  __typename?: 'UserLevelSumAggregates';
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of msgAllTime across the matching connection */
+  msgAllTime: Scalars['BigFloat'];
+  /** Sum of msgDay across the matching connection */
+  msgDay: Scalars['BigFloat'];
+  /** Sum of msgMonth across the matching connection */
+  msgMonth: Scalars['BigFloat'];
+  /** Sum of msgWeek across the matching connection */
+  msgWeek: Scalars['BigFloat'];
+  /** Sum of userId across the matching connection */
+  userId: Scalars['BigFloat'];
+};
+
+export type UserLevelVariancePopulationAggregates = {
+  __typename?: 'UserLevelVariancePopulationAggregates';
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of msgAllTime across the matching connection */
+  msgAllTime?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of msgDay across the matching connection */
+  msgDay?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of msgMonth across the matching connection */
+  msgMonth?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of msgWeek across the matching connection */
+  msgWeek?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type UserLevelVarianceSampleAggregates = {
+  __typename?: 'UserLevelVarianceSampleAggregates';
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of msgAllTime across the matching connection */
+  msgAllTime?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of msgDay across the matching connection */
+  msgDay?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of msgMonth across the matching connection */
+  msgMonth?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of msgWeek across the matching connection */
+  msgWeek?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A connection to a list of `UserLevel` values. */
+export type UserLevelsConnection = {
+  __typename?: 'UserLevelsConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<UserLevelAggregates>;
+  /** A list of edges which contains the `UserLevel` and cursor to aid in pagination. */
+  edges: Array<UserLevelsEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<UserLevelAggregates>>;
+  /** A list of `UserLevel` objects. */
+  nodes: Array<UserLevel>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `UserLevel` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `UserLevel` values. */
+export type UserLevelsConnectionGroupedAggregatesArgs = {
+  groupBy: Array<UserLevelsGroupBy>;
+  having?: InputMaybe<UserLevelsHavingInput>;
+};
+
 /** A `UserLevel` edge in the connection. */
 export type UserLevelsEdge = {
   __typename?: 'UserLevelsEdge';
@@ -9471,6 +9724,124 @@ export type UserLevelsEdge = {
   cursor?: Maybe<Scalars['Cursor']>;
   /** The `UserLevel` at the end of the edge. */
   node: UserLevel;
+};
+
+/** Grouping methods for `UserLevel` for usage during aggregation. */
+export enum UserLevelsGroupBy {
+  GuildId = 'GUILD_ID',
+  LastMsg = 'LAST_MSG',
+  LastMsgTruncatedToDay = 'LAST_MSG_TRUNCATED_TO_DAY',
+  LastMsgTruncatedToHour = 'LAST_MSG_TRUNCATED_TO_HOUR',
+  MsgAllTime = 'MSG_ALL_TIME',
+  MsgDay = 'MSG_DAY',
+  MsgMonth = 'MSG_MONTH',
+  MsgWeek = 'MSG_WEEK',
+  UserId = 'USER_ID'
+}
+
+export type UserLevelsHavingAverageInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  msgAllTime?: InputMaybe<HavingBigintFilter>;
+  msgDay?: InputMaybe<HavingBigintFilter>;
+  msgMonth?: InputMaybe<HavingBigintFilter>;
+  msgWeek?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UserLevelsHavingDistinctCountInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  msgAllTime?: InputMaybe<HavingBigintFilter>;
+  msgDay?: InputMaybe<HavingBigintFilter>;
+  msgMonth?: InputMaybe<HavingBigintFilter>;
+  msgWeek?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `UserLevel` aggregates. */
+export type UserLevelsHavingInput = {
+  AND?: InputMaybe<Array<UserLevelsHavingInput>>;
+  OR?: InputMaybe<Array<UserLevelsHavingInput>>;
+  average?: InputMaybe<UserLevelsHavingAverageInput>;
+  distinctCount?: InputMaybe<UserLevelsHavingDistinctCountInput>;
+  max?: InputMaybe<UserLevelsHavingMaxInput>;
+  min?: InputMaybe<UserLevelsHavingMinInput>;
+  stddevPopulation?: InputMaybe<UserLevelsHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<UserLevelsHavingStddevSampleInput>;
+  sum?: InputMaybe<UserLevelsHavingSumInput>;
+  variancePopulation?: InputMaybe<UserLevelsHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<UserLevelsHavingVarianceSampleInput>;
+};
+
+export type UserLevelsHavingMaxInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  msgAllTime?: InputMaybe<HavingBigintFilter>;
+  msgDay?: InputMaybe<HavingBigintFilter>;
+  msgMonth?: InputMaybe<HavingBigintFilter>;
+  msgWeek?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UserLevelsHavingMinInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  msgAllTime?: InputMaybe<HavingBigintFilter>;
+  msgDay?: InputMaybe<HavingBigintFilter>;
+  msgMonth?: InputMaybe<HavingBigintFilter>;
+  msgWeek?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UserLevelsHavingStddevPopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  msgAllTime?: InputMaybe<HavingBigintFilter>;
+  msgDay?: InputMaybe<HavingBigintFilter>;
+  msgMonth?: InputMaybe<HavingBigintFilter>;
+  msgWeek?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UserLevelsHavingStddevSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  msgAllTime?: InputMaybe<HavingBigintFilter>;
+  msgDay?: InputMaybe<HavingBigintFilter>;
+  msgMonth?: InputMaybe<HavingBigintFilter>;
+  msgWeek?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UserLevelsHavingSumInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  msgAllTime?: InputMaybe<HavingBigintFilter>;
+  msgDay?: InputMaybe<HavingBigintFilter>;
+  msgMonth?: InputMaybe<HavingBigintFilter>;
+  msgWeek?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UserLevelsHavingVariancePopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  msgAllTime?: InputMaybe<HavingBigintFilter>;
+  msgDay?: InputMaybe<HavingBigintFilter>;
+  msgMonth?: InputMaybe<HavingBigintFilter>;
+  msgWeek?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type UserLevelsHavingVarianceSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  msgAllTime?: InputMaybe<HavingBigintFilter>;
+  msgDay?: InputMaybe<HavingBigintFilter>;
+  msgMonth?: InputMaybe<HavingBigintFilter>;
+  msgWeek?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `UserLevel`. */
@@ -11174,9 +11545,33 @@ export type ResolversTypes = {
   UserFilter: UserFilter;
   UserInput: UserInput;
   UserLevel: ResolverTypeWrapper<UserLevel>;
+  UserLevelAggregates: ResolverTypeWrapper<UserLevelAggregates>;
+  UserLevelAverageAggregates: ResolverTypeWrapper<UserLevelAverageAggregates>;
+  UserLevelCondition: UserLevelCondition;
+  UserLevelDistinctCountAggregates: ResolverTypeWrapper<UserLevelDistinctCountAggregates>;
+  UserLevelFilter: UserLevelFilter;
   UserLevelInput: UserLevelInput;
+  UserLevelMaxAggregates: ResolverTypeWrapper<UserLevelMaxAggregates>;
+  UserLevelMinAggregates: ResolverTypeWrapper<UserLevelMinAggregates>;
   UserLevelPatch: UserLevelPatch;
+  UserLevelStddevPopulationAggregates: ResolverTypeWrapper<UserLevelStddevPopulationAggregates>;
+  UserLevelStddevSampleAggregates: ResolverTypeWrapper<UserLevelStddevSampleAggregates>;
+  UserLevelSumAggregates: ResolverTypeWrapper<UserLevelSumAggregates>;
+  UserLevelVariancePopulationAggregates: ResolverTypeWrapper<UserLevelVariancePopulationAggregates>;
+  UserLevelVarianceSampleAggregates: ResolverTypeWrapper<UserLevelVarianceSampleAggregates>;
+  UserLevelsConnection: ResolverTypeWrapper<UserLevelsConnection>;
   UserLevelsEdge: ResolverTypeWrapper<UserLevelsEdge>;
+  UserLevelsGroupBy: UserLevelsGroupBy;
+  UserLevelsHavingAverageInput: UserLevelsHavingAverageInput;
+  UserLevelsHavingDistinctCountInput: UserLevelsHavingDistinctCountInput;
+  UserLevelsHavingInput: UserLevelsHavingInput;
+  UserLevelsHavingMaxInput: UserLevelsHavingMaxInput;
+  UserLevelsHavingMinInput: UserLevelsHavingMinInput;
+  UserLevelsHavingStddevPopulationInput: UserLevelsHavingStddevPopulationInput;
+  UserLevelsHavingStddevSampleInput: UserLevelsHavingStddevSampleInput;
+  UserLevelsHavingSumInput: UserLevelsHavingSumInput;
+  UserLevelsHavingVariancePopulationInput: UserLevelsHavingVariancePopulationInput;
+  UserLevelsHavingVarianceSampleInput: UserLevelsHavingVarianceSampleInput;
   UserLevelsOrderBy: UserLevelsOrderBy;
   UserMaxAggregates: ResolverTypeWrapper<UserMaxAggregates>;
   UserMinAggregates: ResolverTypeWrapper<UserMinAggregates>;
@@ -11814,9 +12209,32 @@ export type ResolversParentTypes = {
   UserFilter: UserFilter;
   UserInput: UserInput;
   UserLevel: UserLevel;
+  UserLevelAggregates: UserLevelAggregates;
+  UserLevelAverageAggregates: UserLevelAverageAggregates;
+  UserLevelCondition: UserLevelCondition;
+  UserLevelDistinctCountAggregates: UserLevelDistinctCountAggregates;
+  UserLevelFilter: UserLevelFilter;
   UserLevelInput: UserLevelInput;
+  UserLevelMaxAggregates: UserLevelMaxAggregates;
+  UserLevelMinAggregates: UserLevelMinAggregates;
   UserLevelPatch: UserLevelPatch;
+  UserLevelStddevPopulationAggregates: UserLevelStddevPopulationAggregates;
+  UserLevelStddevSampleAggregates: UserLevelStddevSampleAggregates;
+  UserLevelSumAggregates: UserLevelSumAggregates;
+  UserLevelVariancePopulationAggregates: UserLevelVariancePopulationAggregates;
+  UserLevelVarianceSampleAggregates: UserLevelVarianceSampleAggregates;
+  UserLevelsConnection: UserLevelsConnection;
   UserLevelsEdge: UserLevelsEdge;
+  UserLevelsHavingAverageInput: UserLevelsHavingAverageInput;
+  UserLevelsHavingDistinctCountInput: UserLevelsHavingDistinctCountInput;
+  UserLevelsHavingInput: UserLevelsHavingInput;
+  UserLevelsHavingMaxInput: UserLevelsHavingMaxInput;
+  UserLevelsHavingMinInput: UserLevelsHavingMinInput;
+  UserLevelsHavingStddevPopulationInput: UserLevelsHavingStddevPopulationInput;
+  UserLevelsHavingStddevSampleInput: UserLevelsHavingStddevSampleInput;
+  UserLevelsHavingSumInput: UserLevelsHavingSumInput;
+  UserLevelsHavingVariancePopulationInput: UserLevelsHavingVariancePopulationInput;
+  UserLevelsHavingVarianceSampleInput: UserLevelsHavingVarianceSampleInput;
   UserMaxAggregates: UserMaxAggregates;
   UserMinAggregates: UserMinAggregates;
   UserPatch: UserPatch;
@@ -13558,6 +13976,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   allReminders?: Resolver<Maybe<ResolversTypes['RemindersConnection']>, ParentType, ContextType, RequireFields<QueryAllRemindersArgs, 'orderBy'>>;
   allRoleMenus?: Resolver<Maybe<ResolversTypes['RoleMenusConnection']>, ParentType, ContextType, RequireFields<QueryAllRoleMenusArgs, 'orderBy'>>;
   allTags?: Resolver<Maybe<ResolversTypes['TagsConnection']>, ParentType, ContextType, RequireFields<QueryAllTagsArgs, 'orderBy'>>;
+  allUserLevels?: Resolver<Maybe<ResolversTypes['UserLevelsConnection']>, ParentType, ContextType, RequireFields<QueryAllUserLevelsArgs, 'orderBy'>>;
   allUsers?: Resolver<Maybe<ResolversTypes['UsersConnection']>, ParentType, ContextType, RequireFields<QueryAllUsersArgs, 'orderBy'>>;
   allWebUserGuilds?: Resolver<Maybe<ResolversTypes['WebUserGuildsConnection']>, ParentType, ContextType, RequireFields<QueryAllWebUserGuildsArgs, 'orderBy'>>;
   allWebUsers?: Resolver<Maybe<ResolversTypes['WebUsersConnection']>, ParentType, ContextType, RequireFields<QueryAllWebUsersArgs, 'orderBy'>>;
@@ -14169,6 +14588,121 @@ export type UserLevelResolvers<ContextType = any, ParentType extends ResolversPa
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserLevelAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelAggregates'] = ResolversParentTypes['UserLevelAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['UserLevelAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['UserLevelDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['UserLevelMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['UserLevelMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['UserLevelStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['UserLevelStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['UserLevelSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['UserLevelVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['UserLevelVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserLevelAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelAverageAggregates'] = ResolversParentTypes['UserLevelAverageAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgAllTime?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgDay?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgMonth?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgWeek?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserLevelDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelDistinctCountAggregates'] = ResolversParentTypes['UserLevelDistinctCountAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  lastMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgAllTime?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgDay?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgMonth?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgWeek?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserLevelMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelMaxAggregates'] = ResolversParentTypes['UserLevelMaxAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgAllTime?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgDay?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgMonth?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgWeek?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserLevelMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelMinAggregates'] = ResolversParentTypes['UserLevelMinAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgAllTime?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgDay?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgMonth?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgWeek?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserLevelStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelStddevPopulationAggregates'] = ResolversParentTypes['UserLevelStddevPopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgAllTime?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgDay?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgMonth?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgWeek?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserLevelStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelStddevSampleAggregates'] = ResolversParentTypes['UserLevelStddevSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgAllTime?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgDay?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgMonth?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgWeek?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserLevelSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelSumAggregates'] = ResolversParentTypes['UserLevelSumAggregates']> = {
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  msgAllTime?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  msgDay?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  msgMonth?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  msgWeek?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserLevelVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelVariancePopulationAggregates'] = ResolversParentTypes['UserLevelVariancePopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgAllTime?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgDay?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgMonth?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgWeek?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserLevelVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelVarianceSampleAggregates'] = ResolversParentTypes['UserLevelVarianceSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgAllTime?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgDay?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgMonth?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  msgWeek?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserLevelsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelsConnection'] = ResolversParentTypes['UserLevelsConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['UserLevelAggregates']>, ParentType, ContextType>;
+  edges?: Resolver<Array<ResolversTypes['UserLevelsEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['UserLevelAggregates']>>, ParentType, ContextType, RequireFields<UserLevelsConnectionGroupedAggregatesArgs, 'groupBy'>>;
+  nodes?: Resolver<Array<ResolversTypes['UserLevel']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UserLevelsEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelsEdge'] = ResolversParentTypes['UserLevelsEdge']> = {
   cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
   node?: Resolver<ResolversTypes['UserLevel'], ParentType, ContextType>;
@@ -14704,6 +15238,17 @@ export type Resolvers<ContextType = any> = {
   UserAverageAggregates?: UserAverageAggregatesResolvers<ContextType>;
   UserDistinctCountAggregates?: UserDistinctCountAggregatesResolvers<ContextType>;
   UserLevel?: UserLevelResolvers<ContextType>;
+  UserLevelAggregates?: UserLevelAggregatesResolvers<ContextType>;
+  UserLevelAverageAggregates?: UserLevelAverageAggregatesResolvers<ContextType>;
+  UserLevelDistinctCountAggregates?: UserLevelDistinctCountAggregatesResolvers<ContextType>;
+  UserLevelMaxAggregates?: UserLevelMaxAggregatesResolvers<ContextType>;
+  UserLevelMinAggregates?: UserLevelMinAggregatesResolvers<ContextType>;
+  UserLevelStddevPopulationAggregates?: UserLevelStddevPopulationAggregatesResolvers<ContextType>;
+  UserLevelStddevSampleAggregates?: UserLevelStddevSampleAggregatesResolvers<ContextType>;
+  UserLevelSumAggregates?: UserLevelSumAggregatesResolvers<ContextType>;
+  UserLevelVariancePopulationAggregates?: UserLevelVariancePopulationAggregatesResolvers<ContextType>;
+  UserLevelVarianceSampleAggregates?: UserLevelVarianceSampleAggregatesResolvers<ContextType>;
+  UserLevelsConnection?: UserLevelsConnectionResolvers<ContextType>;
   UserLevelsEdge?: UserLevelsEdgeResolvers<ContextType>;
   UserMaxAggregates?: UserMaxAggregatesResolvers<ContextType>;
   UserMinAggregates?: UserMinAggregatesResolvers<ContextType>;
@@ -14935,6 +15480,13 @@ export type UpdateUserMutationVariables = Exact<{
 export type UpdateUserMutation = { __typename?: 'Mutation', updateUserById?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', id: string, isPatron: boolean, rep: string, lastRep?: string | null, fishies: string, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null } | null } | null };
 
 export type UserDataFragment = { __typename?: 'User', id: string, isPatron: boolean, rep: string, lastRep?: string | null, fishies: string, lastFishies?: string | null, lastfmUsername?: string | null, patronEmoji?: string | null, profileData?: { [key: string]: any } | null };
+
+export type UserGlobalLevelQueryVariables = Exact<{
+  userId: Scalars['BigInt'];
+}>;
+
+
+export type UserGlobalLevelQuery = { __typename?: 'Query', allUserLevels?: { __typename?: 'UserLevelsConnection', aggregates?: { __typename?: 'UserLevelAggregates', sum?: { __typename?: 'UserLevelSumAggregates', msgAllTime: any, msgDay: any, msgMonth: any, msgWeek: any } | null } | null, nodes: Array<{ __typename?: 'UserLevel', lastMsg: string }> } | null };
 
 export type UserGuildLevelQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -15248,6 +15800,23 @@ export const UpdateUserDocument = gql`
   }
 }
     ${UserDataFragmentDoc}`;
+export const UserGlobalLevelDocument = gql`
+    query userGlobalLevel($userId: BigInt!) {
+  allUserLevels(condition: {userId: $userId}) {
+    aggregates {
+      sum {
+        msgAllTime
+        msgDay
+        msgMonth
+        msgWeek
+      }
+    }
+    nodes {
+      lastMsg
+    }
+  }
+}
+    `;
 export const UserGuildLevelDocument = gql`
     query userGuildLevel($guildId: BigInt!, $userId: BigInt!) {
   userLevelByUserIdAndGuildId(guildId: $guildId, userId: $userId) {
@@ -15337,6 +15906,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     updateUser(variables: UpdateUserMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateUserMutation>(UpdateUserDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateUser', 'mutation');
+    },
+    userGlobalLevel(variables: UserGlobalLevelQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UserGlobalLevelQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UserGlobalLevelQuery>(UserGlobalLevelDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'userGlobalLevel', 'query');
     },
     userGuildLevel(variables: UserGuildLevelQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UserGuildLevelQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserGuildLevelQuery>(UserGuildLevelDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'userGuildLevel', 'query');
