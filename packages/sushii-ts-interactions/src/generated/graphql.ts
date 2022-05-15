@@ -6710,6 +6710,7 @@ export type Query = Node & {
   /** Reads a single `User` using its globally unique `ID`. */
   user?: Maybe<User>;
   userById?: Maybe<User>;
+  userGuildRank?: Maybe<UserGuildRankResult>;
   /** Reads a single `UserLevel` using its globally unique `ID`. */
   userLevel?: Maybe<UserLevel>;
   userLevelByUserIdAndGuildId?: Maybe<UserLevel>;
@@ -7221,6 +7222,13 @@ export type QueryUserArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryUserByIdArgs = {
   id: Scalars['BigInt'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryUserGuildRankArgs = {
+  guildId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
 };
 
 
@@ -9431,6 +9439,25 @@ export type UserFilter = {
   rep?: InputMaybe<BigIntFilter>;
 };
 
+export type UserGuildRankResult = {
+  __typename?: 'UserGuildRankResult';
+  guildId?: Maybe<Scalars['BigInt']>;
+  lastMsg?: Maybe<Scalars['Datetime']>;
+  msgAllTime?: Maybe<Scalars['BigInt']>;
+  msgAllTimeRank?: Maybe<Scalars['BigInt']>;
+  msgAllTimeTotal?: Maybe<Scalars['BigInt']>;
+  msgDay?: Maybe<Scalars['BigInt']>;
+  msgDayRank?: Maybe<Scalars['BigInt']>;
+  msgDayTotal?: Maybe<Scalars['BigInt']>;
+  msgMonth?: Maybe<Scalars['BigInt']>;
+  msgMonthRank?: Maybe<Scalars['BigInt']>;
+  msgMonthTotal?: Maybe<Scalars['BigInt']>;
+  msgWeek?: Maybe<Scalars['BigInt']>;
+  msgWeekRank?: Maybe<Scalars['BigInt']>;
+  msgWeekTotal?: Maybe<Scalars['BigInt']>;
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
 /** An input for mutations affecting `User` */
 export type UserInput = {
   fishies: Scalars['BigInt'];
@@ -11543,6 +11570,7 @@ export type ResolversTypes = {
   UserCondition: UserCondition;
   UserDistinctCountAggregates: ResolverTypeWrapper<UserDistinctCountAggregates>;
   UserFilter: UserFilter;
+  UserGuildRankResult: ResolverTypeWrapper<UserGuildRankResult>;
   UserInput: UserInput;
   UserLevel: ResolverTypeWrapper<UserLevel>;
   UserLevelAggregates: ResolverTypeWrapper<UserLevelAggregates>;
@@ -12207,6 +12235,7 @@ export type ResolversParentTypes = {
   UserCondition: UserCondition;
   UserDistinctCountAggregates: UserDistinctCountAggregates;
   UserFilter: UserFilter;
+  UserGuildRankResult: UserGuildRankResult;
   UserInput: UserInput;
   UserLevel: UserLevel;
   UserLevelAggregates: UserLevelAggregates;
@@ -14025,6 +14054,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   timeframeUserLevels?: Resolver<Maybe<ResolversTypes['TimeframeUserLevelsConnection']>, ParentType, ContextType, Partial<QueryTimeframeUserLevelsArgs>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'nodeId'>>;
   userById?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserByIdArgs, 'id'>>;
+  userGuildRank?: Resolver<Maybe<ResolversTypes['UserGuildRankResult']>, ParentType, ContextType, RequireFields<QueryUserGuildRankArgs, 'guildId' | 'userId'>>;
   userLevel?: Resolver<Maybe<ResolversTypes['UserLevel']>, ParentType, ContextType, RequireFields<QueryUserLevelArgs, 'nodeId'>>;
   userLevelByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['UserLevel']>, ParentType, ContextType, RequireFields<QueryUserLevelByUserIdAndGuildIdArgs, 'guildId' | 'userId'>>;
   webUser?: Resolver<Maybe<ResolversTypes['WebUser']>, ParentType, ContextType, RequireFields<QueryWebUserArgs, 'nodeId'>>;
@@ -14573,6 +14603,25 @@ export type UserDistinctCountAggregatesResolvers<ContextType = any, ParentType e
   patronEmoji?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   profileData?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   rep?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserGuildRankResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserGuildRankResult'] = ResolversParentTypes['UserGuildRankResult']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  lastMsg?: Resolver<Maybe<ResolversTypes['Datetime']>, ParentType, ContextType>;
+  msgAllTime?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgAllTimeRank?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgAllTimeTotal?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgDay?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgDayRank?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgDayTotal?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgMonth?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgMonthRank?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgMonthTotal?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgWeek?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgWeekRank?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  msgWeekTotal?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -15237,6 +15286,7 @@ export type Resolvers<ContextType = any> = {
   UserAggregates?: UserAggregatesResolvers<ContextType>;
   UserAverageAggregates?: UserAverageAggregatesResolvers<ContextType>;
   UserDistinctCountAggregates?: UserDistinctCountAggregatesResolvers<ContextType>;
+  UserGuildRankResult?: UserGuildRankResultResolvers<ContextType>;
   UserLevel?: UserLevelResolvers<ContextType>;
   UserLevelAggregates?: UserLevelAggregatesResolvers<ContextType>;
   UserLevelAverageAggregates?: UserLevelAverageAggregatesResolvers<ContextType>;
@@ -15488,13 +15538,13 @@ export type UserGlobalLevelQueryVariables = Exact<{
 
 export type UserGlobalLevelQuery = { __typename?: 'Query', allUserLevels?: { __typename?: 'UserLevelsConnection', aggregates?: { __typename?: 'UserLevelAggregates', sum?: { __typename?: 'UserLevelSumAggregates', msgAllTime: any, msgDay: any, msgMonth: any, msgWeek: any } | null } | null, nodes: Array<{ __typename?: 'UserLevel', lastMsg: string }> } | null };
 
-export type UserGuildLevelQueryVariables = Exact<{
+export type UserGuildLevelAndRankQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
   userId: Scalars['BigInt'];
 }>;
 
 
-export type UserGuildLevelQuery = { __typename?: 'Query', userLevelByUserIdAndGuildId?: { __typename?: 'UserLevel', guildId: string, lastMsg: string, msgAllTime: string, msgDay: string, msgMonth: string, msgWeek: string, userId: string } | null };
+export type UserGuildLevelAndRankQuery = { __typename?: 'Query', userGuildRank?: { __typename?: 'UserGuildRankResult', lastMsg?: string | null, guildId?: string | null, msgAllTime?: string | null, msgAllTimeRank?: string | null, msgDay?: string | null, msgWeekRank?: string | null, msgWeekTotal?: string | null, msgWeek?: string | null, msgMonthTotal?: string | null, msgMonthRank?: string | null, msgMonth?: string | null, msgDayTotal?: string | null, msgDayRank?: string | null, msgAllTimeTotal?: string | null } | null };
 
 export const GuildConfigDataFragmentDoc = gql`
     fragment GuildConfigData on GuildConfig {
@@ -15817,16 +15867,23 @@ export const UserGlobalLevelDocument = gql`
   }
 }
     `;
-export const UserGuildLevelDocument = gql`
-    query userGuildLevel($guildId: BigInt!, $userId: BigInt!) {
-  userLevelByUserIdAndGuildId(guildId: $guildId, userId: $userId) {
-    guildId
+export const UserGuildLevelAndRankDocument = gql`
+    query userGuildLevelAndRank($guildId: BigInt!, $userId: BigInt!) {
+  userGuildRank(guildId: $guildId, userId: $userId) {
     lastMsg
+    guildId
     msgAllTime
+    msgAllTimeRank
     msgDay
-    msgMonth
+    msgWeekRank
+    msgWeekTotal
     msgWeek
-    userId
+    msgMonthTotal
+    msgMonthRank
+    msgMonth
+    msgDayTotal
+    msgDayRank
+    msgAllTimeTotal
   }
 }
     `;
@@ -15910,8 +15967,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     userGlobalLevel(variables: UserGlobalLevelQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UserGlobalLevelQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserGlobalLevelQuery>(UserGlobalLevelDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'userGlobalLevel', 'query');
     },
-    userGuildLevel(variables: UserGuildLevelQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UserGuildLevelQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UserGuildLevelQuery>(UserGuildLevelDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'userGuildLevel', 'query');
+    userGuildLevelAndRank(variables: UserGuildLevelAndRankQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UserGuildLevelAndRankQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UserGuildLevelAndRankQuery>(UserGuildLevelAndRankDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'userGuildLevelAndRank', 'query');
     }
   };
 }

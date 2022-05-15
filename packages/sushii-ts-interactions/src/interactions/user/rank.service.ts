@@ -22,8 +22,8 @@ export async function getUserRank(
     throw new Error("User not found");
   }
 
-  const { userLevelByUserIdAndGuildId: userGuildLevel } =
-    await ctx.sushiiAPI.sdk.userGuildLevel({
+  const { userGuildRank: userGuildLevel } =
+    await ctx.sushiiAPI.sdk.userGuildLevelAndRank({
       guildId,
       userId: user.id,
     });
@@ -32,7 +32,7 @@ export async function getUserRank(
   }
 
   const userLevel = new UserLevelProgress(
-    parseInt(userGuildLevel.msgAllTime, 10)
+    parseInt(userGuildLevel.msgAllTime || "0", 10)
   );
   const { allUserLevels: globalXP } = await ctx.sushiiAPI.sdk.userGlobalLevel({
     userId: user.id,
@@ -69,14 +69,14 @@ export async function getUserRank(
     GLOBAL_REQ_XP: globalLevel.nextLevelXpRequired,
     GLOBAL_XP_PROGRESS: globalLevel.nextLevelXpPercentage,
     // ranks
-    RANK_ALL: userRank.msgAllTimeRank,
-    RANK_ALL_TOTAL: userRank.msgAllTimeTotal,
-    RANK_WEEK: userRank.msgWeekRank,
-    RANK_WEEK_TOTAL: userRank.msgWeekTotal,
-    RANK_MONTH: userRank.msgMonthRank,
-    RANK_MONTH_TOTAL: userRank.msgMonthTotal,
-    RANK_DAY: userRank.msgDayRank,
-    RANK_DAY_TOTAL: userRank.msgDayTotal,
+    RANK_ALL: userGuildLevel.msgAllTimeRank || "0",
+    RANK_ALL_TOTAL: userGuildLevel.msgAllTimeTotal || "0",
+    RANK_WEEK: userGuildLevel.msgWeekRank || "0",
+    RANK_WEEK_TOTAL: userGuildLevel.msgWeekTotal || "0",
+    RANK_MONTH: userGuildLevel.msgMonthRank || "0",
+    RANK_MONTH_TOTAL: userGuildLevel.msgMonthTotal || "0",
+    RANK_DAY: userGuildLevel.msgDayRank || "0",
+    RANK_DAY_TOTAL: userGuildLevel.msgDayTotal || "0",
   };
 
   const rankBuffer = await ctx.sushiiImageServer.getUserRank(rankContext);

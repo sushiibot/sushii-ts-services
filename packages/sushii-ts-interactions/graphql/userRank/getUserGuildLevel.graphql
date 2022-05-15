@@ -1,11 +1,18 @@
-query userGuildLevel($guildId: BigInt!, $userId: BigInt!) {
-  userLevelByUserIdAndGuildId(guildId: $guildId, userId: $userId) {
-    guildId
+query userGuildLevelAndRank($guildId: BigInt!, $userId: BigInt!) {
+  userGuildRank(guildId: $guildId, userId: $userId) {
     lastMsg
+    guildId
     msgAllTime
+    msgAllTimeRank
     msgDay
-    msgMonth
+    msgWeekRank
+    msgWeekTotal
     msgWeek
-    userId
+    msgMonthTotal
+    msgMonthRank
+    msgMonth
+    msgDayTotal
+    msgDayRank
+    msgAllTimeTotal
   }
 }
