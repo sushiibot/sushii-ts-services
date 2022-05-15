@@ -5,10 +5,12 @@ import RepCommand from "./user/rep";
 import AvatarCommand from "./user/avatar";
 import UserInfoHandler from "./moderation/context_lookup/LookupContextMenuHandler";
 import PingCommand from "./meta/ping";
-import BanCommand from "./moderation/BanCommand";
-import KickCommand from "./moderation/KickCommand";
+// import BanCommand from "./moderation/BanCommand";
+// import KickCommand from "./moderation/KickCommand";
 import NotificationCommand from "./notifications/NotificationCommand";
 import NotificationListAutocomplete from "./notifications/Autocomplete";
+import TagCommand from "./tags/TagCommand";
+// import TimeoutCommand from "./moderation/TimeoutCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -23,10 +25,13 @@ export default function addCommands(
     new PingCommand(),
 
     // Moderation
-    new BanCommand(),
-    new KickCommand(),
+    // new BanCommand(),
+    // new KickCommand(),
+    // new TimeoutCommand(),
 
-    new NotificationCommand()
+    new NotificationCommand(),
+
+    new TagCommand()
   );
 
   interactionClient.addContextMenu(new UserInfoHandler());

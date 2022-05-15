@@ -48,7 +48,11 @@
   "tag": {
     "add": {
       "missing_content_and_attachment": "You must provide either a content or an attachment to add a tag!",
-      "success_title": "Created a new tag {{tagName}}"
+      "success": {
+        "title": "Created a new tag {{tagName}}",
+        "content": "Content",
+        "attachment": "Attachment"
+      }
     },
     "get": {
       "not_found": "Tag {{tagName}} was not found!"

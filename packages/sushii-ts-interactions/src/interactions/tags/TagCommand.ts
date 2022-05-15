@@ -13,6 +13,9 @@ import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
 
+const NAME_STARTS_WITH = "name_starts_with";
+const NAME_CONTAINS = "name_contains";
+
 async function deniedTagPermission(
   ctx: Context,
   interaction: APIChatInputApplicationCommandGuildInteraction,
@@ -93,13 +96,13 @@ export default class TagCommand extends SlashCommandHandler {
         .setDescription("Get a random tag.")
         .addStringOption((o) =>
           o
-            .setName("name starts with")
+            .setName(NAME_STARTS_WITH)
             .setDescription("Filter tags name starting with this text.")
             .setRequired(false)
         )
         .addStringOption((o) =>
           o
-            .setName("name contains")
+            .setName(NAME_CONTAINS)
             .setDescription("Filter tags name containing this text.")
             .setRequired(false)
         )
@@ -132,13 +135,13 @@ export default class TagCommand extends SlashCommandHandler {
         // All optional but requires at least one
         .addStringOption((o) =>
           o
-            .setName("name starts with")
+            .setName(NAME_STARTS_WITH)
             .setDescription("Filter tags name starting with this text.")
             .setRequired(false)
         )
         .addStringOption((o) =>
           o
-            .setName("name contains")
+            .setName(NAME_CONTAINS)
             .setDescription("Filter tags containing this text.")
             .setRequired(false)
         )
@@ -187,7 +190,7 @@ export default class TagCommand extends SlashCommandHandler {
         )
         .addStringOption((o) =>
           o
-            .setName("new name")
+            .setName("new_name")
             .setDescription("The new name of the tag.")
             .setRequired(true)
         )
@@ -252,7 +255,7 @@ export default class TagCommand extends SlashCommandHandler {
       throw new Error("Missing tag name");
     }
 
-    const tagContent = options.getString("content");
+    const tagContent = options.getString("content") || "";
     const tagAttachment = options.getAttachment("attachment");
 
     if (!tagContent && !tagAttachment) {
@@ -268,17 +271,13 @@ export default class TagCommand extends SlashCommandHandler {
       });
     }
 
-    const content = tagContent || tagAttachment?.url;
-    if (!content) {
-      throw new Error("Missing tag content or attachment, should not happen.");
-    }
-
     const invoker = getInvokerUser(interaction);
 
     await ctx.sushiiAPI.sdk.createTag({
       tag: {
         tagName,
-        content,
+        content: tagContent,
+        attachment: tagAttachment?.url,
         created: dayjs().toISOString(),
         guildId: interaction.guild_id,
         ownerId: invoker.id,
@@ -286,9 +285,27 @@ export default class TagCommand extends SlashCommandHandler {
       },
     });
 
+    const fields = [];
+
+    if (tagContent) {
+      fields.push({
+        name: t("tag.add.content", { ns: "commands" }),
+        value: tagContent,
+        inline: true,
+      });
+    }
+
+    if (tagAttachment) {
+      fields.push({
+        name: t("tag.add.attachment", { ns: "commands" }),
+        value: tagAttachment.url,
+        inline: true,
+      });
+    }
+
     const embed = new EmbedBuilder()
-      .setTitle(t("tag.add.success_title", { ns: "commands", tagName }))
-      .setDescription(content)
+      .setTitle(t("tag.add.success.title", { ns: "commands", tagName }))
+      .setFields(...fields)
       .setColor(Color.Success);
 
     await ctx.REST.interactionReply(interaction, {
@@ -341,8 +358,8 @@ export default class TagCommand extends SlashCommandHandler {
     interaction: APIChatInputApplicationCommandGuildInteraction,
     options: CommandInteractionOptionResolver
   ): Promise<void> {
-    const startsWith = options.getString("name starts with");
-    const contains = options.getString("name contains");
+    const startsWith = options.getString(NAME_STARTS_WITH);
+    const contains = options.getString(NAME_CONTAINS);
     const owner = options.getUser("owner");
 
     if (!startsWith && !contains && !owner) {
@@ -393,8 +410,10 @@ export default class TagCommand extends SlashCommandHandler {
       });
     }
 
-    let { content } = tag.randomTag;
-    const { attachment } = tag.randomTag;
+    let content;
+    const { content: tagContent, attachment, tagName } = tag.randomTag;
+
+    content = `${tagName}: ${tagContent}`;
 
     if (attachment) {
       content += attachment;
@@ -447,7 +466,7 @@ export default class TagCommand extends SlashCommandHandler {
         },
         {
           name: t("tag.info.success.owner", { ns: "commands" }),
-          value: tag.tagByGuildIdAndTagName.ownerId,
+          value: `<@${tag.tagByGuildIdAndTagName.ownerId}>`,
         },
         {
           name: t("tag.info.success.use_count", { ns: "commands" }),
@@ -481,23 +500,23 @@ export default class TagCommand extends SlashCommandHandler {
     await ctx.REST.interactionReply(
       interaction,
       {
-        content: t("tag.fulllist.message_content", {
+        content: t("tag.fulllist.success.message_content", {
           ns: "commands",
           count: totalCount,
         }),
         attachments: [
           {
             id: "0",
-            description: t("tag.fulllist.file_description", {
+            description: t("tag.fulllist.success.file_description", {
               ns: "commands",
             }),
-            filename: t("tag.fulllist.file_name", { ns: "commands" }),
+            filename: t("tag.fulllist.success.file_name", { ns: "commands" }),
           },
         ],
       },
       [
         {
-          fileName: t("tag.fulllist.file_name", { ns: "commands" }),
+          fileName: t("tag.fulllist.success.file_name", { ns: "commands" }),
           fileData: tagNames.join("\n"),
         },
       ]
@@ -509,8 +528,8 @@ export default class TagCommand extends SlashCommandHandler {
     interaction: APIChatInputApplicationCommandGuildInteraction,
     options: CommandInteractionOptionResolver
   ): Promise<void> {
-    const startsWith = options.getString("name starts with");
-    const contains = options.getString("name contains");
+    const startsWith = options.getString(NAME_STARTS_WITH);
+    const contains = options.getString(NAME_CONTAINS);
     const owner = options.getUser("owner");
 
     if (!startsWith && !contains && !owner) {
@@ -568,16 +587,16 @@ export default class TagCommand extends SlashCommandHandler {
         attachments: [
           {
             id: "0",
-            description: t("tag.fulllist.file_description", {
+            description: t("tag.fulllist.success.file_description", {
               ns: "commands",
             }),
-            filename: t("tag.fulllist.file_name", { ns: "commands" }),
+            filename: t("tag.fulllist.success.file_name", { ns: "commands" }),
           },
         ],
       },
       [
         {
-          fileName: t("tag.fulllist.file_name", { ns: "commands" }),
+          fileName: t("tag.fulllist.success.file_name", { ns: "commands" }),
           fileData: tagNames.join("\n"),
         },
       ]
@@ -702,7 +721,7 @@ export default class TagCommand extends SlashCommandHandler {
       return;
     }
 
-    const newName = options.getString("new name");
+    const newName = options.getString("new_name");
     if (!newName) {
       throw new Error("Missing new tag name.");
     }
