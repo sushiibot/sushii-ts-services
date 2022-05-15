@@ -1,16 +1,6 @@
-query searchTags(
-  $guildId: BigInt
-  $ownerId: BigInt
-  $includesInsensitive: String
-  $startsWithInsensitive: String
-) {
+query searchTags($guildId: BigInt, $ownerId: BigInt, $filter: TagFilter) {
   allTags(
-    filter: {
-      tagName: {
-        includesInsensitive: $includesInsensitive
-        startsWithInsensitive: $startsWithInsensitive
-      }
-    }
+    filter: $filter
     condition: { guildId: $guildId, ownerId: $ownerId }
     orderBy: TAG_NAME_ASC
   ) {

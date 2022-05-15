@@ -15489,8 +15489,7 @@ export type ListGuildTagsQuery = { __typename?: 'Query', allTags?: { __typename?
 export type SearchTagsQueryVariables = Exact<{
   guildId?: InputMaybe<Scalars['BigInt']>;
   ownerId?: InputMaybe<Scalars['BigInt']>;
-  includesInsensitive?: InputMaybe<Scalars['String']>;
-  startsWithInsensitive?: InputMaybe<Scalars['String']>;
+  filter?: InputMaybe<TagFilter>;
 }>;
 
 
@@ -15799,9 +15798,9 @@ export const ListGuildTagsDocument = gql`
 }
     ${TagDataFragmentDoc}`;
 export const SearchTagsDocument = gql`
-    query searchTags($guildId: BigInt, $ownerId: BigInt, $includesInsensitive: String, $startsWithInsensitive: String) {
+    query searchTags($guildId: BigInt, $ownerId: BigInt, $filter: TagFilter) {
   allTags(
-    filter: {tagName: {includesInsensitive: $includesInsensitive, startsWithInsensitive: $startsWithInsensitive}}
+    filter: $filter
     condition: {guildId: $guildId, ownerId: $ownerId}
     orderBy: TAG_NAME_ASC
   ) {

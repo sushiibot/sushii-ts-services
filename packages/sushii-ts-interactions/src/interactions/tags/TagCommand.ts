@@ -5,7 +5,7 @@ import {
   PermissionFlagsBits,
 } from "discord-api-types/v10";
 import { t } from "i18next";
-import { Tag } from "../../generated/graphql";
+import { Tag, TagFilter } from "../../generated/graphql";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import getInvokerUser from "../../utils/interactions";
@@ -561,11 +561,21 @@ export default class TagCommand extends SlashCommandHandler {
       });
     }
 
+    let filter: TagFilter | undefined;
+
+    if (startsWith || contains) {
+      filter = {
+        tagName: {
+          includesInsensitive: contains,
+          startsWithInsensitive: startsWith,
+        },
+      };
+    }
+
     const tags = await ctx.sushiiAPI.sdk.searchTags({
       guildId: interaction.guild_id,
       ownerId: owner?.id,
-      includesInsensitive: contains,
-      startsWithInsensitive: startsWith,
+      filter,
     });
 
     if (!tags.allTags) {
