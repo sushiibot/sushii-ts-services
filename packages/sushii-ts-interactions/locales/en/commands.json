@@ -9,8 +9,8 @@
     "cooldown": "You can rep again in {{duration}}"
   },
   "avatar": {
-    "user_title": "{{username}}'s Avatar",
-    "member_title": "{{username}}'s Server Avatar"
+    "user_avatar_title": "{{username}}'s avatar",
+    "member_avatar_title": "{{username}}'s server avatar"
   },
   "ping": {
     "title": "Pong!",
@@ -82,7 +82,9 @@
         "starts_with_contains_xor": "You can only use *one* of the options `name starts with` or `name contains`, not both."
       },
       "success": {
-        "message_content": "Tag search results"
+        "message_content": "Tag search results",
+        "file_name": "tags_search.txt",
+        "file_description": "Searched tags in this server."
       }
     },
     "random": {

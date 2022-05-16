@@ -344,12 +344,15 @@ export default class TagCommand extends SlashCommandHandler {
       content += tag.tagByGuildIdAndTagName.attachment;
     }
 
+    const embed = new EmbedBuilder()
+      .setTitle(tag.tagByGuildIdAndTagName.tagName)
+      .setDescription(content)
+      .setColor(Color.Info)
+      .setImage(tag.tagByGuildIdAndTagName.attachment || null);
+
     await ctx.REST.interactionReply(interaction, {
-      content,
-      // No pings in tags
-      allowed_mentions: {
-        parse: [],
-      },
+      embeds: [embed.toJSON()],
+      // Allowedmentions not required, no pings in embed
     });
   }
 
@@ -590,23 +593,23 @@ export default class TagCommand extends SlashCommandHandler {
     await ctx.REST.interactionReply(
       interaction,
       {
-        content: t("tag.search.message_content", {
+        content: t("tag.search.success.message_content", {
           ns: "commands",
           count: totalCount,
         }),
         attachments: [
           {
             id: "0",
-            description: t("tag.fulllist.success.file_description", {
+            description: t("tag.search.success.file_description", {
               ns: "commands",
             }),
-            filename: t("tag.fulllist.success.file_name", { ns: "commands" }),
+            filename: t("tag.search.success.file_name", { ns: "commands" }),
           },
         ],
       },
       [
         {
-          fileName: t("tag.fulllist.success.file_name", { ns: "commands" }),
+          fileName: t("tag.search.success.file_name", { ns: "commands" }),
           fileData: tagNames.join("\n"),
         },
       ]

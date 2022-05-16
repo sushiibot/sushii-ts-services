@@ -197,20 +197,22 @@ export async function fishyForUser(
   }
 
   // Invoker same as target
-  let lastFishies = dayjs(dbTargetUser.lastFishies);
+  let lastFishies = dayjs.utc(dbTargetUser.lastFishies);
 
   // If invoker different target
   if (dbInvokerUser) {
-    lastFishies = dayjs(dbInvokerUser.lastFishies);
+    lastFishies = dayjs.utc(dbInvokerUser.lastFishies);
   }
 
   const nextFishies = lastFishies.add(dayjs.duration({ hours: 12 }));
-  if (lastFishies.isBefore(nextFishies)) {
+  if (nextFishies.isAfter(dayjs.utc())) {
+    // Time is still before nextfishies time
     // User has already caught fishies today
     return nextFishies;
   }
 
-  logger.debug(dbTargetUser, "before");
+  logger.debug(dbTargetUser, "target before");
+  logger.debug(dbInvokerUser, "invoker before");
 
   // Get new fishy count
   const caughtType = getRandomCatchable();
@@ -229,7 +231,7 @@ export async function fishyForUser(
   // Update lastFishy timestamp for invoker
   if (dbInvokerUser) {
     // If invoker different from target, update invoker
-    dbInvokerUser.lastFishies = dayjs().toISOString();
+    dbInvokerUser.lastFishies = dayjs().utc().toISOString();
     // Update invoker
     await ctx.sushiiAPI.sdk.updateUser({
       id: dbInvokerUser.id,
@@ -237,10 +239,11 @@ export async function fishyForUser(
     });
   } else {
     // Invoker is target, update target
-    dbTargetUser.lastFishies = dayjs().toISOString();
+    dbTargetUser.lastFishies = dayjs().utc().toISOString();
   }
 
-  logger.debug(dbTargetUser, "after");
+  logger.debug(dbTargetUser, "target after");
+  logger.debug(dbInvokerUser, "invoker after");
 
   // Update target
   await ctx.sushiiAPI.sdk.updateUser({

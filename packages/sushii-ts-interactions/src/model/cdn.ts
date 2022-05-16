@@ -11,10 +11,11 @@ export default class CDNClient {
   public memberFaceURL(
     guildId: string,
     member: APIGuildMember,
-    userId: string
+    userId: string,
+    options?: ImageURLOptions
   ): string | null {
     return member.avatar
-      ? this.cdn.guildMemberAvatar(guildId, userId, member.avatar)
+      ? this.cdn.guildMemberAvatar(guildId, userId, member.avatar, options)
       : null;
   }
 

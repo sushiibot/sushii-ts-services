@@ -34,10 +34,12 @@ export default class AvatarCommand extends SlashCommandHandler {
     const embeds = [];
 
     // User av
-    const userFaceURL = ctx.CDN.userFaceURL(target);
+    const userFaceURL = ctx.CDN.userFaceURL(target, {
+      size: 4096,
+    });
     const userEmbed = new EmbedBuilder()
       .setTitle(
-        t("avatar.user_avatar", {
+        t("avatar.user_avatar_title", {
           ns: "commands",
           username: target.username,
         })
@@ -49,25 +51,38 @@ export default class AvatarCommand extends SlashCommandHandler {
 
     // Guild av
     if (isGuildInteraction(interaction)) {
-      const member = await ctx.REST.getMember(interaction.guild_id, target.id);
+      try {
+        const member = await ctx.REST.getMember(
+          interaction.guild_id,
+          target.id
+        );
 
-      const memberFaceURL = ctx.CDN.memberFaceURL(
-        interaction.guild_id,
-        member,
-        target.id
-      );
-      const memberEmbed = new EmbedBuilder()
-        .setTitle(
-          t("avatar.member_avatar", {
-            ns: "commands",
-            username: member.nick || target.username,
-          })
-        )
-        .setURL(userFaceURL)
-        .setImage(memberFaceURL)
-        .toJSON();
+        const memberFaceURL = ctx.CDN.memberFaceURL(
+          interaction.guild_id,
+          member,
+          target.id,
+          {
+            size: 4096,
+          }
+        );
 
-      embeds.push(memberEmbed);
+        if (memberFaceURL) {
+          const memberEmbed = new EmbedBuilder()
+            .setTitle(
+              t("avatar.member_avatar_title", {
+                ns: "commands",
+                username: member.nick || target.username,
+              })
+            )
+            .setURL(memberFaceURL)
+            .setImage(memberFaceURL)
+            .toJSON();
+
+          embeds.push(memberEmbed);
+        }
+      } catch (e) {
+        // Ignore if member not found
+      }
     }
 
     await ctx.REST.interactionReply(interaction, {

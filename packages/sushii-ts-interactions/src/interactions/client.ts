@@ -227,10 +227,10 @@ export default class InteractionClient {
    * @returns
    */
   public async register(): Promise<void> {
-    log.info("registering %s guild commands", this.commands.size);
+    log.info("registering %s slash commands", this.commands.size);
 
     // Actual global commands
-    if (this.config.guildId === undefined) {
+    if (this.config.guildIds.length === 0) {
       await this.rest.put(
         Routes.applicationCommands(this.config.applicationId),
         { body: this.getCommandsArray() }
@@ -240,16 +240,22 @@ export default class InteractionClient {
       return;
     }
 
-    // Guild only commands for testing
-    const res = await this.rest.put(
-      Routes.applicationGuildCommands(
-        this.config.applicationId,
-        this.config.guildId
-      ),
-      { body: this.getCommandsArray() }
-    );
+    // eslint-disable-next-line no-restricted-syntax
+    for (const guildId of this.config.guildIds) {
+      // Guild only commands for testing
+      // eslint-disable-next-line no-await-in-loop
+      const res = await this.rest.put(
+        Routes.applicationGuildCommands(this.config.applicationId, guildId),
+        { body: this.getCommandsArray() }
+      );
 
-    log.info("registered %s guild commands", this.commands.size, res);
+      log.info(
+        "registered %s guild commands in %s",
+        this.commands.size,
+        res,
+        guildId
+      );
+    }
   }
 
   /**
