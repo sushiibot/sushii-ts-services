@@ -17,6 +17,8 @@ export default class KickCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("kick")
     .setDescription("Kick a member.")
+    .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
+    .setDMPermission(false)
     .addUserOption((o) =>
       o.setName("user").setDescription("Who to kick.").setRequired(true)
     )

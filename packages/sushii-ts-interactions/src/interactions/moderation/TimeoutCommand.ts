@@ -17,6 +17,8 @@ export default class TimeoutCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("timeout")
     .setDescription("Timeout a member.")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
+    .setDMPermission(false)
     .addUserOption((o) =>
       o.setName("user").setDescription("Who to timeout.").setRequired(true)
     )

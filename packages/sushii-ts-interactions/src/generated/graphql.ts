@@ -15338,6 +15338,15 @@ export type Resolvers<ContextType = any> = {
 };
 
 
+export type BanDataFragment = { __typename?: 'GuildBan', guildId: string, nodeId: string, userId: string };
+
+export type MyQueryQueryVariables = Exact<{
+  userId: Scalars['BigInt'];
+}>;
+
+
+export type MyQueryQuery = { __typename?: 'Query', allGuildBans?: { __typename?: 'GuildBansConnection', totalCount: number, nodes: Array<{ __typename?: 'GuildBan', guildId: string, nodeId: string, userId: string }> } | null };
+
 export type GuildConfigByIdQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
 }>;
@@ -15376,6 +15385,13 @@ export type GetNextCaseIdQueryVariables = Exact<{
 
 
 export type GetNextCaseIdQuery = { __typename?: 'Query', nextCaseId?: string | null };
+
+export type GetUserModLogHistoryQueryVariables = Exact<{
+  userId: Scalars['BigInt'];
+}>;
+
+
+export type GetUserModLogHistoryQuery = { __typename?: 'Query', allModLogs?: { __typename?: 'ModLogsConnection', totalCount: number, nodes: Array<{ __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string }> } | null };
 
 export type ModLogDataFragment = { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string };
 
@@ -15545,6 +15561,13 @@ export type UserGuildLevelAndRankQueryVariables = Exact<{
 
 export type UserGuildLevelAndRankQuery = { __typename?: 'Query', userGuildRank?: { __typename?: 'UserGuildRankResult', lastMsg?: string | null, guildId?: string | null, msgAllTime?: string | null, msgAllTimeRank?: string | null, msgDay?: string | null, msgWeekRank?: string | null, msgWeekTotal?: string | null, msgWeek?: string | null, msgMonthTotal?: string | null, msgMonthRank?: string | null, msgMonth?: string | null, msgDayTotal?: string | null, msgDayRank?: string | null, msgAllTimeTotal?: string | null } | null };
 
+export const BanDataFragmentDoc = gql`
+    fragment BanData on GuildBan {
+  guildId
+  nodeId
+  userId
+}
+    `;
 export const GuildConfigDataFragmentDoc = gql`
     fragment GuildConfigData on GuildConfig {
   disabledChannels
@@ -15629,6 +15652,16 @@ export const UserDataFragmentDoc = gql`
   profileData
 }
     `;
+export const MyQueryDocument = gql`
+    query MyQuery($userId: BigInt!) {
+  allGuildBans(condition: {userId: $userId}) {
+    nodes {
+      ...BanData
+    }
+    totalCount
+  }
+}
+    ${BanDataFragmentDoc}`;
 export const GuildConfigByIdDocument = gql`
     query guildConfigByID($guildId: BigInt!) {
   guildConfigById(id: $guildId) {
@@ -15666,6 +15699,16 @@ export const GetNextCaseIdDocument = gql`
   nextCaseId(guildId: $guildId)
 }
     `;
+export const GetUserModLogHistoryDocument = gql`
+    query getUserModLogHistory($userId: BigInt!) {
+  allModLogs(condition: {userId: $userId}) {
+    nodes {
+      ...ModLogData
+    }
+    totalCount
+  }
+}
+    ${ModLogDataFragmentDoc}`;
 export const UpdateModLogDocument = gql`
     mutation updateModLog($caseId: BigInt!, $guildId: BigInt!, $modLogPatch: ModLogPatch!) {
   updateModLogByGuildIdAndCaseId(
@@ -15894,6 +15937,9 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    MyQuery(variables: MyQueryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MyQueryQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MyQueryQuery>(MyQueryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MyQuery', 'query');
+    },
     guildConfigByID(variables: GuildConfigByIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GuildConfigByIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GuildConfigByIdQuery>(GuildConfigByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'guildConfigByID', 'query');
     },
@@ -15908,6 +15954,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getNextCaseID(variables: GetNextCaseIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetNextCaseIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetNextCaseIdQuery>(GetNextCaseIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getNextCaseID', 'query');
+    },
+    getUserModLogHistory(variables: GetUserModLogHistoryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserModLogHistoryQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetUserModLogHistoryQuery>(GetUserModLogHistoryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getUserModLogHistory', 'query');
     },
     updateModLog(variables: UpdateModLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateModLogMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateModLogMutation>(UpdateModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateModLog', 'mutation');

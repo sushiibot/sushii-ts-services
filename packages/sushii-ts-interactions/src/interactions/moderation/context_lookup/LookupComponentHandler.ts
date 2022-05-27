@@ -18,9 +18,10 @@ export enum Action {
   Ban = "ban",
   Kick = "kick",
   Mute = "Mute",
+  Unmute = "Unmute",
   Warn = "warn",
   History = "history",
-  Lookup = "Lookup",
+  Lookup = "lookup",
 }
 
 function strToAction(s: string): Action {
@@ -31,6 +32,8 @@ function strToAction(s: string): Action {
       return Action.Kick;
     case "mute":
       return Action.Mute;
+    case "unmute":
+      return Action.Mute;
     case "warn":
       return Action.Warn;
     case "history":
@@ -38,7 +41,7 @@ function strToAction(s: string): Action {
     case "lookup":
       return Action.Lookup;
     default:
-      throw new Error("Invalid action");
+      throw new Error(`Invalid action ${s}`);
   }
 }
 
@@ -49,13 +52,14 @@ interface ButtonAction {
 
 function parseCustomID(id: string): ButtonAction {
   const arr = id.split(":");
-  if (arr.length !== 3) {
-    throw new Error("Invalid custom ID");
+  if (arr.length !== 4) {
+    throw new Error(`Invalid custom ID ${id}`);
   }
 
+  // lookup:button:lookup:id
   return {
-    action: strToAction(arr[1]),
-    target: arr[2],
+    action: strToAction(arr[2]),
+    target: arr[3],
   };
 }
 
@@ -84,6 +88,8 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
         break;
       case Action.Mute:
         break;
+      case Action.Unmute:
+        break;
       case Action.Warn:
         break;
       case Action.History:
@@ -92,33 +98,10 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
         break;
     }
 
-    // TODO: Fetch rules, if empty just add confirm button
-
-    const reasonSelect = new SelectMenuBuilder()
-      .setCustomId(`lookup:select:ban:${target}`)
-      .setOptions(
-        new SelectMenuOptionBuilder()
-          .setLabel("Rule 1")
-          .setValue("rule1")
-          .setDescription("Rule to member")
-      )
-      .setPlaceholder("Reason");
-
-    const reasonRow = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-      reasonSelect
-    );
-
-    const confirmButton = new ButtonBuilder()
-      .setCustomId(`lookup:button:ban:${target}`)
-      .setLabel("Confirm without reason")
-      .setStyle(ButtonStyle.Danger);
-
-    const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-      confirmButton
-    );
+    // TODO: Confirm button
 
     ctx.REST.interactionEdit(interaction, {
-      components: [reasonRow.toJSON(), buttonRow.toJSON()],
+      components: [],
     });
   }
 }

@@ -122,7 +122,7 @@ function getRandomCatchable(): CatchableType {
   }
 
   // Scaled types - Lower index fishies more common
-  const idx = Math.floor(randDistNumber(0, scaledTypes.length, 3));
+  const idx = Math.floor(randDistNumber(0, scaledTypes.length, 2));
   return scaledTypes[idx];
 }
 

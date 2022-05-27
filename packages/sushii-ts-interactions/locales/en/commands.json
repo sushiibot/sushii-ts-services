@@ -6,7 +6,7 @@
   },
   "rep": {
     "success": "You gave {{username}} a rep! ({{oldAmount}} → {{newAmount}} total)",
-    "cooldown": "You can rep again in {{duration}}"
+    "cooldown": "You can rep again <t:{{nexRepTimestamp}}:R>"
   },
   "avatar": {
     "user_avatar_title": "{{username}}'s avatar",
@@ -47,7 +47,9 @@
   },
   "tag": {
     "add": {
-      "missing_content_and_attachment": "You must provide either a content or an attachment to add a tag!",
+      "error": {
+        "missing_content_and_attachment": "You must provide either a content or an attachment to add a tag!"
+      },
       "success": {
         "title": "Created a new tag {{tagName}}",
         "content": "Content",
@@ -90,7 +92,6 @@
     "random": {
       "error": {
         "title": "Random tag failed",
-        "no_options": "You must provide at least one search option.",
         "starts_with_contains_xor": "You can only use *one* of the options `name starts with` or `name contains`, not both."
       }
     },

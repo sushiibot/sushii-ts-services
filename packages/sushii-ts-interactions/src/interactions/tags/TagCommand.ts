@@ -263,7 +263,9 @@ export default class TagCommand extends SlashCommandHandler {
         embeds: [
           new EmbedBuilder()
             .setDescription(
-              t("tag.add.missing_content_and_attachment", { ns: "commands" })
+              t("tag.add.error.missing_content_and_attachment", {
+                ns: "commands",
+              })
             )
             .setColor(Color.Error)
             .toJSON(),
@@ -289,7 +291,7 @@ export default class TagCommand extends SlashCommandHandler {
 
     if (tagContent) {
       fields.push({
-        name: t("tag.add.content", { ns: "commands" }),
+        name: t("tag.add.success.content", { ns: "commands" }),
         value: tagContent,
         inline: true,
       });
@@ -297,7 +299,7 @@ export default class TagCommand extends SlashCommandHandler {
 
     if (tagAttachment) {
       fields.push({
-        name: t("tag.add.attachment", { ns: "commands" }),
+        name: t("tag.add.success.attachment", { ns: "commands" }),
         value: tagAttachment.url,
         inline: true,
       });
@@ -305,7 +307,7 @@ export default class TagCommand extends SlashCommandHandler {
 
     const embed = new EmbedBuilder()
       .setTitle(t("tag.add.success.title", { ns: "commands", tagName }))
-      .setFields(...fields)
+      .setFields(fields)
       .setColor(Color.Success);
 
     await ctx.REST.interactionReply(interaction, {
@@ -340,19 +342,24 @@ export default class TagCommand extends SlashCommandHandler {
     }
 
     let { content } = tag.tagByGuildIdAndTagName;
+
     if (tag.tagByGuildIdAndTagName.attachment) {
       content += tag.tagByGuildIdAndTagName.attachment;
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle(tag.tagByGuildIdAndTagName.tagName)
-      .setDescription(content)
-      .setColor(Color.Info)
-      .setImage(tag.tagByGuildIdAndTagName.attachment || null);
+    // const embed = new EmbedBuilder()
+    //   .setTitle(tag.tagByGuildIdAndTagName.tagName)
+    //   .setDescription(content)
+    //   .setColor(Color.Info)
+    //   .setImage(tag.tagByGuildIdAndTagName.attachment || null);
 
     await ctx.REST.interactionReply(interaction, {
-      embeds: [embed.toJSON()],
+      // embeds: [embed.toJSON()],
+      content,
       // Allowedmentions not required, no pings in embed
+      allowed_mentions: {
+        parse: [],
+      },
     });
   }
 
@@ -364,20 +371,6 @@ export default class TagCommand extends SlashCommandHandler {
     const startsWith = options.getString(NAME_STARTS_WITH);
     const contains = options.getString(NAME_CONTAINS);
     const owner = options.getUser("owner");
-
-    if (!startsWith && !contains && !owner) {
-      return ctx.REST.interactionReply(interaction, {
-        embeds: [
-          new EmbedBuilder()
-            .setTitle(t("tag.random.error.title", { ns: "commands" }))
-            .setDescription(
-              t("tag.random.error.no_options", { ns: "commands" })
-            )
-            .setColor(Color.Error)
-            .toJSON(),
-        ],
-      });
-    }
 
     // startsWith xor contains
     if (startsWith && contains) {
@@ -462,7 +455,7 @@ export default class TagCommand extends SlashCommandHandler {
     const embed = new EmbedBuilder()
       .setTitle(t("tag.info.success.title", { ns: "commands", tagName }))
       .setColor(Color.Info)
-      .setFields(
+      .setFields([
         {
           name: t("tag.info.success.content", { ns: "commands" }),
           value: tag.tagByGuildIdAndTagName.content,
@@ -474,8 +467,8 @@ export default class TagCommand extends SlashCommandHandler {
         {
           name: t("tag.info.success.use_count", { ns: "commands" }),
           value: tag.tagByGuildIdAndTagName.useCount,
-        }
-      )
+        },
+      ])
       .setTimestamp(dayjs(tag.tagByGuildIdAndTagName.created).toDate());
 
     await ctx.REST.interactionReply(interaction, {
@@ -682,10 +675,12 @@ export default class TagCommand extends SlashCommandHandler {
 
     const embed = new EmbedBuilder()
       .setTitle(t("tag.edit.success.title", { ns: "commands", tagName }))
-      .setFields({
-        name: t("tag.edit.success.content", { ns: "commands" }),
-        value: tag.tagByGuildIdAndTagName.content,
-      })
+      .setFields([
+        {
+          name: t("tag.edit.success.content", { ns: "commands" }),
+          value: tag.tagByGuildIdAndTagName.content,
+        },
+      ])
       .setImage(newAttachment?.url || null)
       .setColor(Color.Success);
 
@@ -766,10 +761,12 @@ export default class TagCommand extends SlashCommandHandler {
 
     const embed = new EmbedBuilder()
       .setTitle(t("tag.rename.success.title", { ns: "commands", tagName }))
-      .setFields({
-        name: t("tag.rename.success.new_name", { ns: "commands" }),
-        value: newName,
-      })
+      .setFields([
+        {
+          name: t("tag.rename.success.new_name", { ns: "commands" }),
+          value: newName,
+        },
+      ])
       .setColor(Color.Success);
 
     await ctx.REST.interactionReply(interaction, {
@@ -824,7 +821,7 @@ export default class TagCommand extends SlashCommandHandler {
 
     const embed = new EmbedBuilder()
       .setTitle(t("tag.delete.title", { ns: "commands", tagName }))
-      .setFields(
+      .setFields([
         {
           name: t("tag.delete.success.content", { ns: "commands" }),
           value: tag.tagByGuildIdAndTagName.content,
@@ -836,8 +833,8 @@ export default class TagCommand extends SlashCommandHandler {
         {
           name: t("tag.delete.success.use_count", { ns: "commands" }),
           value: tag.tagByGuildIdAndTagName.useCount,
-        }
-      )
+        },
+      ])
       .setColor(Color.Success);
 
     await ctx.REST.interactionReply(interaction, {

@@ -21,7 +21,7 @@ export default abstract class AutocompleteHandler extends InteractionHandler {
    * Example for /notification:
    * fullCommandNamePath = "notification"
    */
-  abstract readonly fullCommandNamePath: string;
+  abstract readonly fullCommandNamePath: string | string[];
 
   abstract handler(
     ctx: Context,

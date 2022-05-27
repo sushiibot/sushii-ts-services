@@ -11,36 +11,40 @@ import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
 
-export default class NotificationCommand extends SlashCommandHandler {
+export default class ReminderCommand extends SlashCommandHandler {
   serverOnly = true;
 
   command = new SlashCommandBuilder()
-    .setName("notification")
-    .setDescription("Get notifications when someone says something.")
+    .setName("reminder")
+    .setDescription("Set reminders for the future.")
     .addSubcommand((c) =>
       c
         .setName("add")
-        .setDescription("Set a new notification.")
+        .setDescription("Set a new reminder.")
         .addStringOption((o) =>
           o
-            .setName("keyword")
-            .setDescription("The keyword to notify you when mentioned.")
+            .setName("duration")
+            .setDescription("When to remind you.")
+            .setRequired(true)
+        )
+        .addStringOption((o) =>
+          o
+            .setName("description")
+            .setDescription("Description of the reminder.")
             .setRequired(true)
         )
     )
     .addSubcommand((c) =>
-      c
-        .setName("list")
-        .setDescription("List all of your current notifications.")
+      c.setName("list").setDescription("List all of your pending reminders.")
     )
     .addSubcommand((c) =>
       c
         .setName("delete")
-        .setDescription("Delete a notification.")
+        .setDescription("Delete a reminder.")
         .addStringOption((o) =>
           o
-            .setName("keyword")
-            .setDescription("The keyword to delete.")
+            .setName("description")
+            .setDescription("The reminder to delete.")
             .setRequired(true)
             .setAutocomplete(true)
         )
@@ -60,11 +64,11 @@ export default class NotificationCommand extends SlashCommandHandler {
     const subcommand = options.getSubcommand();
     switch (subcommand) {
       case "add":
-        return NotificationCommand.addHandler(ctx, interaction, options);
+        return ReminderCommand.addHandler(ctx, interaction, options);
       case "list":
-        return NotificationCommand.listHandler(ctx, interaction);
+        return ReminderCommand.listHandler(ctx, interaction);
       case "delete":
-        return NotificationCommand.deleteHandler(ctx, interaction, options);
+        return ReminderCommand.deleteHandler(ctx, interaction, options);
 
       default:
         throw new Error("Invalid subcommand.");

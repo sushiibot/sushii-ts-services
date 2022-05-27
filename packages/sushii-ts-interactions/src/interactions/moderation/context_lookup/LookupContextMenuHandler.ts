@@ -11,6 +11,7 @@ import {
   MessageFlags,
 } from "discord-api-types/v10";
 import Context from "../../../model/context";
+import memberIsTimedOut from "../../../utils/member";
 import ContextMenuHandler from "../../handlers/ContextMenuHandler";
 import getUserinfoEmbed from "../../user/userinfo.service";
 import { lookupButtonCustomIDPrefix, Action } from "./LookupComponentHandler";
@@ -46,32 +47,55 @@ export default class UserInfoHandler extends ContextMenuHandler {
     const targetUser = interaction.data.resolved.users[targetID];
     const targetMember = interaction.data.resolved.members?.[targetID];
 
+    const isMuted = memberIsTimedOut(targetMember);
+
     const banButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.Ban))
       .setLabel("Ban")
+      .setEmoji({
+        name: "🔨",
+      })
       .setStyle(ButtonStyle.Danger);
 
     const kickButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.Kick))
       .setLabel("Kick")
-      .setStyle(ButtonStyle.Danger);
+      .setEmoji({
+        name: "👢",
+      })
+      .setStyle(ButtonStyle.Secondary);
 
-    const muteButton = new ButtonBuilder()
-      .setCustomId(buttonCustomID(targetID, Action.Mute))
-      .setLabel("Mute")
-      .setStyle(ButtonStyle.Danger);
+    // Mute or unmute depending on timeout state
+    const muteButton = isMuted
+      ? new ButtonBuilder()
+          .setCustomId(buttonCustomID(targetID, Action.Unmute))
+          .setLabel("Unmute")
+          .setEmoji({
+            name: "🔉",
+          })
+          .setStyle(ButtonStyle.Secondary)
+      : new ButtonBuilder()
+          .setCustomId(buttonCustomID(targetID, Action.Mute))
+          .setLabel("Mute")
+          .setEmoji({
+            name: "🔇",
+          })
+          .setStyle(ButtonStyle.Secondary);
 
     const warnButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.Warn))
       .setLabel("Warn")
-      .setStyle(ButtonStyle.Danger);
+      .setEmoji({
+        name: "⚠",
+      })
+      .setStyle(ButtonStyle.Secondary);
 
-    const topRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    const topRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
       banButton,
       kickButton,
       muteButton,
-      warnButton
-    );
+      warnButton,
+    ]);
 
     const historyButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.History))
@@ -81,12 +105,12 @@ export default class UserInfoHandler extends ContextMenuHandler {
     const lookupButton = new ButtonBuilder()
       .setCustomId(buttonCustomID(targetID, Action.Lookup))
       .setLabel("Lookup")
-      .setStyle(ButtonStyle.Primary);
+      .setStyle(ButtonStyle.Secondary);
 
-    const secondRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    const secondRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
       historyButton,
-      lookupButton
-    );
+      lookupButton,
+    ]);
 
     const embed = await getUserinfoEmbed(
       ctx,

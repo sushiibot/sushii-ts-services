@@ -25,9 +25,10 @@ export default async function repForUser(
     ctx.sushiiAPI.getOrCreateUser(invoker.id),
   ]);
 
-  const lastRep = dayjs(dbInvokerUser.lastRep);
+  const lastRep = dayjs.utc(dbInvokerUser.lastRep);
   const nextRep = lastRep.add(dayjs.duration({ hours: 12 }));
-  if (lastRep.isBefore(nextRep)) {
+  // Now is before next rep
+  if (dayjs().utc().isBefore(nextRep)) {
     // User has already repped today
     return nextRep;
   }
@@ -38,7 +39,7 @@ export default async function repForUser(
   // Update rep for target
   dbUser.rep = newAmount.toString();
   // Update lastRep for invoker
-  dbInvokerUser.lastRep = dayjs().toISOString();
+  dbInvokerUser.lastRep = dayjs().utc().toISOString();
 
   // Update invoker
   const updateInvokerPromise = ctx.sushiiAPI.sdk.updateUser({

@@ -7,16 +7,16 @@
     "test": "jest",
     "build": "tsc --skipLibCheck",
     "build:graphql": "graphql-codegen --config codegen.yml",
-    "start": "ts-node src/index.ts | pino-pretty -c -t"
+    "dev": "ts-node src/index.ts | pino-pretty -c -t"
   },
   "dependencies": {
     "@cloudamqp/amqp-client": "^2.0.2",
-    "@discordjs/builders": "^0.13.0",
+    "@discordjs/builders": "^0.14.0-dev",
     "@discordjs/collection": "^0.5.0",
     "@discordjs/rest": "^0.3.0",
     "@sapphire/snowflake": "^3.2.0",
     "dayjs": "^1.10.7",
-    "discord-api-types": "^0.32.0",
+    "discord-api-types": "^0.33.1",
     "discord.js": "monbrey/discord.js#modals",
     "dotenv": "^16.0.0",
     "graphql": "^16.3.0",

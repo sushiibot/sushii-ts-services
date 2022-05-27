@@ -165,8 +165,16 @@ export default class InteractionClient {
    *
    * @param handler autocomplete to add
    */
-  public addAutocomplete(handler: AutocompleteHandler): void {
-    this.autocompleteHandlers.set(handler.fullCommandNamePath, handler);
+  public addAutocompleteHandlers(...handlers: AutocompleteHandler[]): void {
+    handlers.forEach((handler) => {
+      if (Array.isArray(handler.fullCommandNamePath)) {
+        handler.fullCommandNamePath.forEach((path) =>
+          this.autocompleteHandlers.set(path, handler)
+        );
+      } else {
+        this.autocompleteHandlers.set(handler.fullCommandNamePath, handler);
+      }
+    });
   }
 
   /**
@@ -310,9 +318,13 @@ export default class InteractionClient {
     } catch (e) {
       log.error(e, "error running command %s", interaction.data.name);
 
-      await this.context.REST.interactionReply(interaction, {
-        content: "uh oh something broke",
-      });
+      try {
+        await this.context.REST.interactionReply(interaction, {
+          content: "uh oh something broke",
+        });
+      } catch (e2) {
+        log.warn(e2, "error replying error %s", interaction.data.name);
+      }
     }
   }
 
@@ -488,7 +500,7 @@ export default class InteractionClient {
     try {
       await buttonHandler.handleInteraction(this.context, interaction);
     } catch (e) {
-      log.error(e, "error handling button %s: %o", interaction.id);
+      log.error(e, "error handling button %s", interaction.id);
     }
   }
 

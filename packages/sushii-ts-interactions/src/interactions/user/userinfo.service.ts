@@ -39,32 +39,43 @@ export default async function getUserinfoEmbed(
   const createdTimestamp = getCreatedTimestampSeconds(user.id);
 
   // Creation times
-  embed = embed.addFields({
-    name: "Account Created",
-    value: `<t:${createdTimestamp}:F> (<t:${createdTimestamp}:R>)`,
-  });
+  embed = embed.addFields([
+    {
+      name: "Account Created",
+      value: `<t:${createdTimestamp}:F> (<t:${createdTimestamp}:R>)`,
+    },
+  ]);
 
   if (member) {
     const joinedTimestamp = dayjs(member.joined_at);
+
     embed = embed
-      .addFields({
-        name: "Roles",
-        value: member.roles.map((id) => `<@&${id}>`).join(" "),
-      })
+      .addFields([
+        {
+          name: "Roles",
+          value:
+            member.roles.map((id) => `<@&${id}>`).join(" ") ||
+            "Member has no roles",
+        },
+      ])
       // TODO: Display colour requires guild roles to be cached
       // .setColor(member.displayColor)
-      .addFields({
-        name: "Joined Server",
-        value: `<t:${joinedTimestamp.unix()}:F> (<t:${joinedTimestamp.unix()}:R>)`,
-      });
+      .addFields([
+        {
+          name: "Joined Server",
+          value: `<t:${joinedTimestamp.unix()}:F> (<t:${joinedTimestamp.unix()}:R>)`,
+        },
+      ]);
 
     if (member.premium_since) {
       const premiumSinceTimestamp = dayjs(member.premium_since);
 
-      embed = embed.addFields({
-        name: "Boosting Since",
-        value: `<t:${premiumSinceTimestamp.unix()}:F> (<t:${premiumSinceTimestamp.unix()}:R>)`,
-      });
+      embed = embed.addFields([
+        {
+          name: "Boosting Since",
+          value: `<t:${premiumSinceTimestamp.unix()}:F> (<t:${premiumSinceTimestamp.unix()}:R>)`,
+        },
+      ]);
     }
   }
 

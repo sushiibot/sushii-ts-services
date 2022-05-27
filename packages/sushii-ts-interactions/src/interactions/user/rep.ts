@@ -3,6 +3,7 @@ import { isDayjs } from "dayjs";
 import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 import i18next from "i18next";
 import Context from "../../model/context";
+import Color from "../../utils/colors";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
@@ -34,11 +35,7 @@ export default class RepCommand extends SlashCommandHandler {
 
     const target = options.getUser("user");
     if (!target) {
-      await ctx.REST.interactionReply(interaction, {
-        content: "You need to provide a user to fishy for!",
-      });
-
-      return;
+      throw new Error("no rep user");
     }
 
     const res = await repForUser(
@@ -48,17 +45,17 @@ export default class RepCommand extends SlashCommandHandler {
       target
     );
 
-    let embed;
+    let embed = new EmbedBuilder();
 
     if (isDayjs(res)) {
-      embed = new EmbedBuilder().setDescription(
-        i18next.t("fishy.cooldown", {
+      embed = embed.setColor(Color.Error).setDescription(
+        i18next.t("rep.cooldown", {
           ns: "commands",
-          nextFishyTimestamp: res.unix(),
+          nexRepTimestamp: res.unix(),
         })
       );
     } else {
-      embed = new EmbedBuilder().setDescription(
+      embed = new EmbedBuilder().setColor(Color.Success).setDescription(
         i18next.t("rep.success", {
           ns: "commands",
           username: target.username,

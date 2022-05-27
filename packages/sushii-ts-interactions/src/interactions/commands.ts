@@ -10,6 +10,8 @@ import PingCommand from "./meta/ping";
 import NotificationCommand from "./notifications/NotificationCommand";
 import NotificationListAutocomplete from "./notifications/Autocomplete";
 import TagCommand from "./tags/TagCommand";
+import TagGetAutocomplete from "./tags/TagAutocomplete";
+import ContextLookUpButtonHandler from "./moderation/context_lookup/LookupComponentHandler";
 // import TimeoutCommand from "./moderation/TimeoutCommand";
 
 export default function addCommands(
@@ -36,5 +38,11 @@ export default function addCommands(
 
   interactionClient.addContextMenu(new UserInfoHandler());
 
-  interactionClient.addAutocomplete(new NotificationListAutocomplete());
+  interactionClient.addButton(new ContextLookUpButtonHandler());
+
+  interactionClient.addAutocompleteHandlers(
+    new NotificationListAutocomplete(),
+
+    new TagGetAutocomplete()
+  );
 }

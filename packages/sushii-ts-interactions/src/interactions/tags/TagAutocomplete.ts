@@ -4,12 +4,17 @@ import {
   InteractionResponseType,
 } from "discord-api-types/v10";
 import Context from "../../model/context";
-import getInvokerUser from "../../utils/interactions";
 import { AutocompleteHandler } from "../handlers";
 import { AutocompleteOption } from "../handlers/AutocompleteHandler";
 
-export default class TagAutocomplete extends AutocompleteHandler {
-  fullCommandNamePath = "notification.delete";
+export default class TagGetAutocomplete extends AutocompleteHandler {
+  fullCommandNamePath = [
+    "tag.get",
+    "tag.info",
+    "tag.rename",
+    "tag.edit",
+    "tag.delete",
+  ];
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
@@ -21,19 +26,19 @@ export default class TagAutocomplete extends AutocompleteHandler {
       throw new Error("Option type must be string.");
     }
 
-    const invoker = getInvokerUser(interaction);
-
-    const matching = await ctx.sushiiAPI.sdk.searchNotificationsStartingWith({
-      userId: invoker.id,
-      query: option.value,
+    const matching = await ctx.sushiiAPI.sdk.searchTags({
+      guildId: interaction.guild_id,
+      filter: {
+        tagName: {
+          startsWithInsensitive: option.value,
+        },
+      },
     });
 
-    const choices = matching.notificationsStartingWith?.nodes
-      .filter((k): k is string => !!k)
-      .map((s) => ({
-        name: s,
-        value: s,
-      }));
+    const choices = matching.allTags?.edges.map((s) => ({
+      name: s.node.tagName,
+      value: s.node.tagName,
+    }));
 
     await ctx.REST.interactionCallback(interaction, {
       type: InteractionResponseType.ApplicationCommandAutocompleteResult,

@@ -17,6 +17,8 @@ export default class BanCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("ban")
     .setDescription("Ban a member.")
+    .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
+    .setDMPermission(false)
     .addUserOption((o) =>
       o.setName("user").setDescription("Who to ban.").setRequired(true)
     )
