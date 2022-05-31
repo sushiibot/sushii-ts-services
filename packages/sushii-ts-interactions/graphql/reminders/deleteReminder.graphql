@@ -1,0 +1,7 @@
+mutation deleteReminder($userId: BigInt!, $setAt: Datetime!) {
+  deleteReminderByUserIdAndSetAt(input: { setAt: $setAt, userId: $userId }) {
+    reminder {
+      ...ReminderData
+    }
+  }
+}

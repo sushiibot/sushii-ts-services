@@ -1,6 +1,7 @@
 import {
   ActionRowBuilder,
   ButtonBuilder,
+  EmbedBuilder,
   SelectMenuBuilder,
   SelectMenuOptionBuilder,
 } from "@discordjs/builders";
@@ -9,7 +10,9 @@ import {
   APIMessageComponentButtonInteraction,
   ButtonStyle,
 } from "discord-api-types/v10";
+import { lookup } from "dns";
 import Context from "../../../model/context";
+import Color from "../../../utils/colors";
 import { ButtonHandler } from "../../handlers";
 
 export const lookupButtonCustomIDPrefix = "lookup:button:";
@@ -92,10 +95,100 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
         break;
       case Action.Warn:
         break;
-      case Action.History:
-        break;
-      case Action.Lookup:
-        break;
+      case Action.History: {
+        const { allModLogs } = await ctx.sushiiAPI.sdk.getUserModLogHistory({
+          guildId: interaction.guild_id,
+          userId: target,
+        });
+
+        const cases = allModLogs?.nodes;
+
+        const { embeds, components } = interaction.message;
+
+        if (!cases || cases.length === 0) {
+          embeds.push(
+            new EmbedBuilder()
+              .setTitle("📂 User History")
+              .setDescription("User has no moderation case history. All clean!")
+              .setColor(Color.Success)
+              .toJSON()
+          );
+        } else {
+          const casesStr = cases.map((c) => {
+            let s = `${c.caseId} - <t:${c.actionTime}:f> - ${c.action}`;
+            if (c.reason) {
+              s += `┗ Reason: ${c.reason}`;
+            }
+
+            return s;
+          });
+
+          embeds.push(
+            new EmbedBuilder()
+              .setTitle("📂 User History")
+              .setDescription(casesStr.join("\n"))
+              .setColor(Color.Success)
+              .toJSON()
+          );
+        }
+
+        // Disable history button, second row, first button
+        const historyButton = components?.at(1)?.components.at(0);
+        if (components && historyButton) {
+          historyButton.disabled = true;
+
+          components[1].components[0] = historyButton;
+        }
+
+        await ctx.REST.interactionEdit(interaction, {
+          components,
+          embeds,
+        });
+
+        return;
+      }
+      case Action.Lookup: {
+        const bans = await ctx.sushiiAPI.sdk.getUserBans({
+          userId: target,
+        });
+
+        const { embeds, components } = interaction.message;
+
+        if (!bans.allGuildBans?.nodes || bans.allGuildBans.nodes.length === 0) {
+          embeds.push(
+            new EmbedBuilder()
+              .setTitle("🔎 User Lookup")
+              .setDescription("User has no bans in any shared servers.")
+              .setColor(Color.Success)
+              .toJSON()
+          );
+        } else {
+          const bansStr = bans.allGuildBans.nodes.map((b) => b.guildId);
+
+          embeds.push(
+            new EmbedBuilder()
+              .setTitle("🔎 User Lookup")
+              .setDescription(bansStr.join("\n"))
+              .setColor(Color.Success)
+              .toJSON()
+          );
+        }
+
+        // Disable lookup button, second row, second button
+        const lookupButton = components?.at(1)?.components.at(1);
+        if (components && lookupButton) {
+          lookupButton.disabled = true;
+
+          components[1].components[1] = lookupButton;
+        }
+
+        await ctx.REST.interactionEdit(interaction, {
+          components,
+          embeds,
+        });
+
+        return;
+      }
     }
 
     // TODO: Confirm button

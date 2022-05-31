@@ -6625,6 +6625,7 @@ export type Query = Node & {
   allMutes?: Maybe<MutesConnection>;
   /** Reads and enables pagination through a set of `Notification`. */
   allNotifications?: Maybe<NotificationsConnection>;
+  allRedisGuildIds: Array<Scalars['BigInt']>;
   /** Reads and enables pagination through a set of `Reminder`. */
   allReminders?: Maybe<RemindersConnection>;
   /** Reads and enables pagination through a set of `RoleMenu`. */
@@ -6695,6 +6696,7 @@ export type Query = Node & {
    */
   query: Query;
   randomTag?: Maybe<Tag>;
+  redisGuildByGuildId?: Maybe<RedisGuild>;
   /** Reads a single `Reminder` using its globally unique `ID`. */
   reminder?: Maybe<Reminder>;
   reminderByUserIdAndSetAt?: Maybe<Reminder>;
@@ -7156,6 +7158,12 @@ export type QueryRandomTagArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryRedisGuildByGuildIdArgs = {
+  guild_id: Scalars['BigInt'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryReminderArgs = {
   nodeId: Scalars['ID'];
 };
@@ -7267,6 +7275,46 @@ export type QueryWebUserGuildArgs = {
 export type QueryWebUserGuildByUserIdAndGuildIdArgs = {
   guildId: Scalars['BigInt'];
   userId: Scalars['BigInt'];
+};
+
+export type RedisGuild = {
+  __typename?: 'RedisGuild';
+  afkChannelId?: Maybe<Scalars['String']>;
+  afkTimeout: Scalars['Int'];
+  applicationId?: Maybe<Scalars['String']>;
+  banner?: Maybe<Scalars['String']>;
+  channels?: Maybe<Array<Maybe<Scalars['String']>>>;
+  defaultMessageNotifications?: Maybe<Scalars['Int']>;
+  description?: Maybe<Scalars['String']>;
+  discoverySplash?: Maybe<Scalars['String']>;
+  emojis?: Maybe<Array<Maybe<Scalars['String']>>>;
+  explicitContentFilter?: Maybe<Scalars['Int']>;
+  features?: Maybe<Array<Maybe<Scalars['String']>>>;
+  icon?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  joinedAt?: Maybe<Scalars['String']>;
+  large?: Maybe<Scalars['Boolean']>;
+  maxMembers?: Maybe<Scalars['Int']>;
+  maxVideoChannelUsers?: Maybe<Scalars['Int']>;
+  memberCount?: Maybe<Scalars['Int']>;
+  members?: Maybe<Array<Maybe<Scalars['String']>>>;
+  mfaLevel?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  nsfwLevel: Scalars['Int'];
+  ownerId: Scalars['String'];
+  preferredLocale?: Maybe<Scalars['String']>;
+  premiumSubscriptionCount?: Maybe<Scalars['Int']>;
+  premiumTier: Scalars['Int'];
+  presences?: Maybe<Array<Maybe<Scalars['String']>>>;
+  roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+  rulesChannelId?: Maybe<Scalars['String']>;
+  splash?: Maybe<Scalars['String']>;
+  systemChannelFlags?: Maybe<Scalars['Int']>;
+  systemChannelId?: Maybe<Scalars['String']>;
+  unavailable?: Maybe<Scalars['Boolean']>;
+  vanityUrlCode?: Maybe<Scalars['String']>;
+  verificationLevel?: Maybe<Scalars['Int']>;
+  voiceStates?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type Reminder = Node & {
@@ -11411,6 +11459,7 @@ export type ResolversTypes = {
   NotificationsStartingWithEdge: ResolverTypeWrapper<NotificationsStartingWithEdge>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
+  RedisGuild: ResolverTypeWrapper<RedisGuild>;
   Reminder: ResolverTypeWrapper<Reminder>;
   ReminderAggregates: ResolverTypeWrapper<ReminderAggregates>;
   ReminderAverageAggregates: ResolverTypeWrapper<ReminderAverageAggregates>;
@@ -12082,6 +12131,7 @@ export type ResolversParentTypes = {
   NotificationsStartingWithEdge: NotificationsStartingWithEdge;
   PageInfo: PageInfo;
   Query: {};
+  RedisGuild: RedisGuild;
   Reminder: Reminder;
   ReminderAggregates: ReminderAggregates;
   ReminderAverageAggregates: ReminderAverageAggregates;
@@ -14002,6 +14052,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   allModLogs?: Resolver<Maybe<ResolversTypes['ModLogsConnection']>, ParentType, ContextType, RequireFields<QueryAllModLogsArgs, 'orderBy'>>;
   allMutes?: Resolver<Maybe<ResolversTypes['MutesConnection']>, ParentType, ContextType, RequireFields<QueryAllMutesArgs, 'orderBy'>>;
   allNotifications?: Resolver<Maybe<ResolversTypes['NotificationsConnection']>, ParentType, ContextType, RequireFields<QueryAllNotificationsArgs, 'orderBy'>>;
+  allRedisGuildIds?: Resolver<Array<ResolversTypes['BigInt']>, ParentType, ContextType>;
   allReminders?: Resolver<Maybe<ResolversTypes['RemindersConnection']>, ParentType, ContextType, RequireFields<QueryAllRemindersArgs, 'orderBy'>>;
   allRoleMenus?: Resolver<Maybe<ResolversTypes['RoleMenusConnection']>, ParentType, ContextType, RequireFields<QueryAllRoleMenusArgs, 'orderBy'>>;
   allTags?: Resolver<Maybe<ResolversTypes['TagsConnection']>, ParentType, ContextType, RequireFields<QueryAllTagsArgs, 'orderBy'>>;
@@ -14044,6 +14095,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   notificationsStartingWith?: Resolver<Maybe<ResolversTypes['NotificationsStartingWithConnection']>, ParentType, ContextType, Partial<QueryNotificationsStartingWithArgs>>;
   query?: Resolver<ResolversTypes['Query'], ParentType, ContextType>;
   randomTag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, Partial<QueryRandomTagArgs>>;
+  redisGuildByGuildId?: Resolver<Maybe<ResolversTypes['RedisGuild']>, ParentType, ContextType, RequireFields<QueryRedisGuildByGuildIdArgs, 'guild_id'>>;
   reminder?: Resolver<Maybe<ResolversTypes['Reminder']>, ParentType, ContextType, RequireFields<QueryReminderArgs, 'nodeId'>>;
   reminderByUserIdAndSetAt?: Resolver<Maybe<ResolversTypes['Reminder']>, ParentType, ContextType, RequireFields<QueryReminderByUserIdAndSetAtArgs, 'setAt' | 'userId'>>;
   roleMenu?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuArgs, 'nodeId'>>;
@@ -14061,6 +14113,46 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   webUserById?: Resolver<Maybe<ResolversTypes['WebUser']>, ParentType, ContextType, RequireFields<QueryWebUserByIdArgs, 'id'>>;
   webUserGuild?: Resolver<Maybe<ResolversTypes['WebUserGuild']>, ParentType, ContextType, RequireFields<QueryWebUserGuildArgs, 'nodeId'>>;
   webUserGuildByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['WebUserGuild']>, ParentType, ContextType, RequireFields<QueryWebUserGuildByUserIdAndGuildIdArgs, 'guildId' | 'userId'>>;
+};
+
+export type RedisGuildResolvers<ContextType = any, ParentType extends ResolversParentTypes['RedisGuild'] = ResolversParentTypes['RedisGuild']> = {
+  afkChannelId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  afkTimeout?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  applicationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  banner?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  channels?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  defaultMessageNotifications?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  discoverySplash?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  emojis?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  explicitContentFilter?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  features?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  icon?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  joinedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  large?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  maxMembers?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  maxVideoChannelUsers?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  memberCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  members?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  mfaLevel?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  nsfwLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  ownerId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  preferredLocale?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  premiumSubscriptionCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  premiumTier?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  presences?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  rulesChannelId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  splash?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  systemChannelFlags?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  systemChannelId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  unavailable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  vanityUrlCode?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  verificationLevel?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  voiceStates?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ReminderResolvers<ContextType = any, ParentType extends ResolversParentTypes['Reminder'] = ResolversParentTypes['Reminder']> = {
@@ -15220,6 +15312,7 @@ export type Resolvers<ContextType = any> = {
   NotificationsStartingWithEdge?: NotificationsStartingWithEdgeResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  RedisGuild?: RedisGuildResolvers<ContextType>;
   Reminder?: ReminderResolvers<ContextType>;
   ReminderAggregates?: ReminderAggregatesResolvers<ContextType>;
   ReminderAverageAggregates?: ReminderAverageAggregatesResolvers<ContextType>;
@@ -15340,12 +15433,12 @@ export type Resolvers<ContextType = any> = {
 
 export type BanDataFragment = { __typename?: 'GuildBan', guildId: string, nodeId: string, userId: string };
 
-export type MyQueryQueryVariables = Exact<{
+export type GetUserBansQueryVariables = Exact<{
   userId: Scalars['BigInt'];
 }>;
 
 
-export type MyQueryQuery = { __typename?: 'Query', allGuildBans?: { __typename?: 'GuildBansConnection', totalCount: number, nodes: Array<{ __typename?: 'GuildBan', guildId: string, nodeId: string, userId: string }> } | null };
+export type GetUserBansQuery = { __typename?: 'Query', allGuildBans?: { __typename?: 'GuildBansConnection', totalCount: number, nodes: Array<{ __typename?: 'GuildBan', guildId: string, nodeId: string, userId: string }> } | null };
 
 export type GuildConfigByIdQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -15387,6 +15480,7 @@ export type GetNextCaseIdQueryVariables = Exact<{
 export type GetNextCaseIdQuery = { __typename?: 'Query', nextCaseId?: string | null };
 
 export type GetUserModLogHistoryQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
   userId: Scalars['BigInt'];
 }>;
 
@@ -15436,6 +15530,30 @@ export type SearchNotificationsStartingWithQueryVariables = Exact<{
 
 
 export type SearchNotificationsStartingWithQuery = { __typename?: 'Query', notificationsStartingWith?: { __typename?: 'NotificationsStartingWithConnection', nodes: Array<string | null>, totalCount: number } | null };
+
+export type CreateReminderMutationVariables = Exact<{
+  reminder: ReminderInput;
+}>;
+
+
+export type CreateReminderMutation = { __typename?: 'Mutation', createReminder?: { __typename?: 'CreateReminderPayload', reminder?: { __typename?: 'Reminder', userId: string, description: string, expireAt: string, setAt: string } | null } | null };
+
+export type DeleteReminderMutationVariables = Exact<{
+  userId: Scalars['BigInt'];
+  setAt: Scalars['Datetime'];
+}>;
+
+
+export type DeleteReminderMutation = { __typename?: 'Mutation', deleteReminderByUserIdAndSetAt?: { __typename?: 'DeleteReminderPayload', reminder?: { __typename?: 'Reminder', userId: string, description: string, expireAt: string, setAt: string } | null } | null };
+
+export type GetUserRemindersQueryVariables = Exact<{
+  userId: Scalars['BigInt'];
+}>;
+
+
+export type GetUserRemindersQuery = { __typename?: 'Query', allReminders?: { __typename?: 'RemindersConnection', totalCount: number, nodes: Array<{ __typename?: 'Reminder', userId: string, description: string, expireAt: string, setAt: string }> } | null };
+
+export type ReminderDataFragment = { __typename?: 'Reminder', userId: string, description: string, expireAt: string, setAt: string };
 
 export type CreateRoleMenuMutationVariables = Exact<{
   roleMenu: RoleMenuInput;
@@ -15620,6 +15738,14 @@ export const NotificationDataFragmentDoc = gql`
   userId
 }
     `;
+export const ReminderDataFragmentDoc = gql`
+    fragment ReminderData on Reminder {
+  userId
+  description
+  expireAt
+  setAt
+}
+    `;
 export const RoleMenuDataFragmentDoc = gql`
     fragment RoleMenuData on RoleMenu {
   messageId
@@ -15652,8 +15778,8 @@ export const UserDataFragmentDoc = gql`
   profileData
 }
     `;
-export const MyQueryDocument = gql`
-    query MyQuery($userId: BigInt!) {
+export const GetUserBansDocument = gql`
+    query getUserBans($userId: BigInt!) {
   allGuildBans(condition: {userId: $userId}) {
     nodes {
       ...BanData
@@ -15700,8 +15826,8 @@ export const GetNextCaseIdDocument = gql`
 }
     `;
 export const GetUserModLogHistoryDocument = gql`
-    query getUserModLogHistory($userId: BigInt!) {
-  allModLogs(condition: {userId: $userId}) {
+    query getUserModLogHistory($guildId: BigInt!, $userId: BigInt!) {
+  allModLogs(condition: {guildId: $guildId, userId: $userId}) {
     nodes {
       ...ModLogData
     }
@@ -15757,6 +15883,34 @@ export const SearchNotificationsStartingWithDocument = gql`
   }
 }
     `;
+export const CreateReminderDocument = gql`
+    mutation createReminder($reminder: ReminderInput!) {
+  createReminder(input: {reminder: $reminder}) {
+    reminder {
+      ...ReminderData
+    }
+  }
+}
+    ${ReminderDataFragmentDoc}`;
+export const DeleteReminderDocument = gql`
+    mutation deleteReminder($userId: BigInt!, $setAt: Datetime!) {
+  deleteReminderByUserIdAndSetAt(input: {setAt: $setAt, userId: $userId}) {
+    reminder {
+      ...ReminderData
+    }
+  }
+}
+    ${ReminderDataFragmentDoc}`;
+export const GetUserRemindersDocument = gql`
+    query getUserReminders($userId: BigInt!) {
+  allReminders(condition: {userId: $userId}) {
+    nodes {
+      ...ReminderData
+    }
+    totalCount
+  }
+}
+    ${ReminderDataFragmentDoc}`;
 export const CreateRoleMenuDocument = gql`
     mutation createRoleMenu($roleMenu: RoleMenuInput!) {
   createRoleMenu(input: {roleMenu: $roleMenu}) {
@@ -15937,8 +16091,8 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    MyQuery(variables: MyQueryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<MyQueryQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<MyQueryQuery>(MyQueryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'MyQuery', 'query');
+    getUserBans(variables: GetUserBansQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserBansQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetUserBansQuery>(GetUserBansDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getUserBans', 'query');
     },
     guildConfigByID(variables: GuildConfigByIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GuildConfigByIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GuildConfigByIdQuery>(GuildConfigByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'guildConfigByID', 'query');
@@ -15972,6 +16126,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     searchNotificationsStartingWith(variables: SearchNotificationsStartingWithQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchNotificationsStartingWithQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<SearchNotificationsStartingWithQuery>(SearchNotificationsStartingWithDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'searchNotificationsStartingWith', 'query');
+    },
+    createReminder(variables: CreateReminderMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateReminderMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateReminderMutation>(CreateReminderDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createReminder', 'mutation');
+    },
+    deleteReminder(variables: DeleteReminderMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteReminderMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteReminderMutation>(DeleteReminderDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteReminder', 'mutation');
+    },
+    getUserReminders(variables: GetUserRemindersQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserRemindersQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetUserRemindersQuery>(GetUserRemindersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getUserReminders', 'query');
     },
     createRoleMenu(variables: CreateRoleMenuMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateRoleMenuMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateRoleMenuMutation>(CreateRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createRoleMenu', 'mutation');

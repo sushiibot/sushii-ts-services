@@ -1,0 +1,8 @@
+query getUserModLogHistory($guildId: BigInt!, $userId: BigInt!) {
+  allModLogs(condition: { guildId: $guildId, userId: $userId }) {
+    nodes {
+      ...ModLogData
+    }
+    totalCount
+  }
+}

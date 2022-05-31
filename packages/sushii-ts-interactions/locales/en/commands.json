@@ -128,5 +128,31 @@
         "use_count": "Use Count"
       }
     }
+  },
+  "reminder": {
+    "add": {
+      "success": {
+        "title": "Added a new reminder",
+        "description": "I'll reminder you <t:{{expireAtTimestamp}}:R> to {{description}}"
+      },
+      "error": {
+        "invalid_duration": "Invalid duration! Please provide a duration like `1 hour` or `3 days 1 hour`."
+      }
+    },
+    "list": {
+      "success": {
+        "title": "Your reminders",
+        "empty": "You have no reminders! You must have good memory."
+      }
+    },
+    "delete": {
+      "success": {
+        "title": "Reminder deleted",
+        "description": "Deleted reminder <t:{{expireAtTimestamp}}:R> to {{description}}"
+      },
+      "error": {
+        "not_found": "Reminder not found"
+      }
+    }
   }
 }

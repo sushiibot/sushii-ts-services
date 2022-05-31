@@ -1,0 +1,7 @@
+mutation createReminder($reminder: ReminderInput!) {
+  createReminder(input: { reminder: $reminder }) {
+    reminder {
+      ...ReminderData
+    }
+  }
+}

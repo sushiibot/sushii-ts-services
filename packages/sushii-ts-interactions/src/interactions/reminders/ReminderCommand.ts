@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
+import dayjs from "dayjs";
 import {
   APIChatInputApplicationCommandGuildInteraction,
   MessageFlags,
@@ -8,6 +9,7 @@ import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { isNoValuesDeletedError } from "../../utils/graphqlError";
 import getInvokerUser from "../../utils/interactions";
+import parseDuration from "../../utils/parseDuration";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
 
@@ -24,7 +26,7 @@ export default class ReminderCommand extends SlashCommandHandler {
         .addStringOption((o) =>
           o
             .setName("duration")
-            .setDescription("When to remind you.")
+            .setDescription("When in the future to remind you.")
             .setRequired(true)
         )
         .addStringOption((o) =>
@@ -43,8 +45,8 @@ export default class ReminderCommand extends SlashCommandHandler {
         .setDescription("Delete a reminder.")
         .addStringOption((o) =>
           o
-            .setName("description")
-            .setDescription("The reminder to delete.")
+            .setName("duration")
+            .setDescription("Which reminder to delete.")
             .setRequired(true)
             .setAutocomplete(true)
         )
@@ -80,29 +82,58 @@ export default class ReminderCommand extends SlashCommandHandler {
     interaction: APIChatInputApplicationCommandGuildInteraction,
     options: CommandInteractionOptionResolver
   ): Promise<void> {
-    const keyword = options.getString("keyword");
-    if (!keyword) {
-      throw new Error("Missing keyword.");
+    const durationStr = options.getString("duration");
+    if (!durationStr) {
+      throw new Error("Missing duration.");
+    }
+
+    const description = options.getString("description");
+    if (!description) {
+      throw new Error("Missing description");
     }
 
     const invoker = getInvokerUser(interaction);
 
-    await ctx.sushiiAPI.sdk.createNotification({
-      notification: {
-        guildId: interaction.guild_id,
+    const duration = parseDuration(durationStr);
+    if (!duration) {
+      await ctx.REST.interactionReply(interaction, {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(
+              t("reminder.add.error.invalid_duration", { ns: "commands" })
+            )
+            .setColor(Color.Error)
+            .toJSON(),
+        ],
+      });
+
+      return;
+    }
+
+    const expireAt = dayjs().utc().add(duration);
+
+    await ctx.sushiiAPI.sdk.createReminder({
+      reminder: {
         userId: invoker.id,
-        keyword,
+        description,
+        setAt: dayjs().utc().toISOString(),
+        expireAt: expireAt.toISOString(),
       },
     });
 
     const embed = new EmbedBuilder()
-      .setTitle("Added notification.")
-      .setFields([{ name: "Keyword", value: keyword }])
+      .setTitle(t("reminder.add.success.title", { ns: "commands" }))
+      .setDescription(
+        t("reminder.add.success.description", {
+          ns: "commands",
+          expireAtTimestamp: expireAt.unix(),
+          description,
+        })
+      )
       .setColor(Color.Success);
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed.toJSON()],
-      flags: MessageFlags.Ephemeral,
     });
   }
 
@@ -112,33 +143,35 @@ export default class ReminderCommand extends SlashCommandHandler {
   ): Promise<void> {
     const invoker = getInvokerUser(interaction);
 
-    const notifications = await ctx.sushiiAPI.sdk.getUserNotifications({
+    const reminders = await ctx.sushiiAPI.sdk.getUserReminders({
       userId: invoker.id,
     });
 
-    const keywords = notifications.allNotifications?.nodes.map(
-      (n) => n.keyword
-    );
+    const remindersStr = reminders.allReminders?.nodes.map((r) => {
+      const expireAtTimestamp = dayjs.utc(r.expireAt);
+      return `<t:${expireAtTimestamp.utc()}:R> ${r.description}`;
+    });
 
-    if (!keywords || keywords.length === 0) {
+    if (!remindersStr || remindersStr.length === 0) {
       await ctx.REST.interactionReply(interaction, {
-        content: t("notification.list.empty", {
-          ns: "commands",
-        }),
-        flags: MessageFlags.Ephemeral,
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(t("reminder.list.success.empty", { ns: "commands" }))
+            .setColor(Color.Warning)
+            .toJSON(),
+        ],
       });
 
       return;
     }
 
     const embed = new EmbedBuilder()
-      .setTitle(t("notification.list.title", { ns: "commands" }))
-      .setDescription(keywords.join("\n"))
+      .setTitle(t("reminder.list.success.title", { ns: "commands" }))
+      .setDescription(remindersStr.join("\n"))
       .setColor(Color.Info);
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed.toJSON()],
-      flags: MessageFlags.Ephemeral,
     });
   }
 
@@ -147,18 +180,17 @@ export default class ReminderCommand extends SlashCommandHandler {
     interaction: APIChatInputApplicationCommandGuildInteraction,
     options: CommandInteractionOptionResolver
   ): Promise<void> {
-    const keyword = options.getString("keyword");
-    if (!keyword) {
-      throw new Error("Missing keyword.");
+    const duration = options.getString("duration");
+    if (!duration) {
+      throw new Error("Missing duration.");
     }
 
     const invoker = getInvokerUser(interaction);
 
     try {
-      await ctx.sushiiAPI.sdk.deleteNotification({
-        guildId: interaction.guild_id,
+      await ctx.sushiiAPI.sdk.deleteReminder({
         userId: invoker.id,
-        keyword,
+        setAt,
       });
     } catch (err) {
       if (!isNoValuesDeletedError(err)) {
@@ -167,21 +199,27 @@ export default class ReminderCommand extends SlashCommandHandler {
 
       // Returns correct error
       await ctx.REST.interactionReply(interaction, {
-        content: t("notification.delete.not_found", {
-          ns: "commands",
-          keyword,
-        }),
-        flags: MessageFlags.Ephemeral,
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(
+              t("reminder.delete.error.not_found", {
+                ns: "commands",
+                keyword,
+              })
+            )
+            .setColor(Color.Warning)
+            .toJSON(),
+        ],
       });
 
       return;
     }
 
     const embed = new EmbedBuilder()
-      .setTitle(t("notification.delete.title", { ns: "commands" }))
+      .setTitle(t("reminder.delete.success.title", { ns: "commands" }))
       .setFields([
         {
-          name: t("notification.delete.field_title", { ns: "commands" }),
+          name: t("reminder.delete.success.field_title", { ns: "commands" }),
           value: keyword,
         },
       ])
@@ -189,7 +227,6 @@ export default class ReminderCommand extends SlashCommandHandler {
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed.toJSON()],
-      flags: MessageFlags.Ephemeral,
     });
   }
 }

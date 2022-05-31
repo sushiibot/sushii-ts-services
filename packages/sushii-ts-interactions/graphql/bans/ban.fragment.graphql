@@ -1,0 +1,5 @@
+fragment BanData on GuildBan {
+  guildId
+  nodeId
+  userId
+}

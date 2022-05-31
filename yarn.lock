@@ -1999,6 +1999,7 @@ __metadata:
     i18next-fs-backend: ^1.1.4
     jest: ^27.5.1
     node-fetch: 2.6.7
+    parse-duration: ^1.0.2
     pino: ^7.8.0
     pino-pretty: ^7.5.1
     prettier: ^2.5.1
@@ -7920,6 +7921,13 @@ __metadata:
   dependencies:
     callsites: ^3.0.0
   checksum: 6ba8b255145cae9470cf5551eb74be2d22281587af787a2626683a6c20fbb464978784661478dd2a3f1dad74d1e802d403e1b03c1a31fab310259eec8ac560ff
+  languageName: node
+  linkType: hard
+
+"parse-duration@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "parse-duration@npm:1.0.2"
+  checksum: d103ca9c3b630cc6169a89039349b735af796b94d9dc810750b16f79285ce5df20669ef0d02b23eda5832dc51aee88316857f3695584e88ba0ae5d77743134ef
   languageName: node
   linkType: hard
 

@@ -8,6 +8,7 @@ import {
   APIUser,
 } from "discord-api-types/v10";
 import Context from "../../model/context";
+import Color from "../../utils/colors";
 import { getCreatedTimestampSeconds } from "../../utils/snowflake";
 
 export default async function getUserinfoEmbed(
@@ -34,7 +35,8 @@ export default async function getUserinfoEmbed(
     .setImage(ctx.CDN.userBannerURL(user))
     .setFooter({
       text: `ID: ${user.id}`,
-    });
+    })
+    .setColor(Color.Success);
 
   const createdTimestamp = getCreatedTimestampSeconds(user.id);
 
