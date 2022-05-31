@@ -9,6 +9,7 @@ import http from "http";
 import bodyparser from "body-parser";
 import { createTerminus, TerminusState } from "@godaddy/terminus";
 import { database, schemas, options, port } from "./options";
+import redis from "./extended_schema/redis";
 
 const logger = pino({
   name: "postgraphile",
@@ -16,6 +17,7 @@ const logger = pino({
 
 async function main() {
   const middleware = postgraphile(database, schemas, options);
+  await redis.connect();
 
   const app = express();
 

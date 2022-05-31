@@ -8053,6 +8053,7 @@ type Query implements Node {
     """The method to use when ordering `Notification`."""
     orderBy: [NotificationsOrderBy!] = [PRIMARY_KEY_ASC]
   ): NotificationsConnection
+  allRedisGuildIds: [BigInt!]!
 
   """Reads and enables pagination through a set of `Reminder`."""
   allReminders(
@@ -8155,6 +8156,40 @@ type Query implements Node {
     """The method to use when ordering `Tag`."""
     orderBy: [TagsOrderBy!] = [PRIMARY_KEY_ASC]
   ): TagsConnection
+
+  """Reads and enables pagination through a set of `UserLevel`."""
+  allUserLevels(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: UserLevelCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: UserLevelFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `UserLevel`."""
+    orderBy: [UserLevelsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): UserLevelsConnection
 
   """Reads and enables pagination through a set of `User`."""
   allUsers(
@@ -8431,6 +8466,8 @@ type Query implements Node {
   which can only query top level fields if they are in a particular form.
   """
   query: Query!
+  randomTag(guildId: BigInt, ownerId: BigInt, query: String, startsWith: Boolean): Tag
+  redisGuildByGuildId(guild_id: BigInt!): RedisGuild
 
   """Reads a single `Reminder` using its globally unique `ID`."""
   reminder(
@@ -8453,62 +8490,6 @@ type Query implements Node {
     nodeId: ID!
   ): Tag
   tagByGuildIdAndTagName(guildId: BigInt!, tagName: String!): Tag
-
-  """Reads and enables pagination through a set of `Tag`."""
-  tagSearch(
-    """Read all values in the set after (below) this cursor."""
-    after: Cursor
-
-    """Read all values in the set before (above) this cursor."""
-    before: Cursor
-
-    """
-    A filter to be used in determining which values should be returned by the collection.
-    """
-    filter: TagFilter
-
-    """Only read the first `n` values of the set."""
-    first: Int
-    guildId: BigInt
-
-    """Only read the last `n` values of the set."""
-    last: Int
-
-    """
-    Skip the first `n` values from our `after` cursor, an alternative to cursor
-    based pagination. May not be used with `last`.
-    """
-    offset: Int
-    query: String
-  ): TagsConnection
-
-  """Reads and enables pagination through a set of `Tag`."""
-  tagsStartingWith(
-    """Read all values in the set after (below) this cursor."""
-    after: Cursor
-
-    """Read all values in the set before (above) this cursor."""
-    before: Cursor
-
-    """
-    A filter to be used in determining which values should be returned by the collection.
-    """
-    filter: TagFilter
-
-    """Only read the first `n` values of the set."""
-    first: Int
-    guildId: BigInt
-
-    """Only read the last `n` values of the set."""
-    last: Int
-
-    """
-    Skip the first `n` values from our `after` cursor, an alternative to cursor
-    based pagination. May not be used with `last`.
-    """
-    offset: Int
-    query: String
-  ): TagsConnection
 
   """
   Leaderboard for given timeframe and optional guild. If guild is null, it is the global leaderboard
@@ -8546,6 +8527,7 @@ type Query implements Node {
     nodeId: ID!
   ): User
   userById(id: BigInt!): User
+  userGuildRank(guildId: BigInt!, userId: BigInt!): UserGuildRankResult
 
   """Reads a single `UserLevel` using its globally unique `ID`."""
   userLevel(
@@ -8569,6 +8551,45 @@ type Query implements Node {
     nodeId: ID!
   ): WebUserGuild
   webUserGuildByUserIdAndGuildId(guildId: BigInt!, userId: BigInt!): WebUserGuild
+}
+
+type RedisGuild {
+  afkChannelId: String
+  afkTimeout: Int!
+  applicationId: String
+  banner: String
+  channels: [String]
+  defaultMessageNotifications: Int
+  description: String
+  discoverySplash: String
+  emojis: [String]
+  explicitContentFilter: Int
+  features: [String]
+  icon: String
+  id: String!
+  joinedAt: String
+  large: Boolean
+  maxMembers: Int
+  maxVideoChannelUsers: Int
+  memberCount: Int
+  members: [String]
+  mfaLevel: Int
+  name: String!
+  nsfwLevel: Int!
+  ownerId: String!
+  preferredLocale: String
+  premiumSubscriptionCount: Int
+  premiumTier: Int!
+  presences: [String]
+  roles: [String]
+  rulesChannelId: String
+  splash: String
+  systemChannelFlags: Int
+  systemChannelId: String
+  unavailable: Boolean
+  vanityUrlCode: String
+  verificationLevel: Int
+  voiceStates: [String]
 }
 
 type Reminder implements Node {
@@ -9479,6 +9500,7 @@ input StringListFilter {
 }
 
 type Tag implements Node {
+  attachment: String
   content: String!
   created: Datetime!
   guildId: BigInt!
@@ -9555,6 +9577,9 @@ type TagAverageAggregates {
 A condition to be used against `Tag` object types. All fields are tested for equality and combined with a logical ‘and.’
 """
 input TagCondition {
+  """Checks for equality with the object’s `attachment` field."""
+  attachment: String
+
   """Checks for equality with the object’s `content` field."""
   content: String
 
@@ -9575,6 +9600,9 @@ input TagCondition {
 }
 
 type TagDistinctCountAggregates {
+  """Distinct count of attachment across the matching connection"""
+  attachment: BigInt
+
   """Distinct count of content across the matching connection"""
   content: BigInt
 
@@ -9600,6 +9628,9 @@ A filter to be used against `Tag` object types. All fields are combined with a l
 input TagFilter {
   """Checks for all expressions in this list."""
   and: [TagFilter!]
+
+  """Filter by the object’s `attachment` field."""
+  attachment: StringFilter
 
   """Filter by the object’s `content` field."""
   content: StringFilter
@@ -9628,6 +9659,7 @@ input TagFilter {
 
 """An input for mutations affecting `Tag`"""
 input TagInput {
+  attachment: String
   content: String!
   created: Datetime!
   guildId: BigInt!
@@ -9660,6 +9692,7 @@ type TagMinAggregates {
 
 """Represents an update to a `Tag`. Fields that are set will be updated."""
 input TagPatch {
+  attachment: String
   content: String
   created: Datetime
   guildId: BigInt
@@ -9773,6 +9806,7 @@ type TagsEdge {
 
 """Grouping methods for `Tag` for usage during aggregation."""
 enum TagsGroupBy {
+  ATTACHMENT
   CONTENT
   CREATED
   CREATED_TRUNCATED_TO_DAY
@@ -9863,6 +9897,8 @@ input TagsHavingVarianceSampleInput {
 
 """Methods to use when ordering `Tag`."""
 enum TagsOrderBy {
+  ATTACHMENT_ASC
+  ATTACHMENT_DESC
   CONTENT_ASC
   CONTENT_DESC
   CREATED_ASC
@@ -11282,6 +11318,24 @@ input UserFilter {
   rep: BigIntFilter
 }
 
+type UserGuildRankResult {
+  guildId: BigInt
+  lastMsg: Datetime
+  msgAllTime: BigInt
+  msgAllTimeRank: BigInt
+  msgAllTimeTotal: BigInt
+  msgDay: BigInt
+  msgDayRank: BigInt
+  msgDayTotal: BigInt
+  msgMonth: BigInt
+  msgMonthRank: BigInt
+  msgMonthTotal: BigInt
+  msgWeek: BigInt
+  msgWeekRank: BigInt
+  msgWeekTotal: BigInt
+  userId: BigInt
+}
+
 """An input for mutations affecting `User`"""
 input UserInput {
   fishies: BigInt!
@@ -11310,6 +11364,159 @@ type UserLevel implements Node {
   userId: BigInt!
 }
 
+type UserLevelAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: UserLevelAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: UserLevelDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: UserLevelMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: UserLevelMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: UserLevelStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: UserLevelStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: UserLevelSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: UserLevelVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: UserLevelVarianceSampleAggregates
+}
+
+type UserLevelAverageAggregates {
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of msgAllTime across the matching connection"""
+  msgAllTime: BigFloat
+
+  """Mean average of msgDay across the matching connection"""
+  msgDay: BigFloat
+
+  """Mean average of msgMonth across the matching connection"""
+  msgMonth: BigFloat
+
+  """Mean average of msgWeek across the matching connection"""
+  msgWeek: BigFloat
+
+  """Mean average of userId across the matching connection"""
+  userId: BigFloat
+}
+
+"""
+A condition to be used against `UserLevel` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input UserLevelCondition {
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `lastMsg` field."""
+  lastMsg: Datetime
+
+  """Checks for equality with the object’s `msgAllTime` field."""
+  msgAllTime: BigInt
+
+  """Checks for equality with the object’s `msgDay` field."""
+  msgDay: BigInt
+
+  """Checks for equality with the object’s `msgMonth` field."""
+  msgMonth: BigInt
+
+  """Checks for equality with the object’s `msgWeek` field."""
+  msgWeek: BigInt
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: BigInt
+}
+
+type UserLevelDistinctCountAggregates {
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of lastMsg across the matching connection"""
+  lastMsg: BigInt
+
+  """Distinct count of msgAllTime across the matching connection"""
+  msgAllTime: BigInt
+
+  """Distinct count of msgDay across the matching connection"""
+  msgDay: BigInt
+
+  """Distinct count of msgMonth across the matching connection"""
+  msgMonth: BigInt
+
+  """Distinct count of msgWeek across the matching connection"""
+  msgWeek: BigInt
+
+  """Distinct count of userId across the matching connection"""
+  userId: BigInt
+}
+
+"""
+A filter to be used against `UserLevel` object types. All fields are combined with a logical ‘and.’
+"""
+input UserLevelFilter {
+  """Checks for all expressions in this list."""
+  and: [UserLevelFilter!]
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Filter by the object’s `lastMsg` field."""
+  lastMsg: DatetimeFilter
+
+  """Filter by the object’s `msgAllTime` field."""
+  msgAllTime: BigIntFilter
+
+  """Filter by the object’s `msgDay` field."""
+  msgDay: BigIntFilter
+
+  """Filter by the object’s `msgMonth` field."""
+  msgMonth: BigIntFilter
+
+  """Filter by the object’s `msgWeek` field."""
+  msgWeek: BigIntFilter
+
+  """Negates the expression."""
+  not: UserLevelFilter
+
+  """Checks for any expressions in this list."""
+  or: [UserLevelFilter!]
+
+  """Filter by the object’s `userId` field."""
+  userId: BigIntFilter
+}
+
 """An input for mutations affecting `UserLevel`"""
 input UserLevelInput {
   guildId: BigInt!
@@ -11319,6 +11526,46 @@ input UserLevelInput {
   msgMonth: BigInt!
   msgWeek: BigInt!
   userId: BigInt!
+}
+
+type UserLevelMaxAggregates {
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of msgAllTime across the matching connection"""
+  msgAllTime: BigInt
+
+  """Maximum of msgDay across the matching connection"""
+  msgDay: BigInt
+
+  """Maximum of msgMonth across the matching connection"""
+  msgMonth: BigInt
+
+  """Maximum of msgWeek across the matching connection"""
+  msgWeek: BigInt
+
+  """Maximum of userId across the matching connection"""
+  userId: BigInt
+}
+
+type UserLevelMinAggregates {
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of msgAllTime across the matching connection"""
+  msgAllTime: BigInt
+
+  """Minimum of msgDay across the matching connection"""
+  msgDay: BigInt
+
+  """Minimum of msgMonth across the matching connection"""
+  msgMonth: BigInt
+
+  """Minimum of msgWeek across the matching connection"""
+  msgWeek: BigInt
+
+  """Minimum of userId across the matching connection"""
+  userId: BigInt
 }
 
 """
@@ -11334,6 +11581,147 @@ input UserLevelPatch {
   userId: BigInt
 }
 
+type UserLevelStddevPopulationAggregates {
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """
+  Population standard deviation of msgAllTime across the matching connection
+  """
+  msgAllTime: BigFloat
+
+  """Population standard deviation of msgDay across the matching connection"""
+  msgDay: BigFloat
+
+  """
+  Population standard deviation of msgMonth across the matching connection
+  """
+  msgMonth: BigFloat
+
+  """
+  Population standard deviation of msgWeek across the matching connection
+  """
+  msgWeek: BigFloat
+
+  """Population standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type UserLevelStddevSampleAggregates {
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample standard deviation of msgAllTime across the matching connection"""
+  msgAllTime: BigFloat
+
+  """Sample standard deviation of msgDay across the matching connection"""
+  msgDay: BigFloat
+
+  """Sample standard deviation of msgMonth across the matching connection"""
+  msgMonth: BigFloat
+
+  """Sample standard deviation of msgWeek across the matching connection"""
+  msgWeek: BigFloat
+
+  """Sample standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type UserLevelSumAggregates {
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of msgAllTime across the matching connection"""
+  msgAllTime: BigFloat!
+
+  """Sum of msgDay across the matching connection"""
+  msgDay: BigFloat!
+
+  """Sum of msgMonth across the matching connection"""
+  msgMonth: BigFloat!
+
+  """Sum of msgWeek across the matching connection"""
+  msgWeek: BigFloat!
+
+  """Sum of userId across the matching connection"""
+  userId: BigFloat!
+}
+
+type UserLevelVariancePopulationAggregates {
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of msgAllTime across the matching connection"""
+  msgAllTime: BigFloat
+
+  """Population variance of msgDay across the matching connection"""
+  msgDay: BigFloat
+
+  """Population variance of msgMonth across the matching connection"""
+  msgMonth: BigFloat
+
+  """Population variance of msgWeek across the matching connection"""
+  msgWeek: BigFloat
+
+  """Population variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type UserLevelVarianceSampleAggregates {
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of msgAllTime across the matching connection"""
+  msgAllTime: BigFloat
+
+  """Sample variance of msgDay across the matching connection"""
+  msgDay: BigFloat
+
+  """Sample variance of msgMonth across the matching connection"""
+  msgMonth: BigFloat
+
+  """Sample variance of msgWeek across the matching connection"""
+  msgWeek: BigFloat
+
+  """Sample variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
+"""A connection to a list of `UserLevel` values."""
+type UserLevelsConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: UserLevelAggregates
+
+  """
+  A list of edges which contains the `UserLevel` and cursor to aid in pagination.
+  """
+  edges: [UserLevelsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `UserLevel` for these aggregates."""
+    groupBy: [UserLevelsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: UserLevelsHavingInput
+  ): [UserLevelAggregates!]
+
+  """A list of `UserLevel` objects."""
+  nodes: [UserLevel!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `UserLevel` you could get from the connection."""
+  totalCount: Int!
+}
+
 """A `UserLevel` edge in the connection."""
 type UserLevelsEdge {
   """A cursor for use in pagination."""
@@ -11341,6 +11729,124 @@ type UserLevelsEdge {
 
   """The `UserLevel` at the end of the edge."""
   node: UserLevel!
+}
+
+"""Grouping methods for `UserLevel` for usage during aggregation."""
+enum UserLevelsGroupBy {
+  GUILD_ID
+  LAST_MSG
+  LAST_MSG_TRUNCATED_TO_DAY
+  LAST_MSG_TRUNCATED_TO_HOUR
+  MSG_ALL_TIME
+  MSG_DAY
+  MSG_MONTH
+  MSG_WEEK
+  USER_ID
+}
+
+input UserLevelsHavingAverageInput {
+  guildId: HavingBigintFilter
+  lastMsg: HavingDatetimeFilter
+  msgAllTime: HavingBigintFilter
+  msgDay: HavingBigintFilter
+  msgMonth: HavingBigintFilter
+  msgWeek: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input UserLevelsHavingDistinctCountInput {
+  guildId: HavingBigintFilter
+  lastMsg: HavingDatetimeFilter
+  msgAllTime: HavingBigintFilter
+  msgDay: HavingBigintFilter
+  msgMonth: HavingBigintFilter
+  msgWeek: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+"""Conditions for `UserLevel` aggregates."""
+input UserLevelsHavingInput {
+  AND: [UserLevelsHavingInput!]
+  OR: [UserLevelsHavingInput!]
+  average: UserLevelsHavingAverageInput
+  distinctCount: UserLevelsHavingDistinctCountInput
+  max: UserLevelsHavingMaxInput
+  min: UserLevelsHavingMinInput
+  stddevPopulation: UserLevelsHavingStddevPopulationInput
+  stddevSample: UserLevelsHavingStddevSampleInput
+  sum: UserLevelsHavingSumInput
+  variancePopulation: UserLevelsHavingVariancePopulationInput
+  varianceSample: UserLevelsHavingVarianceSampleInput
+}
+
+input UserLevelsHavingMaxInput {
+  guildId: HavingBigintFilter
+  lastMsg: HavingDatetimeFilter
+  msgAllTime: HavingBigintFilter
+  msgDay: HavingBigintFilter
+  msgMonth: HavingBigintFilter
+  msgWeek: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input UserLevelsHavingMinInput {
+  guildId: HavingBigintFilter
+  lastMsg: HavingDatetimeFilter
+  msgAllTime: HavingBigintFilter
+  msgDay: HavingBigintFilter
+  msgMonth: HavingBigintFilter
+  msgWeek: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input UserLevelsHavingStddevPopulationInput {
+  guildId: HavingBigintFilter
+  lastMsg: HavingDatetimeFilter
+  msgAllTime: HavingBigintFilter
+  msgDay: HavingBigintFilter
+  msgMonth: HavingBigintFilter
+  msgWeek: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input UserLevelsHavingStddevSampleInput {
+  guildId: HavingBigintFilter
+  lastMsg: HavingDatetimeFilter
+  msgAllTime: HavingBigintFilter
+  msgDay: HavingBigintFilter
+  msgMonth: HavingBigintFilter
+  msgWeek: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input UserLevelsHavingSumInput {
+  guildId: HavingBigintFilter
+  lastMsg: HavingDatetimeFilter
+  msgAllTime: HavingBigintFilter
+  msgDay: HavingBigintFilter
+  msgMonth: HavingBigintFilter
+  msgWeek: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input UserLevelsHavingVariancePopulationInput {
+  guildId: HavingBigintFilter
+  lastMsg: HavingDatetimeFilter
+  msgAllTime: HavingBigintFilter
+  msgDay: HavingBigintFilter
+  msgMonth: HavingBigintFilter
+  msgWeek: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input UserLevelsHavingVarianceSampleInput {
+  guildId: HavingBigintFilter
+  lastMsg: HavingDatetimeFilter
+  msgAllTime: HavingBigintFilter
+  msgDay: HavingBigintFilter
+  msgMonth: HavingBigintFilter
+  msgWeek: HavingBigintFilter
+  userId: HavingBigintFilter
 }
 
 """Methods to use when ordering `UserLevel`."""

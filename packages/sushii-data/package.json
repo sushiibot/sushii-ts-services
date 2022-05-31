@@ -16,8 +16,6 @@
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "dev": "ts-node ./src/index.ts | pino-pretty -c -t",
-    "start": "nest start | pino-pretty -c -t",
-    "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "build": "tsc",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -30,21 +28,25 @@
   "dependencies": {
     "@godaddy/terminus": "^4.10.2",
     "@graphile/pg-aggregates": "^0.1.0",
+    "@redis/client": "^1.1.0",
     "body-parser": "^1.20.0",
     "compression": "^1.7.4",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "graphile-utils": "^4.12.2",
     "helmet": "^5.0.2",
+    "lodash": "^4.17.21",
     "pino": "^7.8.0",
     "pino-http": "^6.6.0",
     "postgraphile": "^4.12.9",
     "postgraphile-plugin-connection-filter": "^2.3.0",
-    "redis": "^4.0.4"
+    "redis": "^4.1.0"
   },
   "devDependencies": {
     "@types/compression": "^1.7.2",
     "@types/express": "^4.17.13",
     "@types/jest": "27.4.0",
+    "@types/lodash": "^4.14.182",
     "@types/node": "^16.0.0",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",

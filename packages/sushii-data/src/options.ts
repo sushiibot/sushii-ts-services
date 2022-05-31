@@ -3,6 +3,7 @@ import pino from "pino";
 import { PostGraphileOptions } from "postgraphile";
 import PgAggregatesPlugin from "@graphile/pg-aggregates";
 import ConnectionFilterPlugin from "postgraphile-plugin-connection-filter";
+import guildCache from "./extended_schema/guildCache";
 
 const logger = pino({ name: "options" });
 
@@ -28,7 +29,7 @@ logger.debug("using database schemas: ", schemas);
 // PostGraphile options; see https://www.graphile.org/postgraphile/usage-library/#api-postgraphilepgconfig-schemaname-options
 export const options: PostGraphileOptions = {
   ownerConnectionString: process.env.OWNER_DATABASE_URL,
-  appendPlugins: [ConnectionFilterPlugin, PgAggregatesPlugin],
+  appendPlugins: [ConnectionFilterPlugin, PgAggregatesPlugin, guildCache],
   // pgSettings assigned in JWT token
   retryOnInitFail: false,
   watchPg: true,
