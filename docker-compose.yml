@@ -74,7 +74,7 @@ services:
             - RABBIT_PORT=5672
             - RABBIT_USERNAME=guest
             - RABBIT_PASSWORD=guest
-            - REDIS_HOST=redis
+            - REDIS_HOST=keydb
             - REDIS_PORT=6379
             - PROMETHEUS_HOST=127.0.0.1
             - PROMETHEUS_PORT=8005
@@ -98,9 +98,9 @@ services:
             - "traefik.http.routers.rabbitmq.entrypoints=secure"
             - "traefik.http.routers.rabbitmq.tls.certresolver=acme"
             - "traefik.http.routers.rabbitmq.middlewares=auth@file"
-    redis:
-        image: redis:6
-        container_name: sushii-redis
+    keydb:
+        image: eqalpha/keydb:x86_64_v6.3.1
+        container_name: sushii-keydb
         restart: unless-stopped
         expose:
             - "6379"
