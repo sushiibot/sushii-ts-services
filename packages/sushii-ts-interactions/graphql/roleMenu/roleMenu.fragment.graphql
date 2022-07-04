@@ -1,6 +1,9 @@
 fragment RoleMenuData on RoleMenu {
-  messageId
   guildId
   channelId
-  editorId
+  messageId
+  menuName
+  description
+  maxCount
+  roleIds
 }

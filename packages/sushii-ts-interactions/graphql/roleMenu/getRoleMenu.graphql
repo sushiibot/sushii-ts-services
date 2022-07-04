@@ -1,5 +1,5 @@
-query roleMenuByChannelAndEditorID($channelId: BigInt!, $editorId: BigInt!) {
-  roleMenuByChannelIdAndEditorId(channelId: $channelId, editorId: $editorId) {
+query getRoleMenu($guildId: BigInt!, $menuName: String!) {
+  roleMenuByGuildIdAndMenuName(guildId: $guildId, menuName: $menuName) {
     ...RoleMenuData
   }
 }

@@ -6,7 +6,9 @@ import {
 } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../model/context";
+import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
+import { interactionReplyErrorPerrmision } from "../responses/error";
 import ModActionData from "./ModActionData";
 
 export default class BanCommand extends SlashCommandHandler {
@@ -41,6 +43,16 @@ export default class BanCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: APIChatInputApplicationCommandGuildInteraction
   ): Promise<void> {
+    const hasBanPerms = hasPermission(
+      interaction.member.permissions,
+      PermissionFlagsBits.BanMembers
+    );
+    if (!hasBanPerms) {
+      await interactionReplyErrorPerrmision(ctx, interaction, "Ban Members");
+
+      return;
+    }
+
     const data = new ModActionData(interaction);
 
     // User av

@@ -25,6 +25,7 @@ module.exports = {
     "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/switch-exhaustiveness-check": "error",
     "no-bitwise": "off",
+    "class-methods-use-this": "off"
   },
   settings: {
     "import/resolver": {

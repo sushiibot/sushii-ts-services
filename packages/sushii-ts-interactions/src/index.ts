@@ -17,7 +17,12 @@ async function main(): Promise<void> {
   const config = new Config();
   const amqpClient = new AMQPClient(config.amqpUrl);
   const rabbitGatewayClient = new AmqpGateway(amqpClient, config);
-  const rest = new REST({ version: "9" }).setToken(config.token);
+  const rest = new REST({
+    version: "10",
+    // api: config.proxyUrl,
+  }).setToken(config.token);
+
+  log.info("config: %o", config.proxyUrl);
 
   const interactionClient = new InteractionClient(rest, config);
   addCommands(interactionClient);

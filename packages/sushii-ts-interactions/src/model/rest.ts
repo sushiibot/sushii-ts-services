@@ -21,6 +21,7 @@ export default class RESTClient {
 
   constructor(private readonly config: ConfigI) {
     this.rest = new REST({
+      version: "10",
       api: this.config.proxyUrl,
     }).setToken(config.token);
   }

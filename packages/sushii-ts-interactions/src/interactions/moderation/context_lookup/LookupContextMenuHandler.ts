@@ -9,9 +9,11 @@ import {
   ApplicationCommandType,
   ButtonStyle,
   MessageFlags,
+  PermissionFlagsBits,
 } from "discord-api-types/v10";
 import Context from "../../../model/context";
 import memberIsTimedOut from "../../../utils/member";
+import { hasPermission } from "../../../utils/permissions";
 import ContextMenuHandler from "../../handlers/ContextMenuHandler";
 import getUserinfoEmbed from "../../user/userinfo.service";
 import { lookupButtonCustomIDPrefix, Action } from "./LookupComponentHandler";
@@ -46,6 +48,27 @@ export default class UserInfoHandler extends ContextMenuHandler {
     const targetID = interaction.data.target_id;
     const targetUser = interaction.data.resolved.users[targetID];
     const targetMember = interaction.data.resolved.members?.[targetID];
+
+    const isModerator = hasPermission(
+      interaction.member.permissions,
+      PermissionFlagsBits.BanMembers
+    );
+
+    const embed = await getUserinfoEmbed(
+      ctx,
+      interaction,
+      targetUser,
+      targetMember
+    );
+
+    if (!isModerator) {
+      await ctx.REST.interactionReply(interaction, {
+        embeds: [embed],
+        flags: MessageFlags.Ephemeral,
+      });
+
+      return;
+    }
 
     const isMuted = memberIsTimedOut(targetMember);
 
@@ -111,13 +134,6 @@ export default class UserInfoHandler extends ContextMenuHandler {
       historyButton,
       lookupButton,
     ]);
-
-    const embed = await getUserinfoEmbed(
-      ctx,
-      interaction,
-      targetUser,
-      targetMember
-    );
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed],

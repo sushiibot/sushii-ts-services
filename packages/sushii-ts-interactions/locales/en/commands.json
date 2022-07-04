@@ -41,8 +41,12 @@
   },
   "rolemenu": {
     "new": {
-      "created": "New role menu created!",
-      "already_active": "You are already editing a role menu! Use `/rolemenu role add` or `/rolemenu role remove` to edit the menu."
+      "success": {
+        "created": "New role menu created!"
+      },
+      "error": {
+        "name_already_exists": "A role menu `{{name}}` already exists! Please pick a different name."
+      }
     }
   },
   "tag": {
@@ -153,6 +157,18 @@
       "error": {
         "not_found": "Reminder not found"
       }
+    }
+  },
+  "welcome": {
+    "success": {
+      "title": "Updated welcome message"
+    }
+  },
+  "generic": {
+    "error": {
+      "error": "Error",
+      "no_permission": "You do not have permission to use this command, sorry! You need the {{permission}} permission.",
+      "internal": "Uh oh! Something went wrong, maybe you can try again?"
     }
   }
 }

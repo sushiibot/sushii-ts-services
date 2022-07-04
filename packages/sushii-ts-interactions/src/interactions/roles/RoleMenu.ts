@@ -11,10 +11,11 @@ import {
   APIChatInputApplicationCommandInteraction,
   APIMessage,
   ComponentType,
+  MessageFlags,
+  PermissionFlagsBits,
 } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../model/context";
-import { RoleMenuByChannelAndEditorIdQuery } from "../../generated/graphql";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
@@ -34,13 +35,15 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("rolemenu")
     .setDescription("Create a role menu.")
+    .setDMPermission(false)
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
     .addSubcommand((c) =>
       c
         .setName("new")
         .addStringOption((o) =>
           o
-            .setName("title")
-            .setDescription("The title of the role menu.")
+            .setName("menu_name")
+            .setDescription("The name of the role menu.")
             .setRequired(true)
         )
         .addStringOption((o) =>
@@ -69,14 +72,14 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         .setName("edit")
         .addStringOption((o) =>
           o
-            .setName("messageID")
-            .setDescription("The message ID of the role menu to edit.")
+            .setName("menu_name")
+            .setDescription("The name of the role menu to edit.")
             .setRequired(true)
         )
         .addStringOption((o) =>
           o
-            .setName("title")
-            .setDescription("The new title of the role menu.")
+            .setName("new_menu_name")
+            .setDescription("The new name of the role menu.")
             .setRequired(false)
         )
         .addStringOption((o) =>
@@ -100,50 +103,38 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setRequired(false)
         )
     )
-    .addSubcommandGroup((g) =>
-      g
-        .setName("role")
-        .addSubcommand((c) =>
-          c
-            .setName("add")
-            .setDescription("Add a role to the menu.")
-            .addRoleOption((o) =>
-              o
-                .setName("role")
-                .setDescription("The role to add.")
-                .setRequired(true)
-            )
-            .addStringOption((o) =>
-              o
-                .setName("label")
-                .setDescription(
-                  "The label of the role (can be different from the role name)."
-                )
-                .setRequired(true)
-            )
-            .addStringOption((o) =>
-              o
-                .setName("description")
-                .setDescription("The description of the role.")
-                .setRequired(false)
-            )
-            .addStringOption((o) =>
-              o
-                .setName("emoji")
-                .setDescription("The emoji of the role option.")
-                .setRequired(false)
-            )
+    .addSubcommand((c) =>
+      c
+        .setName("addroles")
+        .setDescription("Add a role to the menu.")
+        .addStringOption((o) =>
+          o
+            .setName("menu_name")
+            .setDescription("The name of the menu to add the roles to.")
+            .setRequired(true)
         )
-        .addSubcommand((c) =>
-          c
-            .setName("remove")
-            .setDescription("Remove a role from the menu.")
-            .addRoleOption((o) =>
-              o
-                .setName("role")
-                .setDescription("The role to remove.")
-                .setRequired(true)
-            )
+        .addStringOption((o) =>
+          o
+            .setName("roles")
+            .setDescription("The roles to add.")
+            .setRequired(true)
+        )
+    )
+    .addSubcommand((c) =>
+      c
+        .setName("removeroles")
+        .setDescription("Remove a role from the menu.")
+        .addStringOption((o) =>
+          o
+            .setName("menu_name")
+            .setDescription("The name of the menu to remove the roles from.")
+            .setRequired(true)
+        )
+        .addStringOption((o) =>
+          o
+            .setName("roles")
+            .setDescription("The roles to remove.")
+            .setRequired(true)
         )
     )
     .toJSON();
@@ -163,12 +154,10 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         return this.newHandler(ctx, interaction, options);
       case "edit":
         return this.editHandler(ctx, interaction, options);
-
-      // role subgroup
-      case "add":
-        return this.roleAddHandler(ctx, interaction, options);
-      case "remove":
-        return this.roleRemoveHandler(ctx, interaction, options);
+      case "addroles":
+        return this.addRolesHandler(ctx, interaction, options);
+      case "removeroles":
+        return this.removeRolesHandler(ctx, interaction, options);
       default:
         throw new Error("Invalid subcommand.");
     }
@@ -183,50 +172,60 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("This command can only be used in a server.");
     }
 
-    const invoker = getInvokerUser(interaction);
-
-    const title = options.getString("title");
-    if (!title) {
-      throw new Error("No title provided.");
+    const name = options.getString("name");
+    if (!name) {
+      throw new Error("No name provided.");
     }
 
+    // -------------------------------------------------------------------------
+    // Check if menu name already exists
+
     // Does not fetch message from Discord API, not needed
-    const menu = await this.getActiveMenu(ctx, interaction);
+    const menu = await ctx.sushiiAPI.sdk.getRoleMenu({
+      guildId: interaction.guild_id,
+      menuName: name,
+    });
+
     if (menu) {
       return ctx.REST.interactionReply(interaction, {
-        content: t("rolemenu.new.already_active"),
+        content: t("rolemenu.new.error.name_already_exists", { name }),
       });
     }
 
+    // -------------------------------------------------------------------------
+    // Create menu
+
     const description = options.getString("description");
-    const maxRoles = options.getInteger("max_roles") || 25;
+    const maxRoles = options.getInteger("max_roles");
     const requiredRole = options.getRole("required_role");
 
     const customID = getRoleMenuID(requiredRole?.id);
 
-    const selectMenu = new SelectMenuBuilder()
-      .setCustomId(customID)
-      .setMaxValues(maxRoles)
-      .setOptions(
-        new SelectMenuOptionBuilder()
-          .setLabel("Rule 1")
-          .setValue("rule1")
-          .setDescription("Rule to member")
-      )
-      .setPlaceholder("Reason");
-
-    const row = new ActionRowBuilder<SelectMenuBuilder>()
-      .addComponents(selectMenu)
-      .toJSON();
-
-    const embed = new EmbedBuilder()
-      .setTitle(title)
+    let embed = new EmbedBuilder()
+      .setTitle(name)
       .setDescription(description || null);
+
+    if (maxRoles) {
+      embed = embed.addFields([
+        {
+          name: "Max roles",
+          value: maxRoles.toString(),
+        },
+      ]);
+    }
+
+    if (requiredRole) {
+      embed = embed.addFields([
+        {
+          name: "required roles",
+          value: `<@&${requiredRole.id}>`,
+        },
+      ]);
+    }
 
     // Send additional message, not interaction response as we don't want the
     // extra slash command ui thing
     const message = await ctx.REST.sendChannelMessage(interaction.channel_id, {
-      components: [row],
       embeds: [embed.toJSON()],
     });
 
@@ -234,29 +233,35 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     await ctx.sushiiAPI.sdk.createRoleMenu({
       roleMenu: {
         channelId: interaction.channel_id,
-        editorId: invoker.id,
         guildId: interaction.guild_id,
         messageId: message.id,
+        menuName: name,
+        description,
+        maxCount: maxRoles,
       },
     });
 
     await ctx.REST.interactionReply(interaction, {
       content: t("rolemenu.new.created"),
-      components: [row],
+      flags: MessageFlags.Ephemeral,
     });
   }
 
   private async editHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandInteraction,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
     options: CommandInteractionOptionResolver
   ): Promise<void> {
-    const title = options.getString("title");
-    if (!title) {
-      throw new Error("No title provided.");
+    const menuName = options.getString("menu_name");
+    if (!menuName) {
+      throw new Error("No name provided.");
     }
 
-    const menuMsg = await this.getActiveMenuMessage(ctx, interaction);
+    const menuMsg = await ctx.sushiiAPI.sdk.getRoleMenu({
+      guildId: interaction.guild_id,
+      menuName,
+    });
+
     if (!menuMsg) {
       return ctx.REST.interactionReply(interaction, {
         content: t("rolemenu.edit.no_active_menu"),
@@ -269,20 +274,20 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const selectMenu = new SelectMenuBuilder()
       .setCustomId("rolemenu:")
       .setMaxValues(maxRoles)
-      .setOptions(
+      .setOptions([
         new SelectMenuOptionBuilder()
           .setLabel("Rule 1")
           .setValue("rule1")
-          .setDescription("Rule to member")
-      )
+          .setDescription("Rule to member"),
+      ])
       .setPlaceholder("Reason");
 
-    const row = new ActionRowBuilder<SelectMenuBuilder>().setComponents(
-      selectMenu
-    );
+    const row = new ActionRowBuilder<SelectMenuBuilder>().setComponents([
+      selectMenu,
+    ]);
 
     const embed = new EmbedBuilder()
-      .setTitle(title)
+      .setTitle(menuName)
       .setDescription(description || null);
 
     await ctx.REST.interactionReply(interaction, {
@@ -291,17 +296,22 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     });
   }
 
-  private async roleAddHandler(
+  private async addRolesHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandInteraction,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
     options: CommandInteractionOptionResolver
   ): Promise<void> {
-    const role = options.getRole("role");
-    if (!role) {
+    const menuName = options.getString("menu_name");
+    if (!menuName) {
+      throw new Error("No menu name provided.");
+    }
+
+    const roles = options.getString("roles");
+    if (!roles) {
       throw new Error("No role provided.");
     }
 
-    const menuMsg = await this.getActiveMenuMessage(ctx, interaction);
+    const menuMsg = await this.getMenuMessage(ctx, interaction, menuName);
     if (!menuMsg) {
       return ctx.REST.interactionReply(interaction, {
         content: t("rolemenu.edit.no_active_menu"),
@@ -362,45 +372,37 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private async roleRemoveHandler(
+  private async removeRolesHandler(
     ctx: Context,
     interaction: APIChatInputApplicationCommandInteraction,
     options: CommandInteractionOptionResolver
   ): Promise<void> {
-    const menuMsg = await this.getActiveMenuMessage(ctx, interaction);
-    if (!menuMsg) {
-      return ctx.REST.interactionReply(interaction, {
-        content: t("rolemenu.edit.no_active_menu"),
-      });
+    const name = options.getString("name");
+    if (!name) {
+      throw new Error("No name provided.");
     }
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private async getActiveMenu(
+  private async getMenuMessage(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandInteraction
-  ): Promise<
-    RoleMenuByChannelAndEditorIdQuery["roleMenuByChannelIdAndEditorId"]
-  > {
-    const user = getInvokerUser(interaction);
-
-    const menu = await ctx.sushiiAPI.sdk.roleMenuByChannelAndEditorID({
-      channelId: interaction.channel_id,
-      editorId: user.id,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    menuName: string
+  ): Promise<APIMessage | null> {
+    const menu = await ctx.sushiiAPI.sdk.getRoleMenu({
+      guildId: interaction.guild_id,
+      menuName,
     });
 
-    return menu.roleMenuByChannelIdAndEditorId;
-  }
-
-  private async getActiveMenuMessage(
-    ctx: Context,
-    interaction: APIChatInputApplicationCommandInteraction
-  ): Promise<APIMessage | null> {
-    const roleMenu = await this.getActiveMenu(ctx, interaction);
-    if (!roleMenu) {
+    if (!menu.roleMenuByGuildIdAndMenuName) {
       return null;
     }
 
-    return ctx.REST.getChannelMessage(roleMenu.channelId, roleMenu.messageId);
+    const msg = await ctx.REST.getChannelMessage(
+      menu.roleMenuByGuildIdAndMenuName.channelId,
+      menu.roleMenuByGuildIdAndMenuName.messageId
+    );
+
+    return msg;
   }
 }
