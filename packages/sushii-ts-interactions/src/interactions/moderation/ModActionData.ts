@@ -20,6 +20,9 @@ export default class ModActionData {
 
   public attachment?: APIAttachment;
 
+  // Only exists for ban
+  public deleteMessageDays?: number;
+
   /**
    * Duration of timeout, only exists for timeout command
    */
@@ -44,10 +47,20 @@ export default class ModActionData {
     this.reason = options.getString("reason");
     this.attachment = options.getAttachment("attachment");
 
+    this.deleteMessageDays = options.getInteger("days_to_delete");
+
     const durationStr = options.getString("duration");
 
     if (durationStr) {
       this.timeoutDuration = dayjs.duration(durationStr);
     }
+  }
+
+  communicationDisabledUntil(): dayjs.Dayjs {
+    if (!this.timeoutDuration) {
+      throw new Error("missing timeoutDuration");
+    }
+
+    return dayjs.utc().add(this.timeoutDuration);
   }
 }

@@ -94,6 +94,12 @@ export default class KickCommand extends SlashCommandHandler {
       },
     });
 
+    await ctx.REST.kickMember(
+      interaction.guild_id,
+      data.target.id,
+      data.reason
+    );
+
     await ctx.REST.interactionReply(interaction, {
       embeds: [userEmbed.toJSON()],
     });

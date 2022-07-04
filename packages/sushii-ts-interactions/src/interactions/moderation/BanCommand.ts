@@ -24,6 +24,14 @@ export default class BanCommand extends SlashCommandHandler {
     .addUserOption((o) =>
       o.setName("user").setDescription("Who to ban.").setRequired(true)
     )
+    .addIntegerOption((o) =>
+      o
+        .setName("days_to_delete")
+        .setDescription("Number of days to delete messages for")
+        .setMaxValue(7)
+        .setMinValue(0)
+        .setRequired(false)
+    )
     .addStringOption((o) =>
       o
         .setName("reason")
@@ -93,6 +101,13 @@ export default class BanCommand extends SlashCommandHandler {
         msgId: undefined,
       },
     });
+
+    await ctx.REST.banUser(
+      interaction.guild_id,
+      data.target.id,
+      data.reason,
+      data.deleteMessageDays
+    );
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [userEmbed.toJSON()],

@@ -1,4 +1,5 @@
 import { RawFile, REST } from "@discordjs/rest";
+import dayjs from "dayjs";
 import {
   Routes,
   RESTPostAPIInteractionCallbackJSONBody,
@@ -127,9 +128,38 @@ export default class RESTClient {
   public async banUser(
     guildId: string,
     userId: string,
+    reason?: string,
+    deleteMessageDays?: number
+  ): Promise<void> {
+    await this.rest.put(Routes.guildBan(guildId, userId), {
+      reason,
+      body: { delete_message_days: deleteMessageDays },
+    });
+  }
+
+  public async kickMember(
+    guildId: string,
+    userId: string,
     reason?: string
   ): Promise<void> {
-    await this.rest.put(Routes.guildBan(guildId, userId), { reason });
+    await this.rest.delete(Routes.guildMember(guildId, userId), {
+      reason,
+    });
+  }
+
+  public async timeoutMember(
+    guildId: string,
+    userId: string,
+    communication_disabled_until: dayjs.Dayjs,
+    reason?: string
+  ): Promise<void> {
+    await this.rest.patch(Routes.guildMember(guildId, userId), {
+      reason,
+      body: {
+        communication_disabled_until:
+          communication_disabled_until.toISOString(),
+      },
+    });
   }
 
   public getGuildRoles(guildId: string): Promise<RESTGetAPIGuildRolesResult> {

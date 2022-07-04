@@ -100,6 +100,13 @@ export default class TimeoutCommand extends SlashCommandHandler {
       },
     });
 
+    await ctx.REST.timeoutMember(
+      interaction.guild_id,
+      data.target.id,
+      data.communicationDisabledUntil(),
+      data.reason
+    );
+
     await ctx.REST.interactionReply(interaction, {
       embeds: [userEmbed.toJSON()],
     });
