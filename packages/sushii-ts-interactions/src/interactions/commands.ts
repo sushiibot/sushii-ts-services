@@ -14,6 +14,8 @@ import TagGetAutocomplete from "./tags/TagAutocomplete";
 import ContextLookUpButtonHandler from "./moderation/context_lookup/LookupComponentHandler";
 import WelcomeCommand from "./settings/WelcomeCommand";
 import TimeoutCommand from "./moderation/TimeoutCommand";
+import ReminderDeleteAutocomplete from "./reminders/ReminderAutocomplete";
+import ReminderCommand from "./reminders/ReminderCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -33,6 +35,7 @@ export default function addCommands(
     new TimeoutCommand(),
 
     new NotificationCommand(),
+    new ReminderCommand(),
 
     new TagCommand(),
 
@@ -47,6 +50,8 @@ export default function addCommands(
   interactionClient.addAutocompleteHandlers(
     new NotificationListAutocomplete(),
 
-    new TagGetAutocomplete()
+    new TagGetAutocomplete(),
+
+    new ReminderDeleteAutocomplete()
   );
 }
