@@ -17,16 +17,20 @@
     "description": "Discord REST API (message send): `{{restMs}}ms`\nsushii API: `{{sushiiApiMs}}ms`"
   },
   "kick": {
-    "success": "<@{{id}}> ({{id}}) has been kicked!",
+    "success": "User kicked",
     "failure": "Failed to kick <@{{id}}> ({{id}})"
   },
   "ban": {
-    "success": "<@{{id}}> ({{id}}) has been banned!",
+    "success": "User banned",
     "failure": "Failed to ban <@{{id}}> ({{id}})"
   },
   "timeout": {
-    "success": "<@{{id}}> ({{id}}) has been timed out!",
+    "success": "User timed out",
     "failure": "Failed to timeout <@{{id}}> ({{id}})"
+  },
+  "warn": {
+    "success": "User warned",
+    "failure": "Failed to warn <@{{id}}> ({{id}})"
   },
   "notification": {
     "list": {

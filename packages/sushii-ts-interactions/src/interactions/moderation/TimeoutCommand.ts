@@ -6,6 +6,7 @@ import {
 } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../model/context";
+import Color from "../../utils/colors";
 import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorPerrmision } from "../responses/error";
@@ -26,6 +27,12 @@ export default class TimeoutCommand extends SlashCommandHandler {
     )
     .addStringOption((o) =>
       o
+        .setName("duration")
+        .setDescription("How long to timeout the user.")
+        .setRequired(true)
+    )
+    .addStringOption((o) =>
+      o
         .setName("reason")
         .setDescription("Reason for timing out this user.")
         .setRequired(false)
@@ -34,12 +41,6 @@ export default class TimeoutCommand extends SlashCommandHandler {
       o
         .setName("attachment")
         .setDescription("Additional media to attach to the case.")
-        .setRequired(false)
-    )
-    .addStringOption((o) =>
-      o
-        .setName("duration")
-        .setDescription("How long to timeout the user.")
         .setRequired(false)
     )
     .toJSON();
@@ -70,8 +71,11 @@ export default class TimeoutCommand extends SlashCommandHandler {
           id: data.target.id,
         })
       )
-      .setURL(userFaceURL)
-      .setImage(userFaceURL);
+      .setAuthor({
+        name: `${data.target.username}#${data.target.discriminator}`,
+        iconURL: userFaceURL,
+      })
+      .setColor(Color.Success);
 
     const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
       guildId: interaction.guild_id,
