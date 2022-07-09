@@ -55,7 +55,7 @@ export default makeExtendSchemaPlugin(() => ({
   `,
   resolvers: {
     Query: {
-      redisGuild: async (_query, args) => {
+      redisGuildByGuildId: async (_query, args) => {
         const cachedGuildStr = await redis.get(`guild:${args.guild_id}`);
         logger.info(`redis: get guild:${args.guild_id}`);
 

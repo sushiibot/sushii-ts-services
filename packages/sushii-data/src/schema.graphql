@@ -2186,26 +2186,15 @@ type DeleteReminderPayload {
   ): RemindersEdge
 }
 
-"""All input for the `deleteRoleMenuByChannelIdAndEditorId` mutation."""
-input DeleteRoleMenuByChannelIdAndEditorIdInput {
-  channelId: BigInt!
-
+"""All input for the `deleteRoleMenuByGuildIdAndMenuName` mutation."""
+input DeleteRoleMenuByGuildIdAndMenuNameInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  editorId: BigInt!
-}
-
-"""All input for the `deleteRoleMenuByMessageId` mutation."""
-input DeleteRoleMenuByMessageIdInput {
-  """
-  An arbitrary string value with no semantic meaning. Will be included in the
-  payload verbatim. May be used to track mutations by the client.
-  """
-  clientMutationId: String
-  messageId: BigInt!
+  guildId: BigInt!
+  menuName: String!
 }
 
 """All input for the `deleteRoleMenu` mutation."""
@@ -6476,19 +6465,11 @@ type Mutation {
   ): DeleteRoleMenuPayload
 
   """Deletes a single `RoleMenu` using a unique key."""
-  deleteRoleMenuByChannelIdAndEditorId(
+  deleteRoleMenuByGuildIdAndMenuName(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: DeleteRoleMenuByChannelIdAndEditorIdInput!
-  ): DeleteRoleMenuPayload
-
-  """Deletes a single `RoleMenu` using a unique key."""
-  deleteRoleMenuByMessageId(
-    """
-    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
-    """
-    input: DeleteRoleMenuByMessageIdInput!
+    input: DeleteRoleMenuByGuildIdAndMenuNameInput!
   ): DeleteRoleMenuPayload
 
   """Deletes a single `Tag` using its globally unique id."""
@@ -6810,19 +6791,11 @@ type Mutation {
   ): UpdateRoleMenuPayload
 
   """Updates a single `RoleMenu` using a unique key and a patch."""
-  updateRoleMenuByChannelIdAndEditorId(
+  updateRoleMenuByGuildIdAndMenuName(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: UpdateRoleMenuByChannelIdAndEditorIdInput!
-  ): UpdateRoleMenuPayload
-
-  """Updates a single `RoleMenu` using a unique key and a patch."""
-  updateRoleMenuByMessageId(
-    """
-    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
-    """
-    input: UpdateRoleMenuByMessageIdInput!
+    input: UpdateRoleMenuByGuildIdAndMenuNameInput!
   ): UpdateRoleMenuPayload
 
   """Updates a single `Tag` using its globally unique id and a patch."""
@@ -8481,8 +8454,7 @@ type Query implements Node {
     """The globally unique `ID` to be used in selecting a single `RoleMenu`."""
     nodeId: ID!
   ): RoleMenu
-  roleMenuByChannelIdAndEditorId(channelId: BigInt!, editorId: BigInt!): RoleMenu
-  roleMenuByMessageId(messageId: BigInt!): RoleMenu
+  roleMenuByGuildIdAndMenuName(guildId: BigInt!, menuName: String!): RoleMenu
 
   """Reads a single `Tag` using its globally unique `ID`."""
   tag(
@@ -8907,15 +8879,17 @@ enum RemindersOrderBy {
 }
 
 type RoleMenu implements Node {
-  channelId: BigInt!
-  editorId: BigInt!
+  description: String
   guildId: BigInt!
-  messageId: BigInt!
+  maxCount: Int
+  menuName: String!
 
   """
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
   nodeId: ID!
+  requiredRole: BigInt
+  roleIds: [BigInt]
 }
 
 type RoleMenuAggregates {
@@ -8967,17 +8941,14 @@ type RoleMenuAggregates {
 }
 
 type RoleMenuAverageAggregates {
-  """Mean average of channelId across the matching connection"""
-  channelId: BigFloat
-
-  """Mean average of editorId across the matching connection"""
-  editorId: BigFloat
-
   """Mean average of guildId across the matching connection"""
   guildId: BigFloat
 
-  """Mean average of messageId across the matching connection"""
-  messageId: BigFloat
+  """Mean average of maxCount across the matching connection"""
+  maxCount: BigFloat
+
+  """Mean average of requiredRole across the matching connection"""
+  requiredRole: BigFloat
 }
 
 """
@@ -8985,31 +8956,43 @@ A condition to be used against `RoleMenu` object types. All fields are tested
 for equality and combined with a logical ‘and.’
 """
 input RoleMenuCondition {
-  """Checks for equality with the object’s `channelId` field."""
-  channelId: BigInt
-
-  """Checks for equality with the object’s `editorId` field."""
-  editorId: BigInt
+  """Checks for equality with the object’s `description` field."""
+  description: String
 
   """Checks for equality with the object’s `guildId` field."""
   guildId: BigInt
 
-  """Checks for equality with the object’s `messageId` field."""
-  messageId: BigInt
+  """Checks for equality with the object’s `maxCount` field."""
+  maxCount: Int
+
+  """Checks for equality with the object’s `menuName` field."""
+  menuName: String
+
+  """Checks for equality with the object’s `requiredRole` field."""
+  requiredRole: BigInt
+
+  """Checks for equality with the object’s `roleIds` field."""
+  roleIds: [BigInt]
 }
 
 type RoleMenuDistinctCountAggregates {
-  """Distinct count of channelId across the matching connection"""
-  channelId: BigInt
-
-  """Distinct count of editorId across the matching connection"""
-  editorId: BigInt
+  """Distinct count of description across the matching connection"""
+  description: BigInt
 
   """Distinct count of guildId across the matching connection"""
   guildId: BigInt
 
-  """Distinct count of messageId across the matching connection"""
-  messageId: BigInt
+  """Distinct count of maxCount across the matching connection"""
+  maxCount: BigInt
+
+  """Distinct count of menuName across the matching connection"""
+  menuName: BigInt
+
+  """Distinct count of requiredRole across the matching connection"""
+  requiredRole: BigInt
+
+  """Distinct count of roleIds across the matching connection"""
+  roleIds: BigInt
 }
 
 """
@@ -9019,147 +9002,136 @@ input RoleMenuFilter {
   """Checks for all expressions in this list."""
   and: [RoleMenuFilter!]
 
-  """Filter by the object’s `channelId` field."""
-  channelId: BigIntFilter
-
-  """Filter by the object’s `editorId` field."""
-  editorId: BigIntFilter
+  """Filter by the object’s `description` field."""
+  description: StringFilter
 
   """Filter by the object’s `guildId` field."""
   guildId: BigIntFilter
 
-  """Filter by the object’s `messageId` field."""
-  messageId: BigIntFilter
+  """Filter by the object’s `maxCount` field."""
+  maxCount: IntFilter
+
+  """Filter by the object’s `menuName` field."""
+  menuName: StringFilter
 
   """Negates the expression."""
   not: RoleMenuFilter
 
   """Checks for any expressions in this list."""
   or: [RoleMenuFilter!]
+
+  """Filter by the object’s `requiredRole` field."""
+  requiredRole: BigIntFilter
+
+  """Filter by the object’s `roleIds` field."""
+  roleIds: BigIntListFilter
 }
 
 """An input for mutations affecting `RoleMenu`"""
 input RoleMenuInput {
-  channelId: BigInt!
-  editorId: BigInt!
+  description: String
   guildId: BigInt!
-  messageId: BigInt!
+  maxCount: Int
+  menuName: String!
+  requiredRole: BigInt
+  roleIds: [BigInt]
 }
 
 type RoleMenuMaxAggregates {
-  """Maximum of channelId across the matching connection"""
-  channelId: BigInt
-
-  """Maximum of editorId across the matching connection"""
-  editorId: BigInt
-
   """Maximum of guildId across the matching connection"""
   guildId: BigInt
 
-  """Maximum of messageId across the matching connection"""
-  messageId: BigInt
+  """Maximum of maxCount across the matching connection"""
+  maxCount: Int
+
+  """Maximum of requiredRole across the matching connection"""
+  requiredRole: BigInt
 }
 
 type RoleMenuMinAggregates {
-  """Minimum of channelId across the matching connection"""
-  channelId: BigInt
-
-  """Minimum of editorId across the matching connection"""
-  editorId: BigInt
-
   """Minimum of guildId across the matching connection"""
   guildId: BigInt
 
-  """Minimum of messageId across the matching connection"""
-  messageId: BigInt
+  """Minimum of maxCount across the matching connection"""
+  maxCount: Int
+
+  """Minimum of requiredRole across the matching connection"""
+  requiredRole: BigInt
 }
 
 """
 Represents an update to a `RoleMenu`. Fields that are set will be updated.
 """
 input RoleMenuPatch {
-  channelId: BigInt
-  editorId: BigInt
+  description: String
   guildId: BigInt
-  messageId: BigInt
+  maxCount: Int
+  menuName: String
+  requiredRole: BigInt
+  roleIds: [BigInt]
 }
 
 type RoleMenuStddevPopulationAggregates {
-  """
-  Population standard deviation of channelId across the matching connection
-  """
-  channelId: BigFloat
-
-  """
-  Population standard deviation of editorId across the matching connection
-  """
-  editorId: BigFloat
-
   """
   Population standard deviation of guildId across the matching connection
   """
   guildId: BigFloat
 
   """
-  Population standard deviation of messageId across the matching connection
+  Population standard deviation of maxCount across the matching connection
   """
-  messageId: BigFloat
+  maxCount: BigFloat
+
+  """
+  Population standard deviation of requiredRole across the matching connection
+  """
+  requiredRole: BigFloat
 }
 
 type RoleMenuStddevSampleAggregates {
-  """Sample standard deviation of channelId across the matching connection"""
-  channelId: BigFloat
-
-  """Sample standard deviation of editorId across the matching connection"""
-  editorId: BigFloat
-
   """Sample standard deviation of guildId across the matching connection"""
   guildId: BigFloat
 
-  """Sample standard deviation of messageId across the matching connection"""
-  messageId: BigFloat
+  """Sample standard deviation of maxCount across the matching connection"""
+  maxCount: BigFloat
+
+  """
+  Sample standard deviation of requiredRole across the matching connection
+  """
+  requiredRole: BigFloat
 }
 
 type RoleMenuSumAggregates {
-  """Sum of channelId across the matching connection"""
-  channelId: BigFloat!
-
-  """Sum of editorId across the matching connection"""
-  editorId: BigFloat!
-
   """Sum of guildId across the matching connection"""
   guildId: BigFloat!
 
-  """Sum of messageId across the matching connection"""
-  messageId: BigFloat!
+  """Sum of maxCount across the matching connection"""
+  maxCount: BigInt!
+
+  """Sum of requiredRole across the matching connection"""
+  requiredRole: BigFloat!
 }
 
 type RoleMenuVariancePopulationAggregates {
-  """Population variance of channelId across the matching connection"""
-  channelId: BigFloat
-
-  """Population variance of editorId across the matching connection"""
-  editorId: BigFloat
-
   """Population variance of guildId across the matching connection"""
   guildId: BigFloat
 
-  """Population variance of messageId across the matching connection"""
-  messageId: BigFloat
+  """Population variance of maxCount across the matching connection"""
+  maxCount: BigFloat
+
+  """Population variance of requiredRole across the matching connection"""
+  requiredRole: BigFloat
 }
 
 type RoleMenuVarianceSampleAggregates {
-  """Sample variance of channelId across the matching connection"""
-  channelId: BigFloat
-
-  """Sample variance of editorId across the matching connection"""
-  editorId: BigFloat
-
   """Sample variance of guildId across the matching connection"""
   guildId: BigFloat
 
-  """Sample variance of messageId across the matching connection"""
-  messageId: BigFloat
+  """Sample variance of maxCount across the matching connection"""
+  maxCount: BigFloat
+
+  """Sample variance of requiredRole across the matching connection"""
+  requiredRole: BigFloat
 }
 
 """A connection to a list of `RoleMenu` values."""
@@ -9206,23 +9178,24 @@ type RoleMenusEdge {
 
 """Grouping methods for `RoleMenu` for usage during aggregation."""
 enum RoleMenusGroupBy {
-  CHANNEL_ID
-  EDITOR_ID
+  DESCRIPTION
   GUILD_ID
+  MAX_COUNT
+  MENU_NAME
+  REQUIRED_ROLE
+  ROLE_IDS
 }
 
 input RoleMenusHavingAverageInput {
-  channelId: HavingBigintFilter
-  editorId: HavingBigintFilter
   guildId: HavingBigintFilter
-  messageId: HavingBigintFilter
+  maxCount: HavingIntFilter
+  requiredRole: HavingBigintFilter
 }
 
 input RoleMenusHavingDistinctCountInput {
-  channelId: HavingBigintFilter
-  editorId: HavingBigintFilter
   guildId: HavingBigintFilter
-  messageId: HavingBigintFilter
+  maxCount: HavingIntFilter
+  requiredRole: HavingBigintFilter
 }
 
 """Conditions for `RoleMenu` aggregates."""
@@ -9241,67 +9214,64 @@ input RoleMenusHavingInput {
 }
 
 input RoleMenusHavingMaxInput {
-  channelId: HavingBigintFilter
-  editorId: HavingBigintFilter
   guildId: HavingBigintFilter
-  messageId: HavingBigintFilter
+  maxCount: HavingIntFilter
+  requiredRole: HavingBigintFilter
 }
 
 input RoleMenusHavingMinInput {
-  channelId: HavingBigintFilter
-  editorId: HavingBigintFilter
   guildId: HavingBigintFilter
-  messageId: HavingBigintFilter
+  maxCount: HavingIntFilter
+  requiredRole: HavingBigintFilter
 }
 
 input RoleMenusHavingStddevPopulationInput {
-  channelId: HavingBigintFilter
-  editorId: HavingBigintFilter
   guildId: HavingBigintFilter
-  messageId: HavingBigintFilter
+  maxCount: HavingIntFilter
+  requiredRole: HavingBigintFilter
 }
 
 input RoleMenusHavingStddevSampleInput {
-  channelId: HavingBigintFilter
-  editorId: HavingBigintFilter
   guildId: HavingBigintFilter
-  messageId: HavingBigintFilter
+  maxCount: HavingIntFilter
+  requiredRole: HavingBigintFilter
 }
 
 input RoleMenusHavingSumInput {
-  channelId: HavingBigintFilter
-  editorId: HavingBigintFilter
   guildId: HavingBigintFilter
-  messageId: HavingBigintFilter
+  maxCount: HavingIntFilter
+  requiredRole: HavingBigintFilter
 }
 
 input RoleMenusHavingVariancePopulationInput {
-  channelId: HavingBigintFilter
-  editorId: HavingBigintFilter
   guildId: HavingBigintFilter
-  messageId: HavingBigintFilter
+  maxCount: HavingIntFilter
+  requiredRole: HavingBigintFilter
 }
 
 input RoleMenusHavingVarianceSampleInput {
-  channelId: HavingBigintFilter
-  editorId: HavingBigintFilter
   guildId: HavingBigintFilter
-  messageId: HavingBigintFilter
+  maxCount: HavingIntFilter
+  requiredRole: HavingBigintFilter
 }
 
 """Methods to use when ordering `RoleMenu`."""
 enum RoleMenusOrderBy {
-  CHANNEL_ID_ASC
-  CHANNEL_ID_DESC
-  EDITOR_ID_ASC
-  EDITOR_ID_DESC
+  DESCRIPTION_ASC
+  DESCRIPTION_DESC
   GUILD_ID_ASC
   GUILD_ID_DESC
-  MESSAGE_ID_ASC
-  MESSAGE_ID_DESC
+  MAX_COUNT_ASC
+  MAX_COUNT_DESC
+  MENU_NAME_ASC
+  MENU_NAME_DESC
   NATURAL
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
+  REQUIRED_ROLE_ASC
+  REQUIRED_ROLE_DESC
+  ROLE_IDS_ASC
+  ROLE_IDS_DESC
 }
 
 """
@@ -10770,31 +10740,15 @@ type UpdateReminderPayload {
   ): RemindersEdge
 }
 
-"""All input for the `updateRoleMenuByChannelIdAndEditorId` mutation."""
-input UpdateRoleMenuByChannelIdAndEditorIdInput {
-  channelId: BigInt!
-
+"""All input for the `updateRoleMenuByGuildIdAndMenuName` mutation."""
+input UpdateRoleMenuByGuildIdAndMenuNameInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
-  editorId: BigInt!
-
-  """
-  An object where the defined keys will be set on the `RoleMenu` being updated.
-  """
-  roleMenuPatch: RoleMenuPatch!
-}
-
-"""All input for the `updateRoleMenuByMessageId` mutation."""
-input UpdateRoleMenuByMessageIdInput {
-  """
-  An arbitrary string value with no semantic meaning. Will be included in the
-  payload verbatim. May be used to track mutations by the client.
-  """
-  clientMutationId: String
-  messageId: BigInt!
+  guildId: BigInt!
+  menuName: String!
 
   """
   An object where the defined keys will be set on the `RoleMenu` being updated.
