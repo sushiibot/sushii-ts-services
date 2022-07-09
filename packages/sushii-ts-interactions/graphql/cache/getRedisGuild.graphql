@@ -1,0 +1,40 @@
+query getRedisGuild($guild_id: BigInt!) {
+  redisGuildByGuildId(guild_id: $guild_id) {
+    afkChannelId
+    afkTimeout
+    applicationId
+    banner
+    channels
+    defaultMessageNotifications
+    description
+    discoverySplash
+    emojis
+    explicitContentFilter
+    features
+    icon
+    id
+    joinedAt
+    large
+    maxMembers
+    maxVideoChannelUsers
+    memberCount
+    members
+    mfaLevel
+    name
+    nsfwLevel
+    ownerId
+    preferredLocale
+    premiumSubscriptionCount
+    premiumTier
+    presences
+    roles
+    rulesChannelId
+    splash
+    systemChannelFlags
+    systemChannelId
+    unavailable
+    vanityUrlCode
+    verificationLevel
+    voiceStates
+  }
+}

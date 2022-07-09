@@ -43,6 +43,14 @@ export default class TimeoutCommand extends SlashCommandHandler {
         .setDescription("Additional media to attach to the case.")
         .setRequired(false)
     )
+    .addBooleanOption((o) =>
+      o
+        .setName("skip_dm")
+        .setDescription(
+          "Set to false if you do not want to DM the reason to the user."
+        )
+        .setRequired(false)
+    )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
@@ -110,6 +118,8 @@ export default class TimeoutCommand extends SlashCommandHandler {
       data.communicationDisabledUntil(),
       data.reason
     );
+
+    // TODO: DM user
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [userEmbed.toJSON()],

@@ -5,6 +5,7 @@ import {
   PermissionFlagsBits,
 } from "discord-api-types/v10";
 import { t } from "i18next";
+import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { hasPermission } from "../../utils/permissions";
@@ -12,7 +13,7 @@ import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorPerrmision } from "../responses/error";
 import ModActionData from "./ModActionData";
 
-export default class BanCommand extends SlashCommandHandler {
+export default class WarnCommand extends SlashCommandHandler {
   serverOnly = true;
 
   requiredBotPermissions = PermissionFlagsBits.BanMembers.toString();
@@ -28,7 +29,7 @@ export default class BanCommand extends SlashCommandHandler {
     .addStringOption((o) =>
       o
         .setName("reason")
-        .setDescription("Reason for banning this user.")
+        .setDescription("Reason for warning this user. This will DM the user.")
         .setRequired(false)
     )
     .addAttachmentOption((o) =>
@@ -98,12 +99,47 @@ export default class BanCommand extends SlashCommandHandler {
       },
     });
 
-    await ctx.REST.banUser(
-      interaction.guild_id,
-      data.target.id,
-      data.reason,
-      data.deleteMessageDays
-    );
+    // Cached from redis
+    const cachedGuild = await ctx.sushiiAPI.sdk.getRedisGuild({
+      guild_id: interaction.guild_id,
+    });
+
+    if (!cachedGuild.redisGuildByGuildId) {
+      logger.warn(
+        { guildId: interaction.guild_id },
+        "Failed to fetch guild from redis cache"
+      );
+    }
+
+    const guildName =
+      cachedGuild.redisGuildByGuildId?.name || interaction.guild_id.toString();
+
+    const guildIcon =
+      cachedGuild.redisGuildByGuildId?.icon &&
+      ctx.CDN.cdn.icon(
+        interaction.guild_id,
+        cachedGuild.redisGuildByGuildId.icon
+      );
+
+    const embed = new EmbedBuilder()
+      .setTitle(t("warn.dm_title", { ns: "commands" }))
+      .setAuthor({
+        name: guildName,
+        iconURL: guildIcon || undefined,
+      })
+      .setFields(
+        data.reason
+          ? [
+              {
+                name: t("warn.dm_reason", { ns: "commands" }),
+                value: data.reason,
+              },
+            ]
+          : []
+      )
+      .setColor(Color.Warning);
+
+    await ctx.REST.dmUser(data.target.id, { embeds: [embed.toJSON()] });
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [userEmbed.toJSON()],

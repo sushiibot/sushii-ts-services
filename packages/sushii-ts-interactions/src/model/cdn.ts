@@ -2,7 +2,7 @@ import { CDN, ImageURLOptions } from "@discordjs/rest";
 import { APIGuildMember, APIUser } from "discord-api-types/v10";
 
 export default class CDNClient {
-  private cdn: CDN;
+  public cdn: CDN;
 
   constructor(cdnBaseURl?: string | undefined) {
     this.cdn = new CDN(cdnBaseURl);

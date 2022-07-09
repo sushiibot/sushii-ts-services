@@ -14,6 +14,7 @@ import {
   RESTPatchAPIChannelMessageJSONBody,
   RESTPostAPIChannelMessageResult,
   RESTPostAPIChannelMessageJSONBody,
+  RESTPostAPICurrentUserCreateDMChannelResult,
 } from "discord-api-types/v10";
 import { ConfigI } from "./config";
 
@@ -166,5 +167,25 @@ export default class RESTClient {
     return this.rest.get(
       Routes.guildRoles(guildId)
     ) as Promise<RESTGetAPIGuildRolesResult>;
+  }
+
+  // User
+  public dmUser(
+    userId: string,
+    data: RESTPostAPIChannelMessageJSONBody
+  ): Promise<RESTPostAPIChannelMessageResult> {
+    return this.createDmChannel(userId).then((channel) =>
+      this.sendChannelMessage(channel.id, data)
+    ) as Promise<RESTPostAPIChannelMessageResult>;
+  }
+
+  public createDmChannel(
+    userId: string
+  ): Promise<RESTPostAPICurrentUserCreateDMChannelResult> {
+    return this.rest.post(Routes.userChannels(), {
+      body: {
+        recipient_id: userId,
+      },
+    }) as Promise<RESTPostAPICurrentUserCreateDMChannelResult>;
   }
 }

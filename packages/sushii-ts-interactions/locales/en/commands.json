@@ -30,7 +30,9 @@
   },
   "warn": {
     "success": "User warned",
-    "failure": "Failed to warn <@{{id}}> ({{id}})"
+    "failure": "Failed to warn <@{{id}}> ({{id}})",
+    "dm_title": "You have been warned",
+    "dm_reason": "Reason"
   },
   "notification": {
     "list": {

@@ -16,11 +16,13 @@ import WelcomeCommand from "./settings/WelcomeCommand";
 import TimeoutCommand from "./moderation/TimeoutCommand";
 import ReminderDeleteAutocomplete from "./reminders/ReminderAutocomplete";
 import ReminderCommand from "./reminders/ReminderCommand";
+import WarnCommand from "./moderation/WarnCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
 ): void {
   interactionClient.addCommands(
+    // User
     new UserInfoCommand(),
     new FishyCommand(),
     new RepCommand(),
@@ -33,6 +35,7 @@ export default function addCommands(
     new BanCommand(),
     new KickCommand(),
     new TimeoutCommand(),
+    new WarnCommand(),
 
     new NotificationCommand(),
     new ReminderCommand(),
