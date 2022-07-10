@@ -51,15 +51,12 @@ export default class AvatarCommand extends SlashCommandHandler {
 
     // Guild av
     if (isGuildInteraction(interaction)) {
-      try {
-        const member = await ctx.REST.getMember(
-          interaction.guild_id,
-          target.id
-        );
+      const member = await ctx.REST.getMember(interaction.guild_id, target.id);
 
+      if (member.ok) {
         const memberFaceURL = ctx.CDN.memberFaceURL(
           interaction.guild_id,
-          member,
+          member.safeUnwrap(),
           target.id,
           {
             size: 4096,
@@ -71,7 +68,7 @@ export default class AvatarCommand extends SlashCommandHandler {
             .setTitle(
               t("avatar.member_avatar_title", {
                 ns: "commands",
-                username: member.nick || target.username,
+                username: member.safeUnwrap().nick || target.username,
               })
             )
             .setURL(memberFaceURL)
@@ -80,8 +77,6 @@ export default class AvatarCommand extends SlashCommandHandler {
 
           embeds.push(memberEmbed);
         }
-      } catch (e) {
-        // Ignore if member not found
       }
     }
 

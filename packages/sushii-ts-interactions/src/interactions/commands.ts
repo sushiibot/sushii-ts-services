@@ -17,6 +17,7 @@ import TimeoutCommand from "./moderation/TimeoutCommand";
 import ReminderDeleteAutocomplete from "./reminders/ReminderAutocomplete";
 import ReminderCommand from "./reminders/ReminderCommand";
 import WarnCommand from "./moderation/WarnCommand";
+import HistoryCommand from "./moderation/HistoryCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -36,6 +37,7 @@ export default function addCommands(
     new KickCommand(),
     new TimeoutCommand(),
     new WarnCommand(),
+    new HistoryCommand(),
 
     new NotificationCommand(),
     new ReminderCommand(),

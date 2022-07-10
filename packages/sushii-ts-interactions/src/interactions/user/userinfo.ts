@@ -47,7 +47,9 @@ export default class UserinfoHandler extends SlashCommandHandler {
         target = interaction.member.user;
       }
 
-      member = await ctx.REST.getMember(interaction.guild_id, target.id);
+      member = (
+        await ctx.REST.getMember(interaction.guild_id, target.id)
+      ).unwrapOr(undefined);
 
       logger.debug("userinfo option target member: %o", member);
     } else if (isDMInteraction(interaction)) {

@@ -1,4 +1,4 @@
-import { RawFile, REST } from "@discordjs/rest";
+import { DiscordAPIError, RawFile, REST } from "@discordjs/rest";
 import dayjs from "dayjs";
 import {
   Routes,
@@ -16,6 +16,7 @@ import {
   RESTPostAPIChannelMessageJSONBody,
   RESTPostAPICurrentUserCreateDMChannelResult,
 } from "discord-api-types/v10";
+import { Ok, Err, Result } from "ts-results";
 import { ConfigI } from "./config";
 
 export default class RESTClient {
@@ -120,10 +121,10 @@ export default class RESTClient {
   public getMember(
     guildId: string,
     userId: string
-  ): Promise<RESTGetAPIGuildMemberResult> {
-    return this.rest.get(
-      Routes.guildMember(guildId, userId)
-    ) as Promise<RESTGetAPIGuildMemberResult>;
+  ): Promise<Result<RESTGetAPIGuildMemberResult, DiscordAPIError>> {
+    return this.handleError<RESTGetAPIGuildMemberResult>(
+      this.rest.get(Routes.guildMember(guildId, userId))
+    );
   }
 
   public async banUser(
@@ -187,5 +188,22 @@ export default class RESTClient {
         recipient_id: userId,
       },
     }) as Promise<RESTPostAPICurrentUserCreateDMChannelResult>;
+  }
+
+  private async handleError<T>(
+    promise: Promise<unknown>
+  ): Promise<Result<T, DiscordAPIError>> {
+    try {
+      const res = await promise;
+
+      return Ok(res as T);
+    } catch (err) {
+      if (err instanceof DiscordAPIError) {
+        return Err(err);
+      }
+
+      // Errors that commands can't really or shouldn't handle, idk
+      throw err;
+    }
   }
 }

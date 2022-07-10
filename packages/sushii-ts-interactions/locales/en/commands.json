@@ -34,6 +34,11 @@
     "dm_title": "You have been warned",
     "dm_reason": "Reason"
   },
+  "history": {
+    "title_zero": "No cases were found.",
+    "title_one": "{{count}} case was found.",
+    "title_other": "{{count}} cases were found."
+  },
   "notification": {
     "list": {
       "title": "Your Notifications",
