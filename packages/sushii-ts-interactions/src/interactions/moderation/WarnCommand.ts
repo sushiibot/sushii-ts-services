@@ -10,7 +10,10 @@ import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
-import { interactionReplyErrorPerrmision } from "../responses/error";
+import {
+  interactionReplyErrorMessage,
+  interactionReplyErrorPerrmision,
+} from "../responses/error";
 import ModActionData from "./ModActionData";
 
 export default class WarnCommand extends SlashCommandHandler {
@@ -139,7 +142,15 @@ export default class WarnCommand extends SlashCommandHandler {
       )
       .setColor(Color.Warning);
 
-    await ctx.REST.dmUser(data.target.id, { embeds: [embed.toJSON()] });
+    const res = await ctx.REST.dmUser(data.target.id, {
+      embeds: [embed.toJSON()],
+    });
+
+    if (res.err) {
+      await interactionReplyErrorMessage(ctx, interaction, res.val.message);
+
+      return;
+    }
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [userEmbed.toJSON()],

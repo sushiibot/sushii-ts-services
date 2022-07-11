@@ -9,7 +9,10 @@ import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
-import { interactionReplyErrorPerrmision } from "../responses/error";
+import {
+  interactionReplyErrorMessage,
+  interactionReplyErrorPerrmision,
+} from "../responses/error";
 import ModActionData from "./ModActionData";
 
 export default class TimeoutCommand extends SlashCommandHandler {
@@ -112,12 +115,22 @@ export default class TimeoutCommand extends SlashCommandHandler {
       },
     });
 
-    await ctx.REST.timeoutMember(
+    const res = await ctx.REST.timeoutMember(
       interaction.guild_id,
       data.target.id,
       data.communicationDisabledUntil(),
       data.reason
     );
+
+    if (res.err) {
+      await interactionReplyErrorMessage(
+        ctx,
+        interaction,
+        `Failed to time out user: ${res.val.message}`
+      );
+
+      return;
+    }
 
     // TODO: DM user
 

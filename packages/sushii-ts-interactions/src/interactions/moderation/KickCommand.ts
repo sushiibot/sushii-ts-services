@@ -9,7 +9,10 @@ import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
-import { interactionReplyErrorPerrmision } from "../responses/error";
+import {
+  interactionReplyErrorMessage,
+  interactionReplyErrorPerrmision,
+} from "../responses/error";
 import ModActionData from "./ModActionData";
 
 export default class KickCommand extends SlashCommandHandler {
@@ -98,11 +101,21 @@ export default class KickCommand extends SlashCommandHandler {
       },
     });
 
-    await ctx.REST.kickMember(
+    const res = await ctx.REST.kickMember(
       interaction.guild_id,
       data.target.id,
       data.reason
     );
+
+    if (res.err) {
+      await interactionReplyErrorMessage(
+        ctx,
+        interaction,
+        `Failed to kick user: ${res.val.message}`
+      );
+
+      return;
+    }
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [userEmbed.toJSON()],

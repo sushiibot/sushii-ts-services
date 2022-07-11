@@ -9,7 +9,10 @@ import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
-import { interactionReplyErrorPerrmision } from "../responses/error";
+import {
+  interactionReplyErrorMessage,
+  interactionReplyErrorPerrmision,
+} from "../responses/error";
 import ModActionData from "./ModActionData";
 
 export default class BanCommand extends SlashCommandHandler {
@@ -106,12 +109,23 @@ export default class BanCommand extends SlashCommandHandler {
       },
     });
 
-    await ctx.REST.banUser(
+    const res = await ctx.REST.banUser(
       interaction.guild_id,
       data.target.id,
       data.reason,
       data.deleteMessageDays
     );
+
+    if (res.err) {
+      // If ban failed
+      await interactionReplyErrorMessage(
+        ctx,
+        interaction,
+        `Failed to ban user: ${res.val.message}`
+      );
+
+      return;
+    }
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [userEmbed.toJSON()],

@@ -15,9 +15,16 @@ import {
   RESTPostAPIChannelMessageResult,
   RESTPostAPIChannelMessageJSONBody,
   RESTPostAPICurrentUserCreateDMChannelResult,
+  RESTPutAPIGuildBanResult,
+  RESTPatchAPIGuildMemberResult,
+  RESTDeleteAPIGuildMemberResult,
+  RESTPatchAPIWebhookWithTokenMessageResult,
+  RESTPostAPIInteractionFollowupResult,
 } from "discord-api-types/v10";
 import { Ok, Err, Result } from "ts-results";
 import { ConfigI } from "./config";
+
+export type APIPromiseResult<T> = Promise<Result<T, DiscordAPIError>>;
 
 export default class RESTClient {
   private rest: REST;
@@ -29,11 +36,11 @@ export default class RESTClient {
     }).setToken(config.token);
   }
 
-  public async interactionReply(
+  public interactionReply(
     interaction: APIInteraction,
     msg: APIInteractionResponseCallbackData,
     files?: RawFile[]
-  ): Promise<void> {
+  ): APIPromiseResult<RESTPostAPIInteractionFollowupResult> {
     return this.interactionCallback(
       interaction,
       {
@@ -51,133 +58,149 @@ export default class RESTClient {
    * @param msg
    * @returns
    */
-  public async interactionEdit(
+  public interactionEdit(
     interaction: APIInteraction,
     msg: APIInteractionResponseCallbackData
-  ): Promise<void> {
+  ): APIPromiseResult<RESTPostAPIInteractionFollowupResult> {
     return this.interactionCallback(interaction, {
       type: InteractionResponseType.UpdateMessage,
       data: msg,
     });
   }
 
-  public async interactionCallback(
+  public interactionCallback(
     interaction: APIInteraction,
     payload: RESTPostAPIInteractionCallbackJSONBody,
     files?: RawFile[]
-  ): Promise<void> {
+  ): APIPromiseResult<RESTPostAPIInteractionFollowupResult> {
     // TODO: Handle errors, determine response type
-    await this.rest.post(
-      Routes.interactionCallback(interaction.id, interaction.token),
-      { body: payload, files }
+    return this.handleError(
+      this.rest.post(
+        Routes.interactionCallback(interaction.id, interaction.token),
+        { body: payload, files }
+      )
     );
   }
 
-  public async interactionEditOriginal(
+  public interactionEditOriginal(
     interaction: APIInteraction,
     msg: APIInteractionResponseCallbackData
-  ): Promise<void> {
+  ): APIPromiseResult<RESTPatchAPIWebhookWithTokenMessageResult> {
     // Webhooks use application id not interaction id
-    await this.rest.patch(
-      Routes.webhookMessage(interaction.application_id, interaction.token),
-      {
-        body: msg,
-      }
+    return this.handleError(
+      this.rest.patch(
+        Routes.webhookMessage(interaction.application_id, interaction.token),
+        {
+          body: msg,
+        }
+      )
     );
   }
 
   public sendChannelMessage(
     channelID: string,
     data: RESTPostAPIChannelMessageJSONBody
-  ): Promise<RESTPostAPIChannelMessageResult> {
-    return this.rest.post(Routes.channelMessages(channelID), {
-      body: data,
-    }) as Promise<RESTPostAPIChannelMessageResult>;
+  ): APIPromiseResult<RESTPostAPIChannelMessageResult> {
+    return this.handleError(
+      this.rest.post(Routes.channelMessages(channelID), {
+        body: data,
+      })
+    );
   }
 
   public getChannelMessage(
     channelID: string,
     messageID: string
-  ): Promise<RESTGetAPIChannelMessageResult> {
-    return this.rest.get(
-      Routes.channelMessage(channelID, messageID)
-    ) as Promise<RESTGetAPIChannelMessageResult>;
+  ): APIPromiseResult<RESTGetAPIChannelMessageResult> {
+    return this.handleError(
+      this.rest.get(Routes.channelMessage(channelID, messageID))
+    );
   }
 
   public editChannelMessage(
     channelID: string,
     messageID: string,
     msg: RESTPatchAPIChannelMessageJSONBody
-  ): Promise<RESTPatchAPIChannelMessageResult> {
-    return this.rest.patch(Routes.channelMessage(channelID, messageID), {
-      body: msg,
-    }) as Promise<RESTPatchAPIChannelMessageResult>;
+  ): APIPromiseResult<RESTPatchAPIChannelMessageResult> {
+    return this.handleError(
+      this.rest.patch(Routes.channelMessage(channelID, messageID), {
+        body: msg,
+      })
+    );
   }
 
-  public getUser(userId: string): Promise<RESTGetAPIUserResult> {
-    return this.rest.get(Routes.user(userId)) as Promise<RESTGetAPIUserResult>;
+  public getUser(userId: string): APIPromiseResult<RESTGetAPIUserResult> {
+    return this.handleError(this.rest.get(Routes.user(userId)));
   }
 
   public getMember(
     guildId: string,
     userId: string
-  ): Promise<Result<RESTGetAPIGuildMemberResult, DiscordAPIError>> {
+  ): APIPromiseResult<RESTGetAPIGuildMemberResult> {
     return this.handleError<RESTGetAPIGuildMemberResult>(
       this.rest.get(Routes.guildMember(guildId, userId))
     );
   }
 
-  public async banUser(
+  public banUser(
     guildId: string,
     userId: string,
     reason?: string,
     deleteMessageDays?: number
-  ): Promise<void> {
-    await this.rest.put(Routes.guildBan(guildId, userId), {
-      reason,
-      body: { delete_message_days: deleteMessageDays },
-    });
+  ): APIPromiseResult<RESTPutAPIGuildBanResult> {
+    return this.handleError<RESTPutAPIGuildBanResult>(
+      this.rest.put(Routes.guildBan(guildId, userId), {
+        reason,
+        body: { delete_message_days: deleteMessageDays },
+      })
+    );
   }
 
-  public async kickMember(
+  public kickMember(
     guildId: string,
     userId: string,
     reason?: string
-  ): Promise<void> {
-    await this.rest.delete(Routes.guildMember(guildId, userId), {
-      reason,
-    });
+  ): APIPromiseResult<RESTDeleteAPIGuildMemberResult> {
+    return this.handleError(
+      this.rest.delete(Routes.guildMember(guildId, userId), {
+        reason,
+      })
+    );
   }
 
-  public async timeoutMember(
+  public timeoutMember(
     guildId: string,
     userId: string,
     communication_disabled_until: dayjs.Dayjs,
     reason?: string
-  ): Promise<void> {
-    await this.rest.patch(Routes.guildMember(guildId, userId), {
-      reason,
-      body: {
-        communication_disabled_until:
-          communication_disabled_until.toISOString(),
-      },
-    });
+  ): APIPromiseResult<RESTPatchAPIGuildMemberResult> {
+    return this.handleError(
+      this.rest.patch(Routes.guildMember(guildId, userId), {
+        reason,
+        body: {
+          communication_disabled_until:
+            communication_disabled_until.toISOString(),
+        },
+      })
+    );
   }
 
-  public getGuildRoles(guildId: string): Promise<RESTGetAPIGuildRolesResult> {
-    return this.rest.get(
-      Routes.guildRoles(guildId)
-    ) as Promise<RESTGetAPIGuildRolesResult>;
+  public getGuildRoles(
+    guildId: string
+  ): APIPromiseResult<RESTGetAPIGuildRolesResult> {
+    return this.handleError(this.rest.get(Routes.guildRoles(guildId)));
   }
 
   // User
   public dmUser(
     userId: string,
     data: RESTPostAPIChannelMessageJSONBody
-  ): Promise<RESTPostAPIChannelMessageResult> {
-    return this.createDmChannel(userId).then((channel) =>
-      this.sendChannelMessage(channel.id, data)
-    ) as Promise<RESTPostAPIChannelMessageResult>;
+  ): APIPromiseResult<RESTPostAPIChannelMessageResult> {
+    return this.handleError(
+      this.createDmChannel(userId).then((channel) =>
+        this.sendChannelMessage(channel.id, data)
+      )
+    );
   }
 
   public createDmChannel(
