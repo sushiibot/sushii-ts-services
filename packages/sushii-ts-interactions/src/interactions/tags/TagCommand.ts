@@ -259,7 +259,7 @@ export default class TagCommand extends SlashCommandHandler {
     const tagAttachment = options.getAttachment("attachment");
 
     if (!tagContent && !tagAttachment) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         embeds: [
           new EmbedBuilder()
             .setDescription(
@@ -271,6 +271,8 @@ export default class TagCommand extends SlashCommandHandler {
             .toJSON(),
         ],
       });
+
+      return;
     }
 
     const invoker = getInvokerUser(interaction);
@@ -331,7 +333,7 @@ export default class TagCommand extends SlashCommandHandler {
     });
 
     if (!tag.tagByGuildIdAndTagName) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         embeds: [
           new EmbedBuilder()
             .setDescription(t("tag.get.not_found", { ns: "commands", tagName }))
@@ -339,6 +341,8 @@ export default class TagCommand extends SlashCommandHandler {
             .toJSON(),
         ],
       });
+
+      return;
     }
 
     let { content } = tag.tagByGuildIdAndTagName;
@@ -374,7 +378,7 @@ export default class TagCommand extends SlashCommandHandler {
 
     // startsWith xor contains
     if (startsWith && contains) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.random.error.title", { ns: "commands" }))
@@ -385,6 +389,8 @@ export default class TagCommand extends SlashCommandHandler {
             .toJSON(),
         ],
       });
+
+      return;
     }
 
     const tag = await ctx.sushiiAPI.sdk.getRandomTag({
@@ -395,7 +401,7 @@ export default class TagCommand extends SlashCommandHandler {
     });
 
     if (!tag.randomTag) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.random.error.title", { ns: "commands" }))
@@ -404,6 +410,8 @@ export default class TagCommand extends SlashCommandHandler {
             .toJSON(),
         ],
       });
+
+      return;
     }
 
     let content;
@@ -440,7 +448,7 @@ export default class TagCommand extends SlashCommandHandler {
     });
 
     if (!tag.tagByGuildIdAndTagName) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         embeds: [
           new EmbedBuilder()
             .setDescription(
@@ -450,6 +458,8 @@ export default class TagCommand extends SlashCommandHandler {
             .toJSON(),
         ],
       });
+
+      return;
     }
 
     const embed = new EmbedBuilder()
@@ -529,7 +539,7 @@ export default class TagCommand extends SlashCommandHandler {
     const owner = options.getUser("owner");
 
     if (!startsWith && !contains && !owner) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.search.error.title", { ns: "commands" }))
@@ -540,11 +550,13 @@ export default class TagCommand extends SlashCommandHandler {
             .toJSON(),
         ],
       });
+
+      return;
     }
 
     // startsWith xor contains
     if (startsWith && contains) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.search.error.title", { ns: "commands" }))
@@ -555,6 +567,8 @@ export default class TagCommand extends SlashCommandHandler {
             .toJSON(),
         ],
       });
+
+      return;
     }
 
     let filter: TagFilter | undefined;
@@ -626,12 +640,14 @@ export default class TagCommand extends SlashCommandHandler {
 
     // Check if tag exists
     if (!tag.tagByGuildIdAndTagName) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         content: t("tag.edit.error.not_found", {
           ns: "commands",
           tagName,
         }),
       });
+
+      return;
     }
 
     const invoker = getInvokerUser(interaction);
@@ -653,7 +669,7 @@ export default class TagCommand extends SlashCommandHandler {
     const newAttachment = options.getAttachment("attachment");
 
     if (!newContent && !newAttachment) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.edit.error.title", { ns: "commands" }))
@@ -662,6 +678,8 @@ export default class TagCommand extends SlashCommandHandler {
             .toJSON(),
         ],
       });
+
+      return;
     }
 
     await ctx.sushiiAPI.sdk.updateTag({
@@ -706,12 +724,14 @@ export default class TagCommand extends SlashCommandHandler {
 
     // Check if tag exists
     if (!tag.tagByGuildIdAndTagName) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         content: t("tag.edit.error.not_found", {
           ns: "commands",
           tagName,
         }),
       });
+
+      return;
     }
 
     const invoker = getInvokerUser(interaction);
@@ -741,12 +761,14 @@ export default class TagCommand extends SlashCommandHandler {
     });
 
     if (tagExists.tagByGuildIdAndTagName) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         content: t("tag.rename.error.already_exists", {
           ns: "commands",
           tagName,
         }),
       });
+
+      return;
     }
 
     // Rename tag, possible failure if tag name already exists, but rare enough
@@ -791,12 +813,14 @@ export default class TagCommand extends SlashCommandHandler {
 
     // Check if tag exists
     if (!tag.tagByGuildIdAndTagName) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         content: t("tag.delete.not_found", {
           ns: "commands",
           tagName,
         }),
       });
+
+      return;
     }
 
     const invoker = getInvokerUser(interaction);
