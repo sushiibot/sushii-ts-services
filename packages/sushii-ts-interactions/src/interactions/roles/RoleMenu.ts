@@ -16,9 +16,9 @@ import {
 } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../model/context";
-import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
+import { interactionReplyErrorMessage } from "../responses/error";
 import { getRoleMenuID } from "./ids";
 
 const RE_EMOJI = /(<a?)?:(w+):(d{18}>)/;
@@ -187,9 +187,11 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     });
 
     if (menu) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         content: t("rolemenu.new.error.name_already_exists", { name }),
       });
+
+      return;
     }
 
     // -------------------------------------------------------------------------
@@ -199,7 +201,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const maxRoles = options.getInteger("max_roles");
     const requiredRole = options.getRole("required_role");
 
-    const customID = getRoleMenuID(requiredRole?.id);
+    // TODO: const customID = getRoleMenuID(requiredRole?.id);
 
     let embed = new EmbedBuilder()
       .setTitle(name)
@@ -229,12 +231,22 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       embeds: [embed.toJSON()],
     });
 
+    if (message.err) {
+      await interactionReplyErrorMessage(
+        ctx,
+        interaction,
+        `Failed to ban user: ${message.val.message}`
+      );
+
+      return;
+    }
+
     // Save to DB
     await ctx.sushiiAPI.sdk.createRoleMenu({
       roleMenu: {
         channelId: interaction.channel_id,
         guildId: interaction.guild_id,
-        messageId: message.id,
+        messageId: message.safeUnwrap().id,
         menuName: name,
         description,
         maxCount: maxRoles,
@@ -263,9 +275,11 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     });
 
     if (!menuMsg) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         content: t("rolemenu.edit.no_active_menu"),
       });
+
+      return;
     }
 
     const description = options.getString("description");
@@ -313,9 +327,11 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     const menuMsg = await this.getMenuMessage(ctx, interaction, menuName);
     if (!menuMsg) {
-      return ctx.REST.interactionReply(interaction, {
+      await ctx.REST.interactionReply(interaction, {
         content: t("rolemenu.edit.no_active_menu"),
       });
+
+      return;
     }
 
     if (menuMsg.components === undefined) {
@@ -403,6 +419,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       menu.roleMenuByGuildIdAndMenuName.messageId
     );
 
-    return msg;
+    return msg.unwrapOr(null);
   }
 }
