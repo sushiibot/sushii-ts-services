@@ -35,7 +35,8 @@ export default class TagGetAutocomplete extends AutocompleteHandler {
       },
     });
 
-    const choices = matching.allTags?.edges.map((s) => ({
+    // Max 25, slice from 0 to end 25
+    const choices = matching.allTags?.edges.slice(0, 25).map((s) => ({
       name: s.node.tagName,
       value: s.node.tagName,
     }));

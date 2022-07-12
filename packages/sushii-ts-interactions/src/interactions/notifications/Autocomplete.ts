@@ -30,6 +30,7 @@ export default class NotificationListAutocomplete extends AutocompleteHandler {
 
     const choices = matching.notificationsStartingWith?.nodes
       .filter((k): k is string => !!k)
+      .slice(0, 25)
       .map((s) => ({
         name: s,
         value: s,

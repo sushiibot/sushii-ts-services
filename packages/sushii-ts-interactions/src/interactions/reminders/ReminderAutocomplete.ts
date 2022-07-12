@@ -34,6 +34,7 @@ export default class ReminderDeleteAutocomplete extends AutocompleteHandler {
       matching.allReminders?.nodes
         .filter((r) => r.description.startsWith(option.value) && r)
         .filter((r) => !!r)
+        .slice(0, 25)
         .map((s) => ({
           name: `${getDurationFromNow(dayjs.utc(s.expireAt)).humanize()} - ${
             s.description
