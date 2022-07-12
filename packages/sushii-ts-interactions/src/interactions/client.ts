@@ -583,7 +583,7 @@ export default class InteractionClient {
 
     const interaction = JSON.parse(msgString);
     if (!isGatewayInteractionCreateDispatch(interaction)) {
-      log.debug("received non-interaction AMQP message %s", interaction.t);
+      // log.debug("received non-interaction AMQP message %s", interaction.t);
       return;
     }
 
