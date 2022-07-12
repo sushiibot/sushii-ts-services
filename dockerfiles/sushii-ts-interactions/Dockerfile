@@ -14,4 +14,7 @@ RUN yarn workspace @sushiibot/sushii-interactions build
 
 # Not yet used
 EXPOSE 8080
-ENTRYPOINT [ "node", "./packages/sushii-ts-interactions/dist/index.js" ]
+
+WORKDIR /config/packages/sushii-ts-interactions
+
+ENTRYPOINT [ "node", "./dist/index.js" ]
