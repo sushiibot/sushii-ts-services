@@ -11,7 +11,8 @@ services:
             - .sushii_interactions.env
         environment:
             - DISCORD_TOKEN=$DISCORD_TOKEN
-            - APPLICATION_ID=418953475947233291
+            # sushiiDev application ID, different from bot user id
+            - APPLICATION_ID=193163942502072320
             # No per guild commands
             # - GUILD_ID=167058919611564043,418504865543749642
             - SUSHII_GRAPHQL_URL=http://sushii_data:8080/graphql
