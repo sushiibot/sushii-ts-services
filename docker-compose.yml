@@ -4,9 +4,12 @@ services:
         build:
             dockerfile: ./dockerfiles/sushii-ts-interactions/Dockerfile
             context: .
+        depends_on:
+            - sushii_data
         environment:
             - APPLICATION_ID=418953475947233291
-            - GUILD_ID=167058919611564043,418504865543749642
+            # No per guild commands
+            # - GUILD_ID=167058919611564043,418504865543749642
             - SUSHII_GRAPHQL_URL=http://sushii_data:8080/graphql
             - AMQP_URL=amqp://rabbitmq:5672
             - AMQP_QUEUE_NAME=gateway.recv
@@ -18,11 +21,20 @@ services:
         labels:
             - "traefik.enable=false"
     sushii_data:
-        depends_on:
-            - sushii_interactions
         build:
             dockerfile: ./dockerfiles/sushii-data/Dockerfile
             context: .
+        env_file:
+            - .sushii_data.env
+        environment:
+            - DATABASE_VISITOR=sushii_visitor
+            # Required secret env vars:
+            # - DATABASE_URL
+            # - JWT_PUB_KEY
+        networks:
+            - sushii_net
+        labels:
+            - "traefik.enable=false"
     oathkeeper:
         image: oryd/oathkeeper:v0.38
         restart: unless-stopped
