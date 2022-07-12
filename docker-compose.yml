@@ -106,6 +106,8 @@ services:
             - STATE_MESSAGE=true
             - STATE_MESSAGE_TTL=60000
             - STATE_PRESENCE=false
+            - STATE_EMOJI=true
+            - STATE_VOICE=false
             - RABBIT_HOST=rabbitmq
             - RABBIT_PORT=5672
             - RABBIT_USERNAME=guest
@@ -125,6 +127,9 @@ services:
         expose:
             - "5672"
             - "15672"
+        env_file:
+            # user/pass
+            - .rabbitmq.env
         networks:
             - sushii_net
         labels:
