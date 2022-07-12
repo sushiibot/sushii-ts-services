@@ -5,7 +5,9 @@ const logger = pino({
   name: "redis",
 });
 
-const client = createClient();
+const client = createClient({
+  url: process.env.REDIS_URL,
+});
 
 client.on("error", (err) => logger.error("redis client error", err));
 client.on("connect", () => logger.info("initiating connection to redis"));
