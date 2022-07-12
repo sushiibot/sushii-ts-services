@@ -5,6 +5,7 @@ import {
   SelectMenuBuilder,
   SelectMenuOptionBuilder,
 } from "@discordjs/builders";
+import dayjs from "dayjs";
 import { isGuildInteraction } from "discord-api-types/utils/v10";
 import {
   APIMessageComponentButtonInteraction,
@@ -118,9 +119,11 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
           );
         } else {
           const casesStr = cases.map((c) => {
-            let s = `${c.caseId} - <t:${c.actionTime}:f> - ${c.action}`;
+            let s = `\`#${c.caseId}\` - <t:${dayjs
+              .utc(c.actionTime)
+              .unix()}:R> - ${c.action}`;
             if (c.reason) {
-              s += `┗ Reason: ${c.reason}`;
+              s += `\n┗ Reason: ${c.reason}`;
             }
 
             return s;
