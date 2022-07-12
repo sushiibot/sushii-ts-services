@@ -8,8 +8,9 @@ services:
             - sushii_data
         env_file:
             # Token
-            - .env
+            - .sushii_interactions.env
         environment:
+            - DISCORD_TOKEN=$DISCORD_TOKEN
             - APPLICATION_ID=418953475947233291
             # No per guild commands
             # - GUILD_ID=167058919611564043,418504865543749642
