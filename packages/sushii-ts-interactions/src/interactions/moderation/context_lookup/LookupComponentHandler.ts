@@ -9,6 +9,7 @@ import { isGuildInteraction } from "discord-api-types/utils/v10";
 import {
   APIMessageComponentButtonInteraction,
   ButtonStyle,
+  MessageFlags,
 } from "discord-api-types/v10";
 import { lookup } from "dns";
 import Context from "../../../model/context";
@@ -20,8 +21,8 @@ export const lookupButtonCustomIDPrefix = "lookup:button:";
 export enum Action {
   Ban = "ban",
   Kick = "kick",
-  Mute = "Mute",
-  Unmute = "Unmute",
+  Mute = "mute",
+  Unmute = "unmute",
   Warn = "warn",
   History = "history",
   Lookup = "lookup",
@@ -86,15 +87,17 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
 
     switch (action) {
       case Action.Ban:
-        break;
       case Action.Kick:
-        break;
       case Action.Mute:
-        break;
       case Action.Unmute:
-        break;
       case Action.Warn:
-        break;
+        await ctx.REST.interactionReply(interaction, {
+          content: "Oops, this hasn't been implemented yet! Coming soon...",
+          flags: MessageFlags.Ephemeral,
+        });
+
+        return;
+
       case Action.History: {
         const { allModLogs } = await ctx.sushiiAPI.sdk.getUserModLogHistory({
           guildId: interaction.guild_id,
