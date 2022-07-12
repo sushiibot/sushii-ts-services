@@ -164,7 +164,7 @@
     "delete": {
       "success": {
         "title": "Reminder deleted",
-        "description": "Deleted reminder <t:{{expireAtTimestamp}}:R> to {{description}}"
+        "description": "{{description}} <t:{{expireAtTimestamp}}:R>"
       },
       "error": {
         "not_found": "Reminder not found"

@@ -9,6 +9,7 @@ import getInvokerUser from "../../utils/interactions";
 import parseDuration from "../../utils/parseDuration";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
+import { interactionReplyErrorMessage } from "../responses/error";
 
 export default class ReminderCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -189,11 +190,15 @@ export default class ReminderCommand extends SlashCommandHandler {
 
     const invoker = getInvokerUser(interaction);
 
+    let deletedReminder;
+
     try {
-      await ctx.sushiiAPI.sdk.deleteReminder({
+      const r = await ctx.sushiiAPI.sdk.deleteReminder({
         userId: invoker.id,
         setAt: reminder,
       });
+
+      deletedReminder = r.deleteReminderByUserIdAndSetAt?.reminder;
     } catch (err) {
       if (!isNoValuesDeletedError(err)) {
         throw err;
@@ -221,8 +226,8 @@ export default class ReminderCommand extends SlashCommandHandler {
       .setDescription(
         t("reminder.delete.success.description", {
           ns: "commands",
-          expireAtTimestamp: dayjs.utc(reminder).unix(),
-          description: "uhh todo",
+          expireAtTimestamp: dayjs.utc(deletedReminder?.expireAt).unix(),
+          description: deletedReminder?.description || "unknown",
         })
       )
       .setColor(Color.Success);
