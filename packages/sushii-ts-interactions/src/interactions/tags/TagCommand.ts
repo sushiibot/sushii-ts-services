@@ -844,7 +844,7 @@ export default class TagCommand extends SlashCommandHandler {
     });
 
     const embed = new EmbedBuilder()
-      .setTitle(t("tag.delete.title", { ns: "commands", tagName }))
+      .setTitle(t("tag.delete.success.title", { ns: "commands", tagName }))
       .setFields([
         {
           name: t("tag.delete.success.content", { ns: "commands" }),
@@ -852,13 +852,14 @@ export default class TagCommand extends SlashCommandHandler {
         },
         {
           name: t("tag.delete.success.owner", { ns: "commands" }),
-          value: tag.tagByGuildIdAndTagName.ownerId,
+          value: `<@${tag.tagByGuildIdAndTagName.ownerId}>`,
         },
         {
           name: t("tag.delete.success.use_count", { ns: "commands" }),
           value: tag.tagByGuildIdAndTagName.useCount,
         },
       ])
+      .setTimestamp(dayjs(tag.tagByGuildIdAndTagName.created).toDate())
       .setColor(Color.Success);
 
     await ctx.REST.interactionReply(interaction, {
