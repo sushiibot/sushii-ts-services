@@ -31,9 +31,11 @@ async function main(): Promise<void> {
   await interactionClient.register();
 
   log.info("connecting to rabbitmq for gateway events");
-  rabbitGatewayClient.connect((msg) =>
+  await rabbitGatewayClient.connect((msg) =>
     interactionClient.handleAMQPMessage(msg)
   );
+
+  log.info("connected to rabbitmq, processing events");
 
   process.on("SIGINT", () => {
     log.info("cleaning up");
