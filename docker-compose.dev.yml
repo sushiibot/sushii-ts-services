@@ -17,7 +17,7 @@ services:
             - CLUSTERS=1
             - DEFAULT_QUEUE=true
             - RESUME=true
-            - INTENTS=13831
+            - INTENTS=37391
             - LARGE_THRESHOLD=250
             - STATUS=online
             - ACTIVITY_TYPE=0
@@ -31,6 +31,9 @@ services:
             - STATE_MESSAGE=true
             - STATE_MESSAGE_TTL=60000
             - STATE_PRESENCE=false
+            - STATE_EMOJI=true
+            - STATE_VOICE=false
+            - STATE_OLD=false
             - RABBIT_HOST=rabbitmq
             - RABBIT_PORT=5672
             - RABBIT_USERNAME=guest
