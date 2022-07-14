@@ -1,6 +1,9 @@
 import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
 import dayjs from "dayjs";
-import { APIChatInputApplicationCommandGuildInteraction } from "discord-api-types/v10";
+import {
+  APIChatInputApplicationCommandGuildInteraction,
+  MessageFlags,
+} from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -9,7 +12,6 @@ import getInvokerUser from "../../utils/interactions";
 import parseDuration from "../../utils/parseDuration";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
-import { interactionReplyErrorMessage } from "../responses/error";
 
 export default class ReminderCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -103,6 +105,7 @@ export default class ReminderCommand extends SlashCommandHandler {
             .setColor(Color.Error)
             .toJSON(),
         ],
+        flags: MessageFlags.Ephemeral,
       });
 
       return;
@@ -132,6 +135,7 @@ export default class ReminderCommand extends SlashCommandHandler {
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed.toJSON()],
+      flags: MessageFlags.Ephemeral,
     });
   }
 
@@ -163,6 +167,7 @@ export default class ReminderCommand extends SlashCommandHandler {
             .setColor(Color.Success)
             .toJSON(),
         ],
+        flags: MessageFlags.Ephemeral,
       });
 
       return;
@@ -175,6 +180,7 @@ export default class ReminderCommand extends SlashCommandHandler {
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed.toJSON()],
+      flags: MessageFlags.Ephemeral,
     });
   }
 
@@ -216,6 +222,7 @@ export default class ReminderCommand extends SlashCommandHandler {
             .setColor(Color.Warning)
             .toJSON(),
         ],
+        flags: MessageFlags.Ephemeral,
       });
 
       return;
@@ -234,6 +241,7 @@ export default class ReminderCommand extends SlashCommandHandler {
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [embed.toJSON()],
+      flags: MessageFlags.Ephemeral,
     });
   }
 }
