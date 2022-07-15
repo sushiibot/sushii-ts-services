@@ -18,6 +18,10 @@ describe("parseDuration", () => {
       expectedDuration: dayjs.duration({ hours: 3, minutes: 20 }),
     },
     {
+      durationString: "0s",
+      expectedDuration: null,
+    },
+    {
       durationString: "not a valid duration",
       expectedDuration: null,
     },
