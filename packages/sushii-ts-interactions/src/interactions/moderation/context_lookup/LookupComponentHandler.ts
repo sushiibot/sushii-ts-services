@@ -16,6 +16,7 @@ import { lookup } from "dns";
 import Context from "../../../model/context";
 import Color from "../../../utils/colors";
 import { ButtonHandler } from "../../handlers";
+import buildUserHistoryEmbed from "../formatters/history";
 
 export const lookupButtonCustomIDPrefix = "lookup:button:";
 
@@ -100,43 +101,14 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
         return;
 
       case Action.History: {
-        const { allModLogs } = await ctx.sushiiAPI.sdk.getUserModLogHistory({
+        const cases = await ctx.sushiiAPI.sdk.getUserModLogHistory({
           guildId: interaction.guild_id,
           userId: target,
         });
 
-        const cases = allModLogs?.nodes;
-
         const { embeds, components } = interaction.message;
 
-        if (!cases || cases.length === 0) {
-          embeds.push(
-            new EmbedBuilder()
-              .setTitle("📂 User History")
-              .setDescription("User has no moderation case history. All clean!")
-              .setColor(Color.Success)
-              .toJSON()
-          );
-        } else {
-          const casesStr = cases.map((c) => {
-            let s = `\`#${c.caseId}\` - <t:${dayjs
-              .utc(c.actionTime)
-              .unix()}:R> - ${c.action}`;
-            if (c.reason) {
-              s += `\n┗ Reason: ${c.reason}`;
-            }
-
-            return s;
-          });
-
-          embeds.push(
-            new EmbedBuilder()
-              .setTitle("📂 User History")
-              .setDescription(casesStr.join("\n"))
-              .setColor(Color.Success)
-              .toJSON()
-          );
-        }
+        embeds.push(buildUserHistoryEmbed(cases, "context_menu").toJSON());
 
         // Disable history button, second row, first button
         const historyButton = components?.at(1)?.components.at(0);

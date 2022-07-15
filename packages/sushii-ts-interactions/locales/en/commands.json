@@ -35,9 +35,17 @@
     "dm_reason": "Reason"
   },
   "history": {
-    "title_zero": "No cases were found.",
-    "title_one": "{{count}} case was found.",
-    "title_other": "{{count}} cases were found."
+    "context_menu": {
+      "title": "📂 User History",
+      "description_empty": "No moderation case history. All clean!"
+    },
+    "command": {
+      "title_zero": "No cases were found.",
+      "title_one": "{{count}} case was found.",
+      "title_other": "{{count}} cases were found."
+    },
+    "case_with_reason": "",
+    "case_without_reason": ""
   },
   "notification": {
     "list": {

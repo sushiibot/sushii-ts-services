@@ -1,17 +1,16 @@
-import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder } from "@discordjs/builders";
 import dayjs from "dayjs";
 import {
   APIChatInputApplicationCommandGuildInteraction,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
-import { t } from "i18next";
 import Context from "../../model/context";
-import Color from "../../utils/colors";
 import { hasPermission } from "../../utils/permissions";
 import { getCreatedTimestampSeconds } from "../../utils/snowflake";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
 import { interactionReplyErrorPerrmision } from "../responses/error";
+import buildUserHistoryEmbed from "./formatters/history";
 
 export default class HistoryCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -84,57 +83,12 @@ export default class HistoryCommand extends SlashCommandHandler {
       });
     }
 
-    if (!cases.allModLogs || cases.allModLogs.nodes.length === 0) {
-      await ctx.REST.interactionReply(interaction, {
-        embeds: [
-          new EmbedBuilder()
-            .setTitle(
-              t("history.title", {
-                ns: "commands",
-                count: 0,
-              })
-            )
-            .setAuthor({
-              name: `${user.username}#${user.discriminator}`,
-              iconURL: userFaceURL,
-            })
-            .setFields(fields)
-            .setColor(Color.Success)
-            .toJSON(),
-        ],
-      });
-
-      return;
-    }
-
-    const casesStrs = cases.allModLogs.nodes.map((c) => {
-      let str = `\`#${c.caseId}\` <t:${dayjs.utc(c.actionTime).unix()}:R> - **${
-        c.action
-      }**`;
-
-      if (c.executorId) {
-        str += ` by <@${c.executorId}>`;
-      }
-
-      str += ` for ${c.reason}`;
-
-      return str;
-    });
-
-    const userEmbed = new EmbedBuilder()
-      .setTitle(
-        t("history.title", {
-          ns: "commands",
-          count: casesStrs.length,
-        })
-      )
+    const userEmbed = buildUserHistoryEmbed(cases, "command")
       .setAuthor({
         name: `${user.username}#${user.discriminator}`,
         iconURL: userFaceURL,
       })
-      .setDescription(casesStrs.join("\n"))
-      .setFields(fields)
-      .setColor(Color.Success);
+      .setFields(fields);
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [userEmbed.toJSON()],
