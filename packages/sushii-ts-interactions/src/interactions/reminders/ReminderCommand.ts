@@ -100,7 +100,12 @@ export default class ReminderCommand extends SlashCommandHandler {
         embeds: [
           new EmbedBuilder()
             .setTitle(
-              t("reminder.add.error.invalid_duration", { ns: "commands" })
+              t("reminder.add.error.invalid_duration_title", { ns: "commands" })
+            )
+            .setDescription(
+              t("reminder.add.error.invalid_duration_description", {
+                ns: "commands",
+              })
             )
             .setColor(Color.Error)
             .toJSON(),

@@ -151,7 +151,8 @@
         "description": "I'll remind you <t:{{expireAtTimestamp}}:R> to {{description}}"
       },
       "error": {
-        "invalid_duration": "Invalid duration! Please provide a duration like `1 hour` or `3 days 1 hour`."
+        "invalid_duration_title": "Invalid duration",
+        "invalid_duration_description": "Please provide a duration like `1 hour` or `3 days 1 hour`."
       }
     },
     "list": {

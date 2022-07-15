@@ -19,7 +19,7 @@ describe("parseDuration", () => {
     },
     {
       durationString: "not a valid duration",
-      expectedDuration: dayjs.duration({ milliseconds: 0 }),
+      expectedDuration: null,
     },
   ])(
     "parseDuration($durationString)",
@@ -30,6 +30,10 @@ describe("parseDuration", () => {
         if (dur === null) {
           expect(dur).toEqual(expectedDuration);
         } else {
+          if (expectedDuration === null) {
+            throw new Error("duration is not null but expected null");
+          }
+
           expect(dur.milliseconds()).toEqual(expectedDuration.milliseconds());
         }
       });

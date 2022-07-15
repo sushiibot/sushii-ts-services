@@ -11,7 +11,7 @@ import parse from "parse-duration";
 export default function parseDuration(s: string): Duration | null {
   const seconds = parse(s, "s");
 
-  if (seconds === 0) {
+  if (seconds === null) {
     return null;
   }
 
