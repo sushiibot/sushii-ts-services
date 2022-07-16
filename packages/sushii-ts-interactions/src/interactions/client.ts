@@ -317,6 +317,7 @@ export default class InteractionClient {
 
       await command.handler(this.context, interaction);
     } catch (e) {
+      Sentry.captureException(e);
       log.error(e, "error running command %s", interaction.data.name);
 
       try {
@@ -324,6 +325,7 @@ export default class InteractionClient {
           content: "uh oh something broke",
         });
       } catch (e2) {
+        Sentry.captureException(e2);
         log.warn(e2, "error replying error %s", interaction.data.name);
       }
     }
@@ -381,6 +383,7 @@ export default class InteractionClient {
         focusedOption.option
       );
     } catch (e) {
+      Sentry.captureException(e);
       log.error(e, "error running autocomplete %s", interaction.data.name);
     }
   }
@@ -436,12 +439,18 @@ export default class InteractionClient {
 
       await command.handler(this.context, interaction);
     } catch (e) {
+      Sentry.captureException(e);
       log.error(e, "error running command %s", interaction.data.name);
 
-      await this.context.REST.interactionReply(interaction, {
-        content: "uh oh something broke",
-        flags: MessageFlags.Ephemeral,
-      });
+      try {
+        await this.context.REST.interactionReply(interaction, {
+          content: "uh oh something broke",
+          flags: MessageFlags.Ephemeral,
+        });
+      } catch (e2) {
+        Sentry.captureException(e2);
+        log.warn(e2, "error replying error %s", interaction.data.name);
+      }
     }
   }
 
@@ -469,6 +478,7 @@ export default class InteractionClient {
     try {
       await modalHandler.handleModalSubmit(this.context, interaction);
     } catch (e) {
+      Sentry.captureException(e);
       log.error(e, "error handling modal %s: %s", interaction.id);
     }
   }
@@ -501,6 +511,7 @@ export default class InteractionClient {
     try {
       await buttonHandler.handleInteraction(this.context, interaction);
     } catch (e) {
+      Sentry.captureException(e);
       log.error(e, "error handling button %s", interaction.id);
     }
   }
@@ -531,6 +542,7 @@ export default class InteractionClient {
     try {
       await selectMenuHandler.handleInteraction(this.context, interaction);
     } catch (e) {
+      Sentry.captureException(e);
       log.error(e, "error handling select menu %s: %o", interaction.id);
     }
   }
