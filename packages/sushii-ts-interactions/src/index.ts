@@ -2,6 +2,7 @@ import "./dayjs";
 import { REST } from "@discordjs/rest";
 import dotenv from "dotenv";
 import { AMQPClient } from "@cloudamqp/amqp-client";
+import Sentry from "@sentry/node";
 import log from "./logger";
 import InteractionClient from "./interactions/client";
 import { Config } from "./model/config";
@@ -11,10 +12,21 @@ import addCommands from "./interactions/commands";
 
 async function main(): Promise<void> {
   dotenv.config();
+  const config = new Config();
+
+  Sentry.init({
+    dsn: config.sentryDsn,
+    environment:
+      process.env.NODE_ENV === "production" ? "production" : "development",
+
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 1.0,
+  });
 
   await initI18next();
 
-  const config = new Config();
   const amqpClient = new AMQPClient(config.amqpUrl);
   const rabbitGatewayClient = new AmqpGateway(amqpClient, config);
   const rest = new REST({
@@ -40,9 +52,14 @@ async function main(): Promise<void> {
   process.on("SIGINT", () => {
     log.info("cleaning up");
 
+    log.info("closing rabbitmq");
     rabbitGatewayClient.stop();
-    log.info("bye");
-    process.exit();
+
+    log.info("closing sentry");
+    Sentry.close(2000).then(() => {
+      log.info("bye");
+      process.exit();
+    });
   });
 }
 

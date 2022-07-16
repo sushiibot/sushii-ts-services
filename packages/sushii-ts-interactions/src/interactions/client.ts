@@ -23,6 +23,7 @@ import {
   isMessageComponentButtonInteraction,
   isMessageComponentSelectMenuInteraction,
 } from "discord-api-types/utils/v10";
+import Sentry from "@sentry/node";
 import { ConfigI } from "../model/config";
 import Context from "../model/context";
 import log from "../logger";
@@ -590,6 +591,8 @@ export default class InteractionClient {
     try {
       this.handleAPIInteraction(interaction.d);
     } catch (e) {
+      Sentry.captureException(e);
+
       log.error(e, "error handling AMQP message %s", interaction.t);
     }
   }

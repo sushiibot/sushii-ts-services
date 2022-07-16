@@ -10,6 +10,8 @@ function requiredEnv(envVar: string): string {
 export interface ConfigI {
   token: string;
   applicationId: string;
+
+  sentryDsn?: string;
   // If using guild commands for testing
   guildIds: string[];
   graphqlApiURL: string;
@@ -25,6 +27,8 @@ export class Config implements ConfigI {
   public token: string;
 
   public applicationId: string;
+
+  public sentryDsn?: string;
 
   public guildIds: string[];
 
@@ -43,6 +47,7 @@ export class Config implements ConfigI {
   constructor() {
     this.token = requiredEnv("DISCORD_TOKEN");
     this.applicationId = requiredEnv("APPLICATION_ID");
+    this.sentryDsn = process.env.SENTRY_DSN;
     this.guildIds = process.env.GUILD_IDS?.split(",") || [];
     this.graphqlApiURL = requiredEnv("SUSHII_GRAPHQL_URL");
     this.graphqlApiToken = requiredEnv("SUSHII_GRAPHQL_TOKEN");

@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "target": "es2016",
+    "sourceMap": true,
+    "inlineSources": true,
+    "sourceRoot": "/",
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

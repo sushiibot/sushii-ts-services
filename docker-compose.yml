@@ -10,6 +10,7 @@ services:
             # Token
             - .sushii_interactions.env
         environment:
+            - NODE_ENV=production
             - DISCORD_TOKEN=$DISCORD_TOKEN
             # sushiiDev application ID, different from bot user id
             - APPLICATION_ID=193163942502072320
