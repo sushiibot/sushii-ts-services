@@ -302,8 +302,12 @@ export default class TagCommand extends SlashCommandHandler {
           new EmbedBuilder()
             .setTitle(t("tag.add.error.failed_title", { ns: "commands" }))
             .setDescription(
-              t("tag.add.error.already_exists_description", { ns: "commands" })
+              t("tag.add.error.already_exists_description", {
+                ns: "commands",
+                tagName,
+              })
             )
+            .setColor(Color.Error)
             .toJSON(),
         ],
       });

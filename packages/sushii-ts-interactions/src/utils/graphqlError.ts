@@ -19,5 +19,5 @@ export function isUniqueViolation(err: unknown): boolean {
     return false;
   }
 
-  return err.response.errors?.at(0)?.extensions?.code === "23505";
+  return err.response.errors?.at(0)?.extensions?.exception.errcode === "23505";
 }
