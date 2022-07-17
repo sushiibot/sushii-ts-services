@@ -24,6 +24,7 @@ import {
   isMessageComponentSelectMenuInteraction,
 } from "discord-api-types/utils/v10";
 import * as Sentry from "@sentry/node";
+import { t } from "i18next";
 import { ConfigI } from "../model/config";
 import Context from "../model/context";
 import log from "../logger";
@@ -37,6 +38,7 @@ import {
 import { isGatewayInteractionCreateDispatch } from "../utils/interactionTypeGuards";
 import ContextMenuHandler from "./handlers/ContextMenuHandler";
 import { AutocompleteOption } from "./handlers/AutocompleteHandler";
+import getInvokerUser from "../utils/interactions";
 
 interface FocusedOption {
   path: string;
@@ -317,12 +319,24 @@ export default class InteractionClient {
 
       await command.handler(this.context, interaction);
     } catch (e) {
-      Sentry.captureException(e);
+      const invoker = getInvokerUser(interaction);
+
+      Sentry.captureException(e, {
+        user: {
+          id: invoker.id,
+          username: invoker.username,
+        },
+        tags: {
+          type: "command",
+          custom_id: interaction.data.name,
+        },
+      });
+
       log.error(e, "error running command %s", interaction.data.name);
 
       try {
         await this.context.REST.interactionReply(interaction, {
-          content: "uh oh something broke",
+          content: t("generic.error.internal"),
         });
       } catch (e2) {
         Sentry.captureException(e2);
@@ -383,7 +397,13 @@ export default class InteractionClient {
         focusedOption.option
       );
     } catch (e) {
-      Sentry.captureException(e);
+      Sentry.captureException(e, {
+        tags: {
+          type: "autocomplete",
+          custom_id: interaction.data.name,
+        },
+      });
+
       log.error(e, "error running autocomplete %s", interaction.data.name);
     }
   }
@@ -439,12 +459,17 @@ export default class InteractionClient {
 
       await command.handler(this.context, interaction);
     } catch (e) {
-      Sentry.captureException(e);
+      Sentry.captureException(e, {
+        tags: {
+          type: "context_menu",
+          name: interaction.data.name,
+        },
+      });
       log.error(e, "error running command %s", interaction.data.name);
 
       try {
         await this.context.REST.interactionReply(interaction, {
-          content: "uh oh something broke",
+          content: t("generic.error.internal"),
           flags: MessageFlags.Ephemeral,
         });
       } catch (e2) {
@@ -478,7 +503,13 @@ export default class InteractionClient {
     try {
       await modalHandler.handleModalSubmit(this.context, interaction);
     } catch (e) {
-      Sentry.captureException(e);
+      Sentry.captureException(e, {
+        tags: {
+          type: "modal",
+          custom_id: interaction.data.custom_id,
+        },
+      });
+
       log.error(e, "error handling modal %s: %s", interaction.id);
     }
   }
@@ -511,7 +542,13 @@ export default class InteractionClient {
     try {
       await buttonHandler.handleInteraction(this.context, interaction);
     } catch (e) {
-      Sentry.captureException(e);
+      Sentry.captureException(e, {
+        tags: {
+          type: "button",
+          custom_id: interaction.data.custom_id,
+        },
+      });
+
       log.error(e, "error handling button %s", interaction.id);
     }
   }
