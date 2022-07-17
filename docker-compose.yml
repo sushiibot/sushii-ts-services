@@ -6,6 +6,7 @@ services:
             context: .
         depends_on:
             - sushii_data
+        restart: unless-stopped
         env_file:
             # Token
             - .sushii_interactions.env
@@ -30,6 +31,7 @@ services:
         build:
             dockerfile: ./dockerfiles/sushii-data/Dockerfile
             context: .
+        restart: unless-stopped
         env_file:
             - .sushii_data.env
         environment:
