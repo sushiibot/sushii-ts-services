@@ -71,7 +71,9 @@
   "tag": {
     "add": {
       "error": {
-        "missing_content_and_attachment": "You must provide either a content or an attachment to add a tag!"
+        "missing_content_and_attachment": "You must provide either a content or an attachment to add a tag!",
+        "failed_title": "Failed to add tag",
+        "already_exists_description": "Tag {{tagName}} already exists, please choose another name."
       },
       "success": {
         "title": "Created a new tag {{tagName}}",
@@ -189,7 +191,7 @@
     "error": {
       "error": "Error",
       "no_permission": "You do not have permission to use this command, sorry! You need the {{permission}} permission.",
-      "internal": "Uh oh! Something went wrong, maybe you can try again?"
+      "internal": "Uh oh! Something went wrong, I'll let my owner know about the error! Maybe you can try again?"
     }
   }
 }

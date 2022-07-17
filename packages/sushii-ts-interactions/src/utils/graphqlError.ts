@@ -13,3 +13,11 @@ export function isNoValuesDeletedError(err: unknown): boolean {
 
   return !!err.response.errors?.at(0)?.message.includes(NO_VALUES_DELETED_MSG);
 }
+
+export function isUniqueViolation(err: unknown): boolean {
+  if (!isGraphQLError(err)) {
+    return false;
+  }
+
+  return err.response.errors?.at(0)?.extensions?.code === "23505";
+}

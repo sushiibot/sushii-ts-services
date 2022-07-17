@@ -9,6 +9,7 @@ import { Tag, TagFilter } from "../../generated/graphql";
 import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
+import { isUniqueViolation } from "../../utils/graphqlError";
 import getInvokerUser from "../../utils/interactions";
 import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
@@ -291,8 +292,23 @@ export default class TagCommand extends SlashCommandHandler {
         },
       });
     } catch (err) {
-      logger.error(err, "failed to createTag");
-      throw err;
+      if (!isUniqueViolation(err)) {
+        logger.error(err, "failed to createTag");
+        throw err;
+      }
+
+      await ctx.REST.interactionReply(interaction, {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(t("tag.add.error.failed_title", { ns: "commands" }))
+            .setDescription(
+              t("tag.add.error.already_exists_description", { ns: "commands" })
+            )
+            .toJSON(),
+        ],
+      });
+
+      return;
     }
 
     const fields = [];
