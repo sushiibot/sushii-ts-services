@@ -23,7 +23,7 @@ import {
   isMessageComponentButtonInteraction,
   isMessageComponentSelectMenuInteraction,
 } from "discord-api-types/utils/v10";
-import Sentry from "@sentry/node";
+import * as Sentry from "@sentry/node";
 import { ConfigI } from "../model/config";
 import Context from "../model/context";
 import log from "../logger";

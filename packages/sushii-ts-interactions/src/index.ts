@@ -2,7 +2,7 @@ import "./dayjs";
 import { REST } from "@discordjs/rest";
 import dotenv from "dotenv";
 import { AMQPClient } from "@cloudamqp/amqp-client";
-import Sentry from "@sentry/node";
+import * as Sentry from "@sentry/node";
 import log from "./logger";
 import InteractionClient from "./interactions/client";
 import { Config } from "./model/config";

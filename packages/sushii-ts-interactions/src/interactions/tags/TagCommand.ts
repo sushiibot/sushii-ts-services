@@ -6,6 +6,7 @@ import {
 } from "discord-api-types/v10";
 import { t } from "i18next";
 import { Tag, TagFilter } from "../../generated/graphql";
+import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import getInvokerUser from "../../utils/interactions";
@@ -277,17 +278,22 @@ export default class TagCommand extends SlashCommandHandler {
 
     const invoker = getInvokerUser(interaction);
 
-    await ctx.sushiiAPI.sdk.createTag({
-      tag: {
-        tagName,
-        content: tagContent,
-        attachment: tagAttachment?.url,
-        created: dayjs().toISOString(),
-        guildId: interaction.guild_id,
-        ownerId: invoker.id,
-        useCount: "0",
-      },
-    });
+    try {
+      await ctx.sushiiAPI.sdk.createTag({
+        tag: {
+          tagName,
+          content: tagContent,
+          attachment: tagAttachment?.url,
+          created: dayjs().toISOString(),
+          guildId: interaction.guild_id,
+          ownerId: invoker.id,
+          useCount: "0",
+        },
+      });
+    } catch (err) {
+      logger.error(err, "failed to createTag");
+      throw err;
+    }
 
     const fields = [];
 
