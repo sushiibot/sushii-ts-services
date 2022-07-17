@@ -64,5 +64,7 @@ async function main(): Promise<void> {
 }
 
 main().catch((e) => {
+  Sentry.captureException(e);
+
   log.error(e, "fatal error rip");
 });
