@@ -27,7 +27,7 @@ import { ConfigI } from "./config";
 export type APIPromiseResult<T> = Promise<Result<T, DiscordAPIError>>;
 
 export default class RESTClient {
-  private rest: REST;
+  public readonly rest: REST;
 
   constructor(private readonly config: ConfigI) {
     this.rest = new REST({

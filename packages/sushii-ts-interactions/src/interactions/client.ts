@@ -1,5 +1,4 @@
 import Collection from "@discordjs/collection";
-import { REST } from "@discordjs/rest";
 import {
   Routes,
   RESTPostAPIApplicationCommandsJSONBody,
@@ -87,11 +86,6 @@ function findFocusedOption(
 
 export default class InteractionClient {
   /**
-   * Discord REST client
-   */
-  private rest: REST;
-
-  /**
    * Bot configuration
    */
   private config: ConfigI;
@@ -133,8 +127,7 @@ export default class InteractionClient {
    */
   private selectMenuHandlers: Collection<string, SelectMenuHandler>;
 
-  constructor(rest: REST, config: ConfigI) {
-    this.rest = rest;
+  constructor(config: ConfigI) {
     this.config = config;
     this.context = new Context(config);
     this.commands = new Collection();
@@ -242,7 +235,7 @@ export default class InteractionClient {
 
     // Actual global commands
     if (this.config.guildIds.length === 0) {
-      await this.rest.put(
+      await this.context.REST.rest.put(
         Routes.applicationCommands(this.config.applicationId),
         { body: this.getCommandsArray() }
       );
@@ -255,7 +248,7 @@ export default class InteractionClient {
     for (const guildId of this.config.guildIds) {
       // Guild only commands for testing
       // eslint-disable-next-line no-await-in-loop
-      const res = await this.rest.put(
+      const res = await this.context.REST.rest.put(
         Routes.applicationGuildCommands(this.config.applicationId, guildId),
         { body: this.getCommandsArray() }
       );
