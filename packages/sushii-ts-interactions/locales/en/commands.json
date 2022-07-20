@@ -134,7 +134,8 @@
     },
     "rename": {
       "error": {
-        "already_exists": "Tag {{tagName}} already exists, please choose another name."
+        "failed_title": "Failed to rename tag",
+        "already_exists_description": "Tag {{tagName}} already exists, please choose another name."
       },
       "success": {
         "title": "Renamed tag {{tagName}}",

@@ -3,6 +3,7 @@ import { isGuildInteraction } from "discord-api-types/utils/v10";
 import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../model/context";
+import Color from "../../utils/colors";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
@@ -46,6 +47,7 @@ export default class AvatarCommand extends SlashCommandHandler {
       )
       .setURL(userFaceURL)
       .setImage(userFaceURL)
+      .setColor(Color.Success)
       .toJSON();
     embeds.push(userEmbed);
 
@@ -73,6 +75,7 @@ export default class AvatarCommand extends SlashCommandHandler {
             )
             .setURL(memberFaceURL)
             .setImage(memberFaceURL)
+            .setColor(Color.Success)
             .toJSON();
 
           embeds.push(memberEmbed);

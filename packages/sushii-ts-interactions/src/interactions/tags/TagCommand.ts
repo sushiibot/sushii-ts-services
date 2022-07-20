@@ -788,10 +788,18 @@ export default class TagCommand extends SlashCommandHandler {
 
     if (tagExists.tagByGuildIdAndTagName) {
       await ctx.REST.interactionReply(interaction, {
-        content: t("tag.rename.error.already_exists", {
-          ns: "commands",
-          tagName,
-        }),
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(t("tag.rename.error.failed_title", { ns: "commands" }))
+            .setDescription(
+              t("tag.rename.error.already_exists_description", {
+                ns: "commands",
+                tagName,
+              })
+            )
+            .setColor(Color.Error)
+            .toJSON(),
+        ],
       });
 
       return;
