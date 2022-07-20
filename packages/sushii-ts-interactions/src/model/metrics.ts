@@ -15,7 +15,7 @@ export default class Metrics {
 
   constructor() {
     const register = new Registry();
-    const prefix = "sushii_ts_worker";
+    const prefix = "sushii_ts_worker_";
 
     collectDefaultMetrics({
       register,
@@ -25,25 +25,29 @@ export default class Metrics {
     this.registry = register;
 
     this.slashCommandsCounter = new client.Counter({
-      name: "slash_command",
-      help: "slash commands",
+      name: `${prefix}slash_command`,
+      help: "Slash commands",
       labelNames: ["command_name"],
+      registers: [register],
     });
 
     this.autocompleteCounter = new client.Counter({
-      name: "autocomplete_interaction",
-      help: "autocomplete interactions",
+      name: `${prefix}autocomplete_interaction`,
+      help: "Autocomplete interactions",
       labelNames: ["command_name"],
+      registers: [register],
     });
 
     this.messageComponentCounter = new client.Counter({
-      name: "message_component_interaction",
-      help: "message component interactions",
+      name: `${prefix}message_component_interaction`,
+      help: "Message component interactions, e.g. buttons",
+      registers: [register],
     });
 
     this.modalCounter = new client.Counter({
-      name: "modal_interaction",
-      help: "modal submit interactions",
+      name: `${prefix}modal_interaction`,
+      help: "Modal submit interactions",
+      registers: [register],
     });
   }
 
