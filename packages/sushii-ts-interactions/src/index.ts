@@ -9,7 +9,7 @@ import AmqpGateway from "./gateway/amqp";
 import initI18next from "./i18next";
 import addCommands from "./interactions/commands";
 import server from "./server";
-import getMetricsRegistry from "./metrics";
+import Metrics from "./model/metrics";
 
 async function main(): Promise<void> {
   dotenv.config();
@@ -30,8 +30,9 @@ async function main(): Promise<void> {
 
   const amqpClient = new AMQPClient(config.amqpUrl);
   const rabbitGatewayClient = new AmqpGateway(amqpClient, config);
+  const metrics = new Metrics();
 
-  const interactionClient = new InteractionClient(config);
+  const interactionClient = new InteractionClient(config, metrics);
   addCommands(interactionClient);
 
   // Register commands to Discord API
@@ -47,8 +48,7 @@ async function main(): Promise<void> {
   // ---------------------------------------------------------------------------
   // Metrics and healthcheck
 
-  const registry = getMetricsRegistry();
-  server(registry, {
+  server(metrics.getRegistry(), {
     onHealthcheck: async () => {
       log.info("healthcheck");
 

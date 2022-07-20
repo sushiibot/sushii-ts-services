@@ -38,6 +38,7 @@ import { isGatewayInteractionCreateDispatch } from "../utils/interactionTypeGuar
 import ContextMenuHandler from "./handlers/ContextMenuHandler";
 import { AutocompleteOption } from "./handlers/AutocompleteHandler";
 import getInvokerUser from "../utils/interactions";
+import Metrics from "../model/metrics";
 
 interface FocusedOption {
   path: string;
@@ -91,6 +92,11 @@ export default class InteractionClient {
   private config: ConfigI;
 
   /**
+   * Prometheus metrics
+   */
+  private metrics: Metrics;
+
+  /**
    * Command context for shared stuff like database connections, API clients, etc.
    */
   private context: Context;
@@ -127,8 +133,9 @@ export default class InteractionClient {
    */
   private selectMenuHandlers: Collection<string, SelectMenuHandler>;
 
-  constructor(config: ConfigI) {
+  constructor(config: ConfigI, metrics: Metrics) {
     this.config = config;
+    this.metrics = metrics;
     this.context = new Context(config);
     this.commands = new Collection();
     this.autocompleteHandlers = new Collection();
@@ -631,7 +638,9 @@ export default class InteractionClient {
     }
 
     try {
+      // Not awaited as we don't need to block
       this.handleAPIInteraction(interaction.d);
+      this.metrics.handleInteraction(interaction.d);
     } catch (e) {
       Sentry.captureException(e);
 
