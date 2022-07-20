@@ -26,7 +26,11 @@
   },
   "timeout": {
     "success": "User timed out",
-    "failure": "Failed to timeout <@{{id}}> ({{id}})"
+    "failure": "Failed to timeout <@{{id}}> ({{id}})",
+    "error": {
+      "invalid_duration_title": "Invalid duration",
+      "invalid_duration_description": "Please provide a duration like `1 hour` or `3 days 1 hour`."
+    }
   },
   "warn": {
     "success": "User warned",

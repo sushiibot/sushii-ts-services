@@ -5,7 +5,9 @@ import {
   APIChatInputApplicationCommandInteraction,
   APIUser,
 } from "discord-api-types/v10";
+import { Err, Ok, Result } from "ts-results";
 import getInvokerUser from "../../utils/interactions";
+import parseDuration from "../../utils/parseDuration";
 import CommandInteractionOptionResolver from "../resolver";
 
 /**
@@ -52,15 +54,17 @@ export default class ModActionData {
     const durationStr = options.getString("duration");
 
     if (durationStr) {
-      this.timeoutDuration = dayjs.duration(durationStr);
+      // This is **required** to exist if it's a timeout command, so it will
+      // only be null if it's an invalid duration.
+      this.timeoutDuration = parseDuration(durationStr) || undefined;
     }
   }
 
-  communicationDisabledUntil(): dayjs.Dayjs {
+  communicationDisabledUntil(): Result<dayjs.Dayjs, string> {
     if (!this.timeoutDuration) {
-      throw new Error("missing timeoutDuration");
+      return Err("Invalid duration");
     }
 
-    return dayjs.utc().add(this.timeoutDuration);
+    return Ok(dayjs.utc().add(this.timeoutDuration));
   }
 }

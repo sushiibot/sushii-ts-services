@@ -72,6 +72,27 @@ export default class TimeoutCommand extends SlashCommandHandler {
     }
 
     const data = new ModActionData(interaction);
+    const comDisabledUntil = data.communicationDisabledUntil();
+
+    if (comDisabledUntil.err) {
+      await ctx.REST.interactionReply(interaction, {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(
+              t("timeout.error.invalid_duration_title", { ns: "commands" })
+            )
+            .setDescription(
+              t("timeout.error.invalid_duration_description", {
+                ns: "commands",
+              })
+            )
+            .setColor(Color.Error)
+            .toJSON(),
+        ],
+      });
+
+      return;
+    }
 
     // User av
     const userFaceURL = ctx.CDN.userFaceURL(data.target);
@@ -118,7 +139,7 @@ export default class TimeoutCommand extends SlashCommandHandler {
     const res = await ctx.REST.timeoutMember(
       interaction.guild_id,
       data.target.id,
-      data.communicationDisabledUntil(),
+      comDisabledUntil.safeUnwrap(),
       data.reason
     );
 
