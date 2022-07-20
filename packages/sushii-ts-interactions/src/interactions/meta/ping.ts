@@ -2,6 +2,7 @@ import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
 import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../model/context";
+import Color from "../../utils/colors";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 
@@ -33,16 +34,22 @@ export default class PingCommand extends SlashCommandHandler {
     });
     const sushiiRestEnd = process.hrtime.bigint();
 
-    const embed = new EmbedBuilder().setTitle(t("ping.title")).setDescription(
-      t("ping.description", {
-        ns: "commands",
-        restMs: ((discordRestEnd - discordRestStart) / BigInt(1e6)).toString(),
-        sushiiApiMs: (
-          (sushiiRestEnd - sushiiRestStart) /
-          BigInt(1e6)
-        ).toString(),
-      })
-    );
+    const embed = new EmbedBuilder()
+      .setTitle(t("ping.title"))
+      .setDescription(
+        t("ping.description", {
+          ns: "commands",
+          restMs: (
+            (discordRestEnd - discordRestStart) /
+            BigInt(1e6)
+          ).toString(),
+          sushiiApiMs: (
+            (sushiiRestEnd - sushiiRestStart) /
+            BigInt(1e6)
+          ).toString(),
+        })
+      )
+      .setColor(Color.Success);
 
     await ctx.REST.interactionEditOriginal(interaction, {
       content: "",
