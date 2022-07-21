@@ -1956,16 +1956,6 @@ export type DeleteRoleMenuByGuildIdAndMenuNameInput = {
   menuName: Scalars['String'];
 };
 
-/** All input for the `deleteRoleMenuByMessageId` mutation. */
-export type DeleteRoleMenuByMessageIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  messageId: Scalars['BigInt'];
-};
-
 /** All input for the `deleteRoleMenu` mutation. */
 export type DeleteRoleMenuInput = {
   /**
@@ -5251,8 +5241,6 @@ export type Mutation = {
   deleteRoleMenu?: Maybe<DeleteRoleMenuPayload>;
   /** Deletes a single `RoleMenu` using a unique key. */
   deleteRoleMenuByGuildIdAndMenuName?: Maybe<DeleteRoleMenuPayload>;
-  /** Deletes a single `RoleMenu` using a unique key. */
-  deleteRoleMenuByMessageId?: Maybe<DeleteRoleMenuPayload>;
   /** Deletes a single `Tag` using its globally unique id. */
   deleteTag?: Maybe<DeleteTagPayload>;
   /** Deletes a single `Tag` using a unique key. */
@@ -5331,8 +5319,6 @@ export type Mutation = {
   updateRoleMenu?: Maybe<UpdateRoleMenuPayload>;
   /** Updates a single `RoleMenu` using a unique key and a patch. */
   updateRoleMenuByGuildIdAndMenuName?: Maybe<UpdateRoleMenuPayload>;
-  /** Updates a single `RoleMenu` using a unique key and a patch. */
-  updateRoleMenuByMessageId?: Maybe<UpdateRoleMenuPayload>;
   /** Updates a single `Tag` using its globally unique id and a patch. */
   updateTag?: Maybe<UpdateTagPayload>;
   /** Updates a single `Tag` using a unique key and a patch. */
@@ -5645,12 +5631,6 @@ export type MutationDeleteRoleMenuByGuildIdAndMenuNameArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteRoleMenuByMessageIdArgs = {
-  input: DeleteRoleMenuByMessageIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTagArgs = {
   input: DeleteTagInput;
 };
@@ -5887,12 +5867,6 @@ export type MutationUpdateRoleMenuArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateRoleMenuByGuildIdAndMenuNameArgs = {
   input: UpdateRoleMenuByGuildIdAndMenuNameInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateRoleMenuByMessageIdArgs = {
-  input: UpdateRoleMenuByMessageIdInput;
 };
 
 
@@ -6703,7 +6677,6 @@ export type Query = Node & {
   /** Reads a single `RoleMenu` using its globally unique `ID`. */
   roleMenu?: Maybe<RoleMenu>;
   roleMenuByGuildIdAndMenuName?: Maybe<RoleMenu>;
-  roleMenuByMessageId?: Maybe<RoleMenu>;
   /** Reads a single `Tag` using its globally unique `ID`. */
   tag?: Maybe<Tag>;
   tagByGuildIdAndTagName?: Maybe<Tag>;
@@ -7190,12 +7163,6 @@ export type QueryRoleMenuByGuildIdAndMenuNameArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryRoleMenuByMessageIdArgs = {
-  messageId: Scalars['BigInt'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
 export type QueryTagArgs = {
   nodeId: Scalars['ID'];
 };
@@ -7306,7 +7273,7 @@ export type RedisGuild = {
   premiumSubscriptionCount?: Maybe<Scalars['Int']>;
   premiumTier: Scalars['Int'];
   presences?: Maybe<Array<Maybe<Scalars['String']>>>;
-  roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+  roles?: Maybe<Array<Maybe<RedisGuildRole>>>;
   rulesChannelId?: Maybe<Scalars['String']>;
   splash?: Maybe<Scalars['String']>;
   systemChannelFlags?: Maybe<Scalars['Int']>;
@@ -7315,6 +7282,27 @@ export type RedisGuild = {
   vanityUrlCode?: Maybe<Scalars['String']>;
   verificationLevel?: Maybe<Scalars['Int']>;
   voiceStates?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type RedisGuildRole = {
+  __typename?: 'RedisGuildRole';
+  color: Scalars['Int'];
+  hoist: Scalars['Boolean'];
+  icon?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  managed: Scalars['Boolean'];
+  mentionable: Scalars['Boolean'];
+  name: Scalars['String'];
+  permissions: Scalars['String'];
+  position: Scalars['Int'];
+  tags?: Maybe<RedisRoleTags>;
+  unicode_emoji?: Maybe<Scalars['String']>;
+};
+
+export type RedisRoleTags = {
+  __typename?: 'RedisRoleTags';
+  bot_id?: Maybe<Scalars['String']>;
+  integration_id?: Maybe<Scalars['String']>;
 };
 
 export type Reminder = Node & {
@@ -7590,14 +7578,13 @@ export enum RemindersOrderBy {
 
 export type RoleMenu = Node & {
   __typename?: 'RoleMenu';
-  channelId: Scalars['BigInt'];
   description?: Maybe<Scalars['String']>;
   guildId: Scalars['BigInt'];
   maxCount?: Maybe<Scalars['Int']>;
   menuName: Scalars['String'];
-  messageId: Scalars['BigInt'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
+  requiredRole?: Maybe<Scalars['BigInt']>;
   roleIds?: Maybe<Array<Maybe<Scalars['BigInt']>>>;
 };
 
@@ -7626,14 +7613,12 @@ export type RoleMenuAggregates = {
 
 export type RoleMenuAverageAggregates = {
   __typename?: 'RoleMenuAverageAggregates';
-  /** Mean average of channelId across the matching connection */
-  channelId?: Maybe<Scalars['BigFloat']>;
   /** Mean average of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
   /** Mean average of maxCount across the matching connection */
   maxCount?: Maybe<Scalars['BigFloat']>;
-  /** Mean average of messageId across the matching connection */
-  messageId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of requiredRole across the matching connection */
+  requiredRole?: Maybe<Scalars['BigFloat']>;
 };
 
 /**
@@ -7641,8 +7626,6 @@ export type RoleMenuAverageAggregates = {
  * for equality and combined with a logical ‘and.’
  */
 export type RoleMenuCondition = {
-  /** Checks for equality with the object’s `channelId` field. */
-  channelId?: InputMaybe<Scalars['BigInt']>;
   /** Checks for equality with the object’s `description` field. */
   description?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `guildId` field. */
@@ -7651,16 +7634,14 @@ export type RoleMenuCondition = {
   maxCount?: InputMaybe<Scalars['Int']>;
   /** Checks for equality with the object’s `menuName` field. */
   menuName?: InputMaybe<Scalars['String']>;
-  /** Checks for equality with the object’s `messageId` field. */
-  messageId?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `requiredRole` field. */
+  requiredRole?: InputMaybe<Scalars['BigInt']>;
   /** Checks for equality with the object’s `roleIds` field. */
   roleIds?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
 };
 
 export type RoleMenuDistinctCountAggregates = {
   __typename?: 'RoleMenuDistinctCountAggregates';
-  /** Distinct count of channelId across the matching connection */
-  channelId?: Maybe<Scalars['BigInt']>;
   /** Distinct count of description across the matching connection */
   description?: Maybe<Scalars['BigInt']>;
   /** Distinct count of guildId across the matching connection */
@@ -7669,8 +7650,8 @@ export type RoleMenuDistinctCountAggregates = {
   maxCount?: Maybe<Scalars['BigInt']>;
   /** Distinct count of menuName across the matching connection */
   menuName?: Maybe<Scalars['BigInt']>;
-  /** Distinct count of messageId across the matching connection */
-  messageId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of requiredRole across the matching connection */
+  requiredRole?: Maybe<Scalars['BigInt']>;
   /** Distinct count of roleIds across the matching connection */
   roleIds?: Maybe<Scalars['BigInt']>;
 };
@@ -7679,8 +7660,6 @@ export type RoleMenuDistinctCountAggregates = {
 export type RoleMenuFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<RoleMenuFilter>>;
-  /** Filter by the object’s `channelId` field. */
-  channelId?: InputMaybe<BigIntFilter>;
   /** Filter by the object’s `description` field. */
   description?: InputMaybe<StringFilter>;
   /** Filter by the object’s `guildId` field. */
@@ -7689,120 +7668,104 @@ export type RoleMenuFilter = {
   maxCount?: InputMaybe<IntFilter>;
   /** Filter by the object’s `menuName` field. */
   menuName?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `messageId` field. */
-  messageId?: InputMaybe<BigIntFilter>;
   /** Negates the expression. */
   not?: InputMaybe<RoleMenuFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<RoleMenuFilter>>;
+  /** Filter by the object’s `requiredRole` field. */
+  requiredRole?: InputMaybe<BigIntFilter>;
   /** Filter by the object’s `roleIds` field. */
   roleIds?: InputMaybe<BigIntListFilter>;
 };
 
 /** An input for mutations affecting `RoleMenu` */
 export type RoleMenuInput = {
-  channelId: Scalars['BigInt'];
   description?: InputMaybe<Scalars['String']>;
   guildId: Scalars['BigInt'];
   maxCount?: InputMaybe<Scalars['Int']>;
   menuName: Scalars['String'];
-  messageId: Scalars['BigInt'];
+  requiredRole?: InputMaybe<Scalars['BigInt']>;
   roleIds?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
 };
 
 export type RoleMenuMaxAggregates = {
   __typename?: 'RoleMenuMaxAggregates';
-  /** Maximum of channelId across the matching connection */
-  channelId?: Maybe<Scalars['BigInt']>;
   /** Maximum of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigInt']>;
   /** Maximum of maxCount across the matching connection */
   maxCount?: Maybe<Scalars['Int']>;
-  /** Maximum of messageId across the matching connection */
-  messageId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of requiredRole across the matching connection */
+  requiredRole?: Maybe<Scalars['BigInt']>;
 };
 
 export type RoleMenuMinAggregates = {
   __typename?: 'RoleMenuMinAggregates';
-  /** Minimum of channelId across the matching connection */
-  channelId?: Maybe<Scalars['BigInt']>;
   /** Minimum of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigInt']>;
   /** Minimum of maxCount across the matching connection */
   maxCount?: Maybe<Scalars['Int']>;
-  /** Minimum of messageId across the matching connection */
-  messageId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of requiredRole across the matching connection */
+  requiredRole?: Maybe<Scalars['BigInt']>;
 };
 
 /** Represents an update to a `RoleMenu`. Fields that are set will be updated. */
 export type RoleMenuPatch = {
-  channelId?: InputMaybe<Scalars['BigInt']>;
   description?: InputMaybe<Scalars['String']>;
   guildId?: InputMaybe<Scalars['BigInt']>;
   maxCount?: InputMaybe<Scalars['Int']>;
   menuName?: InputMaybe<Scalars['String']>;
-  messageId?: InputMaybe<Scalars['BigInt']>;
+  requiredRole?: InputMaybe<Scalars['BigInt']>;
   roleIds?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
 };
 
 export type RoleMenuStddevPopulationAggregates = {
   __typename?: 'RoleMenuStddevPopulationAggregates';
-  /** Population standard deviation of channelId across the matching connection */
-  channelId?: Maybe<Scalars['BigFloat']>;
   /** Population standard deviation of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
   /** Population standard deviation of maxCount across the matching connection */
   maxCount?: Maybe<Scalars['BigFloat']>;
-  /** Population standard deviation of messageId across the matching connection */
-  messageId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of requiredRole across the matching connection */
+  requiredRole?: Maybe<Scalars['BigFloat']>;
 };
 
 export type RoleMenuStddevSampleAggregates = {
   __typename?: 'RoleMenuStddevSampleAggregates';
-  /** Sample standard deviation of channelId across the matching connection */
-  channelId?: Maybe<Scalars['BigFloat']>;
   /** Sample standard deviation of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
   /** Sample standard deviation of maxCount across the matching connection */
   maxCount?: Maybe<Scalars['BigFloat']>;
-  /** Sample standard deviation of messageId across the matching connection */
-  messageId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of requiredRole across the matching connection */
+  requiredRole?: Maybe<Scalars['BigFloat']>;
 };
 
 export type RoleMenuSumAggregates = {
   __typename?: 'RoleMenuSumAggregates';
-  /** Sum of channelId across the matching connection */
-  channelId: Scalars['BigFloat'];
   /** Sum of guildId across the matching connection */
   guildId: Scalars['BigFloat'];
   /** Sum of maxCount across the matching connection */
   maxCount: Scalars['BigInt'];
-  /** Sum of messageId across the matching connection */
-  messageId: Scalars['BigFloat'];
+  /** Sum of requiredRole across the matching connection */
+  requiredRole: Scalars['BigFloat'];
 };
 
 export type RoleMenuVariancePopulationAggregates = {
   __typename?: 'RoleMenuVariancePopulationAggregates';
-  /** Population variance of channelId across the matching connection */
-  channelId?: Maybe<Scalars['BigFloat']>;
   /** Population variance of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
   /** Population variance of maxCount across the matching connection */
   maxCount?: Maybe<Scalars['BigFloat']>;
-  /** Population variance of messageId across the matching connection */
-  messageId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of requiredRole across the matching connection */
+  requiredRole?: Maybe<Scalars['BigFloat']>;
 };
 
 export type RoleMenuVarianceSampleAggregates = {
   __typename?: 'RoleMenuVarianceSampleAggregates';
-  /** Sample variance of channelId across the matching connection */
-  channelId?: Maybe<Scalars['BigFloat']>;
   /** Sample variance of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
   /** Sample variance of maxCount across the matching connection */
   maxCount?: Maybe<Scalars['BigFloat']>;
-  /** Sample variance of messageId across the matching connection */
-  messageId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of requiredRole across the matching connection */
+  requiredRole?: Maybe<Scalars['BigFloat']>;
 };
 
 /** A connection to a list of `RoleMenu` values. */
@@ -7840,26 +7803,24 @@ export type RoleMenusEdge = {
 
 /** Grouping methods for `RoleMenu` for usage during aggregation. */
 export enum RoleMenusGroupBy {
-  ChannelId = 'CHANNEL_ID',
   Description = 'DESCRIPTION',
   GuildId = 'GUILD_ID',
   MaxCount = 'MAX_COUNT',
   MenuName = 'MENU_NAME',
+  RequiredRole = 'REQUIRED_ROLE',
   RoleIds = 'ROLE_IDS'
 }
 
 export type RoleMenusHavingAverageInput = {
-  channelId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
   maxCount?: InputMaybe<HavingIntFilter>;
-  messageId?: InputMaybe<HavingBigintFilter>;
+  requiredRole?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenusHavingDistinctCountInput = {
-  channelId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
   maxCount?: InputMaybe<HavingIntFilter>;
-  messageId?: InputMaybe<HavingBigintFilter>;
+  requiredRole?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Conditions for `RoleMenu` aggregates. */
@@ -7878,58 +7839,49 @@ export type RoleMenusHavingInput = {
 };
 
 export type RoleMenusHavingMaxInput = {
-  channelId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
   maxCount?: InputMaybe<HavingIntFilter>;
-  messageId?: InputMaybe<HavingBigintFilter>;
+  requiredRole?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenusHavingMinInput = {
-  channelId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
   maxCount?: InputMaybe<HavingIntFilter>;
-  messageId?: InputMaybe<HavingBigintFilter>;
+  requiredRole?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenusHavingStddevPopulationInput = {
-  channelId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
   maxCount?: InputMaybe<HavingIntFilter>;
-  messageId?: InputMaybe<HavingBigintFilter>;
+  requiredRole?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenusHavingStddevSampleInput = {
-  channelId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
   maxCount?: InputMaybe<HavingIntFilter>;
-  messageId?: InputMaybe<HavingBigintFilter>;
+  requiredRole?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenusHavingSumInput = {
-  channelId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
   maxCount?: InputMaybe<HavingIntFilter>;
-  messageId?: InputMaybe<HavingBigintFilter>;
+  requiredRole?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenusHavingVariancePopulationInput = {
-  channelId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
   maxCount?: InputMaybe<HavingIntFilter>;
-  messageId?: InputMaybe<HavingBigintFilter>;
+  requiredRole?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenusHavingVarianceSampleInput = {
-  channelId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
   maxCount?: InputMaybe<HavingIntFilter>;
-  messageId?: InputMaybe<HavingBigintFilter>;
+  requiredRole?: InputMaybe<HavingBigintFilter>;
 };
 
 /** Methods to use when ordering `RoleMenu`. */
 export enum RoleMenusOrderBy {
-  ChannelIdAsc = 'CHANNEL_ID_ASC',
-  ChannelIdDesc = 'CHANNEL_ID_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
   DescriptionDesc = 'DESCRIPTION_DESC',
   GuildIdAsc = 'GUILD_ID_ASC',
@@ -7938,11 +7890,11 @@ export enum RoleMenusOrderBy {
   MaxCountDesc = 'MAX_COUNT_DESC',
   MenuNameAsc = 'MENU_NAME_ASC',
   MenuNameDesc = 'MENU_NAME_DESC',
-  MessageIdAsc = 'MESSAGE_ID_ASC',
-  MessageIdDesc = 'MESSAGE_ID_DESC',
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RequiredRoleAsc = 'REQUIRED_ROLE_ASC',
+  RequiredRoleDesc = 'REQUIRED_ROLE_DESC',
   RoleIdsAsc = 'ROLE_IDS_ASC',
   RoleIdsDesc = 'ROLE_IDS_DESC'
 }
@@ -9109,18 +9061,6 @@ export type UpdateRoleMenuByGuildIdAndMenuNameInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   guildId: Scalars['BigInt'];
   menuName: Scalars['String'];
-  /** An object where the defined keys will be set on the `RoleMenu` being updated. */
-  roleMenuPatch: RoleMenuPatch;
-};
-
-/** All input for the `updateRoleMenuByMessageId` mutation. */
-export type UpdateRoleMenuByMessageIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  messageId: Scalars['BigInt'];
   /** An object where the defined keys will be set on the `RoleMenu` being updated. */
   roleMenuPatch: RoleMenuPatch;
 };
@@ -11203,7 +11143,6 @@ export type ResolversTypes = {
   DeleteReminderInput: DeleteReminderInput;
   DeleteReminderPayload: ResolverTypeWrapper<DeleteReminderPayload>;
   DeleteRoleMenuByGuildIdAndMenuNameInput: DeleteRoleMenuByGuildIdAndMenuNameInput;
-  DeleteRoleMenuByMessageIdInput: DeleteRoleMenuByMessageIdInput;
   DeleteRoleMenuInput: DeleteRoleMenuInput;
   DeleteRoleMenuPayload: ResolverTypeWrapper<DeleteRoleMenuPayload>;
   DeleteTagByGuildIdAndTagNameInput: DeleteTagByGuildIdAndTagNameInput;
@@ -11496,6 +11435,8 @@ export type ResolversTypes = {
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
   RedisGuild: ResolverTypeWrapper<RedisGuild>;
+  RedisGuildRole: ResolverTypeWrapper<RedisGuildRole>;
+  RedisRoleTags: ResolverTypeWrapper<RedisRoleTags>;
   Reminder: ResolverTypeWrapper<Reminder>;
   ReminderAggregates: ResolverTypeWrapper<ReminderAggregates>;
   ReminderAverageAggregates: ResolverTypeWrapper<ReminderAverageAggregates>;
@@ -11631,7 +11572,6 @@ export type ResolversTypes = {
   UpdateReminderInput: UpdateReminderInput;
   UpdateReminderPayload: ResolverTypeWrapper<UpdateReminderPayload>;
   UpdateRoleMenuByGuildIdAndMenuNameInput: UpdateRoleMenuByGuildIdAndMenuNameInput;
-  UpdateRoleMenuByMessageIdInput: UpdateRoleMenuByMessageIdInput;
   UpdateRoleMenuInput: UpdateRoleMenuInput;
   UpdateRoleMenuPayload: ResolverTypeWrapper<UpdateRoleMenuPayload>;
   UpdateTagByGuildIdAndTagNameInput: UpdateTagByGuildIdAndTagNameInput;
@@ -11896,7 +11836,6 @@ export type ResolversParentTypes = {
   DeleteReminderInput: DeleteReminderInput;
   DeleteReminderPayload: DeleteReminderPayload;
   DeleteRoleMenuByGuildIdAndMenuNameInput: DeleteRoleMenuByGuildIdAndMenuNameInput;
-  DeleteRoleMenuByMessageIdInput: DeleteRoleMenuByMessageIdInput;
   DeleteRoleMenuInput: DeleteRoleMenuInput;
   DeleteRoleMenuPayload: DeleteRoleMenuPayload;
   DeleteTagByGuildIdAndTagNameInput: DeleteTagByGuildIdAndTagNameInput;
@@ -12168,6 +12107,8 @@ export type ResolversParentTypes = {
   PageInfo: PageInfo;
   Query: {};
   RedisGuild: RedisGuild;
+  RedisGuildRole: RedisGuildRole;
+  RedisRoleTags: RedisRoleTags;
   Reminder: Reminder;
   ReminderAggregates: ReminderAggregates;
   ReminderAverageAggregates: ReminderAverageAggregates;
@@ -12297,7 +12238,6 @@ export type ResolversParentTypes = {
   UpdateReminderInput: UpdateReminderInput;
   UpdateReminderPayload: UpdateReminderPayload;
   UpdateRoleMenuByGuildIdAndMenuNameInput: UpdateRoleMenuByGuildIdAndMenuNameInput;
-  UpdateRoleMenuByMessageIdInput: UpdateRoleMenuByMessageIdInput;
   UpdateRoleMenuInput: UpdateRoleMenuInput;
   UpdateRoleMenuPayload: UpdateRoleMenuPayload;
   UpdateTagByGuildIdAndTagNameInput: UpdateTagByGuildIdAndTagNameInput;
@@ -13795,7 +13735,6 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteReminderByUserIdAndSetAt?: Resolver<Maybe<ResolversTypes['DeleteReminderPayload']>, ParentType, ContextType, RequireFields<MutationDeleteReminderByUserIdAndSetAtArgs, 'input'>>;
   deleteRoleMenu?: Resolver<Maybe<ResolversTypes['DeleteRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoleMenuArgs, 'input'>>;
   deleteRoleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['DeleteRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoleMenuByGuildIdAndMenuNameArgs, 'input'>>;
-  deleteRoleMenuByMessageId?: Resolver<Maybe<ResolversTypes['DeleteRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoleMenuByMessageIdArgs, 'input'>>;
   deleteTag?: Resolver<Maybe<ResolversTypes['DeleteTagPayload']>, ParentType, ContextType, RequireFields<MutationDeleteTagArgs, 'input'>>;
   deleteTagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['DeleteTagPayload']>, ParentType, ContextType, RequireFields<MutationDeleteTagByGuildIdAndTagNameArgs, 'input'>>;
   deleteUser?: Resolver<Maybe<ResolversTypes['DeleteUserPayload']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'input'>>;
@@ -13836,7 +13775,6 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateReminderByUserIdAndSetAt?: Resolver<Maybe<ResolversTypes['UpdateReminderPayload']>, ParentType, ContextType, RequireFields<MutationUpdateReminderByUserIdAndSetAtArgs, 'input'>>;
   updateRoleMenu?: Resolver<Maybe<ResolversTypes['UpdateRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationUpdateRoleMenuArgs, 'input'>>;
   updateRoleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['UpdateRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationUpdateRoleMenuByGuildIdAndMenuNameArgs, 'input'>>;
-  updateRoleMenuByMessageId?: Resolver<Maybe<ResolversTypes['UpdateRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationUpdateRoleMenuByMessageIdArgs, 'input'>>;
   updateTag?: Resolver<Maybe<ResolversTypes['UpdateTagPayload']>, ParentType, ContextType, RequireFields<MutationUpdateTagArgs, 'input'>>;
   updateTagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['UpdateTagPayload']>, ParentType, ContextType, RequireFields<MutationUpdateTagByGuildIdAndTagNameArgs, 'input'>>;
   updateUser?: Resolver<Maybe<ResolversTypes['UpdateUserPayload']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'input'>>;
@@ -14136,7 +14074,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   reminderByUserIdAndSetAt?: Resolver<Maybe<ResolversTypes['Reminder']>, ParentType, ContextType, RequireFields<QueryReminderByUserIdAndSetAtArgs, 'setAt' | 'userId'>>;
   roleMenu?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuArgs, 'nodeId'>>;
   roleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuByGuildIdAndMenuNameArgs, 'guildId' | 'menuName'>>;
-  roleMenuByMessageId?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuByMessageIdArgs, 'messageId'>>;
   tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'nodeId'>>;
   tagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagByGuildIdAndTagNameArgs, 'guildId' | 'tagName'>>;
   timeframeUserLevels?: Resolver<Maybe<ResolversTypes['TimeframeUserLevelsConnection']>, ParentType, ContextType, Partial<QueryTimeframeUserLevelsArgs>>;
@@ -14179,7 +14116,7 @@ export type RedisGuildResolvers<ContextType = any, ParentType extends ResolversP
   premiumSubscriptionCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   premiumTier?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   presences?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['RedisGuildRole']>>>, ParentType, ContextType>;
   rulesChannelId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   splash?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   systemChannelFlags?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -14188,6 +14125,27 @@ export type RedisGuildResolvers<ContextType = any, ParentType extends ResolversP
   vanityUrlCode?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   verificationLevel?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   voiceStates?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RedisGuildRoleResolvers<ContextType = any, ParentType extends ResolversParentTypes['RedisGuildRole'] = ResolversParentTypes['RedisGuildRole']> = {
+  color?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  hoist?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  icon?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  managed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  mentionable?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  permissions?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  position?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  tags?: Resolver<Maybe<ResolversTypes['RedisRoleTags']>, ParentType, ContextType>;
+  unicode_emoji?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RedisRoleTagsResolvers<ContextType = any, ParentType extends ResolversParentTypes['RedisRoleTags'] = ResolversParentTypes['RedisRoleTags']> = {
+  bot_id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  integration_id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -14279,13 +14237,12 @@ export type RemindersEdgeResolvers<ContextType = any, ParentType extends Resolve
 };
 
 export type RoleMenuResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenu'] = ResolversParentTypes['RoleMenu']> = {
-  channelId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   maxCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   menuName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  messageId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  requiredRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   roleIds?: Resolver<Maybe<Array<Maybe<ResolversTypes['BigInt']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -14305,77 +14262,68 @@ export type RoleMenuAggregatesResolvers<ContextType = any, ParentType extends Re
 };
 
 export type RoleMenuAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuAverageAggregates'] = ResolversParentTypes['RoleMenuAverageAggregates']> = {
-  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   maxCount?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  requiredRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuDistinctCountAggregates'] = ResolversParentTypes['RoleMenuDistinctCountAggregates']> = {
-  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   maxCount?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   menuName?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  messageId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  requiredRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   roleIds?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuMaxAggregates'] = ResolversParentTypes['RoleMenuMaxAggregates']> = {
-  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   maxCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  messageId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  requiredRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuMinAggregates'] = ResolversParentTypes['RoleMenuMinAggregates']> = {
-  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   maxCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  messageId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  requiredRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuStddevPopulationAggregates'] = ResolversParentTypes['RoleMenuStddevPopulationAggregates']> = {
-  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   maxCount?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  requiredRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuStddevSampleAggregates'] = ResolversParentTypes['RoleMenuStddevSampleAggregates']> = {
-  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   maxCount?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  requiredRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuSumAggregates'] = ResolversParentTypes['RoleMenuSumAggregates']> = {
-  channelId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   maxCount?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  messageId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  requiredRole?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuVariancePopulationAggregates'] = ResolversParentTypes['RoleMenuVariancePopulationAggregates']> = {
-  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   maxCount?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  requiredRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuVarianceSampleAggregates'] = ResolversParentTypes['RoleMenuVarianceSampleAggregates']> = {
-  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   maxCount?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  messageId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  requiredRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -15355,6 +15303,8 @@ export type Resolvers<ContextType = any> = {
   PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RedisGuild?: RedisGuildResolvers<ContextType>;
+  RedisGuildRole?: RedisGuildRoleResolvers<ContextType>;
+  RedisRoleTags?: RedisRoleTagsResolvers<ContextType>;
   Reminder?: ReminderResolvers<ContextType>;
   ReminderAggregates?: ReminderAggregatesResolvers<ContextType>;
   ReminderAverageAggregates?: ReminderAverageAggregatesResolvers<ContextType>;
@@ -15487,7 +15437,7 @@ export type GetRedisGuildQueryVariables = Exact<{
 }>;
 
 
-export type GetRedisGuildQuery = { __typename?: 'Query', redisGuildByGuildId?: { __typename?: 'RedisGuild', afkChannelId?: string | null, afkTimeout: number, applicationId?: string | null, banner?: string | null, channels?: Array<string | null> | null, defaultMessageNotifications?: number | null, description?: string | null, discoverySplash?: string | null, emojis?: Array<string | null> | null, explicitContentFilter?: number | null, features?: Array<string | null> | null, icon?: string | null, id: string, joinedAt?: string | null, large?: boolean | null, maxMembers?: number | null, maxVideoChannelUsers?: number | null, memberCount?: number | null, members?: Array<string | null> | null, mfaLevel?: number | null, name: string, nsfwLevel: number, ownerId: string, preferredLocale?: string | null, premiumSubscriptionCount?: number | null, premiumTier: number, presences?: Array<string | null> | null, roles?: Array<string | null> | null, rulesChannelId?: string | null, splash?: string | null, systemChannelFlags?: number | null, systemChannelId?: string | null, unavailable?: boolean | null, vanityUrlCode?: string | null, verificationLevel?: number | null, voiceStates?: Array<string | null> | null } | null };
+export type GetRedisGuildQuery = { __typename?: 'Query', redisGuildByGuildId?: { __typename?: 'RedisGuild', afkChannelId?: string | null, afkTimeout: number, applicationId?: string | null, banner?: string | null, channels?: Array<string | null> | null, defaultMessageNotifications?: number | null, description?: string | null, discoverySplash?: string | null, emojis?: Array<string | null> | null, explicitContentFilter?: number | null, features?: Array<string | null> | null, icon?: string | null, id: string, joinedAt?: string | null, large?: boolean | null, maxMembers?: number | null, maxVideoChannelUsers?: number | null, memberCount?: number | null, members?: Array<string | null> | null, mfaLevel?: number | null, name: string, nsfwLevel: number, ownerId: string, preferredLocale?: string | null, premiumSubscriptionCount?: number | null, premiumTier: number, presences?: Array<string | null> | null, rulesChannelId?: string | null, splash?: string | null, systemChannelFlags?: number | null, systemChannelId?: string | null, unavailable?: boolean | null, vanityUrlCode?: string | null, verificationLevel?: number | null, voiceStates?: Array<string | null> | null, roles?: Array<{ __typename?: 'RedisGuildRole', id: string, color: number, hoist: boolean, icon?: string | null, managed: boolean, mentionable: boolean, position: number, name: string, permissions: string, unicode_emoji?: string | null } | null> | null } | null };
 
 export type GuildConfigByIdQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -15609,7 +15559,7 @@ export type CreateRoleMenuMutationVariables = Exact<{
 }>;
 
 
-export type CreateRoleMenuMutation = { __typename?: 'Mutation', createRoleMenu?: { __typename?: 'CreateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, channelId: string, messageId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null } | null } | null };
+export type CreateRoleMenuMutation = { __typename?: 'Mutation', createRoleMenu?: { __typename?: 'CreateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null } | null } | null };
 
 export type GetRoleMenuQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -15617,17 +15567,18 @@ export type GetRoleMenuQueryVariables = Exact<{
 }>;
 
 
-export type GetRoleMenuQuery = { __typename?: 'Query', roleMenuByGuildIdAndMenuName?: { __typename?: 'RoleMenu', guildId: string, channelId: string, messageId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null } | null };
+export type GetRoleMenuQuery = { __typename?: 'Query', roleMenuByGuildIdAndMenuName?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null } | null };
 
-export type RoleMenuDataFragment = { __typename?: 'RoleMenu', guildId: string, channelId: string, messageId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null };
+export type RoleMenuDataFragment = { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null };
 
 export type UpdateRoleMenuMutationVariables = Exact<{
-  messageId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+  menuName: Scalars['String'];
   roleMenuPatch: RoleMenuPatch;
 }>;
 
 
-export type UpdateRoleMenuMutation = { __typename?: 'Mutation', updateRoleMenuByMessageId?: { __typename?: 'UpdateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, channelId: string, messageId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null } | null } | null };
+export type UpdateRoleMenuMutation = { __typename?: 'Mutation', updateRoleMenuByGuildIdAndMenuName?: { __typename?: 'UpdateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null } | null } | null };
 
 export type CreateTagMutationVariables = Exact<{
   tag: TagInput;
@@ -15798,12 +15749,11 @@ export const ReminderDataFragmentDoc = gql`
 export const RoleMenuDataFragmentDoc = gql`
     fragment RoleMenuData on RoleMenu {
   guildId
-  channelId
-  messageId
   menuName
   description
   maxCount
   roleIds
+  requiredRole
 }
     `;
 export const TagDataFragmentDoc = gql`
@@ -15870,7 +15820,18 @@ export const GetRedisGuildDocument = gql`
     premiumSubscriptionCount
     premiumTier
     presences
-    roles
+    roles {
+      id
+      color
+      hoist
+      icon
+      managed
+      mentionable
+      position
+      name
+      permissions
+      unicode_emoji
+    }
     rulesChannelId
     splash
     systemChannelFlags
@@ -16022,9 +15983,9 @@ export const GetRoleMenuDocument = gql`
 }
     ${RoleMenuDataFragmentDoc}`;
 export const UpdateRoleMenuDocument = gql`
-    mutation updateRoleMenu($messageId: BigInt!, $roleMenuPatch: RoleMenuPatch!) {
-  updateRoleMenuByMessageId(
-    input: {roleMenuPatch: $roleMenuPatch, messageId: $messageId}
+    mutation updateRoleMenu($guildId: BigInt!, $menuName: String!, $roleMenuPatch: RoleMenuPatch!) {
+  updateRoleMenuByGuildIdAndMenuName(
+    input: {guildId: $guildId, menuName: $menuName, roleMenuPatch: $roleMenuPatch}
   ) {
     roleMenu {
       ...RoleMenuData

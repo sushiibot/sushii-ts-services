@@ -9244,45 +9244,6 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "DeleteRoleMenuByMessageIdInput",
-        "description": "All input for the `deleteRoleMenuByMessageId` mutation.",
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "clientMutationId",
-            "description": "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client.",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "messageId",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
         "name": "DeleteRoleMenuInput",
         "description": "All input for the `deleteRoleMenu` mutation.",
         "fields": null,
@@ -31039,35 +31000,6 @@
             "deprecationReason": null
           },
           {
-            "name": "deleteRoleMenuByMessageId",
-            "description": "Deletes a single `RoleMenu` using a unique key.",
-            "args": [
-              {
-                "name": "input",
-                "description": "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.",
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "DeleteRoleMenuByMessageIdInput",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "OBJECT",
-              "name": "DeleteRoleMenuPayload",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "deleteTag",
             "description": "Deletes a single `Tag` using its globally unique id.",
             "args": [
@@ -32211,35 +32143,6 @@
                   "ofType": {
                     "kind": "INPUT_OBJECT",
                     "name": "UpdateRoleMenuByGuildIdAndMenuNameInput",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "OBJECT",
-              "name": "UpdateRoleMenuPayload",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "updateRoleMenuByMessageId",
-            "description": "Updates a single `RoleMenu` using a unique key and a patch.",
-            "args": [
-              {
-                "name": "input",
-                "description": "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.",
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "UpdateRoleMenuByMessageIdInput",
                     "ofType": null
                   }
                 },
@@ -40277,35 +40180,6 @@
             "deprecationReason": null
           },
           {
-            "name": "roleMenuByMessageId",
-            "description": null,
-            "args": [
-              {
-                "name": "messageId",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "BigInt",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "OBJECT",
-              "name": "RoleMenu",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "tag",
             "description": "Reads a single `Tag` using its globally unique `ID`.",
             "args": [
@@ -41190,8 +41064,8 @@
               "kind": "LIST",
               "name": null,
               "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
+                "kind": "OBJECT",
+                "name": "RedisGuildRole",
                 "ofType": null
               }
             },
@@ -41294,6 +41168,216 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "RedisGuildRole",
+        "description": null,
+        "fields": [
+          {
+            "name": "color",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "hoist",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "icon",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "managed",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "mentionable",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "permissions",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "tags",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "RedisRoleTags",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "unicode_emoji",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "RedisRoleTags",
+        "description": null,
+        "fields": [
+          {
+            "name": "bot_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "integration_id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -43014,22 +43098,6 @@
         "description": null,
         "fields": [
           {
-            "name": "channelId",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "description",
             "description": null,
             "args": [],
@@ -43086,22 +43154,6 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "nodeId",
             "description": "A globally unique identifier. Can be used in various places throughout the system to identify this single value.",
             "args": [],
@@ -43113,6 +43165,18 @@
                 "name": "ID",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "requiredRole",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "BigInt",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -43290,18 +43354,6 @@
         "description": null,
         "fields": [
           {
-            "name": "channelId",
-            "description": "Mean average of channelId across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "guildId",
             "description": "Mean average of guildId across the matching connection",
             "args": [],
@@ -43326,8 +43378,8 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
-            "description": "Mean average of messageId across the matching connection",
+            "name": "requiredRole",
+            "description": "Mean average of requiredRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -43349,18 +43401,6 @@
         "description": "A condition to be used against `RoleMenu` object types. All fields are tested\nfor equality and combined with a logical ‘and.’",
         "fields": null,
         "inputFields": [
-          {
-            "name": "channelId",
-            "description": "Checks for equality with the object’s `channelId` field.",
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "description",
             "description": "Checks for equality with the object’s `description` field.",
@@ -43410,8 +43450,8 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
-            "description": "Checks for equality with the object’s `messageId` field.",
+            "name": "requiredRole",
+            "description": "Checks for equality with the object’s `requiredRole` field.",
             "type": {
               "kind": "SCALAR",
               "name": "BigInt",
@@ -43447,18 +43487,6 @@
         "name": "RoleMenuDistinctCountAggregates",
         "description": null,
         "fields": [
-          {
-            "name": "channelId",
-            "description": "Distinct count of channelId across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "description",
             "description": "Distinct count of description across the matching connection",
@@ -43508,8 +43536,8 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
-            "description": "Distinct count of messageId across the matching connection",
+            "name": "requiredRole",
+            "description": "Distinct count of requiredRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -43564,18 +43592,6 @@
             "deprecationReason": null
           },
           {
-            "name": "channelId",
-            "description": "Filter by the object’s `channelId` field.",
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "BigIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "description",
             "description": "Filter by the object’s `description` field.",
             "type": {
@@ -43624,18 +43640,6 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
-            "description": "Filter by the object’s `messageId` field.",
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "BigIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "not",
             "description": "Negates the expression.",
             "type": {
@@ -43668,6 +43672,18 @@
             "deprecationReason": null
           },
           {
+            "name": "requiredRole",
+            "description": "Filter by the object’s `requiredRole` field.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "BigIntFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleIds",
             "description": "Filter by the object’s `roleIds` field.",
             "type": {
@@ -43690,22 +43706,6 @@
         "description": "An input for mutations affecting `RoleMenu`",
         "fields": null,
         "inputFields": [
-          {
-            "name": "channelId",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "description",
             "description": null,
@@ -43763,16 +43763,12 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
+            "name": "requiredRole",
             "description": null,
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "BigInt",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -43805,18 +43801,6 @@
         "description": null,
         "fields": [
           {
-            "name": "channelId",
-            "description": "Maximum of channelId across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "guildId",
             "description": "Maximum of guildId across the matching connection",
             "args": [],
@@ -43841,8 +43825,8 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
-            "description": "Maximum of messageId across the matching connection",
+            "name": "requiredRole",
+            "description": "Maximum of requiredRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -43863,18 +43847,6 @@
         "name": "RoleMenuMinAggregates",
         "description": null,
         "fields": [
-          {
-            "name": "channelId",
-            "description": "Minimum of channelId across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "guildId",
             "description": "Minimum of guildId across the matching connection",
@@ -43900,8 +43872,8 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
-            "description": "Minimum of messageId across the matching connection",
+            "name": "requiredRole",
+            "description": "Minimum of requiredRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -43923,18 +43895,6 @@
         "description": "Represents an update to a `RoleMenu`. Fields that are set will be updated.",
         "fields": null,
         "inputFields": [
-          {
-            "name": "channelId",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "description",
             "description": null,
@@ -43984,7 +43944,7 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
+            "name": "requiredRole",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -44022,18 +43982,6 @@
         "description": null,
         "fields": [
           {
-            "name": "channelId",
-            "description": "Population standard deviation of channelId across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "guildId",
             "description": "Population standard deviation of guildId across the matching connection",
             "args": [],
@@ -44058,8 +44006,8 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
-            "description": "Population standard deviation of messageId across the matching connection",
+            "name": "requiredRole",
+            "description": "Population standard deviation of requiredRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -44080,18 +44028,6 @@
         "name": "RoleMenuStddevSampleAggregates",
         "description": null,
         "fields": [
-          {
-            "name": "channelId",
-            "description": "Sample standard deviation of channelId across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "guildId",
             "description": "Sample standard deviation of guildId across the matching connection",
@@ -44117,8 +44053,8 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
-            "description": "Sample standard deviation of messageId across the matching connection",
+            "name": "requiredRole",
+            "description": "Sample standard deviation of requiredRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -44139,22 +44075,6 @@
         "name": "RoleMenuSumAggregates",
         "description": null,
         "fields": [
-          {
-            "name": "channelId",
-            "description": "Sum of channelId across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "BigFloat",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "guildId",
             "description": "Sum of guildId across the matching connection",
@@ -44188,8 +44108,8 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
-            "description": "Sum of messageId across the matching connection",
+            "name": "requiredRole",
+            "description": "Sum of requiredRole across the matching connection",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -44215,18 +44135,6 @@
         "description": null,
         "fields": [
           {
-            "name": "channelId",
-            "description": "Population variance of channelId across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "guildId",
             "description": "Population variance of guildId across the matching connection",
             "args": [],
@@ -44251,8 +44159,8 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
-            "description": "Population variance of messageId across the matching connection",
+            "name": "requiredRole",
+            "description": "Population variance of requiredRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -44273,18 +44181,6 @@
         "name": "RoleMenuVarianceSampleAggregates",
         "description": null,
         "fields": [
-          {
-            "name": "channelId",
-            "description": "Sample variance of channelId across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "guildId",
             "description": "Sample variance of guildId across the matching connection",
@@ -44310,8 +44206,8 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
-            "description": "Sample variance of messageId across the matching connection",
+            "name": "requiredRole",
+            "description": "Sample variance of requiredRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -44535,12 +44431,6 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "CHANNEL_ID",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "DESCRIPTION",
             "description": null,
             "isDeprecated": false,
@@ -44565,6 +44455,12 @@
             "deprecationReason": null
           },
           {
+            "name": "REQUIRED_ROLE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ROLE_IDS",
             "description": null,
             "isDeprecated": false,
@@ -44579,18 +44475,6 @@
         "description": null,
         "fields": null,
         "inputFields": [
-          {
-            "name": "channelId",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "guildId",
             "description": null,
@@ -44616,7 +44500,7 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
+            "name": "requiredRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -44639,18 +44523,6 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "channelId",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "guildId",
             "description": null,
             "type": {
@@ -44675,7 +44547,7 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
+            "name": "requiredRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -44857,18 +44729,6 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "channelId",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "guildId",
             "description": null,
             "type": {
@@ -44893,7 +44753,7 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
+            "name": "requiredRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -44916,18 +44776,6 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "channelId",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "guildId",
             "description": null,
             "type": {
@@ -44952,7 +44800,7 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
+            "name": "requiredRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -44975,18 +44823,6 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "channelId",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "guildId",
             "description": null,
             "type": {
@@ -45011,7 +44847,7 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
+            "name": "requiredRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -45034,18 +44870,6 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "channelId",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "guildId",
             "description": null,
             "type": {
@@ -45070,7 +44894,7 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
+            "name": "requiredRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -45093,18 +44917,6 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "channelId",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "guildId",
             "description": null,
             "type": {
@@ -45129,7 +44941,7 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
+            "name": "requiredRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -45152,18 +44964,6 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "channelId",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "guildId",
             "description": null,
             "type": {
@@ -45188,7 +44988,7 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
+            "name": "requiredRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -45211,18 +45011,6 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "channelId",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "guildId",
             "description": null,
             "type": {
@@ -45247,7 +45035,7 @@
             "deprecationReason": null
           },
           {
-            "name": "messageId",
+            "name": "requiredRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -45271,18 +45059,6 @@
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
-          {
-            "name": "CHANNEL_ID_ASC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "CHANNEL_ID_DESC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "DESCRIPTION_ASC",
             "description": null,
@@ -45332,18 +45108,6 @@
             "deprecationReason": null
           },
           {
-            "name": "MESSAGE_ID_ASC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "MESSAGE_ID_DESC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "NATURAL",
             "description": null,
             "isDeprecated": false,
@@ -45357,6 +45121,18 @@
           },
           {
             "name": "PRIMARY_KEY_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "REQUIRED_ROLE_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "REQUIRED_ROLE_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -51577,61 +51353,6 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "String",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "roleMenuPatch",
-            "description": "An object where the defined keys will be set on the `RoleMenu` being updated.",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "RoleMenuPatch",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "UpdateRoleMenuByMessageIdInput",
-        "description": "All input for the `updateRoleMenuByMessageId` mutation.",
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "clientMutationId",
-            "description": "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client.",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "messageId",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "BigInt",
                 "ofType": null
               }
             },

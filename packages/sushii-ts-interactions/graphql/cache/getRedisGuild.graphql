@@ -27,7 +27,18 @@ query getRedisGuild($guild_id: BigInt!) {
     premiumSubscriptionCount
     premiumTier
     presences
-    roles
+    roles {
+      id
+      color
+      hoist
+      icon
+      managed
+      mentionable
+      position
+      name
+      permissions
+      unicode_emoji
+    }
     rulesChannelId
     splash
     systemChannelFlags
