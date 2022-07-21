@@ -196,7 +196,8 @@
     "error": {
       "error": "Error",
       "no_permission": "You do not have permission to use this command, sorry! You need the {{permission}} permission.",
-      "internal": "Uh oh! Something went wrong, I'll let my owner know about the error! Maybe you can try again?"
+      "internal": "Uh oh! Something went wrong, I'll let my owner know about the error! Maybe you can try again?",
+      "Message": "Uh oh! Something went wrong: {{message}}"
     }
   }
 }
