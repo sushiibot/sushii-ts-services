@@ -19,7 +19,6 @@ import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
 import { interactionReplyErrorMessage } from "../responses/error";
-import { getRoleMenuID } from "./ids";
 
 const RE_EMOJI = /(<a?)?:(w+):(d{18}>)/;
 
@@ -244,10 +243,9 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     // Save to DB
     await ctx.sushiiAPI.sdk.createRoleMenu({
       roleMenu: {
-        channelId: interaction.channel_id,
         guildId: interaction.guild_id,
-        messageId: message.safeUnwrap().id,
         menuName: name,
+        requiredRole: requiredRole?.id,
         description,
         maxCount: maxRoles,
       },
@@ -414,11 +412,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return null;
     }
 
-    const msg = await ctx.REST.getChannelMessage(
-      menu.roleMenuByGuildIdAndMenuName.channelId,
-      menu.roleMenuByGuildIdAndMenuName.messageId
-    );
-
-    return msg.unwrapOr(null);
+    // TODO: No message fetching
+    return null;
   }
 }

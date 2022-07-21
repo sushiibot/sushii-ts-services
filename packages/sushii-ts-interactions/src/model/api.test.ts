@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { Config } from "./config";
 import Context from "./context";
 import SushiiSDK from "./api";
+import Metrics from "./metrics";
 
 describe("SushiiSDK", () => {
   let sushiiSDK: SushiiSDK;
@@ -10,7 +11,7 @@ describe("SushiiSDK", () => {
   beforeEach(() => {
     dotenv.config();
     const conf = new Config();
-    const ctx = new Context(conf);
+    const ctx = new Context(conf, new Metrics());
 
     sushiiSDK = ctx.sushiiAPI;
   });
