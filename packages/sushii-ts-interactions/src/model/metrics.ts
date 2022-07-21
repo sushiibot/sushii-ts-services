@@ -13,6 +13,9 @@ export default class Metrics {
 
   private modalCounter: client.Counter<string>;
 
+  // sushii api
+  private sushiiApiHistogram: client.Histogram<string>;
+
   constructor() {
     const register = new Registry();
     const prefix = "sushii_ts_worker_";
@@ -49,6 +52,13 @@ export default class Metrics {
       help: "Modal submit interactions",
       registers: [register],
     });
+
+    this.sushiiApiHistogram = new client.Histogram({
+      name: `${prefix}sushii_api_call_duration`,
+      help: "Sushii API call duration",
+      labelNames: ["method", "endpoint"],
+      registers: [register],
+    });
   }
 
   public getRegistry(): Registry {
@@ -80,5 +90,11 @@ export default class Metrics {
         logger.warn("Unhandled interaction type:", type);
       }
     }
+  }
+
+  public sushiiAPIStartTimer(): ReturnType<
+    typeof this.sushiiApiHistogram.startTimer
+  > {
+    return this.sushiiApiHistogram.startTimer();
   }
 }

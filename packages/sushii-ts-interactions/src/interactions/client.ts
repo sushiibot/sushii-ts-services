@@ -136,7 +136,7 @@ export default class InteractionClient {
   constructor(config: ConfigI, metrics: Metrics) {
     this.config = config;
     this.metrics = metrics;
-    this.context = new Context(config);
+    this.context = new Context(config, metrics);
     this.commands = new Collection();
     this.autocompleteHandlers = new Collection();
     this.modalHandlers = new Collection();
