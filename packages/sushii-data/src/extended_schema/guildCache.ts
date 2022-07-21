@@ -9,6 +9,25 @@ const logger = pino({
 
 export default makeExtendSchemaPlugin(() => ({
   typeDefs: gql`
+    type RedisRoleTags {
+      bot_id: String
+      integration_id: String
+    }
+
+    type RedisGuildRole {
+      id: String!
+      name: String!
+      color: Int!
+      hoist: Boolean!
+      icon: String
+      unicode_emoji: String
+      position: Int!
+      permissions: String!
+      managed: Boolean!
+      mentionable: Boolean!
+      tags: RedisRoleTags
+    }
+
     type RedisGuild {
       afkChannelId: String
       afkTimeout: Int!
@@ -40,7 +59,7 @@ export default makeExtendSchemaPlugin(() => ({
       vanityUrlCode: String
       verificationLevel: Int
       voiceStates: [String]
-      roles: [String]
+      roles: [RedisGuildRole]
       presences: [String]
       members: [String]
       features: [String]
@@ -66,6 +85,23 @@ export default makeExtendSchemaPlugin(() => ({
         }
 
         const parsedSnakeCase = JSON.parse(cachedGuildStr);
+
+        const guildKeys = await redis.sMembers(`guild_keys:${args.guild_id}`);
+
+        const roles = await Promise.all(
+          guildKeys
+            .filter((key) => key.startsWith("role:"))
+            .map((key) => redis.get(key)),
+        );
+
+        // Add filtered and json parsed roles to guild
+        parsedSnakeCase.roles = roles
+          .filter((role): role is string => role !== null)
+          .map((role) => JSON.parse(role));
+
+        // Sort roles in place -- first by id, then by position.
+        parsedSnakeCase.roles.sort((a: any, b: any) => a.id - b.id);
+        parsedSnakeCase.roles.sort((a: any, b: any) => a.position - b.position);
 
         // Convert keys to camel case
         return mapKeys(parsedSnakeCase, (v, k) => camelCase(k));

@@ -8553,7 +8553,7 @@ type RedisGuild {
   premiumSubscriptionCount: Int
   premiumTier: Int!
   presences: [String]
-  roles: [String]
+  roles: [RedisGuildRole]
   rulesChannelId: String
   splash: String
   systemChannelFlags: Int
@@ -8562,6 +8562,25 @@ type RedisGuild {
   vanityUrlCode: String
   verificationLevel: Int
   voiceStates: [String]
+}
+
+type RedisGuildRole {
+  color: Int!
+  hoist: Boolean!
+  icon: String
+  id: String!
+  managed: Boolean!
+  mentionable: Boolean!
+  name: String!
+  permissions: String!
+  position: Int!
+  tags: RedisRoleTags
+  unicode_emoji: String
+}
+
+type RedisRoleTags {
+  bot_id: String
+  integration_id: String
 }
 
 type Reminder implements Node {
