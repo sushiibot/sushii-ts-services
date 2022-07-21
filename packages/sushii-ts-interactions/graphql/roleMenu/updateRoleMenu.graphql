@@ -1,6 +1,14 @@
-mutation updateRoleMenu($messageId: BigInt!, $roleMenuPatch: RoleMenuPatch!) {
-  updateRoleMenuByMessageId(
-    input: { roleMenuPatch: $roleMenuPatch, messageId: $messageId }
+mutation updateRoleMenu(
+  $guildId: BigInt!
+  $menuName: String!
+  $roleMenuPatch: RoleMenuPatch!
+) {
+  updateRoleMenuByGuildIdAndMenuName(
+    input: {
+      guildId: $guildId
+      menuName: $menuName
+      roleMenuPatch: $roleMenuPatch
+    }
   ) {
     roleMenu {
       ...RoleMenuData

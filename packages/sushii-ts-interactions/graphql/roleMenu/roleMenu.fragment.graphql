@@ -1,9 +1,8 @@
 fragment RoleMenuData on RoleMenu {
   guildId
-  channelId
-  messageId
   menuName
   description
   maxCount
   roleIds
+  requiredRole
 }
