@@ -47,7 +47,7 @@ export function interactionReplyErrorUnauthorized(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
-    t("generic.error.unauthorized", { ns: "commands", message })
+    t("generic.error.unauthorized_target", { ns: "commands", message })
   );
 }
 

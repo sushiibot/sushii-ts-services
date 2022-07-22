@@ -1,6 +1,7 @@
 import {
   APIChatInputApplicationCommandGuildInteraction,
   APIInteractionDataResolvedGuildMember,
+  APIUser,
 } from "discord-api-types/v10";
 import { Err, Ok, Result } from "ts-results";
 import { RedisGuildRole } from "../../generated/graphql";
@@ -20,9 +21,10 @@ function getHighestRole(roles: RedisGuildRole[]): RedisGuildRole {
 export default async function hasPermissionTargetingMember(
   ctx: Context,
   interaction: APIChatInputApplicationCommandGuildInteraction,
-  target?: APIInteractionDataResolvedGuildMember
-): Promise<Result<boolean, string>> {
-  if (!target) {
+  targetUser?: APIUser,
+  targetMember?: APIInteractionDataResolvedGuildMember
+): Promise<Result<true, string>> {
+  if (!targetMember || !targetUser) {
     return Ok(true);
   }
 
@@ -34,6 +36,22 @@ export default async function hasPermissionTargetingMember(
 
   if (!guild.redisGuildByGuildId?.roles) {
     return Err("Guild not found");
+  }
+
+  const { ownerId } = guild.redisGuildByGuildId;
+  // Executor owner
+  if (ownerId === member.user.id) {
+    return Ok(true);
+  }
+
+  // Cannot target owner
+  if (targetUser.id === ownerId) {
+    return Err("You cannot target the owner");
+  }
+
+  // Cannot target self
+  if (targetUser.id === member.user.id) {
+    return Err("You cannot target yourself");
   }
 
   const rolesMap = guild.redisGuildByGuildId.roles.reduce((acc, role) => {
@@ -48,11 +66,15 @@ export default async function hasPermissionTargetingMember(
     .filter((role): role is RedisGuildRole => !role);
   const highestMemberRole = getHighestRole(executorRoles);
 
-  const targetRoles = target.roles
+  const targetRoles = targetMember.roles
     .map((roleId) => rolesMap.get(roleId))
     .filter((role): role is RedisGuildRole => !role);
   const highestTargetRole = getHighestRole(targetRoles);
 
   // Target highest role has to be less than current role.
-  return Ok(highestTargetRole.position < highestMemberRole.position);
+  if (highestTargetRole.position < highestMemberRole.position) {
+    return Ok(true);
+  }
+
+  return Err("You cannot target a member with a higher role than you");
 }

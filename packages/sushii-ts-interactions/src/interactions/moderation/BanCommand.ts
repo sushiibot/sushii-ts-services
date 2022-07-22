@@ -72,15 +72,15 @@ export default class BanCommand extends SlashCommandHandler {
     const hasPermsTargetingMember = await hasPermissionTargetingMember(
       ctx,
       interaction,
+      data.targetUser,
       data.targetMember
     );
 
-    if (!hasPermsTargetingMember) {
-      // Has ban perms, but can't ban the target since they have a higher role
+    if (hasPermsTargetingMember.err) {
       await interactionReplyErrorUnauthorized(
         ctx,
         interaction,
-        "User has a higher role than you."
+        hasPermsTargetingMember.val
       );
 
       return;
