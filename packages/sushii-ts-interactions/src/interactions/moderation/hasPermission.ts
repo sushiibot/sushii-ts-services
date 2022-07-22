@@ -28,7 +28,7 @@ export default async function hasPermissionTargetingMember(
     return Ok(true);
   }
 
-  const { member } = interaction;
+  const { member: executorMember } = interaction;
 
   const guild = await ctx.sushiiAPI.sdk.getRedisGuild({
     guild_id: interaction.guild_id,
@@ -39,19 +39,19 @@ export default async function hasPermissionTargetingMember(
   }
 
   const { ownerId } = guild.redisGuildByGuildId;
+  // Cannot target self -- even if owner just to prevent failure
+  if (targetUser.id === executorMember.user.id) {
+    return Err("You cannot target yourself");
+  }
+
   // Executor owner
-  if (ownerId === member.user.id) {
+  if (executorMember.user.id === ownerId) {
     return Ok(true);
   }
 
   // Cannot target owner
   if (targetUser.id === ownerId) {
     return Err("You cannot target the owner");
-  }
-
-  // Cannot target self
-  if (targetUser.id === member.user.id) {
-    return Err("You cannot target yourself");
   }
 
   const rolesMap = guild.redisGuildByGuildId.roles.reduce((acc, role) => {
@@ -61,7 +61,7 @@ export default async function hasPermissionTargetingMember(
     return acc;
   }, new Map<string, RedisGuildRole>());
 
-  const executorRoles = member.roles
+  const executorRoles = executorMember.roles
     .map((roleId) => rolesMap.get(roleId))
     .filter((role): role is RedisGuildRole => !role);
   const highestMemberRole = getHighestRole(executorRoles);
