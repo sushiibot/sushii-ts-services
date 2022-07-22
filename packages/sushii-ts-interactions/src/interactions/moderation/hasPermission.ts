@@ -63,12 +63,12 @@ export default async function hasPermissionTargetingMember(
 
   const executorRoles = executorMember.roles
     .map((roleId) => rolesMap.get(roleId))
-    .filter((role): role is RedisGuildRole => !role);
+    .filter((role): role is RedisGuildRole => !!role);
   const highestMemberRole = getHighestRole(executorRoles);
 
   const targetRoles = targetMember.roles
     .map((roleId) => rolesMap.get(roleId))
-    .filter((role): role is RedisGuildRole => !role);
+    .filter((role): role is RedisGuildRole => !!role);
   const highestTargetRole = getHighestRole(targetRoles);
 
   // Target highest role has to be less than current role.
