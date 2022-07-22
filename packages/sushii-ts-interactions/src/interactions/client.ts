@@ -328,7 +328,7 @@ export default class InteractionClient {
         },
         tags: {
           type: "command",
-          custom_id: interaction.data.name,
+          command_name: interaction.data.name,
         },
       });
 
