@@ -8,7 +8,11 @@ import { RedisGuildRole } from "../../generated/graphql";
 import Context from "../../model/context";
 
 // getHighestRole returns the highest role of a user in a guild
-function getHighestRole(roles: RedisGuildRole[]): RedisGuildRole {
+function getHighestRole(roles: RedisGuildRole[]): RedisGuildRole | null {
+  if (roles.length === 0) {
+    return null;
+  }
+
   return roles.reduce((prev, role) => {
     if (role.position > prev.position) {
       return role;
@@ -71,9 +75,19 @@ export default async function hasPermissionTargetingMember(
     .filter((role): role is RedisGuildRole => !!role);
   const highestTargetRole = getHighestRole(targetRoles);
 
+  // Default 0 for @everyone role position
+  const highestMemberRolePosition = highestMemberRole?.position ?? 0;
+  const highestTargetRolePosition = highestTargetRole?.position ?? 0;
+
   // Target highest role has to be less than current role.
-  if (highestTargetRole.position < highestMemberRole.position) {
+  if (highestTargetRolePosition < highestMemberRolePosition) {
     return Ok(true);
+  }
+
+  if (highestTargetRolePosition === highestMemberRolePosition) {
+    return Err(
+      "You cannot target a member with the same highest role than you"
+    );
   }
 
   return Err("You cannot target a member with a higher role than you");
