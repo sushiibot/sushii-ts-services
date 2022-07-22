@@ -11,8 +11,10 @@ import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
 import {
   interactionReplyErrorMessage,
-  interactionReplyErrorPerrmision,
+  interactionReplyErrorPermission,
+  interactionReplyErrorUnauthorized,
 } from "../responses/error";
+import hasPermissionTargetingMember from "./hasPermission";
 import ModActionData from "./ModActionData";
 
 export default class KickCommand extends SlashCommandHandler {
@@ -52,24 +54,41 @@ export default class KickCommand extends SlashCommandHandler {
       PermissionFlagsBits.KickMembers
     );
     if (!hasBanPerms) {
-      await interactionReplyErrorPerrmision(ctx, interaction, "Ban Members");
+      await interactionReplyErrorPermission(ctx, interaction, "Ban Members");
 
       return;
     }
 
     const data = new ModActionData(interaction);
 
+    const hasPermsTargetingMember = await hasPermissionTargetingMember(
+      ctx,
+      interaction,
+      data.targetMember
+    );
+
+    if (!hasPermsTargetingMember) {
+      // Has ban perms, but can't ban the target since they have a higher role
+      await interactionReplyErrorUnauthorized(
+        ctx,
+        interaction,
+        "User has a higher role than you."
+      );
+
+      return;
+    }
+
     // User av
-    const userFaceURL = ctx.CDN.userFaceURL(data.target);
+    const userFaceURL = ctx.CDN.userFaceURL(data.targetUser);
     const userEmbed = new EmbedBuilder()
       .setTitle(
         t("kick.success", {
           ns: "commands",
-          id: data.target.id,
+          id: data.targetUser.id,
         })
       )
       .setAuthor({
-        name: `${data.target.username}#${data.target.discriminator}`,
+        name: `${data.targetUser.username}#${data.targetUser.discriminator}`,
         iconURL: userFaceURL,
       })
       .setColor(Color.Success);
@@ -90,8 +109,8 @@ export default class KickCommand extends SlashCommandHandler {
         caseId: nextCaseId,
         action: "kick",
         pending: true,
-        userId: data.target.id,
-        userTag: data.target.discriminator,
+        userId: data.targetUser.id,
+        userTag: data.targetUser.discriminator,
         executorId: data.invoker.id,
         actionTime: dayjs().toISOString(),
         reason: data.reason,
@@ -103,7 +122,7 @@ export default class KickCommand extends SlashCommandHandler {
 
     const res = await ctx.REST.kickMember(
       interaction.guild_id,
-      data.target.id,
+      data.targetUser.id,
       data.reason
     );
 

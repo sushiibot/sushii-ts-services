@@ -3,6 +3,7 @@ import { Duration } from "dayjs/plugin/duration";
 import {
   APIAttachment,
   APIChatInputApplicationCommandInteraction,
+  APIInteractionDataResolvedGuildMember,
   APIUser,
 } from "discord-api-types/v10";
 import { Err, Ok, Result } from "ts-results";
@@ -14,7 +15,9 @@ import CommandInteractionOptionResolver from "../resolver";
  * Common moderation command data
  */
 export default class ModActionData {
-  public target: APIUser;
+  public targetUser: APIUser;
+
+  public targetMember?: APIInteractionDataResolvedGuildMember;
 
   public invoker: APIUser;
 
@@ -44,7 +47,10 @@ export default class ModActionData {
       throw new Error("No user provided.");
     }
 
-    this.target = target;
+    this.targetUser = target;
+
+    // Could be undefined if the target is not in the guild
+    this.targetMember = options.getMember("user");
 
     this.reason = options.getString("reason");
     this.attachment = options.getAttachment("attachment");

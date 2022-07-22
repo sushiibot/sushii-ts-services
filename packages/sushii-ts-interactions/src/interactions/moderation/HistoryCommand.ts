@@ -9,7 +9,7 @@ import { hasPermission } from "../../utils/permissions";
 import { getCreatedTimestampSeconds } from "../../utils/snowflake";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
-import { interactionReplyErrorPerrmision } from "../responses/error";
+import { interactionReplyErrorPermission } from "../responses/error";
 import buildUserHistoryEmbed from "./formatters/history";
 
 export default class HistoryCommand extends SlashCommandHandler {
@@ -40,7 +40,7 @@ export default class HistoryCommand extends SlashCommandHandler {
       PermissionFlagsBits.BanMembers
     );
     if (!hasBanPerms) {
-      await interactionReplyErrorPerrmision(ctx, interaction, "Ban Members");
+      await interactionReplyErrorPermission(ctx, interaction, "Ban Members");
 
       return;
     }
