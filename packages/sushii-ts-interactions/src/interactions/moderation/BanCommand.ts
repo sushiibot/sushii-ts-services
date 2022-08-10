@@ -14,8 +14,11 @@ import {
   interactionReplyErrorPermission,
   interactionReplyErrorUnauthorized,
 } from "../responses/error";
+import { ActionType } from "./ActionType";
 import hasPermissionTargetingMember from "./hasPermission";
 import ModActionData from "./ModActionData";
+import { attachmentOption, reasonOption, skipDMOption } from "./options";
+import sendModActionDM from "./sendDm";
 
 export default class BanCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -38,18 +41,9 @@ export default class BanCommand extends SlashCommandHandler {
         .setMinValue(0)
         .setRequired(false)
     )
-    .addStringOption((o) =>
-      o
-        .setName("reason")
-        .setDescription("Reason for banning this user.")
-        .setRequired(false)
-    )
-    .addAttachmentOption((o) =>
-      o
-        .setName("attachment")
-        .setDescription("Additional media to attach to the case.")
-        .setRequired(false)
-    )
+    .addStringOption(reasonOption(ActionType.Ban))
+    .addAttachmentOption(attachmentOption)
+    .addBooleanOption(skipDMOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
@@ -111,7 +105,7 @@ export default class BanCommand extends SlashCommandHandler {
       );
     }
 
-    await ctx.sushiiAPI.sdk.createModLog({
+    const { createModLog } = await ctx.sushiiAPI.sdk.createModLog({
       modLog: {
         guildId: interaction.guild_id,
         caseId: nextCaseId,
@@ -128,6 +122,10 @@ export default class BanCommand extends SlashCommandHandler {
       },
     });
 
+    // Need to DM before banning
+
+    const dmRes = await sendModActionDM(ctx, interaction, data, ActionType.Ban);
+
     const res = await ctx.REST.banUser(
       interaction.guild_id,
       data.targetUser.id,
@@ -135,13 +133,17 @@ export default class BanCommand extends SlashCommandHandler {
       data.deleteMessageDays
     );
 
-    if (res.err) {
-      // If ban failed
-      await interactionReplyErrorMessage(
-        ctx,
-        interaction,
-        `Failed to ban user: ${res.val.message}`
-      );
+    if (res.err && dmRes.ok) {
+      await Promise.allSettled([
+        // If we sent the DM but the ban failed, we need to delete the DM
+        ctx.REST.deleteChannelMessage(dmRes.val.channel_id, dmRes.val.id),
+        // If ban failed
+        interactionReplyErrorMessage(
+          ctx,
+          interaction,
+          `Failed to ban user: ${res.val.message}`
+        ),
+      ]);
 
       return;
     }

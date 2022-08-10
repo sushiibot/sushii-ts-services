@@ -36,11 +36,14 @@ export default class RESTClient {
     }).setToken(config.token);
   }
 
+  /**
+   * Interaction response returns 204 no content
+   */
   public interactionReply(
     interaction: APIInteraction,
     msg: APIInteractionResponseCallbackData,
     files?: RawFile[]
-  ): APIPromiseResult<RESTPostAPIInteractionFollowupResult> {
+  ): APIPromiseResult<void> {
     return this.interactionCallback(
       interaction,
       {
@@ -68,16 +71,26 @@ export default class RESTClient {
     });
   }
 
-  public interactionCallback(
+  public interactionCallback<T>(
     interaction: APIInteraction,
     payload: RESTPostAPIInteractionCallbackJSONBody,
     files?: RawFile[]
-  ): APIPromiseResult<RESTPostAPIInteractionFollowupResult> {
+  ): APIPromiseResult<T> {
     // TODO: Handle errors, determine response type
     return this.handleError(
       this.rest.post(
         Routes.interactionCallback(interaction.id, interaction.token),
         { body: payload, files }
+      )
+    );
+  }
+
+  public interactionGetOriginal(
+    interaction: APIInteraction
+  ): APIPromiseResult<RESTPatchAPIWebhookWithTokenMessageResult> {
+    return this.handleError(
+      this.rest.get(
+        Routes.webhookMessage(interaction.application_id, interaction.token)
       )
     );
   }
@@ -129,6 +142,15 @@ export default class RESTClient {
     );
   }
 
+  public deleteChannelMessage(
+    channelID: string,
+    messageID: string
+  ): APIPromiseResult<RESTPatchAPIChannelMessageResult> {
+    return this.handleError(
+      this.rest.delete(Routes.channelMessage(channelID, messageID))
+    );
+  }
+
   public getUser(userId: string): APIPromiseResult<RESTGetAPIUserResult> {
     return this.handleError(this.rest.get(Routes.user(userId)));
   }
@@ -156,6 +178,18 @@ export default class RESTClient {
     );
   }
 
+  public unbanUser(
+    guildId: string,
+    userId: string,
+    reason?: string
+  ): APIPromiseResult<RESTPutAPIGuildBanResult> {
+    return this.handleError<RESTPutAPIGuildBanResult>(
+      this.rest.delete(Routes.guildBan(guildId, userId), {
+        reason,
+      })
+    );
+  }
+
   public kickMember(
     guildId: string,
     userId: string,
@@ -171,15 +205,16 @@ export default class RESTClient {
   public timeoutMember(
     guildId: string,
     userId: string,
-    communication_disabled_until: dayjs.Dayjs,
+    communication_disabled_until: dayjs.Dayjs | null,
     reason?: string
   ): APIPromiseResult<RESTPatchAPIGuildMemberResult> {
     return this.handleError(
       this.rest.patch(Routes.guildMember(guildId, userId), {
         reason,
         body: {
+          // Must be null to remove
           communication_disabled_until:
-            communication_disabled_until.toISOString(),
+            communication_disabled_until?.toISOString() || null,
         },
       })
     );
@@ -224,6 +259,8 @@ export default class RESTClient {
       if (err instanceof DiscordAPIError) {
         return Err(err);
       }
+
+      // HTTPError is thrown, not returned
 
       // Errors that commands can't really or shouldn't handle, idk
       throw err;

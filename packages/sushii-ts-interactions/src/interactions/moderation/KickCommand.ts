@@ -14,8 +14,10 @@ import {
   interactionReplyErrorPermission,
   interactionReplyErrorUnauthorized,
 } from "../responses/error";
+import { ActionType } from "./ActionType";
 import hasPermissionTargetingMember from "./hasPermission";
 import ModActionData from "./ModActionData";
+import { attachmentOption, reasonOption, skipDMOption } from "./options";
 
 export default class KickCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -30,18 +32,9 @@ export default class KickCommand extends SlashCommandHandler {
     .addUserOption((o) =>
       o.setName("user").setDescription("Who to kick.").setRequired(true)
     )
-    .addStringOption((o) =>
-      o
-        .setName("reason")
-        .setDescription("Reason for kicking this user.")
-        .setRequired(false)
-    )
-    .addAttachmentOption((o) =>
-      o
-        .setName("attachment")
-        .setDescription("Additional media to attach to the case.")
-        .setRequired(false)
-    )
+    .addStringOption(reasonOption(ActionType.Kick))
+    .addAttachmentOption(attachmentOption)
+    .addBooleanOption(skipDMOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

@@ -77,12 +77,14 @@
       "error": {
         "missing_content_and_attachment": "You must provide either a content or an attachment to add a tag!",
         "failed_title": "Failed to add tag",
-        "already_exists_description": "Tag {{tagName}} already exists, please choose another name."
+        "already_exists_description": "Tag {{tagName}} already exists, please choose another name.",
+        "failed_get_original_message": "I couldn't save the attachment, maybe try this again?"
       },
       "success": {
         "title": "Created a new tag {{tagName}}",
         "content": "Content",
-        "attachment": "Attachment"
+        "attachment": "Attachment",
+        "footer": "Please do not delete this message or the tag attachment will expire."
       }
     },
     "get": {
@@ -129,11 +131,14 @@
         "title": "Tag edit failed",
         "not_found": "Tag {{tagName}} was not found!",
         "not_owner": "You do not own the tag {{tagName}} so you cannot edit it :(",
-        "no_options": "You must provide at least one option `content` or `attachment`."
+        "no_options": "You must provide at least one option `content` or `attachment`.",
+        "failed_title": "$t(.tag.add.error.failed_title)",
+        "failed_get_original_message": "$t(.tag.add.error.failed_get_original_message)"
       },
       "success": {
         "title": "Edited tag {{tagName}}",
-        "content": "Content"
+        "content": "Content",
+        "footer": "$t(tag.add.success.footer)"
       }
     },
     "rename": {

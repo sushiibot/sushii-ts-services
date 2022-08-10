@@ -1,22 +1,68 @@
 import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
+import { RawFile } from "@discordjs/rest";
 import dayjs from "dayjs";
 import {
+  APIAttachment,
   APIChatInputApplicationCommandGuildInteraction,
+  APIEmbedField,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
 import { t } from "i18next";
+import fetch from "node-fetch";
+import { Err, Ok, Result } from "ts-results";
 import { Tag, TagFilter } from "../../generated/graphql";
-import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import { isUniqueViolation } from "../../utils/graphqlError";
 import getInvokerUser from "../../utils/interactions";
 import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
+import { interactionReplyErrorMessage } from "../responses/error";
 
 const NAME_STARTS_WITH = "name_starts_with";
 const NAME_CONTAINS = "name_contains";
+
+interface TagUpdateData {
+  fields: APIEmbedField[];
+  files: RawFile[];
+}
+
+async function getFieldsAndFiles(
+  newContent: string | undefined,
+  newAttachment: APIAttachment | undefined
+): Promise<Result<TagUpdateData, string>> {
+  const fields = [];
+  const files: RawFile[] = [];
+
+  if (newContent) {
+    fields.push({
+      name: t("tag.edit.success.content", { ns: "commands" }),
+      value: newContent,
+    });
+  }
+
+  if (newAttachment) {
+    fields.push({
+      name: t("tag.edit.success.attachment", { ns: "commands" }),
+      value: newAttachment.url,
+    });
+
+    try {
+      const fileData = await fetch(newAttachment.url).then((res) =>
+        res.buffer()
+      );
+
+      files.push({
+        fileData,
+        fileName: newAttachment.filename,
+      });
+    } catch (err) {
+      return Err(t("tag.edit.error.attachment_fetch", { ns: "commands" }));
+    }
+  }
+
+  return Ok({ fields, files });
+}
 
 async function deniedTagPermission(
   ctx: Context,
@@ -279,24 +325,12 @@ export default class TagCommand extends SlashCommandHandler {
 
     const invoker = getInvokerUser(interaction);
 
-    try {
-      await ctx.sushiiAPI.sdk.createTag({
-        tag: {
-          tagName,
-          content: tagContent,
-          attachment: tagAttachment?.url,
-          created: dayjs().toISOString(),
-          guildId: interaction.guild_id,
-          ownerId: invoker.id,
-          useCount: "0",
-        },
-      });
-    } catch (err) {
-      if (!isUniqueViolation(err)) {
-        logger.error(err, "failed to createTag");
-        throw err;
-      }
+    const tagExistsRes = await ctx.sushiiAPI.sdk.getTag({
+      guildId: interaction.guild_id,
+      tagName,
+    });
 
+    if (tagExistsRes.tagByGuildIdAndTagName) {
       await ctx.REST.interactionReply(interaction, {
         embeds: [
           new EmbedBuilder()
@@ -311,11 +345,16 @@ export default class TagCommand extends SlashCommandHandler {
             .toJSON(),
         ],
       });
+    }
+
+    const embedDataRes = await getFieldsAndFiles(tagContent, tagAttachment);
+    if (embedDataRes.err) {
+      await interactionReplyErrorMessage(ctx, interaction, embedDataRes.val);
 
       return;
     }
 
-    const fields = [];
+    const { fields, files } = embedDataRes.val;
 
     if (tagContent) {
       fields.push({
@@ -338,8 +377,55 @@ export default class TagCommand extends SlashCommandHandler {
       .setFields(fields)
       .setColor(Color.Success);
 
-    await ctx.REST.interactionReply(interaction, {
-      embeds: [embed.toJSON()],
+    await ctx.REST.interactionReply(
+      interaction,
+      {
+        embeds: [embed.toJSON()],
+      },
+      files
+    );
+
+    let attachmentUrl;
+    if (tagAttachment) {
+      const replyMsg = await ctx.REST.interactionGetOriginal(interaction);
+
+      if (replyMsg.ok) {
+        attachmentUrl = replyMsg.val.attachments.at(0)?.url;
+      } else {
+        // Return err
+
+        await ctx.REST.interactionEdit(interaction, {
+          embeds: [
+            new EmbedBuilder()
+              .setColor(Color.Error)
+              .setTitle(
+                t("tag.add.error.failed_title", {
+                  ns: "commands",
+                })
+              )
+              .setDescription(
+                t("tag.add.error.failed_get_original_message", {
+                  ns: "commands",
+                })
+              )
+              .toJSON(),
+          ],
+        });
+
+        return;
+      }
+    }
+
+    await ctx.sushiiAPI.sdk.createTag({
+      tag: {
+        tagName,
+        content: tagContent,
+        attachment: attachmentUrl,
+        created: dayjs().toISOString(),
+        guildId: interaction.guild_id,
+        ownerId: invoker.id,
+        useCount: "0",
+      },
     });
   }
 
@@ -708,28 +794,76 @@ export default class TagCommand extends SlashCommandHandler {
       return;
     }
 
-    await ctx.sushiiAPI.sdk.updateTag({
-      tagPatch: {
-        content: newContent,
-        attachment: newAttachment?.url,
-      },
-      guildId: interaction.guild_id,
-      tagName,
-    });
+    const embedDataRes = await getFieldsAndFiles(newContent, newAttachment);
+    if (embedDataRes.err) {
+      await interactionReplyErrorMessage(ctx, interaction, embedDataRes.val);
+
+      return;
+    }
+
+    const { fields, files } = embedDataRes.val;
 
     const embed = new EmbedBuilder()
       .setTitle(t("tag.edit.success.title", { ns: "commands", tagName }))
-      .setFields([
-        {
-          name: t("tag.edit.success.content", { ns: "commands" }),
-          value: tag.tagByGuildIdAndTagName.content,
-        },
-      ])
+      .setFields(fields)
       .setImage(newAttachment?.url || null)
-      .setColor(Color.Success);
+      .setColor(Color.Success)
+      .setFooter(
+        newAttachment
+          ? {
+              text: t("tag.edit.success.footer", { ns: "commands" }),
+            }
+          : null
+      );
 
-    await ctx.REST.interactionReply(interaction, {
-      embeds: [embed.toJSON()],
+    await ctx.REST.interactionReply(
+      interaction,
+      {
+        embeds: [embed.toJSON()],
+      },
+      files
+    );
+
+    let attachmentUrl;
+    if (newAttachment) {
+      const replyMsg = await ctx.REST.interactionGetOriginal(interaction);
+
+      if (replyMsg.ok) {
+        attachmentUrl = replyMsg.val.attachments.at(0)?.url;
+      } else {
+        // Return err
+
+        await ctx.REST.interactionEdit(interaction, {
+          embeds: [
+            new EmbedBuilder()
+              .setColor(Color.Error)
+              .setTitle(
+                t("tag.edit.error.failed_title", {
+                  ns: "commands",
+                })
+              )
+              .setDescription(
+                t("tag.edit.error.failed_get_original_message", {
+                  ns: "commands",
+                })
+              )
+              .toJSON(),
+          ],
+        });
+
+        return;
+      }
+    }
+
+    // Save the attachment url of the reply message, not the interaction
+    // attachment. Interaction attachment is ephemeral
+    await ctx.sushiiAPI.sdk.updateTag({
+      tagPatch: {
+        content: newContent,
+        attachment: attachmentUrl,
+      },
+      guildId: interaction.guild_id,
+      tagName,
     });
   }
 

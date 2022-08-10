@@ -15463,6 +15463,14 @@ export type CreateModLogMutationVariables = Exact<{
 
 export type CreateModLogMutation = { __typename?: 'Mutation', createModLog?: { __typename?: 'CreateModLogPayload', modLog?: { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string } | null } | null };
 
+export type DeleteModLogMutationVariables = Exact<{
+  caseId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+}>;
+
+
+export type DeleteModLogMutation = { __typename?: 'Mutation', deleteModLogByGuildIdAndCaseId?: { __typename?: 'DeleteModLogPayload', modLog?: { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string } | null } | null };
+
 export type GetModLogQueryVariables = Exact<{
   caseId: Scalars['BigInt'];
   guildId: Scalars['BigInt'];
@@ -15868,6 +15876,15 @@ export const CreateModLogDocument = gql`
   }
 }
     ${ModLogDataFragmentDoc}`;
+export const DeleteModLogDocument = gql`
+    mutation deleteModLog($caseId: BigInt!, $guildId: BigInt!) {
+  deleteModLogByGuildIdAndCaseId(input: {guildId: $guildId, caseId: $caseId}) {
+    modLog {
+      ...ModLogData
+    }
+  }
+}
+    ${ModLogDataFragmentDoc}`;
 export const GetModLogDocument = gql`
     query getModLog($caseId: BigInt!, $guildId: BigInt!) {
   modLogByGuildIdAndCaseId(caseId: $caseId, guildId: $guildId) {
@@ -16160,6 +16177,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     createModLog(variables: CreateModLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateModLogMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateModLogMutation>(CreateModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createModLog', 'mutation');
+    },
+    deleteModLog(variables: DeleteModLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteModLogMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteModLogMutation>(DeleteModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteModLog', 'mutation');
     },
     getModLog(variables: GetModLogQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetModLogQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetModLogQuery>(GetModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getModLog', 'query');

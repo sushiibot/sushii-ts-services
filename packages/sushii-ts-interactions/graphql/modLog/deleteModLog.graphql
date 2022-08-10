@@ -1,0 +1,9 @@
+mutation deleteModLog($caseId: BigInt!, $guildId: BigInt!) {
+  deleteModLogByGuildIdAndCaseId(
+    input: { guildId: $guildId, caseId: $caseId }
+  ) {
+    modLog {
+      ...ModLogData
+    }
+  }
+}

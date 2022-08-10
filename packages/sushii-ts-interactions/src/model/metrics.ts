@@ -1,9 +1,15 @@
-import { APIInteraction, InteractionType } from "discord-api-types/v10";
+import {
+  APIInteraction,
+  GatewayDispatchPayload,
+  InteractionType,
+} from "discord-api-types/v10";
 import client, { collectDefaultMetrics, Registry } from "prom-client";
 import logger from "../logger";
 
 export default class Metrics {
   readonly registry: client.Registry;
+
+  private gatewayEventsCounter: client.Counter<string>;
 
   private slashCommandsCounter: client.Counter<string>;
 
@@ -26,6 +32,13 @@ export default class Metrics {
     });
 
     this.registry = register;
+
+    this.gatewayEventsCounter = new client.Counter({
+      name: `${prefix}discord_events`,
+      help: "Discord gateway events",
+      labelNames: ["event_name"],
+      registers: [register],
+    });
 
     this.slashCommandsCounter = new client.Counter({
       name: `${prefix}slash_command`,
@@ -90,6 +103,10 @@ export default class Metrics {
         logger.warn("Unhandled interaction type:", type);
       }
     }
+  }
+
+  public handleGatewayDispatchEvent(event: GatewayDispatchPayload): void {
+    this.gatewayEventsCounter.inc({ event_name: event.t.toString() });
   }
 
   public sushiiAPIStartTimer(): ReturnType<

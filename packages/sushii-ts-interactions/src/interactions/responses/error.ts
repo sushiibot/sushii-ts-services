@@ -1,8 +1,5 @@
 import { EmbedBuilder } from "@discordjs/builders";
-import {
-  APIInteraction,
-  RESTPostAPIInteractionFollowupResult,
-} from "discord-api-types/v10";
+import { APIInteraction } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../model/context";
 import { APIPromiseResult } from "../../model/rest";
@@ -13,7 +10,7 @@ export function interactionReplyError(
   interaction: APIInteraction,
   title: string,
   description: string
-): APIPromiseResult<RESTPostAPIInteractionFollowupResult> {
+): APIPromiseResult<void> {
   return ctx.REST.interactionReply(interaction, {
     embeds: [
       new EmbedBuilder()
@@ -29,7 +26,7 @@ export function interactionReplyErrorPermission(
   ctx: Context,
   interaction: APIInteraction,
   permission: string
-): APIPromiseResult<RESTPostAPIInteractionFollowupResult> {
+): APIPromiseResult<void> {
   return interactionReplyError(
     ctx,
     interaction,
@@ -42,7 +39,7 @@ export function interactionReplyErrorUnauthorized(
   ctx: Context,
   interaction: APIInteraction,
   message: string
-): APIPromiseResult<RESTPostAPIInteractionFollowupResult> {
+): APIPromiseResult<void> {
   return interactionReplyError(
     ctx,
     interaction,
@@ -55,7 +52,7 @@ export function interactionReplyErrorMessage(
   ctx: Context,
   interaction: APIInteraction,
   message: string
-): APIPromiseResult<RESTPostAPIInteractionFollowupResult> {
+): APIPromiseResult<void> {
   return interactionReplyError(
     ctx,
     interaction,
@@ -67,7 +64,7 @@ export function interactionReplyErrorMessage(
 export function interactionReplyErrorInternal(
   ctx: Context,
   interaction: APIInteraction
-): APIPromiseResult<RESTPostAPIInteractionFollowupResult> {
+): APIPromiseResult<void> {
   return interactionReplyError(
     ctx,
     interaction,

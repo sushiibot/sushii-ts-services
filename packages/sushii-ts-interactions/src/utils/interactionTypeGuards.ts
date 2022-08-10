@@ -5,6 +5,7 @@ import {
   APIChatInputApplicationCommandInteraction,
   APIInteraction,
   GatewayDispatchEvents,
+  GatewayDispatchPayload,
   GatewayInteractionCreateDispatch,
   GatewayOpcodes,
   InteractionType,
@@ -28,6 +29,12 @@ export function isDMInteraction(
     interaction.guild_id === undefined &&
     interaction.member === undefined
   );
+}
+
+export function isGatewayDispatchEvent(
+  msg: any
+): msg is GatewayDispatchPayload {
+  return msg && msg.op === GatewayOpcodes.Dispatch;
 }
 
 export function isGatewayInteractionCreateDispatch(

@@ -69,6 +69,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     .addSubcommand((c) =>
       c
         .setName("edit")
+        .setDescription("Edit a role menu's options.")
         .addStringOption((o) =>
           o
             .setName("menu_name")
@@ -105,7 +106,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     .addSubcommand((c) =>
       c
         .setName("addroles")
-        .setDescription("Add a role to the menu.")
+        .setDescription("Add roles to a menu.")
         .addStringOption((o) =>
           o
             .setName("menu_name")
@@ -122,7 +123,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     .addSubcommand((c) =>
       c
         .setName("removeroles")
-        .setDescription("Remove a role from the menu.")
+        .setDescription("Remove roles from a menu.")
         .addStringOption((o) =>
           o
             .setName("menu_name")

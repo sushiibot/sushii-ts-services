@@ -15,8 +15,10 @@ import {
   interactionReplyErrorPermission,
   interactionReplyErrorUnauthorized,
 } from "../responses/error";
+import { ActionType } from "./ActionType";
 import hasPermissionTargetingMember from "./hasPermission";
 import ModActionData from "./ModActionData";
+import { attachmentOption, reasonOption, skipDMOption } from "./options";
 
 export default class WarnCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -31,18 +33,9 @@ export default class WarnCommand extends SlashCommandHandler {
     .addUserOption((o) =>
       o.setName("user").setDescription("Who to warn.").setRequired(true)
     )
-    .addStringOption((o) =>
-      o
-        .setName("reason")
-        .setDescription("Reason for warning this user. This will DM the user.")
-        .setRequired(false)
-    )
-    .addAttachmentOption((o) =>
-      o
-        .setName("attachment")
-        .setDescription("Additional media to attach to the case.")
-        .setRequired(false)
-    )
+    .addStringOption(reasonOption(ActionType.Warn))
+    .addAttachmentOption(attachmentOption)
+    .addBooleanOption(skipDMOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

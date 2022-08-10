@@ -14,7 +14,7 @@ import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
 
 export default class ReminderCommand extends SlashCommandHandler {
-  serverOnly = true;
+  serverOnly = false;
 
   command = new SlashCommandBuilder()
     .setName("reminder")

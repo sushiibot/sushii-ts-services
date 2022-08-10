@@ -33,6 +33,8 @@ export default class ModActionData {
    */
   public timeoutDuration?: Duration;
 
+  public skipDM: boolean;
+
   constructor(interaction: APIChatInputApplicationCommandInteraction) {
     const options = new CommandInteractionOptionResolver(
       interaction.data.options,
@@ -64,6 +66,8 @@ export default class ModActionData {
       // only be null if it's an invalid duration.
       this.timeoutDuration = parseDuration(durationStr) || undefined;
     }
+
+    this.skipDM = options.getBoolean("skip_dm") || false;
   }
 
   communicationDisabledUntil(): Result<dayjs.Dayjs, string> {

@@ -14,8 +14,10 @@ import {
   interactionReplyErrorPermission,
   interactionReplyErrorUnauthorized,
 } from "../responses/error";
+import { ActionType } from "./ActionType";
 import hasPermissionTargetingMember from "./hasPermission";
 import ModActionData from "./ModActionData";
+import { attachmentOption, reasonOption, skipDMOption } from "./options";
 
 export default class TimeoutCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -36,26 +38,9 @@ export default class TimeoutCommand extends SlashCommandHandler {
         .setDescription("How long to timeout the user.")
         .setRequired(true)
     )
-    .addStringOption((o) =>
-      o
-        .setName("reason")
-        .setDescription("Reason for timing out this user.")
-        .setRequired(false)
-    )
-    .addAttachmentOption((o) =>
-      o
-        .setName("attachment")
-        .setDescription("Additional media to attach to the case.")
-        .setRequired(false)
-    )
-    .addBooleanOption((o) =>
-      o
-        .setName("skip_dm")
-        .setDescription(
-          "Set to false if you do not want to DM the reason to the user."
-        )
-        .setRequired(false)
-    )
+    .addStringOption(reasonOption(ActionType.Timeout))
+    .addAttachmentOption(attachmentOption)
+    .addBooleanOption(skipDMOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

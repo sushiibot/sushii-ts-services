@@ -34,7 +34,10 @@ import {
   SelectMenuHandler,
   AutocompleteHandler,
 } from "./handlers";
-import { isGatewayInteractionCreateDispatch } from "../utils/interactionTypeGuards";
+import {
+  isGatewayDispatchEvent,
+  isGatewayInteractionCreateDispatch,
+} from "../utils/interactionTypeGuards";
 import ContextMenuHandler from "./handlers/ContextMenuHandler";
 import { AutocompleteOption } from "./handlers/AutocompleteHandler";
 import getInvokerUser from "../utils/interactions";
@@ -632,6 +635,12 @@ export default class InteractionClient {
     }
 
     const interaction = JSON.parse(msgString);
+    if (!isGatewayDispatchEvent(interaction)) {
+      return;
+    }
+
+    this.metrics.handleGatewayDispatchEvent(interaction);
+
     if (!isGatewayInteractionCreateDispatch(interaction)) {
       // log.debug("received non-interaction AMQP message %s", interaction.t);
       return;
