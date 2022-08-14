@@ -1,22 +1,17 @@
-import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
-import dayjs from "dayjs";
+import { SlashCommandBuilder } from "@discordjs/builders";
 import {
   APIChatInputApplicationCommandGuildInteraction,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
-import { t } from "i18next";
-import logger from "../../logger";
 import Context from "../../model/context";
-import Color from "../../utils/colors";
 import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
 import {
   interactionReplyErrorMessage,
   interactionReplyErrorPermission,
-  interactionReplyErrorUnauthorized,
 } from "../responses/error";
 import { ActionType } from "./ActionType";
-import hasPermissionTargetingMember from "./hasPermission";
+import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
 import { attachmentOption, reasonOption, skipDMOption } from "./options";
 
@@ -54,109 +49,14 @@ export default class WarnCommand extends SlashCommandHandler {
     }
 
     const data = new ModActionData(interaction);
-    const hasPermsTargetingMember = await hasPermissionTargetingMember(
-      ctx,
-      interaction,
-      data.targetUser,
-      data.targetMember
-    );
-
-    if (hasPermsTargetingMember.err) {
-      await interactionReplyErrorUnauthorized(
-        ctx,
-        interaction,
-        hasPermsTargetingMember.val
-      );
+    const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
+    if (fetchTargetsRes.err) {
+      await interactionReplyErrorMessage(ctx, interaction, fetchTargetsRes.val);
 
       return;
     }
 
-    // User av
-    const userFaceURL = ctx.CDN.userFaceURL(data.targetUser);
-    const userEmbed = new EmbedBuilder()
-      .setTitle(
-        t("warn.success", {
-          ns: "commands",
-          id: data.targetUser.id,
-        })
-      )
-      .setAuthor({
-        name: `${data.targetUser.username}#${data.targetUser.discriminator}`,
-        iconURL: userFaceURL,
-      })
-      .setColor(Color.Success);
-
-    const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
-      guildId: interaction.guild_id,
-    });
-
-    if (!nextCaseId) {
-      throw new Error(
-        `Failed to get next case id for guild ${interaction.guild_id}`
-      );
-    }
-
-    await ctx.sushiiAPI.sdk.createModLog({
-      modLog: {
-        guildId: interaction.guild_id,
-        caseId: nextCaseId,
-        action: "warn",
-        pending: true,
-        userId: data.targetUser.id,
-        userTag: data.targetUser.discriminator,
-        executorId: data.invoker.id,
-        actionTime: dayjs().toISOString(),
-        reason: data.reason,
-        attachments: [data.attachment?.url || null],
-        // This is set in the mod logger
-        msgId: undefined,
-      },
-    });
-
-    // Cached from redis
-    const cachedGuild = await ctx.sushiiAPI.sdk.getRedisGuild({
-      guild_id: interaction.guild_id,
-    });
-
-    if (!cachedGuild.redisGuildByGuildId) {
-      logger.warn(
-        { guildId: interaction.guild_id },
-        "Failed to fetch guild from redis cache"
-      );
-    }
-
-    const guildName =
-      cachedGuild.redisGuildByGuildId?.name || interaction.guild_id.toString();
-
-    const guildIcon =
-      cachedGuild.redisGuildByGuildId?.icon &&
-      ctx.CDN.cdn.icon(
-        interaction.guild_id,
-        cachedGuild.redisGuildByGuildId.icon
-      );
-
-    const embed = new EmbedBuilder()
-      .setTitle(t("warn.dm_title", { ns: "commands" }))
-      .setAuthor({
-        name: guildName,
-        iconURL: guildIcon || undefined,
-      })
-      .setFields(
-        data.reason
-          ? [
-              {
-                name: t("warn.dm_reason", { ns: "commands" }),
-                value: data.reason,
-              },
-            ]
-          : []
-      )
-      .setColor(Color.Warning);
-
-    const res = await ctx.REST.dmUser(data.targetUser.id, {
-      embeds: [embed.toJSON()],
-    });
-
+    const res = await executeAction(ctx, interaction, data, ActionType.Warn);
     if (res.err) {
       await interactionReplyErrorMessage(ctx, interaction, res.val.message);
 
@@ -164,7 +64,7 @@ export default class WarnCommand extends SlashCommandHandler {
     }
 
     await ctx.REST.interactionReply(interaction, {
-      embeds: [userEmbed.toJSON()],
+      embeds: [res.val.toJSON()],
     });
   }
 }

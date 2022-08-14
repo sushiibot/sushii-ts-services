@@ -65,4 +65,23 @@ export namespace ActionType {
         return "warned";
     }
   }
+
+  export function toEmoji(action: ActionType): string {
+    switch (action) {
+      case ActionType.Ban:
+        return "🔨";
+      case ActionType.BanRemove:
+        return "🔓";
+      case ActionType.Kick:
+        return "👢";
+      case ActionType.Timeout:
+        return "🔇";
+      case ActionType.TimeoutRemove:
+        return "🔉";
+      case ActionType.TimeoutAdjust:
+        return "⏲️";
+      case ActionType.Warn:
+        return "⚠️";
+    }
+  }
 }

@@ -244,6 +244,22 @@ export default class CommandInteractionOptionResolver {
   }
 
   /**
+   * Gets a resolved user.
+   * @param {string} name The name of the option.
+   * @returns The value of the option, or null if not set and not required.
+   */
+  getResolved(): APIChatInputApplicationCommandInteractionDataResolved {
+    return this.resolved;
+  }
+
+  /**
+   * Gets a resolved user.
+   */
+  getResolvedUsers(): Record<string, APIUser> {
+    return this.resolved.users || {};
+  }
+
+  /**
    * Gets a member option.
    * @param name The name of the option.
    * @returns The value of the option, or null if not set and not required.
@@ -259,6 +275,13 @@ export default class CommandInteractionOptionResolver {
     }
 
     return this.resolved.members?.[user.id];
+  }
+
+  /**
+   * Gets all resolved members.
+   */
+  getResolveMembers(): Record<string, APIInteractionDataResolvedGuildMember> {
+    return this.resolved.members || {};
   }
 
   /**

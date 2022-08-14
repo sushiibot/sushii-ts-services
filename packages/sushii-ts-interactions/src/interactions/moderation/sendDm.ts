@@ -2,6 +2,7 @@ import { EmbedBuilder } from "@discordjs/builders";
 import {
   APIChatInputApplicationCommandGuildInteraction,
   APIMessage,
+  APIUser,
 } from "discord-api-types/v10";
 import { Err, Result } from "ts-results";
 import Context from "../../model/context";
@@ -9,7 +10,7 @@ import Color from "../../utils/colors";
 import { ActionType } from "./ActionType";
 import ModActionData from "./ModActionData";
 
-async function buildEmbed(
+async function buildDMEmbed(
   ctx: Context,
   interaction: APIChatInputApplicationCommandGuildInteraction,
   data: ModActionData,
@@ -58,11 +59,12 @@ export default async function sendModActionDM(
   ctx: Context,
   interaction: APIChatInputApplicationCommandGuildInteraction,
   data: ModActionData,
+  target: APIUser,
   action: ActionType
 ): Promise<Result<APIMessage, string>> {
-  const embed = await buildEmbed(ctx, interaction, data, action);
+  const embed = await buildDMEmbed(ctx, interaction, data, action);
 
-  const res = await ctx.REST.dmUser(data.targetUser.id, {
+  const res = await ctx.REST.dmUser(target.id, {
     embeds: [embed.toJSON()],
   });
 

@@ -4,7 +4,7 @@ import {
   APIUser,
 } from "discord-api-types/v10";
 import { Err, Ok, Result } from "ts-results";
-import { RedisGuildRole } from "../../generated/graphql";
+import { GetRedisGuildQuery, RedisGuildRole } from "../../generated/graphql";
 import Context from "../../model/context";
 
 // getHighestRole returns the highest role of a user in a guild
@@ -25,8 +25,9 @@ function getHighestRole(roles: RedisGuildRole[]): RedisGuildRole | null {
 export default async function hasPermissionTargetingMember(
   ctx: Context,
   interaction: APIChatInputApplicationCommandGuildInteraction,
+  redisGuild: NonNullable<GetRedisGuildQuery["redisGuildByGuildId"]>,
   targetUser?: APIUser,
-  targetMember?: APIInteractionDataResolvedGuildMember
+  targetMember?: Omit<APIInteractionDataResolvedGuildMember, "permissions">
 ): Promise<Result<true, string>> {
   if (!targetMember || !targetUser) {
     return Ok(true);
@@ -34,15 +35,12 @@ export default async function hasPermissionTargetingMember(
 
   const { member: executorMember } = interaction;
 
-  const guild = await ctx.sushiiAPI.sdk.getRedisGuild({
-    guild_id: interaction.guild_id,
-  });
-
-  if (!guild.redisGuildByGuildId?.roles) {
-    return Err("Guild not found");
+  // No roles in guild? Or just missing from query
+  if (!redisGuild.roles) {
+    return Ok(true);
   }
 
-  const { ownerId } = guild.redisGuildByGuildId;
+  const { ownerId } = redisGuild;
   // Cannot target self -- even if owner just to prevent failure
   if (targetUser.id === executorMember.user.id) {
     return Err("You cannot target yourself");
@@ -58,7 +56,7 @@ export default async function hasPermissionTargetingMember(
     return Err("You cannot target the owner");
   }
 
-  const rolesMap = guild.redisGuildByGuildId.roles.reduce((acc, role) => {
+  const rolesMap = redisGuild.roles.reduce((acc, role) => {
     if (role?.id) {
       acc.set(role.id, role);
     }
