@@ -15569,6 +15569,14 @@ export type CreateRoleMenuMutationVariables = Exact<{
 
 export type CreateRoleMenuMutation = { __typename?: 'Mutation', createRoleMenu?: { __typename?: 'CreateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null } | null } | null };
 
+export type DeleteRoleMenuMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  menuName: Scalars['String'];
+}>;
+
+
+export type DeleteRoleMenuMutation = { __typename?: 'Mutation', deleteRoleMenuByGuildIdAndMenuName?: { __typename?: 'DeleteRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null } | null } | null };
+
 export type GetRoleMenuQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
   menuName: Scalars['String'];
@@ -15992,6 +16000,17 @@ export const CreateRoleMenuDocument = gql`
   }
 }
     ${RoleMenuDataFragmentDoc}`;
+export const DeleteRoleMenuDocument = gql`
+    mutation deleteRoleMenu($guildId: BigInt!, $menuName: String!) {
+  deleteRoleMenuByGuildIdAndMenuName(
+    input: {guildId: $guildId, menuName: $menuName}
+  ) {
+    roleMenu {
+      ...RoleMenuData
+    }
+  }
+}
+    ${RoleMenuDataFragmentDoc}`;
 export const GetRoleMenuDocument = gql`
     query getRoleMenu($guildId: BigInt!, $menuName: String!) {
   roleMenuByGuildIdAndMenuName(guildId: $guildId, menuName: $menuName) {
@@ -16216,6 +16235,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     createRoleMenu(variables: CreateRoleMenuMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateRoleMenuMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateRoleMenuMutation>(CreateRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createRoleMenu', 'mutation');
+    },
+    deleteRoleMenu(variables: DeleteRoleMenuMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteRoleMenuMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteRoleMenuMutation>(DeleteRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteRoleMenu', 'mutation');
     },
     getRoleMenu(variables: GetRoleMenuQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetRoleMenuQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetRoleMenuQuery>(GetRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getRoleMenu', 'query');
