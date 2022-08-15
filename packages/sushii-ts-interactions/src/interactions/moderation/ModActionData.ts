@@ -13,7 +13,7 @@ import getInvokerUser from "../../utils/interactions";
 import parseDuration from "../../utils/parseDuration";
 import CommandInteractionOptionResolver from "../resolver";
 
-const ID_REGEX = /\d{17,20}/;
+const ID_REGEX = /\d{17,20}/g;
 
 export interface ModActionTarget {
   user: APIUser;
@@ -95,9 +95,13 @@ export default class ModActionData {
 
     const targetMemberPromises = [];
 
-    for (let i = 0; i < targetIds.length; i += 1) {
-      const id = targetIds[i];
+    for (const id of targetIds) {
+      // Raw ID provided, fetch member from API if not in resolved
+      if (!resolvedUsers[id] && !resolvedMembers[id]) {
+        targetMemberPromises.push(ctx.REST.getMember(interaction.guild_id, id));
+      }
 
+      // Mentioned and is a member
       if (resolvedUsers[id] && resolvedMembers[id]) {
         this.targets.set(id, {
           user: resolvedUsers[id],
@@ -105,8 +109,13 @@ export default class ModActionData {
         });
       }
 
-      targetMemberPromises.push(ctx.REST.getMember(interaction.guild_id, id));
-      // Fetch member from API if not in resolved
+      // Mentioned but not in guild
+      if (resolvedUsers[id] && !resolvedMembers[id]) {
+        this.targets.set(id, {
+          user: resolvedUsers[id],
+          member: null,
+        });
+      }
     }
 
     // Resolve all member fetches

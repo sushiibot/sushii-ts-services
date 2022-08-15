@@ -26,9 +26,39 @@ function buildResponseEmbed(
   action: ActionType,
   content: string
 ): EmbedBuilder {
+  const fields = [];
+
+  fields.push({
+    name: "Reason",
+    value: data.reason || "No reason provided",
+  });
+
+  if (data.skipDM) {
+    fields.push({
+      name: "User DM",
+      value: "Users were not sent a DM.",
+    });
+  }
+
+  if (data.deleteMessageDays) {
+    fields.push({
+      name: "Delete message days",
+      value: data.deleteMessageDays.toString(),
+    });
+  }
+
+  if (data.timeoutDuration) {
+    fields.push({
+      name: "Timeout duration",
+      value: data.timeoutDuration.humanize(),
+    });
+  }
+
   return new EmbedBuilder()
     .setTitle(`${ActionType.toPastTense(action)} ${data.targets.size} users`)
     .setDescription(content)
+    .setFields(fields)
+    .setImage(data.attachment?.url || null)
     .setColor(Color.Success);
 }
 
@@ -261,31 +291,29 @@ export default async function executeAction(
     return Err(new Error("Failed to get redis guild"));
   }
 
-  const promises = [];
-  for (const [, target] of data.targets) {
-    promises.push(
-      executeActionUser(
-        ctx,
-        interaction,
-        data,
-        target,
-        actionType,
-        redisGuild.redisGuildByGuildId
-      )
-    );
-  }
-
   let msg = "";
 
-  const results = await Promise.all(promises);
-  for (const result of results) {
-    if (result.err) {
-      msg += `:x: <@${result.val.target.user.id}> (\`${result.val.target.user.id}\`) - ${result.val.message}`;
+  for (const [, target] of data.targets) {
+    // Should be synchronous so we don't reuse the same case ID
+    // eslint-disable-next-line no-await-in-loop
+    const res = await executeActionUser(
+      ctx,
+      interaction,
+      data,
+      target,
+      actionType,
+      redisGuild.redisGuildByGuildId
+    );
+
+    if (res.err) {
+      msg += `:x: <@${res.val.target.user.id}> (\`${res.val.target.user.id}\`) - ${res.val.message}`;
     } else {
-      msg += `${ActionType.toEmoji(actionType)} <@${result.val.id}> (\`${
-        result.val.id
-      }\`) - ${ActionType.toPastTense(actionType)}`;
+      msg += `${ActionType.toEmoji(actionType)} <@${res.val.id}> (\`${
+        res.val.id
+      }\`) ${ActionType.toPastTense(actionType)}`;
     }
+
+    msg += "\n";
   }
 
   return Ok(buildResponseEmbed(ctx, data, actionType, msg));
