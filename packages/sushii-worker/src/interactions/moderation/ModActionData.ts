@@ -86,6 +86,10 @@ export default class ModActionData {
       );
     }
 
+    if (targetIds.length > 25) {
+      return Err("You can't target more than 25 users at once.");
+    }
+
     // For each ID, check if in resolved (mentioned)
     // else fetch member/user from API
 
