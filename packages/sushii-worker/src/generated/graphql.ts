@@ -6677,7 +6677,6 @@ export type Query = Node & {
   /** Reads a single `RoleMenu` using its globally unique `ID`. */
   roleMenu?: Maybe<RoleMenu>;
   roleMenuByGuildIdAndMenuName?: Maybe<RoleMenu>;
-  roleMenusStartingWith?: Maybe<RoleMenusStartingWithConnection>;
   /** Reads a single `Tag` using its globally unique `ID`. */
   tag?: Maybe<Tag>;
   tagByGuildIdAndTagName?: Maybe<Tag>;
@@ -7160,19 +7159,6 @@ export type QueryRoleMenuArgs = {
 export type QueryRoleMenuByGuildIdAndMenuNameArgs = {
   guildId: Scalars['BigInt'];
   menuName: Scalars['String'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryRoleMenusStartingWithArgs = {
-  after?: InputMaybe<Scalars['Cursor']>;
-  before?: InputMaybe<Scalars['Cursor']>;
-  filter?: InputMaybe<StringFilter>;
-  first?: InputMaybe<Scalars['Int']>;
-  guildId?: InputMaybe<Scalars['BigInt']>;
-  last?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  query?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -7912,26 +7898,6 @@ export enum RoleMenusOrderBy {
   RoleIdsAsc = 'ROLE_IDS_ASC',
   RoleIdsDesc = 'ROLE_IDS_DESC'
 }
-
-/** A connection to a list of `String` values. */
-export type RoleMenusStartingWithConnection = {
-  __typename?: 'RoleMenusStartingWithConnection';
-  /** A list of edges which contains the `String` and cursor to aid in pagination. */
-  edges: Array<RoleMenusStartingWithEdge>;
-  /** A list of `String` objects. */
-  nodes: Array<Maybe<Scalars['String']>>;
-  /** The count of *all* `String` you could get from the connection. */
-  totalCount: Scalars['Int'];
-};
-
-/** A `String` edge in the connection. */
-export type RoleMenusStartingWithEdge = {
-  __typename?: 'RoleMenusStartingWithEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']>;
-  /** The `String` at the end of the edge. */
-  node?: Maybe<Scalars['String']>;
-};
 
 /** A filter to be used against String fields. All fields are combined with a logical ‘and.’ */
 export type StringFilter = {
@@ -11529,8 +11495,6 @@ export type ResolversTypes = {
   RoleMenusHavingVariancePopulationInput: RoleMenusHavingVariancePopulationInput;
   RoleMenusHavingVarianceSampleInput: RoleMenusHavingVarianceSampleInput;
   RoleMenusOrderBy: RoleMenusOrderBy;
-  RoleMenusStartingWithConnection: ResolverTypeWrapper<RoleMenusStartingWithConnection>;
-  RoleMenusStartingWithEdge: ResolverTypeWrapper<RoleMenusStartingWithEdge>;
   String: ResolverTypeWrapper<Scalars['String']>;
   StringFilter: StringFilter;
   StringListFilter: StringListFilter;
@@ -12199,8 +12163,6 @@ export type ResolversParentTypes = {
   RoleMenusHavingSumInput: RoleMenusHavingSumInput;
   RoleMenusHavingVariancePopulationInput: RoleMenusHavingVariancePopulationInput;
   RoleMenusHavingVarianceSampleInput: RoleMenusHavingVarianceSampleInput;
-  RoleMenusStartingWithConnection: RoleMenusStartingWithConnection;
-  RoleMenusStartingWithEdge: RoleMenusStartingWithEdge;
   String: Scalars['String'];
   StringFilter: StringFilter;
   StringListFilter: StringListFilter;
@@ -14112,7 +14074,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   reminderByUserIdAndSetAt?: Resolver<Maybe<ResolversTypes['Reminder']>, ParentType, ContextType, RequireFields<QueryReminderByUserIdAndSetAtArgs, 'setAt' | 'userId'>>;
   roleMenu?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuArgs, 'nodeId'>>;
   roleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuByGuildIdAndMenuNameArgs, 'guildId' | 'menuName'>>;
-  roleMenusStartingWith?: Resolver<Maybe<ResolversTypes['RoleMenusStartingWithConnection']>, ParentType, ContextType, Partial<QueryRoleMenusStartingWithArgs>>;
   tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'nodeId'>>;
   tagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagByGuildIdAndTagNameArgs, 'guildId' | 'tagName'>>;
   timeframeUserLevels?: Resolver<Maybe<ResolversTypes['TimeframeUserLevelsConnection']>, ParentType, ContextType, Partial<QueryTimeframeUserLevelsArgs>>;
@@ -14379,19 +14340,6 @@ export type RoleMenusConnectionResolvers<ContextType = any, ParentType extends R
 export type RoleMenusEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenusEdge'] = ResolversParentTypes['RoleMenusEdge']> = {
   cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
   node?: Resolver<ResolversTypes['RoleMenu'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type RoleMenusStartingWithConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenusStartingWithConnection'] = ResolversParentTypes['RoleMenusStartingWithConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['RoleMenusStartingWithEdge']>, ParentType, ContextType>;
-  nodes?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type RoleMenusStartingWithEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenusStartingWithEdge'] = ResolversParentTypes['RoleMenusStartingWithEdge']> = {
-  cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -15383,8 +15331,6 @@ export type Resolvers<ContextType = any> = {
   RoleMenuVarianceSampleAggregates?: RoleMenuVarianceSampleAggregatesResolvers<ContextType>;
   RoleMenusConnection?: RoleMenusConnectionResolvers<ContextType>;
   RoleMenusEdge?: RoleMenusEdgeResolvers<ContextType>;
-  RoleMenusStartingWithConnection?: RoleMenusStartingWithConnectionResolvers<ContextType>;
-  RoleMenusStartingWithEdge?: RoleMenusStartingWithEdgeResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
   TagAggregates?: TagAggregatesResolvers<ContextType>;
   TagAverageAggregates?: TagAverageAggregatesResolvers<ContextType>;
@@ -15491,7 +15437,7 @@ export type GetRedisGuildQueryVariables = Exact<{
 }>;
 
 
-export type GetRedisGuildQuery = { __typename?: 'Query', redisGuildByGuildId?: { __typename?: 'RedisGuild', afkChannelId?: string | null, afkTimeout: number, applicationId?: string | null, banner?: string | null, channels?: Array<string | null> | null, defaultMessageNotifications?: number | null, description?: string | null, discoverySplash?: string | null, emojis?: Array<string | null> | null, explicitContentFilter?: number | null, features?: Array<string | null> | null, icon?: string | null, id: string, joinedAt?: string | null, large?: boolean | null, maxMembers?: number | null, maxVideoChannelUsers?: number | null, memberCount?: number | null, members?: Array<string | null> | null, mfaLevel?: number | null, name: string, nsfwLevel: number, ownerId: string, preferredLocale?: string | null, premiumSubscriptionCount?: number | null, premiumTier: number, presences?: Array<string | null> | null, rulesChannelId?: string | null, splash?: string | null, systemChannelFlags?: number | null, systemChannelId?: string | null, unavailable?: boolean | null, vanityUrlCode?: string | null, verificationLevel?: number | null, voiceStates?: Array<string | null> | null, roles?: Array<{ __typename?: 'RedisGuildRole', id: string, color: number, hoist: boolean, icon?: string | null, managed: boolean, mentionable: boolean, position: number, name: string, permissions: string, unicode_emoji?: string | null } | null> | null } | null };
+export type GetRedisGuildQuery = { __typename?: 'Query', redisGuildByGuildId?: { __typename?: 'RedisGuild', afkChannelId?: string | null, afkTimeout: number, applicationId?: string | null, banner?: string | null, channels?: Array<string | null> | null, defaultMessageNotifications?: number | null, description?: string | null, discoverySplash?: string | null, explicitContentFilter?: number | null, features?: Array<string | null> | null, icon?: string | null, id: string, joinedAt?: string | null, large?: boolean | null, maxMembers?: number | null, maxVideoChannelUsers?: number | null, memberCount?: number | null, members?: Array<string | null> | null, mfaLevel?: number | null, name: string, nsfwLevel: number, ownerId: string, preferredLocale?: string | null, premiumSubscriptionCount?: number | null, premiumTier: number, presences?: Array<string | null> | null, rulesChannelId?: string | null, splash?: string | null, systemChannelFlags?: number | null, systemChannelId?: string | null, unavailable?: boolean | null, vanityUrlCode?: string | null, verificationLevel?: number | null, voiceStates?: Array<string | null> | null, roles?: Array<{ __typename?: 'RedisGuildRole', id: string, color: number, hoist: boolean, icon?: string | null, managed: boolean, mentionable: boolean, position: number, name: string, permissions: string, unicode_emoji?: string | null } | null> | null } | null };
 
 export type GuildConfigByIdQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -15879,7 +15825,6 @@ export const GetRedisGuildDocument = gql`
     defaultMessageNotifications
     description
     discoverySplash
-    emojis
     explicitContentFilter
     features
     icon

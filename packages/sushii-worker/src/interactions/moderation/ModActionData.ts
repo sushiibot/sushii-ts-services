@@ -42,7 +42,7 @@ export default class ModActionData {
    */
   public timeoutDuration?: Duration;
 
-  public skipDM: boolean;
+  public sendDM: boolean;
 
   constructor(interaction: APIChatInputApplicationCommandGuildInteraction) {
     this.options = new CommandInteractionOptionResolver(
@@ -65,7 +65,7 @@ export default class ModActionData {
       this.timeoutDuration = parseDuration(durationStr) || undefined;
     }
 
-    this.skipDM = this.options.getBoolean("skip_dm") || false;
+    this.sendDM = this.options.getBoolean("send_dm") || true;
   }
 
   async fetchTargets(
@@ -73,7 +73,7 @@ export default class ModActionData {
     interaction: APIChatInputApplicationCommandGuildInteraction
   ): Promise<Result<void, string>> {
     // Get IDs from string
-    const targetsString = this.options.getString("user");
+    const targetsString = this.options.getString("users");
     if (!targetsString) {
       // user option should be required so this should only throw if very wrong.
       return Err("No target users provided");
@@ -81,7 +81,9 @@ export default class ModActionData {
 
     const targetIds = targetsString.match(ID_REGEX);
     if (!targetIds) {
-      return Err("No targets IDs found");
+      return Err(
+        "No users were provided, please specify which users to target with IDs or mentions."
+      );
     }
 
     // For each ID, check if in resolved (mentioned)
@@ -140,8 +142,8 @@ export default class ModActionData {
           targetUserPromises.push(ctx.REST.getUser(targetIds[i]));
 
           logger.debug(
-            result.value.val,
-            "fetch member not found, fetching user instead"
+            "fetch member not found (%s), fetching user instead",
+            result.value.val.message
           );
         }
       } else {

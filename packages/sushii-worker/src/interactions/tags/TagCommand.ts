@@ -5,6 +5,7 @@ import {
   APIAttachment,
   APIChatInputApplicationCommandGuildInteraction,
   APIEmbedField,
+  MessageFlags,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
 import { t } from "i18next";
@@ -452,6 +453,7 @@ export default class TagCommand extends SlashCommandHandler {
             .setColor(Color.Error)
             .toJSON(),
         ],
+        flags: MessageFlags.Ephemeral,
       });
 
       return;

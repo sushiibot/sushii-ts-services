@@ -13,7 +13,12 @@ import {
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
-import { attachmentOption, reasonOption, skipDMOption } from "./options";
+import {
+  attachmentOption,
+  reasonOption,
+  sendDMOption,
+  usersOption,
+} from "./options";
 
 export default class TimeoutCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -22,12 +27,10 @@ export default class TimeoutCommand extends SlashCommandHandler {
 
   command = new SlashCommandBuilder()
     .setName("timeout")
-    .setDescription("Timeout a member.")
+    .setDescription("Timeout members.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
     .setDMPermission(false)
-    .addUserOption((o) =>
-      o.setName("user").setDescription("Who to timeout.").setRequired(true)
-    )
+    .addStringOption(usersOption(ActionType.Timeout))
     .addStringOption((o) =>
       o
         .setName("duration")
@@ -36,7 +39,7 @@ export default class TimeoutCommand extends SlashCommandHandler {
     )
     .addStringOption(reasonOption(ActionType.Timeout))
     .addAttachmentOption(attachmentOption)
-    .addBooleanOption(skipDMOption)
+    .addBooleanOption(sendDMOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

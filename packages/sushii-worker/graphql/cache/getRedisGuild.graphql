@@ -8,7 +8,8 @@ query getRedisGuild($guild_id: BigInt!) {
     defaultMessageNotifications
     description
     discoverySplash
-    emojis
+    # Emojis are set as string in graphql but are objects in redis
+    # emojis
     explicitContentFilter
     features
     icon

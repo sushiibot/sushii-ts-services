@@ -13,7 +13,12 @@ import {
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
-import { attachmentOption, reasonOption, skipDMOption } from "./options";
+import {
+  attachmentOption,
+  reasonOption,
+  sendDMOption,
+  usersOption,
+} from "./options";
 
 export default class KickCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -22,15 +27,13 @@ export default class KickCommand extends SlashCommandHandler {
 
   command = new SlashCommandBuilder()
     .setName("kick")
-    .setDescription("Kick a member.")
+    .setDescription("Kick members.")
     .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
     .setDMPermission(false)
-    .addUserOption((o) =>
-      o.setName("user").setDescription("Who to kick.").setRequired(true)
-    )
+    .addStringOption(usersOption(ActionType.Kick))
     .addStringOption(reasonOption(ActionType.Kick))
     .addAttachmentOption(attachmentOption)
-    .addBooleanOption(skipDMOption)
+    .addBooleanOption(sendDMOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

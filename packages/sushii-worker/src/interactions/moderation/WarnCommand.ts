@@ -13,7 +13,12 @@ import {
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
-import { attachmentOption, reasonOption, skipDMOption } from "./options";
+import {
+  attachmentOption,
+  reasonOption,
+  sendDMOption,
+  usersOption,
+} from "./options";
 
 export default class WarnCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -22,15 +27,13 @@ export default class WarnCommand extends SlashCommandHandler {
 
   command = new SlashCommandBuilder()
     .setName("warn")
-    .setDescription("Warn a member.")
+    .setDescription("Warn members.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
     .setDMPermission(false)
-    .addUserOption((o) =>
-      o.setName("user").setDescription("Who to warn.").setRequired(true)
-    )
+    .addStringOption(usersOption(ActionType.Warn))
     .addStringOption(reasonOption(ActionType.Warn))
     .addAttachmentOption(attachmentOption)
-    .addBooleanOption(skipDMOption)
+    .addBooleanOption(sendDMOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

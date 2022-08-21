@@ -13,7 +13,12 @@ import {
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
-import { attachmentOption, reasonOption, skipDMOption } from "./options";
+import {
+  attachmentOption,
+  reasonOption,
+  sendDMOption,
+  usersOption,
+} from "./options";
 
 export default class BanCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -22,12 +27,10 @@ export default class BanCommand extends SlashCommandHandler {
 
   command = new SlashCommandBuilder()
     .setName("ban")
-    .setDescription("Ban a member.")
+    .setDescription("Ban users.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
     .setDMPermission(false)
-    .addStringOption((o) =>
-      o.setName("user").setDescription("Who to ban.").setRequired(true)
-    )
+    .addStringOption(usersOption(ActionType.Ban))
     .addIntegerOption((o) =>
       o
         .setName("days_to_delete")
@@ -38,7 +41,7 @@ export default class BanCommand extends SlashCommandHandler {
     )
     .addStringOption(reasonOption(ActionType.Ban))
     .addAttachmentOption(attachmentOption)
-    .addBooleanOption(skipDMOption)
+    .addBooleanOption(sendDMOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

@@ -2,9 +2,9 @@ import { EmbedBuilder } from "@discordjs/builders";
 import dayjs from "dayjs";
 import {
   APIChatInputApplicationCommandGuildInteraction,
+  APIMessage,
   APIUser,
 } from "discord-api-types/v10";
-import { t } from "i18next";
 import { Err, Ok, Result } from "ts-results";
 import { GetRedisGuildQuery } from "../../generated/graphql";
 import logger from "../../logger";
@@ -33,17 +33,18 @@ function buildResponseEmbed(
     value: data.reason || "No reason provided",
   });
 
-  if (data.skipDM) {
-    fields.push({
-      name: "User DM",
-      value: "Users were not sent a DM.",
-    });
-  }
-
   if (data.deleteMessageDays) {
     fields.push({
       name: "Delete message days",
       value: data.deleteMessageDays.toString(),
+    });
+  }
+
+  // No delete message days
+  if (action === ActionType.Ban && !data.deleteMessageDays) {
+    fields.push({
+      name: "Delete message days",
+      value: "No messages were deleted.",
     });
   }
 
@@ -53,6 +54,13 @@ function buildResponseEmbed(
       value: data.timeoutDuration.humanize(),
     });
   }
+
+  fields.push({
+    name: "User DM",
+    value: data.sendDM
+      ? "Users were sent a DM with the provided reason."
+      : "Users were **not** sent a DM with the provided reason.",
+  });
 
   return new EmbedBuilder()
     .setTitle(`${ActionType.toPastTense(action)} ${data.targets.size} users`)
@@ -71,6 +79,14 @@ async function execActionUser(
 ): Promise<Result<ModActionTarget, ActionError>> {
   switch (actionType) {
     case ActionType.Kick: {
+      // Member already fetched earlier
+      if (!target.member) {
+        return Err({
+          target,
+          message: "User is not in the server",
+        });
+      }
+
       const res = await ctx.REST.kickMember(
         interaction.guild_id,
         target.user.id,
@@ -120,6 +136,13 @@ async function execActionUser(
     }
     case ActionType.Timeout:
     case ActionType.TimeoutAdjust: {
+      if (!target.member) {
+        return Err({
+          target,
+          message: "User is not in the server",
+        });
+      }
+
       // Timeout and adjust are both same, just update timeout end time
 
       const res = await ctx.REST.timeoutMember(
@@ -139,6 +162,13 @@ async function execActionUser(
       break;
     }
     case ActionType.TimeoutRemove: {
+      if (!target.member) {
+        return Err({
+          target,
+          message: "User is not in the server",
+        });
+      }
+
       const res = await ctx.REST.timeoutMember(
         interaction.guild_id,
         target.user.id,
@@ -156,6 +186,13 @@ async function execActionUser(
       break;
     }
     case ActionType.Warn:
+      if (!target.member) {
+        return Err({
+          target,
+          message: "User is not in the server",
+        });
+      }
+
       // Nothing, only DM
       break;
   }
@@ -182,10 +219,7 @@ async function executeActionUser(
   if (hasPermsTargetingMember.err) {
     return Err({
       target,
-      message: t("generic.error.unauthorized_target", {
-        ns: "commands",
-        message: hasPermsTargetingMember.val,
-      }),
+      message: hasPermsTargetingMember.val,
     });
   }
 
@@ -217,9 +251,12 @@ async function executeActionUser(
     },
   });
 
-  let dmRes;
-  // DM before for ban
-  if (!data.skipDM && actionType !== ActionType.Ban) {
+  // Only DM if should DM AND if target is in the server.
+  const shouldDM = data.sendDM && target.member;
+
+  let dmRes: Result<APIMessage, string> | null = null;
+  // DM before for ban and send dm
+  if (actionType === ActionType.Ban && shouldDM) {
     dmRes = await sendModActionDM(
       ctx,
       interaction,
@@ -233,8 +270,8 @@ async function executeActionUser(
   // REST methods will throw if it is not a successful request
   const res = await execActionUser(ctx, interaction, data, target, actionType);
 
-  // DM after for non-ban
-  if (!data.skipDM && actionType !== ActionType.Ban) {
+  // DM after for non-ban and send dm
+  if (actionType !== ActionType.Ban && shouldDM) {
     dmRes = await sendModActionDM(
       ctx,
       interaction,
@@ -248,10 +285,10 @@ async function executeActionUser(
   if (res.err) {
     // Delete DM reason if it was sent
     let deleteDMPromise;
-    if (dmRes?.ok) {
+    if (dmRes && dmRes.ok) {
       deleteDMPromise = ctx.REST.deleteChannelMessage(
         dmRes.val.channel_id,
-        dmRes.val.channel_id
+        dmRes.val.id
       );
     }
 
