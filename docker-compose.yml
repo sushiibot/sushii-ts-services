@@ -2,7 +2,7 @@ version: "3.8"
 services:
     sushii_interactions:
         build:
-            dockerfile: ./dockerfiles/sushii-ts-interactions/Dockerfile
+            dockerfile: ./dockerfiles/sushii-worker/Dockerfile
             context: .
         depends_on:
             - sushii_data

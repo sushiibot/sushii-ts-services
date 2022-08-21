@@ -9,19 +9,22 @@ import {
 import { isGuildInteraction } from "discord-api-types/utils/v10";
 import {
   APIChatInputApplicationCommandGuildInteraction,
-  MessageFlags,
+  ButtonStyle,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
 import { t } from "i18next";
 import { None, Option, Some } from "ts-results";
-import { GetRoleMenuQuery } from "../../generated/graphql";
+import { GetRoleMenuQuery, RedisGuildRole } from "../../generated/graphql";
+import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
+import { interactionReplyErrorMessage } from "../responses/error";
+import { buildCustomID } from "./RoleMenuButtonHandler";
 
-const RE_EMOJI = /(<a?)?:(w+):(d{18}>)/;
-const RE_ROLE = /<@&\d{17,20}>/g;
+const RE_EMOJI = /(<a?)?:(w+):(d{17,20}>)/;
+const RE_ROLE = /<@&(\d{17,20})>/g;
 
 enum RoleMenuOption {
   Name = "menu_name",
@@ -37,13 +40,6 @@ enum RoleMenuOption {
 enum RoleMenuType {
   SelectMenu = "select_menu",
   Buttons = "buttons",
-}
-
-function roleCustomId(
-  interaction: APIChatInputApplicationCommandGuildInteraction,
-  roleId: string
-): string {
-  return `${interaction.guild_id}:${roleId}`;
 }
 
 export default class RoleMenuCommand extends SlashCommandHandler {
@@ -63,11 +59,13 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     .addSubcommand((c) =>
       c
         .setName("new")
+        .setDescription("Create a new role menu.")
         .addStringOption((o) =>
           o
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the role menu.")
             .setRequired(true)
+            .setAutocomplete(true)
         )
         .addStringOption((o) =>
           o
@@ -99,6 +97,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the role menu to edit.")
             .setRequired(true)
+            .setAutocomplete(true)
         )
         .addStringOption((o) =>
           o
@@ -136,6 +135,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the menu to add the roles to.")
             .setRequired(true)
+            .setAutocomplete(true)
         )
         .addStringOption((o) =>
           o
@@ -153,6 +153,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the menu to remove the roles from.")
             .setRequired(true)
+            .setAutocomplete(true)
         )
         .addStringOption((o) =>
           o
@@ -172,16 +173,35 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the menu to add the roles to.")
             .setRequired(true)
+            .setAutocomplete(true)
         )
     )
     .addSubcommand((c) =>
       c
         .setName("send")
+        .setDescription("Send a role menu to a channel.")
         .addStringOption((o) =>
           o
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the role menu.")
             .setRequired(true)
+            .setAutocomplete(true)
+        )
+        .addStringOption((o) =>
+          o
+            .setName(RoleMenuOption.Type)
+            .setDescription("The type of menu to send.")
+            .setRequired(true)
+            .setChoices(
+              {
+                name: "Select menu",
+                value: RoleMenuType.SelectMenu,
+              },
+              {
+                name: "Buttons",
+                value: RoleMenuType.Buttons,
+              }
+            )
         )
         .addChannelOption((o) =>
           o
@@ -190,22 +210,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
               "The channel to send the role menu to, by default the current channel."
             )
             .setRequired(false)
-        )
-        .addStringOption((o) =>
-          o
-            .setName(RoleMenuOption.Type)
-            .setDescription("The type of menu to send.")
-            .setRequired(false)
-            .setChoices(
-              {
-                name: "Select Menus",
-                value: RoleMenuType.SelectMenu,
-              },
-              {
-                name: "Buttons",
-                value: RoleMenuType.Buttons,
-              }
-            )
         )
     )
     .toJSON();
@@ -284,8 +288,30 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     });
 
     await ctx.REST.interactionReply(interaction, {
-      content: t("rolemenu.new.created"),
-      flags: MessageFlags.Ephemeral,
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("Created a new role menu")
+          .setFields([
+            {
+              name: "Name",
+              value: name,
+            },
+            {
+              name: "Description",
+              value: description || "No description set.",
+            },
+            {
+              name: "Max Roles",
+              value: maxRoles?.toString() || "No limit on max roles.",
+            },
+            {
+              name: "Required",
+              value: requiredRole ? `<&@${requiredRole}>` : "No required role.",
+            },
+          ])
+          .setColor(Color.Success)
+          .toJSON(),
+      ],
     });
   }
 
@@ -373,7 +399,8 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No role provided.");
     }
 
-    const roleIds = roles.match(RE_ROLE);
+    // First match to get the ID group
+    const roleIds = [...roles.matchAll(RE_ROLE)].map((match) => match[1]);
     if (!roleIds) {
       await ctx.REST.interactionReply(interaction, {
         content: t("rolemenu.edit.no_roles_given"),
@@ -414,11 +441,11 @@ export default class RoleMenuCommand extends SlashCommandHandler {
           .setTitle("Added roles to role menu")
           .setFields([
             {
-              name: "New roles",
-              value: newRoleIds.map((id) => `<@&${id}>`).join(" "),
+              name: "Added roles",
+              value: roleIds.map((id) => `<@&${id}>`).join(" "),
             },
             {
-              name: "Updated menu roles",
+              name: "New menu roles",
               value: newRoleIds.map((id) => `<@&${id}>`).join(" "),
             },
           ])
@@ -453,7 +480,9 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No role provided.");
     }
 
-    const roleIdsToRemove = roles.match(RE_ROLE);
+    const roleIdsToRemove = [...roles.matchAll(RE_ROLE)].map(
+      (match) => match[1]
+    );
     if (!roleIdsToRemove) {
       await ctx.REST.interactionReply(interaction, {
         content: t("rolemenu.edit.no_roles_given"),
@@ -488,7 +517,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
               value: roleIdsToRemove.map((id) => `<@&${id}>`).join(" "),
             },
             {
-              name: "Updated menu roles",
+              name: "New menu roles",
               value:
                 newRoleIds?.map((id) => `<@&${id}>`).join(" ") ||
                 "Menu has no roles",
@@ -535,15 +564,16 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No name provided.");
     }
 
-    const sendChannel = options.getString(RoleMenuOption.Channel);
-    if (!sendChannel) {
-      throw new Error("No sendChannel provided.");
-    }
+    const sendChannel = options.getChannel(RoleMenuOption.Channel);
+    const sendChannelId = sendChannel?.id || interaction.channel_id;
 
     const type = options.getString(RoleMenuOption.Type);
     if (!type) {
       throw new Error("No type provided.");
     }
+
+    // ------------------------------------------------------------
+    // Get menu from db
 
     const roleMenu = await this.getMenu(ctx, interaction, name);
     if (roleMenu.none) {
@@ -556,10 +586,44 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     const roleMenuData = roleMenu.safeUnwrap();
 
+    // ------------------------------------------------------------
+    // Get guild role names
+    const redisGuild = await ctx.sushiiAPI.sdk.getRedisGuild({
+      guild_id: interaction.guild_id,
+    });
+
+    const guildRoles = redisGuild.redisGuildByGuildId?.roles;
+    if (!guildRoles) {
+      throw new Error("No roles found in guild.");
+    }
+
+    const guildRolesMap = guildRoles.reduce((map, role) => {
+      if (role) {
+        map.set(role.id, role);
+      }
+
+      return map;
+    }, new Map<string, RedisGuildRole>());
+
     if (!roleMenuData.roleIds || roleMenuData.roleIds.length === 0) {
-      await ctx.REST.interactionReply(interaction, {
-        content: t("rolemenu.edit.menu_has_no_roles"),
-      });
+      await interactionReplyErrorMessage(
+        ctx,
+        interaction,
+        t("rolemenu.send.error.menu_has_no_roles")
+      );
+
+      return;
+    }
+
+    if (
+      roleMenuData.maxCount &&
+      roleMenuData.roleIds.length < roleMenuData.maxCount
+    ) {
+      await interactionReplyErrorMessage(
+        ctx,
+        interaction,
+        t("rolemenu.send.error.menu_has_less_roles_than_max")
+      );
 
       return;
     }
@@ -590,30 +654,29 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     // Build buttons
     const components = [];
     if (type === RoleMenuType.Buttons) {
-      const rowButtons = [];
+      let row = new ActionRowBuilder<ButtonBuilder>();
 
       for (const roleId of roleIds) {
-        const button = new ButtonBuilder({
-          custom_id: roleCustomId(interaction, roleId),
-          label: `<@&${roleId}>`,
-        });
+        const button = new ButtonBuilder()
+          .setCustomId(buildCustomID(roleId))
+          .setLabel(guildRolesMap.get(roleId)?.name || roleId)
+          .setStyle(ButtonStyle.Secondary);
 
-        rowButtons.push(button);
+        // Row full, push to component rows list
+        if (row.components.length === 5) {
+          components.push(row.toJSON());
 
-        if (rowButtons.length === 5) {
-          const row = new ActionRowBuilder<ButtonBuilder>()
-            .addComponents(rowButtons)
-            .toJSON();
-          components.push(row);
+          // Create new row
+          row = new ActionRowBuilder<ButtonBuilder>();
         }
+
+        // Add component to row
+        row = row.addComponents([button]);
       }
 
       // No more roles, check again if there are any remaining buttons
-      if (rowButtons.length > 0) {
-        const row = new ActionRowBuilder<ButtonBuilder>()
-          .addComponents(rowButtons)
-          .toJSON();
-        components.push(row);
+      if (row.components.length > 0) {
+        components.push(row.toJSON());
       }
     }
 
@@ -625,25 +688,31 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
       for (const roleId of roleIds) {
         const option = new SelectMenuOptionBuilder()
-          .setValue(roleCustomId(interaction, roleId))
-          .setLabel(`<@&${roleId}>`);
+          .setValue(buildCustomID(roleId))
+          .setLabel(guildRolesMap.get(roleId)?.name || roleId);
 
         selectOptions.push(option);
       }
 
-      const selectMenu = new SelectMenuBuilder().addOptions(selectOptions);
+      const selectMenu = new SelectMenuBuilder()
+        .setPlaceholder("Select a role")
+        .setCustomId(`roleMenu:select:${name}`)
+        .addOptions(selectOptions)
+        .setMaxValues(roleMenuData.maxCount || 25);
+
       const row = new ActionRowBuilder<SelectMenuBuilder>()
         .addComponents([selectMenu])
         .toJSON();
       components.push(row);
     }
 
-    const res = await ctx.REST.sendChannelMessage(sendChannel, {
+    const res = await ctx.REST.sendChannelMessage(sendChannelId, {
       embeds: [embed.toJSON()],
       components,
     });
 
     if (res.err) {
+      logger.error(res.val, "Error sending role menu message");
       await ctx.REST.interactionReply(interaction, {
         content: t("rolemenu.edit.error.send_message"),
       });
@@ -655,7 +724,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       embeds: [
         new EmbedBuilder()
           .setTitle("Sent role menu")
-          .setDescription(`<#${sendChannel}>`)
+          .setDescription(`<#${sendChannelId}>`)
           .setColor(Color.Success)
           .toJSON(),
       ],

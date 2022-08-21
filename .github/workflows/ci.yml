@@ -13,7 +13,7 @@ jobs:
       matrix:
         app:
           - sushii-data
-          - sushii-interactions
+          - sushii-worker
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node.js

@@ -18,6 +18,9 @@ import ReminderDeleteAutocomplete from "./reminders/ReminderAutocomplete";
 import ReminderCommand from "./reminders/ReminderCommand";
 import WarnCommand from "./moderation/WarnCommand";
 import HistoryCommand from "./moderation/HistoryCommand";
+import RoleMenuCommand from "./roles/RoleMenu";
+import RoleMenuAutocomplete from "./roles/RoleMenuAutocomplete";
+import RoleMenuButtonHandler from "./roles/RoleMenuButtonHandler";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -42,7 +45,11 @@ export default function addCommands(
     new NotificationCommand(),
     new ReminderCommand(),
 
+    // Tags
     new TagCommand(),
+
+    // Roles
+    new RoleMenuCommand(),
 
     // Settings
     new WelcomeCommand()
@@ -50,13 +57,19 @@ export default function addCommands(
 
   interactionClient.addContextMenu(new UserInfoHandler());
 
-  interactionClient.addButton(new ContextLookUpButtonHandler());
+  interactionClient.addButtons(
+    new ContextLookUpButtonHandler(),
+
+    new RoleMenuButtonHandler()
+  );
 
   interactionClient.addAutocompleteHandlers(
     new NotificationListAutocomplete(),
 
     new TagGetAutocomplete(),
 
-    new ReminderDeleteAutocomplete()
+    new ReminderDeleteAutocomplete(),
+
+    new RoleMenuAutocomplete()
   );
 }

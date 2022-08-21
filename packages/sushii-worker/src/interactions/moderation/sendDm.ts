@@ -3,6 +3,7 @@ import {
   APIChatInputApplicationCommandGuildInteraction,
   APIMessage,
   APIUser,
+  RESTJSONErrorCodes,
 } from "discord-api-types/v10";
 import { Err, Result } from "ts-results";
 import Context from "../../model/context";
@@ -69,7 +70,7 @@ export default async function sendModActionDM(
   });
 
   if (res.err) {
-    if (res.val.code === "50007") {
+    if (res.val.code === RESTJSONErrorCodes.CannotSendMessagesToThisUser) {
       return Err("User has DMs disabled or bot is blocked.");
     }
   }

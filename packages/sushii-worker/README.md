@@ -1,4 +1,4 @@
-# sushii-interactions
+# sushii-worker
 
 TypeScript + [Discord API Types](https://github.com/discordjs/discord-api-types)
 

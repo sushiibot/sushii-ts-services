@@ -12,7 +12,7 @@ jobs:
       matrix:
         app:
           - sushii-data
-          - sushii-ts-interactions
+          - sushii-worker
     steps:
       - name: Checkout
         uses: actions/checkout@v2

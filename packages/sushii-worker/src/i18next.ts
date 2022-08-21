@@ -13,6 +13,9 @@ export default async function initI18next(): Promise<void> {
         loadPath: "./locales/{{lng}}/{{ns}}.json",
       },
       saveMissing: true,
+      interpolation: {
+        escapeValue: false,
+      },
     },
     (err) => {
       if (err) {

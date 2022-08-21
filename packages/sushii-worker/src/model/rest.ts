@@ -20,6 +20,8 @@ import {
   RESTDeleteAPIGuildMemberResult,
   RESTPatchAPIWebhookWithTokenMessageResult,
   RESTPostAPIInteractionFollowupResult,
+  RESTPutAPIGuildMemberRoleResult,
+  RESTDeleteAPIGuildMemberRoleResult,
 } from "discord-api-types/v10";
 import { Ok, Err, Result } from "ts-results";
 import { ConfigI } from "./config";
@@ -199,6 +201,26 @@ export default class RESTClient {
       this.rest.delete(Routes.guildMember(guildId, userId), {
         reason,
       })
+    );
+  }
+
+  public addMemberRole(
+    guildId: string,
+    userId: string,
+    roleId: string
+  ): APIPromiseResult<RESTPutAPIGuildMemberRoleResult> {
+    return this.handleError(
+      this.rest.put(Routes.guildMemberRole(guildId, userId, roleId))
+    );
+  }
+
+  public removeMemberRole(
+    guildId: string,
+    userId: string,
+    roleId: string
+  ): APIPromiseResult<RESTDeleteAPIGuildMemberRoleResult> {
+    return this.handleError(
+      this.rest.delete(Routes.guildMemberRole(guildId, userId, roleId))
     );
   }
 

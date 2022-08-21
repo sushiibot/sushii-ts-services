@@ -6677,6 +6677,7 @@ export type Query = Node & {
   /** Reads a single `RoleMenu` using its globally unique `ID`. */
   roleMenu?: Maybe<RoleMenu>;
   roleMenuByGuildIdAndMenuName?: Maybe<RoleMenu>;
+  roleMenusStartingWith?: Maybe<RoleMenusStartingWithConnection>;
   /** Reads a single `Tag` using its globally unique `ID`. */
   tag?: Maybe<Tag>;
   tagByGuildIdAndTagName?: Maybe<Tag>;
@@ -7159,6 +7160,19 @@ export type QueryRoleMenuArgs = {
 export type QueryRoleMenuByGuildIdAndMenuNameArgs = {
   guildId: Scalars['BigInt'];
   menuName: Scalars['String'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryRoleMenusStartingWithArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<StringFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  query?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -7898,6 +7912,26 @@ export enum RoleMenusOrderBy {
   RoleIdsAsc = 'ROLE_IDS_ASC',
   RoleIdsDesc = 'ROLE_IDS_DESC'
 }
+
+/** A connection to a list of `String` values. */
+export type RoleMenusStartingWithConnection = {
+  __typename?: 'RoleMenusStartingWithConnection';
+  /** A list of edges which contains the `String` and cursor to aid in pagination. */
+  edges: Array<RoleMenusStartingWithEdge>;
+  /** A list of `String` objects. */
+  nodes: Array<Maybe<Scalars['String']>>;
+  /** The count of *all* `String` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** A `String` edge in the connection. */
+export type RoleMenusStartingWithEdge = {
+  __typename?: 'RoleMenusStartingWithEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `String` at the end of the edge. */
+  node?: Maybe<Scalars['String']>;
+};
 
 /** A filter to be used against String fields. All fields are combined with a logical ‘and.’ */
 export type StringFilter = {
@@ -11495,6 +11529,8 @@ export type ResolversTypes = {
   RoleMenusHavingVariancePopulationInput: RoleMenusHavingVariancePopulationInput;
   RoleMenusHavingVarianceSampleInput: RoleMenusHavingVarianceSampleInput;
   RoleMenusOrderBy: RoleMenusOrderBy;
+  RoleMenusStartingWithConnection: ResolverTypeWrapper<RoleMenusStartingWithConnection>;
+  RoleMenusStartingWithEdge: ResolverTypeWrapper<RoleMenusStartingWithEdge>;
   String: ResolverTypeWrapper<Scalars['String']>;
   StringFilter: StringFilter;
   StringListFilter: StringListFilter;
@@ -12163,6 +12199,8 @@ export type ResolversParentTypes = {
   RoleMenusHavingSumInput: RoleMenusHavingSumInput;
   RoleMenusHavingVariancePopulationInput: RoleMenusHavingVariancePopulationInput;
   RoleMenusHavingVarianceSampleInput: RoleMenusHavingVarianceSampleInput;
+  RoleMenusStartingWithConnection: RoleMenusStartingWithConnection;
+  RoleMenusStartingWithEdge: RoleMenusStartingWithEdge;
   String: Scalars['String'];
   StringFilter: StringFilter;
   StringListFilter: StringListFilter;
@@ -14074,6 +14112,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   reminderByUserIdAndSetAt?: Resolver<Maybe<ResolversTypes['Reminder']>, ParentType, ContextType, RequireFields<QueryReminderByUserIdAndSetAtArgs, 'setAt' | 'userId'>>;
   roleMenu?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuArgs, 'nodeId'>>;
   roleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuByGuildIdAndMenuNameArgs, 'guildId' | 'menuName'>>;
+  roleMenusStartingWith?: Resolver<Maybe<ResolversTypes['RoleMenusStartingWithConnection']>, ParentType, ContextType, Partial<QueryRoleMenusStartingWithArgs>>;
   tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'nodeId'>>;
   tagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagByGuildIdAndTagNameArgs, 'guildId' | 'tagName'>>;
   timeframeUserLevels?: Resolver<Maybe<ResolversTypes['TimeframeUserLevelsConnection']>, ParentType, ContextType, Partial<QueryTimeframeUserLevelsArgs>>;
@@ -14340,6 +14379,19 @@ export type RoleMenusConnectionResolvers<ContextType = any, ParentType extends R
 export type RoleMenusEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenusEdge'] = ResolversParentTypes['RoleMenusEdge']> = {
   cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
   node?: Resolver<ResolversTypes['RoleMenu'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenusStartingWithConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenusStartingWithConnection'] = ResolversParentTypes['RoleMenusStartingWithConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['RoleMenusStartingWithEdge']>, ParentType, ContextType>;
+  nodes?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenusStartingWithEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenusStartingWithEdge'] = ResolversParentTypes['RoleMenusStartingWithEdge']> = {
+  cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -15331,6 +15383,8 @@ export type Resolvers<ContextType = any> = {
   RoleMenuVarianceSampleAggregates?: RoleMenuVarianceSampleAggregatesResolvers<ContextType>;
   RoleMenusConnection?: RoleMenusConnectionResolvers<ContextType>;
   RoleMenusEdge?: RoleMenusEdgeResolvers<ContextType>;
+  RoleMenusStartingWithConnection?: RoleMenusStartingWithConnectionResolvers<ContextType>;
+  RoleMenusStartingWithEdge?: RoleMenusStartingWithEdgeResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
   TagAggregates?: TagAggregatesResolvers<ContextType>;
   TagAverageAggregates?: TagAverageAggregatesResolvers<ContextType>;
@@ -15586,6 +15640,14 @@ export type GetRoleMenuQueryVariables = Exact<{
 export type GetRoleMenuQuery = { __typename?: 'Query', roleMenuByGuildIdAndMenuName?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null } | null };
 
 export type RoleMenuDataFragment = { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null };
+
+export type SearchRoleMenuStartingWithQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  menuNameStartsWith: Scalars['String'];
+}>;
+
+
+export type SearchRoleMenuStartingWithQuery = { __typename?: 'Query', allRoleMenus?: { __typename?: 'RoleMenusConnection', totalCount: number, nodes: Array<{ __typename?: 'RoleMenu', menuName: string }> } | null };
 
 export type UpdateRoleMenuMutationVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -16018,6 +16080,19 @@ export const GetRoleMenuDocument = gql`
   }
 }
     ${RoleMenuDataFragmentDoc}`;
+export const SearchRoleMenuStartingWithDocument = gql`
+    query searchRoleMenuStartingWith($guildId: BigInt!, $menuNameStartsWith: String!) {
+  allRoleMenus(
+    filter: {guildId: {equalTo: $guildId}, menuName: {startsWith: $menuNameStartsWith}}
+    first: 25
+  ) {
+    nodes {
+      menuName
+    }
+    totalCount
+  }
+}
+    `;
 export const UpdateRoleMenuDocument = gql`
     mutation updateRoleMenu($guildId: BigInt!, $menuName: String!, $roleMenuPatch: RoleMenuPatch!) {
   updateRoleMenuByGuildIdAndMenuName(
@@ -16241,6 +16316,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getRoleMenu(variables: GetRoleMenuQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetRoleMenuQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetRoleMenuQuery>(GetRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getRoleMenu', 'query');
+    },
+    searchRoleMenuStartingWith(variables: SearchRoleMenuStartingWithQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchRoleMenuStartingWithQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<SearchRoleMenuStartingWithQuery>(SearchRoleMenuStartingWithDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'searchRoleMenuStartingWith', 'query');
     },
     updateRoleMenu(variables: UpdateRoleMenuMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateRoleMenuMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateRoleMenuMutation>(UpdateRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateRoleMenu', 'mutation');

@@ -1,5 +1,5 @@
 {
-  "name": "@sushiibot/sushii-interactions",
+  "name": "@sushiibot/sushii-worker",
   "version": "1.0.0",
   "main": "index.js",
   "license": "AGPL-3.0-or-later",

@@ -2,17 +2,12 @@
   "keys": [
     {
       "use": "sig",
-      "kty": "RSA",
-      "kid": "79483b48-1e49-492f-9726-a37ef1b44e9c",
-      "alg": "RS256",
-      "n": "vdR8T6mGOvBd2IuDzgfz9JOcRrfoM0iJAAC9wiho94Uvp6Eyv7xoU00I1I_Tzt2Dk3O5GSw8fsSVgzd92wiLxK9eoVSLo_JrDf7lfiF2XUhkJtXeNdQsb_NE9gnjdNpUEchwxNk1gTjYlLGHSXXJh_8rrZ3QhtBJYEk0yWRMTbLOmyL1kUF2Tt7BCssK5BrnlDhuK-qtHIxOyN7tvOY_Sk-EP9Pugq9RFoHvvJWwft_EBYBa-q8oksMg9A_8_ZDksFT0yb6B92jrrObbZz5mmc7SQxjXXW5z6_bi5xA6Xyetb70iSZfm8m892OOevbMIkY5cC11UXRjFjm1sCXS3rQ",
-      "e": "AQAB",
-      "d": "IeI1tjp6PTb-aVKt2i7NOtDGSlE1X0IJQjjfpjJ0Wgop8W_ykQreTFApzVdG5VvgyocTeQzOV4pbbaqQCnLCD_-FkqJ2snLo7PycliD-8bOkPNJb8ZvHusvfeVNWiFsYOnxetKRYypINBq2Rimk96cqAT2Ml_4paLpeilngSrqN3Jdy5awN9-UIP0Y_iQIKLyV7iJ6dpB2gMlfoJ3NJQ_I5iPvV_bHmC6QR4hwzN2tUnkkiK8JfBNRmZ89RyPvkKUqQzxkDd5LA5Ujy0gjNLx42Y0v1PsvUGb13Fm8jCEnTimEzC7yAgNwBIgjSnwWJgl3FvLzqbfaA8bfD4hLIQ-Q",
-      "p": "ztdYze84Rp-Y3aQ6KgvWvelpziQAlhhR4vnjiLUd48TXs3ztFnlV4VUPQTQwQxGbdL3-YINky3lRmuhQzWmuLXZEXub1hMk7r_j5gFSXDbinrZ7xNvPcrFAPdfUcpdH-oq4C5sRqqhgVc0uBn0olsZMYdjp0G7jALUh-oDmVJp8",
-      "q": "6vIkmHkXvU1Rrp_dbtHyOOZ-A7kY818RPEaWNMdwhNz5cHEl_jP1hvwnlebczqTUj4sVUavMDZkCjFxnH2VrYBdjj5LDS8EELa_bLPcVgxjiJ_-gljVhx4NNQLSJZt_nrFKob4TvRsN-LF0JixIqP80Af22EoFLbEQaR0o9COjM",
-      "dp": "dRqWvIDja5iQA2wnQgbR3VN5A6x-aHv8YHT5zTw9X-bh-EySLlcjuB9gM5pIeLBPQxkOG7ZIKqrU-M7ucF2Ur0h2DQTVnAgSMt7S40UBAFO7GyERj_sgxK3PEwli3r61W4UJP32UphhcjJoDGRvxm0ecYdNWSRugMgMJLc1sFCE",
-      "dq": "UMLr0X3Oq0Po0B4j__QrT2Pr7VuzN_V190JMX9gu1X0gQYajiL5TqBMFiIHTZTVD3BPzQB_OBN6UAavBxwkV3_IqRzAr8d5nkUziCpLk0iu7kgRNL1UqR2rbI2Lr2HEfMh03yR3pImoQ9S8GGMglvci6YxNCg9n3c-LOPZMBMQ",
-      "qi": "rgVge5k9HK-pL_fIRCz5n7tLgHCUeZQu5OalaqnIDT7BPUtcSRzsXQLxlHiZ7IxEG1duHNRY-nRL2lvElLSCorLw5Pb3P0kqJLtPlclP7-RHZ6IVHqew-Dc25ouJBGmvxY8Kkat89zCS8IjEY6uN3IUhy1qOmjOj35qGlcCWUkg"
+      "kty": "OKP",
+      "kid": "fbc7358e-f5ae-415c-92c8-e9c07488dd85",
+      "crv": "Ed25519",
+      "alg": "EdDSA",
+      "x": "8MnHJViiR7OnJe_-kKOI5ARudXwoJqsabHlUPRaJiKo",
+      "d": "RS9X_pkVYu42X6HH_-mzLVafsHPl6MKVVgrtbhVBGws"
     }
   ]
 }

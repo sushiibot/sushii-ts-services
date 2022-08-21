@@ -206,8 +206,10 @@ export default class InteractionClient {
    *
    * @param componentHandler ButtonHandler to add
    */
-  public addButton(componentHandler: ButtonHandler): void {
-    this.buttonHandlers.set(componentHandler.customIDPrefix, componentHandler);
+  public addButtons(...buttonHandlers: ButtonHandler[]): void {
+    buttonHandlers.forEach((handler) => {
+      this.buttonHandlers.set(handler.customIDPrefix, handler);
+    });
   }
 
   /**

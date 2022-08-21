@@ -1,0 +1,17 @@
+query searchRoleMenuStartingWith(
+  $guildId: BigInt!
+  $menuNameStartsWith: String!
+) {
+  allRoleMenus(
+    filter: {
+      guildId: { equalTo: $guildId }
+      menuName: { startsWith: $menuNameStartsWith }
+    }
+    first: 25
+  ) {
+    nodes {
+      menuName
+    }
+    totalCount
+  }
+}
