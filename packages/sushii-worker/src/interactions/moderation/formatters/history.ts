@@ -29,6 +29,17 @@ export default function buildUserHistoryEmbed(
     return embed;
   }
 
+  const summary = query.allModLogs.nodes.reduce((m, item) => {
+    const oldCount = m.get(item.action) || 0;
+    m.set(item.action, oldCount + 1);
+
+    return m;
+  }, new Map<string, number>());
+
+  const summaryStr = Array.from(summary.entries()).map(
+    ([action, num]) => `${action} - ${num}`
+  );
+
   // Build case history
   const casesStr = query.allModLogs.nodes.map((c) => {
     let s = `\`#${c.caseId}\` **${c.action}** <t:${dayjs
@@ -45,7 +56,12 @@ export default function buildUserHistoryEmbed(
     return s;
   });
 
-  embed = embed.setDescription(casesStr.join("\n"));
+  embed = embed.setDescription(casesStr.join("\n")).addFields([
+    {
+      name: t("history.summary"),
+      value: summaryStr.join("\n"),
+    },
+  ]);
 
   return embed;
 }

@@ -88,7 +88,7 @@ export default class HistoryCommand extends SlashCommandHandler {
         name: `${user.username}#${user.discriminator}`,
         iconURL: userFaceURL,
       })
-      .setFields(fields);
+      .addFields(fields);
 
     await ctx.REST.interactionReply(interaction, {
       embeds: [userEmbed.toJSON()],
