@@ -207,20 +207,40 @@ export default class RESTClient {
   public addMemberRole(
     guildId: string,
     userId: string,
-    roleId: string
+    roleId: string,
+    reason?: string
   ): APIPromiseResult<RESTPutAPIGuildMemberRoleResult> {
     return this.handleError(
-      this.rest.put(Routes.guildMemberRole(guildId, userId, roleId))
+      this.rest.put(Routes.guildMemberRole(guildId, userId, roleId), { reason })
     );
   }
 
   public removeMemberRole(
     guildId: string,
     userId: string,
-    roleId: string
+    roleId: string,
+    reason?: string
   ): APIPromiseResult<RESTDeleteAPIGuildMemberRoleResult> {
     return this.handleError(
-      this.rest.delete(Routes.guildMemberRole(guildId, userId, roleId))
+      this.rest.delete(Routes.guildMemberRole(guildId, userId, roleId), {
+        reason,
+      })
+    );
+  }
+
+  public setMemberRoles(
+    guildId: string,
+    userId: string,
+    roleIds: string[],
+    reason?: string
+  ): APIPromiseResult<RESTPatchAPIGuildMemberResult> {
+    return this.handleError(
+      this.rest.patch(Routes.guildMember(guildId, userId), {
+        reason,
+        body: {
+          roles: roleIds,
+        },
+      })
     );
   }
 

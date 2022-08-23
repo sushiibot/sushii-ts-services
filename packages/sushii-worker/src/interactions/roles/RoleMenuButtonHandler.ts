@@ -2,67 +2,17 @@ import { EmbedBuilder } from "@discordjs/builders";
 
 import { isGuildInteraction } from "discord-api-types/utils/v10";
 import {
-  APIButtonComponentWithCustomId,
   APIMessageComponentButtonInteraction,
-  ComponentType,
   MessageFlags,
 } from "discord-api-types/v10";
 
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { ButtonHandler } from "../handlers";
-
-export const roleMenuButtonCustomIDPrefix = "roleMenu:";
-
-export interface RoleMenuButton {
-  roleId: string;
-}
-
-export function parseCustomID(customID: string): string | undefined {
-  if (!customID.startsWith(roleMenuButtonCustomIDPrefix)) {
-    return;
-  }
-
-  return customID.split(":").at(1);
-}
-
-export function buildCustomID(roleId: string): string {
-  return `${roleMenuButtonCustomIDPrefix}${roleId}`;
-}
-
-interface ButtonRoleData {
-  roleId: string;
-  label: string;
-}
-
-/**
- * Parse a message to get all the roles contained in buttons.
- */
-function getRoleMenuMessageRoles(
-  msg: APIMessageComponentButtonInteraction["message"]
-): ButtonRoleData[] {
-  if (!msg.components) {
-    return [];
-  }
-
-  return msg.components
-    .map((row) =>
-      row.components
-        .filter(
-          (component): component is APIButtonComponentWithCustomId =>
-            component.type === ComponentType.Button
-        )
-        .map((button) => ({
-          roleId: parseCustomID(button.custom_id),
-          label: button.label!,
-        }))
-        .filter((button): button is ButtonRoleData => !!button.roleId)
-    )
-    .flat();
-}
+import { parseCustomID, roleMenuCustomIDPrefix } from "./ids";
 
 export default class RoleMenuButtonHandler extends ButtonHandler {
-  customIDPrefix = roleMenuButtonCustomIDPrefix;
+  customIDPrefix = roleMenuCustomIDPrefix;
 
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
@@ -78,6 +28,8 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
       throw new Error("No role to add or remove");
     }
 
+    // If user already has role -> remove it
+    // If user doesn't have role -> add it
     const isRemovingRole = interaction.member.roles.includes(roleToAddOrRemove);
 
     let res;

@@ -21,7 +21,7 @@ import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
 import { interactionReplyErrorMessage } from "../responses/error";
-import { buildCustomID } from "./RoleMenuButtonHandler";
+import { buildCustomID, roleMenuCustomIDPrefix } from "./ids";
 
 const RE_EMOJI = /(<a?)?:(w+):(d{17,20}>)/;
 const RE_ROLE = /<@&(\d{17,20})>/g;
@@ -688,7 +688,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
       for (const roleId of roleIds) {
         const option = new SelectMenuOptionBuilder()
-          .setValue(buildCustomID(roleId))
+          .setValue(roleId)
           .setLabel(guildRolesMap.get(roleId)?.name || roleId);
 
         selectOptions.push(option);
@@ -696,7 +696,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
       const selectMenu = new SelectMenuBuilder()
         .setPlaceholder("Select a role")
-        .setCustomId(`roleMenu:select:${name}`)
+        .setCustomId(`${roleMenuCustomIDPrefix}:select:${name}`)
         .addOptions(selectOptions)
         .setMaxValues(roleMenuData.maxCount || 25);
 

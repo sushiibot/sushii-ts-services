@@ -21,6 +21,7 @@ import HistoryCommand from "./moderation/HistoryCommand";
 import RoleMenuCommand from "./roles/RoleMenu";
 import RoleMenuAutocomplete from "./roles/RoleMenuAutocomplete";
 import RoleMenuButtonHandler from "./roles/RoleMenuButtonHandler";
+import RoleMenuSelectMenuHandler from "./roles/RoleMenuSelectMenuHandler";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -62,6 +63,8 @@ export default function addCommands(
 
     new RoleMenuButtonHandler()
   );
+
+  interactionClient.addSelectMenu(new RoleMenuSelectMenuHandler());
 
   interactionClient.addAutocompleteHandlers(
     new NotificationListAutocomplete(),
