@@ -5,12 +5,14 @@ import {
   APIMessageComponentSelectMenuInteraction,
   MessageFlags,
 } from "discord-api-types/v10";
-import logger from "../../logger";
-
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SelectMenuHandler } from "../handlers";
-import { getRoleMenuMessageSelectRoles, roleMenuCustomIDPrefix } from "./ids";
+import {
+  getRoleMenuMessageSelectRoles,
+  getRoleMenuRequiredRole,
+  roleMenuCustomIDPrefix,
+} from "./ids";
 
 export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
   customIDPrefix = roleMenuCustomIDPrefix;
@@ -24,6 +26,24 @@ export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
       throw new Error("Not a guild interaction");
     }
 
+    const requiredRole = getRoleMenuRequiredRole(interaction.message);
+    if (requiredRole && !interaction.member.roles.includes(requiredRole)) {
+      await ctx.REST.interactionReply(interaction, {
+        embeds: [
+          new EmbedBuilder()
+            .setColor(Color.Error)
+            .setTitle("Failed to update your roles")
+            .setDescription(
+              `You need to have the <@&${requiredRole}> role to use this menu.`
+            )
+            .toJSON(),
+        ],
+        flags: MessageFlags.Ephemeral,
+      });
+
+      return;
+    }
+
     const menuRoles = getRoleMenuMessageSelectRoles(interaction.message);
 
     if (interaction.data.values.length === 0) {
@@ -35,10 +55,6 @@ export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
 
     // Updated total member roles
     const memberNewRoles = new Set(interaction.member.roles);
-
-    logger.debug("selected roles: %o", interaction.data.values);
-    logger.debug("member roles: %o", interaction.member.roles);
-    logger.debug("menu roles: %o", menuRoles);
 
     // Keep track of which ones are added and removed to show user
     const addedRoles = [];
@@ -66,13 +82,6 @@ export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
         removedRoles.push(role.roleId);
       }
     }
-
-    logger.debug(
-      "Added roles: %o, Removed roles: %o",
-      addedRoles,
-      removedRoles
-    );
-    logger.debug("memberNewRoles: %o", Array.from(memberNewRoles));
 
     let description = "";
     if (addedRoles.length > 0) {

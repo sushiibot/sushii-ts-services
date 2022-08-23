@@ -23,7 +23,6 @@ import CommandInteractionOptionResolver from "../resolver";
 import { interactionReplyErrorMessage } from "../responses/error";
 import { buildCustomID, roleMenuCustomIDPrefix } from "./ids";
 
-const RE_EMOJI = /(<a?)?:(w+):(d{17,20}>)/;
 const RE_ROLE = /<@&(\d{17,20})>/g;
 
 enum RoleMenuOption {
@@ -305,7 +304,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
               value: maxRoles?.toString() || "No limit on max roles.",
             },
             {
-              name: "Required",
+              name: "Required Role",
               value: requiredRole ? `<&@${requiredRole}>` : "No required role.",
             },
           ])

@@ -24,6 +24,46 @@ interface MenuRoleData {
   label: string;
 }
 
+export function getRoleMenuRequiredRole(
+  msg: APIMessageComponentButtonInteraction["message"]
+): string | null {
+  if (!msg.embeds) {
+    return null;
+  }
+
+  const embed = msg.embeds.at(0);
+  if (!embed) {
+    return null;
+  }
+
+  return (
+    embed.fields?.find((field) => field.name === "Required role")?.value || null
+  );
+}
+
+export function getRoleMenuMaxRoles(
+  msg: APIMessageComponentButtonInteraction["message"]
+): number | null {
+  if (!msg.embeds) {
+    return null;
+  }
+
+  const embed = msg.embeds.at(0);
+  if (!embed) {
+    return null;
+  }
+
+  const maxRoles = embed.fields?.find(
+    (field) => field.name === "Maximum roles you can pick"
+  )?.value;
+  if (!maxRoles) {
+    return null;
+  }
+
+  // NaN if invalid, which is falsy
+  return parseInt(maxRoles, 10) || null;
+}
+
 /**
  * Parse a message to get all the roles contained in buttons.
  */
