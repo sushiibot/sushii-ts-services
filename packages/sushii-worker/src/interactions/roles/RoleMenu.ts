@@ -19,6 +19,7 @@ import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
+import { getHighestMemberRole } from "../moderation/hasPermission";
 import CommandInteractionOptionResolver from "../resolver";
 import { interactionReplyErrorMessage } from "../responses/error";
 import { buildCustomID, roleMenuCustomIDPrefix } from "./ids";
@@ -408,6 +409,52 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
+    const redisGuild = await ctx.sushiiAPI.sdk.getRedisGuild({
+      guild_id: interaction.guild_id,
+    });
+
+    if (!redisGuild.redisGuildByGuildId) {
+      throw new Error("Redis guild not found.");
+    }
+
+    // Only check for adding roles higher than own roles if the user is not the owner
+    if (redisGuild.redisGuildByGuildId.ownerId !== interaction.member.user.id) {
+      const guildRolesMap = redisGuild.redisGuildByGuildId.roles?.reduce(
+        (acc, role) => {
+          if (role?.id) {
+            acc.set(role.id, role);
+          }
+          return acc;
+        },
+        new Map<string, RedisGuildRole>()
+      );
+
+      if (!guildRolesMap) {
+        throw new Error("No roles found.");
+      }
+
+      // Check that user is only adding roles that are lower than current role.
+      // Prevents users from getting roles above their highest role.
+      const highestRole = getHighestMemberRole(
+        interaction.member,
+        redisGuild.redisGuildByGuildId
+      );
+
+      for (const roleId of roleIds) {
+        const role = guildRolesMap.get(roleId);
+        // If trying to add a role that is higher than the user's current highest
+        // role.
+        if (role && highestRole && role.position > highestRole.position) {
+          // eslint-disable-next-line no-await-in-loop
+          await ctx.REST.interactionReply(interaction, {
+            content: t("rolemenu.edit.higher_role_given"),
+          });
+
+          return;
+        }
+      }
+    }
+
     // Add new roles to the menu
     let newRoleIds = roleMenu.safeUnwrap().roleIds || [];
     newRoleIds = newRoleIds.concat(roleIds);
@@ -694,15 +741,20 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       }
 
       const selectMenu = new SelectMenuBuilder()
-        .setPlaceholder("Select a role")
+        .setPlaceholder("Select your roles!")
         .setCustomId(`${roleMenuCustomIDPrefix}:select:${name}`)
         .addOptions(selectOptions)
-        .setMaxValues(roleMenuData.maxCount || 25);
+        .setMaxValues(roleMenuData.maxCount || 25)
+        // Allow 0 to let people clear all roles
+        // Default is 1
+        .setMinValues(0);
 
       const row = new ActionRowBuilder<SelectMenuBuilder>()
         .addComponents([selectMenu])
         .toJSON();
       components.push(row);
+
+      // Add a button for clearing all roles
     }
 
     const res = await ctx.REST.sendChannelMessage(sendChannelId, {

@@ -46,11 +46,7 @@ export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
 
     const menuRoles = getRoleMenuMessageSelectRoles(interaction.message);
 
-    if (interaction.data.values.length === 0) {
-      throw new Error("No role to add or remove");
-    }
-
-    // Select menu roles
+    // Select menu roles -- this can be 0 when clearing all roles
     const selectedRolesSet = new Set(interaction.data.values);
 
     // Updated total member roles

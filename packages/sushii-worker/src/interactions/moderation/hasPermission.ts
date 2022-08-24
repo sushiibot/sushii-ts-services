@@ -1,6 +1,7 @@
 import {
   APIChatInputApplicationCommandGuildInteraction,
   APIInteractionDataResolvedGuildMember,
+  APIInteractionGuildMember,
   APIUser,
 } from "discord-api-types/v10";
 import { Err, Ok, Result } from "ts-results";
@@ -20,6 +21,28 @@ function getHighestRole(roles: RedisGuildRole[]): RedisGuildRole | null {
 
     return prev;
   }, roles[0]);
+}
+
+export function getHighestMemberRole(
+  member: APIInteractionGuildMember,
+  redisGuild: NonNullable<GetRedisGuildQuery["redisGuildByGuildId"]>
+): RedisGuildRole | null {
+  const rolesMap = redisGuild.roles?.reduce((acc, role) => {
+    if (role?.id) {
+      acc.set(role.id, role);
+    }
+    return acc;
+  }, new Map<string, RedisGuildRole>());
+
+  if (!rolesMap) {
+    return null;
+  }
+
+  const roles = member.roles
+    .map((roleId) => rolesMap.get(roleId))
+    .filter((role): role is RedisGuildRole => !!role);
+
+  return getHighestRole(roles);
 }
 
 export default async function hasPermissionTargetingMember(
