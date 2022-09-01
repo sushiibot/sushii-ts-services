@@ -130,7 +130,8 @@
     "random": {
       "error": {
         "title": "Random tag failed",
-        "starts_with_contains_xor": "You can only use *one* of the options `name starts with` or `name contains`, not both."
+        "starts_with_contains_xor": "You can only use *one* of the options `name starts with` or `name contains`, not both.",
+        "not_found": "No tags were found with the provided filters."
       }
     },
     "edit": {
