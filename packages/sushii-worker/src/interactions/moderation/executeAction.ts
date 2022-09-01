@@ -57,9 +57,9 @@ function buildResponseEmbed(
 
   fields.push({
     name: "User DM",
-    value: data.sendDM
-      ? "Users were sent a DM with the provided reason."
-      : "Users were **not** sent a DM with the provided reason.",
+    value: data.getSendDM()
+      ? "Members were sent a DM with the provided reason."
+      : "Members were **not** sent a DM with the provided reason.",
   });
 
   return new EmbedBuilder()
@@ -252,7 +252,7 @@ async function executeActionUser(
   });
 
   // Only DM if should DM AND if target is in the server.
-  const shouldDM = data.sendDM && target.member;
+  const shouldDM = data.getSendDM() && target.member;
 
   let dmRes: Result<APIMessage, string> | null = null;
   // DM before for ban and send dm

@@ -42,7 +42,7 @@ export default class ModActionData {
    */
   public timeoutDuration?: Duration;
 
-  public sendDM: boolean;
+  private sendDM?: boolean;
 
   constructor(interaction: APIChatInputApplicationCommandGuildInteraction) {
     this.options = new CommandInteractionOptionResolver(
@@ -65,7 +65,15 @@ export default class ModActionData {
       this.timeoutDuration = parseDuration(durationStr) || undefined;
     }
 
-    this.sendDM = this.options.getBoolean("send_dm") || true;
+    this.sendDM = this.options.getBoolean("send_dm");
+  }
+
+  getSendDM(): boolean {
+    if (this.sendDM === undefined) {
+      return true;
+    }
+
+    return this.sendDM;
   }
 
   async fetchTargets(
