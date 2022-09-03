@@ -18,6 +18,7 @@ import { GetRoleMenuQuery, RedisGuildRole } from "../../generated/graphql";
 import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
+import parseEmoji from "../../utils/parseEmoji";
 import { SlashCommandHandler } from "../handlers";
 import { getHighestMemberRole } from "../moderation/hasPermission";
 import CommandInteractionOptionResolver from "../resolver";
@@ -30,6 +31,8 @@ enum RoleMenuOption {
   Name = "menu_name",
   NewName = "new_menu_name",
   Description = "description",
+  Emoji = "emoji",
+  Role = "role",
   Roles = "roles",
   MaxRoles = "max_roles",
   RequiredRole = "required_role",
@@ -65,7 +68,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the role menu.")
             .setRequired(true)
-            .setAutocomplete(true)
         )
         .addStringOption((o) =>
           o
@@ -166,6 +168,39 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     )
     .addSubcommand((c) =>
       c
+        .setName("roleoptions")
+        .setDescription("Add extra information to a rolemenu's role.")
+        .addStringOption((o) =>
+          o
+            .setName(RoleMenuOption.Name)
+            .setDescription("The name of the menu to add the roles to.")
+            .setRequired(true)
+            .setAutocomplete(true)
+        )
+        .addRoleOption((o) =>
+          o
+            .setName(RoleMenuOption.Role)
+            .setDescription("The role to update.")
+            .setRequired(true)
+        )
+        .addStringOption((o) =>
+          o
+            .setName(RoleMenuOption.Emoji)
+            .setDescription("An emoji to represent the role in the menu.")
+            .setRequired(false)
+        )
+        .addStringOption((o) =>
+          o
+            .setName(RoleMenuOption.Description)
+            .setDescription(
+              "A description for the role. Only shows for select menus."
+            )
+            .setMaxLength(100)
+            .setRequired(false)
+        )
+    )
+    .addSubcommand((c) =>
+      c
         .setName("delete")
         .setDescription("Delete a role menu.")
         .addStringOption((o) =>
@@ -233,6 +268,8 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         return this.addRolesHandler(ctx, interaction, options);
       case "removeroles":
         return this.removeRolesHandler(ctx, interaction, options);
+      case "roleoptions":
+        return this.roleOptionsHandler(ctx, interaction, options);
       case "delete":
         return this.deleteHandler(ctx, interaction, options);
       case "send":
@@ -456,7 +493,10 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     }
 
     // Add new roles to the menu
-    let newRoleIds = roleMenu.safeUnwrap().roleIds || [];
+    let newRoleIds =
+      roleMenu
+        .safeUnwrap()
+        .roleMenuRolesByGuildIdAndMenuName.nodes.map((n) => n.roleId) || [];
     newRoleIds = newRoleIds.concat(roleIds);
 
     // Deduplicate -- sets are ordered so this should preserve order
@@ -470,15 +510,10 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
-    // Save to DB
-    await ctx.sushiiAPI.sdk.updateRoleMenu({
+    await ctx.sushiiAPI.sdk.addRoleMenuRoles({
       guildId: interaction.guild_id,
       menuName,
-      roleMenuPatch: {
-        guildId: interaction.guild_id,
-        menuName,
-        roleIds: newRoleIds,
-      },
+      roleIds,
     });
 
     await ctx.REST.interactionReply(interaction, {
@@ -540,17 +575,14 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     // Remove roles from the menu
     const newRoleIds = roleMenu
       .safeUnwrap()
-      .roleIds?.filter((id) => id && !roleIdsToRemove.includes(id));
+      .roleMenuRolesByGuildIdAndMenuName.nodes.map((n) => n.roleId)
+      .filter((id) => id && !roleIdsToRemove.includes(id));
 
     // Save to DB
-    await ctx.sushiiAPI.sdk.updateRoleMenu({
+    await ctx.sushiiAPI.sdk.deleteRoleMenuRoles({
       guildId: interaction.guild_id,
       menuName,
-      roleMenuPatch: {
-        guildId: interaction.guild_id,
-        menuName,
-        roleIds: newRoleIds,
-      },
+      roleIds: roleIdsToRemove,
     });
 
     await ctx.REST.interactionReply(interaction, {
@@ -569,6 +601,102 @@ export default class RoleMenuCommand extends SlashCommandHandler {
                 "Menu has no roles",
             },
           ])
+          .setColor(Color.Success)
+          .toJSON(),
+      ],
+    });
+  }
+
+  private async roleOptionsHandler(
+    ctx: Context,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: CommandInteractionOptionResolver
+  ): Promise<void> {
+    const menuName = options.getString(RoleMenuOption.Name);
+    if (!menuName) {
+      throw new Error("No name provided.");
+    }
+
+    const roleMenu = await this.getMenu(ctx, interaction, menuName);
+    if (roleMenu.none) {
+      await ctx.REST.interactionReply(interaction, {
+        content: t("rolemenu.edit.menu_not_found"),
+      });
+
+      return;
+    }
+
+    const role = options.getRole(RoleMenuOption.Role);
+    if (!role) {
+      throw new Error("No role provided.");
+    }
+
+    const emojiStr = options.getString(RoleMenuOption.Emoji);
+    const description = options.getString(RoleMenuOption.Description);
+
+    if (!emojiStr && !description) {
+      await interactionReplyErrorMessage(
+        ctx,
+        interaction,
+        t("rolemenu.roleoptions.error.no_option_provided")
+      );
+
+      return;
+    }
+
+    if (emojiStr) {
+      const parsedEmoji = parseEmoji(emojiStr);
+
+      if (!parsedEmoji) {
+        await interactionReplyErrorMessage(
+          ctx,
+          interaction,
+          t("rolemenu.roleoptions.error.invalid_emoji")
+        );
+
+        return;
+      }
+    }
+
+    if (description && description.length > 100) {
+      await interactionReplyErrorMessage(
+        ctx,
+        interaction,
+        t("rolemenu.roleoptions.error.description_too_long")
+      );
+
+      return;
+    }
+
+    await ctx.sushiiAPI.sdk.upsertRoleMenuRole({
+      guildId: interaction.guild_id,
+      menuName,
+      roleId: role.id,
+      description,
+      emoji: emojiStr,
+    });
+
+    const fields = [];
+
+    if (emojiStr) {
+      fields.push({
+        name: "Emoji",
+        value: emojiStr,
+      });
+    }
+
+    if (description) {
+      fields.push({
+        name: "Description",
+        value: description,
+      });
+    }
+
+    await ctx.REST.interactionReply(interaction, {
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("Added options to role")
+          .setFields(fields)
           .setColor(Color.Success)
           .toJSON(),
       ],
@@ -651,7 +779,9 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return map;
     }, new Map<string, RedisGuildRole>());
 
-    if (!roleMenuData.roleIds || roleMenuData.roleIds.length === 0) {
+    const roles = roleMenuData.roleMenuRolesByGuildIdAndMenuName.nodes;
+
+    if (roles.length === 0) {
       await interactionReplyErrorMessage(
         ctx,
         interaction,
@@ -661,10 +791,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
-    if (
-      roleMenuData.maxCount &&
-      roleMenuData.roleIds.length < roleMenuData.maxCount
-    ) {
+    if (roleMenuData.maxCount && roles.length < roleMenuData.maxCount) {
       await interactionReplyErrorMessage(
         ctx,
         interaction,
@@ -673,8 +800,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
       return;
     }
-
-    const roleIds = roleMenuData.roleIds.filter((id): id is string => !!id);
 
     const fields = [];
     if (roleMenuData.requiredRole) {
@@ -702,11 +827,21 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     if (type === RoleMenuType.Buttons) {
       let row = new ActionRowBuilder<ButtonBuilder>();
 
-      for (const roleId of roleIds) {
-        const button = new ButtonBuilder()
+      for (const { roleId, emoji } of roles) {
+        let button = new ButtonBuilder()
           .setCustomId(buildCustomID(roleId))
           .setLabel(guildRolesMap.get(roleId)?.name || roleId)
           .setStyle(ButtonStyle.Secondary);
+
+        const parsedEmoji = emoji ? parseEmoji(emoji) : null;
+
+        if (parsedEmoji) {
+          button = button.setEmoji({
+            id: parsedEmoji.id || undefined,
+            animated: parsedEmoji.animated,
+            name: parsedEmoji.name || undefined,
+          });
+        }
 
         // Row full, push to component rows list
         if (row.components.length === 5) {
@@ -732,10 +867,24 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     if (type === RoleMenuType.SelectMenu) {
       const selectOptions = [];
 
-      for (const roleId of roleIds) {
-        const option = new SelectMenuOptionBuilder()
+      for (const { roleId, emoji, description } of roles) {
+        let option = new SelectMenuOptionBuilder()
           .setValue(roleId)
           .setLabel(guildRolesMap.get(roleId)?.name || roleId);
+
+        const parsedEmoji = emoji ? parseEmoji(emoji) : null;
+
+        if (parsedEmoji) {
+          option = option.setEmoji({
+            id: parsedEmoji.id || undefined,
+            animated: parsedEmoji.animated,
+            name: parsedEmoji.name || undefined,
+          });
+        }
+
+        if (description) {
+          option = option.setDescription(description);
+        }
 
         selectOptions.push(option);
       }
@@ -744,7 +893,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         .setPlaceholder("Select your roles!")
         .setCustomId(`${roleMenuCustomIDPrefix}:select:${name}`)
         .addOptions(selectOptions)
-        .setMaxValues(roleMenuData.maxCount || 25)
+        .setMaxValues(roleMenuData.maxCount || roles.length)
         // Allow 0 to let people clear all roles
         // Default is 1
         .setMinValues(0);

@@ -2029,6 +2029,7 @@ __metadata:
     pino-pretty: ^7.5.2
     postgraphile: ^4.12.9
     postgraphile-plugin-connection-filter: ^2.3.0
+    postgraphile-upsert-plugin: ^3.1.1
     prettier: ^2.3.2
     redis: ^4.1.0
     source-map-support: ^0.5.20
@@ -8390,6 +8391,13 @@ __metadata:
   dependencies:
     tslib: ^2.3.0
   checksum: b5bf7ae847225682ebc48e9224c45ccf1d3e16dfd820f2bdfe3dfc26f049e7c995278bf77123a2be04561b6b23438063590845e0456492f4ee67db0ae3a99771
+  languageName: node
+  linkType: hard
+
+"postgraphile-upsert-plugin@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "postgraphile-upsert-plugin@npm:3.1.1"
+  checksum: 5185ed4bbfeea24bcfdc6d3cf37fb1bc1d8eed6e6d870d38e7978a38624a6a69e305a670937ea73275a1adb076f9f80493e855987aaabfbe97445d179ddf41fa
   languageName: node
   linkType: hard
 

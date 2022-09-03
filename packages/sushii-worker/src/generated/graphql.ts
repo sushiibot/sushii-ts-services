@@ -36,6 +36,31 @@ export type Scalars = {
   UUID: any;
 };
 
+/** All input for the `addRoleMenuRoles` mutation. */
+export type AddRoleMenuRolesInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  menuName?: InputMaybe<Scalars['String']>;
+  roleIds?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+};
+
+/** The output of our `addRoleMenuRoles` mutation. */
+export type AddRoleMenuRolesPayload = {
+  __typename?: 'AddRoleMenuRolesPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  roleMenuRoles?: Maybe<Array<RoleMenuRole>>;
+};
+
 /** A filter to be used against BigInt fields. All fields are combined with a logical ‘and.’ */
 export type BigIntFilter = {
   /** Not equal to the specified value, treating null like an ordinary value. */
@@ -1142,6 +1167,41 @@ export type CreateRoleMenuPayloadRoleMenuEdgeArgs = {
   orderBy?: InputMaybe<Array<RoleMenusOrderBy>>;
 };
 
+/** All input for the create `RoleMenuRole` mutation. */
+export type CreateRoleMenuRoleInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `RoleMenuRole` to be created by this mutation. */
+  roleMenuRole: RoleMenuRoleInput;
+};
+
+/** The output of our create `RoleMenuRole` mutation. */
+export type CreateRoleMenuRolePayload = {
+  __typename?: 'CreateRoleMenuRolePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `RoleMenu` that is related to this `RoleMenuRole`. */
+  roleMenuByGuildIdAndMenuName?: Maybe<RoleMenu>;
+  /** The `RoleMenuRole` that was created by this mutation. */
+  roleMenuRole?: Maybe<RoleMenuRole>;
+  /** An edge for our `RoleMenuRole`. May be used by Relay 1. */
+  roleMenuRoleEdge?: Maybe<RoleMenuRolesEdge>;
+};
+
+
+/** The output of our create `RoleMenuRole` mutation. */
+export type CreateRoleMenuRolePayloadRoleMenuRoleEdgeArgs = {
+  orderBy?: InputMaybe<Array<RoleMenuRolesOrderBy>>;
+};
+
 /** All input for the create `Tag` mutation. */
 export type CreateTagInput = {
   /**
@@ -1988,6 +2048,79 @@ export type DeleteRoleMenuPayload = {
 /** The output of our delete `RoleMenu` mutation. */
 export type DeleteRoleMenuPayloadRoleMenuEdgeArgs = {
   orderBy?: InputMaybe<Array<RoleMenusOrderBy>>;
+};
+
+/** All input for the `deleteRoleMenuRoleByGuildIdAndMenuNameAndRoleId` mutation. */
+export type DeleteRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  menuName: Scalars['String'];
+  roleId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteRoleMenuRole` mutation. */
+export type DeleteRoleMenuRoleInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `RoleMenuRole` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `RoleMenuRole` mutation. */
+export type DeleteRoleMenuRolePayload = {
+  __typename?: 'DeleteRoleMenuRolePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedRoleMenuRoleId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `RoleMenu` that is related to this `RoleMenuRole`. */
+  roleMenuByGuildIdAndMenuName?: Maybe<RoleMenu>;
+  /** The `RoleMenuRole` that was deleted by this mutation. */
+  roleMenuRole?: Maybe<RoleMenuRole>;
+  /** An edge for our `RoleMenuRole`. May be used by Relay 1. */
+  roleMenuRoleEdge?: Maybe<RoleMenuRolesEdge>;
+};
+
+
+/** The output of our delete `RoleMenuRole` mutation. */
+export type DeleteRoleMenuRolePayloadRoleMenuRoleEdgeArgs = {
+  orderBy?: InputMaybe<Array<RoleMenuRolesOrderBy>>;
+};
+
+/** All input for the `deleteRoleMenuRoles` mutation. */
+export type DeleteRoleMenuRolesInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  menuName?: InputMaybe<Scalars['String']>;
+  roleIds?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+};
+
+/** The output of our `deleteRoleMenuRoles` mutation. */
+export type DeleteRoleMenuRolesPayload = {
+  __typename?: 'DeleteRoleMenuRolesPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  roleMenuRoles?: Maybe<Array<RoleMenuRole>>;
 };
 
 /** All input for the `deleteTagByGuildIdAndTagName` mutation. */
@@ -5145,6 +5278,7 @@ export enum ModLogsOrderBy {
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
+  addRoleMenuRoles?: Maybe<AddRoleMenuRolesPayload>;
   /** Creates a single `BotStat`. */
   createBotStat?: Maybe<CreateBotStatPayload>;
   /** Creates a single `CachedGuild`. */
@@ -5175,6 +5309,8 @@ export type Mutation = {
   createReminder?: Maybe<CreateReminderPayload>;
   /** Creates a single `RoleMenu`. */
   createRoleMenu?: Maybe<CreateRoleMenuPayload>;
+  /** Creates a single `RoleMenuRole`. */
+  createRoleMenuRole?: Maybe<CreateRoleMenuRolePayload>;
   /** Creates a single `Tag`. */
   createTag?: Maybe<CreateTagPayload>;
   /** Creates a single `User`. */
@@ -5241,6 +5377,11 @@ export type Mutation = {
   deleteRoleMenu?: Maybe<DeleteRoleMenuPayload>;
   /** Deletes a single `RoleMenu` using a unique key. */
   deleteRoleMenuByGuildIdAndMenuName?: Maybe<DeleteRoleMenuPayload>;
+  /** Deletes a single `RoleMenuRole` using its globally unique id. */
+  deleteRoleMenuRole?: Maybe<DeleteRoleMenuRolePayload>;
+  /** Deletes a single `RoleMenuRole` using a unique key. */
+  deleteRoleMenuRoleByGuildIdAndMenuNameAndRoleId?: Maybe<DeleteRoleMenuRolePayload>;
+  deleteRoleMenuRoles?: Maybe<DeleteRoleMenuRolesPayload>;
   /** Deletes a single `Tag` using its globally unique id. */
   deleteTag?: Maybe<DeleteTagPayload>;
   /** Deletes a single `Tag` using a unique key. */
@@ -5319,6 +5460,10 @@ export type Mutation = {
   updateRoleMenu?: Maybe<UpdateRoleMenuPayload>;
   /** Updates a single `RoleMenu` using a unique key and a patch. */
   updateRoleMenuByGuildIdAndMenuName?: Maybe<UpdateRoleMenuPayload>;
+  /** Updates a single `RoleMenuRole` using its globally unique id and a patch. */
+  updateRoleMenuRole?: Maybe<UpdateRoleMenuRolePayload>;
+  /** Updates a single `RoleMenuRole` using a unique key and a patch. */
+  updateRoleMenuRoleByGuildIdAndMenuNameAndRoleId?: Maybe<UpdateRoleMenuRolePayload>;
   /** Updates a single `Tag` using its globally unique id and a patch. */
   updateTag?: Maybe<UpdateTagPayload>;
   /** Updates a single `Tag` using a unique key and a patch. */
@@ -5339,6 +5484,52 @@ export type Mutation = {
   updateWebUserGuild?: Maybe<UpdateWebUserGuildPayload>;
   /** Updates a single `WebUserGuild` using a unique key and a patch. */
   updateWebUserGuildByUserIdAndGuildId?: Maybe<UpdateWebUserGuildPayload>;
+  /** Upserts a single `BotStat`. */
+  upsertBotStat?: Maybe<UpsertBotStatPayload>;
+  /** Upserts a single `CachedGuild`. */
+  upsertCachedGuild?: Maybe<UpsertCachedGuildPayload>;
+  /** Upserts a single `CachedUser`. */
+  upsertCachedUser?: Maybe<UpsertCachedUserPayload>;
+  /** Upserts a single `Feed`. */
+  upsertFeed?: Maybe<UpsertFeedPayload>;
+  /** Upserts a single `FeedItem`. */
+  upsertFeedItem?: Maybe<UpsertFeedItemPayload>;
+  /** Upserts a single `FeedSubscription`. */
+  upsertFeedSubscription?: Maybe<UpsertFeedSubscriptionPayload>;
+  /** Upserts a single `GuildBan`. */
+  upsertGuildBan?: Maybe<UpsertGuildBanPayload>;
+  /** Upserts a single `GuildConfig`. */
+  upsertGuildConfig?: Maybe<UpsertGuildConfigPayload>;
+  /** Upserts a single `Member`. */
+  upsertMember?: Maybe<UpsertMemberPayload>;
+  /** Upserts a single `ModLog`. */
+  upsertModLog?: Maybe<UpsertModLogPayload>;
+  /** Upserts a single `Mute`. */
+  upsertMute?: Maybe<UpsertMutePayload>;
+  /** Upserts a single `Notification`. */
+  upsertNotification?: Maybe<UpsertNotificationPayload>;
+  /** Upserts a single `Reminder`. */
+  upsertReminder?: Maybe<UpsertReminderPayload>;
+  /** Upserts a single `RoleMenu`. */
+  upsertRoleMenu?: Maybe<UpsertRoleMenuPayload>;
+  /** Upserts a single `RoleMenuRole`. */
+  upsertRoleMenuRole?: Maybe<UpsertRoleMenuRolePayload>;
+  /** Upserts a single `Tag`. */
+  upsertTag?: Maybe<UpsertTagPayload>;
+  /** Upserts a single `User`. */
+  upsertUser?: Maybe<UpsertUserPayload>;
+  /** Upserts a single `UserLevel`. */
+  upsertUserLevel?: Maybe<UpsertUserLevelPayload>;
+  /** Upserts a single `WebUser`. */
+  upsertWebUser?: Maybe<UpsertWebUserPayload>;
+  /** Upserts a single `WebUserGuild`. */
+  upsertWebUserGuild?: Maybe<UpsertWebUserGuildPayload>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationAddRoleMenuRolesArgs = {
+  input: AddRoleMenuRolesInput;
 };
 
 
@@ -5429,6 +5620,12 @@ export type MutationCreateReminderArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateRoleMenuArgs = {
   input: CreateRoleMenuInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateRoleMenuRoleArgs = {
+  input: CreateRoleMenuRoleInput;
 };
 
 
@@ -5627,6 +5824,24 @@ export type MutationDeleteRoleMenuArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteRoleMenuByGuildIdAndMenuNameArgs = {
   input: DeleteRoleMenuByGuildIdAndMenuNameInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteRoleMenuRoleArgs = {
+  input: DeleteRoleMenuRoleInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteRoleMenuRoleByGuildIdAndMenuNameAndRoleIdArgs = {
+  input: DeleteRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteRoleMenuRolesArgs = {
+  input: DeleteRoleMenuRolesInput;
 };
 
 
@@ -5871,6 +6086,18 @@ export type MutationUpdateRoleMenuByGuildIdAndMenuNameArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateRoleMenuRoleArgs = {
+  input: UpdateRoleMenuRoleInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateRoleMenuRoleByGuildIdAndMenuNameAndRoleIdArgs = {
+  input: UpdateRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateTagArgs = {
   input: UpdateTagInput;
 };
@@ -5927,6 +6154,146 @@ export type MutationUpdateWebUserGuildArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateWebUserGuildByUserIdAndGuildIdArgs = {
   input: UpdateWebUserGuildByUserIdAndGuildIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertBotStatArgs = {
+  input: UpsertBotStatInput;
+  where?: InputMaybe<UpsertBotStatWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertCachedGuildArgs = {
+  input: UpsertCachedGuildInput;
+  where?: InputMaybe<UpsertCachedGuildWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertCachedUserArgs = {
+  input: UpsertCachedUserInput;
+  where?: InputMaybe<UpsertCachedUserWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertFeedArgs = {
+  input: UpsertFeedInput;
+  where?: InputMaybe<UpsertFeedWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertFeedItemArgs = {
+  input: UpsertFeedItemInput;
+  where?: InputMaybe<UpsertFeedItemWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertFeedSubscriptionArgs = {
+  input: UpsertFeedSubscriptionInput;
+  where?: InputMaybe<UpsertFeedSubscriptionWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertGuildBanArgs = {
+  input: UpsertGuildBanInput;
+  where?: InputMaybe<UpsertGuildBanWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertGuildConfigArgs = {
+  input: UpsertGuildConfigInput;
+  where?: InputMaybe<UpsertGuildConfigWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertMemberArgs = {
+  input: UpsertMemberInput;
+  where?: InputMaybe<UpsertMemberWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertModLogArgs = {
+  input: UpsertModLogInput;
+  where?: InputMaybe<UpsertModLogWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertMuteArgs = {
+  input: UpsertMuteInput;
+  where?: InputMaybe<UpsertMuteWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertNotificationArgs = {
+  input: UpsertNotificationInput;
+  where?: InputMaybe<UpsertNotificationWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertReminderArgs = {
+  input: UpsertReminderInput;
+  where?: InputMaybe<UpsertReminderWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertRoleMenuArgs = {
+  input: UpsertRoleMenuInput;
+  where?: InputMaybe<UpsertRoleMenuWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertRoleMenuRoleArgs = {
+  input: UpsertRoleMenuRoleInput;
+  where?: InputMaybe<UpsertRoleMenuRoleWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertTagArgs = {
+  input: UpsertTagInput;
+  where?: InputMaybe<UpsertTagWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertUserArgs = {
+  input: UpsertUserInput;
+  where?: InputMaybe<UpsertUserWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertUserLevelArgs = {
+  input: UpsertUserLevelInput;
+  where?: InputMaybe<UpsertUserLevelWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertWebUserArgs = {
+  input: UpsertWebUserInput;
+  where?: InputMaybe<UpsertWebUserWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertWebUserGuildArgs = {
+  input: UpsertWebUserGuildInput;
+  where?: InputMaybe<UpsertWebUserGuildWhere>;
 };
 
 export type Mute = Node & {
@@ -6602,6 +6969,8 @@ export type Query = Node & {
   allRedisGuildIds: Array<Scalars['BigInt']>;
   /** Reads and enables pagination through a set of `Reminder`. */
   allReminders?: Maybe<RemindersConnection>;
+  /** Reads and enables pagination through a set of `RoleMenuRole`. */
+  allRoleMenuRoles?: Maybe<RoleMenuRolesConnection>;
   /** Reads and enables pagination through a set of `RoleMenu`. */
   allRoleMenus?: Maybe<RoleMenusConnection>;
   /** Reads and enables pagination through a set of `Tag`. */
@@ -6677,6 +7046,9 @@ export type Query = Node & {
   /** Reads a single `RoleMenu` using its globally unique `ID`. */
   roleMenu?: Maybe<RoleMenu>;
   roleMenuByGuildIdAndMenuName?: Maybe<RoleMenu>;
+  /** Reads a single `RoleMenuRole` using its globally unique `ID`. */
+  roleMenuRole?: Maybe<RoleMenuRole>;
+  roleMenuRoleByGuildIdAndMenuNameAndRoleId?: Maybe<RoleMenuRole>;
   /** Reads a single `Tag` using its globally unique `ID`. */
   tag?: Maybe<Tag>;
   tagByGuildIdAndTagName?: Maybe<Tag>;
@@ -6851,6 +7223,19 @@ export type QueryAllRemindersArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<RemindersOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllRoleMenuRolesArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<RoleMenuRoleCondition>;
+  filter?: InputMaybe<RoleMenuRoleFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<RoleMenuRolesOrderBy>>;
 };
 
 
@@ -7159,6 +7544,20 @@ export type QueryRoleMenuArgs = {
 export type QueryRoleMenuByGuildIdAndMenuNameArgs = {
   guildId: Scalars['BigInt'];
   menuName: Scalars['String'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryRoleMenuRoleArgs = {
+  nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryRoleMenuRoleByGuildIdAndMenuNameAndRoleIdArgs = {
+  guildId: Scalars['BigInt'];
+  menuName: Scalars['String'];
+  roleId: Scalars['BigInt'];
 };
 
 
@@ -7585,7 +7984,20 @@ export type RoleMenu = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
   requiredRole?: Maybe<Scalars['BigInt']>;
-  roleIds?: Maybe<Array<Maybe<Scalars['BigInt']>>>;
+  /** Reads and enables pagination through a set of `RoleMenuRole`. */
+  roleMenuRolesByGuildIdAndMenuName: RoleMenuRolesConnection;
+};
+
+
+export type RoleMenuRoleMenuRolesByGuildIdAndMenuNameArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<RoleMenuRoleCondition>;
+  filter?: InputMaybe<RoleMenuRoleFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<RoleMenuRolesOrderBy>>;
 };
 
 export type RoleMenuAggregates = {
@@ -7636,8 +8048,6 @@ export type RoleMenuCondition = {
   menuName?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `requiredRole` field. */
   requiredRole?: InputMaybe<Scalars['BigInt']>;
-  /** Checks for equality with the object’s `roleIds` field. */
-  roleIds?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
 };
 
 export type RoleMenuDistinctCountAggregates = {
@@ -7652,8 +8062,6 @@ export type RoleMenuDistinctCountAggregates = {
   menuName?: Maybe<Scalars['BigInt']>;
   /** Distinct count of requiredRole across the matching connection */
   requiredRole?: Maybe<Scalars['BigInt']>;
-  /** Distinct count of roleIds across the matching connection */
-  roleIds?: Maybe<Scalars['BigInt']>;
 };
 
 /** A filter to be used against `RoleMenu` object types. All fields are combined with a logical ‘and.’ */
@@ -7674,8 +8082,6 @@ export type RoleMenuFilter = {
   or?: InputMaybe<Array<RoleMenuFilter>>;
   /** Filter by the object’s `requiredRole` field. */
   requiredRole?: InputMaybe<BigIntFilter>;
-  /** Filter by the object’s `roleIds` field. */
-  roleIds?: InputMaybe<BigIntListFilter>;
 };
 
 /** An input for mutations affecting `RoleMenu` */
@@ -7685,7 +8091,6 @@ export type RoleMenuInput = {
   maxCount?: InputMaybe<Scalars['Int']>;
   menuName: Scalars['String'];
   requiredRole?: InputMaybe<Scalars['BigInt']>;
-  roleIds?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
 };
 
 export type RoleMenuMaxAggregates = {
@@ -7715,8 +8120,295 @@ export type RoleMenuPatch = {
   maxCount?: InputMaybe<Scalars['Int']>;
   menuName?: InputMaybe<Scalars['String']>;
   requiredRole?: InputMaybe<Scalars['BigInt']>;
-  roleIds?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
 };
+
+export type RoleMenuRole = Node & {
+  __typename?: 'RoleMenuRole';
+  description?: Maybe<Scalars['String']>;
+  emoji?: Maybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  menuName: Scalars['String'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  roleId: Scalars['BigInt'];
+  /** Reads a single `RoleMenu` that is related to this `RoleMenuRole`. */
+  roleMenuByGuildIdAndMenuName?: Maybe<RoleMenu>;
+};
+
+export type RoleMenuRoleAggregates = {
+  __typename?: 'RoleMenuRoleAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<RoleMenuRoleAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<RoleMenuRoleDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<RoleMenuRoleMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<RoleMenuRoleMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<RoleMenuRoleStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<RoleMenuRoleStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<RoleMenuRoleSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<RoleMenuRoleVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<RoleMenuRoleVarianceSampleAggregates>;
+};
+
+export type RoleMenuRoleAverageAggregates = {
+  __typename?: 'RoleMenuRoleAverageAggregates';
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+};
+
+/**
+ * A condition to be used against `RoleMenuRole` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type RoleMenuRoleCondition = {
+  /** Checks for equality with the object’s `description` field. */
+  description?: InputMaybe<Scalars['String']>;
+  /** Checks for equality with the object’s `emoji` field. */
+  emoji?: InputMaybe<Scalars['String']>;
+  /** Checks for equality with the object’s `guildId` field. */
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `menuName` field. */
+  menuName?: InputMaybe<Scalars['String']>;
+  /** Checks for equality with the object’s `roleId` field. */
+  roleId?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type RoleMenuRoleDistinctCountAggregates = {
+  __typename?: 'RoleMenuRoleDistinctCountAggregates';
+  /** Distinct count of description across the matching connection */
+  description?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of emoji across the matching connection */
+  emoji?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of menuName across the matching connection */
+  menuName?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `RoleMenuRole` object types. All fields are combined with a logical ‘and.’ */
+export type RoleMenuRoleFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<RoleMenuRoleFilter>>;
+  /** Filter by the object’s `description` field. */
+  description?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `emoji` field. */
+  emoji?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `menuName` field. */
+  menuName?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<RoleMenuRoleFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<RoleMenuRoleFilter>>;
+  /** Filter by the object’s `roleId` field. */
+  roleId?: InputMaybe<BigIntFilter>;
+};
+
+/** An input for mutations affecting `RoleMenuRole` */
+export type RoleMenuRoleInput = {
+  description?: InputMaybe<Scalars['String']>;
+  emoji?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  menuName: Scalars['String'];
+  roleId: Scalars['BigInt'];
+};
+
+export type RoleMenuRoleMaxAggregates = {
+  __typename?: 'RoleMenuRoleMaxAggregates';
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigInt']>;
+};
+
+export type RoleMenuRoleMinAggregates = {
+  __typename?: 'RoleMenuRoleMinAggregates';
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigInt']>;
+};
+
+/** Represents an update to a `RoleMenuRole`. Fields that are set will be updated. */
+export type RoleMenuRolePatch = {
+  description?: InputMaybe<Scalars['String']>;
+  emoji?: InputMaybe<Scalars['String']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  menuName?: InputMaybe<Scalars['String']>;
+  roleId?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type RoleMenuRoleStddevPopulationAggregates = {
+  __typename?: 'RoleMenuRoleStddevPopulationAggregates';
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type RoleMenuRoleStddevSampleAggregates = {
+  __typename?: 'RoleMenuRoleStddevSampleAggregates';
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type RoleMenuRoleSumAggregates = {
+  __typename?: 'RoleMenuRoleSumAggregates';
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of roleId across the matching connection */
+  roleId: Scalars['BigFloat'];
+};
+
+export type RoleMenuRoleVariancePopulationAggregates = {
+  __typename?: 'RoleMenuRoleVariancePopulationAggregates';
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type RoleMenuRoleVarianceSampleAggregates = {
+  __typename?: 'RoleMenuRoleVarianceSampleAggregates';
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A connection to a list of `RoleMenuRole` values. */
+export type RoleMenuRolesConnection = {
+  __typename?: 'RoleMenuRolesConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<RoleMenuRoleAggregates>;
+  /** A list of edges which contains the `RoleMenuRole` and cursor to aid in pagination. */
+  edges: Array<RoleMenuRolesEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<RoleMenuRoleAggregates>>;
+  /** A list of `RoleMenuRole` objects. */
+  nodes: Array<RoleMenuRole>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `RoleMenuRole` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `RoleMenuRole` values. */
+export type RoleMenuRolesConnectionGroupedAggregatesArgs = {
+  groupBy: Array<RoleMenuRolesGroupBy>;
+  having?: InputMaybe<RoleMenuRolesHavingInput>;
+};
+
+/** A `RoleMenuRole` edge in the connection. */
+export type RoleMenuRolesEdge = {
+  __typename?: 'RoleMenuRolesEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `RoleMenuRole` at the end of the edge. */
+  node: RoleMenuRole;
+};
+
+/** Grouping methods for `RoleMenuRole` for usage during aggregation. */
+export enum RoleMenuRolesGroupBy {
+  Description = 'DESCRIPTION',
+  Emoji = 'EMOJI',
+  GuildId = 'GUILD_ID',
+  MenuName = 'MENU_NAME',
+  RoleId = 'ROLE_ID'
+}
+
+export type RoleMenuRolesHavingAverageInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenuRolesHavingDistinctCountInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `RoleMenuRole` aggregates. */
+export type RoleMenuRolesHavingInput = {
+  AND?: InputMaybe<Array<RoleMenuRolesHavingInput>>;
+  OR?: InputMaybe<Array<RoleMenuRolesHavingInput>>;
+  average?: InputMaybe<RoleMenuRolesHavingAverageInput>;
+  distinctCount?: InputMaybe<RoleMenuRolesHavingDistinctCountInput>;
+  max?: InputMaybe<RoleMenuRolesHavingMaxInput>;
+  min?: InputMaybe<RoleMenuRolesHavingMinInput>;
+  stddevPopulation?: InputMaybe<RoleMenuRolesHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<RoleMenuRolesHavingStddevSampleInput>;
+  sum?: InputMaybe<RoleMenuRolesHavingSumInput>;
+  variancePopulation?: InputMaybe<RoleMenuRolesHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<RoleMenuRolesHavingVarianceSampleInput>;
+};
+
+export type RoleMenuRolesHavingMaxInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenuRolesHavingMinInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenuRolesHavingStddevPopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenuRolesHavingStddevSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenuRolesHavingSumInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenuRolesHavingVariancePopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type RoleMenuRolesHavingVarianceSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Methods to use when ordering `RoleMenuRole`. */
+export enum RoleMenuRolesOrderBy {
+  DescriptionAsc = 'DESCRIPTION_ASC',
+  DescriptionDesc = 'DESCRIPTION_DESC',
+  EmojiAsc = 'EMOJI_ASC',
+  EmojiDesc = 'EMOJI_DESC',
+  GuildIdAsc = 'GUILD_ID_ASC',
+  GuildIdDesc = 'GUILD_ID_DESC',
+  MenuNameAsc = 'MENU_NAME_ASC',
+  MenuNameDesc = 'MENU_NAME_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RoleIdAsc = 'ROLE_ID_ASC',
+  RoleIdDesc = 'ROLE_ID_DESC'
+}
 
 export type RoleMenuStddevPopulationAggregates = {
   __typename?: 'RoleMenuStddevPopulationAggregates';
@@ -7807,8 +8499,7 @@ export enum RoleMenusGroupBy {
   GuildId = 'GUILD_ID',
   MaxCount = 'MAX_COUNT',
   MenuName = 'MENU_NAME',
-  RequiredRole = 'REQUIRED_ROLE',
-  RoleIds = 'ROLE_IDS'
+  RequiredRole = 'REQUIRED_ROLE'
 }
 
 export type RoleMenusHavingAverageInput = {
@@ -7895,8 +8586,98 @@ export enum RoleMenusOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RequiredRoleAsc = 'REQUIRED_ROLE_ASC',
   RequiredRoleDesc = 'REQUIRED_ROLE_DESC',
-  RoleIdsAsc = 'ROLE_IDS_ASC',
-  RoleIdsDesc = 'ROLE_IDS_DESC'
+  RoleMenuRolesByGuildIdAndMenuNameAverageDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_DESCRIPTION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameAverageDescriptionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_DESCRIPTION_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameAverageEmojiAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_EMOJI_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameAverageEmojiDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_EMOJI_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameAverageGuildIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_GUILD_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameAverageGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_GUILD_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameAverageMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_MENU_NAME_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameAverageMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameAverageRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_ROLE_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameAverageRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_ROLE_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameCountAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_COUNT_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameCountDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_COUNT_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameDistinctCountDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_DESCRIPTION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameDistinctCountDescriptionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_DESCRIPTION_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameDistinctCountEmojiAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_EMOJI_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameDistinctCountEmojiDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_EMOJI_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameDistinctCountGuildIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_GUILD_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameDistinctCountGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_GUILD_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameDistinctCountMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_MENU_NAME_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameDistinctCountMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameDistinctCountRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_ROLE_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameDistinctCountRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_ROLE_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameMaxDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_DESCRIPTION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameMaxDescriptionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_DESCRIPTION_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameMaxEmojiAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_EMOJI_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameMaxEmojiDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_EMOJI_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameMaxGuildIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_GUILD_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameMaxGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_GUILD_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameMaxMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_MENU_NAME_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameMaxMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameMaxRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_ROLE_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameMaxRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_ROLE_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameMinDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_DESCRIPTION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameMinDescriptionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_DESCRIPTION_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameMinEmojiAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_EMOJI_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameMinEmojiDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_EMOJI_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameMinGuildIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_GUILD_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameMinGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_GUILD_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameMinMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_MENU_NAME_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameMinMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameMinRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_ROLE_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameMinRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_ROLE_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevPopulationDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_DESCRIPTION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevPopulationDescriptionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_DESCRIPTION_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevPopulationEmojiAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_EMOJI_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevPopulationEmojiDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_EMOJI_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevPopulationGuildIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_GUILD_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevPopulationGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_GUILD_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevPopulationMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_MENU_NAME_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevPopulationMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevPopulationRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_ROLE_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevPopulationRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_ROLE_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevSampleDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_DESCRIPTION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevSampleDescriptionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_DESCRIPTION_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevSampleEmojiAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_EMOJI_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevSampleEmojiDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_EMOJI_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevSampleGuildIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_GUILD_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevSampleGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_GUILD_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevSampleMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_MENU_NAME_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevSampleMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevSampleRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_ROLE_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevSampleRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_ROLE_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameSumDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_DESCRIPTION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameSumDescriptionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_DESCRIPTION_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameSumEmojiAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_EMOJI_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameSumEmojiDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_EMOJI_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameSumGuildIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_GUILD_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameSumGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_GUILD_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameSumMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_MENU_NAME_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameSumMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameSumRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_ROLE_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameSumRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_ROLE_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameVariancePopulationDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_DESCRIPTION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameVariancePopulationDescriptionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_DESCRIPTION_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameVariancePopulationEmojiAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_EMOJI_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameVariancePopulationEmojiDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_EMOJI_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameVariancePopulationGuildIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_GUILD_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameVariancePopulationGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_GUILD_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameVariancePopulationMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_MENU_NAME_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameVariancePopulationMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameVariancePopulationRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_ROLE_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameVariancePopulationRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_ROLE_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameVarianceSampleDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_DESCRIPTION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameVarianceSampleDescriptionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_DESCRIPTION_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameVarianceSampleEmojiAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_EMOJI_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameVarianceSampleEmojiDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_EMOJI_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameVarianceSampleGuildIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_GUILD_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameVarianceSampleGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_GUILD_ID_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameVarianceSampleMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_MENU_NAME_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameVarianceSampleMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameVarianceSampleRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_ROLE_ID_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameVarianceSampleRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_ROLE_ID_DESC'
 }
 
 /** A filter to be used against String fields. All fields are combined with a logical ‘and.’ */
@@ -9100,6 +9881,57 @@ export type UpdateRoleMenuPayloadRoleMenuEdgeArgs = {
   orderBy?: InputMaybe<Array<RoleMenusOrderBy>>;
 };
 
+/** All input for the `updateRoleMenuRoleByGuildIdAndMenuNameAndRoleId` mutation. */
+export type UpdateRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  menuName: Scalars['String'];
+  roleId: Scalars['BigInt'];
+  /** An object where the defined keys will be set on the `RoleMenuRole` being updated. */
+  roleMenuRolePatch: RoleMenuRolePatch;
+};
+
+/** All input for the `updateRoleMenuRole` mutation. */
+export type UpdateRoleMenuRoleInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `RoleMenuRole` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `RoleMenuRole` being updated. */
+  roleMenuRolePatch: RoleMenuRolePatch;
+};
+
+/** The output of our update `RoleMenuRole` mutation. */
+export type UpdateRoleMenuRolePayload = {
+  __typename?: 'UpdateRoleMenuRolePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `RoleMenu` that is related to this `RoleMenuRole`. */
+  roleMenuByGuildIdAndMenuName?: Maybe<RoleMenu>;
+  /** The `RoleMenuRole` that was updated by this mutation. */
+  roleMenuRole?: Maybe<RoleMenuRole>;
+  /** An edge for our `RoleMenuRole`. May be used by Relay 1. */
+  roleMenuRoleEdge?: Maybe<RoleMenuRolesEdge>;
+};
+
+
+/** The output of our update `RoleMenuRole` mutation. */
+export type UpdateRoleMenuRolePayloadRoleMenuRoleEdgeArgs = {
+  orderBy?: InputMaybe<Array<RoleMenuRolesOrderBy>>;
+};
+
 /** All input for the `updateTagByGuildIdAndTagName` mutation. */
 export type UpdateTagByGuildIdAndTagNameInput = {
   /**
@@ -9341,6 +10173,674 @@ export type UpdateWebUserPayload = {
 /** The output of our update `WebUser` mutation. */
 export type UpdateWebUserPayloadWebUserEdgeArgs = {
   orderBy?: InputMaybe<Array<WebUsersOrderBy>>;
+};
+
+/** All input for the upsert `BotStat` mutation. */
+export type UpsertBotStatInput = {
+  /** The `BotStat` to be upserted by this mutation. */
+  botStat: BotStatInput;
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+};
+
+/** The output of our upsert `BotStat` mutation. */
+export type UpsertBotStatPayload = {
+  __typename?: 'UpsertBotStatPayload';
+  /** The `BotStat` that was upserted by this mutation. */
+  botStat?: Maybe<BotStat>;
+  /** An edge for our `BotStat`. May be used by Relay 1. */
+  botStatEdge?: Maybe<BotStatsEdge>;
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `BotStat` mutation. */
+export type UpsertBotStatPayloadBotStatEdgeArgs = {
+  orderBy?: InputMaybe<Array<BotStatsOrderBy>>;
+};
+
+/** Where conditions for the upsert `BotStat` mutation. */
+export type UpsertBotStatWhere = {
+  category?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
+/** All input for the upsert `CachedGuild` mutation. */
+export type UpsertCachedGuildInput = {
+  /** The `CachedGuild` to be upserted by this mutation. */
+  cachedGuild: CachedGuildInput;
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+};
+
+/** The output of our upsert `CachedGuild` mutation. */
+export type UpsertCachedGuildPayload = {
+  __typename?: 'UpsertCachedGuildPayload';
+  /** The `CachedGuild` that was upserted by this mutation. */
+  cachedGuild?: Maybe<CachedGuild>;
+  /** An edge for our `CachedGuild`. May be used by Relay 1. */
+  cachedGuildEdge?: Maybe<CachedGuildsEdge>;
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `CachedGuild` mutation. */
+export type UpsertCachedGuildPayloadCachedGuildEdgeArgs = {
+  orderBy?: InputMaybe<Array<CachedGuildsOrderBy>>;
+};
+
+/** Where conditions for the upsert `CachedGuild` mutation. */
+export type UpsertCachedGuildWhere = {
+  id?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `CachedUser` mutation. */
+export type UpsertCachedUserInput = {
+  /** The `CachedUser` to be upserted by this mutation. */
+  cachedUser: CachedUserInput;
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+};
+
+/** The output of our upsert `CachedUser` mutation. */
+export type UpsertCachedUserPayload = {
+  __typename?: 'UpsertCachedUserPayload';
+  /** The `CachedUser` that was upserted by this mutation. */
+  cachedUser?: Maybe<CachedUser>;
+  /** An edge for our `CachedUser`. May be used by Relay 1. */
+  cachedUserEdge?: Maybe<CachedUsersEdge>;
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `CachedUser` mutation. */
+export type UpsertCachedUserPayloadCachedUserEdgeArgs = {
+  orderBy?: InputMaybe<Array<CachedUsersOrderBy>>;
+};
+
+/** Where conditions for the upsert `CachedUser` mutation. */
+export type UpsertCachedUserWhere = {
+  id?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `Feed` mutation. */
+export type UpsertFeedInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `Feed` to be upserted by this mutation. */
+  feed: FeedInput;
+};
+
+/** All input for the upsert `FeedItem` mutation. */
+export type UpsertFeedItemInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `FeedItem` to be upserted by this mutation. */
+  feedItem: FeedItemInput;
+};
+
+/** The output of our upsert `FeedItem` mutation. */
+export type UpsertFeedItemPayload = {
+  __typename?: 'UpsertFeedItemPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `FeedItem` that was upserted by this mutation. */
+  feedItem?: Maybe<FeedItem>;
+  /** An edge for our `FeedItem`. May be used by Relay 1. */
+  feedItemEdge?: Maybe<FeedItemsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `FeedItem` mutation. */
+export type UpsertFeedItemPayloadFeedItemEdgeArgs = {
+  orderBy?: InputMaybe<Array<FeedItemsOrderBy>>;
+};
+
+/** Where conditions for the upsert `FeedItem` mutation. */
+export type UpsertFeedItemWhere = {
+  feedId?: InputMaybe<Scalars['String']>;
+  itemId?: InputMaybe<Scalars['String']>;
+};
+
+/** The output of our upsert `Feed` mutation. */
+export type UpsertFeedPayload = {
+  __typename?: 'UpsertFeedPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `Feed` that was upserted by this mutation. */
+  feed?: Maybe<Feed>;
+  /** An edge for our `Feed`. May be used by Relay 1. */
+  feedEdge?: Maybe<FeedsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `Feed` mutation. */
+export type UpsertFeedPayloadFeedEdgeArgs = {
+  orderBy?: InputMaybe<Array<FeedsOrderBy>>;
+};
+
+/** All input for the upsert `FeedSubscription` mutation. */
+export type UpsertFeedSubscriptionInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `FeedSubscription` to be upserted by this mutation. */
+  feedSubscription: FeedSubscriptionInput;
+};
+
+/** The output of our upsert `FeedSubscription` mutation. */
+export type UpsertFeedSubscriptionPayload = {
+  __typename?: 'UpsertFeedSubscriptionPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Reads a single `Feed` that is related to this `FeedSubscription`. */
+  feedByFeedId?: Maybe<Feed>;
+  /** The `FeedSubscription` that was upserted by this mutation. */
+  feedSubscription?: Maybe<FeedSubscription>;
+  /** An edge for our `FeedSubscription`. May be used by Relay 1. */
+  feedSubscriptionEdge?: Maybe<FeedSubscriptionsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `FeedSubscription` mutation. */
+export type UpsertFeedSubscriptionPayloadFeedSubscriptionEdgeArgs = {
+  orderBy?: InputMaybe<Array<FeedSubscriptionsOrderBy>>;
+};
+
+/** Where conditions for the upsert `FeedSubscription` mutation. */
+export type UpsertFeedSubscriptionWhere = {
+  channelId?: InputMaybe<Scalars['BigInt']>;
+  feedId?: InputMaybe<Scalars['String']>;
+};
+
+/** Where conditions for the upsert `Feed` mutation. */
+export type UpsertFeedWhere = {
+  feedId?: InputMaybe<Scalars['String']>;
+};
+
+/** All input for the upsert `GuildBan` mutation. */
+export type UpsertGuildBanInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `GuildBan` to be upserted by this mutation. */
+  guildBan: GuildBanInput;
+};
+
+/** The output of our upsert `GuildBan` mutation. */
+export type UpsertGuildBanPayload = {
+  __typename?: 'UpsertGuildBanPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `GuildBan` that was upserted by this mutation. */
+  guildBan?: Maybe<GuildBan>;
+  /** An edge for our `GuildBan`. May be used by Relay 1. */
+  guildBanEdge?: Maybe<GuildBansEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `GuildBan` mutation. */
+export type UpsertGuildBanPayloadGuildBanEdgeArgs = {
+  orderBy?: InputMaybe<Array<GuildBansOrderBy>>;
+};
+
+/** Where conditions for the upsert `GuildBan` mutation. */
+export type UpsertGuildBanWhere = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `GuildConfig` mutation. */
+export type UpsertGuildConfigInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `GuildConfig` to be upserted by this mutation. */
+  guildConfig: GuildConfigInput;
+};
+
+/** The output of our upsert `GuildConfig` mutation. */
+export type UpsertGuildConfigPayload = {
+  __typename?: 'UpsertGuildConfigPayload';
+  /** Reads a single `CachedGuild` that is related to this `GuildConfig`. */
+  cachedGuildById?: Maybe<CachedGuild>;
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `GuildConfig` that was upserted by this mutation. */
+  guildConfig?: Maybe<GuildConfig>;
+  /** An edge for our `GuildConfig`. May be used by Relay 1. */
+  guildConfigEdge?: Maybe<GuildConfigsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `GuildConfig` mutation. */
+export type UpsertGuildConfigPayloadGuildConfigEdgeArgs = {
+  orderBy?: InputMaybe<Array<GuildConfigsOrderBy>>;
+};
+
+/** Where conditions for the upsert `GuildConfig` mutation. */
+export type UpsertGuildConfigWhere = {
+  id?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `Member` mutation. */
+export type UpsertMemberInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `Member` to be upserted by this mutation. */
+  member: MemberInput;
+};
+
+/** The output of our upsert `Member` mutation. */
+export type UpsertMemberPayload = {
+  __typename?: 'UpsertMemberPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `Member` that was upserted by this mutation. */
+  member?: Maybe<Member>;
+  /** An edge for our `Member`. May be used by Relay 1. */
+  memberEdge?: Maybe<MembersEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `Member` mutation. */
+export type UpsertMemberPayloadMemberEdgeArgs = {
+  orderBy?: InputMaybe<Array<MembersOrderBy>>;
+};
+
+/** Where conditions for the upsert `Member` mutation. */
+export type UpsertMemberWhere = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `ModLog` mutation. */
+export type UpsertModLogInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `ModLog` to be upserted by this mutation. */
+  modLog: ModLogInput;
+};
+
+/** The output of our upsert `ModLog` mutation. */
+export type UpsertModLogPayload = {
+  __typename?: 'UpsertModLogPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `ModLog` that was upserted by this mutation. */
+  modLog?: Maybe<ModLog>;
+  /** An edge for our `ModLog`. May be used by Relay 1. */
+  modLogEdge?: Maybe<ModLogsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `ModLog` mutation. */
+export type UpsertModLogPayloadModLogEdgeArgs = {
+  orderBy?: InputMaybe<Array<ModLogsOrderBy>>;
+};
+
+/** Where conditions for the upsert `ModLog` mutation. */
+export type UpsertModLogWhere = {
+  caseId?: InputMaybe<Scalars['BigInt']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `Mute` mutation. */
+export type UpsertMuteInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `Mute` to be upserted by this mutation. */
+  mute: MuteInput;
+};
+
+/** The output of our upsert `Mute` mutation. */
+export type UpsertMutePayload = {
+  __typename?: 'UpsertMutePayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Reads a single `ModLog` that is related to this `Mute`. */
+  modLogByGuildIdAndCaseId?: Maybe<ModLog>;
+  /** The `Mute` that was upserted by this mutation. */
+  mute?: Maybe<Mute>;
+  /** An edge for our `Mute`. May be used by Relay 1. */
+  muteEdge?: Maybe<MutesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `Mute` mutation. */
+export type UpsertMutePayloadMuteEdgeArgs = {
+  orderBy?: InputMaybe<Array<MutesOrderBy>>;
+};
+
+/** Where conditions for the upsert `Mute` mutation. */
+export type UpsertMuteWhere = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `Notification` mutation. */
+export type UpsertNotificationInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `Notification` to be upserted by this mutation. */
+  notification: NotificationInput;
+};
+
+/** The output of our upsert `Notification` mutation. */
+export type UpsertNotificationPayload = {
+  __typename?: 'UpsertNotificationPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `Notification` that was upserted by this mutation. */
+  notification?: Maybe<Notification>;
+  /** An edge for our `Notification`. May be used by Relay 1. */
+  notificationEdge?: Maybe<NotificationsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `Notification` mutation. */
+export type UpsertNotificationPayloadNotificationEdgeArgs = {
+  orderBy?: InputMaybe<Array<NotificationsOrderBy>>;
+};
+
+/** Where conditions for the upsert `Notification` mutation. */
+export type UpsertNotificationWhere = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  keyword?: InputMaybe<Scalars['String']>;
+  userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `Reminder` mutation. */
+export type UpsertReminderInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `Reminder` to be upserted by this mutation. */
+  reminder: ReminderInput;
+};
+
+/** The output of our upsert `Reminder` mutation. */
+export type UpsertReminderPayload = {
+  __typename?: 'UpsertReminderPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `Reminder` that was upserted by this mutation. */
+  reminder?: Maybe<Reminder>;
+  /** An edge for our `Reminder`. May be used by Relay 1. */
+  reminderEdge?: Maybe<RemindersEdge>;
+};
+
+
+/** The output of our upsert `Reminder` mutation. */
+export type UpsertReminderPayloadReminderEdgeArgs = {
+  orderBy?: InputMaybe<Array<RemindersOrderBy>>;
+};
+
+/** Where conditions for the upsert `Reminder` mutation. */
+export type UpsertReminderWhere = {
+  setAt?: InputMaybe<Scalars['Datetime']>;
+  userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `RoleMenu` mutation. */
+export type UpsertRoleMenuInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `RoleMenu` to be upserted by this mutation. */
+  roleMenu: RoleMenuInput;
+};
+
+/** The output of our upsert `RoleMenu` mutation. */
+export type UpsertRoleMenuPayload = {
+  __typename?: 'UpsertRoleMenuPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `RoleMenu` that was upserted by this mutation. */
+  roleMenu?: Maybe<RoleMenu>;
+  /** An edge for our `RoleMenu`. May be used by Relay 1. */
+  roleMenuEdge?: Maybe<RoleMenusEdge>;
+};
+
+
+/** The output of our upsert `RoleMenu` mutation. */
+export type UpsertRoleMenuPayloadRoleMenuEdgeArgs = {
+  orderBy?: InputMaybe<Array<RoleMenusOrderBy>>;
+};
+
+/** All input for the upsert `RoleMenuRole` mutation. */
+export type UpsertRoleMenuRoleInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `RoleMenuRole` to be upserted by this mutation. */
+  roleMenuRole: RoleMenuRoleInput;
+};
+
+/** The output of our upsert `RoleMenuRole` mutation. */
+export type UpsertRoleMenuRolePayload = {
+  __typename?: 'UpsertRoleMenuRolePayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `RoleMenu` that is related to this `RoleMenuRole`. */
+  roleMenuByGuildIdAndMenuName?: Maybe<RoleMenu>;
+  /** The `RoleMenuRole` that was upserted by this mutation. */
+  roleMenuRole?: Maybe<RoleMenuRole>;
+  /** An edge for our `RoleMenuRole`. May be used by Relay 1. */
+  roleMenuRoleEdge?: Maybe<RoleMenuRolesEdge>;
+};
+
+
+/** The output of our upsert `RoleMenuRole` mutation. */
+export type UpsertRoleMenuRolePayloadRoleMenuRoleEdgeArgs = {
+  orderBy?: InputMaybe<Array<RoleMenuRolesOrderBy>>;
+};
+
+/** Where conditions for the upsert `RoleMenuRole` mutation. */
+export type UpsertRoleMenuRoleWhere = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  menuName?: InputMaybe<Scalars['String']>;
+  roleId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** Where conditions for the upsert `RoleMenu` mutation. */
+export type UpsertRoleMenuWhere = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  menuName?: InputMaybe<Scalars['String']>;
+};
+
+/** All input for the upsert `Tag` mutation. */
+export type UpsertTagInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `Tag` to be upserted by this mutation. */
+  tag: TagInput;
+};
+
+/** The output of our upsert `Tag` mutation. */
+export type UpsertTagPayload = {
+  __typename?: 'UpsertTagPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `Tag` that was upserted by this mutation. */
+  tag?: Maybe<Tag>;
+  /** An edge for our `Tag`. May be used by Relay 1. */
+  tagEdge?: Maybe<TagsEdge>;
+};
+
+
+/** The output of our upsert `Tag` mutation. */
+export type UpsertTagPayloadTagEdgeArgs = {
+  orderBy?: InputMaybe<Array<TagsOrderBy>>;
+};
+
+/** Where conditions for the upsert `Tag` mutation. */
+export type UpsertTagWhere = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  tagName?: InputMaybe<Scalars['String']>;
+};
+
+/** All input for the upsert `User` mutation. */
+export type UpsertUserInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `User` to be upserted by this mutation. */
+  user: UserInput;
+};
+
+/** All input for the upsert `UserLevel` mutation. */
+export type UpsertUserLevelInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `UserLevel` to be upserted by this mutation. */
+  userLevel: UserLevelInput;
+};
+
+/** The output of our upsert `UserLevel` mutation. */
+export type UpsertUserLevelPayload = {
+  __typename?: 'UpsertUserLevelPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `UserLevel` that was upserted by this mutation. */
+  userLevel?: Maybe<UserLevel>;
+  /** An edge for our `UserLevel`. May be used by Relay 1. */
+  userLevelEdge?: Maybe<UserLevelsEdge>;
+};
+
+
+/** The output of our upsert `UserLevel` mutation. */
+export type UpsertUserLevelPayloadUserLevelEdgeArgs = {
+  orderBy?: InputMaybe<Array<UserLevelsOrderBy>>;
+};
+
+/** Where conditions for the upsert `UserLevel` mutation. */
+export type UpsertUserLevelWhere = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** The output of our upsert `User` mutation. */
+export type UpsertUserPayload = {
+  __typename?: 'UpsertUserPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `User` that was upserted by this mutation. */
+  user?: Maybe<User>;
+  /** An edge for our `User`. May be used by Relay 1. */
+  userEdge?: Maybe<UsersEdge>;
+};
+
+
+/** The output of our upsert `User` mutation. */
+export type UpsertUserPayloadUserEdgeArgs = {
+  orderBy?: InputMaybe<Array<UsersOrderBy>>;
+};
+
+/** Where conditions for the upsert `User` mutation. */
+export type UpsertUserWhere = {
+  id?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `WebUserGuild` mutation. */
+export type UpsertWebUserGuildInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `WebUserGuild` to be upserted by this mutation. */
+  webUserGuild: WebUserGuildInput;
+};
+
+/** The output of our upsert `WebUserGuild` mutation. */
+export type UpsertWebUserGuildPayload = {
+  __typename?: 'UpsertWebUserGuildPayload';
+  /** Reads a single `CachedGuild` that is related to this `WebUserGuild`. */
+  cachedGuildByGuildId?: Maybe<CachedGuild>;
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `WebUser` that is related to this `WebUserGuild`. */
+  webUserByUserId?: Maybe<WebUser>;
+  /** The `WebUserGuild` that was upserted by this mutation. */
+  webUserGuild?: Maybe<WebUserGuild>;
+  /** An edge for our `WebUserGuild`. May be used by Relay 1. */
+  webUserGuildEdge?: Maybe<WebUserGuildsEdge>;
+};
+
+
+/** The output of our upsert `WebUserGuild` mutation. */
+export type UpsertWebUserGuildPayloadWebUserGuildEdgeArgs = {
+  orderBy?: InputMaybe<Array<WebUserGuildsOrderBy>>;
+};
+
+/** Where conditions for the upsert `WebUserGuild` mutation. */
+export type UpsertWebUserGuildWhere = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `WebUser` mutation. */
+export type UpsertWebUserInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `WebUser` to be upserted by this mutation. */
+  webUser: WebUserInput;
+};
+
+/** The output of our upsert `WebUser` mutation. */
+export type UpsertWebUserPayload = {
+  __typename?: 'UpsertWebUserPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `WebUser` that was upserted by this mutation. */
+  webUser?: Maybe<WebUser>;
+  /** An edge for our `WebUser`. May be used by Relay 1. */
+  webUserEdge?: Maybe<WebUsersEdge>;
+};
+
+
+/** The output of our upsert `WebUser` mutation. */
+export type UpsertWebUserPayloadWebUserEdgeArgs = {
+  orderBy?: InputMaybe<Array<WebUsersOrderBy>>;
+};
+
+/** Where conditions for the upsert `WebUser` mutation. */
+export type UpsertWebUserWhere = {
+  id?: InputMaybe<Scalars['BigInt']>;
 };
 
 export type User = Node & {
@@ -11013,6 +12513,8 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  AddRoleMenuRolesInput: AddRoleMenuRolesInput;
+  AddRoleMenuRolesPayload: ResolverTypeWrapper<AddRoleMenuRolesPayload>;
   BigFloat: ResolverTypeWrapper<Scalars['BigFloat']>;
   BigInt: ResolverTypeWrapper<Scalars['BigInt']>;
   BigIntFilter: BigIntFilter;
@@ -11088,6 +12590,8 @@ export type ResolversTypes = {
   CreateReminderPayload: ResolverTypeWrapper<CreateReminderPayload>;
   CreateRoleMenuInput: CreateRoleMenuInput;
   CreateRoleMenuPayload: ResolverTypeWrapper<CreateRoleMenuPayload>;
+  CreateRoleMenuRoleInput: CreateRoleMenuRoleInput;
+  CreateRoleMenuRolePayload: ResolverTypeWrapper<CreateRoleMenuRolePayload>;
   CreateTagInput: CreateTagInput;
   CreateTagPayload: ResolverTypeWrapper<CreateTagPayload>;
   CreateUserInput: CreateUserInput;
@@ -11145,6 +12649,11 @@ export type ResolversTypes = {
   DeleteRoleMenuByGuildIdAndMenuNameInput: DeleteRoleMenuByGuildIdAndMenuNameInput;
   DeleteRoleMenuInput: DeleteRoleMenuInput;
   DeleteRoleMenuPayload: ResolverTypeWrapper<DeleteRoleMenuPayload>;
+  DeleteRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput: DeleteRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput;
+  DeleteRoleMenuRoleInput: DeleteRoleMenuRoleInput;
+  DeleteRoleMenuRolePayload: ResolverTypeWrapper<DeleteRoleMenuRolePayload>;
+  DeleteRoleMenuRolesInput: DeleteRoleMenuRolesInput;
+  DeleteRoleMenuRolesPayload: ResolverTypeWrapper<DeleteRoleMenuRolesPayload>;
   DeleteTagByGuildIdAndTagNameInput: DeleteTagByGuildIdAndTagNameInput;
   DeleteTagInput: DeleteTagInput;
   DeleteTagPayload: ResolverTypeWrapper<DeleteTagPayload>;
@@ -11400,7 +12909,7 @@ export type ResolversTypes = {
   MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
   MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
   MutesOrderBy: MutesOrderBy;
-  Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['Member'] | ResolversTypes['ModLog'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'];
+  Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['Member'] | ResolversTypes['ModLog'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['RoleMenuRole'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'];
   Notification: ResolverTypeWrapper<Notification>;
   NotificationAggregates: ResolverTypeWrapper<NotificationAggregates>;
   NotificationAverageAggregates: ResolverTypeWrapper<NotificationAverageAggregates>;
@@ -11476,6 +12985,35 @@ export type ResolversTypes = {
   RoleMenuMaxAggregates: ResolverTypeWrapper<RoleMenuMaxAggregates>;
   RoleMenuMinAggregates: ResolverTypeWrapper<RoleMenuMinAggregates>;
   RoleMenuPatch: RoleMenuPatch;
+  RoleMenuRole: ResolverTypeWrapper<RoleMenuRole>;
+  RoleMenuRoleAggregates: ResolverTypeWrapper<RoleMenuRoleAggregates>;
+  RoleMenuRoleAverageAggregates: ResolverTypeWrapper<RoleMenuRoleAverageAggregates>;
+  RoleMenuRoleCondition: RoleMenuRoleCondition;
+  RoleMenuRoleDistinctCountAggregates: ResolverTypeWrapper<RoleMenuRoleDistinctCountAggregates>;
+  RoleMenuRoleFilter: RoleMenuRoleFilter;
+  RoleMenuRoleInput: RoleMenuRoleInput;
+  RoleMenuRoleMaxAggregates: ResolverTypeWrapper<RoleMenuRoleMaxAggregates>;
+  RoleMenuRoleMinAggregates: ResolverTypeWrapper<RoleMenuRoleMinAggregates>;
+  RoleMenuRolePatch: RoleMenuRolePatch;
+  RoleMenuRoleStddevPopulationAggregates: ResolverTypeWrapper<RoleMenuRoleStddevPopulationAggregates>;
+  RoleMenuRoleStddevSampleAggregates: ResolverTypeWrapper<RoleMenuRoleStddevSampleAggregates>;
+  RoleMenuRoleSumAggregates: ResolverTypeWrapper<RoleMenuRoleSumAggregates>;
+  RoleMenuRoleVariancePopulationAggregates: ResolverTypeWrapper<RoleMenuRoleVariancePopulationAggregates>;
+  RoleMenuRoleVarianceSampleAggregates: ResolverTypeWrapper<RoleMenuRoleVarianceSampleAggregates>;
+  RoleMenuRolesConnection: ResolverTypeWrapper<RoleMenuRolesConnection>;
+  RoleMenuRolesEdge: ResolverTypeWrapper<RoleMenuRolesEdge>;
+  RoleMenuRolesGroupBy: RoleMenuRolesGroupBy;
+  RoleMenuRolesHavingAverageInput: RoleMenuRolesHavingAverageInput;
+  RoleMenuRolesHavingDistinctCountInput: RoleMenuRolesHavingDistinctCountInput;
+  RoleMenuRolesHavingInput: RoleMenuRolesHavingInput;
+  RoleMenuRolesHavingMaxInput: RoleMenuRolesHavingMaxInput;
+  RoleMenuRolesHavingMinInput: RoleMenuRolesHavingMinInput;
+  RoleMenuRolesHavingStddevPopulationInput: RoleMenuRolesHavingStddevPopulationInput;
+  RoleMenuRolesHavingStddevSampleInput: RoleMenuRolesHavingStddevSampleInput;
+  RoleMenuRolesHavingSumInput: RoleMenuRolesHavingSumInput;
+  RoleMenuRolesHavingVariancePopulationInput: RoleMenuRolesHavingVariancePopulationInput;
+  RoleMenuRolesHavingVarianceSampleInput: RoleMenuRolesHavingVarianceSampleInput;
+  RoleMenuRolesOrderBy: RoleMenuRolesOrderBy;
   RoleMenuStddevPopulationAggregates: ResolverTypeWrapper<RoleMenuStddevPopulationAggregates>;
   RoleMenuStddevSampleAggregates: ResolverTypeWrapper<RoleMenuStddevSampleAggregates>;
   RoleMenuSumAggregates: ResolverTypeWrapper<RoleMenuSumAggregates>;
@@ -11574,6 +13112,9 @@ export type ResolversTypes = {
   UpdateRoleMenuByGuildIdAndMenuNameInput: UpdateRoleMenuByGuildIdAndMenuNameInput;
   UpdateRoleMenuInput: UpdateRoleMenuInput;
   UpdateRoleMenuPayload: ResolverTypeWrapper<UpdateRoleMenuPayload>;
+  UpdateRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput: UpdateRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput;
+  UpdateRoleMenuRoleInput: UpdateRoleMenuRoleInput;
+  UpdateRoleMenuRolePayload: ResolverTypeWrapper<UpdateRoleMenuRolePayload>;
   UpdateTagByGuildIdAndTagNameInput: UpdateTagByGuildIdAndTagNameInput;
   UpdateTagInput: UpdateTagInput;
   UpdateTagPayload: ResolverTypeWrapper<UpdateTagPayload>;
@@ -11589,6 +13130,66 @@ export type ResolversTypes = {
   UpdateWebUserGuildPayload: ResolverTypeWrapper<UpdateWebUserGuildPayload>;
   UpdateWebUserInput: UpdateWebUserInput;
   UpdateWebUserPayload: ResolverTypeWrapper<UpdateWebUserPayload>;
+  UpsertBotStatInput: UpsertBotStatInput;
+  UpsertBotStatPayload: ResolverTypeWrapper<UpsertBotStatPayload>;
+  UpsertBotStatWhere: UpsertBotStatWhere;
+  UpsertCachedGuildInput: UpsertCachedGuildInput;
+  UpsertCachedGuildPayload: ResolverTypeWrapper<UpsertCachedGuildPayload>;
+  UpsertCachedGuildWhere: UpsertCachedGuildWhere;
+  UpsertCachedUserInput: UpsertCachedUserInput;
+  UpsertCachedUserPayload: ResolverTypeWrapper<UpsertCachedUserPayload>;
+  UpsertCachedUserWhere: UpsertCachedUserWhere;
+  UpsertFeedInput: UpsertFeedInput;
+  UpsertFeedItemInput: UpsertFeedItemInput;
+  UpsertFeedItemPayload: ResolverTypeWrapper<UpsertFeedItemPayload>;
+  UpsertFeedItemWhere: UpsertFeedItemWhere;
+  UpsertFeedPayload: ResolverTypeWrapper<UpsertFeedPayload>;
+  UpsertFeedSubscriptionInput: UpsertFeedSubscriptionInput;
+  UpsertFeedSubscriptionPayload: ResolverTypeWrapper<UpsertFeedSubscriptionPayload>;
+  UpsertFeedSubscriptionWhere: UpsertFeedSubscriptionWhere;
+  UpsertFeedWhere: UpsertFeedWhere;
+  UpsertGuildBanInput: UpsertGuildBanInput;
+  UpsertGuildBanPayload: ResolverTypeWrapper<UpsertGuildBanPayload>;
+  UpsertGuildBanWhere: UpsertGuildBanWhere;
+  UpsertGuildConfigInput: UpsertGuildConfigInput;
+  UpsertGuildConfigPayload: ResolverTypeWrapper<UpsertGuildConfigPayload>;
+  UpsertGuildConfigWhere: UpsertGuildConfigWhere;
+  UpsertMemberInput: UpsertMemberInput;
+  UpsertMemberPayload: ResolverTypeWrapper<UpsertMemberPayload>;
+  UpsertMemberWhere: UpsertMemberWhere;
+  UpsertModLogInput: UpsertModLogInput;
+  UpsertModLogPayload: ResolverTypeWrapper<UpsertModLogPayload>;
+  UpsertModLogWhere: UpsertModLogWhere;
+  UpsertMuteInput: UpsertMuteInput;
+  UpsertMutePayload: ResolverTypeWrapper<UpsertMutePayload>;
+  UpsertMuteWhere: UpsertMuteWhere;
+  UpsertNotificationInput: UpsertNotificationInput;
+  UpsertNotificationPayload: ResolverTypeWrapper<UpsertNotificationPayload>;
+  UpsertNotificationWhere: UpsertNotificationWhere;
+  UpsertReminderInput: UpsertReminderInput;
+  UpsertReminderPayload: ResolverTypeWrapper<UpsertReminderPayload>;
+  UpsertReminderWhere: UpsertReminderWhere;
+  UpsertRoleMenuInput: UpsertRoleMenuInput;
+  UpsertRoleMenuPayload: ResolverTypeWrapper<UpsertRoleMenuPayload>;
+  UpsertRoleMenuRoleInput: UpsertRoleMenuRoleInput;
+  UpsertRoleMenuRolePayload: ResolverTypeWrapper<UpsertRoleMenuRolePayload>;
+  UpsertRoleMenuRoleWhere: UpsertRoleMenuRoleWhere;
+  UpsertRoleMenuWhere: UpsertRoleMenuWhere;
+  UpsertTagInput: UpsertTagInput;
+  UpsertTagPayload: ResolverTypeWrapper<UpsertTagPayload>;
+  UpsertTagWhere: UpsertTagWhere;
+  UpsertUserInput: UpsertUserInput;
+  UpsertUserLevelInput: UpsertUserLevelInput;
+  UpsertUserLevelPayload: ResolverTypeWrapper<UpsertUserLevelPayload>;
+  UpsertUserLevelWhere: UpsertUserLevelWhere;
+  UpsertUserPayload: ResolverTypeWrapper<UpsertUserPayload>;
+  UpsertUserWhere: UpsertUserWhere;
+  UpsertWebUserGuildInput: UpsertWebUserGuildInput;
+  UpsertWebUserGuildPayload: ResolverTypeWrapper<UpsertWebUserGuildPayload>;
+  UpsertWebUserGuildWhere: UpsertWebUserGuildWhere;
+  UpsertWebUserInput: UpsertWebUserInput;
+  UpsertWebUserPayload: ResolverTypeWrapper<UpsertWebUserPayload>;
+  UpsertWebUserWhere: UpsertWebUserWhere;
   User: ResolverTypeWrapper<User>;
   UserAggregates: ResolverTypeWrapper<UserAggregates>;
   UserAverageAggregates: ResolverTypeWrapper<UserAverageAggregates>;
@@ -11710,6 +13311,8 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  AddRoleMenuRolesInput: AddRoleMenuRolesInput;
+  AddRoleMenuRolesPayload: AddRoleMenuRolesPayload;
   BigFloat: Scalars['BigFloat'];
   BigInt: Scalars['BigInt'];
   BigIntFilter: BigIntFilter;
@@ -11781,6 +13384,8 @@ export type ResolversParentTypes = {
   CreateReminderPayload: CreateReminderPayload;
   CreateRoleMenuInput: CreateRoleMenuInput;
   CreateRoleMenuPayload: CreateRoleMenuPayload;
+  CreateRoleMenuRoleInput: CreateRoleMenuRoleInput;
+  CreateRoleMenuRolePayload: CreateRoleMenuRolePayload;
   CreateTagInput: CreateTagInput;
   CreateTagPayload: CreateTagPayload;
   CreateUserInput: CreateUserInput;
@@ -11838,6 +13443,11 @@ export type ResolversParentTypes = {
   DeleteRoleMenuByGuildIdAndMenuNameInput: DeleteRoleMenuByGuildIdAndMenuNameInput;
   DeleteRoleMenuInput: DeleteRoleMenuInput;
   DeleteRoleMenuPayload: DeleteRoleMenuPayload;
+  DeleteRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput: DeleteRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput;
+  DeleteRoleMenuRoleInput: DeleteRoleMenuRoleInput;
+  DeleteRoleMenuRolePayload: DeleteRoleMenuRolePayload;
+  DeleteRoleMenuRolesInput: DeleteRoleMenuRolesInput;
+  DeleteRoleMenuRolesPayload: DeleteRoleMenuRolesPayload;
   DeleteTagByGuildIdAndTagNameInput: DeleteTagByGuildIdAndTagNameInput;
   DeleteTagInput: DeleteTagInput;
   DeleteTagPayload: DeleteTagPayload;
@@ -12074,7 +13684,7 @@ export type ResolversParentTypes = {
   MutesHavingSumInput: MutesHavingSumInput;
   MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
   MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
-  Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['Member'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'];
+  Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['Member'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['RoleMenuRole'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'];
   Notification: Notification;
   NotificationAggregates: NotificationAggregates;
   NotificationAverageAggregates: NotificationAverageAggregates;
@@ -12146,6 +13756,33 @@ export type ResolversParentTypes = {
   RoleMenuMaxAggregates: RoleMenuMaxAggregates;
   RoleMenuMinAggregates: RoleMenuMinAggregates;
   RoleMenuPatch: RoleMenuPatch;
+  RoleMenuRole: RoleMenuRole;
+  RoleMenuRoleAggregates: RoleMenuRoleAggregates;
+  RoleMenuRoleAverageAggregates: RoleMenuRoleAverageAggregates;
+  RoleMenuRoleCondition: RoleMenuRoleCondition;
+  RoleMenuRoleDistinctCountAggregates: RoleMenuRoleDistinctCountAggregates;
+  RoleMenuRoleFilter: RoleMenuRoleFilter;
+  RoleMenuRoleInput: RoleMenuRoleInput;
+  RoleMenuRoleMaxAggregates: RoleMenuRoleMaxAggregates;
+  RoleMenuRoleMinAggregates: RoleMenuRoleMinAggregates;
+  RoleMenuRolePatch: RoleMenuRolePatch;
+  RoleMenuRoleStddevPopulationAggregates: RoleMenuRoleStddevPopulationAggregates;
+  RoleMenuRoleStddevSampleAggregates: RoleMenuRoleStddevSampleAggregates;
+  RoleMenuRoleSumAggregates: RoleMenuRoleSumAggregates;
+  RoleMenuRoleVariancePopulationAggregates: RoleMenuRoleVariancePopulationAggregates;
+  RoleMenuRoleVarianceSampleAggregates: RoleMenuRoleVarianceSampleAggregates;
+  RoleMenuRolesConnection: RoleMenuRolesConnection;
+  RoleMenuRolesEdge: RoleMenuRolesEdge;
+  RoleMenuRolesHavingAverageInput: RoleMenuRolesHavingAverageInput;
+  RoleMenuRolesHavingDistinctCountInput: RoleMenuRolesHavingDistinctCountInput;
+  RoleMenuRolesHavingInput: RoleMenuRolesHavingInput;
+  RoleMenuRolesHavingMaxInput: RoleMenuRolesHavingMaxInput;
+  RoleMenuRolesHavingMinInput: RoleMenuRolesHavingMinInput;
+  RoleMenuRolesHavingStddevPopulationInput: RoleMenuRolesHavingStddevPopulationInput;
+  RoleMenuRolesHavingStddevSampleInput: RoleMenuRolesHavingStddevSampleInput;
+  RoleMenuRolesHavingSumInput: RoleMenuRolesHavingSumInput;
+  RoleMenuRolesHavingVariancePopulationInput: RoleMenuRolesHavingVariancePopulationInput;
+  RoleMenuRolesHavingVarianceSampleInput: RoleMenuRolesHavingVarianceSampleInput;
   RoleMenuStddevPopulationAggregates: RoleMenuStddevPopulationAggregates;
   RoleMenuStddevSampleAggregates: RoleMenuStddevSampleAggregates;
   RoleMenuSumAggregates: RoleMenuSumAggregates;
@@ -12240,6 +13877,9 @@ export type ResolversParentTypes = {
   UpdateRoleMenuByGuildIdAndMenuNameInput: UpdateRoleMenuByGuildIdAndMenuNameInput;
   UpdateRoleMenuInput: UpdateRoleMenuInput;
   UpdateRoleMenuPayload: UpdateRoleMenuPayload;
+  UpdateRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput: UpdateRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput;
+  UpdateRoleMenuRoleInput: UpdateRoleMenuRoleInput;
+  UpdateRoleMenuRolePayload: UpdateRoleMenuRolePayload;
   UpdateTagByGuildIdAndTagNameInput: UpdateTagByGuildIdAndTagNameInput;
   UpdateTagInput: UpdateTagInput;
   UpdateTagPayload: UpdateTagPayload;
@@ -12255,6 +13895,66 @@ export type ResolversParentTypes = {
   UpdateWebUserGuildPayload: UpdateWebUserGuildPayload;
   UpdateWebUserInput: UpdateWebUserInput;
   UpdateWebUserPayload: UpdateWebUserPayload;
+  UpsertBotStatInput: UpsertBotStatInput;
+  UpsertBotStatPayload: UpsertBotStatPayload;
+  UpsertBotStatWhere: UpsertBotStatWhere;
+  UpsertCachedGuildInput: UpsertCachedGuildInput;
+  UpsertCachedGuildPayload: UpsertCachedGuildPayload;
+  UpsertCachedGuildWhere: UpsertCachedGuildWhere;
+  UpsertCachedUserInput: UpsertCachedUserInput;
+  UpsertCachedUserPayload: UpsertCachedUserPayload;
+  UpsertCachedUserWhere: UpsertCachedUserWhere;
+  UpsertFeedInput: UpsertFeedInput;
+  UpsertFeedItemInput: UpsertFeedItemInput;
+  UpsertFeedItemPayload: UpsertFeedItemPayload;
+  UpsertFeedItemWhere: UpsertFeedItemWhere;
+  UpsertFeedPayload: UpsertFeedPayload;
+  UpsertFeedSubscriptionInput: UpsertFeedSubscriptionInput;
+  UpsertFeedSubscriptionPayload: UpsertFeedSubscriptionPayload;
+  UpsertFeedSubscriptionWhere: UpsertFeedSubscriptionWhere;
+  UpsertFeedWhere: UpsertFeedWhere;
+  UpsertGuildBanInput: UpsertGuildBanInput;
+  UpsertGuildBanPayload: UpsertGuildBanPayload;
+  UpsertGuildBanWhere: UpsertGuildBanWhere;
+  UpsertGuildConfigInput: UpsertGuildConfigInput;
+  UpsertGuildConfigPayload: UpsertGuildConfigPayload;
+  UpsertGuildConfigWhere: UpsertGuildConfigWhere;
+  UpsertMemberInput: UpsertMemberInput;
+  UpsertMemberPayload: UpsertMemberPayload;
+  UpsertMemberWhere: UpsertMemberWhere;
+  UpsertModLogInput: UpsertModLogInput;
+  UpsertModLogPayload: UpsertModLogPayload;
+  UpsertModLogWhere: UpsertModLogWhere;
+  UpsertMuteInput: UpsertMuteInput;
+  UpsertMutePayload: UpsertMutePayload;
+  UpsertMuteWhere: UpsertMuteWhere;
+  UpsertNotificationInput: UpsertNotificationInput;
+  UpsertNotificationPayload: UpsertNotificationPayload;
+  UpsertNotificationWhere: UpsertNotificationWhere;
+  UpsertReminderInput: UpsertReminderInput;
+  UpsertReminderPayload: UpsertReminderPayload;
+  UpsertReminderWhere: UpsertReminderWhere;
+  UpsertRoleMenuInput: UpsertRoleMenuInput;
+  UpsertRoleMenuPayload: UpsertRoleMenuPayload;
+  UpsertRoleMenuRoleInput: UpsertRoleMenuRoleInput;
+  UpsertRoleMenuRolePayload: UpsertRoleMenuRolePayload;
+  UpsertRoleMenuRoleWhere: UpsertRoleMenuRoleWhere;
+  UpsertRoleMenuWhere: UpsertRoleMenuWhere;
+  UpsertTagInput: UpsertTagInput;
+  UpsertTagPayload: UpsertTagPayload;
+  UpsertTagWhere: UpsertTagWhere;
+  UpsertUserInput: UpsertUserInput;
+  UpsertUserLevelInput: UpsertUserLevelInput;
+  UpsertUserLevelPayload: UpsertUserLevelPayload;
+  UpsertUserLevelWhere: UpsertUserLevelWhere;
+  UpsertUserPayload: UpsertUserPayload;
+  UpsertUserWhere: UpsertUserWhere;
+  UpsertWebUserGuildInput: UpsertWebUserGuildInput;
+  UpsertWebUserGuildPayload: UpsertWebUserGuildPayload;
+  UpsertWebUserGuildWhere: UpsertWebUserGuildWhere;
+  UpsertWebUserInput: UpsertWebUserInput;
+  UpsertWebUserPayload: UpsertWebUserPayload;
+  UpsertWebUserWhere: UpsertWebUserWhere;
   User: User;
   UserAggregates: UserAggregates;
   UserAverageAggregates: UserAverageAggregates;
@@ -12364,6 +14064,13 @@ export type ResolversParentTypes = {
   WebUsersHavingSumInput: WebUsersHavingSumInput;
   WebUsersHavingVariancePopulationInput: WebUsersHavingVariancePopulationInput;
   WebUsersHavingVarianceSampleInput: WebUsersHavingVarianceSampleInput;
+};
+
+export type AddRoleMenuRolesPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddRoleMenuRolesPayload'] = ResolversParentTypes['AddRoleMenuRolesPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  roleMenuRoles?: Resolver<Maybe<Array<ResolversTypes['RoleMenuRole']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export interface BigFloatScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['BigFloat'], any> {
@@ -12623,6 +14330,15 @@ export type CreateRoleMenuPayloadResolvers<ContextType = any, ParentType extends
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CreateRoleMenuRolePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateRoleMenuRolePayload'] = ResolversParentTypes['CreateRoleMenuRolePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  roleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType>;
+  roleMenuRole?: Resolver<Maybe<ResolversTypes['RoleMenuRole']>, ParentType, ContextType>;
+  roleMenuRoleEdge?: Resolver<Maybe<ResolversTypes['RoleMenuRolesEdge']>, ParentType, ContextType, RequireFields<CreateRoleMenuRolePayloadRoleMenuRoleEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CreateTagPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateTagPayload'] = ResolversParentTypes['CreateTagPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
@@ -12812,6 +14528,23 @@ export type DeleteRoleMenuPayloadResolvers<ContextType = any, ParentType extends
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   roleMenu?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType>;
   roleMenuEdge?: Resolver<Maybe<ResolversTypes['RoleMenusEdge']>, ParentType, ContextType, RequireFields<DeleteRoleMenuPayloadRoleMenuEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteRoleMenuRolePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRoleMenuRolePayload'] = ResolversParentTypes['DeleteRoleMenuRolePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedRoleMenuRoleId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  roleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType>;
+  roleMenuRole?: Resolver<Maybe<ResolversTypes['RoleMenuRole']>, ParentType, ContextType>;
+  roleMenuRoleEdge?: Resolver<Maybe<ResolversTypes['RoleMenuRolesEdge']>, ParentType, ContextType, RequireFields<DeleteRoleMenuRolePayloadRoleMenuRoleEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteRoleMenuRolesPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRoleMenuRolesPayload'] = ResolversParentTypes['DeleteRoleMenuRolesPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  roleMenuRoles?: Resolver<Maybe<Array<ResolversTypes['RoleMenuRole']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -13687,6 +15420,7 @@ export type ModLogsEdgeResolvers<ContextType = any, ParentType extends Resolvers
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addRoleMenuRoles?: Resolver<Maybe<ResolversTypes['AddRoleMenuRolesPayload']>, ParentType, ContextType, RequireFields<MutationAddRoleMenuRolesArgs, 'input'>>;
   createBotStat?: Resolver<Maybe<ResolversTypes['CreateBotStatPayload']>, ParentType, ContextType, RequireFields<MutationCreateBotStatArgs, 'input'>>;
   createCachedGuild?: Resolver<Maybe<ResolversTypes['CreateCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationCreateCachedGuildArgs, 'input'>>;
   createCachedUser?: Resolver<Maybe<ResolversTypes['CreateCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationCreateCachedUserArgs, 'input'>>;
@@ -13702,6 +15436,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createNotification?: Resolver<Maybe<ResolversTypes['CreateNotificationPayload']>, ParentType, ContextType, RequireFields<MutationCreateNotificationArgs, 'input'>>;
   createReminder?: Resolver<Maybe<ResolversTypes['CreateReminderPayload']>, ParentType, ContextType, RequireFields<MutationCreateReminderArgs, 'input'>>;
   createRoleMenu?: Resolver<Maybe<ResolversTypes['CreateRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationCreateRoleMenuArgs, 'input'>>;
+  createRoleMenuRole?: Resolver<Maybe<ResolversTypes['CreateRoleMenuRolePayload']>, ParentType, ContextType, RequireFields<MutationCreateRoleMenuRoleArgs, 'input'>>;
   createTag?: Resolver<Maybe<ResolversTypes['CreateTagPayload']>, ParentType, ContextType, RequireFields<MutationCreateTagArgs, 'input'>>;
   createUser?: Resolver<Maybe<ResolversTypes['CreateUserPayload']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
   createUserLevel?: Resolver<Maybe<ResolversTypes['CreateUserLevelPayload']>, ParentType, ContextType, RequireFields<MutationCreateUserLevelArgs, 'input'>>;
@@ -13735,6 +15470,9 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteReminderByUserIdAndSetAt?: Resolver<Maybe<ResolversTypes['DeleteReminderPayload']>, ParentType, ContextType, RequireFields<MutationDeleteReminderByUserIdAndSetAtArgs, 'input'>>;
   deleteRoleMenu?: Resolver<Maybe<ResolversTypes['DeleteRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoleMenuArgs, 'input'>>;
   deleteRoleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['DeleteRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoleMenuByGuildIdAndMenuNameArgs, 'input'>>;
+  deleteRoleMenuRole?: Resolver<Maybe<ResolversTypes['DeleteRoleMenuRolePayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoleMenuRoleArgs, 'input'>>;
+  deleteRoleMenuRoleByGuildIdAndMenuNameAndRoleId?: Resolver<Maybe<ResolversTypes['DeleteRoleMenuRolePayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoleMenuRoleByGuildIdAndMenuNameAndRoleIdArgs, 'input'>>;
+  deleteRoleMenuRoles?: Resolver<Maybe<ResolversTypes['DeleteRoleMenuRolesPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRoleMenuRolesArgs, 'input'>>;
   deleteTag?: Resolver<Maybe<ResolversTypes['DeleteTagPayload']>, ParentType, ContextType, RequireFields<MutationDeleteTagArgs, 'input'>>;
   deleteTagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['DeleteTagPayload']>, ParentType, ContextType, RequireFields<MutationDeleteTagByGuildIdAndTagNameArgs, 'input'>>;
   deleteUser?: Resolver<Maybe<ResolversTypes['DeleteUserPayload']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'input'>>;
@@ -13775,6 +15513,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateReminderByUserIdAndSetAt?: Resolver<Maybe<ResolversTypes['UpdateReminderPayload']>, ParentType, ContextType, RequireFields<MutationUpdateReminderByUserIdAndSetAtArgs, 'input'>>;
   updateRoleMenu?: Resolver<Maybe<ResolversTypes['UpdateRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationUpdateRoleMenuArgs, 'input'>>;
   updateRoleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['UpdateRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationUpdateRoleMenuByGuildIdAndMenuNameArgs, 'input'>>;
+  updateRoleMenuRole?: Resolver<Maybe<ResolversTypes['UpdateRoleMenuRolePayload']>, ParentType, ContextType, RequireFields<MutationUpdateRoleMenuRoleArgs, 'input'>>;
+  updateRoleMenuRoleByGuildIdAndMenuNameAndRoleId?: Resolver<Maybe<ResolversTypes['UpdateRoleMenuRolePayload']>, ParentType, ContextType, RequireFields<MutationUpdateRoleMenuRoleByGuildIdAndMenuNameAndRoleIdArgs, 'input'>>;
   updateTag?: Resolver<Maybe<ResolversTypes['UpdateTagPayload']>, ParentType, ContextType, RequireFields<MutationUpdateTagArgs, 'input'>>;
   updateTagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['UpdateTagPayload']>, ParentType, ContextType, RequireFields<MutationUpdateTagByGuildIdAndTagNameArgs, 'input'>>;
   updateUser?: Resolver<Maybe<ResolversTypes['UpdateUserPayload']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'input'>>;
@@ -13785,6 +15525,26 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateWebUserById?: Resolver<Maybe<ResolversTypes['UpdateWebUserPayload']>, ParentType, ContextType, RequireFields<MutationUpdateWebUserByIdArgs, 'input'>>;
   updateWebUserGuild?: Resolver<Maybe<ResolversTypes['UpdateWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpdateWebUserGuildArgs, 'input'>>;
   updateWebUserGuildByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['UpdateWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpdateWebUserGuildByUserIdAndGuildIdArgs, 'input'>>;
+  upsertBotStat?: Resolver<Maybe<ResolversTypes['UpsertBotStatPayload']>, ParentType, ContextType, RequireFields<MutationUpsertBotStatArgs, 'input'>>;
+  upsertCachedGuild?: Resolver<Maybe<ResolversTypes['UpsertCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpsertCachedGuildArgs, 'input'>>;
+  upsertCachedUser?: Resolver<Maybe<ResolversTypes['UpsertCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationUpsertCachedUserArgs, 'input'>>;
+  upsertFeed?: Resolver<Maybe<ResolversTypes['UpsertFeedPayload']>, ParentType, ContextType, RequireFields<MutationUpsertFeedArgs, 'input'>>;
+  upsertFeedItem?: Resolver<Maybe<ResolversTypes['UpsertFeedItemPayload']>, ParentType, ContextType, RequireFields<MutationUpsertFeedItemArgs, 'input'>>;
+  upsertFeedSubscription?: Resolver<Maybe<ResolversTypes['UpsertFeedSubscriptionPayload']>, ParentType, ContextType, RequireFields<MutationUpsertFeedSubscriptionArgs, 'input'>>;
+  upsertGuildBan?: Resolver<Maybe<ResolversTypes['UpsertGuildBanPayload']>, ParentType, ContextType, RequireFields<MutationUpsertGuildBanArgs, 'input'>>;
+  upsertGuildConfig?: Resolver<Maybe<ResolversTypes['UpsertGuildConfigPayload']>, ParentType, ContextType, RequireFields<MutationUpsertGuildConfigArgs, 'input'>>;
+  upsertMember?: Resolver<Maybe<ResolversTypes['UpsertMemberPayload']>, ParentType, ContextType, RequireFields<MutationUpsertMemberArgs, 'input'>>;
+  upsertModLog?: Resolver<Maybe<ResolversTypes['UpsertModLogPayload']>, ParentType, ContextType, RequireFields<MutationUpsertModLogArgs, 'input'>>;
+  upsertMute?: Resolver<Maybe<ResolversTypes['UpsertMutePayload']>, ParentType, ContextType, RequireFields<MutationUpsertMuteArgs, 'input'>>;
+  upsertNotification?: Resolver<Maybe<ResolversTypes['UpsertNotificationPayload']>, ParentType, ContextType, RequireFields<MutationUpsertNotificationArgs, 'input'>>;
+  upsertReminder?: Resolver<Maybe<ResolversTypes['UpsertReminderPayload']>, ParentType, ContextType, RequireFields<MutationUpsertReminderArgs, 'input'>>;
+  upsertRoleMenu?: Resolver<Maybe<ResolversTypes['UpsertRoleMenuPayload']>, ParentType, ContextType, RequireFields<MutationUpsertRoleMenuArgs, 'input'>>;
+  upsertRoleMenuRole?: Resolver<Maybe<ResolversTypes['UpsertRoleMenuRolePayload']>, ParentType, ContextType, RequireFields<MutationUpsertRoleMenuRoleArgs, 'input'>>;
+  upsertTag?: Resolver<Maybe<ResolversTypes['UpsertTagPayload']>, ParentType, ContextType, RequireFields<MutationUpsertTagArgs, 'input'>>;
+  upsertUser?: Resolver<Maybe<ResolversTypes['UpsertUserPayload']>, ParentType, ContextType, RequireFields<MutationUpsertUserArgs, 'input'>>;
+  upsertUserLevel?: Resolver<Maybe<ResolversTypes['UpsertUserLevelPayload']>, ParentType, ContextType, RequireFields<MutationUpsertUserLevelArgs, 'input'>>;
+  upsertWebUser?: Resolver<Maybe<ResolversTypes['UpsertWebUserPayload']>, ParentType, ContextType, RequireFields<MutationUpsertWebUserArgs, 'input'>>;
+  upsertWebUserGuild?: Resolver<Maybe<ResolversTypes['UpsertWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpsertWebUserGuildArgs, 'input'>>;
 };
 
 export type MuteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mute'] = ResolversParentTypes['Mute']> = {
@@ -13896,7 +15656,7 @@ export type MutesEdgeResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'BotStat' | 'CachedGuild' | 'CachedUser' | 'Feed' | 'FeedItem' | 'FeedSubscription' | 'GuildBan' | 'GuildConfig' | 'Member' | 'ModLog' | 'Mute' | 'Notification' | 'Query' | 'Reminder' | 'RoleMenu' | 'Tag' | 'User' | 'UserLevel' | 'WebUser' | 'WebUserGuild', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'BotStat' | 'CachedGuild' | 'CachedUser' | 'Feed' | 'FeedItem' | 'FeedSubscription' | 'GuildBan' | 'GuildConfig' | 'Member' | 'ModLog' | 'Mute' | 'Notification' | 'Query' | 'Reminder' | 'RoleMenu' | 'RoleMenuRole' | 'Tag' | 'User' | 'UserLevel' | 'WebUser' | 'WebUserGuild', ParentType, ContextType>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -14028,6 +15788,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   allNotifications?: Resolver<Maybe<ResolversTypes['NotificationsConnection']>, ParentType, ContextType, RequireFields<QueryAllNotificationsArgs, 'orderBy'>>;
   allRedisGuildIds?: Resolver<Array<ResolversTypes['BigInt']>, ParentType, ContextType>;
   allReminders?: Resolver<Maybe<ResolversTypes['RemindersConnection']>, ParentType, ContextType, RequireFields<QueryAllRemindersArgs, 'orderBy'>>;
+  allRoleMenuRoles?: Resolver<Maybe<ResolversTypes['RoleMenuRolesConnection']>, ParentType, ContextType, RequireFields<QueryAllRoleMenuRolesArgs, 'orderBy'>>;
   allRoleMenus?: Resolver<Maybe<ResolversTypes['RoleMenusConnection']>, ParentType, ContextType, RequireFields<QueryAllRoleMenusArgs, 'orderBy'>>;
   allTags?: Resolver<Maybe<ResolversTypes['TagsConnection']>, ParentType, ContextType, RequireFields<QueryAllTagsArgs, 'orderBy'>>;
   allUserLevels?: Resolver<Maybe<ResolversTypes['UserLevelsConnection']>, ParentType, ContextType, RequireFields<QueryAllUserLevelsArgs, 'orderBy'>>;
@@ -14074,6 +15835,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   reminderByUserIdAndSetAt?: Resolver<Maybe<ResolversTypes['Reminder']>, ParentType, ContextType, RequireFields<QueryReminderByUserIdAndSetAtArgs, 'setAt' | 'userId'>>;
   roleMenu?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuArgs, 'nodeId'>>;
   roleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuByGuildIdAndMenuNameArgs, 'guildId' | 'menuName'>>;
+  roleMenuRole?: Resolver<Maybe<ResolversTypes['RoleMenuRole']>, ParentType, ContextType, RequireFields<QueryRoleMenuRoleArgs, 'nodeId'>>;
+  roleMenuRoleByGuildIdAndMenuNameAndRoleId?: Resolver<Maybe<ResolversTypes['RoleMenuRole']>, ParentType, ContextType, RequireFields<QueryRoleMenuRoleByGuildIdAndMenuNameAndRoleIdArgs, 'guildId' | 'menuName' | 'roleId'>>;
   tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'nodeId'>>;
   tagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagByGuildIdAndTagNameArgs, 'guildId' | 'tagName'>>;
   timeframeUserLevels?: Resolver<Maybe<ResolversTypes['TimeframeUserLevelsConnection']>, ParentType, ContextType, Partial<QueryTimeframeUserLevelsArgs>>;
@@ -14243,7 +16006,7 @@ export type RoleMenuResolvers<ContextType = any, ParentType extends ResolversPar
   menuName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   requiredRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  roleIds?: Resolver<Maybe<Array<Maybe<ResolversTypes['BigInt']>>>, ParentType, ContextType>;
+  roleMenuRolesByGuildIdAndMenuName?: Resolver<ResolversTypes['RoleMenuRolesConnection'], ParentType, ContextType, RequireFields<RoleMenuRoleMenuRolesByGuildIdAndMenuNameArgs, 'orderBy'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -14274,7 +16037,6 @@ export type RoleMenuDistinctCountAggregatesResolvers<ContextType = any, ParentTy
   maxCount?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   menuName?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   requiredRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  roleIds?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -14289,6 +16051,104 @@ export type RoleMenuMinAggregatesResolvers<ContextType = any, ParentType extends
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   maxCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   requiredRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRoleResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRole'] = ResolversParentTypes['RoleMenuRole']> = {
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  emoji?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  menuName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  roleId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  roleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRoleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleAggregates'] = ResolversParentTypes['RoleMenuRoleAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['RoleMenuRoleAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['RoleMenuRoleDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['RoleMenuRoleMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['RoleMenuRoleMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['RoleMenuRoleStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['RoleMenuRoleStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['RoleMenuRoleSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['RoleMenuRoleVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['RoleMenuRoleVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRoleAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleAverageAggregates'] = ResolversParentTypes['RoleMenuRoleAverageAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRoleDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleDistinctCountAggregates'] = ResolversParentTypes['RoleMenuRoleDistinctCountAggregates']> = {
+  description?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  emoji?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  menuName?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRoleMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleMaxAggregates'] = ResolversParentTypes['RoleMenuRoleMaxAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRoleMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleMinAggregates'] = ResolversParentTypes['RoleMenuRoleMinAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRoleStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleStddevPopulationAggregates'] = ResolversParentTypes['RoleMenuRoleStddevPopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRoleStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleStddevSampleAggregates'] = ResolversParentTypes['RoleMenuRoleStddevSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRoleSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleSumAggregates'] = ResolversParentTypes['RoleMenuRoleSumAggregates']> = {
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  roleId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRoleVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleVariancePopulationAggregates'] = ResolversParentTypes['RoleMenuRoleVariancePopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRoleVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleVarianceSampleAggregates'] = ResolversParentTypes['RoleMenuRoleVarianceSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRolesConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRolesConnection'] = ResolversParentTypes['RoleMenuRolesConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['RoleMenuRoleAggregates']>, ParentType, ContextType>;
+  edges?: Resolver<Array<ResolversTypes['RoleMenuRolesEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['RoleMenuRoleAggregates']>>, ParentType, ContextType, RequireFields<RoleMenuRolesConnectionGroupedAggregatesArgs, 'groupBy'>>;
+  nodes?: Resolver<Array<ResolversTypes['RoleMenuRole']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RoleMenuRolesEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRolesEdge'] = ResolversParentTypes['RoleMenuRolesEdge']> = {
+  cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['RoleMenuRole'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -14598,6 +16458,15 @@ export type UpdateRoleMenuPayloadResolvers<ContextType = any, ParentType extends
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateRoleMenuRolePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateRoleMenuRolePayload'] = ResolversParentTypes['UpdateRoleMenuRolePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  roleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType>;
+  roleMenuRole?: Resolver<Maybe<ResolversTypes['RoleMenuRole']>, ParentType, ContextType>;
+  roleMenuRoleEdge?: Resolver<Maybe<ResolversTypes['RoleMenuRolesEdge']>, ParentType, ContextType, RequireFields<UpdateRoleMenuRolePayloadRoleMenuRoleEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UpdateTagPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateTagPayload'] = ResolversParentTypes['UpdateTagPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
@@ -14637,6 +16506,172 @@ export type UpdateWebUserPayloadResolvers<ContextType = any, ParentType extends 
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   webUser?: Resolver<Maybe<ResolversTypes['WebUser']>, ParentType, ContextType>;
   webUserEdge?: Resolver<Maybe<ResolversTypes['WebUsersEdge']>, ParentType, ContextType, RequireFields<UpdateWebUserPayloadWebUserEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertBotStatPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertBotStatPayload'] = ResolversParentTypes['UpsertBotStatPayload']> = {
+  botStat?: Resolver<Maybe<ResolversTypes['BotStat']>, ParentType, ContextType>;
+  botStatEdge?: Resolver<Maybe<ResolversTypes['BotStatsEdge']>, ParentType, ContextType, RequireFields<UpsertBotStatPayloadBotStatEdgeArgs, 'orderBy'>>;
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertCachedGuildPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertCachedGuildPayload'] = ResolversParentTypes['UpsertCachedGuildPayload']> = {
+  cachedGuild?: Resolver<Maybe<ResolversTypes['CachedGuild']>, ParentType, ContextType>;
+  cachedGuildEdge?: Resolver<Maybe<ResolversTypes['CachedGuildsEdge']>, ParentType, ContextType, RequireFields<UpsertCachedGuildPayloadCachedGuildEdgeArgs, 'orderBy'>>;
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertCachedUserPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertCachedUserPayload'] = ResolversParentTypes['UpsertCachedUserPayload']> = {
+  cachedUser?: Resolver<Maybe<ResolversTypes['CachedUser']>, ParentType, ContextType>;
+  cachedUserEdge?: Resolver<Maybe<ResolversTypes['CachedUsersEdge']>, ParentType, ContextType, RequireFields<UpsertCachedUserPayloadCachedUserEdgeArgs, 'orderBy'>>;
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertFeedItemPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertFeedItemPayload'] = ResolversParentTypes['UpsertFeedItemPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  feedItem?: Resolver<Maybe<ResolversTypes['FeedItem']>, ParentType, ContextType>;
+  feedItemEdge?: Resolver<Maybe<ResolversTypes['FeedItemsEdge']>, ParentType, ContextType, RequireFields<UpsertFeedItemPayloadFeedItemEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertFeedPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertFeedPayload'] = ResolversParentTypes['UpsertFeedPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  feed?: Resolver<Maybe<ResolversTypes['Feed']>, ParentType, ContextType>;
+  feedEdge?: Resolver<Maybe<ResolversTypes['FeedsEdge']>, ParentType, ContextType, RequireFields<UpsertFeedPayloadFeedEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertFeedSubscriptionPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertFeedSubscriptionPayload'] = ResolversParentTypes['UpsertFeedSubscriptionPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  feedByFeedId?: Resolver<Maybe<ResolversTypes['Feed']>, ParentType, ContextType>;
+  feedSubscription?: Resolver<Maybe<ResolversTypes['FeedSubscription']>, ParentType, ContextType>;
+  feedSubscriptionEdge?: Resolver<Maybe<ResolversTypes['FeedSubscriptionsEdge']>, ParentType, ContextType, RequireFields<UpsertFeedSubscriptionPayloadFeedSubscriptionEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertGuildBanPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertGuildBanPayload'] = ResolversParentTypes['UpsertGuildBanPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  guildBan?: Resolver<Maybe<ResolversTypes['GuildBan']>, ParentType, ContextType>;
+  guildBanEdge?: Resolver<Maybe<ResolversTypes['GuildBansEdge']>, ParentType, ContextType, RequireFields<UpsertGuildBanPayloadGuildBanEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertGuildConfigPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertGuildConfigPayload'] = ResolversParentTypes['UpsertGuildConfigPayload']> = {
+  cachedGuildById?: Resolver<Maybe<ResolversTypes['CachedGuild']>, ParentType, ContextType>;
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  guildConfig?: Resolver<Maybe<ResolversTypes['GuildConfig']>, ParentType, ContextType>;
+  guildConfigEdge?: Resolver<Maybe<ResolversTypes['GuildConfigsEdge']>, ParentType, ContextType, RequireFields<UpsertGuildConfigPayloadGuildConfigEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertMemberPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertMemberPayload'] = ResolversParentTypes['UpsertMemberPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType>;
+  memberEdge?: Resolver<Maybe<ResolversTypes['MembersEdge']>, ParentType, ContextType, RequireFields<UpsertMemberPayloadMemberEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertModLogPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertModLogPayload'] = ResolversParentTypes['UpsertModLogPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  modLog?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType>;
+  modLogEdge?: Resolver<Maybe<ResolversTypes['ModLogsEdge']>, ParentType, ContextType, RequireFields<UpsertModLogPayloadModLogEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertMutePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertMutePayload'] = ResolversParentTypes['UpsertMutePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  modLogByGuildIdAndCaseId?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType>;
+  mute?: Resolver<Maybe<ResolversTypes['Mute']>, ParentType, ContextType>;
+  muteEdge?: Resolver<Maybe<ResolversTypes['MutesEdge']>, ParentType, ContextType, RequireFields<UpsertMutePayloadMuteEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertNotificationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertNotificationPayload'] = ResolversParentTypes['UpsertNotificationPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  notification?: Resolver<Maybe<ResolversTypes['Notification']>, ParentType, ContextType>;
+  notificationEdge?: Resolver<Maybe<ResolversTypes['NotificationsEdge']>, ParentType, ContextType, RequireFields<UpsertNotificationPayloadNotificationEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertReminderPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertReminderPayload'] = ResolversParentTypes['UpsertReminderPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  reminder?: Resolver<Maybe<ResolversTypes['Reminder']>, ParentType, ContextType>;
+  reminderEdge?: Resolver<Maybe<ResolversTypes['RemindersEdge']>, ParentType, ContextType, RequireFields<UpsertReminderPayloadReminderEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertRoleMenuPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertRoleMenuPayload'] = ResolversParentTypes['UpsertRoleMenuPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  roleMenu?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType>;
+  roleMenuEdge?: Resolver<Maybe<ResolversTypes['RoleMenusEdge']>, ParentType, ContextType, RequireFields<UpsertRoleMenuPayloadRoleMenuEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertRoleMenuRolePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertRoleMenuRolePayload'] = ResolversParentTypes['UpsertRoleMenuRolePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  roleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType>;
+  roleMenuRole?: Resolver<Maybe<ResolversTypes['RoleMenuRole']>, ParentType, ContextType>;
+  roleMenuRoleEdge?: Resolver<Maybe<ResolversTypes['RoleMenuRolesEdge']>, ParentType, ContextType, RequireFields<UpsertRoleMenuRolePayloadRoleMenuRoleEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertTagPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertTagPayload'] = ResolversParentTypes['UpsertTagPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType>;
+  tagEdge?: Resolver<Maybe<ResolversTypes['TagsEdge']>, ParentType, ContextType, RequireFields<UpsertTagPayloadTagEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertUserLevelPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertUserLevelPayload'] = ResolversParentTypes['UpsertUserLevelPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  userLevel?: Resolver<Maybe<ResolversTypes['UserLevel']>, ParentType, ContextType>;
+  userLevelEdge?: Resolver<Maybe<ResolversTypes['UserLevelsEdge']>, ParentType, ContextType, RequireFields<UpsertUserLevelPayloadUserLevelEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertUserPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertUserPayload'] = ResolversParentTypes['UpsertUserPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  userEdge?: Resolver<Maybe<ResolversTypes['UsersEdge']>, ParentType, ContextType, RequireFields<UpsertUserPayloadUserEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertWebUserGuildPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertWebUserGuildPayload'] = ResolversParentTypes['UpsertWebUserGuildPayload']> = {
+  cachedGuildByGuildId?: Resolver<Maybe<ResolversTypes['CachedGuild']>, ParentType, ContextType>;
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  webUserByUserId?: Resolver<Maybe<ResolversTypes['WebUser']>, ParentType, ContextType>;
+  webUserGuild?: Resolver<Maybe<ResolversTypes['WebUserGuild']>, ParentType, ContextType>;
+  webUserGuildEdge?: Resolver<Maybe<ResolversTypes['WebUserGuildsEdge']>, ParentType, ContextType, RequireFields<UpsertWebUserGuildPayloadWebUserGuildEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertWebUserPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertWebUserPayload'] = ResolversParentTypes['UpsertWebUserPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  webUser?: Resolver<Maybe<ResolversTypes['WebUser']>, ParentType, ContextType>;
+  webUserEdge?: Resolver<Maybe<ResolversTypes['WebUsersEdge']>, ParentType, ContextType, RequireFields<UpsertWebUserPayloadWebUserEdgeArgs, 'orderBy'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -15117,6 +17152,7 @@ export type WebUsersEdgeResolvers<ContextType = any, ParentType extends Resolver
 };
 
 export type Resolvers<ContextType = any> = {
+  AddRoleMenuRolesPayload?: AddRoleMenuRolesPayloadResolvers<ContextType>;
   BigFloat?: GraphQLScalarType;
   BigInt?: GraphQLScalarType;
   BotStat?: BotStatResolvers<ContextType>;
@@ -15151,6 +17187,7 @@ export type Resolvers<ContextType = any> = {
   CreateNotificationPayload?: CreateNotificationPayloadResolvers<ContextType>;
   CreateReminderPayload?: CreateReminderPayloadResolvers<ContextType>;
   CreateRoleMenuPayload?: CreateRoleMenuPayloadResolvers<ContextType>;
+  CreateRoleMenuRolePayload?: CreateRoleMenuRolePayloadResolvers<ContextType>;
   CreateTagPayload?: CreateTagPayloadResolvers<ContextType>;
   CreateUserLevelPayload?: CreateUserLevelPayloadResolvers<ContextType>;
   CreateUserPayload?: CreateUserPayloadResolvers<ContextType>;
@@ -15174,6 +17211,8 @@ export type Resolvers<ContextType = any> = {
   DeleteNotificationPayload?: DeleteNotificationPayloadResolvers<ContextType>;
   DeleteReminderPayload?: DeleteReminderPayloadResolvers<ContextType>;
   DeleteRoleMenuPayload?: DeleteRoleMenuPayloadResolvers<ContextType>;
+  DeleteRoleMenuRolePayload?: DeleteRoleMenuRolePayloadResolvers<ContextType>;
+  DeleteRoleMenuRolesPayload?: DeleteRoleMenuRolesPayloadResolvers<ContextType>;
   DeleteTagPayload?: DeleteTagPayloadResolvers<ContextType>;
   DeleteUserLevelPayload?: DeleteUserLevelPayloadResolvers<ContextType>;
   DeleteUserPayload?: DeleteUserPayloadResolvers<ContextType>;
@@ -15324,6 +17363,19 @@ export type Resolvers<ContextType = any> = {
   RoleMenuDistinctCountAggregates?: RoleMenuDistinctCountAggregatesResolvers<ContextType>;
   RoleMenuMaxAggregates?: RoleMenuMaxAggregatesResolvers<ContextType>;
   RoleMenuMinAggregates?: RoleMenuMinAggregatesResolvers<ContextType>;
+  RoleMenuRole?: RoleMenuRoleResolvers<ContextType>;
+  RoleMenuRoleAggregates?: RoleMenuRoleAggregatesResolvers<ContextType>;
+  RoleMenuRoleAverageAggregates?: RoleMenuRoleAverageAggregatesResolvers<ContextType>;
+  RoleMenuRoleDistinctCountAggregates?: RoleMenuRoleDistinctCountAggregatesResolvers<ContextType>;
+  RoleMenuRoleMaxAggregates?: RoleMenuRoleMaxAggregatesResolvers<ContextType>;
+  RoleMenuRoleMinAggregates?: RoleMenuRoleMinAggregatesResolvers<ContextType>;
+  RoleMenuRoleStddevPopulationAggregates?: RoleMenuRoleStddevPopulationAggregatesResolvers<ContextType>;
+  RoleMenuRoleStddevSampleAggregates?: RoleMenuRoleStddevSampleAggregatesResolvers<ContextType>;
+  RoleMenuRoleSumAggregates?: RoleMenuRoleSumAggregatesResolvers<ContextType>;
+  RoleMenuRoleVariancePopulationAggregates?: RoleMenuRoleVariancePopulationAggregatesResolvers<ContextType>;
+  RoleMenuRoleVarianceSampleAggregates?: RoleMenuRoleVarianceSampleAggregatesResolvers<ContextType>;
+  RoleMenuRolesConnection?: RoleMenuRolesConnectionResolvers<ContextType>;
+  RoleMenuRolesEdge?: RoleMenuRolesEdgeResolvers<ContextType>;
   RoleMenuStddevPopulationAggregates?: RoleMenuStddevPopulationAggregatesResolvers<ContextType>;
   RoleMenuStddevSampleAggregates?: RoleMenuStddevSampleAggregatesResolvers<ContextType>;
   RoleMenuSumAggregates?: RoleMenuSumAggregatesResolvers<ContextType>;
@@ -15362,11 +17414,32 @@ export type Resolvers<ContextType = any> = {
   UpdateNotificationPayload?: UpdateNotificationPayloadResolvers<ContextType>;
   UpdateReminderPayload?: UpdateReminderPayloadResolvers<ContextType>;
   UpdateRoleMenuPayload?: UpdateRoleMenuPayloadResolvers<ContextType>;
+  UpdateRoleMenuRolePayload?: UpdateRoleMenuRolePayloadResolvers<ContextType>;
   UpdateTagPayload?: UpdateTagPayloadResolvers<ContextType>;
   UpdateUserLevelPayload?: UpdateUserLevelPayloadResolvers<ContextType>;
   UpdateUserPayload?: UpdateUserPayloadResolvers<ContextType>;
   UpdateWebUserGuildPayload?: UpdateWebUserGuildPayloadResolvers<ContextType>;
   UpdateWebUserPayload?: UpdateWebUserPayloadResolvers<ContextType>;
+  UpsertBotStatPayload?: UpsertBotStatPayloadResolvers<ContextType>;
+  UpsertCachedGuildPayload?: UpsertCachedGuildPayloadResolvers<ContextType>;
+  UpsertCachedUserPayload?: UpsertCachedUserPayloadResolvers<ContextType>;
+  UpsertFeedItemPayload?: UpsertFeedItemPayloadResolvers<ContextType>;
+  UpsertFeedPayload?: UpsertFeedPayloadResolvers<ContextType>;
+  UpsertFeedSubscriptionPayload?: UpsertFeedSubscriptionPayloadResolvers<ContextType>;
+  UpsertGuildBanPayload?: UpsertGuildBanPayloadResolvers<ContextType>;
+  UpsertGuildConfigPayload?: UpsertGuildConfigPayloadResolvers<ContextType>;
+  UpsertMemberPayload?: UpsertMemberPayloadResolvers<ContextType>;
+  UpsertModLogPayload?: UpsertModLogPayloadResolvers<ContextType>;
+  UpsertMutePayload?: UpsertMutePayloadResolvers<ContextType>;
+  UpsertNotificationPayload?: UpsertNotificationPayloadResolvers<ContextType>;
+  UpsertReminderPayload?: UpsertReminderPayloadResolvers<ContextType>;
+  UpsertRoleMenuPayload?: UpsertRoleMenuPayloadResolvers<ContextType>;
+  UpsertRoleMenuRolePayload?: UpsertRoleMenuRolePayloadResolvers<ContextType>;
+  UpsertTagPayload?: UpsertTagPayloadResolvers<ContextType>;
+  UpsertUserLevelPayload?: UpsertUserLevelPayloadResolvers<ContextType>;
+  UpsertUserPayload?: UpsertUserPayloadResolvers<ContextType>;
+  UpsertWebUserGuildPayload?: UpsertWebUserGuildPayloadResolvers<ContextType>;
+  UpsertWebUserPayload?: UpsertWebUserPayloadResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserAggregates?: UserAggregatesResolvers<ContextType>;
   UserAverageAggregates?: UserAverageAggregatesResolvers<ContextType>;
@@ -15562,12 +17635,21 @@ export type GetUserRemindersQuery = { __typename?: 'Query', allReminders?: { __t
 
 export type ReminderDataFragment = { __typename?: 'Reminder', userId: string, description: string, expireAt: string, setAt: string };
 
+export type AddRoleMenuRolesMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  menuName: Scalars['String'];
+  roleIds: Array<InputMaybe<Scalars['BigInt']>> | InputMaybe<Scalars['BigInt']>;
+}>;
+
+
+export type AddRoleMenuRolesMutation = { __typename?: 'Mutation', addRoleMenuRoles?: { __typename?: 'AddRoleMenuRolesPayload', roleMenuRoles?: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> | null } | null };
+
 export type CreateRoleMenuMutationVariables = Exact<{
   roleMenu: RoleMenuInput;
 }>;
 
 
-export type CreateRoleMenuMutation = { __typename?: 'Mutation', createRoleMenu?: { __typename?: 'CreateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null } | null } | null };
+export type CreateRoleMenuMutation = { __typename?: 'Mutation', createRoleMenu?: { __typename?: 'CreateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } } | null } | null };
 
 export type DeleteRoleMenuMutationVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -15575,7 +17657,16 @@ export type DeleteRoleMenuMutationVariables = Exact<{
 }>;
 
 
-export type DeleteRoleMenuMutation = { __typename?: 'Mutation', deleteRoleMenuByGuildIdAndMenuName?: { __typename?: 'DeleteRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null } | null } | null };
+export type DeleteRoleMenuMutation = { __typename?: 'Mutation', deleteRoleMenuByGuildIdAndMenuName?: { __typename?: 'DeleteRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } } | null } | null };
+
+export type DeleteRoleMenuRolesMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  menuName: Scalars['String'];
+  roleIds: Array<InputMaybe<Scalars['BigInt']>> | InputMaybe<Scalars['BigInt']>;
+}>;
+
+
+export type DeleteRoleMenuRolesMutation = { __typename?: 'Mutation', deleteRoleMenuRoles?: { __typename?: 'DeleteRoleMenuRolesPayload', roleMenuRoles?: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> | null } | null };
 
 export type GetRoleMenuQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -15583,9 +17674,11 @@ export type GetRoleMenuQueryVariables = Exact<{
 }>;
 
 
-export type GetRoleMenuQuery = { __typename?: 'Query', roleMenuByGuildIdAndMenuName?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null } | null };
+export type GetRoleMenuQuery = { __typename?: 'Query', roleMenuByGuildIdAndMenuName?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } } | null };
 
-export type RoleMenuDataFragment = { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null };
+export type RoleMenuDataFragment = { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } };
+
+export type RoleMenuRoleDataFragment = { __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null };
 
 export type SearchRoleMenuStartingWithQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -15602,7 +17695,18 @@ export type UpdateRoleMenuMutationVariables = Exact<{
 }>;
 
 
-export type UpdateRoleMenuMutation = { __typename?: 'Mutation', updateRoleMenuByGuildIdAndMenuName?: { __typename?: 'UpdateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, roleIds?: Array<string | null> | null, requiredRole?: string | null } | null } | null };
+export type UpdateRoleMenuMutation = { __typename?: 'Mutation', updateRoleMenuByGuildIdAndMenuName?: { __typename?: 'UpdateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } } | null } | null };
+
+export type UpsertRoleMenuRoleMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  menuName: Scalars['String'];
+  roleId: Scalars['BigInt'];
+  emoji?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type UpsertRoleMenuRoleMutation = { __typename?: 'Mutation', upsertRoleMenuRole?: { __typename?: 'UpsertRoleMenuRolePayload', roleMenuRole?: { __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null } | null } | null };
 
 export type CreateTagMutationVariables = Exact<{
   tag: TagInput;
@@ -15770,16 +17874,29 @@ export const ReminderDataFragmentDoc = gql`
   setAt
 }
     `;
+export const RoleMenuRoleDataFragmentDoc = gql`
+    fragment RoleMenuRoleData on RoleMenuRole {
+  guildId
+  menuName
+  roleId
+  emoji
+  description
+}
+    `;
 export const RoleMenuDataFragmentDoc = gql`
     fragment RoleMenuData on RoleMenu {
   guildId
   menuName
   description
   maxCount
-  roleIds
   requiredRole
+  roleMenuRolesByGuildIdAndMenuName {
+    nodes {
+      ...RoleMenuRoleData
+    }
+  }
 }
-    `;
+    ${RoleMenuRoleDataFragmentDoc}`;
 export const TagDataFragmentDoc = gql`
     fragment TagData on Tag {
   content
@@ -15998,6 +18115,17 @@ export const GetUserRemindersDocument = gql`
   }
 }
     ${ReminderDataFragmentDoc}`;
+export const AddRoleMenuRolesDocument = gql`
+    mutation addRoleMenuRoles($guildId: BigInt!, $menuName: String!, $roleIds: [BigInt]!) {
+  addRoleMenuRoles(
+    input: {guildId: $guildId, menuName: $menuName, roleIds: $roleIds}
+  ) {
+    roleMenuRoles {
+      ...RoleMenuRoleData
+    }
+  }
+}
+    ${RoleMenuRoleDataFragmentDoc}`;
 export const CreateRoleMenuDocument = gql`
     mutation createRoleMenu($roleMenu: RoleMenuInput!) {
   createRoleMenu(input: {roleMenu: $roleMenu}) {
@@ -16018,6 +18146,17 @@ export const DeleteRoleMenuDocument = gql`
   }
 }
     ${RoleMenuDataFragmentDoc}`;
+export const DeleteRoleMenuRolesDocument = gql`
+    mutation deleteRoleMenuRoles($guildId: BigInt!, $menuName: String!, $roleIds: [BigInt]!) {
+  deleteRoleMenuRoles(
+    input: {menuName: $menuName, roleIds: $roleIds, guildId: $guildId}
+  ) {
+    roleMenuRoles {
+      ...RoleMenuRoleData
+    }
+  }
+}
+    ${RoleMenuRoleDataFragmentDoc}`;
 export const GetRoleMenuDocument = gql`
     query getRoleMenu($guildId: BigInt!, $menuName: String!) {
   roleMenuByGuildIdAndMenuName(guildId: $guildId, menuName: $menuName) {
@@ -16049,6 +18188,18 @@ export const UpdateRoleMenuDocument = gql`
   }
 }
     ${RoleMenuDataFragmentDoc}`;
+export const UpsertRoleMenuRoleDocument = gql`
+    mutation upsertRoleMenuRole($guildId: BigInt!, $menuName: String!, $roleId: BigInt!, $emoji: String, $description: String) {
+  upsertRoleMenuRole(
+    input: {roleMenuRole: {guildId: $guildId, menuName: $menuName, roleId: $roleId, emoji: $emoji, description: $description}}
+    where: {guildId: $guildId, menuName: $menuName, roleId: $roleId}
+  ) {
+    roleMenuRole {
+      ...RoleMenuRoleData
+    }
+  }
+}
+    ${RoleMenuRoleDataFragmentDoc}`;
 export const CreateTagDocument = gql`
     mutation createTag($tag: TagInput!) {
   createTag(input: {tag: $tag}) {
@@ -16253,11 +18404,17 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     getUserReminders(variables: GetUserRemindersQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserRemindersQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserRemindersQuery>(GetUserRemindersDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getUserReminders', 'query');
     },
+    addRoleMenuRoles(variables: AddRoleMenuRolesMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddRoleMenuRolesMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AddRoleMenuRolesMutation>(AddRoleMenuRolesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'addRoleMenuRoles', 'mutation');
+    },
     createRoleMenu(variables: CreateRoleMenuMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateRoleMenuMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateRoleMenuMutation>(CreateRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createRoleMenu', 'mutation');
     },
     deleteRoleMenu(variables: DeleteRoleMenuMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteRoleMenuMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeleteRoleMenuMutation>(DeleteRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteRoleMenu', 'mutation');
+    },
+    deleteRoleMenuRoles(variables: DeleteRoleMenuRolesMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteRoleMenuRolesMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteRoleMenuRolesMutation>(DeleteRoleMenuRolesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteRoleMenuRoles', 'mutation');
     },
     getRoleMenu(variables: GetRoleMenuQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetRoleMenuQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetRoleMenuQuery>(GetRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getRoleMenu', 'query');
@@ -16267,6 +18424,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     updateRoleMenu(variables: UpdateRoleMenuMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateRoleMenuMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateRoleMenuMutation>(UpdateRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateRoleMenu', 'mutation');
+    },
+    upsertRoleMenuRole(variables: UpsertRoleMenuRoleMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertRoleMenuRoleMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpsertRoleMenuRoleMutation>(UpsertRoleMenuRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertRoleMenuRole', 'mutation');
     },
     createTag(variables: CreateTagMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateTagMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateTagMutation>(CreateTagDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createTag', 'mutation');

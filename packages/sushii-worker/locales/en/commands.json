@@ -72,10 +72,18 @@
         "name_already_exists": "A role menu `{{name}}` already exists! Please pick a different name."
       }
     },
+    "roleoptions": {
+      "error": {
+        "no_option_provided": "Please provide a role option, emoji and/or description.",
+        "invalid_emoji": "The emoji is invalid! You can use a custom emoji or unicode one.",
+        "description_too_long": "The description is too long! It must be less than 100 characters."
+      }
+    },
     "send": {
       "error": {
         "menu_has_no_roles": "The role menu has no roles, add some roles with `/rolemenu addroles` before sending it!",
-        "menu_has_less_roles_than_max": "The role menu has less roles than the maximum allowed, add more roles with `/rolemenu addroles` or reduce the max roles with `/rolemenu edit` before sending it! "
+        "menu_has_less_roles_than_max": "The role menu has less roles than the maximum allowed, add more roles with `/rolemenu addroles` or reduce the max roles with `/rolemenu edit` before sending it! ",
+        "send_message": "Failed to send the role menu message. :("
       }
     }
   },

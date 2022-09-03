@@ -3,6 +3,10 @@ fragment RoleMenuData on RoleMenu {
   menuName
   description
   maxCount
-  roleIds
   requiredRole
+  roleMenuRolesByGuildIdAndMenuName {
+    nodes {
+      ...RoleMenuRoleData
+    }
+  }
 }

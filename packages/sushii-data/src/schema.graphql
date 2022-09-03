@@ -1,3 +1,30 @@
+"""All input for the `addRoleMenuRoles` mutation."""
+input AddRoleMenuRolesInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt
+  menuName: String
+  roleIds: [BigInt]
+}
+
+"""The output of our `addRoleMenuRoles` mutation."""
+type AddRoleMenuRolesPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+  roleMenuRoles: [RoleMenuRole!]
+}
+
 """
 A floating point number that requires more precision than IEEE 754 binary 64
 """
@@ -1281,6 +1308,44 @@ type CreateRoleMenuPayload {
   ): RoleMenusEdge
 }
 
+"""All input for the create `RoleMenuRole` mutation."""
+input CreateRoleMenuRoleInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `RoleMenuRole` to be created by this mutation."""
+  roleMenuRole: RoleMenuRoleInput!
+}
+
+"""The output of our create `RoleMenuRole` mutation."""
+type CreateRoleMenuRolePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `RoleMenu` that is related to this `RoleMenuRole`."""
+  roleMenuByGuildIdAndMenuName: RoleMenu
+
+  """The `RoleMenuRole` that was created by this mutation."""
+  roleMenuRole: RoleMenuRole
+
+  """An edge for our `RoleMenuRole`. May be used by Relay 1."""
+  roleMenuRoleEdge(
+    """The method to use when ordering `RoleMenuRole`."""
+    orderBy: [RoleMenuRolesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): RoleMenuRolesEdge
+}
+
 """All input for the create `Tag` mutation."""
 input CreateTagInput {
   """
@@ -2233,6 +2298,88 @@ type DeleteRoleMenuPayload {
     """The method to use when ordering `RoleMenu`."""
     orderBy: [RoleMenusOrderBy!] = [PRIMARY_KEY_ASC]
   ): RoleMenusEdge
+}
+
+"""
+All input for the `deleteRoleMenuRoleByGuildIdAndMenuNameAndRoleId` mutation.
+"""
+input DeleteRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  menuName: String!
+  roleId: BigInt!
+}
+
+"""All input for the `deleteRoleMenuRole` mutation."""
+input DeleteRoleMenuRoleInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `RoleMenuRole` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `RoleMenuRole` mutation."""
+type DeleteRoleMenuRolePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedRoleMenuRoleId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `RoleMenu` that is related to this `RoleMenuRole`."""
+  roleMenuByGuildIdAndMenuName: RoleMenu
+
+  """The `RoleMenuRole` that was deleted by this mutation."""
+  roleMenuRole: RoleMenuRole
+
+  """An edge for our `RoleMenuRole`. May be used by Relay 1."""
+  roleMenuRoleEdge(
+    """The method to use when ordering `RoleMenuRole`."""
+    orderBy: [RoleMenuRolesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): RoleMenuRolesEdge
+}
+
+"""All input for the `deleteRoleMenuRoles` mutation."""
+input DeleteRoleMenuRolesInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt
+  menuName: String
+  roleIds: [BigInt]
+}
+
+"""The output of our `deleteRoleMenuRoles` mutation."""
+type DeleteRoleMenuRolesPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+  roleMenuRoles: [RoleMenuRole!]
 }
 
 """All input for the `deleteTagByGuildIdAndTagName` mutation."""
@@ -6088,6 +6235,13 @@ enum ModLogsOrderBy {
 The root mutation type which contains root level fields which mutate data.
 """
 type Mutation {
+  addRoleMenuRoles(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: AddRoleMenuRolesInput!
+  ): AddRoleMenuRolesPayload
+
   """Creates a single `BotStat`."""
   createBotStat(
     """
@@ -6207,6 +6361,14 @@ type Mutation {
     """
     input: CreateRoleMenuInput!
   ): CreateRoleMenuPayload
+
+  """Creates a single `RoleMenuRole`."""
+  createRoleMenuRole(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateRoleMenuRoleInput!
+  ): CreateRoleMenuRolePayload
 
   """Creates a single `Tag`."""
   createTag(
@@ -6471,6 +6633,28 @@ type Mutation {
     """
     input: DeleteRoleMenuByGuildIdAndMenuNameInput!
   ): DeleteRoleMenuPayload
+
+  """Deletes a single `RoleMenuRole` using its globally unique id."""
+  deleteRoleMenuRole(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteRoleMenuRoleInput!
+  ): DeleteRoleMenuRolePayload
+
+  """Deletes a single `RoleMenuRole` using a unique key."""
+  deleteRoleMenuRoleByGuildIdAndMenuNameAndRoleId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput!
+  ): DeleteRoleMenuRolePayload
+  deleteRoleMenuRoles(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteRoleMenuRolesInput!
+  ): DeleteRoleMenuRolesPayload
 
   """Deletes a single `Tag` using its globally unique id."""
   deleteTag(
@@ -6798,6 +6982,24 @@ type Mutation {
     input: UpdateRoleMenuByGuildIdAndMenuNameInput!
   ): UpdateRoleMenuPayload
 
+  """
+  Updates a single `RoleMenuRole` using its globally unique id and a patch.
+  """
+  updateRoleMenuRole(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateRoleMenuRoleInput!
+  ): UpdateRoleMenuRolePayload
+
+  """Updates a single `RoleMenuRole` using a unique key and a patch."""
+  updateRoleMenuRoleByGuildIdAndMenuNameAndRoleId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput!
+  ): UpdateRoleMenuRolePayload
+
   """Updates a single `Tag` using its globally unique id and a patch."""
   updateTag(
     """
@@ -6879,6 +7081,186 @@ type Mutation {
     """
     input: UpdateWebUserGuildByUserIdAndGuildIdInput!
   ): UpdateWebUserGuildPayload
+
+  """Upserts a single `BotStat`."""
+  upsertBotStat(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertBotStatInput!
+    where: UpsertBotStatWhere
+  ): UpsertBotStatPayload
+
+  """Upserts a single `CachedGuild`."""
+  upsertCachedGuild(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertCachedGuildInput!
+    where: UpsertCachedGuildWhere
+  ): UpsertCachedGuildPayload
+
+  """Upserts a single `CachedUser`."""
+  upsertCachedUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertCachedUserInput!
+    where: UpsertCachedUserWhere
+  ): UpsertCachedUserPayload
+
+  """Upserts a single `Feed`."""
+  upsertFeed(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertFeedInput!
+    where: UpsertFeedWhere
+  ): UpsertFeedPayload
+
+  """Upserts a single `FeedItem`."""
+  upsertFeedItem(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertFeedItemInput!
+    where: UpsertFeedItemWhere
+  ): UpsertFeedItemPayload
+
+  """Upserts a single `FeedSubscription`."""
+  upsertFeedSubscription(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertFeedSubscriptionInput!
+    where: UpsertFeedSubscriptionWhere
+  ): UpsertFeedSubscriptionPayload
+
+  """Upserts a single `GuildBan`."""
+  upsertGuildBan(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertGuildBanInput!
+    where: UpsertGuildBanWhere
+  ): UpsertGuildBanPayload
+
+  """Upserts a single `GuildConfig`."""
+  upsertGuildConfig(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertGuildConfigInput!
+    where: UpsertGuildConfigWhere
+  ): UpsertGuildConfigPayload
+
+  """Upserts a single `Member`."""
+  upsertMember(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertMemberInput!
+    where: UpsertMemberWhere
+  ): UpsertMemberPayload
+
+  """Upserts a single `ModLog`."""
+  upsertModLog(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertModLogInput!
+    where: UpsertModLogWhere
+  ): UpsertModLogPayload
+
+  """Upserts a single `Mute`."""
+  upsertMute(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertMuteInput!
+    where: UpsertMuteWhere
+  ): UpsertMutePayload
+
+  """Upserts a single `Notification`."""
+  upsertNotification(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertNotificationInput!
+    where: UpsertNotificationWhere
+  ): UpsertNotificationPayload
+
+  """Upserts a single `Reminder`."""
+  upsertReminder(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertReminderInput!
+    where: UpsertReminderWhere
+  ): UpsertReminderPayload
+
+  """Upserts a single `RoleMenu`."""
+  upsertRoleMenu(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertRoleMenuInput!
+    where: UpsertRoleMenuWhere
+  ): UpsertRoleMenuPayload
+
+  """Upserts a single `RoleMenuRole`."""
+  upsertRoleMenuRole(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertRoleMenuRoleInput!
+    where: UpsertRoleMenuRoleWhere
+  ): UpsertRoleMenuRolePayload
+
+  """Upserts a single `Tag`."""
+  upsertTag(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertTagInput!
+    where: UpsertTagWhere
+  ): UpsertTagPayload
+
+  """Upserts a single `User`."""
+  upsertUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertUserInput!
+    where: UpsertUserWhere
+  ): UpsertUserPayload
+
+  """Upserts a single `UserLevel`."""
+  upsertUserLevel(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertUserLevelInput!
+    where: UpsertUserLevelWhere
+  ): UpsertUserLevelPayload
+
+  """Upserts a single `WebUser`."""
+  upsertWebUser(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertWebUserInput!
+    where: UpsertWebUserWhere
+  ): UpsertWebUserPayload
+
+  """Upserts a single `WebUserGuild`."""
+  upsertWebUserGuild(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertWebUserGuildInput!
+    where: UpsertWebUserGuildWhere
+  ): UpsertWebUserGuildPayload
 }
 
 type Mute implements Node {
@@ -8062,6 +8444,40 @@ type Query implements Node {
     orderBy: [RemindersOrderBy!] = [PRIMARY_KEY_ASC]
   ): RemindersConnection
 
+  """Reads and enables pagination through a set of `RoleMenuRole`."""
+  allRoleMenuRoles(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: RoleMenuRoleCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: RoleMenuRoleFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `RoleMenuRole`."""
+    orderBy: [RoleMenuRolesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): RoleMenuRolesConnection
+
   """Reads and enables pagination through a set of `RoleMenu`."""
   allRoleMenus(
     """Read all values in the set after (below) this cursor."""
@@ -8455,6 +8871,15 @@ type Query implements Node {
     nodeId: ID!
   ): RoleMenu
   roleMenuByGuildIdAndMenuName(guildId: BigInt!, menuName: String!): RoleMenu
+
+  """Reads a single `RoleMenuRole` using its globally unique `ID`."""
+  roleMenuRole(
+    """
+    The globally unique `ID` to be used in selecting a single `RoleMenuRole`.
+    """
+    nodeId: ID!
+  ): RoleMenuRole
+  roleMenuRoleByGuildIdAndMenuNameAndRoleId(guildId: BigInt!, menuName: String!, roleId: BigInt!): RoleMenuRole
 
   """Reads a single `Tag` using its globally unique `ID`."""
   tag(
@@ -8908,7 +9333,40 @@ type RoleMenu implements Node {
   """
   nodeId: ID!
   requiredRole: BigInt
-  roleIds: [BigInt]
+
+  """Reads and enables pagination through a set of `RoleMenuRole`."""
+  roleMenuRolesByGuildIdAndMenuName(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: RoleMenuRoleCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: RoleMenuRoleFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `RoleMenuRole`."""
+    orderBy: [RoleMenuRolesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): RoleMenuRolesConnection!
 }
 
 type RoleMenuAggregates {
@@ -8989,9 +9447,6 @@ input RoleMenuCondition {
 
   """Checks for equality with the object’s `requiredRole` field."""
   requiredRole: BigInt
-
-  """Checks for equality with the object’s `roleIds` field."""
-  roleIds: [BigInt]
 }
 
 type RoleMenuDistinctCountAggregates {
@@ -9009,9 +9464,6 @@ type RoleMenuDistinctCountAggregates {
 
   """Distinct count of requiredRole across the matching connection"""
   requiredRole: BigInt
-
-  """Distinct count of roleIds across the matching connection"""
-  roleIds: BigInt
 }
 
 """
@@ -9041,9 +9493,6 @@ input RoleMenuFilter {
 
   """Filter by the object’s `requiredRole` field."""
   requiredRole: BigIntFilter
-
-  """Filter by the object’s `roleIds` field."""
-  roleIds: BigIntListFilter
 }
 
 """An input for mutations affecting `RoleMenu`"""
@@ -9053,7 +9502,6 @@ input RoleMenuInput {
   maxCount: Int
   menuName: String!
   requiredRole: BigInt
-  roleIds: [BigInt]
 }
 
 type RoleMenuMaxAggregates {
@@ -9087,7 +9535,351 @@ input RoleMenuPatch {
   maxCount: Int
   menuName: String
   requiredRole: BigInt
-  roleIds: [BigInt]
+}
+
+type RoleMenuRole implements Node {
+  description: String
+  emoji: String
+  guildId: BigInt!
+  menuName: String!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  roleId: BigInt!
+
+  """Reads a single `RoleMenu` that is related to this `RoleMenuRole`."""
+  roleMenuByGuildIdAndMenuName: RoleMenu
+}
+
+type RoleMenuRoleAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: RoleMenuRoleAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: RoleMenuRoleDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: RoleMenuRoleMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: RoleMenuRoleMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: RoleMenuRoleStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: RoleMenuRoleStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: RoleMenuRoleSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: RoleMenuRoleVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: RoleMenuRoleVarianceSampleAggregates
+}
+
+type RoleMenuRoleAverageAggregates {
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of roleId across the matching connection"""
+  roleId: BigFloat
+}
+
+"""
+A condition to be used against `RoleMenuRole` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input RoleMenuRoleCondition {
+  """Checks for equality with the object’s `description` field."""
+  description: String
+
+  """Checks for equality with the object’s `emoji` field."""
+  emoji: String
+
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `menuName` field."""
+  menuName: String
+
+  """Checks for equality with the object’s `roleId` field."""
+  roleId: BigInt
+}
+
+type RoleMenuRoleDistinctCountAggregates {
+  """Distinct count of description across the matching connection"""
+  description: BigInt
+
+  """Distinct count of emoji across the matching connection"""
+  emoji: BigInt
+
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of menuName across the matching connection"""
+  menuName: BigInt
+
+  """Distinct count of roleId across the matching connection"""
+  roleId: BigInt
+}
+
+"""
+A filter to be used against `RoleMenuRole` object types. All fields are combined with a logical ‘and.’
+"""
+input RoleMenuRoleFilter {
+  """Checks for all expressions in this list."""
+  and: [RoleMenuRoleFilter!]
+
+  """Filter by the object’s `description` field."""
+  description: StringFilter
+
+  """Filter by the object’s `emoji` field."""
+  emoji: StringFilter
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Filter by the object’s `menuName` field."""
+  menuName: StringFilter
+
+  """Negates the expression."""
+  not: RoleMenuRoleFilter
+
+  """Checks for any expressions in this list."""
+  or: [RoleMenuRoleFilter!]
+
+  """Filter by the object’s `roleId` field."""
+  roleId: BigIntFilter
+}
+
+"""An input for mutations affecting `RoleMenuRole`"""
+input RoleMenuRoleInput {
+  description: String
+  emoji: String
+  guildId: BigInt!
+  menuName: String!
+  roleId: BigInt!
+}
+
+type RoleMenuRoleMaxAggregates {
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of roleId across the matching connection"""
+  roleId: BigInt
+}
+
+type RoleMenuRoleMinAggregates {
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of roleId across the matching connection"""
+  roleId: BigInt
+}
+
+"""
+Represents an update to a `RoleMenuRole`. Fields that are set will be updated.
+"""
+input RoleMenuRolePatch {
+  description: String
+  emoji: String
+  guildId: BigInt
+  menuName: String
+  roleId: BigInt
+}
+
+type RoleMenuRoleStddevPopulationAggregates {
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """Population standard deviation of roleId across the matching connection"""
+  roleId: BigFloat
+}
+
+type RoleMenuRoleStddevSampleAggregates {
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample standard deviation of roleId across the matching connection"""
+  roleId: BigFloat
+}
+
+type RoleMenuRoleSumAggregates {
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of roleId across the matching connection"""
+  roleId: BigFloat!
+}
+
+type RoleMenuRoleVariancePopulationAggregates {
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of roleId across the matching connection"""
+  roleId: BigFloat
+}
+
+type RoleMenuRoleVarianceSampleAggregates {
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of roleId across the matching connection"""
+  roleId: BigFloat
+}
+
+"""A connection to a list of `RoleMenuRole` values."""
+type RoleMenuRolesConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: RoleMenuRoleAggregates
+
+  """
+  A list of edges which contains the `RoleMenuRole` and cursor to aid in pagination.
+  """
+  edges: [RoleMenuRolesEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `RoleMenuRole` for these aggregates."""
+    groupBy: [RoleMenuRolesGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: RoleMenuRolesHavingInput
+  ): [RoleMenuRoleAggregates!]
+
+  """A list of `RoleMenuRole` objects."""
+  nodes: [RoleMenuRole!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `RoleMenuRole` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `RoleMenuRole` edge in the connection."""
+type RoleMenuRolesEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `RoleMenuRole` at the end of the edge."""
+  node: RoleMenuRole!
+}
+
+"""Grouping methods for `RoleMenuRole` for usage during aggregation."""
+enum RoleMenuRolesGroupBy {
+  DESCRIPTION
+  EMOJI
+  GUILD_ID
+  MENU_NAME
+  ROLE_ID
+}
+
+input RoleMenuRolesHavingAverageInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input RoleMenuRolesHavingDistinctCountInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+"""Conditions for `RoleMenuRole` aggregates."""
+input RoleMenuRolesHavingInput {
+  AND: [RoleMenuRolesHavingInput!]
+  OR: [RoleMenuRolesHavingInput!]
+  average: RoleMenuRolesHavingAverageInput
+  distinctCount: RoleMenuRolesHavingDistinctCountInput
+  max: RoleMenuRolesHavingMaxInput
+  min: RoleMenuRolesHavingMinInput
+  stddevPopulation: RoleMenuRolesHavingStddevPopulationInput
+  stddevSample: RoleMenuRolesHavingStddevSampleInput
+  sum: RoleMenuRolesHavingSumInput
+  variancePopulation: RoleMenuRolesHavingVariancePopulationInput
+  varianceSample: RoleMenuRolesHavingVarianceSampleInput
+}
+
+input RoleMenuRolesHavingMaxInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input RoleMenuRolesHavingMinInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input RoleMenuRolesHavingStddevPopulationInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input RoleMenuRolesHavingStddevSampleInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input RoleMenuRolesHavingSumInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input RoleMenuRolesHavingVariancePopulationInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input RoleMenuRolesHavingVarianceSampleInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+"""Methods to use when ordering `RoleMenuRole`."""
+enum RoleMenuRolesOrderBy {
+  DESCRIPTION_ASC
+  DESCRIPTION_DESC
+  EMOJI_ASC
+  EMOJI_DESC
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  MENU_NAME_ASC
+  MENU_NAME_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROLE_ID_ASC
+  ROLE_ID_DESC
 }
 
 type RoleMenuStddevPopulationAggregates {
@@ -9202,7 +9994,6 @@ enum RoleMenusGroupBy {
   MAX_COUNT
   MENU_NAME
   REQUIRED_ROLE
-  ROLE_IDS
 }
 
 input RoleMenusHavingAverageInput {
@@ -9289,8 +10080,98 @@ enum RoleMenusOrderBy {
   PRIMARY_KEY_DESC
   REQUIRED_ROLE_ASC
   REQUIRED_ROLE_DESC
-  ROLE_IDS_ASC
-  ROLE_IDS_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_DESCRIPTION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_DESCRIPTION_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_EMOJI_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_EMOJI_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_GUILD_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_GUILD_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_MENU_NAME_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_ROLE_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_ROLE_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_COUNT_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_COUNT_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_DESCRIPTION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_DESCRIPTION_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_EMOJI_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_EMOJI_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_GUILD_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_GUILD_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_MENU_NAME_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_ROLE_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_ROLE_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_DESCRIPTION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_DESCRIPTION_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_EMOJI_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_EMOJI_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_GUILD_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_GUILD_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_MENU_NAME_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_ROLE_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_ROLE_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_DESCRIPTION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_DESCRIPTION_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_EMOJI_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_EMOJI_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_GUILD_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_GUILD_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_MENU_NAME_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_ROLE_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_ROLE_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_DESCRIPTION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_DESCRIPTION_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_EMOJI_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_EMOJI_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_GUILD_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_GUILD_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_MENU_NAME_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_ROLE_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_ROLE_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_DESCRIPTION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_DESCRIPTION_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_EMOJI_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_EMOJI_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_GUILD_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_GUILD_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_MENU_NAME_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_ROLE_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_ROLE_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_DESCRIPTION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_DESCRIPTION_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_EMOJI_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_EMOJI_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_GUILD_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_GUILD_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_MENU_NAME_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_ROLE_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_ROLE_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_DESCRIPTION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_DESCRIPTION_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_EMOJI_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_EMOJI_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_GUILD_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_GUILD_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_MENU_NAME_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_ROLE_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_ROLE_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_DESCRIPTION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_DESCRIPTION_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_EMOJI_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_EMOJI_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_GUILD_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_GUILD_ID_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_MENU_NAME_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_ROLE_ID_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_ROLE_ID_DESC
 }
 
 """
@@ -10817,6 +11698,70 @@ type UpdateRoleMenuPayload {
   ): RoleMenusEdge
 }
 
+"""
+All input for the `updateRoleMenuRoleByGuildIdAndMenuNameAndRoleId` mutation.
+"""
+input UpdateRoleMenuRoleByGuildIdAndMenuNameAndRoleIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  menuName: String!
+  roleId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `RoleMenuRole` being updated.
+  """
+  roleMenuRolePatch: RoleMenuRolePatch!
+}
+
+"""All input for the `updateRoleMenuRole` mutation."""
+input UpdateRoleMenuRoleInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `RoleMenuRole` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `RoleMenuRole` being updated.
+  """
+  roleMenuRolePatch: RoleMenuRolePatch!
+}
+
+"""The output of our update `RoleMenuRole` mutation."""
+type UpdateRoleMenuRolePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `RoleMenu` that is related to this `RoleMenuRole`."""
+  roleMenuByGuildIdAndMenuName: RoleMenu
+
+  """The `RoleMenuRole` that was updated by this mutation."""
+  roleMenuRole: RoleMenuRole
+
+  """An edge for our `RoleMenuRole`. May be used by Relay 1."""
+  roleMenuRoleEdge(
+    """The method to use when ordering `RoleMenuRole`."""
+    orderBy: [RoleMenuRolesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): RoleMenuRolesEdge
+}
+
 """All input for the `updateTagByGuildIdAndTagName` mutation."""
 input UpdateTagByGuildIdAndTagNameInput {
   """
@@ -11111,6 +12056,800 @@ type UpdateWebUserPayload {
     """The method to use when ordering `WebUser`."""
     orderBy: [WebUsersOrderBy!] = [PRIMARY_KEY_ASC]
   ): WebUsersEdge
+}
+
+"""All input for the upsert `BotStat` mutation."""
+input UpsertBotStatInput {
+  """The `BotStat` to be upserted by this mutation."""
+  botStat: BotStatInput!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+}
+
+"""The output of our upsert `BotStat` mutation."""
+type UpsertBotStatPayload {
+  """The `BotStat` that was upserted by this mutation."""
+  botStat: BotStat
+
+  """An edge for our `BotStat`. May be used by Relay 1."""
+  botStatEdge(
+    """The method to use when ordering `BotStat`."""
+    orderBy: [BotStatsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): BotStatsEdge
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `BotStat` mutation."""
+input UpsertBotStatWhere {
+  category: String
+  name: String
+}
+
+"""All input for the upsert `CachedGuild` mutation."""
+input UpsertCachedGuildInput {
+  """The `CachedGuild` to be upserted by this mutation."""
+  cachedGuild: CachedGuildInput!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+}
+
+"""The output of our upsert `CachedGuild` mutation."""
+type UpsertCachedGuildPayload {
+  """The `CachedGuild` that was upserted by this mutation."""
+  cachedGuild: CachedGuild
+
+  """An edge for our `CachedGuild`. May be used by Relay 1."""
+  cachedGuildEdge(
+    """The method to use when ordering `CachedGuild`."""
+    orderBy: [CachedGuildsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): CachedGuildsEdge
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `CachedGuild` mutation."""
+input UpsertCachedGuildWhere {
+  id: BigInt
+}
+
+"""All input for the upsert `CachedUser` mutation."""
+input UpsertCachedUserInput {
+  """The `CachedUser` to be upserted by this mutation."""
+  cachedUser: CachedUserInput!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+}
+
+"""The output of our upsert `CachedUser` mutation."""
+type UpsertCachedUserPayload {
+  """The `CachedUser` that was upserted by this mutation."""
+  cachedUser: CachedUser
+
+  """An edge for our `CachedUser`. May be used by Relay 1."""
+  cachedUserEdge(
+    """The method to use when ordering `CachedUser`."""
+    orderBy: [CachedUsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): CachedUsersEdge
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `CachedUser` mutation."""
+input UpsertCachedUserWhere {
+  id: BigInt
+}
+
+"""All input for the upsert `Feed` mutation."""
+input UpsertFeedInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Feed` to be upserted by this mutation."""
+  feed: FeedInput!
+}
+
+"""All input for the upsert `FeedItem` mutation."""
+input UpsertFeedItemInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `FeedItem` to be upserted by this mutation."""
+  feedItem: FeedItemInput!
+}
+
+"""The output of our upsert `FeedItem` mutation."""
+type UpsertFeedItemPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `FeedItem` that was upserted by this mutation."""
+  feedItem: FeedItem
+
+  """An edge for our `FeedItem`. May be used by Relay 1."""
+  feedItemEdge(
+    """The method to use when ordering `FeedItem`."""
+    orderBy: [FeedItemsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedItemsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `FeedItem` mutation."""
+input UpsertFeedItemWhere {
+  feedId: String
+  itemId: String
+}
+
+"""The output of our upsert `Feed` mutation."""
+type UpsertFeedPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Feed` that was upserted by this mutation."""
+  feed: Feed
+
+  """An edge for our `Feed`. May be used by Relay 1."""
+  feedEdge(
+    """The method to use when ordering `Feed`."""
+    orderBy: [FeedsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the upsert `FeedSubscription` mutation."""
+input UpsertFeedSubscriptionInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `FeedSubscription` to be upserted by this mutation."""
+  feedSubscription: FeedSubscriptionInput!
+}
+
+"""The output of our upsert `FeedSubscription` mutation."""
+type UpsertFeedSubscriptionPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """Reads a single `Feed` that is related to this `FeedSubscription`."""
+  feedByFeedId: Feed
+
+  """The `FeedSubscription` that was upserted by this mutation."""
+  feedSubscription: FeedSubscription
+
+  """An edge for our `FeedSubscription`. May be used by Relay 1."""
+  feedSubscriptionEdge(
+    """The method to use when ordering `FeedSubscription`."""
+    orderBy: [FeedSubscriptionsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FeedSubscriptionsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `FeedSubscription` mutation."""
+input UpsertFeedSubscriptionWhere {
+  channelId: BigInt
+  feedId: String
+}
+
+"""Where conditions for the upsert `Feed` mutation."""
+input UpsertFeedWhere {
+  feedId: String
+}
+
+"""All input for the upsert `GuildBan` mutation."""
+input UpsertGuildBanInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `GuildBan` to be upserted by this mutation."""
+  guildBan: GuildBanInput!
+}
+
+"""The output of our upsert `GuildBan` mutation."""
+type UpsertGuildBanPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `GuildBan` that was upserted by this mutation."""
+  guildBan: GuildBan
+
+  """An edge for our `GuildBan`. May be used by Relay 1."""
+  guildBanEdge(
+    """The method to use when ordering `GuildBan`."""
+    orderBy: [GuildBansOrderBy!] = [PRIMARY_KEY_ASC]
+  ): GuildBansEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `GuildBan` mutation."""
+input UpsertGuildBanWhere {
+  guildId: BigInt
+  userId: BigInt
+}
+
+"""All input for the upsert `GuildConfig` mutation."""
+input UpsertGuildConfigInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `GuildConfig` to be upserted by this mutation."""
+  guildConfig: GuildConfigInput!
+}
+
+"""The output of our upsert `GuildConfig` mutation."""
+type UpsertGuildConfigPayload {
+  """Reads a single `CachedGuild` that is related to this `GuildConfig`."""
+  cachedGuildById: CachedGuild
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `GuildConfig` that was upserted by this mutation."""
+  guildConfig: GuildConfig
+
+  """An edge for our `GuildConfig`. May be used by Relay 1."""
+  guildConfigEdge(
+    """The method to use when ordering `GuildConfig`."""
+    orderBy: [GuildConfigsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): GuildConfigsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `GuildConfig` mutation."""
+input UpsertGuildConfigWhere {
+  id: BigInt
+}
+
+"""All input for the upsert `Member` mutation."""
+input UpsertMemberInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Member` to be upserted by this mutation."""
+  member: MemberInput!
+}
+
+"""The output of our upsert `Member` mutation."""
+type UpsertMemberPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Member` that was upserted by this mutation."""
+  member: Member
+
+  """An edge for our `Member`. May be used by Relay 1."""
+  memberEdge(
+    """The method to use when ordering `Member`."""
+    orderBy: [MembersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MembersEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `Member` mutation."""
+input UpsertMemberWhere {
+  guildId: BigInt
+  userId: BigInt
+}
+
+"""All input for the upsert `ModLog` mutation."""
+input UpsertModLogInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `ModLog` to be upserted by this mutation."""
+  modLog: ModLogInput!
+}
+
+"""The output of our upsert `ModLog` mutation."""
+type UpsertModLogPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `ModLog` that was upserted by this mutation."""
+  modLog: ModLog
+
+  """An edge for our `ModLog`. May be used by Relay 1."""
+  modLogEdge(
+    """The method to use when ordering `ModLog`."""
+    orderBy: [ModLogsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): ModLogsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `ModLog` mutation."""
+input UpsertModLogWhere {
+  caseId: BigInt
+  guildId: BigInt
+}
+
+"""All input for the upsert `Mute` mutation."""
+input UpsertMuteInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Mute` to be upserted by this mutation."""
+  mute: MuteInput!
+}
+
+"""The output of our upsert `Mute` mutation."""
+type UpsertMutePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """Reads a single `ModLog` that is related to this `Mute`."""
+  modLogByGuildIdAndCaseId: ModLog
+
+  """The `Mute` that was upserted by this mutation."""
+  mute: Mute
+
+  """An edge for our `Mute`. May be used by Relay 1."""
+  muteEdge(
+    """The method to use when ordering `Mute`."""
+    orderBy: [MutesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MutesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `Mute` mutation."""
+input UpsertMuteWhere {
+  guildId: BigInt
+  userId: BigInt
+}
+
+"""All input for the upsert `Notification` mutation."""
+input UpsertNotificationInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Notification` to be upserted by this mutation."""
+  notification: NotificationInput!
+}
+
+"""The output of our upsert `Notification` mutation."""
+type UpsertNotificationPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Notification` that was upserted by this mutation."""
+  notification: Notification
+
+  """An edge for our `Notification`. May be used by Relay 1."""
+  notificationEdge(
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): NotificationsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `Notification` mutation."""
+input UpsertNotificationWhere {
+  guildId: BigInt
+  keyword: String
+  userId: BigInt
+}
+
+"""All input for the upsert `Reminder` mutation."""
+input UpsertReminderInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Reminder` to be upserted by this mutation."""
+  reminder: ReminderInput!
+}
+
+"""The output of our upsert `Reminder` mutation."""
+type UpsertReminderPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `Reminder` that was upserted by this mutation."""
+  reminder: Reminder
+
+  """An edge for our `Reminder`. May be used by Relay 1."""
+  reminderEdge(
+    """The method to use when ordering `Reminder`."""
+    orderBy: [RemindersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): RemindersEdge
+}
+
+"""Where conditions for the upsert `Reminder` mutation."""
+input UpsertReminderWhere {
+  setAt: Datetime
+  userId: BigInt
+}
+
+"""All input for the upsert `RoleMenu` mutation."""
+input UpsertRoleMenuInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `RoleMenu` to be upserted by this mutation."""
+  roleMenu: RoleMenuInput!
+}
+
+"""The output of our upsert `RoleMenu` mutation."""
+type UpsertRoleMenuPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `RoleMenu` that was upserted by this mutation."""
+  roleMenu: RoleMenu
+
+  """An edge for our `RoleMenu`. May be used by Relay 1."""
+  roleMenuEdge(
+    """The method to use when ordering `RoleMenu`."""
+    orderBy: [RoleMenusOrderBy!] = [PRIMARY_KEY_ASC]
+  ): RoleMenusEdge
+}
+
+"""All input for the upsert `RoleMenuRole` mutation."""
+input UpsertRoleMenuRoleInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `RoleMenuRole` to be upserted by this mutation."""
+  roleMenuRole: RoleMenuRoleInput!
+}
+
+"""The output of our upsert `RoleMenuRole` mutation."""
+type UpsertRoleMenuRolePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `RoleMenu` that is related to this `RoleMenuRole`."""
+  roleMenuByGuildIdAndMenuName: RoleMenu
+
+  """The `RoleMenuRole` that was upserted by this mutation."""
+  roleMenuRole: RoleMenuRole
+
+  """An edge for our `RoleMenuRole`. May be used by Relay 1."""
+  roleMenuRoleEdge(
+    """The method to use when ordering `RoleMenuRole`."""
+    orderBy: [RoleMenuRolesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): RoleMenuRolesEdge
+}
+
+"""Where conditions for the upsert `RoleMenuRole` mutation."""
+input UpsertRoleMenuRoleWhere {
+  guildId: BigInt
+  menuName: String
+  roleId: BigInt
+}
+
+"""Where conditions for the upsert `RoleMenu` mutation."""
+input UpsertRoleMenuWhere {
+  guildId: BigInt
+  menuName: String
+}
+
+"""All input for the upsert `Tag` mutation."""
+input UpsertTagInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Tag` to be upserted by this mutation."""
+  tag: TagInput!
+}
+
+"""The output of our upsert `Tag` mutation."""
+type UpsertTagPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `Tag` that was upserted by this mutation."""
+  tag: Tag
+
+  """An edge for our `Tag`. May be used by Relay 1."""
+  tagEdge(
+    """The method to use when ordering `Tag`."""
+    orderBy: [TagsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): TagsEdge
+}
+
+"""Where conditions for the upsert `Tag` mutation."""
+input UpsertTagWhere {
+  guildId: BigInt
+  tagName: String
+}
+
+"""All input for the upsert `User` mutation."""
+input UpsertUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `User` to be upserted by this mutation."""
+  user: UserInput!
+}
+
+"""All input for the upsert `UserLevel` mutation."""
+input UpsertUserLevelInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `UserLevel` to be upserted by this mutation."""
+  userLevel: UserLevelInput!
+}
+
+"""The output of our upsert `UserLevel` mutation."""
+type UpsertUserLevelPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `UserLevel` that was upserted by this mutation."""
+  userLevel: UserLevel
+
+  """An edge for our `UserLevel`. May be used by Relay 1."""
+  userLevelEdge(
+    """The method to use when ordering `UserLevel`."""
+    orderBy: [UserLevelsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): UserLevelsEdge
+}
+
+"""Where conditions for the upsert `UserLevel` mutation."""
+input UpsertUserLevelWhere {
+  guildId: BigInt
+  userId: BigInt
+}
+
+"""The output of our upsert `User` mutation."""
+type UpsertUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `User` that was upserted by this mutation."""
+  user: User
+
+  """An edge for our `User`. May be used by Relay 1."""
+  userEdge(
+    """The method to use when ordering `User`."""
+    orderBy: [UsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): UsersEdge
+}
+
+"""Where conditions for the upsert `User` mutation."""
+input UpsertUserWhere {
+  id: BigInt
+}
+
+"""All input for the upsert `WebUserGuild` mutation."""
+input UpsertWebUserGuildInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `WebUserGuild` to be upserted by this mutation."""
+  webUserGuild: WebUserGuildInput!
+}
+
+"""The output of our upsert `WebUserGuild` mutation."""
+type UpsertWebUserGuildPayload {
+  """Reads a single `CachedGuild` that is related to this `WebUserGuild`."""
+  cachedGuildByGuildId: CachedGuild
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `WebUser` that is related to this `WebUserGuild`."""
+  webUserByUserId: WebUser
+
+  """The `WebUserGuild` that was upserted by this mutation."""
+  webUserGuild: WebUserGuild
+
+  """An edge for our `WebUserGuild`. May be used by Relay 1."""
+  webUserGuildEdge(
+    """The method to use when ordering `WebUserGuild`."""
+    orderBy: [WebUserGuildsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): WebUserGuildsEdge
+}
+
+"""Where conditions for the upsert `WebUserGuild` mutation."""
+input UpsertWebUserGuildWhere {
+  guildId: BigInt
+  userId: BigInt
+}
+
+"""All input for the upsert `WebUser` mutation."""
+input UpsertWebUserInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `WebUser` to be upserted by this mutation."""
+  webUser: WebUserInput!
+}
+
+"""The output of our upsert `WebUser` mutation."""
+type UpsertWebUserPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `WebUser` that was upserted by this mutation."""
+  webUser: WebUser
+
+  """An edge for our `WebUser`. May be used by Relay 1."""
+  webUserEdge(
+    """The method to use when ordering `WebUser`."""
+    orderBy: [WebUsersOrderBy!] = [PRIMARY_KEY_ASC]
+  ): WebUsersEdge
+}
+
+"""Where conditions for the upsert `WebUser` mutation."""
+input UpsertWebUserWhere {
+  id: BigInt
 }
 
 type User implements Node {

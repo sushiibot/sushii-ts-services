@@ -14,6 +14,7 @@ export default class RoleMenuAutocomplete extends AutocompleteHandler {
     "rolemenu.removeroles",
     "rolemenu.delete",
     "rolemenu.send",
+    "rolemenu.roleoptions",
   ];
 
   // eslint-disable-next-line class-methods-use-this

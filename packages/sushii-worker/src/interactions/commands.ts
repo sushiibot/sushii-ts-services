@@ -22,6 +22,7 @@ import RoleMenuCommand from "./roles/RoleMenu";
 import RoleMenuAutocomplete from "./roles/RoleMenuAutocomplete";
 import RoleMenuButtonHandler from "./roles/RoleMenuButtonHandler";
 import RoleMenuSelectMenuHandler from "./roles/RoleMenuSelectMenuHandler";
+import UnbanCommand from "./moderation/UnbanCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -38,6 +39,7 @@ export default function addCommands(
 
     // Moderation
     new BanCommand(),
+    new UnbanCommand(),
     new KickCommand(),
     new TimeoutCommand(),
     new WarnCommand(),

@@ -40,6 +40,7 @@
     "pino-http": "^6.6.0",
     "postgraphile": "^4.12.9",
     "postgraphile-plugin-connection-filter": "^2.3.0",
+    "postgraphile-upsert-plugin": "^3.1.1",
     "redis": "^4.1.0"
   },
   "devDependencies": {
