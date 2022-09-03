@@ -1,0 +1,8 @@
+query listRoleMenus($guildId: BigInt!) {
+  allRoleMenus(condition: { guildId: $guildId }) {
+    nodes {
+      ...RoleMenuData
+    }
+    totalCount
+  }
+}

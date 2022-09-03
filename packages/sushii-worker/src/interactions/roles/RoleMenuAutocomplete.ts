@@ -9,6 +9,7 @@ import { AutocompleteOption } from "../handlers/AutocompleteHandler";
 
 export default class RoleMenuAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [
+    "rolemenu.get",
     "rolemenu.edit",
     "rolemenu.addroles",
     "rolemenu.removeroles",

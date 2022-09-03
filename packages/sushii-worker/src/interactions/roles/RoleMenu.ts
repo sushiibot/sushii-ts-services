@@ -130,6 +130,21 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     )
     .addSubcommand((c) =>
       c
+        .setName("get")
+        .setDescription("Get current information about a role menu.")
+        .addStringOption((o) =>
+          o
+            .setName(RoleMenuOption.Name)
+            .setDescription("The name of the role menu.")
+            .setRequired(true)
+            .setAutocomplete(true)
+        )
+    )
+    .addSubcommand((c) =>
+      c.setName("list").setDescription("List all your role menus.")
+    )
+    .addSubcommand((c) =>
+      c
         .setName("addroles")
         .setDescription("Add roles to a menu.")
         .addStringOption((o) =>
@@ -262,6 +277,10 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     switch (subcommand) {
       case "new":
         return this.newHandler(ctx, interaction, options);
+      case "get":
+        return this.getHandler(ctx, interaction, options);
+      case "list":
+        return this.listHandler(ctx, interaction);
       case "edit":
         return this.editHandler(ctx, interaction, options);
       case "addroles":
@@ -346,6 +365,111 @@ export default class RoleMenuCommand extends SlashCommandHandler {
               value: requiredRole ? `<&@${requiredRole}>` : "No required role.",
             },
           ])
+          .setColor(Color.Success)
+          .toJSON(),
+      ],
+    });
+  }
+
+  private async getHandler(
+    ctx: Context,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: CommandInteractionOptionResolver
+  ): Promise<void> {
+    const name = options.getString(RoleMenuOption.Name);
+    if (!name) {
+      throw new Error("No name provided.");
+    }
+
+    const menu = await this.getMenu(ctx, interaction, name);
+    if (menu.none) {
+      await ctx.REST.interactionReply(interaction, {
+        content: t("rolemenu.get.error.not_found", { name }),
+      });
+
+      return;
+    }
+
+    const menuData = menu.safeUnwrap();
+
+    const rolesStr = menuData.roleMenuRolesByGuildIdAndMenuName.nodes
+      .map((r) => {
+        let s = `<@&${r.roleId}>`;
+
+        if (r.emoji && !r.description) {
+          s += `\n┗ **Emoji:** ${r.emoji}`;
+        } else if (r.emoji) {
+          s += `\n┣ **Emoji:** ${r.emoji}`;
+        }
+
+        if (r.description) {
+          s += `\n┗ **Description:** ${r.description}`;
+        }
+
+        return s;
+      })
+      .join("\n");
+
+    await ctx.REST.interactionReply(interaction, {
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("Created a new role menu")
+          .setFields([
+            {
+              name: "Name",
+              value: name,
+            },
+            {
+              name: "Description",
+              value: menuData.description || "No description set.",
+            },
+            {
+              name: "Max Roles",
+              value: menuData.maxCount?.toString() || "No limit on max roles.",
+            },
+            {
+              name: "Required Role",
+              value: menuData.requiredRole
+                ? `<&@${menuData.requiredRole}>`
+                : "No required role.",
+            },
+            {
+              name: "Roles",
+              value: rolesStr || "No roles are added yet!",
+            },
+          ])
+          .setColor(Color.Success)
+          .setFooter({
+            text: "Emojis may not show up here but will still display in menus.",
+          })
+          .toJSON(),
+      ],
+    });
+  }
+
+  private async listHandler(
+    ctx: Context,
+    interaction: APIChatInputApplicationCommandGuildInteraction
+  ): Promise<void> {
+    const menus = await ctx.sushiiAPI.sdk.listRoleMenus({
+      guildId: interaction.guild_id,
+    });
+
+    const nodes = menus.allRoleMenus?.nodes;
+
+    if (!nodes || nodes.length === 0) {
+      await ctx.REST.interactionReply(interaction, {
+        content: "No role menus found.",
+      });
+
+      return;
+    }
+
+    await ctx.REST.interactionReply(interaction, {
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("All role menus")
+          .setDescription(nodes.map((n) => n.menuName).join("\n"))
           .setColor(Color.Success)
           .toJSON(),
       ],

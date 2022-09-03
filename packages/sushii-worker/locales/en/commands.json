@@ -72,6 +72,11 @@
         "name_already_exists": "A role menu `{{name}}` already exists! Please pick a different name."
       }
     },
+    "get": {
+      "error": {
+        "not_found": "The role menu `{{name}}` was not found!"
+      }
+    },
     "roleoptions": {
       "error": {
         "no_option_provided": "Please provide a role option, emoji and/or description.",

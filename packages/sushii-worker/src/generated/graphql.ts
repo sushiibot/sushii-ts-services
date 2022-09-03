@@ -17676,6 +17676,13 @@ export type GetRoleMenuQueryVariables = Exact<{
 
 export type GetRoleMenuQuery = { __typename?: 'Query', roleMenuByGuildIdAndMenuName?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } } | null };
 
+export type ListRoleMenusQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+}>;
+
+
+export type ListRoleMenusQuery = { __typename?: 'Query', allRoleMenus?: { __typename?: 'RoleMenusConnection', totalCount: number, nodes: Array<{ __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } }> } | null };
+
 export type RoleMenuDataFragment = { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } };
 
 export type RoleMenuRoleDataFragment = { __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null };
@@ -18164,6 +18171,16 @@ export const GetRoleMenuDocument = gql`
   }
 }
     ${RoleMenuDataFragmentDoc}`;
+export const ListRoleMenusDocument = gql`
+    query listRoleMenus($guildId: BigInt!) {
+  allRoleMenus(condition: {guildId: $guildId}) {
+    nodes {
+      ...RoleMenuData
+    }
+    totalCount
+  }
+}
+    ${RoleMenuDataFragmentDoc}`;
 export const SearchRoleMenuStartingWithDocument = gql`
     query searchRoleMenuStartingWith($guildId: BigInt!, $menuNameStartsWith: String!) {
   allRoleMenus(
@@ -18418,6 +18435,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getRoleMenu(variables: GetRoleMenuQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetRoleMenuQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetRoleMenuQuery>(GetRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getRoleMenu', 'query');
+    },
+    listRoleMenus(variables: ListRoleMenusQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<ListRoleMenusQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ListRoleMenusQuery>(ListRoleMenusDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'listRoleMenus', 'query');
     },
     searchRoleMenuStartingWith(variables: SearchRoleMenuStartingWithQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchRoleMenuStartingWithQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<SearchRoleMenuStartingWithQuery>(SearchRoleMenuStartingWithDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'searchRoleMenuStartingWith', 'query');
