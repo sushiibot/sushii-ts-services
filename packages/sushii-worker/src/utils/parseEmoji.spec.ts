@@ -5,27 +5,36 @@ import parseEmoji from "./parseEmoji";
 describe("parseEmoji", () => {
   describe.each([
     {
-      emojiStr: "<a:ajenniechew:395937281279787028>",
+      emojiStr: "    <a:ajenniechew:395937281279787028>     ",
       expectedEmoji: {
-        animated: true,
-        id: "395937281279787028",
-        name: "ajenniechew",
+        emoji: {
+          animated: true,
+          id: "395937281279787028",
+          name: "ajenniechew",
+        },
+        string: "<a:ajenniechew:395937281279787028>",
       },
     },
     {
-      emojiStr: "<:JennieRawr:816418604140199976>",
+      emojiStr: "asdfasdf <:JennieRawr:816418604140199976> mewow",
       expectedEmoji: {
-        animated: false,
-        id: "816418604140199976",
-        name: "JennieRawr",
+        emoji: {
+          animated: false,
+          id: "816418604140199976",
+          name: "JennieRawr",
+        },
+        string: "<:JennieRawr:816418604140199976>",
       },
     },
     {
       emojiStr: "🐱",
       expectedEmoji: {
-        animated: undefined,
-        id: null,
-        name: "🐱",
+        emoji: {
+          animated: undefined,
+          id: null,
+          name: "🐱",
+        },
+        string: "🐱",
       },
     },
   ])("parseDuration($emojiStr)", ({ emojiStr, expectedEmoji }) => {

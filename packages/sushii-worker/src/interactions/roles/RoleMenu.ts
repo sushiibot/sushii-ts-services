@@ -19,6 +19,7 @@ import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import parseEmoji from "../../utils/parseEmoji";
+import { roleMenuButtonCompile } from "../customIds";
 import { SlashCommandHandler } from "../handlers";
 import { getHighestMemberRole } from "../moderation/hasPermission";
 import CommandInteractionOptionResolver from "../resolver";
@@ -440,7 +441,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
           ])
           .setColor(Color.Success)
           .setFooter({
-            text: "Emojis may not show up here but will still display in menus.",
+            text: "Emojis may not show up here but they will still display in menus.",
           })
           .toJSON(),
       ],
@@ -768,18 +769,15 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
-    if (emojiStr) {
-      const parsedEmoji = parseEmoji(emojiStr);
+    const parsedEmoji = parseEmoji(emojiStr);
+    if (!parsedEmoji) {
+      await interactionReplyErrorMessage(
+        ctx,
+        interaction,
+        t("rolemenu.roleoptions.error.invalid_emoji")
+      );
 
-      if (!parsedEmoji) {
-        await interactionReplyErrorMessage(
-          ctx,
-          interaction,
-          t("rolemenu.roleoptions.error.invalid_emoji")
-        );
-
-        return;
-      }
+      return;
     }
 
     if (description && description.length > 100) {
@@ -797,7 +795,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       menuName,
       roleId: role.id,
       description,
-      emoji: emojiStr,
+      emoji: parsedEmoji.string,
     });
 
     const fields = [];
@@ -805,7 +803,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     if (emojiStr) {
       fields.push({
         name: "Emoji",
-        value: emojiStr,
+        value: parsedEmoji.string,
       });
     }
 
@@ -953,7 +951,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
       for (const { roleId, emoji } of roles) {
         let button = new ButtonBuilder()
-          .setCustomId(buildCustomID(roleId))
+          .setCustomId(roleMenuButtonCompile(roleId))
           .setLabel(guildRolesMap.get(roleId)?.name || roleId)
           .setStyle(ButtonStyle.Secondary);
 
@@ -961,9 +959,9 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
         if (parsedEmoji) {
           button = button.setEmoji({
-            id: parsedEmoji.id || undefined,
-            animated: parsedEmoji.animated,
-            name: parsedEmoji.name || undefined,
+            id: parsedEmoji.emoji.id || undefined,
+            animated: parsedEmoji.emoji.animated,
+            name: parsedEmoji.emoji.name || undefined,
           });
         }
 
@@ -1000,9 +998,9 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
         if (parsedEmoji) {
           option = option.setEmoji({
-            id: parsedEmoji.id || undefined,
-            animated: parsedEmoji.animated,
-            name: parsedEmoji.name || undefined,
+            id: parsedEmoji.emoji.id || undefined,
+            animated: parsedEmoji.emoji.animated,
+            name: parsedEmoji.emoji.name || undefined,
           });
         }
 
