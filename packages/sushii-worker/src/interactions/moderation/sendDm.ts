@@ -29,10 +29,12 @@ async function buildDMEmbed(
 
   const fields = [];
 
-  if (data.reason) {
+  // Either override message, or fallback to reason
+  const dmMessage = data.getDmMessage();
+  if (dmMessage) {
     fields.push({
       name: "Reason",
-      value: data.reason,
+      value: dmMessage,
     });
   }
 

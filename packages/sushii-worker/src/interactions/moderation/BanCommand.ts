@@ -15,6 +15,7 @@ import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
 import {
   attachmentOption,
+  dmMessage,
   reasonOption,
   sendDMOption,
   usersOption,
@@ -42,6 +43,7 @@ export default class BanCommand extends SlashCommandHandler {
     .addStringOption(reasonOption(ActionType.Ban))
     .addAttachmentOption(attachmentOption)
     .addBooleanOption(sendDMOption)
+    .addStringOption(dmMessage)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

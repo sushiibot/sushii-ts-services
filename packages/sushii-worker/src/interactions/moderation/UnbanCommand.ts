@@ -13,29 +13,21 @@ import {
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
-import {
-  attachmentOption,
-  dmMessage,
-  reasonOption,
-  sendDMOption,
-  usersOption,
-} from "./options";
+import { attachmentOption, reasonOption, usersOption } from "./options";
 
-export default class WarnCommand extends SlashCommandHandler {
+export default class UnbanCommand extends SlashCommandHandler {
   serverOnly = true;
 
   requiredBotPermissions = PermissionFlagsBits.BanMembers.toString();
 
   command = new SlashCommandBuilder()
-    .setName("warn")
-    .setDescription("Warn members.")
+    .setName("unban")
+    .setDescription("Unban users.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
     .setDMPermission(false)
-    .addStringOption(usersOption(ActionType.Warn))
-    .addStringOption(reasonOption(ActionType.Warn))
+    .addStringOption(usersOption(ActionType.BanRemove))
+    .addStringOption(reasonOption(ActionType.BanRemove))
     .addAttachmentOption(attachmentOption)
-    .addBooleanOption(sendDMOption)
-    .addStringOption(dmMessage)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
@@ -54,14 +46,23 @@ export default class WarnCommand extends SlashCommandHandler {
     }
 
     const data = new ModActionData(interaction);
-    const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
+    const fetchTargetsRes = await data.fetchTargets(
+      ctx,
+      interaction,
+      true // skipMember fetch
+    );
     if (fetchTargetsRes.err) {
       await interactionReplyErrorMessage(ctx, interaction, fetchTargetsRes.val);
 
       return;
     }
 
-    const res = await executeAction(ctx, interaction, data, ActionType.Warn);
+    const res = await executeAction(
+      ctx,
+      interaction,
+      data,
+      ActionType.BanRemove
+    );
     if (res.err) {
       await interactionReplyErrorMessage(ctx, interaction, res.val.message);
 

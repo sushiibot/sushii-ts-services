@@ -32,3 +32,10 @@ export const attachmentOption = new SlashCommandAttachmentOption()
   .setName("attachment")
   .setDescription("Additional media to attach to the case.")
   .setRequired(false);
+
+export const dmMessage = new SlashCommandStringOption()
+  .setName("dm_message")
+  .setDescription(
+    "Message to DM to the user if send_dm is True. If not provided, the reason will be sent."
+  )
+  .setRequired(false);

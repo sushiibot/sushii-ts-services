@@ -12,6 +12,7 @@ import Context from "../../model/context";
 import getInvokerUser from "../../utils/interactions";
 import parseDuration from "../../utils/parseDuration";
 import CommandInteractionOptionResolver from "../resolver";
+import { ActionType } from "./ActionType";
 
 const ID_REGEX = /\d{17,20}/g;
 
@@ -44,6 +45,8 @@ export default class ModActionData {
 
   private sendDM?: boolean;
 
+  private dmMessage?: string;
+
   constructor(interaction: APIChatInputApplicationCommandGuildInteraction) {
     this.options = new CommandInteractionOptionResolver(
       interaction.data.options,
@@ -66,9 +69,16 @@ export default class ModActionData {
     }
 
     this.sendDM = this.options.getBoolean("send_dm");
+
+    this.dmMessage = this.options.getString("dm_message");
   }
 
-  getSendDM(): boolean {
+  getSendDM(actionType: ActionType): boolean {
+    // Unban never sends DM
+    if (actionType === ActionType.BanRemove) {
+      return false;
+    }
+
     if (this.sendDM === undefined) {
       return true;
     }
@@ -76,9 +86,14 @@ export default class ModActionData {
     return this.sendDM;
   }
 
+  getDmMessage(): string | undefined {
+    return this.dmMessage || this.reason;
+  }
+
   async fetchTargets(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    skipMembers?: boolean
   ): Promise<Result<void, string>> {
     // Get IDs from string
     const targetsString = this.options.getString("users");
@@ -108,11 +123,19 @@ export default class ModActionData {
     const resolvedMembers = this.options.getResolveMembers();
 
     const targetMemberPromises = [];
+    const targetUserPromises = [];
 
     for (const id of targetIds) {
       // Raw ID provided, fetch member from API if not in resolved
-      if (!resolvedUsers[id] && !resolvedMembers[id]) {
+      // Don't fetch members if skipMembers is true -- skipMembers if doing things
+      // like unban where the member is not in the guild.
+      if (!skipMembers && !resolvedUsers[id] && !resolvedMembers[id]) {
         targetMemberPromises.push(ctx.REST.getMember(interaction.guild_id, id));
+      }
+
+      // Skipping members, fetch user
+      if (skipMembers && !resolvedUsers[id] && !resolvedMembers[id]) {
+        targetUserPromises.push(ctx.REST.getUser(id));
       }
 
       // Mentioned and is a member
@@ -134,7 +157,6 @@ export default class ModActionData {
 
     // Resolve all member fetches
     const targetMembersResult = await Promise.allSettled(targetMemberPromises);
-    const targetUserPromises = [];
 
     for (let i = 0; i < targetMembersResult.length; i += 1) {
       const result = targetMembersResult[i];

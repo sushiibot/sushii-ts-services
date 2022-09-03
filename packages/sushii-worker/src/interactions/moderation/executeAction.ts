@@ -57,9 +57,9 @@ function buildResponseEmbed(
 
   fields.push({
     name: "User DM",
-    value: data.getSendDM()
-      ? "Members were sent a DM with the provided reason."
-      : "Members were **not** sent a DM with the provided reason.",
+    value: data.getSendDM(action)
+      ? "📬 Members were sent a DM with the provided reason."
+      : "📭 Members were **not** sent a DM with the provided reason.",
   });
 
   return new EmbedBuilder()
@@ -200,6 +200,11 @@ async function execActionUser(
   return Ok(target);
 }
 
+interface ExecuteActionUserResult {
+  user: APIUser;
+  dmSent: boolean;
+}
+
 async function executeActionUser(
   ctx: Context,
   interaction: APIChatInputApplicationCommandGuildInteraction,
@@ -207,7 +212,7 @@ async function executeActionUser(
   target: ModActionTarget,
   actionType: ActionType,
   redisGuild: NonNullable<GetRedisGuildQuery["redisGuildByGuildId"]>
-): Promise<Result<APIUser, ActionError>> {
+): Promise<Result<ExecuteActionUserResult, ActionError>> {
   const hasPermsTargetingMember = await hasPermissionTargetingMember(
     ctx,
     interaction,
@@ -252,7 +257,7 @@ async function executeActionUser(
   });
 
   // Only DM if should DM AND if target is in the server.
-  const shouldDM = data.getSendDM() && target.member;
+  const shouldDM = data.getSendDM(actionType) && target.member !== null;
 
   let dmRes: Result<APIMessage, string> | null = null;
   // DM before for ban and send dm
@@ -311,7 +316,10 @@ async function executeActionUser(
     return res;
   }
 
-  return Ok(target.user);
+  return Ok({
+    user: target.user,
+    dmSent: shouldDM,
+  });
 }
 
 export default async function executeAction(
@@ -345,8 +353,15 @@ export default async function executeAction(
     if (res.err) {
       msg += `:x: <@${res.val.target.user.id}> (\`${res.val.target.user.id}\`) - ${res.val.message}`;
     } else {
-      msg += `${ActionType.toEmoji(actionType)} <@${res.val.id}> (\`${
-        res.val.id
+      msg += `${ActionType.toEmoji(actionType)} `;
+
+      // Add emoji if DM was send to user
+      if (res.val.dmSent) {
+        msg += "📬 ";
+      }
+
+      msg += `<@${res.val.user.id}> (\`${
+        res.val.user.id
       }\`) ${ActionType.toPastTense(actionType)}`;
     }
 
