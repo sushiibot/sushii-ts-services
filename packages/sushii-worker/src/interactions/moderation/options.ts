@@ -44,7 +44,9 @@ export const attachmentOption = new SlashCommandAttachmentOption()
 
 export const dmMessageOption = new SlashCommandStringOption()
   .setName(ModerationOption.DMMessage)
-  .setDescription("A message to DM to the user, different from the reason.")
+  .setDescription(
+    "A message to DM to the user, if you want to send a message different from the reason."
+  )
   .setRequired(false);
 
 export const daysToDeleteOption = new SlashCommandIntegerOption()

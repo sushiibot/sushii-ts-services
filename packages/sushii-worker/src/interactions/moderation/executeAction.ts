@@ -55,11 +55,24 @@ function buildResponseEmbed(
     });
   }
 
+  let userDMValue = "📭 Members were **not** sent a DM.";
+
+  const dmMessage = data.getDmMessage();
+  if (data.getSendDM(action)) {
+    userDMValue = "📬 Members were sent a DM with the provided __message__.";
+
+    if (data.dmMessageType() === "message" && dmMessage) {
+      userDMValue += `\n┗ **Message:** ${dmMessage}`;
+    }
+
+    if (data.dmMessageType() === "reason") {
+      userDMValue = "📬 Members were sent a DM with the provided __reason__.";
+    }
+  }
+
   fields.push({
     name: "User DM",
-    value: data.getSendDM(action)
-      ? "📬 Members were sent a DM with the provided reason."
-      : "📭 Members were **not** sent a DM with the provided reason.",
+    value: userDMValue,
   });
 
   return new EmbedBuilder()

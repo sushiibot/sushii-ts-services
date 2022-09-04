@@ -101,6 +101,16 @@ export default class ModActionData {
     return this.dmMessage;
   }
 
+  dmMessageType(): "reason" | "message" | undefined {
+    if (this.DMReason) {
+      return "reason";
+    }
+
+    if (this.dmMessage) {
+      return "message";
+    }
+  }
+
   async fetchTargets(
     ctx: Context,
     interaction: APIChatInputApplicationCommandGuildInteraction,
