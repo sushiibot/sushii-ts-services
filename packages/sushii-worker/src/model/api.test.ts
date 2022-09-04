@@ -5,7 +5,7 @@ import Context from "./context";
 import SushiiSDK from "./api";
 import Metrics from "./metrics";
 
-describe("SushiiSDK", () => {
+describe.skip("SushiiSDK", () => {
   let sushiiSDK: SushiiSDK;
 
   beforeEach(() => {
