@@ -7,13 +7,12 @@ import {
 } from "discord-api-types/v10";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import { customIds } from "../customIds";
+import customIds from "../customIds";
 import { ButtonHandler } from "../handlers";
 import {
   getRoleMenuMaxRoles,
   getRoleMenuMessageButtonRoles,
   getRoleMenuRequiredRole,
-  parseCustomID,
 } from "./ids";
 
 export default class RoleMenuButtonHandler extends ButtonHandler {
@@ -52,10 +51,14 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
     // -------------------------------------------------------------------------
     // Check if removing or adding role
 
-    const roleToAddOrRemove = parseCustomID(interaction.data.custom_id);
-    if (!roleToAddOrRemove) {
+    const customIDMatch = customIds.roleMenuButton.match(
+      interaction.data.custom_id
+    );
+    if (!customIDMatch) {
       throw new Error("No role to add or remove");
     }
+
+    const roleToAddOrRemove = customIDMatch.params.roleId;
 
     // If user already has role -> remove it
     // If user doesn't have role -> add it

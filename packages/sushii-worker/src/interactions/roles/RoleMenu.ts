@@ -19,7 +19,7 @@ import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import parseEmoji from "../../utils/parseEmoji";
-import { roleMenuButtonCompile, roleMenuSelectCompile } from "../customIds";
+import customIds from "../customIds";
 import { SlashCommandHandler } from "../handlers";
 import { getHighestMemberRole } from "../moderation/hasPermission";
 import CommandInteractionOptionResolver from "../resolver";
@@ -950,7 +950,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
       for (const { roleId, emoji } of roles) {
         let button = new ButtonBuilder()
-          .setCustomId(roleMenuButtonCompile(roleId))
+          .setCustomId(customIds.roleMenuButton.compile({ roleId }))
           .setLabel(guildRolesMap.get(roleId)?.name || roleId)
           .setStyle(ButtonStyle.Secondary);
 
@@ -1012,7 +1012,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
       const selectMenu = new SelectMenuBuilder()
         .setPlaceholder("Select your roles!")
-        .setCustomId(roleMenuSelectCompile())
+        .setCustomId(customIds.roleMenuSelect.compile())
         .addOptions(selectOptions)
         .setMaxValues(roleMenuData.maxCount || roles.length)
         // Allow 0 to let people clear all roles

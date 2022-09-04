@@ -6,30 +6,12 @@ import {
 } from "discord-api-types/v10";
 import Context from "../../../model/context";
 import Color from "../../../utils/colors";
-import { customIds } from "../../customIds";
+import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";
 import { ActionType } from "../ActionType";
 import buildUserHistoryEmbed from "../formatters/history";
 
 export const lookupButtonCustomIDPrefix = "lookup:button:";
-
-interface ButtonAction {
-  action: ActionType;
-  target: string;
-}
-
-function parseCustomID(id: string): ButtonAction {
-  const arr = id.split(":");
-  if (arr.length !== 4) {
-    throw new Error(`Invalid custom ID ${id}`);
-  }
-
-  // lookup:button:lookup:id
-  return {
-    action: ActionType.fromString(arr[2]),
-    target: arr[3],
-  };
-}
 
 export default class ContextLookUpButtonHandler extends ButtonHandler {
   customIDMatch = customIds.lookupButton.match;
@@ -43,13 +25,18 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
       throw new Error("Not a guild interaction");
     }
 
-    const { action, target } = parseCustomID(interaction.data.custom_id);
+    const customIDMatch = this.customIDMatch(interaction.data.custom_id);
+    if (!customIDMatch) {
+      throw new Error("Invalid custom ID");
+    }
+
+    const { actionType, targetId } = customIDMatch.params;
 
     // There is no permission check here because the only way to trigger this
     // button is from the userinfo context menu which only displays button if
     // the user already has the required permissions.
 
-    switch (action) {
+    switch (actionType) {
       case ActionType.Ban:
       case ActionType.BanRemove: // TODO: is this possible
       case ActionType.Kick:
@@ -67,7 +54,7 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
       case ActionType.History: {
         const cases = await ctx.sushiiAPI.sdk.getUserModLogHistory({
           guildId: interaction.guild_id,
-          userId: target,
+          userId: targetId,
         });
 
         const { embeds, components } = interaction.message;
@@ -91,7 +78,7 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
       }
       case ActionType.Lookup: {
         const bans = await ctx.sushiiAPI.sdk.getUserBans({
-          userId: target,
+          userId: targetId,
         });
 
         const { embeds, components } = interaction.message;

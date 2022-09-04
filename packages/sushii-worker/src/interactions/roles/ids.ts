@@ -4,20 +4,7 @@ import {
   APISelectMenuComponent,
   ComponentType,
 } from "discord-api-types/v10";
-
-export const roleMenuCustomIDPrefix = "rolemenu:";
-
-export function parseCustomID(customID: string): string | undefined {
-  if (!customID.startsWith(roleMenuCustomIDPrefix)) {
-    return;
-  }
-
-  return customID.split(":").at(1);
-}
-
-export function buildCustomID(roleId: string): string {
-  return `${roleMenuCustomIDPrefix}${roleId}`;
-}
+import customIds from "../customIds";
 
 interface MenuRoleData {
   roleId: string;
@@ -81,10 +68,14 @@ export function getRoleMenuMessageButtonRoles(
           (component): component is APIButtonComponentWithCustomId =>
             component.type === ComponentType.Button
         )
-        .map((button) => ({
-          roleId: parseCustomID(button.custom_id),
-          label: button.label!,
-        }))
+        .map((button) => {
+          const match = customIds.roleMenuButton.matchParams(button.custom_id);
+
+          return {
+            roleId: match ? match.roleId : null,
+            label: button.label!,
+          };
+        })
         .filter((button): button is MenuRoleData => !!button.roleId)
     )
     .flat();

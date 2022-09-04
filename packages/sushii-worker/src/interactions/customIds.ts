@@ -1,46 +1,75 @@
-import { match, compile } from "path-to-regexp";
+import {
+  match,
+  compile,
+  MatchFunction,
+  PathFunction,
+  MatchResult,
+} from "path-to-regexp";
 import { ActionType } from "./moderation/ActionType";
 
-interface CustomIDPath {
-  path: string;
-  match: ReturnType<typeof match>;
-  compile: ReturnType<typeof compile>;
+enum Paths {
+  RoleMenuButton = "/rolemenu/button/:roleId",
+  RoleMenuSelect = "/rolemenu/select",
+  ModerationAction = "/moderation/action/:actionType/:targetId",
 }
 
-function createCustomID(path: string): CustomIDPath {
-  return {
-    path,
-    match: match(path),
-    compile: compile(path),
+type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
+  ? {
+      roleId: string;
+    }
+  : T extends Paths.RoleMenuSelect
+  ? {
+      // No params
+    }
+  : T extends Paths.ModerationAction
+  ? {
+      actionType: ActionType;
+      targetId: string;
+    }
+  : never;
+
+/**
+ * Returns a function that returns null if the match fails or the params.
+ *
+ * @param fn
+ * @returns
+ */
+function paramsOrNull<T extends object>(
+  fn: MatchFunction<T>
+): (path: string) => MatchResult<T>["params"] | null {
+  return (path: string) => {
+    const result = fn(path);
+
+    if (!result) {
+      return null;
+    }
+
+    return result.params;
   };
 }
 
-export const customIds = {
-  roleMenuButton: createCustomID("/rolemenu/button/:roleId"),
-  roleMenuSelect: createCustomID("/rolemenu/select"),
-  lookupButton: createCustomID("/lookup/button/:action/:userId/:reason?"),
+interface CustomIDPath<T extends object> {
+  path: string;
+  match: MatchFunction<T>;
+  matchParams: (path: string) => MatchResult<T>["params"] | null;
+  compile: PathFunction<T>;
+}
+
+function createCustomID<T extends Paths>(path: T): CustomIDPath<PathParams<T>> {
+  const m = match<PathParams<T>>(path);
+
+  return {
+    path,
+    match: m,
+    matchParams: paramsOrNull<PathParams<T>>(m),
+    compile: compile<PathParams<T>>(path),
+  };
+}
+
+const customIds = {
+  roleMenuButton: createCustomID(Paths.RoleMenuButton),
+  roleMenuSelect: createCustomID(Paths.RoleMenuSelect),
+  lookupButton: createCustomID(Paths.ModerationAction),
 };
 
-// Role menu button
-
-export function roleMenuButtonCompile(roleId: string): string {
-  return customIds.roleMenuButton.compile({ roleId });
-}
-
-// Role menu select
-
-export function roleMenuSelectCompile(): string {
-  return customIds.roleMenuSelect.compile();
-}
-
-export function lookupButtonCompile(
-  action: ActionType,
-  userId: string,
-  reason?: string
-): string {
-  return customIds.lookupButton.compile({
-    action,
-    userId,
-    reason,
-  });
-}
+export default customIds;
