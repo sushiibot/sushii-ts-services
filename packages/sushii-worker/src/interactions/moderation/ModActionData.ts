@@ -13,6 +13,7 @@ import getInvokerUser from "../../utils/interactions";
 import parseDuration from "../../utils/parseDuration";
 import CommandInteractionOptionResolver from "../resolver";
 import { ActionType } from "./ActionType";
+import { ModerationOption } from "./options";
 
 const ID_REGEX = /\d{17,20}/g;
 
@@ -43,7 +44,7 @@ export default class ModActionData {
    */
   public timeoutDuration?: Duration;
 
-  private sendDM?: boolean;
+  private DMReason?: boolean;
 
   private dmMessage?: string;
 
@@ -55,12 +56,14 @@ export default class ModActionData {
 
     this.invoker = getInvokerUser(interaction);
 
-    this.reason = this.options.getString("reason");
-    this.attachment = this.options.getAttachment("attachment");
+    this.reason = this.options.getString(ModerationOption.Reason);
+    this.attachment = this.options.getAttachment(ModerationOption.Attachment);
 
-    this.deleteMessageDays = this.options.getInteger("days_to_delete");
+    this.deleteMessageDays = this.options.getInteger(
+      ModerationOption.DaysToDelete
+    );
 
-    const durationStr = this.options.getString("duration");
+    const durationStr = this.options.getString(ModerationOption.Duration);
 
     if (durationStr) {
       // This is **required** to exist if it's a timeout command, so it will
@@ -68,9 +71,9 @@ export default class ModActionData {
       this.timeoutDuration = parseDuration(durationStr) || undefined;
     }
 
-    this.sendDM = this.options.getBoolean("send_dm");
+    this.DMReason = this.options.getBoolean(ModerationOption.DMReason);
 
-    this.dmMessage = this.options.getString("dm_message");
+    this.dmMessage = this.options.getString(ModerationOption.DMMessage);
   }
 
   getSendDM(actionType: ActionType): boolean {
@@ -79,15 +82,18 @@ export default class ModActionData {
       return false;
     }
 
-    if (this.sendDM === undefined) {
-      return true;
-    }
-
-    return this.sendDM;
+    // If not provided, default to no dm.
+    return this.DMReason || false;
   }
 
   getDmMessage(): string | undefined {
-    return this.dmMessage || this.reason;
+    // Only DM reason if dm_reason True
+    if (this.DMReason) {
+      return this.reason;
+    }
+
+    // Return DM message if provided
+    return this.dmMessage;
   }
 
   async fetchTargets(
@@ -96,7 +102,7 @@ export default class ModActionData {
     skipMembers?: boolean
   ): Promise<Result<void, string>> {
     // Get IDs from string
-    const targetsString = this.options.getString("users");
+    const targetsString = this.options.getString(ModerationOption.Users);
     if (!targetsString) {
       // user option should be required so this should only throw if very wrong.
       return Err("No target users provided");

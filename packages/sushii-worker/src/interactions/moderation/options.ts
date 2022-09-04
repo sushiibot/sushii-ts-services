@@ -1,13 +1,24 @@
 import {
   SlashCommandAttachmentOption,
   SlashCommandBooleanOption,
+  SlashCommandIntegerOption,
   SlashCommandStringOption,
 } from "@discordjs/builders";
 import { ActionType } from "./ActionType";
 
+export enum ModerationOption {
+  Users = "users",
+  Reason = "reason",
+  Attachment = "attachment",
+  DMReason = "dm_reason",
+  DMMessage = "dm_message",
+  DaysToDelete = "days_to_delete",
+  Duration = "duration",
+}
+
 export const usersOption = (action: ActionType): SlashCommandStringOption =>
   new SlashCommandStringOption()
-    .setName("users")
+    .setName(ModerationOption.Users)
     .setDescription(
       `Which users to ${ActionType.toString(
         action
@@ -16,26 +27,33 @@ export const usersOption = (action: ActionType): SlashCommandStringOption =>
     .setRequired(true);
 
 export const sendDMOption = new SlashCommandBooleanOption()
-  .setName("send_dm")
-  .setDescription("If true, send a DM with the reason to the user.")
+  .setName(ModerationOption.DMReason)
+  .setDescription("DM the reason to the user.")
   .setRequired(false);
 
 export const reasonOption = (action: ActionType): SlashCommandStringOption =>
   new SlashCommandStringOption()
-    .setName("reason")
+    .setName(ModerationOption.Reason)
     .setDescription(
       `Reason for ${ActionType.toPresentTense(action)} this user.`
     )
     .setRequired(false);
 
 export const attachmentOption = new SlashCommandAttachmentOption()
-  .setName("attachment")
+  .setName(ModerationOption.Attachment)
   .setDescription("Additional media to attach to the case.")
   .setRequired(false);
 
-export const dmMessage = new SlashCommandStringOption()
-  .setName("dm_message")
+export const dmMessageOption = new SlashCommandStringOption()
+  .setName(ModerationOption.DMMessage)
   .setDescription(
-    "Message to DM to the user if send_dm is True. If not provided, the reason will be sent."
+    "A custom message to DM to the user, different from the reason."
   )
+  .setRequired(false);
+
+export const daysToDeleteOption = new SlashCommandIntegerOption()
+  .setName(ModerationOption.DaysToDelete)
+  .setDescription("Number of days to delete messages for")
+  .setMaxValue(7)
+  .setMinValue(0)
   .setRequired(false);

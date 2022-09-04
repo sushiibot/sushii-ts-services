@@ -15,7 +15,7 @@ import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
 import {
   attachmentOption,
-  dmMessage,
+  dmMessageOption,
   reasonOption,
   sendDMOption,
   usersOption,
@@ -35,7 +35,7 @@ export default class WarnCommand extends SlashCommandHandler {
     .addStringOption(reasonOption(ActionType.Warn))
     .addAttachmentOption(attachmentOption)
     .addBooleanOption(sendDMOption)
-    .addStringOption(dmMessage)
+    .addStringOption(dmMessageOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

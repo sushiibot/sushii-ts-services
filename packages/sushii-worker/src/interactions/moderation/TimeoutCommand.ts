@@ -15,7 +15,7 @@ import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
 import {
   attachmentOption,
-  dmMessage,
+  dmMessageOption,
   reasonOption,
   sendDMOption,
   usersOption,
@@ -41,7 +41,7 @@ export default class TimeoutCommand extends SlashCommandHandler {
     .addStringOption(reasonOption(ActionType.Timeout))
     .addAttachmentOption(attachmentOption)
     .addBooleanOption(sendDMOption)
-    .addStringOption(dmMessage)
+    .addStringOption(dmMessageOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

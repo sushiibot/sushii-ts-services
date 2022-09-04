@@ -15,7 +15,8 @@ import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
 import {
   attachmentOption,
-  dmMessage,
+  daysToDeleteOption,
+  dmMessageOption,
   reasonOption,
   sendDMOption,
   usersOption,
@@ -32,18 +33,11 @@ export default class BanCommand extends SlashCommandHandler {
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
     .setDMPermission(false)
     .addStringOption(usersOption(ActionType.Ban))
-    .addIntegerOption((o) =>
-      o
-        .setName("days_to_delete")
-        .setDescription("Number of days to delete messages for")
-        .setMaxValue(7)
-        .setMinValue(0)
-        .setRequired(false)
-    )
+    .addIntegerOption(daysToDeleteOption)
     .addStringOption(reasonOption(ActionType.Ban))
     .addAttachmentOption(attachmentOption)
     .addBooleanOption(sendDMOption)
-    .addStringOption(dmMessage)
+    .addStringOption(dmMessageOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
