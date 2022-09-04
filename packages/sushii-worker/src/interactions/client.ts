@@ -42,6 +42,7 @@ import ContextMenuHandler from "./handlers/ContextMenuHandler";
 import { AutocompleteOption } from "./handlers/AutocompleteHandler";
 import getInvokerUser from "../utils/interactions";
 import Metrics from "../model/metrics";
+import getFullCommandName from "../utils/getFullCommandName";
 
 interface FocusedOption {
   path: string;
@@ -285,7 +286,14 @@ export default class InteractionClient {
       return;
     }
 
-    log.info("received %s command", interaction.data.name);
+    log.info(
+      {
+        command: getFullCommandName(interaction),
+        guildId: interaction.guild_id,
+        userId: getInvokerUser(interaction).id,
+      },
+      "received command"
+    );
 
     try {
       if (command.serverOnly) {
@@ -328,7 +336,7 @@ export default class InteractionClient {
         },
         tags: {
           type: "command",
-          command_name: interaction.data.name,
+          command_name: getFullCommandName(interaction),
         },
       });
 
