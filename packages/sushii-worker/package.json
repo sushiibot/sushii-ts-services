@@ -31,6 +31,7 @@
     "i18next-fs-backend": "^1.1.4",
     "node-fetch": "2.6.7",
     "parse-duration": "^1.0.2",
+    "path-to-regexp": "^6.2.1",
     "pino": "^7.8.0",
     "prom-client": "^14.0.1",
     "ts-results": "^3.3.0"

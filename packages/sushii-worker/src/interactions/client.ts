@@ -127,14 +127,14 @@ export default class InteractionClient {
   private modalHandlers: Collection<string, ModalHandler>;
 
   /**
-   * Button handlers, key is the custom id prefix
+   * Button handlers
    */
-  private buttonHandlers: Collection<string, ButtonHandler>;
+  private buttonHandlers: ButtonHandler[];
 
   /**
-   * select menu handlers, key is the custom id prefix
+   * select menu handlers
    */
-  private selectMenuHandlers: Collection<string, SelectMenuHandler>;
+  private selectMenuHandlers: SelectMenuHandler[];
 
   constructor(config: ConfigI, metrics: Metrics) {
     this.config = config;
@@ -143,8 +143,8 @@ export default class InteractionClient {
     this.commands = new Collection();
     this.autocompleteHandlers = new Collection();
     this.modalHandlers = new Collection();
-    this.buttonHandlers = new Collection();
-    this.selectMenuHandlers = new Collection();
+    this.buttonHandlers = [];
+    this.selectMenuHandlers = [];
     this.contextMenuHandlers = new Collection();
   }
 
@@ -207,9 +207,7 @@ export default class InteractionClient {
    * @param componentHandler ButtonHandler to add
    */
   public addButtons(...buttonHandlers: ButtonHandler[]): void {
-    buttonHandlers.forEach((handler) => {
-      this.buttonHandlers.set(handler.customIDPrefix, handler);
-    });
+    this.buttonHandlers.push(...buttonHandlers);
   }
 
   /**
@@ -217,11 +215,8 @@ export default class InteractionClient {
    *
    * @param componentHandler SelectMenuHandler to add
    */
-  public addSelectMenu(componentHandler: SelectMenuHandler): void {
-    this.selectMenuHandlers.set(
-      componentHandler.customIDPrefix,
-      componentHandler
-    );
+  public addSelectMenus(...componentHandlers: SelectMenuHandler[]): void {
+    this.selectMenuHandlers.push(...componentHandlers);
   }
 
   /**
@@ -529,8 +524,8 @@ export default class InteractionClient {
   ): Promise<void> {
     // TODO: button / select menu handlers don't really need to be a collection
     // as we are always iterating through all handlers
-    const buttonHandler = this.buttonHandlers.find((handler) =>
-      interaction.data.custom_id.startsWith(handler.customIDPrefix)
+    const buttonHandler = this.buttonHandlers.find(
+      (handler) => handler.customIDMatch(interaction.data.custom_id) !== false
     );
 
     if (!buttonHandler) {
@@ -566,8 +561,8 @@ export default class InteractionClient {
   private async handleSelectMenuSubmit(
     interaction: APIMessageComponentSelectMenuInteraction
   ): Promise<void> {
-    const selectMenuHandler = this.selectMenuHandlers.find((handler) =>
-      interaction.data.custom_id.startsWith(handler.customIDPrefix)
+    const selectMenuHandler = this.selectMenuHandlers.find(
+      (handler) => handler.customIDMatch(interaction.data.custom_id) !== false
     );
 
     if (!selectMenuHandler) {

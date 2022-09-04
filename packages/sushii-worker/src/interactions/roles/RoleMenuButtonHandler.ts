@@ -7,17 +7,17 @@ import {
 } from "discord-api-types/v10";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
+import { customIds } from "../customIds";
 import { ButtonHandler } from "../handlers";
 import {
   getRoleMenuMaxRoles,
   getRoleMenuMessageButtonRoles,
   getRoleMenuRequiredRole,
   parseCustomID,
-  roleMenuCustomIDPrefix,
 } from "./ids";
 
 export default class RoleMenuButtonHandler extends ButtonHandler {
-  customIDPrefix = roleMenuCustomIDPrefix;
+  customIDMatch = customIds.roleMenuButton.match;
 
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(

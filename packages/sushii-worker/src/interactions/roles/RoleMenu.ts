@@ -19,12 +19,11 @@ import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import parseEmoji from "../../utils/parseEmoji";
-import { roleMenuButtonCompile } from "../customIds";
+import { roleMenuButtonCompile, roleMenuSelectCompile } from "../customIds";
 import { SlashCommandHandler } from "../handlers";
 import { getHighestMemberRole } from "../moderation/hasPermission";
 import CommandInteractionOptionResolver from "../resolver";
 import { interactionReplyErrorMessage } from "../responses/error";
-import { buildCustomID, roleMenuCustomIDPrefix } from "./ids";
 
 const RE_ROLE = /<@&(\d{17,20})>/g;
 
@@ -1013,7 +1012,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
       const selectMenu = new SelectMenuBuilder()
         .setPlaceholder("Select your roles!")
-        .setCustomId(`${roleMenuCustomIDPrefix}:select:${name}`)
+        .setCustomId(roleMenuSelectCompile())
         .addOptions(selectOptions)
         .setMaxValues(roleMenuData.maxCount || roles.length)
         // Allow 0 to let people clear all roles

@@ -1,0 +1,71 @@
+import {
+  customIds,
+  roleMenuButtonCompile,
+  roleMenuSelectCompile,
+} from "./customIds";
+
+describe("customIds", () => {
+  describe("roleMenuButton", () => {
+    describe.each([
+      {
+        customID: "/rolemenu/button/",
+        wantMatch: false,
+      },
+      {
+        customID: "/rolemenu/button/123",
+        wantMatch: {
+          index: 0,
+          params: {
+            roleId: "123",
+          },
+          path: "/rolemenu/button/123",
+        },
+      },
+      {
+        customID: "/rolemenu/button/12345",
+        wantMatch: {
+          index: 0,
+          params: {
+            roleId: "12345",
+          },
+          path: "/rolemenu/button/12345",
+        },
+      },
+    ])("roleMenuButtonMatch($customID)", ({ customID, wantMatch }) => {
+      test(`matches role menu button ${customID}`, () => {
+        expect(customIds.roleMenuButton.match(customID)).toEqual(wantMatch);
+      });
+
+      test(`menu button compile matches ${customID}`, () => {
+        if (wantMatch && typeof wantMatch !== "boolean") {
+          // Compiling matches the same custom id
+          expect(roleMenuButtonCompile(wantMatch.params.roleId)).toEqual(
+            customID
+          );
+        }
+      });
+    });
+  });
+
+  describe("roleMenuSelect", () => {
+    describe.each([
+      {
+        customID: "/rolemenu/select",
+        wantMatch: {
+          index: 0,
+          params: {},
+          path: "/rolemenu/select",
+        },
+      },
+    ])("roleMenuSelect($customID)", ({ customID, wantMatch }) => {
+      test(`matches role menu select menu ${customID}`, () => {
+        expect(customIds.roleMenuSelect.match(customID)).toEqual(wantMatch);
+      });
+
+      test(`menu select compile matches ${customID}`, () => {
+        // Compiling matches the same custom id
+        expect(roleMenuSelectCompile()).toEqual(customID);
+      });
+    });
+  });
+});

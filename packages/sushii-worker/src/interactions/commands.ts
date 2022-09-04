@@ -66,7 +66,7 @@ export default function addCommands(
     new RoleMenuButtonHandler()
   );
 
-  interactionClient.addSelectMenu(new RoleMenuSelectMenuHandler());
+  interactionClient.addSelectMenus(new RoleMenuSelectMenuHandler());
 
   interactionClient.addAutocompleteHandlers(
     new NotificationListAutocomplete(),

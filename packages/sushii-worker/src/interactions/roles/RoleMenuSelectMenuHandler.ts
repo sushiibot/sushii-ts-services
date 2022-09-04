@@ -7,15 +7,12 @@ import {
 } from "discord-api-types/v10";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
+import { customIds } from "../customIds";
 import { SelectMenuHandler } from "../handlers";
-import {
-  getRoleMenuMessageSelectRoles,
-  getRoleMenuRequiredRole,
-  roleMenuCustomIDPrefix,
-} from "./ids";
+import { getRoleMenuMessageSelectRoles, getRoleMenuRequiredRole } from "./ids";
 
 export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
-  customIDPrefix = roleMenuCustomIDPrefix;
+  customIDMatch = customIds.roleMenuSelect.match;
 
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
