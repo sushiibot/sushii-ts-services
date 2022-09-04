@@ -1,58 +1,20 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  EmbedBuilder,
-  SelectMenuBuilder,
-  SelectMenuOptionBuilder,
-} from "@discordjs/builders";
-import dayjs from "dayjs";
+import { EmbedBuilder } from "@discordjs/builders";
 import { isGuildInteraction } from "discord-api-types/utils/v10";
 import {
   APIMessageComponentButtonInteraction,
-  ButtonStyle,
   MessageFlags,
 } from "discord-api-types/v10";
-import { lookup } from "dns";
 import Context from "../../../model/context";
 import Color from "../../../utils/colors";
+import { customIds } from "../../customIds";
 import { ButtonHandler } from "../../handlers";
+import { ActionType } from "../ActionType";
 import buildUserHistoryEmbed from "../formatters/history";
 
 export const lookupButtonCustomIDPrefix = "lookup:button:";
 
-export enum Action {
-  Ban = "ban",
-  Kick = "kick",
-  Mute = "mute",
-  Unmute = "unmute",
-  Warn = "warn",
-  History = "history",
-  Lookup = "lookup",
-}
-
-function strToAction(s: string): Action {
-  switch (s) {
-    case "ban":
-      return Action.Ban;
-    case "kick":
-      return Action.Kick;
-    case "mute":
-      return Action.Mute;
-    case "unmute":
-      return Action.Mute;
-    case "warn":
-      return Action.Warn;
-    case "history":
-      return Action.History;
-    case "lookup":
-      return Action.Lookup;
-    default:
-      throw new Error(`Invalid action ${s}`);
-  }
-}
-
 interface ButtonAction {
-  action: Action;
+  action: ActionType;
   target: string;
 }
 
@@ -64,13 +26,13 @@ function parseCustomID(id: string): ButtonAction {
 
   // lookup:button:lookup:id
   return {
-    action: strToAction(arr[2]),
+    action: ActionType.fromString(arr[2]),
     target: arr[3],
   };
 }
 
 export default class ContextLookUpButtonHandler extends ButtonHandler {
-  customIDPrefix = lookupButtonCustomIDPrefix;
+  customIDMatch = customIds.lookupButton.match;
 
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
@@ -88,11 +50,13 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
     // the user already has the required permissions.
 
     switch (action) {
-      case Action.Ban:
-      case Action.Kick:
-      case Action.Mute:
-      case Action.Unmute:
-      case Action.Warn:
+      case ActionType.Ban:
+      case ActionType.BanRemove: // TODO: is this possible
+      case ActionType.Kick:
+      case ActionType.Timeout:
+      case ActionType.TimeoutRemove:
+      case ActionType.TimeoutAdjust:
+      case ActionType.Warn:
         await ctx.REST.interactionReply(interaction, {
           content: "Oops, this hasn't been implemented yet! Coming soon...",
           flags: MessageFlags.Ephemeral,
@@ -100,7 +64,7 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
 
         return;
 
-      case Action.History: {
+      case ActionType.History: {
         const cases = await ctx.sushiiAPI.sdk.getUserModLogHistory({
           guildId: interaction.guild_id,
           userId: target,
@@ -125,7 +89,7 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
 
         return;
       }
-      case Action.Lookup: {
+      case ActionType.Lookup: {
         const bans = await ctx.sushiiAPI.sdk.getUserBans({
           userId: target,
         });

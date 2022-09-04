@@ -14,13 +14,10 @@ import {
 import Context from "../../../model/context";
 import memberIsTimedOut from "../../../utils/member";
 import { hasPermission } from "../../../utils/permissions";
+import { lookupButtonCompile } from "../../customIds";
 import ContextMenuHandler from "../../handlers/ContextMenuHandler";
 import getUserinfoEmbed from "../../user/userinfo.service";
-import { lookupButtonCustomIDPrefix, Action } from "./LookupComponentHandler";
-
-function buttonCustomID(userId: string, action: Action): string {
-  return `${lookupButtonCustomIDPrefix}${action}:${userId}`;
-}
+import { ActionType } from "../ActionType";
 
 export default class UserInfoHandler extends ContextMenuHandler {
   serverOnly = true;
@@ -73,7 +70,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
     const isMuted = memberIsTimedOut(targetMember);
 
     const banButton = new ButtonBuilder()
-      .setCustomId(buttonCustomID(targetID, Action.Ban))
+      .setCustomId(lookupButtonCompile(ActionType.Ban, targetID))
       .setLabel("Ban")
       .setEmoji({
         name: "🔨",
@@ -81,7 +78,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
       .setStyle(ButtonStyle.Danger);
 
     const kickButton = new ButtonBuilder()
-      .setCustomId(buttonCustomID(targetID, Action.Kick))
+      .setCustomId(lookupButtonCompile(ActionType.Kick, targetID))
       .setLabel("Kick")
       .setEmoji({
         name: "👢",
@@ -91,14 +88,14 @@ export default class UserInfoHandler extends ContextMenuHandler {
     // Mute or unmute depending on timeout state
     const muteButton = isMuted
       ? new ButtonBuilder()
-          .setCustomId(buttonCustomID(targetID, Action.Unmute))
+          .setCustomId(lookupButtonCompile(ActionType.TimeoutRemove, targetID))
           .setLabel("Unmute")
           .setEmoji({
             name: "🔉",
           })
           .setStyle(ButtonStyle.Secondary)
       : new ButtonBuilder()
-          .setCustomId(buttonCustomID(targetID, Action.Mute))
+          .setCustomId(lookupButtonCompile(ActionType.Timeout, targetID))
           .setLabel("Mute")
           .setEmoji({
             name: "🔇",
@@ -106,7 +103,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
           .setStyle(ButtonStyle.Secondary);
 
     const warnButton = new ButtonBuilder()
-      .setCustomId(buttonCustomID(targetID, Action.Warn))
+      .setCustomId(lookupButtonCompile(ActionType.Warn, targetID))
       .setLabel("Warn")
       .setEmoji({
         name: "⚠",
@@ -121,12 +118,12 @@ export default class UserInfoHandler extends ContextMenuHandler {
     ]);
 
     const historyButton = new ButtonBuilder()
-      .setCustomId(buttonCustomID(targetID, Action.History))
+      .setCustomId(lookupButtonCompile(ActionType.History, targetID))
       .setLabel("History")
       .setStyle(ButtonStyle.Secondary);
 
     const lookupButton = new ButtonBuilder()
-      .setCustomId(buttonCustomID(targetID, Action.Lookup))
+      .setCustomId(lookupButtonCompile(ActionType.Lookup, targetID))
       .setLabel("Lookup")
       .setStyle(ButtonStyle.Secondary);
 

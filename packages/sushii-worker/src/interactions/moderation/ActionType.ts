@@ -1,15 +1,17 @@
 export enum ActionType {
-  Ban,
-  BanRemove,
-  Kick,
-  Timeout,
-  TimeoutRemove,
-  TimeoutAdjust,
-  Warn,
+  Ban = "ban",
+  BanRemove = "unban",
+  Kick = "kick",
+  Timeout = "timeout",
+  TimeoutRemove = "remove timeout",
+  TimeoutAdjust = "adjust timeout",
+  Warn = "warn",
+  History = "history",
+  Lookup = "lookup",
 }
 
 export namespace ActionType {
-  export function toString(action: ActionType): string {
+  export function toModLogString(action: ActionType): string {
     switch (action) {
       case ActionType.Ban:
         return "ban";
@@ -25,6 +27,31 @@ export namespace ActionType {
         return "timeout_adjust";
       case ActionType.Warn:
         return "warn";
+      default:
+        throw new Error("Action type not supported for mod log");
+    }
+  }
+
+  export function fromString(s: string): ActionType {
+    switch (s) {
+      case "ban":
+        return ActionType.Ban;
+      case "kick":
+        return ActionType.Kick;
+      case "warn":
+        return ActionType.Warn;
+      case "timeout":
+        return ActionType.Timeout;
+      case "timeout_remove":
+        return ActionType.TimeoutRemove;
+      case "timeout_adjust":
+        return ActionType.TimeoutAdjust;
+      case "history":
+        return ActionType.History;
+      case "lookup":
+        return ActionType.Lookup;
+      default:
+        throw new Error(`Invalid action ${s}`);
     }
   }
 
@@ -44,6 +71,10 @@ export namespace ActionType {
         return "changing timeout duration for";
       case ActionType.Warn:
         return "warning";
+      case ActionType.History:
+        return "getting history for";
+      case ActionType.Lookup:
+        return "looking up";
     }
   }
 
@@ -63,6 +94,10 @@ export namespace ActionType {
         return "changed timeout duration for"; // timeout duration changed for user
       case ActionType.Warn:
         return "warned";
+      case ActionType.History:
+        return "got history for";
+      case ActionType.Lookup:
+        return "looked up";
     }
   }
 
@@ -82,6 +117,10 @@ export namespace ActionType {
         return "⏲️";
       case ActionType.Warn:
         return "⚠️";
+      case ActionType.History:
+        return "📜";
+      case ActionType.Lookup:
+        return "🔍";
     }
   }
 }

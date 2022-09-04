@@ -195,6 +195,9 @@ async function execActionUser(
 
       // Nothing, only DM
       break;
+    case ActionType.Lookup:
+    case ActionType.History:
+      throw new Error(`unsupported action type ${actionType}`);
   }
 
   return Ok(target);
@@ -243,7 +246,7 @@ async function executeActionUser(
     modLog: {
       guildId: interaction.guild_id,
       caseId: nextCaseId,
-      action: ActionType.toString(actionType),
+      action: ActionType.toModLogString(actionType),
       pending: true,
       userId: target.user.id,
       userTag: target.user.discriminator,
