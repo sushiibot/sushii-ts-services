@@ -1,8 +1,4 @@
-import {
-  customIds,
-  roleMenuButtonCompile,
-  roleMenuSelectCompile,
-} from "./customIds";
+import customIds from "./customIds";
 
 describe("customIds", () => {
   describe("roleMenuButton", () => {
@@ -39,9 +35,11 @@ describe("customIds", () => {
       test(`menu button compile matches ${customID}`, () => {
         if (wantMatch && typeof wantMatch !== "boolean") {
           // Compiling matches the same custom id
-          expect(roleMenuButtonCompile(wantMatch.params.roleId)).toEqual(
-            customID
-          );
+          expect(
+            customIds.roleMenuButton.compile({
+              roleId: wantMatch.params.roleId,
+            })
+          ).toEqual(customID);
         }
       });
     });
@@ -64,7 +62,7 @@ describe("customIds", () => {
 
       test(`menu select compile matches ${customID}`, () => {
         // Compiling matches the same custom id
-        expect(roleMenuSelectCompile()).toEqual(customID);
+        expect(customIds.roleMenuSelect.compile()).toEqual(customID);
       });
     });
   });

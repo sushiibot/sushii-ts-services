@@ -7,7 +7,7 @@ import {
 } from "discord-api-types/v10";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import { customIds } from "../customIds";
+import customIds from "../customIds";
 import { SelectMenuHandler } from "../handlers";
 import { getRoleMenuMessageSelectRoles, getRoleMenuRequiredRole } from "./ids";
 
