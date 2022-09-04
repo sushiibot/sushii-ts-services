@@ -17,7 +17,6 @@ import {
   attachmentOption,
   dmMessageOption,
   reasonOption,
-  sendDMOption,
   usersOption,
 } from "./options";
 
@@ -34,7 +33,6 @@ export default class WarnCommand extends SlashCommandHandler {
     .addStringOption(usersOption(ActionType.Warn))
     .addStringOption(reasonOption(ActionType.Warn))
     .addAttachmentOption(attachmentOption)
-    .addBooleanOption(sendDMOption)
     .addStringOption(dmMessageOption)
     .toJSON();
 

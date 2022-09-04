@@ -82,6 +82,11 @@ export default class ModActionData {
       return false;
     }
 
+    // Warn always DMs
+    if (actionType === ActionType.Warn) {
+      return true;
+    }
+
     // If not provided, default to no dm.
     return this.DMReason || false;
   }
