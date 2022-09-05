@@ -787,6 +787,21 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No role provided.");
     }
 
+    const menuData = roleMenu.safeUnwrap();
+
+    const menuContainsRole =
+      menuData.roleMenuRolesByGuildIdAndMenuName.nodes.find(
+        (r) => r.roleId === role.id
+      );
+
+    if (!menuContainsRole) {
+      await ctx.REST.interactionReply(interaction, {
+        content: t("rolemenu.roleoptions.error.role_not_in_menu"),
+      });
+
+      return;
+    }
+
     const emojiStr = options.getString(RoleMenuOption.Emoji);
     const description = options.getString(RoleMenuOption.Description);
 

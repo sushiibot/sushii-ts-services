@@ -99,7 +99,8 @@
       "error": {
         "no_option_provided": "Please provide a role option, emoji and/or description.",
         "invalid_emoji": "The emoji is invalid! You can use a custom emoji or unicode one.",
-        "description_too_long": "The description is too long! It must be less than 100 characters."
+        "description_too_long": "The description is too long! It must be less than 100 characters.",
+        "role_not_in_menu": "The role provided is not in the role menu!"
       }
     },
     "send": {
