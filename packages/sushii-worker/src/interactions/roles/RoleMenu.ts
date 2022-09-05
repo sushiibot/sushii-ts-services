@@ -496,7 +496,13 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
+    const menuData = roleMenu.safeUnwrap();
+
     const newName = options.getString(RoleMenuOption.NewName);
+    if (!newName) {
+      throw new Error("No new name provided.");
+    }
+
     if (newName) {
       const newMenuNameExists = await this.getMenu(ctx, interaction, newName);
 
@@ -519,18 +525,44 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       menuName,
       roleMenuPatch: {
         guildId: interaction.guild_id,
-        menuName,
+        menuName: newName,
         requiredRole: requiredRole?.id,
         description,
         maxCount,
       },
     });
 
+    const requiredRoleId = requiredRole?.id || menuData.requiredRole;
+
     await ctx.REST.interactionReply(interaction, {
       embeds: [
         new EmbedBuilder()
           .setTitle("Edited role menu")
           .setColor(Color.Success)
+          .setFields([
+            {
+              name: "Name",
+              value: newName,
+            },
+            {
+              name: "Description",
+              value:
+                description || menuData.description || "No description set.",
+            },
+            {
+              name: "Max Roles",
+              value:
+                maxCount?.toString() ||
+                menuData.maxCount?.toString() ||
+                "No limit on max roles.",
+            },
+            {
+              name: "Required Role",
+              value: requiredRoleId
+                ? `<&@${menuData.requiredRole}>`
+                : "No required role.",
+            },
+          ])
           .toJSON(),
       ],
     });
