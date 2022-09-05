@@ -24,7 +24,8 @@ function buildResponseEmbed(
   ctx: Context,
   data: ModActionData,
   action: ActionType,
-  content: string
+  content: string,
+  triedDMNonMember: boolean
 ): EmbedBuilder {
   const fields = [];
 
@@ -55,25 +56,33 @@ function buildResponseEmbed(
     });
   }
 
-  let userDMValue = "📭 Members were **not** sent a DM.";
+  // Unban never has dm, no need for field
+  if (action !== ActionType.BanRemove) {
+    let userDMValue = "📭 Members were **not** sent a DM.";
 
-  const dmMessage = data.getDmMessage();
-  if (data.getSendDM(action)) {
-    userDMValue = "📬 Members were sent a DM with the provided __message__.";
+    const dmMessage = data.getDmMessage();
+    if (data.getSendDM(action)) {
+      userDMValue = "📬 Members were sent a DM with the provided __message__.";
 
-    if (data.dmMessageType() === "message" && dmMessage) {
-      userDMValue += `\n┗ **Message:** ${dmMessage}`;
+      if (data.dmMessageType() === "message" && dmMessage) {
+        userDMValue += `\n┗ **Message:** ${dmMessage}`;
+      }
+
+      if (data.dmMessageType() === "reason") {
+        userDMValue = "📬 Members were sent a DM with the provided __reason__.";
+      }
     }
 
-    if (data.dmMessageType() === "reason") {
-      userDMValue = "📬 Members were sent a DM with the provided __reason__.";
+    if (triedDMNonMember) {
+      userDMValue +=
+        "\n\n**Note:** Some messages were not sent because the user is not in the server.";
     }
+
+    fields.push({
+      name: "User DM",
+      value: userDMValue,
+    });
   }
-
-  fields.push({
-    name: "User DM",
-    value: userDMValue,
-  });
 
   return new EmbedBuilder()
     .setTitle(`${ActionType.toPastTense(action)} ${data.targets.size} users`)
@@ -219,6 +228,7 @@ async function execActionUser(
 interface ExecuteActionUserResult {
   user: APIUser;
   dmSent: boolean;
+  triedDMNonMember: boolean;
 }
 
 async function executeActionUser(
@@ -274,6 +284,8 @@ async function executeActionUser(
 
   // Only DM if should DM AND if target is in the server.
   const shouldDM = data.getSendDM(actionType) && target.member !== null;
+
+  const triedDMNonMember = data.getSendDM(actionType) && target.member === null;
 
   let dmRes: Result<APIMessage, string> | null = null;
   // DM before for ban and send dm
@@ -335,6 +347,7 @@ async function executeActionUser(
   return Ok({
     user: target.user,
     dmSent: shouldDM,
+    triedDMNonMember,
   });
 }
 
@@ -353,6 +366,9 @@ export default async function executeAction(
   }
 
   let msg = "";
+
+  // If executor wants to DM, but target is not a member
+  let triedDMNonMember = false;
 
   for (const [, target] of data.targets) {
     // Should be synchronous so we don't reuse the same case ID
@@ -379,10 +395,13 @@ export default async function executeAction(
       msg += `<@${res.val.user.id}> (\`${
         res.val.user.id
       }\`) ${ActionType.toPastTense(actionType)}`;
+
+      // Makes triedDMNonMember true if any returned value is true
+      triedDMNonMember = triedDMNonMember || res.val.triedDMNonMember;
     }
 
     msg += "\n";
   }
 
-  return Ok(buildResponseEmbed(ctx, data, actionType, msg));
+  return Ok(buildResponseEmbed(ctx, data, actionType, msg, triedDMNonMember));
 }

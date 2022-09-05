@@ -102,12 +102,13 @@ export default class ModActionData {
   }
 
   dmMessageType(): "reason" | "message" | undefined {
-    if (this.DMReason) {
-      return "reason";
-    }
-
+    // DM message has priority even if dm_reason is true
     if (this.dmMessage) {
       return "message";
+    }
+
+    if (this.DMReason) {
+      return "reason";
     }
   }
 
