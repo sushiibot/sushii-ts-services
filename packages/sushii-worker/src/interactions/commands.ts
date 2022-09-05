@@ -23,6 +23,7 @@ import RoleMenuAutocomplete from "./roles/RoleMenuAutocomplete";
 import RoleMenuButtonHandler from "./roles/RoleMenuButtonHandler";
 import RoleMenuSelectMenuHandler from "./roles/RoleMenuSelectMenuHandler";
 import UnbanCommand from "./moderation/UnbanCommand";
+import PruneCommand from "./moderation/PruneCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -44,6 +45,7 @@ export default function addCommands(
     new TimeoutCommand(),
     new WarnCommand(),
     new HistoryCommand(),
+    new PruneCommand(),
 
     new NotificationCommand(),
     new ReminderCommand(),

@@ -22,6 +22,9 @@ import {
   RESTPostAPIInteractionFollowupResult,
   RESTPutAPIGuildMemberRoleResult,
   RESTDeleteAPIGuildMemberRoleResult,
+  RESTGetAPIChannelMessagesResult,
+  RESTGetAPIChannelMessagesQuery,
+  RESTPostAPIChannelMessagesBulkDeleteResult,
 } from "discord-api-types/v10";
 import { Ok, Err, Result } from "ts-results";
 import { ConfigI } from "./config";
@@ -119,6 +122,42 @@ export default class RESTClient {
     return this.handleError(
       this.rest.post(Routes.channelMessages(channelID), {
         body: data,
+      })
+    );
+  }
+
+  public getChannelMessages(
+    channelID: string,
+    options?: RESTGetAPIChannelMessagesQuery
+  ): APIPromiseResult<RESTGetAPIChannelMessagesResult> {
+    // Remove undefined values
+    const cleanedOptions: Record<string, string> = {};
+    for (const [key, value] of Object.entries(options ?? {})) {
+      if (typeof value === "number") {
+        cleanedOptions[key] = value.toString();
+      }
+
+      if (value !== undefined) {
+        cleanedOptions[key] = value;
+      }
+    }
+
+    return this.handleError(
+      this.rest.get(Routes.channelMessages(channelID), {
+        query: new URLSearchParams(cleanedOptions),
+      })
+    );
+  }
+
+  public bulkDeleteChannelMessages(
+    channelID: string,
+    messageIDs: string[]
+  ): APIPromiseResult<RESTPostAPIChannelMessagesBulkDeleteResult> {
+    return this.handleError(
+      this.rest.post(Routes.channelBulkDelete(channelID), {
+        body: {
+          messages: messageIDs,
+        },
       })
     );
   }
