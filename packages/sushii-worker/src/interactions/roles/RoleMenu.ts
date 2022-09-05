@@ -937,10 +937,21 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       });
     }
 
+    let footerText = "";
+    if (type === RoleMenuType.SelectMenu) {
+      footerText = "Remove all selections to clear your roles";
+    } else if (type === RoleMenuType.Buttons) {
+      footerText = "Click buttons again to remove roles";
+    }
+
     const embed = new EmbedBuilder()
       .setTitle(name)
       .setDescription(roleMenuData.description || null)
-      .setFields(fields);
+      .setFields(fields)
+      .setColor(Color.Info)
+      .setFooter({
+        text: footerText,
+      });
 
     // --------------------------------------------------------------
     // Build buttons
@@ -1041,22 +1052,12 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
-    let footerText = "";
-    if (type === RoleMenuType.SelectMenu) {
-      footerText = "Remove all selections to clear your roles";
-    } else if (type === RoleMenuType.Buttons) {
-      footerText = "Click buttons again to remove roles";
-    }
-
     await ctx.REST.interactionReply(interaction, {
       embeds: [
         new EmbedBuilder()
           .setTitle("Sent role menu")
           .setDescription(`<#${sendChannelId}>`)
           .setColor(Color.Success)
-          .setFooter({
-            text: footerText,
-          })
           .toJSON(),
       ],
     });
