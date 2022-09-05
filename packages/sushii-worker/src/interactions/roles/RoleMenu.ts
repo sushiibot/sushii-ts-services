@@ -490,7 +490,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     if (roleMenu.none) {
       await ctx.REST.interactionReply(interaction, {
-        content: t("rolemenu.edit.menu_not_found"),
+        content: t("rolemenu.edit.error.menu_not_found", { name: menuName }),
       });
 
       return;
@@ -498,11 +498,11 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     const newName = options.getString(RoleMenuOption.NewName);
     if (newName) {
-      const newMenuNameExists = await this.getMenu(ctx, interaction, menuName);
+      const newMenuNameExists = await this.getMenu(ctx, interaction, newName);
 
       if (newMenuNameExists.some) {
         await ctx.REST.interactionReply(interaction, {
-          content: t("rolemenu.edit.menu_name_exists"),
+          content: t("rolemenu.edit.error.menu_name_exists", { name: newName }),
         });
 
         return;
@@ -549,7 +549,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const roleMenu = await this.getMenu(ctx, interaction, menuName);
     if (roleMenu.none) {
       await ctx.REST.interactionReply(interaction, {
-        content: t("rolemenu.edit.menu_not_found"),
+        content: t("rolemenu.edit.error.menu_not_found"),
       });
 
       return;
@@ -564,7 +564,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const roleIds = [...roles.matchAll(RE_ROLE)].map((match) => match[1]);
     if (!roleIds) {
       await ctx.REST.interactionReply(interaction, {
-        content: t("rolemenu.edit.no_roles_given"),
+        content: t("rolemenu.addroles.error.no_roles_given"),
       });
 
       return;
@@ -608,7 +608,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         if (role && highestRole && role.position > highestRole.position) {
           // eslint-disable-next-line no-await-in-loop
           await ctx.REST.interactionReply(interaction, {
-            content: t("rolemenu.edit.higher_role_given"),
+            content: t("rolemenu.addroles.error.higher_role_given"),
           });
 
           return;
@@ -628,7 +628,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     if (newRoleIds.length > 25) {
       await ctx.REST.interactionReply(interaction, {
-        content: t("rolemenu.edit.too_many_roles"),
+        content: t("rolemenu.addroles.error.too_many_roles"),
       });
 
       return;
@@ -674,7 +674,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const roleMenu = await this.getMenu(ctx, interaction, menuName);
     if (roleMenu.none) {
       await ctx.REST.interactionReply(interaction, {
-        content: t("rolemenu.edit.menu_not_found"),
+        content: t("rolemenu.edit.error.menu_not_found"),
       });
 
       return;
@@ -690,7 +690,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     );
     if (!roleIdsToRemove) {
       await ctx.REST.interactionReply(interaction, {
-        content: t("rolemenu.edit.no_roles_given"),
+        content: t("rolemenu.removeroles.error.no_roles_given"),
       });
 
       return;

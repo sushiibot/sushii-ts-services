@@ -77,6 +77,24 @@
         "not_found": "The role menu `{{name}}` was not found!"
       }
     },
+    "edit": {
+      "error": {
+        "menu_not_found": "The role menu `{{name}}` was not found!",
+        "menu_name_exists": "A role menu `{{name}}` already exists! Please pick a different name."
+      }
+    },
+    "addroles": {
+      "error": {
+        "no_roles_given": "Please provide at least one role to add.",
+        "higher_role_given": "You cannot add a role higher than your highest role.",
+        "too_many_roles": "You can only add up to 25 roles."
+      }
+    },
+    "removeroles": {
+      "error": {
+        "no_roles_given": "Please provide at least one role to remove."
+      }
+    },
     "roleoptions": {
       "error": {
         "no_option_provided": "Please provide a role option, emoji and/or description.",
