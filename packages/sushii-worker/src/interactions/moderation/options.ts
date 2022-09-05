@@ -26,7 +26,7 @@ export const usersOption = (action: ActionType): SlashCommandStringOption =>
 
 export const sendDMOption = new SlashCommandBooleanOption()
   .setName(ModerationOption.DMReason)
-  .setDescription("DM the reason to the user.")
+  .setDescription("Set to True if you want to DM the reason to the user.")
   .setRequired(false);
 
 export const reasonOption = (action: ActionType): SlashCommandStringOption =>

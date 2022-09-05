@@ -46,7 +46,7 @@ export default class ModActionData {
 
   private DMReason?: boolean;
 
-  private dmMessage?: string;
+  public dmMessage?: string;
 
   constructor(interaction: APIChatInputApplicationCommandGuildInteraction) {
     this.options = new CommandInteractionOptionResolver(
@@ -76,7 +76,7 @@ export default class ModActionData {
     this.dmMessage = this.options.getString(ModerationOption.DMMessage);
   }
 
-  getSendDM(actionType: ActionType): boolean {
+  shouldDMReason(actionType: ActionType): boolean {
     // Unban never sends DM
     if (actionType === ActionType.BanRemove) {
       return false;
@@ -85,6 +85,11 @@ export default class ModActionData {
     // Warn always DMs
     if (actionType === ActionType.Warn) {
       return true;
+    }
+
+    // Don't DM if no reason provided
+    if (!this.reason) {
+      return false;
     }
 
     // If not provided, default to no dm.

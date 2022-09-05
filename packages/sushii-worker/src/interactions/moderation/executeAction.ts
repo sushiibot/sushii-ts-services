@@ -60,22 +60,27 @@ function buildResponseEmbed(
   if (action !== ActionType.BanRemove) {
     let userDMValue = "📭 Members were **not** sent a DM.";
 
-    const dmMessage = data.getDmMessage();
-    if (data.getSendDM(action)) {
-      userDMValue = "📬 Members were sent a DM with the provided __message__.";
+    if (data.shouldDMReason(action) || data.dmMessage) {
+      userDMValue = "📬 Members were sent a DM with the following.";
 
-      if (data.dmMessageType() === "message" && dmMessage) {
-        userDMValue += `\n┗ **Message:** ${dmMessage}`;
+      // Has both reason + message
+      if (data.shouldDMReason(action) && data.dmMessage) {
+        userDMValue += `\n ┣ **Reason:** ${data.reason}`;
       }
 
-      if (data.dmMessageType() === "reason") {
-        userDMValue = "📬 Members were sent a DM with the provided __reason__.";
+      // Has reason + NO message
+      if (data.shouldDMReason(action) && !data.dmMessage) {
+        userDMValue += `\n ┗ **Reason:** ${data.reason}`;
+      }
+
+      if (data.dmMessage) {
+        userDMValue += `\n┗ **Message:** ${data.dmMessage}`;
       }
     }
 
     if (triedDMNonMember) {
       userDMValue +=
-        "\n\n**Note:** Some messages were not sent because the user is not in the server.";
+        "\n\n**Note:** Some messages were not sent to users not in this server.";
     }
 
     fields.push({
@@ -283,9 +288,10 @@ async function executeActionUser(
   });
 
   // Only DM if should DM AND if target is in the server.
-  const shouldDM = data.getSendDM(actionType) && target.member !== null;
+  const shouldDM = data.shouldDMReason(actionType) && target.member !== null;
 
-  const triedDMNonMember = data.getSendDM(actionType) && target.member === null;
+  const triedDMNonMember =
+    data.shouldDMReason(actionType) && target.member === null;
 
   let dmRes: Result<APIMessage, string> | null = null;
   // DM before for ban and send dm
