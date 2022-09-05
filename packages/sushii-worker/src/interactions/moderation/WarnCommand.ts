@@ -13,12 +13,7 @@ import {
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
-import {
-  attachmentOption,
-  dmMessageOption,
-  reasonOption,
-  usersOption,
-} from "./options";
+import { dmMessageOption, reasonOption, usersOption } from "./options";
 
 export default class WarnCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -32,7 +27,7 @@ export default class WarnCommand extends SlashCommandHandler {
     .setDMPermission(false)
     .addStringOption(usersOption(ActionType.Warn))
     .addStringOption(reasonOption(ActionType.Warn))
-    .addAttachmentOption(attachmentOption)
+    // .addAttachmentOption(attachmentOption)
     .addStringOption(dmMessageOption)
     .toJSON();
 

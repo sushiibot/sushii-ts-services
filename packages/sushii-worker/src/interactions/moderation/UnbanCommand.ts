@@ -13,7 +13,7 @@ import {
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
-import { attachmentOption, reasonOption, usersOption } from "./options";
+import { reasonOption, usersOption } from "./options";
 
 export default class UnbanCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -27,7 +27,7 @@ export default class UnbanCommand extends SlashCommandHandler {
     .setDMPermission(false)
     .addStringOption(usersOption(ActionType.BanRemove))
     .addStringOption(reasonOption(ActionType.BanRemove))
-    .addAttachmentOption(attachmentOption)
+    // .addAttachmentOption(attachmentOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

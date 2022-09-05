@@ -14,7 +14,6 @@ import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
 import {
-  attachmentOption,
   dmMessageOption,
   reasonOption,
   sendDMOption,
@@ -33,7 +32,7 @@ export default class KickCommand extends SlashCommandHandler {
     .setDMPermission(false)
     .addStringOption(usersOption(ActionType.Kick))
     .addStringOption(reasonOption(ActionType.Kick))
-    .addAttachmentOption(attachmentOption)
+    // .addAttachmentOption(attachmentOption)
     .addBooleanOption(sendDMOption)
     .addStringOption(dmMessageOption)
     .toJSON();

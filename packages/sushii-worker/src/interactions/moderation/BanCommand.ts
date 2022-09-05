@@ -14,7 +14,6 @@ import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
 import {
-  attachmentOption,
   daysToDeleteOption,
   dmMessageOption,
   reasonOption,
@@ -35,7 +34,7 @@ export default class BanCommand extends SlashCommandHandler {
     .addStringOption(usersOption(ActionType.Ban))
     .addIntegerOption(daysToDeleteOption)
     .addStringOption(reasonOption(ActionType.Ban))
-    .addAttachmentOption(attachmentOption)
+    // .addAttachmentOption(attachmentOption)
     .addBooleanOption(sendDMOption)
     .addStringOption(dmMessageOption)
     .toJSON();

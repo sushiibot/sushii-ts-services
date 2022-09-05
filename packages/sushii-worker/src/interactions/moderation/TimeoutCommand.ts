@@ -14,7 +14,6 @@ import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
 import {
-  attachmentOption,
   dmMessageOption,
   reasonOption,
   sendDMOption,
@@ -39,7 +38,7 @@ export default class TimeoutCommand extends SlashCommandHandler {
         .setRequired(true)
     )
     .addStringOption(reasonOption(ActionType.Timeout))
-    .addAttachmentOption(attachmentOption)
+    // .addAttachmentOption(attachmentOption)
     .addBooleanOption(sendDMOption)
     .addStringOption(dmMessageOption)
     .toJSON();
