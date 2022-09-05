@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "@discordjs/builders";
-import { APIInteraction } from "discord-api-types/v10";
+import { APIInteraction, MessageFlags } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../model/context";
 import { APIPromiseResult } from "../../model/rest";
@@ -9,7 +9,8 @@ export function interactionReplyError(
   ctx: Context,
   interaction: APIInteraction,
   title: string,
-  description: string
+  description: string,
+  ephemeral: boolean = false
 ): APIPromiseResult<void> {
   return ctx.REST.interactionReply(interaction, {
     embeds: [
@@ -19,6 +20,7 @@ export function interactionReplyError(
         .setColor(Color.Error)
         .toJSON(),
     ],
+    flags: ephemeral ? MessageFlags.Ephemeral : undefined,
   });
 }
 
@@ -51,13 +53,15 @@ export function interactionReplyErrorUnauthorized(
 export function interactionReplyErrorMessage(
   ctx: Context,
   interaction: APIInteraction,
-  message: string
+  message: string,
+  ephemeral: boolean = false
 ): APIPromiseResult<void> {
   return interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
-    t("generic.error.message", { ns: "commands", message })
+    t("generic.error.message", { ns: "commands", message }),
+    ephemeral
   );
 }
 

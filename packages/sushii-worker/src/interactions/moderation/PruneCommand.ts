@@ -91,6 +91,7 @@ export default class PruneCommand extends SlashCommandHandler {
       o
         .setName(PruneOption.MaxDeleteCount)
         .setDescription("Max messages to delete. (2-100)")
+        .setMinValue(2)
         .setMaxValue(100)
         .setRequired(false)
     )
@@ -167,7 +168,8 @@ export default class PruneCommand extends SlashCommandHandler {
         await interactionReplyErrorMessage(
           ctx,
           interaction,
-          "After message ID must be older than before message ID."
+          "After message ID must be older than before message ID.",
+          true
         );
 
         return;
@@ -196,7 +198,8 @@ export default class PruneCommand extends SlashCommandHandler {
       await interactionReplyErrorMessage(
         ctx,
         interaction,
-        `Failed to fetch messages: ${msgs.val.message}`
+        `Failed to fetch messages: ${msgs.val.message}`,
+        true
       );
 
       return;
@@ -274,7 +277,8 @@ export default class PruneCommand extends SlashCommandHandler {
       await interactionReplyErrorMessage(
         ctx,
         interaction,
-        `Failed to delete messages: ${res.val.message}`
+        `Failed to delete messages: ${res.val.message}`,
+        true
       );
 
       return;
