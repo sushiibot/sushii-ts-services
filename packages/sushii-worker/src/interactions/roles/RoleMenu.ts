@@ -499,10 +499,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const menuData = roleMenu.safeUnwrap();
 
     const newName = options.getString(RoleMenuOption.NewName);
-    if (!newName) {
-      throw new Error("No new name provided.");
-    }
-
     if (newName) {
       const newMenuNameExists = await this.getMenu(ctx, interaction, newName);
 
@@ -542,7 +538,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
           .setFields([
             {
               name: "Name",
-              value: newName,
+              value: newName || menuName,
             },
             {
               name: "Description",
