@@ -25,6 +25,8 @@ import {
   RESTGetAPIChannelMessagesResult,
   RESTGetAPIChannelMessagesQuery,
   RESTPostAPIChannelMessagesBulkDeleteResult,
+  RESTPatchAPIChannelJSONBody,
+  RESTPatchAPIChannelResult,
 } from "discord-api-types/v10";
 import { Ok, Err, Result } from "ts-results";
 import { ConfigI } from "./config";
@@ -179,6 +181,17 @@ export default class RESTClient {
     return this.handleError(
       this.rest.patch(Routes.channelMessage(channelID, messageID), {
         body: msg,
+      })
+    );
+  }
+
+  public modifyChannel(
+    channelID: string,
+    patch: RESTPatchAPIChannelJSONBody
+  ): APIPromiseResult<RESTPatchAPIChannelResult> {
+    return this.handleError(
+      this.rest.patch(Routes.channel(channelID), {
+        body: patch,
       })
     );
   }
