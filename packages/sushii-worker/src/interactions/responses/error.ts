@@ -65,6 +65,21 @@ export function interactionReplyErrorMessage(
   );
 }
 
+export function interactionReplyErrorPlainMessage(
+  ctx: Context,
+  interaction: APIInteraction,
+  message: string,
+  ephemeral: boolean = false
+): APIPromiseResult<void> {
+  return interactionReplyError(
+    ctx,
+    interaction,
+    t("generic.error.error", { ns: "commands" }),
+    message,
+    ephemeral
+  );
+}
+
 export function interactionReplyErrorInternal(
   ctx: Context,
   interaction: APIInteraction

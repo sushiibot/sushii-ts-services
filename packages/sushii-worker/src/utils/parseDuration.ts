@@ -15,7 +15,5 @@ export default function parseDuration(s: string): Duration | null {
     return null;
   }
 
-  return dayjs.duration({
-    seconds,
-  });
+  return dayjs.duration(seconds, "seconds");
 }

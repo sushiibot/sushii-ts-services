@@ -4,12 +4,18 @@ import {
   MessageFlags,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
+import dayjs from "dayjs";
 import CommandInteractionOptionResolver from "../resolver";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
-import { interactionReplyErrorMessage } from "../responses/error";
+import {
+  interactionReplyErrorMessage,
+  interactionReplyErrorPlainMessage,
+} from "../responses/error";
 import Color from "../../utils/colors";
 import parseDuration from "../../utils/parseDuration";
+
+const RE_ONLY_NUMBERS = /^\d+$/;
 
 enum SlowmodeOption {
   Duration = "duration",
@@ -30,7 +36,7 @@ export default class SlowmodeCommand extends SlashCommandHandler {
       o
         .setName(SlowmodeOption.Duration)
         .setDescription(
-          "Duration to set slowmode to, e.g. 5s or 1m. Set to 0 to disable."
+          "Duration to set slowmode to (Example: 5s or 1m). Set to 0 to disable."
         )
         .setRequired(true)
     )
@@ -61,14 +67,34 @@ export default class SlowmodeCommand extends SlashCommandHandler {
 
     const channel = options.getChannel(SlowmodeOption.Channel);
 
-    const disableSlowmode = durationStr === "0";
+    const isUnitless = RE_ONLY_NUMBERS.test(durationStr.trim());
 
-    const duration = parseDuration(durationStr);
-    if (!duration && !disableSlowmode) {
-      await interactionReplyErrorMessage(
+    let duration = null;
+    if (isUnitless) {
+      duration = dayjs.duration({
+        seconds: parseInt(durationStr, 10),
+      });
+    } else {
+      duration = parseDuration(durationStr);
+    }
+
+    if (!duration) {
+      await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
-        "Invalid duration, please use a valid duration like 5s or 1m."
+        "Invalid duration, please use a valid duration like 5s or 1m.",
+        true
+      );
+
+      return;
+    }
+
+    if (duration.asSeconds() > 21600) {
+      await interactionReplyErrorPlainMessage(
+        ctx,
+        interaction,
+        "Slowmode must be less than 6 hours.",
+        true
       );
 
       return;
@@ -86,10 +112,29 @@ export default class SlowmodeCommand extends SlashCommandHandler {
       await interactionReplyErrorMessage(
         ctx,
         interaction,
-        `Failed to update slowmode: ${res.val.message}`
+        `Failed to update slowmode: ${res.val.message}`,
+        true
       );
 
       return;
+    }
+
+    let formattedDuration = "";
+
+    const seconds = duration.seconds();
+    const minutes = duration.minutes();
+    const hours = duration.hours();
+
+    if (hours) {
+      formattedDuration += `${hours} hour${hours > 1 ? "s" : ""} `;
+    }
+
+    if (minutes) {
+      formattedDuration += `${minutes} minute${minutes > 1 ? "s" : ""} `;
+    }
+
+    if (seconds) {
+      formattedDuration += `${seconds} second${seconds > 1 ? "s" : ""} `;
     }
 
     await ctx.REST.interactionReply(interaction, {
@@ -102,8 +147,8 @@ export default class SlowmodeCommand extends SlashCommandHandler {
               value: `<#${res.val.id}>`,
             },
             {
-              name: "Slowmode",
-              value: duration ? duration.humanize() : "Disabled",
+              name: "Duration",
+              value: formattedDuration || "Disabled",
             }
           )
           .setColor(Color.Success)
