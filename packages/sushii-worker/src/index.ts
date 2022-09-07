@@ -38,12 +38,9 @@ async function main(): Promise<void> {
   // Register commands to Discord API
   await interactionClient.register();
 
-  log.info("connecting to rabbitmq for gateway events");
   await rabbitGatewayClient.connect((msg) =>
     interactionClient.handleAMQPMessage(msg)
   );
-
-  log.info("connected to rabbitmq, processing events");
 
   // ---------------------------------------------------------------------------
   // Metrics and healthcheck

@@ -780,10 +780,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cloudamqp/amqp-client@npm:^2.0.2":
-  version: 2.0.3
-  resolution: "@cloudamqp/amqp-client@npm:2.0.3"
-  checksum: 8f25a795ebdc5a378013f2826f0145c5cf0cc63cc00396a8dc6308f2c60628e0d259a059f4128b8fc7232cd7522d4a5c458748feba137fec7bbb90c35641ed37
+"@cloudamqp/amqp-client@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@cloudamqp/amqp-client@npm:2.1.0"
+  checksum: 1eff4f29b22fdb0636ade7adea42ddc14f4775decfbba7532015b047f88602a8a1b0750ba4ab0b27814266dccceb2ae513c5fd9d41b1993feb99d957dae9396a
   languageName: node
   linkType: hard
 
@@ -2047,7 +2047,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.17.10
     "@babel/preset-typescript": ^7.16.7
-    "@cloudamqp/amqp-client": ^2.0.2
+    "@cloudamqp/amqp-client": ^2.1.0
     "@discordjs/builders": ^1.2.0
     "@discordjs/collection": ^0.5.0
     "@discordjs/rest": ^0.3.0
