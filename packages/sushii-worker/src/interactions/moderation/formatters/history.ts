@@ -51,7 +51,7 @@ export default function buildUserHistoryEmbed(
     // Timestamp
     let s =
       `${ActionType.toEmoji(action)} ` +
-      `\`#${c.caseId}\`` +
+      `\`#${c.caseId}\` - ` +
       `**${c.action}** ` +
       `<t:${dayjs.utc(c.actionTime).unix()}:R> `;
 
