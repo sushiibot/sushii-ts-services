@@ -41,8 +41,10 @@ export namespace ActionType {
       case "warn":
         return ActionType.Warn;
       case "timeout":
+      case "mute": // Legacy name
         return ActionType.Timeout;
       case "timeout_remove":
+      case "unmute": // Legacy name
         return ActionType.TimeoutRemove;
       case "timeout_adjust":
         return ActionType.TimeoutAdjust;

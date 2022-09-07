@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { t } from "i18next";
 import { GetUserModLogHistoryQuery } from "../../../generated/graphql";
 import Color from "../../../utils/colors";
+import { ActionType } from "../ActionType";
 
 export default function buildUserHistoryEmbed(
   query: GetUserModLogHistoryQuery,
@@ -42,9 +43,18 @@ export default function buildUserHistoryEmbed(
 
   // Build case history
   const casesStr = query.allModLogs.nodes.map((c) => {
-    let s = `\`#${c.caseId}\` **${c.action}** <t:${dayjs
-      .utc(c.actionTime)
-      .unix()}:R>`;
+    const action = ActionType.fromString(c.action);
+
+    // Emoji
+    // Case ID
+    // Action string
+    // Timestamp
+    let s =
+      `${ActionType.toEmoji(action)} ` +
+      `\`#${c.caseId}\`` +
+      `**${c.action}** ` +
+      `<t:${dayjs.utc(c.actionTime).unix()}:R> `;
+
     if (c.reason && c.executorId) {
       s += `\n┣ **By:** <@${c.executorId}>`;
     }
