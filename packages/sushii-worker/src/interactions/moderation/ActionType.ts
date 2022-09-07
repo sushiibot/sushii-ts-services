@@ -36,6 +36,8 @@ export namespace ActionType {
     switch (s) {
       case "ban":
         return ActionType.Ban;
+      case "unban":
+        return ActionType.BanRemove;
       case "kick":
         return ActionType.Kick;
       case "warn":
