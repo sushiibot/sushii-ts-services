@@ -281,7 +281,7 @@ async function executeActionUser(
       executorId: data.invoker.id,
       actionTime: dayjs().utc().toISOString(),
       reason: data.reason,
-      attachments: [data.attachment?.url || null],
+      attachments: data.attachment?.url ? [data.attachment.url] : [],
       // This is set in the mod logger
       msgId: undefined,
     },

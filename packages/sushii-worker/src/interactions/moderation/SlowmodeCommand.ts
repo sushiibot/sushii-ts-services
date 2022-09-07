@@ -44,7 +44,7 @@ export default class SlowmodeCommand extends SlashCommandHandler {
       o
         .setName(SlowmodeOption.Channel)
         .setDescription(
-          "Channel to set slowmode for. Defaults to current channel."
+          "Channel to set slowmode for. Defaults to the current channel."
         )
         .setRequired(false)
     )
