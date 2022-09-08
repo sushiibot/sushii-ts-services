@@ -38,7 +38,8 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
 
     switch (actionType) {
       case ActionType.Ban:
-      case ActionType.BanRemove: // TODO: is this possible
+      case ActionType.BanRemove:
+      case ActionType.Note:
       case ActionType.Kick:
       case ActionType.Timeout:
       case ActionType.TimeoutRemove:

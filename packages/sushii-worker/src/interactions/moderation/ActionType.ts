@@ -6,6 +6,7 @@ export enum ActionType {
   TimeoutRemove = "remove timeout",
   TimeoutAdjust = "adjust timeout",
   Warn = "warn",
+  Note = "note",
   History = "history",
   Lookup = "lookup",
 }
@@ -27,6 +28,8 @@ export namespace ActionType {
         return "timeout_adjust";
       case ActionType.Warn:
         return "warn";
+      case ActionType.Note:
+        return "note";
       default:
         throw new Error("Action type not supported for mod log");
     }
@@ -54,6 +57,8 @@ export namespace ActionType {
         return ActionType.History;
       case "lookup":
         return ActionType.Lookup;
+      case "note":
+        return ActionType.Note;
       default:
         throw new Error(`Invalid action ${s}`);
     }
@@ -75,6 +80,8 @@ export namespace ActionType {
         return "changing timeout duration for";
       case ActionType.Warn:
         return "warning";
+      case ActionType.Note:
+        return "adding note for";
       case ActionType.History:
         return "getting history for";
       case ActionType.Lookup:
@@ -98,6 +105,8 @@ export namespace ActionType {
         return "changed timeout duration for"; // timeout duration changed for user
       case ActionType.Warn:
         return "warned";
+      case ActionType.Note:
+        return "added note for";
       case ActionType.History:
         return "got history for";
       case ActionType.Lookup:
@@ -121,6 +130,8 @@ export namespace ActionType {
         return "⏲️";
       case ActionType.Warn:
         return "⚠️";
+      case ActionType.Note:
+        return "📝";
       case ActionType.History:
         return "📜";
       case ActionType.Lookup:

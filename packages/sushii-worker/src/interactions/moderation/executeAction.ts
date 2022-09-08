@@ -133,7 +133,8 @@ async function execActionUser(
       const res = await ctx.REST.banUser(
         interaction.guild_id,
         target.user.id,
-        data.reason
+        data.reason,
+        data.deleteMessageDays
       );
 
       if (res.err) {
@@ -222,6 +223,7 @@ async function execActionUser(
 
       // Nothing, only DM
       break;
+    case ActionType.Note:
     case ActionType.Lookup:
     case ActionType.History:
       throw new Error(`unsupported action type ${actionType}`);
