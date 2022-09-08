@@ -56,7 +56,10 @@ export default class ModActionData {
 
     this.invoker = getInvokerUser(interaction);
 
-    this.reason = this.options.getString(ModerationOption.Reason);
+    // Reason or note
+    this.reason =
+      this.options.getString(ModerationOption.Reason) ||
+      this.options.getString(ModerationOption.Note);
     this.attachment = this.options.getAttachment(ModerationOption.Attachment);
 
     this.deleteMessageDays = this.options.getInteger(

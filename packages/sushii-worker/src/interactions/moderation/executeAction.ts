@@ -10,6 +10,7 @@ import { GetRedisGuildQuery } from "../../generated/graphql";
 import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
+import toSentenceCase from "../../utils/toSentenceCase";
 import { ActionType } from "./ActionType";
 import hasPermissionTargetingMember from "./hasPermission";
 import ModActionData, { ModActionTarget } from "./ModActionData";
@@ -56,8 +57,8 @@ function buildResponseEmbed(
     });
   }
 
-  // Unban never has dm, no need for field
-  if (action !== ActionType.BanRemove) {
+  // Unban and note never has dm, no need for field
+  if (![ActionType.BanRemove, ActionType.Note].includes(action)) {
     let userDMValue = "📭 Members were **not** sent a DM.";
 
     if (data.shouldDMReason(action) || data.dmMessage) {
@@ -90,7 +91,11 @@ function buildResponseEmbed(
   }
 
   return new EmbedBuilder()
-    .setTitle(`${ActionType.toPastTense(action)} ${data.targets.size} users`)
+    .setTitle(
+      `${toSentenceCase(ActionType.toPastTense(action))} ${
+        data.targets.size
+      } users`
+    )
     .setDescription(content)
     .setFields(fields)
     .setImage(data.attachment?.url || null)
@@ -224,6 +229,9 @@ async function execActionUser(
       // Nothing, only DM
       break;
     case ActionType.Note:
+      // Allow for non-members, send no DM
+
+      break;
     case ActionType.Lookup:
     case ActionType.History:
       throw new Error(`unsupported action type ${actionType}`);
@@ -400,9 +408,7 @@ export default async function executeAction(
         msg += "📬 ";
       }
 
-      msg += `<@${res.val.user.id}> (\`${
-        res.val.user.id
-      }\`) ${ActionType.toPastTense(actionType)}`;
+      msg += `<@${res.val.user.id}> (\`${res.val.user.id}\`)`;
 
       // Makes triedDMNonMember true if any returned value is true
       triedDMNonMember = triedDMNonMember || res.val.triedDMNonMember;

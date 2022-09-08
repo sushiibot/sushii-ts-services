@@ -25,6 +25,7 @@ import RoleMenuSelectMenuHandler from "./roles/RoleMenuSelectMenuHandler";
 import UnbanCommand from "./moderation/UnbanCommand";
 import PruneCommand from "./moderation/PruneCommand";
 import SlowmodeCommand from "./moderation/SlowmodeCommand";
+import NoteCommand from "./moderation/NoteCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -45,6 +46,7 @@ export default function addCommands(
     new KickCommand(),
     new TimeoutCommand(),
     new WarnCommand(),
+    new NoteCommand(),
     new HistoryCommand(),
     new PruneCommand(),
     new SlowmodeCommand(),

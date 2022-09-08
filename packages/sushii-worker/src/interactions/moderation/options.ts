@@ -14,6 +14,7 @@ export enum ModerationOption {
   DMMessage = "dm_message",
   DaysToDelete = "days_to_delete",
   Duration = "duration",
+  Note = "note",
 }
 
 export const usersOption = (action: ActionType): SlashCommandStringOption =>
@@ -55,3 +56,8 @@ export const daysToDeleteOption = new SlashCommandIntegerOption()
   .setMaxValue(7)
   .setMinValue(0)
   .setRequired(false);
+
+export const noteOption = new SlashCommandStringOption()
+  .setName(ModerationOption.Note)
+  .setDescription("Note to add to the user.")
+  .setRequired(true);
