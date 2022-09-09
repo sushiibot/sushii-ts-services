@@ -62,6 +62,17 @@ export default class RESTClient {
   }
 
   /**
+   * Interaction response returns 204 no content
+   */
+  public interactionReplyDeferred(
+    interaction: APIInteraction
+  ): APIPromiseResult<void> {
+    return this.interactionCallback(interaction, {
+      type: InteractionResponseType.DeferredChannelMessageWithSource,
+    });
+  }
+
+  /**
    * Edits the message the component was attached to
    *
    * @param interaction

@@ -54,6 +54,13 @@ export default class WarnCommand extends SlashCommandHandler {
       return;
     }
 
+    const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
+    if (ackRes.err) {
+      await interactionReplyErrorMessage(ctx, interaction, ackRes.val.message);
+
+      return;
+    }
+
     const res = await executeAction(ctx, interaction, data, ActionType.Warn);
     if (res.err) {
       await interactionReplyErrorMessage(ctx, interaction, res.val.message);
@@ -61,7 +68,7 @@ export default class WarnCommand extends SlashCommandHandler {
       return;
     }
 
-    await ctx.REST.interactionReply(interaction, {
+    await ctx.REST.interactionEditOriginal(interaction, {
       embeds: [res.val.toJSON()],
     });
   }
