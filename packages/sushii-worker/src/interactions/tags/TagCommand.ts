@@ -357,22 +357,6 @@ export default class TagCommand extends SlashCommandHandler {
 
     const { fields, files } = embedDataRes.val;
 
-    if (tagContent) {
-      fields.push({
-        name: t("tag.add.success.content", { ns: "commands" }),
-        value: tagContent,
-        inline: true,
-      });
-    }
-
-    if (tagAttachment) {
-      fields.push({
-        name: t("tag.add.success.attachment", { ns: "commands" }),
-        value: tagAttachment.url,
-        inline: true,
-      });
-    }
-
     const embed = new EmbedBuilder()
       .setTitle(t("tag.add.success.title", { ns: "commands", tagName }))
       .setFields(fields)
