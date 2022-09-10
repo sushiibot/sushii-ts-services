@@ -43,6 +43,7 @@ import { AutocompleteOption } from "./handlers/AutocompleteHandler";
 import getInvokerUser from "../utils/interactions";
 import Metrics from "../model/metrics";
 import getFullCommandName from "../utils/getFullCommandName";
+import validationErrorToString from "../utils/validationErrorToString";
 
 interface FocusedOption {
   path: string;
@@ -337,6 +338,11 @@ export default class InteractionClient {
         tags: {
           type: "command",
           command_name: getFullCommandName(interaction),
+        },
+        contexts: {
+          validationError: {
+            value: validationErrorToString(e),
+          },
         },
       });
 

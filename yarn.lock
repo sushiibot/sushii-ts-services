@@ -1878,7 +1878,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/shapeshift@npm:^3.5.1":
+"@sapphire/shapeshift@npm:^3.5.1, @sapphire/shapeshift@npm:^3.6.0":
   version: 3.6.0
   resolution: "@sapphire/shapeshift@npm:3.6.0"
   dependencies:
@@ -2058,6 +2058,7 @@ __metadata:
     "@graphql-codegen/typescript-graphql-request": ^4.4.5
     "@graphql-codegen/typescript-operations": ^2.3.5
     "@graphql-codegen/typescript-resolvers": 2.6.1
+    "@sapphire/shapeshift": ^3.6.0
     "@sapphire/snowflake": ^3.2.0
     "@sentry/node": ^7.7.0
     "@sentry/tracing": ^7.7.0
