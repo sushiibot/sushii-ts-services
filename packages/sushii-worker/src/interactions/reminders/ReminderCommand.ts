@@ -12,6 +12,7 @@ import getInvokerUser from "../../utils/interactions";
 import parseDuration from "../../utils/parseDuration";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
+import { interactionReplyErrorPlainMessage } from "../responses/error";
 
 export default class ReminderCommand extends SlashCommandHandler {
   serverOnly = false;
@@ -197,6 +198,17 @@ export default class ReminderCommand extends SlashCommandHandler {
     const reminder = options.getString("reminder");
     if (!reminder) {
       throw new Error("Missing reminder.");
+    }
+
+    if (!dayjs.utc(reminder).isValid()) {
+      await interactionReplyErrorPlainMessage(
+        ctx,
+        interaction,
+        "Invalid reminder, please select a reminder from the autocomplete list!",
+        true
+      );
+
+      return;
     }
 
     const invoker = getInvokerUser(interaction);
