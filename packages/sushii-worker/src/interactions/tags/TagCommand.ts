@@ -968,7 +968,7 @@ export default class TagCommand extends SlashCommandHandler {
     // Check if tag exists
     if (!tag.tagByGuildIdAndTagName) {
       await ctx.REST.interactionReply(interaction, {
-        content: t("tag.delete.not_found", {
+        content: t("tag.delete.error.not_found", {
           ns: "commands",
           tagName,
         }),

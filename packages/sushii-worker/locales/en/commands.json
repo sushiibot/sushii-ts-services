@@ -178,7 +178,8 @@
       "success": {
         "title": "Edited tag {{tagName}}",
         "content": "Content",
-        "footer": "$t(tag.add.success.footer)"
+        "footer": "$t(tag.add.success.footer)",
+        "attachment": "Attachment"
       }
     },
     "rename": {
