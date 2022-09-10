@@ -237,6 +237,12 @@ export default class ModActionData {
       }
     }
 
+    if (this.targets.size === 0) {
+      return Err(
+        "No valid target users were found. Please check IDs are correct and try again."
+      );
+    }
+
     return Ok.EMPTY;
   }
 
