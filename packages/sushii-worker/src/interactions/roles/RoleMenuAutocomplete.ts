@@ -11,6 +11,7 @@ export default class RoleMenuAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [
     "rolemenu.get",
     "rolemenu.edit",
+    "rolemenu.editorder",
     "rolemenu.addroles",
     "rolemenu.removeroles",
     "rolemenu.delete",

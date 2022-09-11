@@ -6747,6 +6747,12 @@ type Mutation {
     """
     input: LogoutInput!
   ): LogoutPayload
+  setRoleMenuRoleOrder(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: SetRoleMenuRoleOrderInput!
+  ): SetRoleMenuRoleOrderPayload
 
   """Updates a single `BotStat` using its globally unique id and a patch."""
   updateBotStat(
@@ -9547,6 +9553,7 @@ type RoleMenuRole implements Node {
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
   """
   nodeId: ID!
+  position: Int
   roleId: BigInt!
 
   """Reads a single `RoleMenu` that is related to this `RoleMenuRole`."""
@@ -9605,6 +9612,9 @@ type RoleMenuRoleAverageAggregates {
   """Mean average of guildId across the matching connection"""
   guildId: BigFloat
 
+  """Mean average of position across the matching connection"""
+  position: BigFloat
+
   """Mean average of roleId across the matching connection"""
   roleId: BigFloat
 }
@@ -9626,6 +9636,9 @@ input RoleMenuRoleCondition {
   """Checks for equality with the object’s `menuName` field."""
   menuName: String
 
+  """Checks for equality with the object’s `position` field."""
+  position: Int
+
   """Checks for equality with the object’s `roleId` field."""
   roleId: BigInt
 }
@@ -9642,6 +9655,9 @@ type RoleMenuRoleDistinctCountAggregates {
 
   """Distinct count of menuName across the matching connection"""
   menuName: BigInt
+
+  """Distinct count of position across the matching connection"""
+  position: BigInt
 
   """Distinct count of roleId across the matching connection"""
   roleId: BigInt
@@ -9672,6 +9688,9 @@ input RoleMenuRoleFilter {
   """Checks for any expressions in this list."""
   or: [RoleMenuRoleFilter!]
 
+  """Filter by the object’s `position` field."""
+  position: IntFilter
+
   """Filter by the object’s `roleId` field."""
   roleId: BigIntFilter
 }
@@ -9682,12 +9701,16 @@ input RoleMenuRoleInput {
   emoji: String
   guildId: BigInt!
   menuName: String!
+  position: Int
   roleId: BigInt!
 }
 
 type RoleMenuRoleMaxAggregates {
   """Maximum of guildId across the matching connection"""
   guildId: BigInt
+
+  """Maximum of position across the matching connection"""
+  position: Int
 
   """Maximum of roleId across the matching connection"""
   roleId: BigInt
@@ -9696,6 +9719,9 @@ type RoleMenuRoleMaxAggregates {
 type RoleMenuRoleMinAggregates {
   """Minimum of guildId across the matching connection"""
   guildId: BigInt
+
+  """Minimum of position across the matching connection"""
+  position: Int
 
   """Minimum of roleId across the matching connection"""
   roleId: BigInt
@@ -9709,6 +9735,7 @@ input RoleMenuRolePatch {
   emoji: String
   guildId: BigInt
   menuName: String
+  position: Int
   roleId: BigInt
 }
 
@@ -9718,6 +9745,11 @@ type RoleMenuRoleStddevPopulationAggregates {
   """
   guildId: BigFloat
 
+  """
+  Population standard deviation of position across the matching connection
+  """
+  position: BigFloat
+
   """Population standard deviation of roleId across the matching connection"""
   roleId: BigFloat
 }
@@ -9725,6 +9757,9 @@ type RoleMenuRoleStddevPopulationAggregates {
 type RoleMenuRoleStddevSampleAggregates {
   """Sample standard deviation of guildId across the matching connection"""
   guildId: BigFloat
+
+  """Sample standard deviation of position across the matching connection"""
+  position: BigFloat
 
   """Sample standard deviation of roleId across the matching connection"""
   roleId: BigFloat
@@ -9734,6 +9769,9 @@ type RoleMenuRoleSumAggregates {
   """Sum of guildId across the matching connection"""
   guildId: BigFloat!
 
+  """Sum of position across the matching connection"""
+  position: BigInt!
+
   """Sum of roleId across the matching connection"""
   roleId: BigFloat!
 }
@@ -9742,6 +9780,9 @@ type RoleMenuRoleVariancePopulationAggregates {
   """Population variance of guildId across the matching connection"""
   guildId: BigFloat
 
+  """Population variance of position across the matching connection"""
+  position: BigFloat
+
   """Population variance of roleId across the matching connection"""
   roleId: BigFloat
 }
@@ -9749,6 +9790,9 @@ type RoleMenuRoleVariancePopulationAggregates {
 type RoleMenuRoleVarianceSampleAggregates {
   """Sample variance of guildId across the matching connection"""
   guildId: BigFloat
+
+  """Sample variance of position across the matching connection"""
+  position: BigFloat
 
   """Sample variance of roleId across the matching connection"""
   roleId: BigFloat
@@ -9802,16 +9846,19 @@ enum RoleMenuRolesGroupBy {
   EMOJI
   GUILD_ID
   MENU_NAME
+  POSITION
   ROLE_ID
 }
 
 input RoleMenuRolesHavingAverageInput {
   guildId: HavingBigintFilter
+  position: HavingIntFilter
   roleId: HavingBigintFilter
 }
 
 input RoleMenuRolesHavingDistinctCountInput {
   guildId: HavingBigintFilter
+  position: HavingIntFilter
   roleId: HavingBigintFilter
 }
 
@@ -9832,36 +9879,43 @@ input RoleMenuRolesHavingInput {
 
 input RoleMenuRolesHavingMaxInput {
   guildId: HavingBigintFilter
+  position: HavingIntFilter
   roleId: HavingBigintFilter
 }
 
 input RoleMenuRolesHavingMinInput {
   guildId: HavingBigintFilter
+  position: HavingIntFilter
   roleId: HavingBigintFilter
 }
 
 input RoleMenuRolesHavingStddevPopulationInput {
   guildId: HavingBigintFilter
+  position: HavingIntFilter
   roleId: HavingBigintFilter
 }
 
 input RoleMenuRolesHavingStddevSampleInput {
   guildId: HavingBigintFilter
+  position: HavingIntFilter
   roleId: HavingBigintFilter
 }
 
 input RoleMenuRolesHavingSumInput {
   guildId: HavingBigintFilter
+  position: HavingIntFilter
   roleId: HavingBigintFilter
 }
 
 input RoleMenuRolesHavingVariancePopulationInput {
   guildId: HavingBigintFilter
+  position: HavingIntFilter
   roleId: HavingBigintFilter
 }
 
 input RoleMenuRolesHavingVarianceSampleInput {
   guildId: HavingBigintFilter
+  position: HavingIntFilter
   roleId: HavingBigintFilter
 }
 
@@ -9876,6 +9930,8 @@ enum RoleMenuRolesOrderBy {
   MENU_NAME_ASC
   MENU_NAME_DESC
   NATURAL
+  POSITION_ASC
+  POSITION_DESC
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
   ROLE_ID_ASC
@@ -10088,6 +10144,8 @@ enum RoleMenusOrderBy {
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_GUILD_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_MENU_NAME_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_POSITION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_POSITION_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_ROLE_ID_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_ROLE_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_COUNT_ASC
@@ -10100,6 +10158,8 @@ enum RoleMenusOrderBy {
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_GUILD_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_MENU_NAME_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_POSITION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_POSITION_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_ROLE_ID_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_ROLE_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_DESCRIPTION_ASC
@@ -10110,6 +10170,8 @@ enum RoleMenusOrderBy {
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_GUILD_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_MENU_NAME_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_POSITION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_POSITION_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_ROLE_ID_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_ROLE_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_DESCRIPTION_ASC
@@ -10120,6 +10182,8 @@ enum RoleMenusOrderBy {
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_GUILD_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_MENU_NAME_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_POSITION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_POSITION_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_ROLE_ID_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_ROLE_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_DESCRIPTION_ASC
@@ -10130,6 +10194,8 @@ enum RoleMenusOrderBy {
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_GUILD_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_MENU_NAME_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_POSITION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_POSITION_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_ROLE_ID_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_ROLE_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_DESCRIPTION_ASC
@@ -10140,6 +10206,8 @@ enum RoleMenusOrderBy {
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_GUILD_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_MENU_NAME_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_POSITION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_POSITION_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_ROLE_ID_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_ROLE_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_DESCRIPTION_ASC
@@ -10150,6 +10218,8 @@ enum RoleMenusOrderBy {
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_GUILD_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_MENU_NAME_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_POSITION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_POSITION_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_ROLE_ID_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_ROLE_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_DESCRIPTION_ASC
@@ -10160,6 +10230,8 @@ enum RoleMenusOrderBy {
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_GUILD_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_MENU_NAME_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_POSITION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_POSITION_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_ROLE_ID_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_ROLE_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_DESCRIPTION_ASC
@@ -10170,8 +10242,37 @@ enum RoleMenusOrderBy {
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_GUILD_ID_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_MENU_NAME_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_MENU_NAME_DESC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_POSITION_ASC
+  ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_POSITION_DESC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_ROLE_ID_ASC
   ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_ROLE_ID_DESC
+}
+
+"""All input for the `setRoleMenuRoleOrder` mutation."""
+input SetRoleMenuRoleOrderInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt
+  menuName: String
+  roleIds: [BigInt]
+}
+
+"""The output of our `setRoleMenuRoleOrder` mutation."""
+type SetRoleMenuRoleOrderPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+  roleMenuRoles: [RoleMenuRole!]
 }
 
 """

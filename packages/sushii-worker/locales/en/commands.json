@@ -83,6 +83,11 @@
         "menu_name_exists": "A role menu `{{name}}` already exists! Please pick a different name."
       }
     },
+    "editorder": {
+      "error": {
+        "mismatched_roles": "The role menu `{{name}}` does not have the same roles as the provided order! You need to include all menu roles: {{roles}}"
+      }
+    },
     "addroles": {
       "error": {
         "no_roles_given": "Please provide at least one role to add.",

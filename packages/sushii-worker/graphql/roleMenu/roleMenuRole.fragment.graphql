@@ -4,4 +4,5 @@ fragment RoleMenuRoleData on RoleMenuRole {
   roleId
   emoji
   description
+  position
 }

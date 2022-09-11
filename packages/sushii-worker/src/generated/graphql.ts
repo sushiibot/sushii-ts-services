@@ -5404,6 +5404,7 @@ export type Mutation = {
   deleteWebUserGuildByUserIdAndGuildId?: Maybe<DeleteWebUserGuildPayload>;
   graphql?: Maybe<GraphqlPayload>;
   logout?: Maybe<LogoutPayload>;
+  setRoleMenuRoleOrder?: Maybe<SetRoleMenuRoleOrderPayload>;
   /** Updates a single `BotStat` using its globally unique id and a patch. */
   updateBotStat?: Maybe<UpdateBotStatPayload>;
   /** Updates a single `BotStat` using a unique key and a patch. */
@@ -5914,6 +5915,12 @@ export type MutationGraphqlArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationLogoutArgs = {
   input: LogoutInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationSetRoleMenuRoleOrderArgs = {
+  input: SetRoleMenuRoleOrderInput;
 };
 
 
@@ -8130,6 +8137,7 @@ export type RoleMenuRole = Node & {
   menuName: Scalars['String'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
+  position?: Maybe<Scalars['Int']>;
   roleId: Scalars['BigInt'];
   /** Reads a single `RoleMenu` that is related to this `RoleMenuRole`. */
   roleMenuByGuildIdAndMenuName?: Maybe<RoleMenu>;
@@ -8162,6 +8170,8 @@ export type RoleMenuRoleAverageAggregates = {
   __typename?: 'RoleMenuRoleAverageAggregates';
   /** Mean average of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of position across the matching connection */
+  position?: Maybe<Scalars['BigFloat']>;
   /** Mean average of roleId across the matching connection */
   roleId?: Maybe<Scalars['BigFloat']>;
 };
@@ -8179,6 +8189,8 @@ export type RoleMenuRoleCondition = {
   guildId?: InputMaybe<Scalars['BigInt']>;
   /** Checks for equality with the object’s `menuName` field. */
   menuName?: InputMaybe<Scalars['String']>;
+  /** Checks for equality with the object’s `position` field. */
+  position?: InputMaybe<Scalars['Int']>;
   /** Checks for equality with the object’s `roleId` field. */
   roleId?: InputMaybe<Scalars['BigInt']>;
 };
@@ -8193,6 +8205,8 @@ export type RoleMenuRoleDistinctCountAggregates = {
   guildId?: Maybe<Scalars['BigInt']>;
   /** Distinct count of menuName across the matching connection */
   menuName?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of position across the matching connection */
+  position?: Maybe<Scalars['BigInt']>;
   /** Distinct count of roleId across the matching connection */
   roleId?: Maybe<Scalars['BigInt']>;
 };
@@ -8213,6 +8227,8 @@ export type RoleMenuRoleFilter = {
   not?: InputMaybe<RoleMenuRoleFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<RoleMenuRoleFilter>>;
+  /** Filter by the object’s `position` field. */
+  position?: InputMaybe<IntFilter>;
   /** Filter by the object’s `roleId` field. */
   roleId?: InputMaybe<BigIntFilter>;
 };
@@ -8223,6 +8239,7 @@ export type RoleMenuRoleInput = {
   emoji?: InputMaybe<Scalars['String']>;
   guildId: Scalars['BigInt'];
   menuName: Scalars['String'];
+  position?: InputMaybe<Scalars['Int']>;
   roleId: Scalars['BigInt'];
 };
 
@@ -8230,6 +8247,8 @@ export type RoleMenuRoleMaxAggregates = {
   __typename?: 'RoleMenuRoleMaxAggregates';
   /** Maximum of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of position across the matching connection */
+  position?: Maybe<Scalars['Int']>;
   /** Maximum of roleId across the matching connection */
   roleId?: Maybe<Scalars['BigInt']>;
 };
@@ -8238,6 +8257,8 @@ export type RoleMenuRoleMinAggregates = {
   __typename?: 'RoleMenuRoleMinAggregates';
   /** Minimum of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of position across the matching connection */
+  position?: Maybe<Scalars['Int']>;
   /** Minimum of roleId across the matching connection */
   roleId?: Maybe<Scalars['BigInt']>;
 };
@@ -8248,6 +8269,7 @@ export type RoleMenuRolePatch = {
   emoji?: InputMaybe<Scalars['String']>;
   guildId?: InputMaybe<Scalars['BigInt']>;
   menuName?: InputMaybe<Scalars['String']>;
+  position?: InputMaybe<Scalars['Int']>;
   roleId?: InputMaybe<Scalars['BigInt']>;
 };
 
@@ -8255,6 +8277,8 @@ export type RoleMenuRoleStddevPopulationAggregates = {
   __typename?: 'RoleMenuRoleStddevPopulationAggregates';
   /** Population standard deviation of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of position across the matching connection */
+  position?: Maybe<Scalars['BigFloat']>;
   /** Population standard deviation of roleId across the matching connection */
   roleId?: Maybe<Scalars['BigFloat']>;
 };
@@ -8263,6 +8287,8 @@ export type RoleMenuRoleStddevSampleAggregates = {
   __typename?: 'RoleMenuRoleStddevSampleAggregates';
   /** Sample standard deviation of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of position across the matching connection */
+  position?: Maybe<Scalars['BigFloat']>;
   /** Sample standard deviation of roleId across the matching connection */
   roleId?: Maybe<Scalars['BigFloat']>;
 };
@@ -8271,6 +8297,8 @@ export type RoleMenuRoleSumAggregates = {
   __typename?: 'RoleMenuRoleSumAggregates';
   /** Sum of guildId across the matching connection */
   guildId: Scalars['BigFloat'];
+  /** Sum of position across the matching connection */
+  position: Scalars['BigInt'];
   /** Sum of roleId across the matching connection */
   roleId: Scalars['BigFloat'];
 };
@@ -8279,6 +8307,8 @@ export type RoleMenuRoleVariancePopulationAggregates = {
   __typename?: 'RoleMenuRoleVariancePopulationAggregates';
   /** Population variance of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of position across the matching connection */
+  position?: Maybe<Scalars['BigFloat']>;
   /** Population variance of roleId across the matching connection */
   roleId?: Maybe<Scalars['BigFloat']>;
 };
@@ -8287,6 +8317,8 @@ export type RoleMenuRoleVarianceSampleAggregates = {
   __typename?: 'RoleMenuRoleVarianceSampleAggregates';
   /** Sample variance of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of position across the matching connection */
+  position?: Maybe<Scalars['BigFloat']>;
   /** Sample variance of roleId across the matching connection */
   roleId?: Maybe<Scalars['BigFloat']>;
 };
@@ -8330,16 +8362,19 @@ export enum RoleMenuRolesGroupBy {
   Emoji = 'EMOJI',
   GuildId = 'GUILD_ID',
   MenuName = 'MENU_NAME',
+  Position = 'POSITION',
   RoleId = 'ROLE_ID'
 }
 
 export type RoleMenuRolesHavingAverageInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
+  position?: InputMaybe<HavingIntFilter>;
   roleId?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenuRolesHavingDistinctCountInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
+  position?: InputMaybe<HavingIntFilter>;
   roleId?: InputMaybe<HavingBigintFilter>;
 };
 
@@ -8360,36 +8395,43 @@ export type RoleMenuRolesHavingInput = {
 
 export type RoleMenuRolesHavingMaxInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
+  position?: InputMaybe<HavingIntFilter>;
   roleId?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenuRolesHavingMinInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
+  position?: InputMaybe<HavingIntFilter>;
   roleId?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenuRolesHavingStddevPopulationInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
+  position?: InputMaybe<HavingIntFilter>;
   roleId?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenuRolesHavingStddevSampleInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
+  position?: InputMaybe<HavingIntFilter>;
   roleId?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenuRolesHavingSumInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
+  position?: InputMaybe<HavingIntFilter>;
   roleId?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenuRolesHavingVariancePopulationInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
+  position?: InputMaybe<HavingIntFilter>;
   roleId?: InputMaybe<HavingBigintFilter>;
 };
 
 export type RoleMenuRolesHavingVarianceSampleInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
+  position?: InputMaybe<HavingIntFilter>;
   roleId?: InputMaybe<HavingBigintFilter>;
 };
 
@@ -8404,6 +8446,8 @@ export enum RoleMenuRolesOrderBy {
   MenuNameAsc = 'MENU_NAME_ASC',
   MenuNameDesc = 'MENU_NAME_DESC',
   Natural = 'NATURAL',
+  PositionAsc = 'POSITION_ASC',
+  PositionDesc = 'POSITION_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RoleIdAsc = 'ROLE_ID_ASC',
@@ -8594,6 +8638,8 @@ export enum RoleMenusOrderBy {
   RoleMenuRolesByGuildIdAndMenuNameAverageGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_GUILD_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameAverageMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_MENU_NAME_ASC',
   RoleMenuRolesByGuildIdAndMenuNameAverageMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameAveragePositionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_POSITION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameAveragePositionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_POSITION_DESC',
   RoleMenuRolesByGuildIdAndMenuNameAverageRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_ROLE_ID_ASC',
   RoleMenuRolesByGuildIdAndMenuNameAverageRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_ROLE_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameCountAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_COUNT_ASC',
@@ -8606,6 +8652,8 @@ export enum RoleMenusOrderBy {
   RoleMenuRolesByGuildIdAndMenuNameDistinctCountGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_GUILD_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameDistinctCountMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_MENU_NAME_ASC',
   RoleMenuRolesByGuildIdAndMenuNameDistinctCountMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameDistinctCountPositionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_POSITION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameDistinctCountPositionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_POSITION_DESC',
   RoleMenuRolesByGuildIdAndMenuNameDistinctCountRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_ROLE_ID_ASC',
   RoleMenuRolesByGuildIdAndMenuNameDistinctCountRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_ROLE_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameMaxDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_DESCRIPTION_ASC',
@@ -8616,6 +8664,8 @@ export enum RoleMenusOrderBy {
   RoleMenuRolesByGuildIdAndMenuNameMaxGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_GUILD_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameMaxMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_MENU_NAME_ASC',
   RoleMenuRolesByGuildIdAndMenuNameMaxMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameMaxPositionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_POSITION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameMaxPositionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_POSITION_DESC',
   RoleMenuRolesByGuildIdAndMenuNameMaxRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_ROLE_ID_ASC',
   RoleMenuRolesByGuildIdAndMenuNameMaxRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_ROLE_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameMinDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_DESCRIPTION_ASC',
@@ -8626,6 +8676,8 @@ export enum RoleMenusOrderBy {
   RoleMenuRolesByGuildIdAndMenuNameMinGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_GUILD_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameMinMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_MENU_NAME_ASC',
   RoleMenuRolesByGuildIdAndMenuNameMinMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameMinPositionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_POSITION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameMinPositionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_POSITION_DESC',
   RoleMenuRolesByGuildIdAndMenuNameMinRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_ROLE_ID_ASC',
   RoleMenuRolesByGuildIdAndMenuNameMinRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_ROLE_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameStddevPopulationDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_DESCRIPTION_ASC',
@@ -8636,6 +8688,8 @@ export enum RoleMenusOrderBy {
   RoleMenuRolesByGuildIdAndMenuNameStddevPopulationGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_GUILD_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameStddevPopulationMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_MENU_NAME_ASC',
   RoleMenuRolesByGuildIdAndMenuNameStddevPopulationMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevPopulationPositionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_POSITION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevPopulationPositionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_POSITION_DESC',
   RoleMenuRolesByGuildIdAndMenuNameStddevPopulationRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_ROLE_ID_ASC',
   RoleMenuRolesByGuildIdAndMenuNameStddevPopulationRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_ROLE_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameStddevSampleDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_DESCRIPTION_ASC',
@@ -8646,6 +8700,8 @@ export enum RoleMenusOrderBy {
   RoleMenuRolesByGuildIdAndMenuNameStddevSampleGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_GUILD_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameStddevSampleMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_MENU_NAME_ASC',
   RoleMenuRolesByGuildIdAndMenuNameStddevSampleMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevSamplePositionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_POSITION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameStddevSamplePositionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_POSITION_DESC',
   RoleMenuRolesByGuildIdAndMenuNameStddevSampleRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_ROLE_ID_ASC',
   RoleMenuRolesByGuildIdAndMenuNameStddevSampleRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_ROLE_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameSumDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_DESCRIPTION_ASC',
@@ -8656,6 +8712,8 @@ export enum RoleMenusOrderBy {
   RoleMenuRolesByGuildIdAndMenuNameSumGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_GUILD_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameSumMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_MENU_NAME_ASC',
   RoleMenuRolesByGuildIdAndMenuNameSumMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameSumPositionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_POSITION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameSumPositionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_POSITION_DESC',
   RoleMenuRolesByGuildIdAndMenuNameSumRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_ROLE_ID_ASC',
   RoleMenuRolesByGuildIdAndMenuNameSumRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_ROLE_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameVariancePopulationDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_DESCRIPTION_ASC',
@@ -8666,6 +8724,8 @@ export enum RoleMenusOrderBy {
   RoleMenuRolesByGuildIdAndMenuNameVariancePopulationGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_GUILD_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameVariancePopulationMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_MENU_NAME_ASC',
   RoleMenuRolesByGuildIdAndMenuNameVariancePopulationMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameVariancePopulationPositionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_POSITION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameVariancePopulationPositionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_POSITION_DESC',
   RoleMenuRolesByGuildIdAndMenuNameVariancePopulationRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_ROLE_ID_ASC',
   RoleMenuRolesByGuildIdAndMenuNameVariancePopulationRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_ROLE_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameVarianceSampleDescriptionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_DESCRIPTION_ASC',
@@ -8676,9 +8736,36 @@ export enum RoleMenusOrderBy {
   RoleMenuRolesByGuildIdAndMenuNameVarianceSampleGuildIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_GUILD_ID_DESC',
   RoleMenuRolesByGuildIdAndMenuNameVarianceSampleMenuNameAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_MENU_NAME_ASC',
   RoleMenuRolesByGuildIdAndMenuNameVarianceSampleMenuNameDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_MENU_NAME_DESC',
+  RoleMenuRolesByGuildIdAndMenuNameVarianceSamplePositionAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_POSITION_ASC',
+  RoleMenuRolesByGuildIdAndMenuNameVarianceSamplePositionDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_POSITION_DESC',
   RoleMenuRolesByGuildIdAndMenuNameVarianceSampleRoleIdAsc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_ROLE_ID_ASC',
   RoleMenuRolesByGuildIdAndMenuNameVarianceSampleRoleIdDesc = 'ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_ROLE_ID_DESC'
 }
+
+/** All input for the `setRoleMenuRoleOrder` mutation. */
+export type SetRoleMenuRoleOrderInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  menuName?: InputMaybe<Scalars['String']>;
+  roleIds?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+};
+
+/** The output of our `setRoleMenuRoleOrder` mutation. */
+export type SetRoleMenuRoleOrderPayload = {
+  __typename?: 'SetRoleMenuRoleOrderPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  roleMenuRoles?: Maybe<Array<RoleMenuRole>>;
+};
 
 /** A filter to be used against String fields. All fields are combined with a logical ‘and.’ */
 export type StringFilter = {
@@ -13033,6 +13120,8 @@ export type ResolversTypes = {
   RoleMenusHavingVariancePopulationInput: RoleMenusHavingVariancePopulationInput;
   RoleMenusHavingVarianceSampleInput: RoleMenusHavingVarianceSampleInput;
   RoleMenusOrderBy: RoleMenusOrderBy;
+  SetRoleMenuRoleOrderInput: SetRoleMenuRoleOrderInput;
+  SetRoleMenuRoleOrderPayload: ResolverTypeWrapper<SetRoleMenuRoleOrderPayload>;
   String: ResolverTypeWrapper<Scalars['String']>;
   StringFilter: StringFilter;
   StringListFilter: StringListFilter;
@@ -13800,6 +13889,8 @@ export type ResolversParentTypes = {
   RoleMenusHavingSumInput: RoleMenusHavingSumInput;
   RoleMenusHavingVariancePopulationInput: RoleMenusHavingVariancePopulationInput;
   RoleMenusHavingVarianceSampleInput: RoleMenusHavingVarianceSampleInput;
+  SetRoleMenuRoleOrderInput: SetRoleMenuRoleOrderInput;
+  SetRoleMenuRoleOrderPayload: SetRoleMenuRoleOrderPayload;
   String: Scalars['String'];
   StringFilter: StringFilter;
   StringListFilter: StringListFilter;
@@ -15485,6 +15576,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteWebUserGuildByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['DeleteWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationDeleteWebUserGuildByUserIdAndGuildIdArgs, 'input'>>;
   graphql?: Resolver<Maybe<ResolversTypes['GraphqlPayload']>, ParentType, ContextType, RequireFields<MutationGraphqlArgs, 'input'>>;
   logout?: Resolver<Maybe<ResolversTypes['LogoutPayload']>, ParentType, ContextType, RequireFields<MutationLogoutArgs, 'input'>>;
+  setRoleMenuRoleOrder?: Resolver<Maybe<ResolversTypes['SetRoleMenuRoleOrderPayload']>, ParentType, ContextType, RequireFields<MutationSetRoleMenuRoleOrderArgs, 'input'>>;
   updateBotStat?: Resolver<Maybe<ResolversTypes['UpdateBotStatPayload']>, ParentType, ContextType, RequireFields<MutationUpdateBotStatArgs, 'input'>>;
   updateBotStatByNameAndCategory?: Resolver<Maybe<ResolversTypes['UpdateBotStatPayload']>, ParentType, ContextType, RequireFields<MutationUpdateBotStatByNameAndCategoryArgs, 'input'>>;
   updateCachedGuild?: Resolver<Maybe<ResolversTypes['UpdateCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpdateCachedGuildArgs, 'input'>>;
@@ -16060,6 +16152,7 @@ export type RoleMenuRoleResolvers<ContextType = any, ParentType extends Resolver
   guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   menuName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  position?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   roleId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   roleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -16081,6 +16174,7 @@ export type RoleMenuRoleAggregatesResolvers<ContextType = any, ParentType extend
 
 export type RoleMenuRoleAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleAverageAggregates'] = ResolversParentTypes['RoleMenuRoleAverageAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  position?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -16090,48 +16184,56 @@ export type RoleMenuRoleDistinctCountAggregatesResolvers<ContextType = any, Pare
   emoji?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   menuName?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  position?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   roleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuRoleMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleMaxAggregates'] = ResolversParentTypes['RoleMenuRoleMaxAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  position?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   roleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuRoleMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleMinAggregates'] = ResolversParentTypes['RoleMenuRoleMinAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  position?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   roleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuRoleStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleStddevPopulationAggregates'] = ResolversParentTypes['RoleMenuRoleStddevPopulationAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  position?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuRoleStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleStddevSampleAggregates'] = ResolversParentTypes['RoleMenuRoleStddevSampleAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  position?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuRoleSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleSumAggregates'] = ResolversParentTypes['RoleMenuRoleSumAggregates']> = {
   guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  position?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   roleId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuRoleVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleVariancePopulationAggregates'] = ResolversParentTypes['RoleMenuRoleVariancePopulationAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  position?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RoleMenuRoleVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenuRoleVarianceSampleAggregates'] = ResolversParentTypes['RoleMenuRoleVarianceSampleAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  position?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -16200,6 +16302,13 @@ export type RoleMenusConnectionResolvers<ContextType = any, ParentType extends R
 export type RoleMenusEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RoleMenusEdge'] = ResolversParentTypes['RoleMenusEdge']> = {
   cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
   node?: Resolver<ResolversTypes['RoleMenu'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SetRoleMenuRoleOrderPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['SetRoleMenuRoleOrderPayload'] = ResolversParentTypes['SetRoleMenuRoleOrderPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  roleMenuRoles?: Resolver<Maybe<Array<ResolversTypes['RoleMenuRole']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -17383,6 +17492,7 @@ export type Resolvers<ContextType = any> = {
   RoleMenuVarianceSampleAggregates?: RoleMenuVarianceSampleAggregatesResolvers<ContextType>;
   RoleMenusConnection?: RoleMenusConnectionResolvers<ContextType>;
   RoleMenusEdge?: RoleMenusEdgeResolvers<ContextType>;
+  SetRoleMenuRoleOrderPayload?: SetRoleMenuRoleOrderPayloadResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
   TagAggregates?: TagAggregatesResolvers<ContextType>;
   TagAverageAggregates?: TagAverageAggregatesResolvers<ContextType>;
@@ -17642,14 +17752,14 @@ export type AddRoleMenuRolesMutationVariables = Exact<{
 }>;
 
 
-export type AddRoleMenuRolesMutation = { __typename?: 'Mutation', addRoleMenuRoles?: { __typename?: 'AddRoleMenuRolesPayload', roleMenuRoles?: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> | null } | null };
+export type AddRoleMenuRolesMutation = { __typename?: 'Mutation', addRoleMenuRoles?: { __typename?: 'AddRoleMenuRolesPayload', roleMenuRoles?: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null, position?: number | null }> | null } | null };
 
 export type CreateRoleMenuMutationVariables = Exact<{
   roleMenu: RoleMenuInput;
 }>;
 
 
-export type CreateRoleMenuMutation = { __typename?: 'Mutation', createRoleMenu?: { __typename?: 'CreateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } } | null } | null };
+export type CreateRoleMenuMutation = { __typename?: 'Mutation', createRoleMenu?: { __typename?: 'CreateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null, position?: number | null }> } } | null } | null };
 
 export type DeleteRoleMenuMutationVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -17657,7 +17767,7 @@ export type DeleteRoleMenuMutationVariables = Exact<{
 }>;
 
 
-export type DeleteRoleMenuMutation = { __typename?: 'Mutation', deleteRoleMenuByGuildIdAndMenuName?: { __typename?: 'DeleteRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } } | null } | null };
+export type DeleteRoleMenuMutation = { __typename?: 'Mutation', deleteRoleMenuByGuildIdAndMenuName?: { __typename?: 'DeleteRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null, position?: number | null }> } } | null } | null };
 
 export type DeleteRoleMenuRolesMutationVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -17666,7 +17776,7 @@ export type DeleteRoleMenuRolesMutationVariables = Exact<{
 }>;
 
 
-export type DeleteRoleMenuRolesMutation = { __typename?: 'Mutation', deleteRoleMenuRoles?: { __typename?: 'DeleteRoleMenuRolesPayload', roleMenuRoles?: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> | null } | null };
+export type DeleteRoleMenuRolesMutation = { __typename?: 'Mutation', deleteRoleMenuRoles?: { __typename?: 'DeleteRoleMenuRolesPayload', roleMenuRoles?: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null, position?: number | null }> | null } | null };
 
 export type GetRoleMenuQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -17674,18 +17784,18 @@ export type GetRoleMenuQueryVariables = Exact<{
 }>;
 
 
-export type GetRoleMenuQuery = { __typename?: 'Query', roleMenuByGuildIdAndMenuName?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } } | null };
+export type GetRoleMenuQuery = { __typename?: 'Query', roleMenuByGuildIdAndMenuName?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null, position?: number | null }> } } | null };
 
 export type ListRoleMenusQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
 }>;
 
 
-export type ListRoleMenusQuery = { __typename?: 'Query', allRoleMenus?: { __typename?: 'RoleMenusConnection', totalCount: number, nodes: Array<{ __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } }> } | null };
+export type ListRoleMenusQuery = { __typename?: 'Query', allRoleMenus?: { __typename?: 'RoleMenusConnection', totalCount: number, nodes: Array<{ __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null, position?: number | null }> } }> } | null };
 
-export type RoleMenuDataFragment = { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } };
+export type RoleMenuDataFragment = { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null, position?: number | null }> } };
 
-export type RoleMenuRoleDataFragment = { __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null };
+export type RoleMenuRoleDataFragment = { __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null, position?: number | null };
 
 export type SearchRoleMenuStartingWithQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -17695,6 +17805,15 @@ export type SearchRoleMenuStartingWithQueryVariables = Exact<{
 
 export type SearchRoleMenuStartingWithQuery = { __typename?: 'Query', allRoleMenus?: { __typename?: 'RoleMenusConnection', totalCount: number, nodes: Array<{ __typename?: 'RoleMenu', menuName: string }> } | null };
 
+export type SetRoleMenuRoleOrderMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  menuName: Scalars['String'];
+  roleIds: Array<InputMaybe<Scalars['BigInt']>> | InputMaybe<Scalars['BigInt']>;
+}>;
+
+
+export type SetRoleMenuRoleOrderMutation = { __typename?: 'Mutation', setRoleMenuRoleOrder?: { __typename?: 'SetRoleMenuRoleOrderPayload', roleMenuRoles?: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null, position?: number | null }> | null } | null };
+
 export type UpdateRoleMenuMutationVariables = Exact<{
   guildId: Scalars['BigInt'];
   menuName: Scalars['String'];
@@ -17702,7 +17821,7 @@ export type UpdateRoleMenuMutationVariables = Exact<{
 }>;
 
 
-export type UpdateRoleMenuMutation = { __typename?: 'Mutation', updateRoleMenuByGuildIdAndMenuName?: { __typename?: 'UpdateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null }> } } | null } | null };
+export type UpdateRoleMenuMutation = { __typename?: 'Mutation', updateRoleMenuByGuildIdAndMenuName?: { __typename?: 'UpdateRoleMenuPayload', roleMenu?: { __typename?: 'RoleMenu', guildId: string, menuName: string, description?: string | null, maxCount?: number | null, requiredRole?: string | null, roleMenuRolesByGuildIdAndMenuName: { __typename?: 'RoleMenuRolesConnection', nodes: Array<{ __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null, position?: number | null }> } } | null } | null };
 
 export type UpsertRoleMenuRoleMutationVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -17713,7 +17832,7 @@ export type UpsertRoleMenuRoleMutationVariables = Exact<{
 }>;
 
 
-export type UpsertRoleMenuRoleMutation = { __typename?: 'Mutation', upsertRoleMenuRole?: { __typename?: 'UpsertRoleMenuRolePayload', roleMenuRole?: { __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null } | null } | null };
+export type UpsertRoleMenuRoleMutation = { __typename?: 'Mutation', upsertRoleMenuRole?: { __typename?: 'UpsertRoleMenuRolePayload', roleMenuRole?: { __typename?: 'RoleMenuRole', guildId: string, menuName: string, roleId: string, emoji?: string | null, description?: string | null, position?: number | null } | null } | null };
 
 export type CreateTagMutationVariables = Exact<{
   tag: TagInput;
@@ -17888,6 +18007,7 @@ export const RoleMenuRoleDataFragmentDoc = gql`
   roleId
   emoji
   description
+  position
 }
     `;
 export const RoleMenuDataFragmentDoc = gql`
@@ -18194,6 +18314,17 @@ export const SearchRoleMenuStartingWithDocument = gql`
   }
 }
     `;
+export const SetRoleMenuRoleOrderDocument = gql`
+    mutation setRoleMenuRoleOrder($guildId: BigInt!, $menuName: String!, $roleIds: [BigInt]!) {
+  setRoleMenuRoleOrder(
+    input: {guildId: $guildId, menuName: $menuName, roleIds: $roleIds}
+  ) {
+    roleMenuRoles {
+      ...RoleMenuRoleData
+    }
+  }
+}
+    ${RoleMenuRoleDataFragmentDoc}`;
 export const UpdateRoleMenuDocument = gql`
     mutation updateRoleMenu($guildId: BigInt!, $menuName: String!, $roleMenuPatch: RoleMenuPatch!) {
   updateRoleMenuByGuildIdAndMenuName(
@@ -18441,6 +18572,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     searchRoleMenuStartingWith(variables: SearchRoleMenuStartingWithQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchRoleMenuStartingWithQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<SearchRoleMenuStartingWithQuery>(SearchRoleMenuStartingWithDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'searchRoleMenuStartingWith', 'query');
+    },
+    setRoleMenuRoleOrder(variables: SetRoleMenuRoleOrderMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SetRoleMenuRoleOrderMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<SetRoleMenuRoleOrderMutation>(SetRoleMenuRoleOrderDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'setRoleMenuRoleOrder', 'mutation');
     },
     updateRoleMenu(variables: UpdateRoleMenuMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateRoleMenuMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateRoleMenuMutation>(UpdateRoleMenuDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateRoleMenu', 'mutation');

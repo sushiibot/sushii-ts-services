@@ -14,7 +14,11 @@ import {
 } from "discord-api-types/v10";
 import { t } from "i18next";
 import { None, Option, Some } from "ts-results";
-import { GetRoleMenuQuery, RedisGuildRole } from "../../generated/graphql";
+import {
+  GetRoleMenuQuery,
+  RedisGuildRole,
+  RoleMenuRole,
+} from "../../generated/graphql";
 import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -23,7 +27,10 @@ import customIds from "../customIds";
 import { SlashCommandHandler } from "../handlers";
 import { getHighestMemberRole } from "../moderation/hasPermission";
 import CommandInteractionOptionResolver from "../resolver";
-import { interactionReplyErrorMessage } from "../responses/error";
+import {
+  interactionReplyErrorMessage,
+  interactionReplyErrorPlainMessage,
+} from "../responses/error";
 
 const RE_ROLE = /<@&(\d{17,20})>/g;
 
@@ -43,6 +50,27 @@ enum RoleMenuOption {
 enum RoleMenuType {
   SelectMenu = "select_menu",
   Buttons = "buttons",
+}
+
+type QueriedRoleMenuRole = Omit<RoleMenuRole, "nodeId">;
+
+function sortRoleMenuRoles(
+  a: QueriedRoleMenuRole,
+  b: QueriedRoleMenuRole
+): number {
+  if (a.position === b.position) {
+    return 0;
+  }
+
+  if (a.position == null) {
+    return 1;
+  }
+
+  if (b.position == null) {
+    return -1;
+  }
+
+  return a.position - b.position;
 }
 
 export default class RoleMenuCommand extends SlashCommandHandler {
@@ -126,6 +154,24 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.RequiredRole)
             .setDescription("A role that the user must have to use this menu")
             .setRequired(false)
+        )
+    )
+    .addSubcommand((c) =>
+      c
+        .setName("editorder")
+        .setDescription("Change the order of a rolemenu's roles.")
+        .addStringOption((o) =>
+          o
+            .setName(RoleMenuOption.Name)
+            .setDescription("The name of the menu to add the roles to.")
+            .setRequired(true)
+            .setAutocomplete(true)
+        )
+        .addStringOption((o) =>
+          o
+            .setName(RoleMenuOption.Roles)
+            .setDescription("The new order of the roles in the menu.")
+            .setRequired(true)
         )
     )
     .addSubcommand((c) =>
@@ -283,6 +329,8 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         return this.listHandler(ctx, interaction);
       case "edit":
         return this.editHandler(ctx, interaction, options);
+      case "editorder":
+        return this.editOrderHandler(ctx, interaction, options);
       case "addroles":
         return this.addRolesHandler(ctx, interaction, options);
       case "removeroles":
@@ -392,7 +440,10 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     const menuData = menu.safeUnwrap();
 
-    const rolesStr = menuData.roleMenuRolesByGuildIdAndMenuName.nodes
+    const roles = menuData.roleMenuRolesByGuildIdAndMenuName.nodes;
+    roles.sort(sortRoleMenuRoles);
+
+    const rolesStr = roles
       .map((r) => {
         let s = `<@&${r.roleId}>`;
 
@@ -559,6 +610,92 @@ export default class RoleMenuCommand extends SlashCommandHandler {
                 : "No required role.",
             },
           ])
+          .toJSON(),
+      ],
+    });
+  }
+
+  private async editOrderHandler(
+    ctx: Context,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: CommandInteractionOptionResolver
+  ): Promise<void> {
+    const menuName = options.getString(RoleMenuOption.Name);
+    if (!menuName) {
+      throw new Error("No menu name provided.");
+    }
+
+    const roleMenu = await this.getMenu(ctx, interaction, menuName);
+    if (roleMenu.none) {
+      await ctx.REST.interactionReply(interaction, {
+        content: t("rolemenu.edit.error.menu_not_found"),
+      });
+
+      return;
+    }
+
+    const roles = options.getString(RoleMenuOption.Roles);
+    if (!roles) {
+      throw new Error("No role provided.");
+    }
+
+    // First match to get the ID group
+    const roleIds = [...roles.matchAll(RE_ROLE)].map((match) => match[1]);
+    if (!roleIds) {
+      await ctx.REST.interactionReply(interaction, {
+        content: t("rolemenu.addroles.error.no_roles_given"),
+      });
+
+      return;
+    }
+
+    const roleMenuData = roleMenu.safeUnwrap();
+    const currentRoles = roleMenuData.roleMenuRolesByGuildIdAndMenuName.nodes;
+    currentRoles.sort(sortRoleMenuRoles);
+
+    const currentRoleIDs = currentRoles.map((r) => r.roleId);
+
+    const currentRoleIDsSet = new Set(currentRoleIDs);
+    const newOrderRoleIDsSet = new Set(roleIds);
+
+    // Check if new order contains exactly the same roles, no more, no less
+    if (
+      currentRoleIDsSet.size !== newOrderRoleIDsSet.size ||
+      !currentRoleIDs.every((id) => newOrderRoleIDsSet.has(id))
+    ) {
+      await interactionReplyErrorPlainMessage(
+        ctx,
+        interaction,
+        t("rolemenu.editorder.error.mismatched_roles", {
+          name: menuName,
+          roles: currentRoleIDs.map((id) => `<@&${id}>`).join(", "),
+        })
+      );
+
+      return;
+    }
+
+    await ctx.sushiiAPI.sdk.setRoleMenuRoleOrder({
+      guildId: interaction.guild_id,
+      menuName,
+      roleIds,
+    });
+
+    await ctx.REST.interactionReply(interaction, {
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("Updated new role menu order")
+          .setFields([
+            {
+              name: "New order",
+              value: roleIds.map((id) => `<@&${id}>`).join(" "),
+            },
+            {
+              name: "Previous order",
+              value: currentRoleIDs.map((id) => `<@&${id}>`).join(" "),
+            },
+          ])
+          .setColor(Color.Success)
           .toJSON(),
       ],
     });
@@ -944,6 +1081,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     }, new Map<string, RedisGuildRole>());
 
     const roles = roleMenuData.roleMenuRolesByGuildIdAndMenuName.nodes;
+    roles.sort(sortRoleMenuRoles);
 
     if (roles.length === 0) {
       await interactionReplyErrorMessage(

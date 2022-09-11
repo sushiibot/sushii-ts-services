@@ -32074,6 +32074,35 @@
             "deprecationReason": null
           },
           {
+            "name": "setRoleMenuRoleOrder",
+            "description": null,
+            "args": [
+              {
+                "name": "input",
+                "description": "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "SetRoleMenuRoleOrderInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "SetRoleMenuRoleOrderPayload",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "updateBotStat",
             "description": "Updates a single `BotStat` using its globally unique id and a patch.",
             "args": [
@@ -45903,6 +45932,18 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": null,
             "args": [],
@@ -46099,6 +46140,18 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": "Mean average of position across the matching connection",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "BigFloat",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": "Mean average of roleId across the matching connection",
             "args": [],
@@ -46171,6 +46224,18 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": "Checks for equality with the object’s `position` field.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": "Checks for equality with the object’s `roleId` field.",
             "type": {
@@ -46231,6 +46296,18 @@
           {
             "name": "menuName",
             "description": "Distinct count of menuName across the matching connection",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "BigInt",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
+            "description": "Distinct count of position across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -46365,6 +46442,18 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": "Filter by the object’s `position` field.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "IntFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": "Filter by the object’s `roleId` field.",
             "type": {
@@ -46444,6 +46533,18 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": null,
             "type": {
@@ -46482,6 +46583,18 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": "Maximum of position across the matching connection",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": "Maximum of roleId across the matching connection",
             "args": [],
@@ -46511,6 +46624,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "BigInt",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
+            "description": "Minimum of position across the matching connection",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -46589,6 +46714,18 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": null,
             "type": {
@@ -46613,6 +46750,18 @@
           {
             "name": "guildId",
             "description": "Population standard deviation of guildId across the matching connection",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "BigFloat",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
+            "description": "Population standard deviation of position across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -46648,6 +46797,18 @@
           {
             "name": "guildId",
             "description": "Sample standard deviation of guildId across the matching connection",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "BigFloat",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
+            "description": "Sample standard deviation of position across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -46697,6 +46858,22 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": "Sum of position across the matching connection",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "BigInt",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": "Sum of roleId across the matching connection",
             "args": [],
@@ -46736,6 +46913,18 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": "Population variance of position across the matching connection",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "BigFloat",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": "Population variance of roleId across the matching connection",
             "args": [],
@@ -46761,6 +46950,18 @@
           {
             "name": "guildId",
             "description": "Sample variance of guildId across the matching connection",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "BigFloat",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
+            "description": "Sample variance of position across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -47020,6 +47221,12 @@
             "deprecationReason": null
           },
           {
+            "name": "POSITION",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ROLE_ID",
             "description": null,
             "isDeprecated": false,
@@ -47040,6 +47247,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "HavingBigintFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "HavingIntFilter",
               "ofType": null
             },
             "defaultValue": null,
@@ -47075,6 +47294,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "HavingBigintFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "HavingIntFilter",
               "ofType": null
             },
             "defaultValue": null,
@@ -47276,6 +47507,18 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "HavingIntFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": null,
             "type": {
@@ -47304,6 +47547,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "HavingBigintFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "HavingIntFilter",
               "ofType": null
             },
             "defaultValue": null,
@@ -47346,6 +47601,18 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "HavingIntFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": null,
             "type": {
@@ -47374,6 +47641,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "HavingBigintFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "HavingIntFilter",
               "ofType": null
             },
             "defaultValue": null,
@@ -47416,6 +47695,18 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "HavingIntFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": null,
             "type": {
@@ -47451,6 +47742,18 @@
             "deprecationReason": null
           },
           {
+            "name": "position",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "HavingIntFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "roleId",
             "description": null,
             "type": {
@@ -47479,6 +47782,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "HavingBigintFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "HavingIntFilter",
               "ofType": null
             },
             "defaultValue": null,
@@ -47560,6 +47875,18 @@
           },
           {
             "name": "NATURAL",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "POSITION_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "POSITION_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -48795,6 +49122,18 @@
             "deprecationReason": null
           },
           {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_POSITION_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_POSITION_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_AVERAGE_ROLE_ID_ASC",
             "description": null,
             "isDeprecated": false,
@@ -48867,6 +49206,18 @@
             "deprecationReason": null
           },
           {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_POSITION_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_POSITION_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_DISTINCT_COUNT_ROLE_ID_ASC",
             "description": null,
             "isDeprecated": false,
@@ -48922,6 +49273,18 @@
           },
           {
             "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_MENU_NAME_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_POSITION_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MAX_POSITION_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -48987,6 +49350,18 @@
             "deprecationReason": null
           },
           {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_POSITION_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_POSITION_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_MIN_ROLE_ID_ASC",
             "description": null,
             "isDeprecated": false,
@@ -49042,6 +49417,18 @@
           },
           {
             "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_MENU_NAME_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_POSITION_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_POPULATION_POSITION_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -49107,6 +49494,18 @@
             "deprecationReason": null
           },
           {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_POSITION_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_POSITION_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_STDDEV_SAMPLE_ROLE_ID_ASC",
             "description": null,
             "isDeprecated": false,
@@ -49162,6 +49561,18 @@
           },
           {
             "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_MENU_NAME_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_POSITION_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_SUM_POSITION_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -49227,6 +49638,18 @@
             "deprecationReason": null
           },
           {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_POSITION_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_POSITION_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_POPULATION_ROLE_ID_ASC",
             "description": null,
             "isDeprecated": false,
@@ -49287,6 +49710,18 @@
             "deprecationReason": null
           },
           {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_POSITION_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_POSITION_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ROLE_MENU_ROLES_BY_GUILD_ID_AND_MENU_NAME_VARIANCE_SAMPLE_ROLE_ID_ASC",
             "description": null,
             "isDeprecated": false,
@@ -49299,6 +49734,124 @@
             "deprecationReason": null
           }
         ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "SetRoleMenuRoleOrderInput",
+        "description": "All input for the `setRoleMenuRoleOrder` mutation.",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "clientMutationId",
+            "description": "An arbitrary string value with no semantic meaning. Will be included in the\npayload verbatim. May be used to track mutations by the client.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "guildId",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "BigInt",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "menuName",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "roleIds",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "BigInt",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "SetRoleMenuRoleOrderPayload",
+        "description": "The output of our `setRoleMenuRoleOrder` mutation.",
+        "fields": [
+          {
+            "name": "clientMutationId",
+            "description": "The exact same `clientMutationId` that was provided in the mutation input,\nunchanged and unused. May be used by a client to track mutations.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "query",
+            "description": "Our root query field type. Allows us to run any query from our mutation payload.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Query",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "roleMenuRoles",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "RoleMenuRole",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
         "possibleTypes": null
       },
       {
