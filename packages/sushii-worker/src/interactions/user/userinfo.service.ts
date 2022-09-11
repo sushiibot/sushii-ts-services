@@ -51,23 +51,24 @@ export default async function getUserinfoEmbed(
   if (member) {
     const joinedTimestamp = dayjs(member.joined_at);
 
-    embed = embed
-      .addFields([
-        {
-          name: "Roles",
-          value:
-            member.roles.map((id) => `<@&${id}>`).join(" ") ||
-            "Member has no roles",
-        },
-      ])
-      // TODO: Display colour requires guild roles to be cached
-      // .setColor(member.displayColor)
-      .addFields([
-        {
-          name: "Joined Server",
-          value: `<t:${joinedTimestamp.unix()}:F> (<t:${joinedTimestamp.unix()}:R>)`,
-        },
-      ]);
+    // 1024 char limit, 40 roles * 25 length each mention = 1000
+    const trimmedRoles = member.roles.slice(0, 40);
+    let rolesStr = trimmedRoles.map((id) => `<@&${id}>`).join(" ");
+
+    if (member.roles.length > 40) {
+      rolesStr += ` and ${member.roles.length - 40} more roles...`;
+    }
+
+    embed = embed.addFields([
+      {
+        name: "Roles",
+        value: rolesStr || "Member has no roles",
+      },
+      {
+        name: "Joined Server",
+        value: `<t:${joinedTimestamp.unix()}:F> (<t:${joinedTimestamp.unix()}:R>)`,
+      },
+    ]);
 
     if (member.premium_since) {
       const premiumSinceTimestamp = dayjs(member.premium_since);
