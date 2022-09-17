@@ -1,4 +1,4 @@
-import InteractionClient from "./client";
+import InteractionClient from "../client";
 import UserInfoCommand from "./user/userinfo";
 import FishyCommand from "./user/fishy";
 import RepCommand from "./user/rep";

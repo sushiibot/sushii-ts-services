@@ -24,26 +24,26 @@ import {
 } from "discord-api-types/utils/v10";
 import * as Sentry from "@sentry/node";
 import { t } from "i18next";
-import { ConfigI } from "../model/config";
-import Context from "../model/context";
-import log from "../logger";
+import { ConfigI } from "./model/config";
+import Context from "./model/context";
+import log from "./logger";
 import {
   SlashCommandHandler,
   ModalHandler,
   ButtonHandler,
   SelectMenuHandler,
   AutocompleteHandler,
-} from "./handlers";
+} from "./interactions/handlers";
 import {
   isGatewayDispatchEvent,
   isGatewayInteractionCreateDispatch,
-} from "../utils/interactionTypeGuards";
-import ContextMenuHandler from "./handlers/ContextMenuHandler";
-import { AutocompleteOption } from "./handlers/AutocompleteHandler";
-import getInvokerUser from "../utils/interactions";
-import Metrics from "../model/metrics";
-import getFullCommandName from "../utils/getFullCommandName";
-import validationErrorToString from "../utils/validationErrorToString";
+} from "./utils/interactionTypeGuards";
+import ContextMenuHandler from "./interactions/handlers/ContextMenuHandler";
+import { AutocompleteOption } from "./interactions/handlers/AutocompleteHandler";
+import getInvokerUser from "./utils/interactions";
+import Metrics from "./model/metrics";
+import getFullCommandName from "./utils/getFullCommandName";
+import validationErrorToString from "./utils/validationErrorToString";
 
 interface FocusedOption {
   path: string;

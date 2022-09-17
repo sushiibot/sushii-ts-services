@@ -934,6 +934,72 @@ export type CreateGuildConfigPayloadGuildConfigEdgeArgs = {
   orderBy?: InputMaybe<Array<GuildConfigsOrderBy>>;
 };
 
+/** All input for the create `LevelRole` mutation. */
+export type CreateLevelRoleInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `LevelRole` to be created by this mutation. */
+  levelRole: LevelRoleInput;
+};
+
+/** All input for the create `LevelRoleOverride` mutation. */
+export type CreateLevelRoleOverrideInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `LevelRoleOverride` to be created by this mutation. */
+  levelRoleOverride: LevelRoleOverrideInput;
+};
+
+/** The output of our create `LevelRoleOverride` mutation. */
+export type CreateLevelRoleOverridePayload = {
+  __typename?: 'CreateLevelRoleOverridePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `LevelRoleOverride` that was created by this mutation. */
+  levelRoleOverride?: Maybe<LevelRoleOverride>;
+  /** An edge for our `LevelRoleOverride`. May be used by Relay 1. */
+  levelRoleOverrideEdge?: Maybe<LevelRoleOverridesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `LevelRoleOverride` mutation. */
+export type CreateLevelRoleOverridePayloadLevelRoleOverrideEdgeArgs = {
+  orderBy?: InputMaybe<Array<LevelRoleOverridesOrderBy>>;
+};
+
+/** The output of our create `LevelRole` mutation. */
+export type CreateLevelRolePayload = {
+  __typename?: 'CreateLevelRolePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `LevelRole` that was created by this mutation. */
+  levelRole?: Maybe<LevelRole>;
+  /** An edge for our `LevelRole`. May be used by Relay 1. */
+  levelRoleEdge?: Maybe<LevelRolesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `LevelRole` mutation. */
+export type CreateLevelRolePayloadLevelRoleEdgeArgs = {
+  orderBy?: InputMaybe<Array<LevelRolesOrderBy>>;
+};
+
 /** All input for the create `Member` mutation. */
 export type CreateMemberInput = {
   /**
@@ -1371,6 +1437,39 @@ export type CreateWebUserPayloadWebUserEdgeArgs = {
   orderBy?: InputMaybe<Array<WebUsersOrderBy>>;
 };
 
+/** All input for the create `XpBlockedChannel` mutation. */
+export type CreateXpBlockedChannelInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `XpBlockedChannel` to be created by this mutation. */
+  xpBlockedChannel: XpBlockedChannelInput;
+};
+
+/** The output of our create `XpBlockedChannel` mutation. */
+export type CreateXpBlockedChannelPayload = {
+  __typename?: 'CreateXpBlockedChannelPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `XpBlockedChannel` that was created by this mutation. */
+  xpBlockedChannel?: Maybe<XpBlockedChannel>;
+  /** An edge for our `XpBlockedChannel`. May be used by Relay 1. */
+  xpBlockedChannelEdge?: Maybe<XpBlockedChannelsEdge>;
+};
+
+
+/** The output of our create `XpBlockedChannel` mutation. */
+export type CreateXpBlockedChannelPayloadXpBlockedChannelEdgeArgs = {
+  orderBy?: InputMaybe<Array<XpBlockedChannelsOrderBy>>;
+};
+
 /** A `BigInt` edge in the connection. */
 export type CurrentUserManagedGuildIdEdge = {
   __typename?: 'CurrentUserManagedGuildIdEdge';
@@ -1775,6 +1874,97 @@ export type DeleteGuildConfigPayload = {
 /** The output of our delete `GuildConfig` mutation. */
 export type DeleteGuildConfigPayloadGuildConfigEdgeArgs = {
   orderBy?: InputMaybe<Array<GuildConfigsOrderBy>>;
+};
+
+/** All input for the `deleteLevelRoleByGuildIdAndRoleId` mutation. */
+export type DeleteLevelRoleByGuildIdAndRoleIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  roleId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteLevelRole` mutation. */
+export type DeleteLevelRoleInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `LevelRole` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** All input for the `deleteLevelRoleOverrideByGuildIdAndRoleIdAndUserId` mutation. */
+export type DeleteLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  roleId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteLevelRoleOverride` mutation. */
+export type DeleteLevelRoleOverrideInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `LevelRoleOverride` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `LevelRoleOverride` mutation. */
+export type DeleteLevelRoleOverridePayload = {
+  __typename?: 'DeleteLevelRoleOverridePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedLevelRoleOverrideId?: Maybe<Scalars['ID']>;
+  /** The `LevelRoleOverride` that was deleted by this mutation. */
+  levelRoleOverride?: Maybe<LevelRoleOverride>;
+  /** An edge for our `LevelRoleOverride`. May be used by Relay 1. */
+  levelRoleOverrideEdge?: Maybe<LevelRoleOverridesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `LevelRoleOverride` mutation. */
+export type DeleteLevelRoleOverridePayloadLevelRoleOverrideEdgeArgs = {
+  orderBy?: InputMaybe<Array<LevelRoleOverridesOrderBy>>;
+};
+
+/** The output of our delete `LevelRole` mutation. */
+export type DeleteLevelRolePayload = {
+  __typename?: 'DeleteLevelRolePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedLevelRoleId?: Maybe<Scalars['ID']>;
+  /** The `LevelRole` that was deleted by this mutation. */
+  levelRole?: Maybe<LevelRole>;
+  /** An edge for our `LevelRole`. May be used by Relay 1. */
+  levelRoleEdge?: Maybe<LevelRolesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `LevelRole` mutation. */
+export type DeleteLevelRolePayloadLevelRoleEdgeArgs = {
+  orderBy?: InputMaybe<Array<LevelRolesOrderBy>>;
 };
 
 /** All input for the `deleteMemberByGuildIdAndUserId` mutation. */
@@ -2349,6 +2539,51 @@ export type DeleteWebUserPayload = {
 /** The output of our delete `WebUser` mutation. */
 export type DeleteWebUserPayloadWebUserEdgeArgs = {
   orderBy?: InputMaybe<Array<WebUsersOrderBy>>;
+};
+
+/** All input for the `deleteXpBlockedChannelByGuildIdAndChannelOrRoleId` mutation. */
+export type DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput = {
+  channelOrRoleId: Scalars['BigInt'];
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteXpBlockedChannel` mutation. */
+export type DeleteXpBlockedChannelInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `XpBlockedChannel` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `XpBlockedChannel` mutation. */
+export type DeleteXpBlockedChannelPayload = {
+  __typename?: 'DeleteXpBlockedChannelPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedXpBlockedChannelId?: Maybe<Scalars['ID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `XpBlockedChannel` that was deleted by this mutation. */
+  xpBlockedChannel?: Maybe<XpBlockedChannel>;
+  /** An edge for our `XpBlockedChannel`. May be used by Relay 1. */
+  xpBlockedChannelEdge?: Maybe<XpBlockedChannelsEdge>;
+};
+
+
+/** The output of our delete `XpBlockedChannel` mutation. */
+export type DeleteXpBlockedChannelPayloadXpBlockedChannelEdgeArgs = {
+  orderBy?: InputMaybe<Array<XpBlockedChannelsOrderBy>>;
 };
 
 export type Feed = Node & {
@@ -4059,6 +4294,660 @@ export type JsonFilter = {
   notIn?: InputMaybe<Array<Scalars['JSON']>>;
 };
 
+export type LevelRole = Node & {
+  __typename?: 'LevelRole';
+  addLevel?: Maybe<Scalars['BigInt']>;
+  guildId: Scalars['BigInt'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  removeLevel?: Maybe<Scalars['BigInt']>;
+  roleId: Scalars['BigInt'];
+};
+
+export type LevelRoleAggregates = {
+  __typename?: 'LevelRoleAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<LevelRoleAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<LevelRoleDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<LevelRoleMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<LevelRoleMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<LevelRoleStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<LevelRoleStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<LevelRoleSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<LevelRoleVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<LevelRoleVarianceSampleAggregates>;
+};
+
+export type LevelRoleAverageAggregates = {
+  __typename?: 'LevelRoleAverageAggregates';
+  /** Mean average of addLevel across the matching connection */
+  addLevel?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of removeLevel across the matching connection */
+  removeLevel?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+};
+
+/**
+ * A condition to be used against `LevelRole` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type LevelRoleCondition = {
+  /** Checks for equality with the object’s `addLevel` field. */
+  addLevel?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `guildId` field. */
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `removeLevel` field. */
+  removeLevel?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `roleId` field. */
+  roleId?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type LevelRoleDistinctCountAggregates = {
+  __typename?: 'LevelRoleDistinctCountAggregates';
+  /** Distinct count of addLevel across the matching connection */
+  addLevel?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of removeLevel across the matching connection */
+  removeLevel?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `LevelRole` object types. All fields are combined with a logical ‘and.’ */
+export type LevelRoleFilter = {
+  /** Filter by the object’s `addLevel` field. */
+  addLevel?: InputMaybe<BigIntFilter>;
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<LevelRoleFilter>>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<LevelRoleFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<LevelRoleFilter>>;
+  /** Filter by the object’s `removeLevel` field. */
+  removeLevel?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `roleId` field. */
+  roleId?: InputMaybe<BigIntFilter>;
+};
+
+/** An input for mutations affecting `LevelRole` */
+export type LevelRoleInput = {
+  addLevel?: InputMaybe<Scalars['BigInt']>;
+  guildId: Scalars['BigInt'];
+  removeLevel?: InputMaybe<Scalars['BigInt']>;
+  roleId: Scalars['BigInt'];
+};
+
+export type LevelRoleMaxAggregates = {
+  __typename?: 'LevelRoleMaxAggregates';
+  /** Maximum of addLevel across the matching connection */
+  addLevel?: Maybe<Scalars['BigInt']>;
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of removeLevel across the matching connection */
+  removeLevel?: Maybe<Scalars['BigInt']>;
+  /** Maximum of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigInt']>;
+};
+
+export type LevelRoleMinAggregates = {
+  __typename?: 'LevelRoleMinAggregates';
+  /** Minimum of addLevel across the matching connection */
+  addLevel?: Maybe<Scalars['BigInt']>;
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of removeLevel across the matching connection */
+  removeLevel?: Maybe<Scalars['BigInt']>;
+  /** Minimum of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigInt']>;
+};
+
+export type LevelRoleOverride = Node & {
+  __typename?: 'LevelRoleOverride';
+  guildId: Scalars['BigInt'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  roleId: Scalars['BigInt'];
+  type: LevelRoleOverrideType;
+  userId: Scalars['BigInt'];
+};
+
+export type LevelRoleOverrideAggregates = {
+  __typename?: 'LevelRoleOverrideAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<LevelRoleOverrideAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<LevelRoleOverrideDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<LevelRoleOverrideMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<LevelRoleOverrideMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<LevelRoleOverrideStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<LevelRoleOverrideStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<LevelRoleOverrideSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<LevelRoleOverrideVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<LevelRoleOverrideVarianceSampleAggregates>;
+};
+
+export type LevelRoleOverrideAverageAggregates = {
+  __typename?: 'LevelRoleOverrideAverageAggregates';
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+/**
+ * A condition to be used against `LevelRoleOverride` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type LevelRoleOverrideCondition = {
+  /** Checks for equality with the object’s `guildId` field. */
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `roleId` field. */
+  roleId?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `type` field. */
+  type?: InputMaybe<LevelRoleOverrideType>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type LevelRoleOverrideDistinctCountAggregates = {
+  __typename?: 'LevelRoleOverrideDistinctCountAggregates';
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of type across the matching connection */
+  type?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `LevelRoleOverride` object types. All fields are combined with a logical ‘and.’ */
+export type LevelRoleOverrideFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<LevelRoleOverrideFilter>>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<LevelRoleOverrideFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<LevelRoleOverrideFilter>>;
+  /** Filter by the object’s `roleId` field. */
+  roleId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `type` field. */
+  type?: InputMaybe<LevelRoleOverrideTypeFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+/** An input for mutations affecting `LevelRoleOverride` */
+export type LevelRoleOverrideInput = {
+  guildId: Scalars['BigInt'];
+  roleId: Scalars['BigInt'];
+  type: LevelRoleOverrideType;
+  userId: Scalars['BigInt'];
+};
+
+export type LevelRoleOverrideMaxAggregates = {
+  __typename?: 'LevelRoleOverrideMaxAggregates';
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+export type LevelRoleOverrideMinAggregates = {
+  __typename?: 'LevelRoleOverrideMinAggregates';
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']>;
+};
+
+/** Represents an update to a `LevelRoleOverride`. Fields that are set will be updated. */
+export type LevelRoleOverridePatch = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  roleId?: InputMaybe<Scalars['BigInt']>;
+  type?: InputMaybe<LevelRoleOverrideType>;
+  userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type LevelRoleOverrideStddevPopulationAggregates = {
+  __typename?: 'LevelRoleOverrideStddevPopulationAggregates';
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type LevelRoleOverrideStddevSampleAggregates = {
+  __typename?: 'LevelRoleOverrideStddevSampleAggregates';
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type LevelRoleOverrideSumAggregates = {
+  __typename?: 'LevelRoleOverrideSumAggregates';
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of roleId across the matching connection */
+  roleId: Scalars['BigFloat'];
+  /** Sum of userId across the matching connection */
+  userId: Scalars['BigFloat'];
+};
+
+export enum LevelRoleOverrideType {
+  Block = 'BLOCK',
+  Grant = 'GRANT'
+}
+
+/** A filter to be used against LevelRoleOverrideType fields. All fields are combined with a logical ‘and.’ */
+export type LevelRoleOverrideTypeFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<LevelRoleOverrideType>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<LevelRoleOverrideType>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<LevelRoleOverrideType>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<LevelRoleOverrideType>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<LevelRoleOverrideType>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<LevelRoleOverrideType>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<LevelRoleOverrideType>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<LevelRoleOverrideType>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<LevelRoleOverrideType>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<LevelRoleOverrideType>>;
+};
+
+export type LevelRoleOverrideVariancePopulationAggregates = {
+  __typename?: 'LevelRoleOverrideVariancePopulationAggregates';
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type LevelRoleOverrideVarianceSampleAggregates = {
+  __typename?: 'LevelRoleOverrideVarianceSampleAggregates';
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of userId across the matching connection */
+  userId?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A connection to a list of `LevelRoleOverride` values. */
+export type LevelRoleOverridesConnection = {
+  __typename?: 'LevelRoleOverridesConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<LevelRoleOverrideAggregates>;
+  /** A list of edges which contains the `LevelRoleOverride` and cursor to aid in pagination. */
+  edges: Array<LevelRoleOverridesEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<LevelRoleOverrideAggregates>>;
+  /** A list of `LevelRoleOverride` objects. */
+  nodes: Array<LevelRoleOverride>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `LevelRoleOverride` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `LevelRoleOverride` values. */
+export type LevelRoleOverridesConnectionGroupedAggregatesArgs = {
+  groupBy: Array<LevelRoleOverridesGroupBy>;
+  having?: InputMaybe<LevelRoleOverridesHavingInput>;
+};
+
+/** A `LevelRoleOverride` edge in the connection. */
+export type LevelRoleOverridesEdge = {
+  __typename?: 'LevelRoleOverridesEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `LevelRoleOverride` at the end of the edge. */
+  node: LevelRoleOverride;
+};
+
+/** Grouping methods for `LevelRoleOverride` for usage during aggregation. */
+export enum LevelRoleOverridesGroupBy {
+  GuildId = 'GUILD_ID',
+  RoleId = 'ROLE_ID',
+  Type = 'TYPE',
+  UserId = 'USER_ID'
+}
+
+export type LevelRoleOverridesHavingAverageInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRoleOverridesHavingDistinctCountInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `LevelRoleOverride` aggregates. */
+export type LevelRoleOverridesHavingInput = {
+  AND?: InputMaybe<Array<LevelRoleOverridesHavingInput>>;
+  OR?: InputMaybe<Array<LevelRoleOverridesHavingInput>>;
+  average?: InputMaybe<LevelRoleOverridesHavingAverageInput>;
+  distinctCount?: InputMaybe<LevelRoleOverridesHavingDistinctCountInput>;
+  max?: InputMaybe<LevelRoleOverridesHavingMaxInput>;
+  min?: InputMaybe<LevelRoleOverridesHavingMinInput>;
+  stddevPopulation?: InputMaybe<LevelRoleOverridesHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<LevelRoleOverridesHavingStddevSampleInput>;
+  sum?: InputMaybe<LevelRoleOverridesHavingSumInput>;
+  variancePopulation?: InputMaybe<LevelRoleOverridesHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<LevelRoleOverridesHavingVarianceSampleInput>;
+};
+
+export type LevelRoleOverridesHavingMaxInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRoleOverridesHavingMinInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRoleOverridesHavingStddevPopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRoleOverridesHavingStddevSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRoleOverridesHavingSumInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRoleOverridesHavingVariancePopulationInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRoleOverridesHavingVarianceSampleInput = {
+  guildId?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+  userId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Methods to use when ordering `LevelRoleOverride`. */
+export enum LevelRoleOverridesOrderBy {
+  GuildIdAsc = 'GUILD_ID_ASC',
+  GuildIdDesc = 'GUILD_ID_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RoleIdAsc = 'ROLE_ID_ASC',
+  RoleIdDesc = 'ROLE_ID_DESC',
+  TypeAsc = 'TYPE_ASC',
+  TypeDesc = 'TYPE_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC'
+}
+
+/** Represents an update to a `LevelRole`. Fields that are set will be updated. */
+export type LevelRolePatch = {
+  addLevel?: InputMaybe<Scalars['BigInt']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  removeLevel?: InputMaybe<Scalars['BigInt']>;
+  roleId?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type LevelRoleStddevPopulationAggregates = {
+  __typename?: 'LevelRoleStddevPopulationAggregates';
+  /** Population standard deviation of addLevel across the matching connection */
+  addLevel?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of removeLevel across the matching connection */
+  removeLevel?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type LevelRoleStddevSampleAggregates = {
+  __typename?: 'LevelRoleStddevSampleAggregates';
+  /** Sample standard deviation of addLevel across the matching connection */
+  addLevel?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of removeLevel across the matching connection */
+  removeLevel?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type LevelRoleSumAggregates = {
+  __typename?: 'LevelRoleSumAggregates';
+  /** Sum of addLevel across the matching connection */
+  addLevel: Scalars['BigFloat'];
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+  /** Sum of removeLevel across the matching connection */
+  removeLevel: Scalars['BigFloat'];
+  /** Sum of roleId across the matching connection */
+  roleId: Scalars['BigFloat'];
+};
+
+export type LevelRoleVariancePopulationAggregates = {
+  __typename?: 'LevelRoleVariancePopulationAggregates';
+  /** Population variance of addLevel across the matching connection */
+  addLevel?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of removeLevel across the matching connection */
+  removeLevel?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type LevelRoleVarianceSampleAggregates = {
+  __typename?: 'LevelRoleVarianceSampleAggregates';
+  /** Sample variance of addLevel across the matching connection */
+  addLevel?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of removeLevel across the matching connection */
+  removeLevel?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of roleId across the matching connection */
+  roleId?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A connection to a list of `LevelRole` values. */
+export type LevelRolesConnection = {
+  __typename?: 'LevelRolesConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<LevelRoleAggregates>;
+  /** A list of edges which contains the `LevelRole` and cursor to aid in pagination. */
+  edges: Array<LevelRolesEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<LevelRoleAggregates>>;
+  /** A list of `LevelRole` objects. */
+  nodes: Array<LevelRole>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `LevelRole` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `LevelRole` values. */
+export type LevelRolesConnectionGroupedAggregatesArgs = {
+  groupBy: Array<LevelRolesGroupBy>;
+  having?: InputMaybe<LevelRolesHavingInput>;
+};
+
+/** A `LevelRole` edge in the connection. */
+export type LevelRolesEdge = {
+  __typename?: 'LevelRolesEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `LevelRole` at the end of the edge. */
+  node: LevelRole;
+};
+
+/** Grouping methods for `LevelRole` for usage during aggregation. */
+export enum LevelRolesGroupBy {
+  AddLevel = 'ADD_LEVEL',
+  GuildId = 'GUILD_ID',
+  RemoveLevel = 'REMOVE_LEVEL',
+  RoleId = 'ROLE_ID'
+}
+
+export type LevelRolesHavingAverageInput = {
+  addLevel?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  removeLevel?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRolesHavingDistinctCountInput = {
+  addLevel?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  removeLevel?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `LevelRole` aggregates. */
+export type LevelRolesHavingInput = {
+  AND?: InputMaybe<Array<LevelRolesHavingInput>>;
+  OR?: InputMaybe<Array<LevelRolesHavingInput>>;
+  average?: InputMaybe<LevelRolesHavingAverageInput>;
+  distinctCount?: InputMaybe<LevelRolesHavingDistinctCountInput>;
+  max?: InputMaybe<LevelRolesHavingMaxInput>;
+  min?: InputMaybe<LevelRolesHavingMinInput>;
+  stddevPopulation?: InputMaybe<LevelRolesHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<LevelRolesHavingStddevSampleInput>;
+  sum?: InputMaybe<LevelRolesHavingSumInput>;
+  variancePopulation?: InputMaybe<LevelRolesHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<LevelRolesHavingVarianceSampleInput>;
+};
+
+export type LevelRolesHavingMaxInput = {
+  addLevel?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  removeLevel?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRolesHavingMinInput = {
+  addLevel?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  removeLevel?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRolesHavingStddevPopulationInput = {
+  addLevel?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  removeLevel?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRolesHavingStddevSampleInput = {
+  addLevel?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  removeLevel?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRolesHavingSumInput = {
+  addLevel?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  removeLevel?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRolesHavingVariancePopulationInput = {
+  addLevel?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  removeLevel?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type LevelRolesHavingVarianceSampleInput = {
+  addLevel?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  removeLevel?: InputMaybe<HavingBigintFilter>;
+  roleId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Methods to use when ordering `LevelRole`. */
+export enum LevelRolesOrderBy {
+  AddLevelAsc = 'ADD_LEVEL_ASC',
+  AddLevelDesc = 'ADD_LEVEL_DESC',
+  GuildIdAsc = 'GUILD_ID_ASC',
+  GuildIdDesc = 'GUILD_ID_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RemoveLevelAsc = 'REMOVE_LEVEL_ASC',
+  RemoveLevelDesc = 'REMOVE_LEVEL_DESC',
+  RoleIdAsc = 'ROLE_ID_ASC',
+  RoleIdDesc = 'ROLE_ID_DESC'
+}
+
 export enum LevelTimeframe {
   AllTime = 'ALL_TIME',
   Day = 'DAY',
@@ -5295,6 +6184,10 @@ export type Mutation = {
   createGuildBan?: Maybe<CreateGuildBanPayload>;
   /** Creates a single `GuildConfig`. */
   createGuildConfig?: Maybe<CreateGuildConfigPayload>;
+  /** Creates a single `LevelRole`. */
+  createLevelRole?: Maybe<CreateLevelRolePayload>;
+  /** Creates a single `LevelRoleOverride`. */
+  createLevelRoleOverride?: Maybe<CreateLevelRoleOverridePayload>;
   /** Creates a single `Member`. */
   createMember?: Maybe<CreateMemberPayload>;
   /** Creates a single `Message`. */
@@ -5321,6 +6214,8 @@ export type Mutation = {
   createWebUser?: Maybe<CreateWebUserPayload>;
   /** Creates a single `WebUserGuild`. */
   createWebUserGuild?: Maybe<CreateWebUserGuildPayload>;
+  /** Creates a single `XpBlockedChannel`. */
+  createXpBlockedChannel?: Maybe<CreateXpBlockedChannelPayload>;
   /** Deletes a single `BotStat` using its globally unique id. */
   deleteBotStat?: Maybe<DeleteBotStatPayload>;
   /** Deletes a single `BotStat` using a unique key. */
@@ -5353,6 +6248,14 @@ export type Mutation = {
   deleteGuildConfig?: Maybe<DeleteGuildConfigPayload>;
   /** Deletes a single `GuildConfig` using a unique key. */
   deleteGuildConfigById?: Maybe<DeleteGuildConfigPayload>;
+  /** Deletes a single `LevelRole` using its globally unique id. */
+  deleteLevelRole?: Maybe<DeleteLevelRolePayload>;
+  /** Deletes a single `LevelRole` using a unique key. */
+  deleteLevelRoleByGuildIdAndRoleId?: Maybe<DeleteLevelRolePayload>;
+  /** Deletes a single `LevelRoleOverride` using its globally unique id. */
+  deleteLevelRoleOverride?: Maybe<DeleteLevelRoleOverridePayload>;
+  /** Deletes a single `LevelRoleOverride` using a unique key. */
+  deleteLevelRoleOverrideByGuildIdAndRoleIdAndUserId?: Maybe<DeleteLevelRoleOverridePayload>;
   /** Deletes a single `Member` using its globally unique id. */
   deleteMember?: Maybe<DeleteMemberPayload>;
   /** Deletes a single `Member` using a unique key. */
@@ -5402,6 +6305,10 @@ export type Mutation = {
   deleteWebUserGuild?: Maybe<DeleteWebUserGuildPayload>;
   /** Deletes a single `WebUserGuild` using a unique key. */
   deleteWebUserGuildByUserIdAndGuildId?: Maybe<DeleteWebUserGuildPayload>;
+  /** Deletes a single `XpBlockedChannel` using its globally unique id. */
+  deleteXpBlockedChannel?: Maybe<DeleteXpBlockedChannelPayload>;
+  /** Deletes a single `XpBlockedChannel` using a unique key. */
+  deleteXpBlockedChannelByGuildIdAndChannelOrRoleId?: Maybe<DeleteXpBlockedChannelPayload>;
   graphql?: Maybe<GraphqlPayload>;
   logout?: Maybe<LogoutPayload>;
   setRoleMenuRoleOrder?: Maybe<SetRoleMenuRoleOrderPayload>;
@@ -5437,6 +6344,14 @@ export type Mutation = {
   updateGuildConfig?: Maybe<UpdateGuildConfigPayload>;
   /** Updates a single `GuildConfig` using a unique key and a patch. */
   updateGuildConfigById?: Maybe<UpdateGuildConfigPayload>;
+  /** Updates a single `LevelRole` using its globally unique id and a patch. */
+  updateLevelRole?: Maybe<UpdateLevelRolePayload>;
+  /** Updates a single `LevelRole` using a unique key and a patch. */
+  updateLevelRoleByGuildIdAndRoleId?: Maybe<UpdateLevelRolePayload>;
+  /** Updates a single `LevelRoleOverride` using its globally unique id and a patch. */
+  updateLevelRoleOverride?: Maybe<UpdateLevelRoleOverridePayload>;
+  /** Updates a single `LevelRoleOverride` using a unique key and a patch. */
+  updateLevelRoleOverrideByGuildIdAndRoleIdAndUserId?: Maybe<UpdateLevelRoleOverridePayload>;
   /** Updates a single `Member` using its globally unique id and a patch. */
   updateMember?: Maybe<UpdateMemberPayload>;
   /** Updates a single `Member` using a unique key and a patch. */
@@ -5477,6 +6392,7 @@ export type Mutation = {
   updateUserLevel?: Maybe<UpdateUserLevelPayload>;
   /** Updates a single `UserLevel` using a unique key and a patch. */
   updateUserLevelByUserIdAndGuildId?: Maybe<UpdateUserLevelPayload>;
+  updateUserXp?: Maybe<UpdateUserXpPayload>;
   /** Updates a single `WebUser` using its globally unique id and a patch. */
   updateWebUser?: Maybe<UpdateWebUserPayload>;
   /** Updates a single `WebUser` using a unique key and a patch. */
@@ -5485,6 +6401,10 @@ export type Mutation = {
   updateWebUserGuild?: Maybe<UpdateWebUserGuildPayload>;
   /** Updates a single `WebUserGuild` using a unique key and a patch. */
   updateWebUserGuildByUserIdAndGuildId?: Maybe<UpdateWebUserGuildPayload>;
+  /** Updates a single `XpBlockedChannel` using its globally unique id and a patch. */
+  updateXpBlockedChannel?: Maybe<UpdateXpBlockedChannelPayload>;
+  /** Updates a single `XpBlockedChannel` using a unique key and a patch. */
+  updateXpBlockedChannelByGuildIdAndChannelOrRoleId?: Maybe<UpdateXpBlockedChannelPayload>;
   /** Upserts a single `BotStat`. */
   upsertBotStat?: Maybe<UpsertBotStatPayload>;
   /** Upserts a single `CachedGuild`. */
@@ -5501,6 +6421,10 @@ export type Mutation = {
   upsertGuildBan?: Maybe<UpsertGuildBanPayload>;
   /** Upserts a single `GuildConfig`. */
   upsertGuildConfig?: Maybe<UpsertGuildConfigPayload>;
+  /** Upserts a single `LevelRole`. */
+  upsertLevelRole?: Maybe<UpsertLevelRolePayload>;
+  /** Upserts a single `LevelRoleOverride`. */
+  upsertLevelRoleOverride?: Maybe<UpsertLevelRoleOverridePayload>;
   /** Upserts a single `Member`. */
   upsertMember?: Maybe<UpsertMemberPayload>;
   /** Upserts a single `ModLog`. */
@@ -5525,6 +6449,8 @@ export type Mutation = {
   upsertWebUser?: Maybe<UpsertWebUserPayload>;
   /** Upserts a single `WebUserGuild`. */
   upsertWebUserGuild?: Maybe<UpsertWebUserGuildPayload>;
+  /** Upserts a single `XpBlockedChannel`. */
+  upsertXpBlockedChannel?: Maybe<UpsertXpBlockedChannelPayload>;
 };
 
 
@@ -5579,6 +6505,18 @@ export type MutationCreateGuildBanArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateGuildConfigArgs = {
   input: CreateGuildConfigInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateLevelRoleArgs = {
+  input: CreateLevelRoleInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateLevelRoleOverrideArgs = {
+  input: CreateLevelRoleOverrideInput;
 };
 
 
@@ -5657,6 +6595,12 @@ export type MutationCreateWebUserArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateWebUserGuildArgs = {
   input: CreateWebUserGuildInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateXpBlockedChannelArgs = {
+  input: CreateXpBlockedChannelInput;
 };
 
 
@@ -5753,6 +6697,30 @@ export type MutationDeleteGuildConfigArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteGuildConfigByIdArgs = {
   input: DeleteGuildConfigByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteLevelRoleArgs = {
+  input: DeleteLevelRoleInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteLevelRoleByGuildIdAndRoleIdArgs = {
+  input: DeleteLevelRoleByGuildIdAndRoleIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteLevelRoleOverrideArgs = {
+  input: DeleteLevelRoleOverrideInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteLevelRoleOverrideByGuildIdAndRoleIdAndUserIdArgs = {
+  input: DeleteLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput;
 };
 
 
@@ -5907,6 +6875,18 @@ export type MutationDeleteWebUserGuildByUserIdAndGuildIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteXpBlockedChannelArgs = {
+  input: DeleteXpBlockedChannelInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdArgs = {
+  input: DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationGraphqlArgs = {
   input: GraphqlInput;
 };
@@ -6017,6 +6997,30 @@ export type MutationUpdateGuildConfigArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateGuildConfigByIdArgs = {
   input: UpdateGuildConfigByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateLevelRoleArgs = {
+  input: UpdateLevelRoleInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateLevelRoleByGuildIdAndRoleIdArgs = {
+  input: UpdateLevelRoleByGuildIdAndRoleIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateLevelRoleOverrideArgs = {
+  input: UpdateLevelRoleOverrideInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateLevelRoleOverrideByGuildIdAndRoleIdAndUserIdArgs = {
+  input: UpdateLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput;
 };
 
 
@@ -6141,6 +7145,12 @@ export type MutationUpdateUserLevelByUserIdAndGuildIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateUserXpArgs = {
+  input: UpdateUserXpInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateWebUserArgs = {
   input: UpdateWebUserInput;
 };
@@ -6161,6 +7171,18 @@ export type MutationUpdateWebUserGuildArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateWebUserGuildByUserIdAndGuildIdArgs = {
   input: UpdateWebUserGuildByUserIdAndGuildIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateXpBlockedChannelArgs = {
+  input: UpdateXpBlockedChannelInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdArgs = {
+  input: UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput;
 };
 
 
@@ -6217,6 +7239,20 @@ export type MutationUpsertGuildBanArgs = {
 export type MutationUpsertGuildConfigArgs = {
   input: UpsertGuildConfigInput;
   where?: InputMaybe<UpsertGuildConfigWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertLevelRoleArgs = {
+  input: UpsertLevelRoleInput;
+  where?: InputMaybe<UpsertLevelRoleWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertLevelRoleOverrideArgs = {
+  input: UpsertLevelRoleOverrideInput;
+  where?: InputMaybe<UpsertLevelRoleOverrideWhere>;
 };
 
 
@@ -6301,6 +7337,13 @@ export type MutationUpsertWebUserArgs = {
 export type MutationUpsertWebUserGuildArgs = {
   input: UpsertWebUserGuildInput;
   where?: InputMaybe<UpsertWebUserGuildWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertXpBlockedChannelArgs = {
+  input: UpsertXpBlockedChannelInput;
+  where?: InputMaybe<UpsertXpBlockedChannelWhere>;
 };
 
 export type Mute = Node & {
@@ -6963,6 +8006,10 @@ export type Query = Node & {
   allGuildBans?: Maybe<GuildBansConnection>;
   /** Reads and enables pagination through a set of `GuildConfig`. */
   allGuildConfigs?: Maybe<GuildConfigsConnection>;
+  /** Reads and enables pagination through a set of `LevelRoleOverride`. */
+  allLevelRoleOverrides?: Maybe<LevelRoleOverridesConnection>;
+  /** Reads and enables pagination through a set of `LevelRole`. */
+  allLevelRoles?: Maybe<LevelRolesConnection>;
   /** Reads and enables pagination through a set of `Member`. */
   allMembers?: Maybe<MembersConnection>;
   /** Reads and enables pagination through a set of `Message`. */
@@ -6990,6 +8037,8 @@ export type Query = Node & {
   allWebUserGuilds?: Maybe<WebUserGuildsConnection>;
   /** Reads and enables pagination through a set of `WebUser`. */
   allWebUsers?: Maybe<WebUsersConnection>;
+  /** Reads and enables pagination through a set of `XpBlockedChannel`. */
+  allXpBlockedChannels?: Maybe<XpBlockedChannelsConnection>;
   /** Reads a single `BotStat` using its globally unique `ID`. */
   botStat?: Maybe<BotStat>;
   botStatByNameAndCategory?: Maybe<BotStat>;
@@ -7022,6 +8071,12 @@ export type Query = Node & {
   /** Reads a single `GuildConfig` using its globally unique `ID`. */
   guildConfig?: Maybe<GuildConfig>;
   guildConfigById?: Maybe<GuildConfig>;
+  /** Reads a single `LevelRole` using its globally unique `ID`. */
+  levelRole?: Maybe<LevelRole>;
+  levelRoleByGuildIdAndRoleId?: Maybe<LevelRole>;
+  /** Reads a single `LevelRoleOverride` using its globally unique `ID`. */
+  levelRoleOverride?: Maybe<LevelRoleOverride>;
+  levelRoleOverrideByGuildIdAndRoleIdAndUserId?: Maybe<LevelRoleOverride>;
   /** Reads a single `Member` using its globally unique `ID`. */
   member?: Maybe<Member>;
   memberByGuildIdAndUserId?: Maybe<Member>;
@@ -7074,6 +8129,9 @@ export type Query = Node & {
   /** Reads a single `WebUserGuild` using its globally unique `ID`. */
   webUserGuild?: Maybe<WebUserGuild>;
   webUserGuildByUserIdAndGuildId?: Maybe<WebUserGuild>;
+  /** Reads a single `XpBlockedChannel` using its globally unique `ID`. */
+  xpBlockedChannel?: Maybe<XpBlockedChannel>;
+  xpBlockedChannelByGuildIdAndChannelOrRoleId?: Maybe<XpBlockedChannel>;
 };
 
 
@@ -7152,6 +8210,32 @@ export type QueryAllGuildConfigsArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<GuildConfigsOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllLevelRoleOverridesArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<LevelRoleOverrideCondition>;
+  filter?: InputMaybe<LevelRoleOverrideFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<LevelRoleOverridesOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllLevelRolesArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<LevelRoleCondition>;
+  filter?: InputMaybe<LevelRoleFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<LevelRolesOrderBy>>;
 };
 
 
@@ -7325,6 +8409,19 @@ export type QueryAllWebUsersArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryAllXpBlockedChannelsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<XpBlockedChannelCondition>;
+  filter?: InputMaybe<XpBlockedChannelFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<XpBlockedChannelsOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryBotStatArgs = {
   nodeId: Scalars['ID'];
 };
@@ -7432,6 +8529,33 @@ export type QueryGuildConfigArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryGuildConfigByIdArgs = {
   id: Scalars['BigInt'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLevelRoleArgs = {
+  nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLevelRoleByGuildIdAndRoleIdArgs = {
+  guildId: Scalars['BigInt'];
+  roleId: Scalars['BigInt'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLevelRoleOverrideArgs = {
+  nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLevelRoleOverrideByGuildIdAndRoleIdAndUserIdArgs = {
+  guildId: Scalars['BigInt'];
+  roleId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
 };
 
 
@@ -7648,6 +8772,19 @@ export type QueryWebUserGuildArgs = {
 export type QueryWebUserGuildByUserIdAndGuildIdArgs = {
   guildId: Scalars['BigInt'];
   userId: Scalars['BigInt'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryXpBlockedChannelArgs = {
+  nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryXpBlockedChannelByGuildIdAndChannelOrRoleIdArgs = {
+  channelOrRoleId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
 };
 
 export type RedisGuild = {
@@ -9677,6 +10814,103 @@ export type UpdateGuildConfigPayloadGuildConfigEdgeArgs = {
   orderBy?: InputMaybe<Array<GuildConfigsOrderBy>>;
 };
 
+/** All input for the `updateLevelRoleByGuildIdAndRoleId` mutation. */
+export type UpdateLevelRoleByGuildIdAndRoleIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  /** An object where the defined keys will be set on the `LevelRole` being updated. */
+  levelRolePatch: LevelRolePatch;
+  roleId: Scalars['BigInt'];
+};
+
+/** All input for the `updateLevelRole` mutation. */
+export type UpdateLevelRoleInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `LevelRole` being updated. */
+  levelRolePatch: LevelRolePatch;
+  /** The globally unique `ID` which will identify a single `LevelRole` to be updated. */
+  nodeId: Scalars['ID'];
+};
+
+/** All input for the `updateLevelRoleOverrideByGuildIdAndRoleIdAndUserId` mutation. */
+export type UpdateLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  /** An object where the defined keys will be set on the `LevelRoleOverride` being updated. */
+  levelRoleOverridePatch: LevelRoleOverridePatch;
+  roleId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
+};
+
+/** All input for the `updateLevelRoleOverride` mutation. */
+export type UpdateLevelRoleOverrideInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `LevelRoleOverride` being updated. */
+  levelRoleOverridePatch: LevelRoleOverridePatch;
+  /** The globally unique `ID` which will identify a single `LevelRoleOverride` to be updated. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our update `LevelRoleOverride` mutation. */
+export type UpdateLevelRoleOverridePayload = {
+  __typename?: 'UpdateLevelRoleOverridePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `LevelRoleOverride` that was updated by this mutation. */
+  levelRoleOverride?: Maybe<LevelRoleOverride>;
+  /** An edge for our `LevelRoleOverride`. May be used by Relay 1. */
+  levelRoleOverrideEdge?: Maybe<LevelRoleOverridesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `LevelRoleOverride` mutation. */
+export type UpdateLevelRoleOverridePayloadLevelRoleOverrideEdgeArgs = {
+  orderBy?: InputMaybe<Array<LevelRoleOverridesOrderBy>>;
+};
+
+/** The output of our update `LevelRole` mutation. */
+export type UpdateLevelRolePayload = {
+  __typename?: 'UpdateLevelRolePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `LevelRole` that was updated by this mutation. */
+  levelRole?: Maybe<LevelRole>;
+  /** An edge for our `LevelRole`. May be used by Relay 1. */
+  levelRoleEdge?: Maybe<LevelRolesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `LevelRole` mutation. */
+export type UpdateLevelRolePayloadLevelRoleEdgeArgs = {
+  orderBy?: InputMaybe<Array<LevelRolesOrderBy>>;
+};
+
 /** All input for the `updateMemberByGuildIdAndUserId` mutation. */
 export type UpdateMemberByGuildIdAndUserIdInput = {
   /**
@@ -10162,6 +11396,32 @@ export type UpdateUserPayloadUserEdgeArgs = {
   orderBy?: InputMaybe<Array<UsersOrderBy>>;
 };
 
+/** All input for the `updateUserXp` mutation. */
+export type UpdateUserXpInput = {
+  channelId?: InputMaybe<Scalars['BigInt']>;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  roleIds?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
+  userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** The output of our `updateUserXp` mutation. */
+export type UpdateUserXpPayload = {
+  __typename?: 'UpdateUserXpPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  userXpUpdateResult?: Maybe<UserXpUpdateResult>;
+};
+
 /** All input for the `updateWebUserById` mutation. */
 export type UpdateWebUserByIdInput = {
   /**
@@ -10260,6 +11520,54 @@ export type UpdateWebUserPayload = {
 /** The output of our update `WebUser` mutation. */
 export type UpdateWebUserPayloadWebUserEdgeArgs = {
   orderBy?: InputMaybe<Array<WebUsersOrderBy>>;
+};
+
+/** All input for the `updateXpBlockedChannelByGuildIdAndChannelOrRoleId` mutation. */
+export type UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput = {
+  channelOrRoleId: Scalars['BigInt'];
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  /** An object where the defined keys will be set on the `XpBlockedChannel` being updated. */
+  xpBlockedChannelPatch: XpBlockedChannelPatch;
+};
+
+/** All input for the `updateXpBlockedChannel` mutation. */
+export type UpdateXpBlockedChannelInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `XpBlockedChannel` to be updated. */
+  nodeId: Scalars['ID'];
+  /** An object where the defined keys will be set on the `XpBlockedChannel` being updated. */
+  xpBlockedChannelPatch: XpBlockedChannelPatch;
+};
+
+/** The output of our update `XpBlockedChannel` mutation. */
+export type UpdateXpBlockedChannelPayload = {
+  __typename?: 'UpdateXpBlockedChannelPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `XpBlockedChannel` that was updated by this mutation. */
+  xpBlockedChannel?: Maybe<XpBlockedChannel>;
+  /** An edge for our `XpBlockedChannel`. May be used by Relay 1. */
+  xpBlockedChannelEdge?: Maybe<XpBlockedChannelsEdge>;
+};
+
+
+/** The output of our update `XpBlockedChannel` mutation. */
+export type UpdateXpBlockedChannelPayloadXpBlockedChannelEdgeArgs = {
+  orderBy?: InputMaybe<Array<XpBlockedChannelsOrderBy>>;
 };
 
 /** All input for the upsert `BotStat` mutation. */
@@ -10524,6 +11832,73 @@ export type UpsertGuildConfigPayloadGuildConfigEdgeArgs = {
 /** Where conditions for the upsert `GuildConfig` mutation. */
 export type UpsertGuildConfigWhere = {
   id?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `LevelRole` mutation. */
+export type UpsertLevelRoleInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `LevelRole` to be upserted by this mutation. */
+  levelRole: LevelRoleInput;
+};
+
+/** All input for the upsert `LevelRoleOverride` mutation. */
+export type UpsertLevelRoleOverrideInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `LevelRoleOverride` to be upserted by this mutation. */
+  levelRoleOverride: LevelRoleOverrideInput;
+};
+
+/** The output of our upsert `LevelRoleOverride` mutation. */
+export type UpsertLevelRoleOverridePayload = {
+  __typename?: 'UpsertLevelRoleOverridePayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `LevelRoleOverride` that was upserted by this mutation. */
+  levelRoleOverride?: Maybe<LevelRoleOverride>;
+  /** An edge for our `LevelRoleOverride`. May be used by Relay 1. */
+  levelRoleOverrideEdge?: Maybe<LevelRoleOverridesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `LevelRoleOverride` mutation. */
+export type UpsertLevelRoleOverridePayloadLevelRoleOverrideEdgeArgs = {
+  orderBy?: InputMaybe<Array<LevelRoleOverridesOrderBy>>;
+};
+
+/** Where conditions for the upsert `LevelRoleOverride` mutation. */
+export type UpsertLevelRoleOverrideWhere = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  roleId?: InputMaybe<Scalars['BigInt']>;
+  userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** The output of our upsert `LevelRole` mutation. */
+export type UpsertLevelRolePayload = {
+  __typename?: 'UpsertLevelRolePayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `LevelRole` that was upserted by this mutation. */
+  levelRole?: Maybe<LevelRole>;
+  /** An edge for our `LevelRole`. May be used by Relay 1. */
+  levelRoleEdge?: Maybe<LevelRolesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `LevelRole` mutation. */
+export type UpsertLevelRolePayloadLevelRoleEdgeArgs = {
+  orderBy?: InputMaybe<Array<LevelRolesOrderBy>>;
+};
+
+/** Where conditions for the upsert `LevelRole` mutation. */
+export type UpsertLevelRoleWhere = {
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  roleId?: InputMaybe<Scalars['BigInt']>;
 };
 
 /** All input for the upsert `Member` mutation. */
@@ -10930,6 +12305,39 @@ export type UpsertWebUserWhere = {
   id?: InputMaybe<Scalars['BigInt']>;
 };
 
+/** All input for the upsert `XpBlockedChannel` mutation. */
+export type UpsertXpBlockedChannelInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `XpBlockedChannel` to be upserted by this mutation. */
+  xpBlockedChannel: XpBlockedChannelInput;
+};
+
+/** The output of our upsert `XpBlockedChannel` mutation. */
+export type UpsertXpBlockedChannelPayload = {
+  __typename?: 'UpsertXpBlockedChannelPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `XpBlockedChannel` that was upserted by this mutation. */
+  xpBlockedChannel?: Maybe<XpBlockedChannel>;
+  /** An edge for our `XpBlockedChannel`. May be used by Relay 1. */
+  xpBlockedChannelEdge?: Maybe<XpBlockedChannelsEdge>;
+};
+
+
+/** The output of our upsert `XpBlockedChannel` mutation. */
+export type UpsertXpBlockedChannelPayloadXpBlockedChannelEdgeArgs = {
+  orderBy?: InputMaybe<Array<XpBlockedChannelsOrderBy>>;
+};
+
+/** Where conditions for the upsert `XpBlockedChannel` mutation. */
+export type UpsertXpBlockedChannelWhere = {
+  channelOrRoleId?: InputMaybe<Scalars['BigInt']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+};
+
 export type User = Node & {
   __typename?: 'User';
   fishies: Scalars['BigInt'];
@@ -11086,6 +12494,7 @@ export type UserLevel = Node & {
   __typename?: 'UserLevel';
   guildId: Scalars['BigInt'];
   lastMsg: Scalars['Datetime'];
+  level: Scalars['BigInt'];
   msgAllTime: Scalars['BigInt'];
   msgDay: Scalars['BigInt'];
   msgMonth: Scalars['BigInt'];
@@ -11122,6 +12531,8 @@ export type UserLevelAverageAggregates = {
   __typename?: 'UserLevelAverageAggregates';
   /** Mean average of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of level across the matching connection */
+  level?: Maybe<Scalars['BigFloat']>;
   /** Mean average of msgAllTime across the matching connection */
   msgAllTime?: Maybe<Scalars['BigFloat']>;
   /** Mean average of msgDay across the matching connection */
@@ -11143,6 +12554,8 @@ export type UserLevelCondition = {
   guildId?: InputMaybe<Scalars['BigInt']>;
   /** Checks for equality with the object’s `lastMsg` field. */
   lastMsg?: InputMaybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `level` field. */
+  level?: InputMaybe<Scalars['BigInt']>;
   /** Checks for equality with the object’s `msgAllTime` field. */
   msgAllTime?: InputMaybe<Scalars['BigInt']>;
   /** Checks for equality with the object’s `msgDay` field. */
@@ -11161,6 +12574,8 @@ export type UserLevelDistinctCountAggregates = {
   guildId?: Maybe<Scalars['BigInt']>;
   /** Distinct count of lastMsg across the matching connection */
   lastMsg?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of level across the matching connection */
+  level?: Maybe<Scalars['BigInt']>;
   /** Distinct count of msgAllTime across the matching connection */
   msgAllTime?: Maybe<Scalars['BigInt']>;
   /** Distinct count of msgDay across the matching connection */
@@ -11181,6 +12596,8 @@ export type UserLevelFilter = {
   guildId?: InputMaybe<BigIntFilter>;
   /** Filter by the object’s `lastMsg` field. */
   lastMsg?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `level` field. */
+  level?: InputMaybe<BigIntFilter>;
   /** Filter by the object’s `msgAllTime` field. */
   msgAllTime?: InputMaybe<BigIntFilter>;
   /** Filter by the object’s `msgDay` field. */
@@ -11201,6 +12618,7 @@ export type UserLevelFilter = {
 export type UserLevelInput = {
   guildId: Scalars['BigInt'];
   lastMsg: Scalars['Datetime'];
+  level?: InputMaybe<Scalars['BigInt']>;
   msgAllTime: Scalars['BigInt'];
   msgDay: Scalars['BigInt'];
   msgMonth: Scalars['BigInt'];
@@ -11212,6 +12630,8 @@ export type UserLevelMaxAggregates = {
   __typename?: 'UserLevelMaxAggregates';
   /** Maximum of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of level across the matching connection */
+  level?: Maybe<Scalars['BigInt']>;
   /** Maximum of msgAllTime across the matching connection */
   msgAllTime?: Maybe<Scalars['BigInt']>;
   /** Maximum of msgDay across the matching connection */
@@ -11228,6 +12648,8 @@ export type UserLevelMinAggregates = {
   __typename?: 'UserLevelMinAggregates';
   /** Minimum of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of level across the matching connection */
+  level?: Maybe<Scalars['BigInt']>;
   /** Minimum of msgAllTime across the matching connection */
   msgAllTime?: Maybe<Scalars['BigInt']>;
   /** Minimum of msgDay across the matching connection */
@@ -11244,6 +12666,7 @@ export type UserLevelMinAggregates = {
 export type UserLevelPatch = {
   guildId?: InputMaybe<Scalars['BigInt']>;
   lastMsg?: InputMaybe<Scalars['Datetime']>;
+  level?: InputMaybe<Scalars['BigInt']>;
   msgAllTime?: InputMaybe<Scalars['BigInt']>;
   msgDay?: InputMaybe<Scalars['BigInt']>;
   msgMonth?: InputMaybe<Scalars['BigInt']>;
@@ -11255,6 +12678,8 @@ export type UserLevelStddevPopulationAggregates = {
   __typename?: 'UserLevelStddevPopulationAggregates';
   /** Population standard deviation of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of level across the matching connection */
+  level?: Maybe<Scalars['BigFloat']>;
   /** Population standard deviation of msgAllTime across the matching connection */
   msgAllTime?: Maybe<Scalars['BigFloat']>;
   /** Population standard deviation of msgDay across the matching connection */
@@ -11271,6 +12696,8 @@ export type UserLevelStddevSampleAggregates = {
   __typename?: 'UserLevelStddevSampleAggregates';
   /** Sample standard deviation of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of level across the matching connection */
+  level?: Maybe<Scalars['BigFloat']>;
   /** Sample standard deviation of msgAllTime across the matching connection */
   msgAllTime?: Maybe<Scalars['BigFloat']>;
   /** Sample standard deviation of msgDay across the matching connection */
@@ -11287,6 +12714,8 @@ export type UserLevelSumAggregates = {
   __typename?: 'UserLevelSumAggregates';
   /** Sum of guildId across the matching connection */
   guildId: Scalars['BigFloat'];
+  /** Sum of level across the matching connection */
+  level: Scalars['BigFloat'];
   /** Sum of msgAllTime across the matching connection */
   msgAllTime: Scalars['BigFloat'];
   /** Sum of msgDay across the matching connection */
@@ -11303,6 +12732,8 @@ export type UserLevelVariancePopulationAggregates = {
   __typename?: 'UserLevelVariancePopulationAggregates';
   /** Population variance of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of level across the matching connection */
+  level?: Maybe<Scalars['BigFloat']>;
   /** Population variance of msgAllTime across the matching connection */
   msgAllTime?: Maybe<Scalars['BigFloat']>;
   /** Population variance of msgDay across the matching connection */
@@ -11319,6 +12750,8 @@ export type UserLevelVarianceSampleAggregates = {
   __typename?: 'UserLevelVarianceSampleAggregates';
   /** Sample variance of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of level across the matching connection */
+  level?: Maybe<Scalars['BigFloat']>;
   /** Sample variance of msgAllTime across the matching connection */
   msgAllTime?: Maybe<Scalars['BigFloat']>;
   /** Sample variance of msgDay across the matching connection */
@@ -11370,6 +12803,7 @@ export enum UserLevelsGroupBy {
   LastMsg = 'LAST_MSG',
   LastMsgTruncatedToDay = 'LAST_MSG_TRUNCATED_TO_DAY',
   LastMsgTruncatedToHour = 'LAST_MSG_TRUNCATED_TO_HOUR',
+  Level = 'LEVEL',
   MsgAllTime = 'MSG_ALL_TIME',
   MsgDay = 'MSG_DAY',
   MsgMonth = 'MSG_MONTH',
@@ -11380,6 +12814,7 @@ export enum UserLevelsGroupBy {
 export type UserLevelsHavingAverageInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
   lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  level?: InputMaybe<HavingBigintFilter>;
   msgAllTime?: InputMaybe<HavingBigintFilter>;
   msgDay?: InputMaybe<HavingBigintFilter>;
   msgMonth?: InputMaybe<HavingBigintFilter>;
@@ -11390,6 +12825,7 @@ export type UserLevelsHavingAverageInput = {
 export type UserLevelsHavingDistinctCountInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
   lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  level?: InputMaybe<HavingBigintFilter>;
   msgAllTime?: InputMaybe<HavingBigintFilter>;
   msgDay?: InputMaybe<HavingBigintFilter>;
   msgMonth?: InputMaybe<HavingBigintFilter>;
@@ -11415,6 +12851,7 @@ export type UserLevelsHavingInput = {
 export type UserLevelsHavingMaxInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
   lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  level?: InputMaybe<HavingBigintFilter>;
   msgAllTime?: InputMaybe<HavingBigintFilter>;
   msgDay?: InputMaybe<HavingBigintFilter>;
   msgMonth?: InputMaybe<HavingBigintFilter>;
@@ -11425,6 +12862,7 @@ export type UserLevelsHavingMaxInput = {
 export type UserLevelsHavingMinInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
   lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  level?: InputMaybe<HavingBigintFilter>;
   msgAllTime?: InputMaybe<HavingBigintFilter>;
   msgDay?: InputMaybe<HavingBigintFilter>;
   msgMonth?: InputMaybe<HavingBigintFilter>;
@@ -11435,6 +12873,7 @@ export type UserLevelsHavingMinInput = {
 export type UserLevelsHavingStddevPopulationInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
   lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  level?: InputMaybe<HavingBigintFilter>;
   msgAllTime?: InputMaybe<HavingBigintFilter>;
   msgDay?: InputMaybe<HavingBigintFilter>;
   msgMonth?: InputMaybe<HavingBigintFilter>;
@@ -11445,6 +12884,7 @@ export type UserLevelsHavingStddevPopulationInput = {
 export type UserLevelsHavingStddevSampleInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
   lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  level?: InputMaybe<HavingBigintFilter>;
   msgAllTime?: InputMaybe<HavingBigintFilter>;
   msgDay?: InputMaybe<HavingBigintFilter>;
   msgMonth?: InputMaybe<HavingBigintFilter>;
@@ -11455,6 +12895,7 @@ export type UserLevelsHavingStddevSampleInput = {
 export type UserLevelsHavingSumInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
   lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  level?: InputMaybe<HavingBigintFilter>;
   msgAllTime?: InputMaybe<HavingBigintFilter>;
   msgDay?: InputMaybe<HavingBigintFilter>;
   msgMonth?: InputMaybe<HavingBigintFilter>;
@@ -11465,6 +12906,7 @@ export type UserLevelsHavingSumInput = {
 export type UserLevelsHavingVariancePopulationInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
   lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  level?: InputMaybe<HavingBigintFilter>;
   msgAllTime?: InputMaybe<HavingBigintFilter>;
   msgDay?: InputMaybe<HavingBigintFilter>;
   msgMonth?: InputMaybe<HavingBigintFilter>;
@@ -11475,6 +12917,7 @@ export type UserLevelsHavingVariancePopulationInput = {
 export type UserLevelsHavingVarianceSampleInput = {
   guildId?: InputMaybe<HavingBigintFilter>;
   lastMsg?: InputMaybe<HavingDatetimeFilter>;
+  level?: InputMaybe<HavingBigintFilter>;
   msgAllTime?: InputMaybe<HavingBigintFilter>;
   msgDay?: InputMaybe<HavingBigintFilter>;
   msgMonth?: InputMaybe<HavingBigintFilter>;
@@ -11488,6 +12931,8 @@ export enum UserLevelsOrderBy {
   GuildIdDesc = 'GUILD_ID_DESC',
   LastMsgAsc = 'LAST_MSG_ASC',
   LastMsgDesc = 'LAST_MSG_DESC',
+  LevelAsc = 'LEVEL_ASC',
+  LevelDesc = 'LEVEL_DESC',
   MsgAllTimeAsc = 'MSG_ALL_TIME_ASC',
   MsgAllTimeDesc = 'MSG_ALL_TIME_DESC',
   MsgDayAsc = 'MSG_DAY_ASC',
@@ -11584,6 +13029,14 @@ export type UserVarianceSampleAggregates = {
   id?: Maybe<Scalars['BigFloat']>;
   /** Sample variance of rep across the matching connection */
   rep?: Maybe<Scalars['BigFloat']>;
+};
+
+export type UserXpUpdateResult = {
+  __typename?: 'UserXpUpdateResult';
+  addRoleIds?: Maybe<Array<Maybe<Scalars['BigInt']>>>;
+  newLevel?: Maybe<Scalars['BigInt']>;
+  oldLevel?: Maybe<Scalars['BigInt']>;
+  removeRoleIds?: Maybe<Array<Maybe<Scalars['BigInt']>>>;
 };
 
 /** A connection to a list of `User` values. */
@@ -12531,6 +13984,256 @@ export enum WebUsersOrderBy {
   WebUserGuildsByUserIdVarianceSampleUserIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_USER_ID_DESC'
 }
 
+export type XpBlockedChannel = Node & {
+  __typename?: 'XpBlockedChannel';
+  channelOrRoleId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+};
+
+export type XpBlockedChannelAggregates = {
+  __typename?: 'XpBlockedChannelAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<XpBlockedChannelAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<XpBlockedChannelDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<XpBlockedChannelMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<XpBlockedChannelMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<XpBlockedChannelStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<XpBlockedChannelStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<XpBlockedChannelSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<XpBlockedChannelVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<XpBlockedChannelVarianceSampleAggregates>;
+};
+
+export type XpBlockedChannelAverageAggregates = {
+  __typename?: 'XpBlockedChannelAverageAggregates';
+  /** Mean average of channelOrRoleId across the matching connection */
+  channelOrRoleId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+/**
+ * A condition to be used against `XpBlockedChannel` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type XpBlockedChannelCondition = {
+  /** Checks for equality with the object’s `channelOrRoleId` field. */
+  channelOrRoleId?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `guildId` field. */
+  guildId?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type XpBlockedChannelDistinctCountAggregates = {
+  __typename?: 'XpBlockedChannelDistinctCountAggregates';
+  /** Distinct count of channelOrRoleId across the matching connection */
+  channelOrRoleId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `XpBlockedChannel` object types. All fields are combined with a logical ‘and.’ */
+export type XpBlockedChannelFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<XpBlockedChannelFilter>>;
+  /** Filter by the object’s `channelOrRoleId` field. */
+  channelOrRoleId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<XpBlockedChannelFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<XpBlockedChannelFilter>>;
+};
+
+/** An input for mutations affecting `XpBlockedChannel` */
+export type XpBlockedChannelInput = {
+  channelOrRoleId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+};
+
+export type XpBlockedChannelMaxAggregates = {
+  __typename?: 'XpBlockedChannelMaxAggregates';
+  /** Maximum of channelOrRoleId across the matching connection */
+  channelOrRoleId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+};
+
+export type XpBlockedChannelMinAggregates = {
+  __typename?: 'XpBlockedChannelMinAggregates';
+  /** Minimum of channelOrRoleId across the matching connection */
+  channelOrRoleId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+};
+
+/** Represents an update to a `XpBlockedChannel`. Fields that are set will be updated. */
+export type XpBlockedChannelPatch = {
+  channelOrRoleId?: InputMaybe<Scalars['BigInt']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type XpBlockedChannelStddevPopulationAggregates = {
+  __typename?: 'XpBlockedChannelStddevPopulationAggregates';
+  /** Population standard deviation of channelOrRoleId across the matching connection */
+  channelOrRoleId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type XpBlockedChannelStddevSampleAggregates = {
+  __typename?: 'XpBlockedChannelStddevSampleAggregates';
+  /** Sample standard deviation of channelOrRoleId across the matching connection */
+  channelOrRoleId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type XpBlockedChannelSumAggregates = {
+  __typename?: 'XpBlockedChannelSumAggregates';
+  /** Sum of channelOrRoleId across the matching connection */
+  channelOrRoleId: Scalars['BigFloat'];
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+};
+
+export type XpBlockedChannelVariancePopulationAggregates = {
+  __typename?: 'XpBlockedChannelVariancePopulationAggregates';
+  /** Population variance of channelOrRoleId across the matching connection */
+  channelOrRoleId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type XpBlockedChannelVarianceSampleAggregates = {
+  __typename?: 'XpBlockedChannelVarianceSampleAggregates';
+  /** Sample variance of channelOrRoleId across the matching connection */
+  channelOrRoleId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A connection to a list of `XpBlockedChannel` values. */
+export type XpBlockedChannelsConnection = {
+  __typename?: 'XpBlockedChannelsConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<XpBlockedChannelAggregates>;
+  /** A list of edges which contains the `XpBlockedChannel` and cursor to aid in pagination. */
+  edges: Array<XpBlockedChannelsEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<XpBlockedChannelAggregates>>;
+  /** A list of `XpBlockedChannel` objects. */
+  nodes: Array<XpBlockedChannel>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `XpBlockedChannel` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `XpBlockedChannel` values. */
+export type XpBlockedChannelsConnectionGroupedAggregatesArgs = {
+  groupBy: Array<XpBlockedChannelsGroupBy>;
+  having?: InputMaybe<XpBlockedChannelsHavingInput>;
+};
+
+/** A `XpBlockedChannel` edge in the connection. */
+export type XpBlockedChannelsEdge = {
+  __typename?: 'XpBlockedChannelsEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `XpBlockedChannel` at the end of the edge. */
+  node: XpBlockedChannel;
+};
+
+/** Grouping methods for `XpBlockedChannel` for usage during aggregation. */
+export enum XpBlockedChannelsGroupBy {
+  ChannelOrRoleId = 'CHANNEL_OR_ROLE_ID',
+  GuildId = 'GUILD_ID'
+}
+
+export type XpBlockedChannelsHavingAverageInput = {
+  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type XpBlockedChannelsHavingDistinctCountInput = {
+  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `XpBlockedChannel` aggregates. */
+export type XpBlockedChannelsHavingInput = {
+  AND?: InputMaybe<Array<XpBlockedChannelsHavingInput>>;
+  OR?: InputMaybe<Array<XpBlockedChannelsHavingInput>>;
+  average?: InputMaybe<XpBlockedChannelsHavingAverageInput>;
+  distinctCount?: InputMaybe<XpBlockedChannelsHavingDistinctCountInput>;
+  max?: InputMaybe<XpBlockedChannelsHavingMaxInput>;
+  min?: InputMaybe<XpBlockedChannelsHavingMinInput>;
+  stddevPopulation?: InputMaybe<XpBlockedChannelsHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<XpBlockedChannelsHavingStddevSampleInput>;
+  sum?: InputMaybe<XpBlockedChannelsHavingSumInput>;
+  variancePopulation?: InputMaybe<XpBlockedChannelsHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<XpBlockedChannelsHavingVarianceSampleInput>;
+};
+
+export type XpBlockedChannelsHavingMaxInput = {
+  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type XpBlockedChannelsHavingMinInput = {
+  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type XpBlockedChannelsHavingStddevPopulationInput = {
+  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type XpBlockedChannelsHavingStddevSampleInput = {
+  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type XpBlockedChannelsHavingSumInput = {
+  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type XpBlockedChannelsHavingVariancePopulationInput = {
+  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type XpBlockedChannelsHavingVarianceSampleInput = {
+  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Methods to use when ordering `XpBlockedChannel`. */
+export enum XpBlockedChannelsOrderBy {
+  ChannelOrRoleIdAsc = 'CHANNEL_OR_ROLE_ID_ASC',
+  ChannelOrRoleIdDesc = 'CHANNEL_OR_ROLE_ID_DESC',
+  GuildIdAsc = 'GUILD_ID_ASC',
+  GuildIdDesc = 'GUILD_ID_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -12663,6 +14366,10 @@ export type ResolversTypes = {
   CreateGuildBanPayload: ResolverTypeWrapper<CreateGuildBanPayload>;
   CreateGuildConfigInput: CreateGuildConfigInput;
   CreateGuildConfigPayload: ResolverTypeWrapper<CreateGuildConfigPayload>;
+  CreateLevelRoleInput: CreateLevelRoleInput;
+  CreateLevelRoleOverrideInput: CreateLevelRoleOverrideInput;
+  CreateLevelRoleOverridePayload: ResolverTypeWrapper<CreateLevelRoleOverridePayload>;
+  CreateLevelRolePayload: ResolverTypeWrapper<CreateLevelRolePayload>;
   CreateMemberInput: CreateMemberInput;
   CreateMemberPayload: ResolverTypeWrapper<CreateMemberPayload>;
   CreateMessageInput: CreateMessageInput;
@@ -12689,6 +14396,8 @@ export type ResolversTypes = {
   CreateWebUserGuildPayload: ResolverTypeWrapper<CreateWebUserGuildPayload>;
   CreateWebUserInput: CreateWebUserInput;
   CreateWebUserPayload: ResolverTypeWrapper<CreateWebUserPayload>;
+  CreateXpBlockedChannelInput: CreateXpBlockedChannelInput;
+  CreateXpBlockedChannelPayload: ResolverTypeWrapper<CreateXpBlockedChannelPayload>;
   CurrentUserManagedGuildIdEdge: ResolverTypeWrapper<CurrentUserManagedGuildIdEdge>;
   CurrentUserManagedGuildIdsConnection: ResolverTypeWrapper<CurrentUserManagedGuildIdsConnection>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
@@ -12718,6 +14427,12 @@ export type ResolversTypes = {
   DeleteGuildConfigByIdInput: DeleteGuildConfigByIdInput;
   DeleteGuildConfigInput: DeleteGuildConfigInput;
   DeleteGuildConfigPayload: ResolverTypeWrapper<DeleteGuildConfigPayload>;
+  DeleteLevelRoleByGuildIdAndRoleIdInput: DeleteLevelRoleByGuildIdAndRoleIdInput;
+  DeleteLevelRoleInput: DeleteLevelRoleInput;
+  DeleteLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput: DeleteLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput;
+  DeleteLevelRoleOverrideInput: DeleteLevelRoleOverrideInput;
+  DeleteLevelRoleOverridePayload: ResolverTypeWrapper<DeleteLevelRoleOverridePayload>;
+  DeleteLevelRolePayload: ResolverTypeWrapper<DeleteLevelRolePayload>;
   DeleteMemberByGuildIdAndUserIdInput: DeleteMemberByGuildIdAndUserIdInput;
   DeleteMemberInput: DeleteMemberInput;
   DeleteMemberPayload: ResolverTypeWrapper<DeleteMemberPayload>;
@@ -12756,6 +14471,9 @@ export type ResolversTypes = {
   DeleteWebUserGuildPayload: ResolverTypeWrapper<DeleteWebUserGuildPayload>;
   DeleteWebUserInput: DeleteWebUserInput;
   DeleteWebUserPayload: ResolverTypeWrapper<DeleteWebUserPayload>;
+  DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput: DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput;
+  DeleteXpBlockedChannelInput: DeleteXpBlockedChannelInput;
+  DeleteXpBlockedChannelPayload: ResolverTypeWrapper<DeleteXpBlockedChannelPayload>;
   Feed: ResolverTypeWrapper<Feed>;
   FeedAggregates: ResolverTypeWrapper<FeedAggregates>;
   FeedCondition: FeedCondition;
@@ -12877,6 +14595,66 @@ export type ResolversTypes = {
   IntFilter: IntFilter;
   JSON: ResolverTypeWrapper<Scalars['JSON']>;
   JSONFilter: JsonFilter;
+  LevelRole: ResolverTypeWrapper<LevelRole>;
+  LevelRoleAggregates: ResolverTypeWrapper<LevelRoleAggregates>;
+  LevelRoleAverageAggregates: ResolverTypeWrapper<LevelRoleAverageAggregates>;
+  LevelRoleCondition: LevelRoleCondition;
+  LevelRoleDistinctCountAggregates: ResolverTypeWrapper<LevelRoleDistinctCountAggregates>;
+  LevelRoleFilter: LevelRoleFilter;
+  LevelRoleInput: LevelRoleInput;
+  LevelRoleMaxAggregates: ResolverTypeWrapper<LevelRoleMaxAggregates>;
+  LevelRoleMinAggregates: ResolverTypeWrapper<LevelRoleMinAggregates>;
+  LevelRoleOverride: ResolverTypeWrapper<LevelRoleOverride>;
+  LevelRoleOverrideAggregates: ResolverTypeWrapper<LevelRoleOverrideAggregates>;
+  LevelRoleOverrideAverageAggregates: ResolverTypeWrapper<LevelRoleOverrideAverageAggregates>;
+  LevelRoleOverrideCondition: LevelRoleOverrideCondition;
+  LevelRoleOverrideDistinctCountAggregates: ResolverTypeWrapper<LevelRoleOverrideDistinctCountAggregates>;
+  LevelRoleOverrideFilter: LevelRoleOverrideFilter;
+  LevelRoleOverrideInput: LevelRoleOverrideInput;
+  LevelRoleOverrideMaxAggregates: ResolverTypeWrapper<LevelRoleOverrideMaxAggregates>;
+  LevelRoleOverrideMinAggregates: ResolverTypeWrapper<LevelRoleOverrideMinAggregates>;
+  LevelRoleOverridePatch: LevelRoleOverridePatch;
+  LevelRoleOverrideStddevPopulationAggregates: ResolverTypeWrapper<LevelRoleOverrideStddevPopulationAggregates>;
+  LevelRoleOverrideStddevSampleAggregates: ResolverTypeWrapper<LevelRoleOverrideStddevSampleAggregates>;
+  LevelRoleOverrideSumAggregates: ResolverTypeWrapper<LevelRoleOverrideSumAggregates>;
+  LevelRoleOverrideType: LevelRoleOverrideType;
+  LevelRoleOverrideTypeFilter: LevelRoleOverrideTypeFilter;
+  LevelRoleOverrideVariancePopulationAggregates: ResolverTypeWrapper<LevelRoleOverrideVariancePopulationAggregates>;
+  LevelRoleOverrideVarianceSampleAggregates: ResolverTypeWrapper<LevelRoleOverrideVarianceSampleAggregates>;
+  LevelRoleOverridesConnection: ResolverTypeWrapper<LevelRoleOverridesConnection>;
+  LevelRoleOverridesEdge: ResolverTypeWrapper<LevelRoleOverridesEdge>;
+  LevelRoleOverridesGroupBy: LevelRoleOverridesGroupBy;
+  LevelRoleOverridesHavingAverageInput: LevelRoleOverridesHavingAverageInput;
+  LevelRoleOverridesHavingDistinctCountInput: LevelRoleOverridesHavingDistinctCountInput;
+  LevelRoleOverridesHavingInput: LevelRoleOverridesHavingInput;
+  LevelRoleOverridesHavingMaxInput: LevelRoleOverridesHavingMaxInput;
+  LevelRoleOverridesHavingMinInput: LevelRoleOverridesHavingMinInput;
+  LevelRoleOverridesHavingStddevPopulationInput: LevelRoleOverridesHavingStddevPopulationInput;
+  LevelRoleOverridesHavingStddevSampleInput: LevelRoleOverridesHavingStddevSampleInput;
+  LevelRoleOverridesHavingSumInput: LevelRoleOverridesHavingSumInput;
+  LevelRoleOverridesHavingVariancePopulationInput: LevelRoleOverridesHavingVariancePopulationInput;
+  LevelRoleOverridesHavingVarianceSampleInput: LevelRoleOverridesHavingVarianceSampleInput;
+  LevelRoleOverridesOrderBy: LevelRoleOverridesOrderBy;
+  LevelRolePatch: LevelRolePatch;
+  LevelRoleStddevPopulationAggregates: ResolverTypeWrapper<LevelRoleStddevPopulationAggregates>;
+  LevelRoleStddevSampleAggregates: ResolverTypeWrapper<LevelRoleStddevSampleAggregates>;
+  LevelRoleSumAggregates: ResolverTypeWrapper<LevelRoleSumAggregates>;
+  LevelRoleVariancePopulationAggregates: ResolverTypeWrapper<LevelRoleVariancePopulationAggregates>;
+  LevelRoleVarianceSampleAggregates: ResolverTypeWrapper<LevelRoleVarianceSampleAggregates>;
+  LevelRolesConnection: ResolverTypeWrapper<LevelRolesConnection>;
+  LevelRolesEdge: ResolverTypeWrapper<LevelRolesEdge>;
+  LevelRolesGroupBy: LevelRolesGroupBy;
+  LevelRolesHavingAverageInput: LevelRolesHavingAverageInput;
+  LevelRolesHavingDistinctCountInput: LevelRolesHavingDistinctCountInput;
+  LevelRolesHavingInput: LevelRolesHavingInput;
+  LevelRolesHavingMaxInput: LevelRolesHavingMaxInput;
+  LevelRolesHavingMinInput: LevelRolesHavingMinInput;
+  LevelRolesHavingStddevPopulationInput: LevelRolesHavingStddevPopulationInput;
+  LevelRolesHavingStddevSampleInput: LevelRolesHavingStddevSampleInput;
+  LevelRolesHavingSumInput: LevelRolesHavingSumInput;
+  LevelRolesHavingVariancePopulationInput: LevelRolesHavingVariancePopulationInput;
+  LevelRolesHavingVarianceSampleInput: LevelRolesHavingVarianceSampleInput;
+  LevelRolesOrderBy: LevelRolesOrderBy;
   LevelTimeframe: LevelTimeframe;
   LogoutInput: LogoutInput;
   LogoutPayload: ResolverTypeWrapper<LogoutPayload>;
@@ -12996,7 +14774,7 @@ export type ResolversTypes = {
   MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
   MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
   MutesOrderBy: MutesOrderBy;
-  Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['Member'] | ResolversTypes['ModLog'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['RoleMenuRole'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'];
+  Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['LevelRole'] | ResolversTypes['LevelRoleOverride'] | ResolversTypes['Member'] | ResolversTypes['ModLog'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['RoleMenuRole'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'] | ResolversTypes['XpBlockedChannel'];
   Notification: ResolverTypeWrapper<Notification>;
   NotificationAggregates: ResolverTypeWrapper<NotificationAggregates>;
   NotificationAverageAggregates: ResolverTypeWrapper<NotificationAverageAggregates>;
@@ -13183,6 +14961,12 @@ export type ResolversTypes = {
   UpdateGuildConfigByIdInput: UpdateGuildConfigByIdInput;
   UpdateGuildConfigInput: UpdateGuildConfigInput;
   UpdateGuildConfigPayload: ResolverTypeWrapper<UpdateGuildConfigPayload>;
+  UpdateLevelRoleByGuildIdAndRoleIdInput: UpdateLevelRoleByGuildIdAndRoleIdInput;
+  UpdateLevelRoleInput: UpdateLevelRoleInput;
+  UpdateLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput: UpdateLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput;
+  UpdateLevelRoleOverrideInput: UpdateLevelRoleOverrideInput;
+  UpdateLevelRoleOverridePayload: ResolverTypeWrapper<UpdateLevelRoleOverridePayload>;
+  UpdateLevelRolePayload: ResolverTypeWrapper<UpdateLevelRolePayload>;
   UpdateMemberByGuildIdAndUserIdInput: UpdateMemberByGuildIdAndUserIdInput;
   UpdateMemberInput: UpdateMemberInput;
   UpdateMemberPayload: ResolverTypeWrapper<UpdateMemberPayload>;
@@ -13213,12 +14997,17 @@ export type ResolversTypes = {
   UpdateUserLevelInput: UpdateUserLevelInput;
   UpdateUserLevelPayload: ResolverTypeWrapper<UpdateUserLevelPayload>;
   UpdateUserPayload: ResolverTypeWrapper<UpdateUserPayload>;
+  UpdateUserXpInput: UpdateUserXpInput;
+  UpdateUserXpPayload: ResolverTypeWrapper<UpdateUserXpPayload>;
   UpdateWebUserByIdInput: UpdateWebUserByIdInput;
   UpdateWebUserGuildByUserIdAndGuildIdInput: UpdateWebUserGuildByUserIdAndGuildIdInput;
   UpdateWebUserGuildInput: UpdateWebUserGuildInput;
   UpdateWebUserGuildPayload: ResolverTypeWrapper<UpdateWebUserGuildPayload>;
   UpdateWebUserInput: UpdateWebUserInput;
   UpdateWebUserPayload: ResolverTypeWrapper<UpdateWebUserPayload>;
+  UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput: UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput;
+  UpdateXpBlockedChannelInput: UpdateXpBlockedChannelInput;
+  UpdateXpBlockedChannelPayload: ResolverTypeWrapper<UpdateXpBlockedChannelPayload>;
   UpsertBotStatInput: UpsertBotStatInput;
   UpsertBotStatPayload: ResolverTypeWrapper<UpsertBotStatPayload>;
   UpsertBotStatWhere: UpsertBotStatWhere;
@@ -13243,6 +15032,12 @@ export type ResolversTypes = {
   UpsertGuildConfigInput: UpsertGuildConfigInput;
   UpsertGuildConfigPayload: ResolverTypeWrapper<UpsertGuildConfigPayload>;
   UpsertGuildConfigWhere: UpsertGuildConfigWhere;
+  UpsertLevelRoleInput: UpsertLevelRoleInput;
+  UpsertLevelRoleOverrideInput: UpsertLevelRoleOverrideInput;
+  UpsertLevelRoleOverridePayload: ResolverTypeWrapper<UpsertLevelRoleOverridePayload>;
+  UpsertLevelRoleOverrideWhere: UpsertLevelRoleOverrideWhere;
+  UpsertLevelRolePayload: ResolverTypeWrapper<UpsertLevelRolePayload>;
+  UpsertLevelRoleWhere: UpsertLevelRoleWhere;
   UpsertMemberInput: UpsertMemberInput;
   UpsertMemberPayload: ResolverTypeWrapper<UpsertMemberPayload>;
   UpsertMemberWhere: UpsertMemberWhere;
@@ -13279,6 +15074,9 @@ export type ResolversTypes = {
   UpsertWebUserInput: UpsertWebUserInput;
   UpsertWebUserPayload: ResolverTypeWrapper<UpsertWebUserPayload>;
   UpsertWebUserWhere: UpsertWebUserWhere;
+  UpsertXpBlockedChannelInput: UpsertXpBlockedChannelInput;
+  UpsertXpBlockedChannelPayload: ResolverTypeWrapper<UpsertXpBlockedChannelPayload>;
+  UpsertXpBlockedChannelWhere: UpsertXpBlockedChannelWhere;
   User: ResolverTypeWrapper<User>;
   UserAggregates: ResolverTypeWrapper<UserAggregates>;
   UserAverageAggregates: ResolverTypeWrapper<UserAverageAggregates>;
@@ -13324,6 +15122,7 @@ export type ResolversTypes = {
   UserSumAggregates: ResolverTypeWrapper<UserSumAggregates>;
   UserVariancePopulationAggregates: ResolverTypeWrapper<UserVariancePopulationAggregates>;
   UserVarianceSampleAggregates: ResolverTypeWrapper<UserVarianceSampleAggregates>;
+  UserXpUpdateResult: ResolverTypeWrapper<UserXpUpdateResult>;
   UsersConnection: ResolverTypeWrapper<UsersConnection>;
   UsersEdge: ResolverTypeWrapper<UsersEdge>;
   UsersGroupBy: UsersGroupBy;
@@ -13396,6 +15195,35 @@ export type ResolversTypes = {
   WebUsersHavingVariancePopulationInput: WebUsersHavingVariancePopulationInput;
   WebUsersHavingVarianceSampleInput: WebUsersHavingVarianceSampleInput;
   WebUsersOrderBy: WebUsersOrderBy;
+  XpBlockedChannel: ResolverTypeWrapper<XpBlockedChannel>;
+  XpBlockedChannelAggregates: ResolverTypeWrapper<XpBlockedChannelAggregates>;
+  XpBlockedChannelAverageAggregates: ResolverTypeWrapper<XpBlockedChannelAverageAggregates>;
+  XpBlockedChannelCondition: XpBlockedChannelCondition;
+  XpBlockedChannelDistinctCountAggregates: ResolverTypeWrapper<XpBlockedChannelDistinctCountAggregates>;
+  XpBlockedChannelFilter: XpBlockedChannelFilter;
+  XpBlockedChannelInput: XpBlockedChannelInput;
+  XpBlockedChannelMaxAggregates: ResolverTypeWrapper<XpBlockedChannelMaxAggregates>;
+  XpBlockedChannelMinAggregates: ResolverTypeWrapper<XpBlockedChannelMinAggregates>;
+  XpBlockedChannelPatch: XpBlockedChannelPatch;
+  XpBlockedChannelStddevPopulationAggregates: ResolverTypeWrapper<XpBlockedChannelStddevPopulationAggregates>;
+  XpBlockedChannelStddevSampleAggregates: ResolverTypeWrapper<XpBlockedChannelStddevSampleAggregates>;
+  XpBlockedChannelSumAggregates: ResolverTypeWrapper<XpBlockedChannelSumAggregates>;
+  XpBlockedChannelVariancePopulationAggregates: ResolverTypeWrapper<XpBlockedChannelVariancePopulationAggregates>;
+  XpBlockedChannelVarianceSampleAggregates: ResolverTypeWrapper<XpBlockedChannelVarianceSampleAggregates>;
+  XpBlockedChannelsConnection: ResolverTypeWrapper<XpBlockedChannelsConnection>;
+  XpBlockedChannelsEdge: ResolverTypeWrapper<XpBlockedChannelsEdge>;
+  XpBlockedChannelsGroupBy: XpBlockedChannelsGroupBy;
+  XpBlockedChannelsHavingAverageInput: XpBlockedChannelsHavingAverageInput;
+  XpBlockedChannelsHavingDistinctCountInput: XpBlockedChannelsHavingDistinctCountInput;
+  XpBlockedChannelsHavingInput: XpBlockedChannelsHavingInput;
+  XpBlockedChannelsHavingMaxInput: XpBlockedChannelsHavingMaxInput;
+  XpBlockedChannelsHavingMinInput: XpBlockedChannelsHavingMinInput;
+  XpBlockedChannelsHavingStddevPopulationInput: XpBlockedChannelsHavingStddevPopulationInput;
+  XpBlockedChannelsHavingStddevSampleInput: XpBlockedChannelsHavingStddevSampleInput;
+  XpBlockedChannelsHavingSumInput: XpBlockedChannelsHavingSumInput;
+  XpBlockedChannelsHavingVariancePopulationInput: XpBlockedChannelsHavingVariancePopulationInput;
+  XpBlockedChannelsHavingVarianceSampleInput: XpBlockedChannelsHavingVarianceSampleInput;
+  XpBlockedChannelsOrderBy: XpBlockedChannelsOrderBy;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -13459,6 +15287,10 @@ export type ResolversParentTypes = {
   CreateGuildBanPayload: CreateGuildBanPayload;
   CreateGuildConfigInput: CreateGuildConfigInput;
   CreateGuildConfigPayload: CreateGuildConfigPayload;
+  CreateLevelRoleInput: CreateLevelRoleInput;
+  CreateLevelRoleOverrideInput: CreateLevelRoleOverrideInput;
+  CreateLevelRoleOverridePayload: CreateLevelRoleOverridePayload;
+  CreateLevelRolePayload: CreateLevelRolePayload;
   CreateMemberInput: CreateMemberInput;
   CreateMemberPayload: CreateMemberPayload;
   CreateMessageInput: CreateMessageInput;
@@ -13485,6 +15317,8 @@ export type ResolversParentTypes = {
   CreateWebUserGuildPayload: CreateWebUserGuildPayload;
   CreateWebUserInput: CreateWebUserInput;
   CreateWebUserPayload: CreateWebUserPayload;
+  CreateXpBlockedChannelInput: CreateXpBlockedChannelInput;
+  CreateXpBlockedChannelPayload: CreateXpBlockedChannelPayload;
   CurrentUserManagedGuildIdEdge: CurrentUserManagedGuildIdEdge;
   CurrentUserManagedGuildIdsConnection: CurrentUserManagedGuildIdsConnection;
   Cursor: Scalars['Cursor'];
@@ -13514,6 +15348,12 @@ export type ResolversParentTypes = {
   DeleteGuildConfigByIdInput: DeleteGuildConfigByIdInput;
   DeleteGuildConfigInput: DeleteGuildConfigInput;
   DeleteGuildConfigPayload: DeleteGuildConfigPayload;
+  DeleteLevelRoleByGuildIdAndRoleIdInput: DeleteLevelRoleByGuildIdAndRoleIdInput;
+  DeleteLevelRoleInput: DeleteLevelRoleInput;
+  DeleteLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput: DeleteLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput;
+  DeleteLevelRoleOverrideInput: DeleteLevelRoleOverrideInput;
+  DeleteLevelRoleOverridePayload: DeleteLevelRoleOverridePayload;
+  DeleteLevelRolePayload: DeleteLevelRolePayload;
   DeleteMemberByGuildIdAndUserIdInput: DeleteMemberByGuildIdAndUserIdInput;
   DeleteMemberInput: DeleteMemberInput;
   DeleteMemberPayload: DeleteMemberPayload;
@@ -13552,6 +15392,9 @@ export type ResolversParentTypes = {
   DeleteWebUserGuildPayload: DeleteWebUserGuildPayload;
   DeleteWebUserInput: DeleteWebUserInput;
   DeleteWebUserPayload: DeleteWebUserPayload;
+  DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput: DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput;
+  DeleteXpBlockedChannelInput: DeleteXpBlockedChannelInput;
+  DeleteXpBlockedChannelPayload: DeleteXpBlockedChannelPayload;
   Feed: Feed;
   FeedAggregates: FeedAggregates;
   FeedCondition: FeedCondition;
@@ -13663,6 +15506,61 @@ export type ResolversParentTypes = {
   IntFilter: IntFilter;
   JSON: Scalars['JSON'];
   JSONFilter: JsonFilter;
+  LevelRole: LevelRole;
+  LevelRoleAggregates: LevelRoleAggregates;
+  LevelRoleAverageAggregates: LevelRoleAverageAggregates;
+  LevelRoleCondition: LevelRoleCondition;
+  LevelRoleDistinctCountAggregates: LevelRoleDistinctCountAggregates;
+  LevelRoleFilter: LevelRoleFilter;
+  LevelRoleInput: LevelRoleInput;
+  LevelRoleMaxAggregates: LevelRoleMaxAggregates;
+  LevelRoleMinAggregates: LevelRoleMinAggregates;
+  LevelRoleOverride: LevelRoleOverride;
+  LevelRoleOverrideAggregates: LevelRoleOverrideAggregates;
+  LevelRoleOverrideAverageAggregates: LevelRoleOverrideAverageAggregates;
+  LevelRoleOverrideCondition: LevelRoleOverrideCondition;
+  LevelRoleOverrideDistinctCountAggregates: LevelRoleOverrideDistinctCountAggregates;
+  LevelRoleOverrideFilter: LevelRoleOverrideFilter;
+  LevelRoleOverrideInput: LevelRoleOverrideInput;
+  LevelRoleOverrideMaxAggregates: LevelRoleOverrideMaxAggregates;
+  LevelRoleOverrideMinAggregates: LevelRoleOverrideMinAggregates;
+  LevelRoleOverridePatch: LevelRoleOverridePatch;
+  LevelRoleOverrideStddevPopulationAggregates: LevelRoleOverrideStddevPopulationAggregates;
+  LevelRoleOverrideStddevSampleAggregates: LevelRoleOverrideStddevSampleAggregates;
+  LevelRoleOverrideSumAggregates: LevelRoleOverrideSumAggregates;
+  LevelRoleOverrideTypeFilter: LevelRoleOverrideTypeFilter;
+  LevelRoleOverrideVariancePopulationAggregates: LevelRoleOverrideVariancePopulationAggregates;
+  LevelRoleOverrideVarianceSampleAggregates: LevelRoleOverrideVarianceSampleAggregates;
+  LevelRoleOverridesConnection: LevelRoleOverridesConnection;
+  LevelRoleOverridesEdge: LevelRoleOverridesEdge;
+  LevelRoleOverridesHavingAverageInput: LevelRoleOverridesHavingAverageInput;
+  LevelRoleOverridesHavingDistinctCountInput: LevelRoleOverridesHavingDistinctCountInput;
+  LevelRoleOverridesHavingInput: LevelRoleOverridesHavingInput;
+  LevelRoleOverridesHavingMaxInput: LevelRoleOverridesHavingMaxInput;
+  LevelRoleOverridesHavingMinInput: LevelRoleOverridesHavingMinInput;
+  LevelRoleOverridesHavingStddevPopulationInput: LevelRoleOverridesHavingStddevPopulationInput;
+  LevelRoleOverridesHavingStddevSampleInput: LevelRoleOverridesHavingStddevSampleInput;
+  LevelRoleOverridesHavingSumInput: LevelRoleOverridesHavingSumInput;
+  LevelRoleOverridesHavingVariancePopulationInput: LevelRoleOverridesHavingVariancePopulationInput;
+  LevelRoleOverridesHavingVarianceSampleInput: LevelRoleOverridesHavingVarianceSampleInput;
+  LevelRolePatch: LevelRolePatch;
+  LevelRoleStddevPopulationAggregates: LevelRoleStddevPopulationAggregates;
+  LevelRoleStddevSampleAggregates: LevelRoleStddevSampleAggregates;
+  LevelRoleSumAggregates: LevelRoleSumAggregates;
+  LevelRoleVariancePopulationAggregates: LevelRoleVariancePopulationAggregates;
+  LevelRoleVarianceSampleAggregates: LevelRoleVarianceSampleAggregates;
+  LevelRolesConnection: LevelRolesConnection;
+  LevelRolesEdge: LevelRolesEdge;
+  LevelRolesHavingAverageInput: LevelRolesHavingAverageInput;
+  LevelRolesHavingDistinctCountInput: LevelRolesHavingDistinctCountInput;
+  LevelRolesHavingInput: LevelRolesHavingInput;
+  LevelRolesHavingMaxInput: LevelRolesHavingMaxInput;
+  LevelRolesHavingMinInput: LevelRolesHavingMinInput;
+  LevelRolesHavingStddevPopulationInput: LevelRolesHavingStddevPopulationInput;
+  LevelRolesHavingStddevSampleInput: LevelRolesHavingStddevSampleInput;
+  LevelRolesHavingSumInput: LevelRolesHavingSumInput;
+  LevelRolesHavingVariancePopulationInput: LevelRolesHavingVariancePopulationInput;
+  LevelRolesHavingVarianceSampleInput: LevelRolesHavingVarianceSampleInput;
   LogoutInput: LogoutInput;
   LogoutPayload: LogoutPayload;
   Member: Member;
@@ -13773,7 +15671,7 @@ export type ResolversParentTypes = {
   MutesHavingSumInput: MutesHavingSumInput;
   MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
   MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
-  Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['Member'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['RoleMenuRole'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'];
+  Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['LevelRole'] | ResolversParentTypes['LevelRoleOverride'] | ResolversParentTypes['Member'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['RoleMenuRole'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'] | ResolversParentTypes['XpBlockedChannel'];
   Notification: Notification;
   NotificationAggregates: NotificationAggregates;
   NotificationAverageAggregates: NotificationAverageAggregates;
@@ -13950,6 +15848,12 @@ export type ResolversParentTypes = {
   UpdateGuildConfigByIdInput: UpdateGuildConfigByIdInput;
   UpdateGuildConfigInput: UpdateGuildConfigInput;
   UpdateGuildConfigPayload: UpdateGuildConfigPayload;
+  UpdateLevelRoleByGuildIdAndRoleIdInput: UpdateLevelRoleByGuildIdAndRoleIdInput;
+  UpdateLevelRoleInput: UpdateLevelRoleInput;
+  UpdateLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput: UpdateLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput;
+  UpdateLevelRoleOverrideInput: UpdateLevelRoleOverrideInput;
+  UpdateLevelRoleOverridePayload: UpdateLevelRoleOverridePayload;
+  UpdateLevelRolePayload: UpdateLevelRolePayload;
   UpdateMemberByGuildIdAndUserIdInput: UpdateMemberByGuildIdAndUserIdInput;
   UpdateMemberInput: UpdateMemberInput;
   UpdateMemberPayload: UpdateMemberPayload;
@@ -13980,12 +15884,17 @@ export type ResolversParentTypes = {
   UpdateUserLevelInput: UpdateUserLevelInput;
   UpdateUserLevelPayload: UpdateUserLevelPayload;
   UpdateUserPayload: UpdateUserPayload;
+  UpdateUserXpInput: UpdateUserXpInput;
+  UpdateUserXpPayload: UpdateUserXpPayload;
   UpdateWebUserByIdInput: UpdateWebUserByIdInput;
   UpdateWebUserGuildByUserIdAndGuildIdInput: UpdateWebUserGuildByUserIdAndGuildIdInput;
   UpdateWebUserGuildInput: UpdateWebUserGuildInput;
   UpdateWebUserGuildPayload: UpdateWebUserGuildPayload;
   UpdateWebUserInput: UpdateWebUserInput;
   UpdateWebUserPayload: UpdateWebUserPayload;
+  UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput: UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput;
+  UpdateXpBlockedChannelInput: UpdateXpBlockedChannelInput;
+  UpdateXpBlockedChannelPayload: UpdateXpBlockedChannelPayload;
   UpsertBotStatInput: UpsertBotStatInput;
   UpsertBotStatPayload: UpsertBotStatPayload;
   UpsertBotStatWhere: UpsertBotStatWhere;
@@ -14010,6 +15919,12 @@ export type ResolversParentTypes = {
   UpsertGuildConfigInput: UpsertGuildConfigInput;
   UpsertGuildConfigPayload: UpsertGuildConfigPayload;
   UpsertGuildConfigWhere: UpsertGuildConfigWhere;
+  UpsertLevelRoleInput: UpsertLevelRoleInput;
+  UpsertLevelRoleOverrideInput: UpsertLevelRoleOverrideInput;
+  UpsertLevelRoleOverridePayload: UpsertLevelRoleOverridePayload;
+  UpsertLevelRoleOverrideWhere: UpsertLevelRoleOverrideWhere;
+  UpsertLevelRolePayload: UpsertLevelRolePayload;
+  UpsertLevelRoleWhere: UpsertLevelRoleWhere;
   UpsertMemberInput: UpsertMemberInput;
   UpsertMemberPayload: UpsertMemberPayload;
   UpsertMemberWhere: UpsertMemberWhere;
@@ -14046,6 +15961,9 @@ export type ResolversParentTypes = {
   UpsertWebUserInput: UpsertWebUserInput;
   UpsertWebUserPayload: UpsertWebUserPayload;
   UpsertWebUserWhere: UpsertWebUserWhere;
+  UpsertXpBlockedChannelInput: UpsertXpBlockedChannelInput;
+  UpsertXpBlockedChannelPayload: UpsertXpBlockedChannelPayload;
+  UpsertXpBlockedChannelWhere: UpsertXpBlockedChannelWhere;
   User: User;
   UserAggregates: UserAggregates;
   UserAverageAggregates: UserAverageAggregates;
@@ -14089,6 +16007,7 @@ export type ResolversParentTypes = {
   UserSumAggregates: UserSumAggregates;
   UserVariancePopulationAggregates: UserVariancePopulationAggregates;
   UserVarianceSampleAggregates: UserVarianceSampleAggregates;
+  UserXpUpdateResult: UserXpUpdateResult;
   UsersConnection: UsersConnection;
   UsersEdge: UsersEdge;
   UsersHavingAverageInput: UsersHavingAverageInput;
@@ -14155,6 +16074,33 @@ export type ResolversParentTypes = {
   WebUsersHavingSumInput: WebUsersHavingSumInput;
   WebUsersHavingVariancePopulationInput: WebUsersHavingVariancePopulationInput;
   WebUsersHavingVarianceSampleInput: WebUsersHavingVarianceSampleInput;
+  XpBlockedChannel: XpBlockedChannel;
+  XpBlockedChannelAggregates: XpBlockedChannelAggregates;
+  XpBlockedChannelAverageAggregates: XpBlockedChannelAverageAggregates;
+  XpBlockedChannelCondition: XpBlockedChannelCondition;
+  XpBlockedChannelDistinctCountAggregates: XpBlockedChannelDistinctCountAggregates;
+  XpBlockedChannelFilter: XpBlockedChannelFilter;
+  XpBlockedChannelInput: XpBlockedChannelInput;
+  XpBlockedChannelMaxAggregates: XpBlockedChannelMaxAggregates;
+  XpBlockedChannelMinAggregates: XpBlockedChannelMinAggregates;
+  XpBlockedChannelPatch: XpBlockedChannelPatch;
+  XpBlockedChannelStddevPopulationAggregates: XpBlockedChannelStddevPopulationAggregates;
+  XpBlockedChannelStddevSampleAggregates: XpBlockedChannelStddevSampleAggregates;
+  XpBlockedChannelSumAggregates: XpBlockedChannelSumAggregates;
+  XpBlockedChannelVariancePopulationAggregates: XpBlockedChannelVariancePopulationAggregates;
+  XpBlockedChannelVarianceSampleAggregates: XpBlockedChannelVarianceSampleAggregates;
+  XpBlockedChannelsConnection: XpBlockedChannelsConnection;
+  XpBlockedChannelsEdge: XpBlockedChannelsEdge;
+  XpBlockedChannelsHavingAverageInput: XpBlockedChannelsHavingAverageInput;
+  XpBlockedChannelsHavingDistinctCountInput: XpBlockedChannelsHavingDistinctCountInput;
+  XpBlockedChannelsHavingInput: XpBlockedChannelsHavingInput;
+  XpBlockedChannelsHavingMaxInput: XpBlockedChannelsHavingMaxInput;
+  XpBlockedChannelsHavingMinInput: XpBlockedChannelsHavingMinInput;
+  XpBlockedChannelsHavingStddevPopulationInput: XpBlockedChannelsHavingStddevPopulationInput;
+  XpBlockedChannelsHavingStddevSampleInput: XpBlockedChannelsHavingStddevSampleInput;
+  XpBlockedChannelsHavingSumInput: XpBlockedChannelsHavingSumInput;
+  XpBlockedChannelsHavingVariancePopulationInput: XpBlockedChannelsHavingVariancePopulationInput;
+  XpBlockedChannelsHavingVarianceSampleInput: XpBlockedChannelsHavingVarianceSampleInput;
 };
 
 export type AddRoleMenuRolesPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddRoleMenuRolesPayload'] = ResolversParentTypes['AddRoleMenuRolesPayload']> = {
@@ -14364,6 +16310,22 @@ export type CreateGuildConfigPayloadResolvers<ContextType = any, ParentType exte
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CreateLevelRoleOverridePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateLevelRoleOverridePayload'] = ResolversParentTypes['CreateLevelRoleOverridePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  levelRoleOverride?: Resolver<Maybe<ResolversTypes['LevelRoleOverride']>, ParentType, ContextType>;
+  levelRoleOverrideEdge?: Resolver<Maybe<ResolversTypes['LevelRoleOverridesEdge']>, ParentType, ContextType, RequireFields<CreateLevelRoleOverridePayloadLevelRoleOverrideEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateLevelRolePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateLevelRolePayload'] = ResolversParentTypes['CreateLevelRolePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  levelRole?: Resolver<Maybe<ResolversTypes['LevelRole']>, ParentType, ContextType>;
+  levelRoleEdge?: Resolver<Maybe<ResolversTypes['LevelRolesEdge']>, ParentType, ContextType, RequireFields<CreateLevelRolePayloadLevelRoleEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CreateMemberPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateMemberPayload'] = ResolversParentTypes['CreateMemberPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType>;
@@ -14472,6 +16434,14 @@ export type CreateWebUserPayloadResolvers<ContextType = any, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CreateXpBlockedChannelPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateXpBlockedChannelPayload'] = ResolversParentTypes['CreateXpBlockedChannelPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  xpBlockedChannel?: Resolver<Maybe<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType>;
+  xpBlockedChannelEdge?: Resolver<Maybe<ResolversTypes['XpBlockedChannelsEdge']>, ParentType, ContextType, RequireFields<CreateXpBlockedChannelPayloadXpBlockedChannelEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CurrentUserManagedGuildIdEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['CurrentUserManagedGuildIdEdge'] = ResolversParentTypes['CurrentUserManagedGuildIdEdge']> = {
   cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
   node?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
@@ -14563,6 +16533,24 @@ export type DeleteGuildConfigPayloadResolvers<ContextType = any, ParentType exte
   deletedGuildConfigId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   guildConfig?: Resolver<Maybe<ResolversTypes['GuildConfig']>, ParentType, ContextType>;
   guildConfigEdge?: Resolver<Maybe<ResolversTypes['GuildConfigsEdge']>, ParentType, ContextType, RequireFields<DeleteGuildConfigPayloadGuildConfigEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteLevelRoleOverridePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteLevelRoleOverridePayload'] = ResolversParentTypes['DeleteLevelRoleOverridePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedLevelRoleOverrideId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  levelRoleOverride?: Resolver<Maybe<ResolversTypes['LevelRoleOverride']>, ParentType, ContextType>;
+  levelRoleOverrideEdge?: Resolver<Maybe<ResolversTypes['LevelRoleOverridesEdge']>, ParentType, ContextType, RequireFields<DeleteLevelRoleOverridePayloadLevelRoleOverrideEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteLevelRolePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteLevelRolePayload'] = ResolversParentTypes['DeleteLevelRolePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedLevelRoleId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  levelRole?: Resolver<Maybe<ResolversTypes['LevelRole']>, ParentType, ContextType>;
+  levelRoleEdge?: Resolver<Maybe<ResolversTypes['LevelRolesEdge']>, ParentType, ContextType, RequireFields<DeleteLevelRolePayloadLevelRoleEdgeArgs, 'orderBy'>>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -14683,6 +16671,15 @@ export type DeleteWebUserPayloadResolvers<ContextType = any, ParentType extends 
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   webUser?: Resolver<Maybe<ResolversTypes['WebUser']>, ParentType, ContextType>;
   webUserEdge?: Resolver<Maybe<ResolversTypes['WebUsersEdge']>, ParentType, ContextType, RequireFields<DeleteWebUserPayloadWebUserEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteXpBlockedChannelPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteXpBlockedChannelPayload'] = ResolversParentTypes['DeleteXpBlockedChannelPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedXpBlockedChannelId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  xpBlockedChannel?: Resolver<Maybe<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType>;
+  xpBlockedChannelEdge?: Resolver<Maybe<ResolversTypes['XpBlockedChannelsEdge']>, ParentType, ContextType, RequireFields<DeleteXpBlockedChannelPayloadXpBlockedChannelEdgeArgs, 'orderBy'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -15161,6 +17158,220 @@ export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
   name: 'JSON';
 }
 
+export type LevelRoleResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRole'] = ResolversParentTypes['LevelRole']> = {
+  addLevel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  removeLevel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleAggregates'] = ResolversParentTypes['LevelRoleAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['LevelRoleAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['LevelRoleDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['LevelRoleMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['LevelRoleMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['LevelRoleStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['LevelRoleStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['LevelRoleSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['LevelRoleVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['LevelRoleVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleAverageAggregates'] = ResolversParentTypes['LevelRoleAverageAggregates']> = {
+  addLevel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  removeLevel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleDistinctCountAggregates'] = ResolversParentTypes['LevelRoleDistinctCountAggregates']> = {
+  addLevel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  removeLevel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleMaxAggregates'] = ResolversParentTypes['LevelRoleMaxAggregates']> = {
+  addLevel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  removeLevel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleMinAggregates'] = ResolversParentTypes['LevelRoleMinAggregates']> = {
+  addLevel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  removeLevel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverrideResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverride'] = ResolversParentTypes['LevelRoleOverride']> = {
+  guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  roleId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['LevelRoleOverrideType'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverrideAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverrideAggregates'] = ResolversParentTypes['LevelRoleOverrideAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['LevelRoleOverrideAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['LevelRoleOverrideDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['LevelRoleOverrideMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['LevelRoleOverrideMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['LevelRoleOverrideStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['LevelRoleOverrideStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['LevelRoleOverrideSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['LevelRoleOverrideVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['LevelRoleOverrideVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverrideAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverrideAverageAggregates'] = ResolversParentTypes['LevelRoleOverrideAverageAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverrideDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverrideDistinctCountAggregates'] = ResolversParentTypes['LevelRoleOverrideDistinctCountAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  type?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverrideMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverrideMaxAggregates'] = ResolversParentTypes['LevelRoleOverrideMaxAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverrideMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverrideMinAggregates'] = ResolversParentTypes['LevelRoleOverrideMinAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverrideStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverrideStddevPopulationAggregates'] = ResolversParentTypes['LevelRoleOverrideStddevPopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverrideStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverrideStddevSampleAggregates'] = ResolversParentTypes['LevelRoleOverrideStddevSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverrideSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverrideSumAggregates'] = ResolversParentTypes['LevelRoleOverrideSumAggregates']> = {
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  roleId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverrideVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverrideVariancePopulationAggregates'] = ResolversParentTypes['LevelRoleOverrideVariancePopulationAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverrideVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverrideVarianceSampleAggregates'] = ResolversParentTypes['LevelRoleOverrideVarianceSampleAggregates']> = {
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverridesConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverridesConnection'] = ResolversParentTypes['LevelRoleOverridesConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['LevelRoleOverrideAggregates']>, ParentType, ContextType>;
+  edges?: Resolver<Array<ResolversTypes['LevelRoleOverridesEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['LevelRoleOverrideAggregates']>>, ParentType, ContextType, RequireFields<LevelRoleOverridesConnectionGroupedAggregatesArgs, 'groupBy'>>;
+  nodes?: Resolver<Array<ResolversTypes['LevelRoleOverride']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleOverridesEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleOverridesEdge'] = ResolversParentTypes['LevelRoleOverridesEdge']> = {
+  cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['LevelRoleOverride'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleStddevPopulationAggregates'] = ResolversParentTypes['LevelRoleStddevPopulationAggregates']> = {
+  addLevel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  removeLevel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleStddevSampleAggregates'] = ResolversParentTypes['LevelRoleStddevSampleAggregates']> = {
+  addLevel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  removeLevel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleSumAggregates'] = ResolversParentTypes['LevelRoleSumAggregates']> = {
+  addLevel?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  removeLevel?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  roleId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleVariancePopulationAggregates'] = ResolversParentTypes['LevelRoleVariancePopulationAggregates']> = {
+  addLevel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  removeLevel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRoleVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRoleVarianceSampleAggregates'] = ResolversParentTypes['LevelRoleVarianceSampleAggregates']> = {
+  addLevel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  removeLevel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  roleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRolesConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRolesConnection'] = ResolversParentTypes['LevelRolesConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['LevelRoleAggregates']>, ParentType, ContextType>;
+  edges?: Resolver<Array<ResolversTypes['LevelRolesEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['LevelRoleAggregates']>>, ParentType, ContextType, RequireFields<LevelRolesConnectionGroupedAggregatesArgs, 'groupBy'>>;
+  nodes?: Resolver<Array<ResolversTypes['LevelRole']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LevelRolesEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['LevelRolesEdge'] = ResolversParentTypes['LevelRolesEdge']> = {
+  cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['LevelRole'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type LogoutPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['LogoutPayload'] = ResolversParentTypes['LogoutPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
@@ -15520,6 +17731,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createFeedSubscription?: Resolver<Maybe<ResolversTypes['CreateFeedSubscriptionPayload']>, ParentType, ContextType, RequireFields<MutationCreateFeedSubscriptionArgs, 'input'>>;
   createGuildBan?: Resolver<Maybe<ResolversTypes['CreateGuildBanPayload']>, ParentType, ContextType, RequireFields<MutationCreateGuildBanArgs, 'input'>>;
   createGuildConfig?: Resolver<Maybe<ResolversTypes['CreateGuildConfigPayload']>, ParentType, ContextType, RequireFields<MutationCreateGuildConfigArgs, 'input'>>;
+  createLevelRole?: Resolver<Maybe<ResolversTypes['CreateLevelRolePayload']>, ParentType, ContextType, RequireFields<MutationCreateLevelRoleArgs, 'input'>>;
+  createLevelRoleOverride?: Resolver<Maybe<ResolversTypes['CreateLevelRoleOverridePayload']>, ParentType, ContextType, RequireFields<MutationCreateLevelRoleOverrideArgs, 'input'>>;
   createMember?: Resolver<Maybe<ResolversTypes['CreateMemberPayload']>, ParentType, ContextType, RequireFields<MutationCreateMemberArgs, 'input'>>;
   createMessage?: Resolver<Maybe<ResolversTypes['CreateMessagePayload']>, ParentType, ContextType, RequireFields<MutationCreateMessageArgs, 'input'>>;
   createModLog?: Resolver<Maybe<ResolversTypes['CreateModLogPayload']>, ParentType, ContextType, RequireFields<MutationCreateModLogArgs, 'input'>>;
@@ -15533,6 +17746,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createUserLevel?: Resolver<Maybe<ResolversTypes['CreateUserLevelPayload']>, ParentType, ContextType, RequireFields<MutationCreateUserLevelArgs, 'input'>>;
   createWebUser?: Resolver<Maybe<ResolversTypes['CreateWebUserPayload']>, ParentType, ContextType, RequireFields<MutationCreateWebUserArgs, 'input'>>;
   createWebUserGuild?: Resolver<Maybe<ResolversTypes['CreateWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationCreateWebUserGuildArgs, 'input'>>;
+  createXpBlockedChannel?: Resolver<Maybe<ResolversTypes['CreateXpBlockedChannelPayload']>, ParentType, ContextType, RequireFields<MutationCreateXpBlockedChannelArgs, 'input'>>;
   deleteBotStat?: Resolver<Maybe<ResolversTypes['DeleteBotStatPayload']>, ParentType, ContextType, RequireFields<MutationDeleteBotStatArgs, 'input'>>;
   deleteBotStatByNameAndCategory?: Resolver<Maybe<ResolversTypes['DeleteBotStatPayload']>, ParentType, ContextType, RequireFields<MutationDeleteBotStatByNameAndCategoryArgs, 'input'>>;
   deleteCachedGuild?: Resolver<Maybe<ResolversTypes['DeleteCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationDeleteCachedGuildArgs, 'input'>>;
@@ -15549,6 +17763,10 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteGuildBanByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['DeleteGuildBanPayload']>, ParentType, ContextType, RequireFields<MutationDeleteGuildBanByGuildIdAndUserIdArgs, 'input'>>;
   deleteGuildConfig?: Resolver<Maybe<ResolversTypes['DeleteGuildConfigPayload']>, ParentType, ContextType, RequireFields<MutationDeleteGuildConfigArgs, 'input'>>;
   deleteGuildConfigById?: Resolver<Maybe<ResolversTypes['DeleteGuildConfigPayload']>, ParentType, ContextType, RequireFields<MutationDeleteGuildConfigByIdArgs, 'input'>>;
+  deleteLevelRole?: Resolver<Maybe<ResolversTypes['DeleteLevelRolePayload']>, ParentType, ContextType, RequireFields<MutationDeleteLevelRoleArgs, 'input'>>;
+  deleteLevelRoleByGuildIdAndRoleId?: Resolver<Maybe<ResolversTypes['DeleteLevelRolePayload']>, ParentType, ContextType, RequireFields<MutationDeleteLevelRoleByGuildIdAndRoleIdArgs, 'input'>>;
+  deleteLevelRoleOverride?: Resolver<Maybe<ResolversTypes['DeleteLevelRoleOverridePayload']>, ParentType, ContextType, RequireFields<MutationDeleteLevelRoleOverrideArgs, 'input'>>;
+  deleteLevelRoleOverrideByGuildIdAndRoleIdAndUserId?: Resolver<Maybe<ResolversTypes['DeleteLevelRoleOverridePayload']>, ParentType, ContextType, RequireFields<MutationDeleteLevelRoleOverrideByGuildIdAndRoleIdAndUserIdArgs, 'input'>>;
   deleteMember?: Resolver<Maybe<ResolversTypes['DeleteMemberPayload']>, ParentType, ContextType, RequireFields<MutationDeleteMemberArgs, 'input'>>;
   deleteMemberByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['DeleteMemberPayload']>, ParentType, ContextType, RequireFields<MutationDeleteMemberByGuildIdAndUserIdArgs, 'input'>>;
   deleteModLog?: Resolver<Maybe<ResolversTypes['DeleteModLogPayload']>, ParentType, ContextType, RequireFields<MutationDeleteModLogArgs, 'input'>>;
@@ -15574,6 +17792,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteWebUserById?: Resolver<Maybe<ResolversTypes['DeleteWebUserPayload']>, ParentType, ContextType, RequireFields<MutationDeleteWebUserByIdArgs, 'input'>>;
   deleteWebUserGuild?: Resolver<Maybe<ResolversTypes['DeleteWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationDeleteWebUserGuildArgs, 'input'>>;
   deleteWebUserGuildByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['DeleteWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationDeleteWebUserGuildByUserIdAndGuildIdArgs, 'input'>>;
+  deleteXpBlockedChannel?: Resolver<Maybe<ResolversTypes['DeleteXpBlockedChannelPayload']>, ParentType, ContextType, RequireFields<MutationDeleteXpBlockedChannelArgs, 'input'>>;
+  deleteXpBlockedChannelByGuildIdAndChannelOrRoleId?: Resolver<Maybe<ResolversTypes['DeleteXpBlockedChannelPayload']>, ParentType, ContextType, RequireFields<MutationDeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdArgs, 'input'>>;
   graphql?: Resolver<Maybe<ResolversTypes['GraphqlPayload']>, ParentType, ContextType, RequireFields<MutationGraphqlArgs, 'input'>>;
   logout?: Resolver<Maybe<ResolversTypes['LogoutPayload']>, ParentType, ContextType, RequireFields<MutationLogoutArgs, 'input'>>;
   setRoleMenuRoleOrder?: Resolver<Maybe<ResolversTypes['SetRoleMenuRoleOrderPayload']>, ParentType, ContextType, RequireFields<MutationSetRoleMenuRoleOrderArgs, 'input'>>;
@@ -15593,6 +17813,10 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateGuildBanByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['UpdateGuildBanPayload']>, ParentType, ContextType, RequireFields<MutationUpdateGuildBanByGuildIdAndUserIdArgs, 'input'>>;
   updateGuildConfig?: Resolver<Maybe<ResolversTypes['UpdateGuildConfigPayload']>, ParentType, ContextType, RequireFields<MutationUpdateGuildConfigArgs, 'input'>>;
   updateGuildConfigById?: Resolver<Maybe<ResolversTypes['UpdateGuildConfigPayload']>, ParentType, ContextType, RequireFields<MutationUpdateGuildConfigByIdArgs, 'input'>>;
+  updateLevelRole?: Resolver<Maybe<ResolversTypes['UpdateLevelRolePayload']>, ParentType, ContextType, RequireFields<MutationUpdateLevelRoleArgs, 'input'>>;
+  updateLevelRoleByGuildIdAndRoleId?: Resolver<Maybe<ResolversTypes['UpdateLevelRolePayload']>, ParentType, ContextType, RequireFields<MutationUpdateLevelRoleByGuildIdAndRoleIdArgs, 'input'>>;
+  updateLevelRoleOverride?: Resolver<Maybe<ResolversTypes['UpdateLevelRoleOverridePayload']>, ParentType, ContextType, RequireFields<MutationUpdateLevelRoleOverrideArgs, 'input'>>;
+  updateLevelRoleOverrideByGuildIdAndRoleIdAndUserId?: Resolver<Maybe<ResolversTypes['UpdateLevelRoleOverridePayload']>, ParentType, ContextType, RequireFields<MutationUpdateLevelRoleOverrideByGuildIdAndRoleIdAndUserIdArgs, 'input'>>;
   updateMember?: Resolver<Maybe<ResolversTypes['UpdateMemberPayload']>, ParentType, ContextType, RequireFields<MutationUpdateMemberArgs, 'input'>>;
   updateMemberByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['UpdateMemberPayload']>, ParentType, ContextType, RequireFields<MutationUpdateMemberByGuildIdAndUserIdArgs, 'input'>>;
   updateModLog?: Resolver<Maybe<ResolversTypes['UpdateModLogPayload']>, ParentType, ContextType, RequireFields<MutationUpdateModLogArgs, 'input'>>;
@@ -15613,10 +17837,13 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateUserById?: Resolver<Maybe<ResolversTypes['UpdateUserPayload']>, ParentType, ContextType, RequireFields<MutationUpdateUserByIdArgs, 'input'>>;
   updateUserLevel?: Resolver<Maybe<ResolversTypes['UpdateUserLevelPayload']>, ParentType, ContextType, RequireFields<MutationUpdateUserLevelArgs, 'input'>>;
   updateUserLevelByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['UpdateUserLevelPayload']>, ParentType, ContextType, RequireFields<MutationUpdateUserLevelByUserIdAndGuildIdArgs, 'input'>>;
+  updateUserXp?: Resolver<Maybe<ResolversTypes['UpdateUserXpPayload']>, ParentType, ContextType, RequireFields<MutationUpdateUserXpArgs, 'input'>>;
   updateWebUser?: Resolver<Maybe<ResolversTypes['UpdateWebUserPayload']>, ParentType, ContextType, RequireFields<MutationUpdateWebUserArgs, 'input'>>;
   updateWebUserById?: Resolver<Maybe<ResolversTypes['UpdateWebUserPayload']>, ParentType, ContextType, RequireFields<MutationUpdateWebUserByIdArgs, 'input'>>;
   updateWebUserGuild?: Resolver<Maybe<ResolversTypes['UpdateWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpdateWebUserGuildArgs, 'input'>>;
   updateWebUserGuildByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['UpdateWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpdateWebUserGuildByUserIdAndGuildIdArgs, 'input'>>;
+  updateXpBlockedChannel?: Resolver<Maybe<ResolversTypes['UpdateXpBlockedChannelPayload']>, ParentType, ContextType, RequireFields<MutationUpdateXpBlockedChannelArgs, 'input'>>;
+  updateXpBlockedChannelByGuildIdAndChannelOrRoleId?: Resolver<Maybe<ResolversTypes['UpdateXpBlockedChannelPayload']>, ParentType, ContextType, RequireFields<MutationUpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdArgs, 'input'>>;
   upsertBotStat?: Resolver<Maybe<ResolversTypes['UpsertBotStatPayload']>, ParentType, ContextType, RequireFields<MutationUpsertBotStatArgs, 'input'>>;
   upsertCachedGuild?: Resolver<Maybe<ResolversTypes['UpsertCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpsertCachedGuildArgs, 'input'>>;
   upsertCachedUser?: Resolver<Maybe<ResolversTypes['UpsertCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationUpsertCachedUserArgs, 'input'>>;
@@ -15625,6 +17852,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   upsertFeedSubscription?: Resolver<Maybe<ResolversTypes['UpsertFeedSubscriptionPayload']>, ParentType, ContextType, RequireFields<MutationUpsertFeedSubscriptionArgs, 'input'>>;
   upsertGuildBan?: Resolver<Maybe<ResolversTypes['UpsertGuildBanPayload']>, ParentType, ContextType, RequireFields<MutationUpsertGuildBanArgs, 'input'>>;
   upsertGuildConfig?: Resolver<Maybe<ResolversTypes['UpsertGuildConfigPayload']>, ParentType, ContextType, RequireFields<MutationUpsertGuildConfigArgs, 'input'>>;
+  upsertLevelRole?: Resolver<Maybe<ResolversTypes['UpsertLevelRolePayload']>, ParentType, ContextType, RequireFields<MutationUpsertLevelRoleArgs, 'input'>>;
+  upsertLevelRoleOverride?: Resolver<Maybe<ResolversTypes['UpsertLevelRoleOverridePayload']>, ParentType, ContextType, RequireFields<MutationUpsertLevelRoleOverrideArgs, 'input'>>;
   upsertMember?: Resolver<Maybe<ResolversTypes['UpsertMemberPayload']>, ParentType, ContextType, RequireFields<MutationUpsertMemberArgs, 'input'>>;
   upsertModLog?: Resolver<Maybe<ResolversTypes['UpsertModLogPayload']>, ParentType, ContextType, RequireFields<MutationUpsertModLogArgs, 'input'>>;
   upsertMute?: Resolver<Maybe<ResolversTypes['UpsertMutePayload']>, ParentType, ContextType, RequireFields<MutationUpsertMuteArgs, 'input'>>;
@@ -15637,6 +17866,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   upsertUserLevel?: Resolver<Maybe<ResolversTypes['UpsertUserLevelPayload']>, ParentType, ContextType, RequireFields<MutationUpsertUserLevelArgs, 'input'>>;
   upsertWebUser?: Resolver<Maybe<ResolversTypes['UpsertWebUserPayload']>, ParentType, ContextType, RequireFields<MutationUpsertWebUserArgs, 'input'>>;
   upsertWebUserGuild?: Resolver<Maybe<ResolversTypes['UpsertWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpsertWebUserGuildArgs, 'input'>>;
+  upsertXpBlockedChannel?: Resolver<Maybe<ResolversTypes['UpsertXpBlockedChannelPayload']>, ParentType, ContextType, RequireFields<MutationUpsertXpBlockedChannelArgs, 'input'>>;
 };
 
 export type MuteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mute'] = ResolversParentTypes['Mute']> = {
@@ -15748,7 +17978,7 @@ export type MutesEdgeResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'BotStat' | 'CachedGuild' | 'CachedUser' | 'Feed' | 'FeedItem' | 'FeedSubscription' | 'GuildBan' | 'GuildConfig' | 'Member' | 'ModLog' | 'Mute' | 'Notification' | 'Query' | 'Reminder' | 'RoleMenu' | 'RoleMenuRole' | 'Tag' | 'User' | 'UserLevel' | 'WebUser' | 'WebUserGuild', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'BotStat' | 'CachedGuild' | 'CachedUser' | 'Feed' | 'FeedItem' | 'FeedSubscription' | 'GuildBan' | 'GuildConfig' | 'LevelRole' | 'LevelRoleOverride' | 'Member' | 'ModLog' | 'Mute' | 'Notification' | 'Query' | 'Reminder' | 'RoleMenu' | 'RoleMenuRole' | 'Tag' | 'User' | 'UserLevel' | 'WebUser' | 'WebUserGuild' | 'XpBlockedChannel', ParentType, ContextType>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -15873,6 +18103,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   allFeeds?: Resolver<Maybe<ResolversTypes['FeedsConnection']>, ParentType, ContextType, RequireFields<QueryAllFeedsArgs, 'orderBy'>>;
   allGuildBans?: Resolver<Maybe<ResolversTypes['GuildBansConnection']>, ParentType, ContextType, RequireFields<QueryAllGuildBansArgs, 'orderBy'>>;
   allGuildConfigs?: Resolver<Maybe<ResolversTypes['GuildConfigsConnection']>, ParentType, ContextType, RequireFields<QueryAllGuildConfigsArgs, 'orderBy'>>;
+  allLevelRoleOverrides?: Resolver<Maybe<ResolversTypes['LevelRoleOverridesConnection']>, ParentType, ContextType, RequireFields<QueryAllLevelRoleOverridesArgs, 'orderBy'>>;
+  allLevelRoles?: Resolver<Maybe<ResolversTypes['LevelRolesConnection']>, ParentType, ContextType, RequireFields<QueryAllLevelRolesArgs, 'orderBy'>>;
   allMembers?: Resolver<Maybe<ResolversTypes['MembersConnection']>, ParentType, ContextType, RequireFields<QueryAllMembersArgs, 'orderBy'>>;
   allMessages?: Resolver<Maybe<ResolversTypes['MessagesConnection']>, ParentType, ContextType, RequireFields<QueryAllMessagesArgs, 'orderBy'>>;
   allModLogs?: Resolver<Maybe<ResolversTypes['ModLogsConnection']>, ParentType, ContextType, RequireFields<QueryAllModLogsArgs, 'orderBy'>>;
@@ -15887,6 +18119,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   allUsers?: Resolver<Maybe<ResolversTypes['UsersConnection']>, ParentType, ContextType, RequireFields<QueryAllUsersArgs, 'orderBy'>>;
   allWebUserGuilds?: Resolver<Maybe<ResolversTypes['WebUserGuildsConnection']>, ParentType, ContextType, RequireFields<QueryAllWebUserGuildsArgs, 'orderBy'>>;
   allWebUsers?: Resolver<Maybe<ResolversTypes['WebUsersConnection']>, ParentType, ContextType, RequireFields<QueryAllWebUsersArgs, 'orderBy'>>;
+  allXpBlockedChannels?: Resolver<Maybe<ResolversTypes['XpBlockedChannelsConnection']>, ParentType, ContextType, RequireFields<QueryAllXpBlockedChannelsArgs, 'orderBy'>>;
   botStat?: Resolver<Maybe<ResolversTypes['BotStat']>, ParentType, ContextType, RequireFields<QueryBotStatArgs, 'nodeId'>>;
   botStatByNameAndCategory?: Resolver<Maybe<ResolversTypes['BotStat']>, ParentType, ContextType, RequireFields<QueryBotStatByNameAndCategoryArgs, 'category' | 'name'>>;
   cachedGuild?: Resolver<Maybe<ResolversTypes['CachedGuild']>, ParentType, ContextType, RequireFields<QueryCachedGuildArgs, 'nodeId'>>;
@@ -15908,6 +18141,10 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   guildBanByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['GuildBan']>, ParentType, ContextType, RequireFields<QueryGuildBanByGuildIdAndUserIdArgs, 'guildId' | 'userId'>>;
   guildConfig?: Resolver<Maybe<ResolversTypes['GuildConfig']>, ParentType, ContextType, RequireFields<QueryGuildConfigArgs, 'nodeId'>>;
   guildConfigById?: Resolver<Maybe<ResolversTypes['GuildConfig']>, ParentType, ContextType, RequireFields<QueryGuildConfigByIdArgs, 'id'>>;
+  levelRole?: Resolver<Maybe<ResolversTypes['LevelRole']>, ParentType, ContextType, RequireFields<QueryLevelRoleArgs, 'nodeId'>>;
+  levelRoleByGuildIdAndRoleId?: Resolver<Maybe<ResolversTypes['LevelRole']>, ParentType, ContextType, RequireFields<QueryLevelRoleByGuildIdAndRoleIdArgs, 'guildId' | 'roleId'>>;
+  levelRoleOverride?: Resolver<Maybe<ResolversTypes['LevelRoleOverride']>, ParentType, ContextType, RequireFields<QueryLevelRoleOverrideArgs, 'nodeId'>>;
+  levelRoleOverrideByGuildIdAndRoleIdAndUserId?: Resolver<Maybe<ResolversTypes['LevelRoleOverride']>, ParentType, ContextType, RequireFields<QueryLevelRoleOverrideByGuildIdAndRoleIdAndUserIdArgs, 'guildId' | 'roleId' | 'userId'>>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<QueryMemberArgs, 'nodeId'>>;
   memberByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<QueryMemberByGuildIdAndUserIdArgs, 'guildId' | 'userId'>>;
   modLog?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType, RequireFields<QueryModLogArgs, 'nodeId'>>;
@@ -15941,6 +18178,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   webUserById?: Resolver<Maybe<ResolversTypes['WebUser']>, ParentType, ContextType, RequireFields<QueryWebUserByIdArgs, 'id'>>;
   webUserGuild?: Resolver<Maybe<ResolversTypes['WebUserGuild']>, ParentType, ContextType, RequireFields<QueryWebUserGuildArgs, 'nodeId'>>;
   webUserGuildByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['WebUserGuild']>, ParentType, ContextType, RequireFields<QueryWebUserGuildByUserIdAndGuildIdArgs, 'guildId' | 'userId'>>;
+  xpBlockedChannel?: Resolver<Maybe<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType, RequireFields<QueryXpBlockedChannelArgs, 'nodeId'>>;
+  xpBlockedChannelByGuildIdAndChannelOrRoleId?: Resolver<Maybe<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType, RequireFields<QueryXpBlockedChannelByGuildIdAndChannelOrRoleIdArgs, 'channelOrRoleId' | 'guildId'>>;
 };
 
 export type RedisGuildResolvers<ContextType = any, ParentType extends ResolversParentTypes['RedisGuild'] = ResolversParentTypes['RedisGuild']> = {
@@ -16518,6 +18757,22 @@ export type UpdateGuildConfigPayloadResolvers<ContextType = any, ParentType exte
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateLevelRoleOverridePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateLevelRoleOverridePayload'] = ResolversParentTypes['UpdateLevelRoleOverridePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  levelRoleOverride?: Resolver<Maybe<ResolversTypes['LevelRoleOverride']>, ParentType, ContextType>;
+  levelRoleOverrideEdge?: Resolver<Maybe<ResolversTypes['LevelRoleOverridesEdge']>, ParentType, ContextType, RequireFields<UpdateLevelRoleOverridePayloadLevelRoleOverrideEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpdateLevelRolePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateLevelRolePayload'] = ResolversParentTypes['UpdateLevelRolePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  levelRole?: Resolver<Maybe<ResolversTypes['LevelRole']>, ParentType, ContextType>;
+  levelRoleEdge?: Resolver<Maybe<ResolversTypes['LevelRolesEdge']>, ParentType, ContextType, RequireFields<UpdateLevelRolePayloadLevelRoleEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UpdateMemberPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateMemberPayload'] = ResolversParentTypes['UpdateMemberPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType>;
@@ -16600,6 +18855,13 @@ export type UpdateUserPayloadResolvers<ContextType = any, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateUserXpPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateUserXpPayload'] = ResolversParentTypes['UpdateUserXpPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  userXpUpdateResult?: Resolver<Maybe<ResolversTypes['UserXpUpdateResult']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UpdateWebUserGuildPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateWebUserGuildPayload'] = ResolversParentTypes['UpdateWebUserGuildPayload']> = {
   cachedGuildByGuildId?: Resolver<Maybe<ResolversTypes['CachedGuild']>, ParentType, ContextType>;
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -16615,6 +18877,14 @@ export type UpdateWebUserPayloadResolvers<ContextType = any, ParentType extends 
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   webUser?: Resolver<Maybe<ResolversTypes['WebUser']>, ParentType, ContextType>;
   webUserEdge?: Resolver<Maybe<ResolversTypes['WebUsersEdge']>, ParentType, ContextType, RequireFields<UpdateWebUserPayloadWebUserEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpdateXpBlockedChannelPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateXpBlockedChannelPayload'] = ResolversParentTypes['UpdateXpBlockedChannelPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  xpBlockedChannel?: Resolver<Maybe<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType>;
+  xpBlockedChannelEdge?: Resolver<Maybe<ResolversTypes['XpBlockedChannelsEdge']>, ParentType, ContextType, RequireFields<UpdateXpBlockedChannelPayloadXpBlockedChannelEdgeArgs, 'orderBy'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -16680,6 +18950,22 @@ export type UpsertGuildConfigPayloadResolvers<ContextType = any, ParentType exte
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   guildConfig?: Resolver<Maybe<ResolversTypes['GuildConfig']>, ParentType, ContextType>;
   guildConfigEdge?: Resolver<Maybe<ResolversTypes['GuildConfigsEdge']>, ParentType, ContextType, RequireFields<UpsertGuildConfigPayloadGuildConfigEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertLevelRoleOverridePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertLevelRoleOverridePayload'] = ResolversParentTypes['UpsertLevelRoleOverridePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  levelRoleOverride?: Resolver<Maybe<ResolversTypes['LevelRoleOverride']>, ParentType, ContextType>;
+  levelRoleOverrideEdge?: Resolver<Maybe<ResolversTypes['LevelRoleOverridesEdge']>, ParentType, ContextType, RequireFields<UpsertLevelRoleOverridePayloadLevelRoleOverrideEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertLevelRolePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertLevelRolePayload'] = ResolversParentTypes['UpsertLevelRolePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  levelRole?: Resolver<Maybe<ResolversTypes['LevelRole']>, ParentType, ContextType>;
+  levelRoleEdge?: Resolver<Maybe<ResolversTypes['LevelRolesEdge']>, ParentType, ContextType, RequireFields<UpsertLevelRolePayloadLevelRoleEdgeArgs, 'orderBy'>>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -16784,6 +19070,14 @@ export type UpsertWebUserPayloadResolvers<ContextType = any, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpsertXpBlockedChannelPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertXpBlockedChannelPayload'] = ResolversParentTypes['UpsertXpBlockedChannelPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  xpBlockedChannel?: Resolver<Maybe<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType>;
+  xpBlockedChannelEdge?: Resolver<Maybe<ResolversTypes['XpBlockedChannelsEdge']>, ParentType, ContextType, RequireFields<UpsertXpBlockedChannelPayloadXpBlockedChannelEdgeArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   fishies?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
@@ -16854,6 +19148,7 @@ export type UserGuildRankResultResolvers<ContextType = any, ParentType extends R
 export type UserLevelResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevel'] = ResolversParentTypes['UserLevel']> = {
   guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   lastMsg?: Resolver<ResolversTypes['Datetime'], ParentType, ContextType>;
+  level?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   msgAllTime?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   msgDay?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   msgMonth?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
@@ -16879,6 +19174,7 @@ export type UserLevelAggregatesResolvers<ContextType = any, ParentType extends R
 
 export type UserLevelAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelAverageAggregates'] = ResolversParentTypes['UserLevelAverageAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  level?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgAllTime?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgDay?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgMonth?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
@@ -16890,6 +19186,7 @@ export type UserLevelAverageAggregatesResolvers<ContextType = any, ParentType ex
 export type UserLevelDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelDistinctCountAggregates'] = ResolversParentTypes['UserLevelDistinctCountAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   lastMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  level?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   msgAllTime?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   msgDay?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   msgMonth?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
@@ -16900,6 +19197,7 @@ export type UserLevelDistinctCountAggregatesResolvers<ContextType = any, ParentT
 
 export type UserLevelMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelMaxAggregates'] = ResolversParentTypes['UserLevelMaxAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  level?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   msgAllTime?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   msgDay?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   msgMonth?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
@@ -16910,6 +19208,7 @@ export type UserLevelMaxAggregatesResolvers<ContextType = any, ParentType extend
 
 export type UserLevelMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelMinAggregates'] = ResolversParentTypes['UserLevelMinAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  level?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   msgAllTime?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   msgDay?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   msgMonth?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
@@ -16920,6 +19219,7 @@ export type UserLevelMinAggregatesResolvers<ContextType = any, ParentType extend
 
 export type UserLevelStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelStddevPopulationAggregates'] = ResolversParentTypes['UserLevelStddevPopulationAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  level?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgAllTime?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgDay?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgMonth?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
@@ -16930,6 +19230,7 @@ export type UserLevelStddevPopulationAggregatesResolvers<ContextType = any, Pare
 
 export type UserLevelStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelStddevSampleAggregates'] = ResolversParentTypes['UserLevelStddevSampleAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  level?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgAllTime?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgDay?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgMonth?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
@@ -16940,6 +19241,7 @@ export type UserLevelStddevSampleAggregatesResolvers<ContextType = any, ParentTy
 
 export type UserLevelSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelSumAggregates'] = ResolversParentTypes['UserLevelSumAggregates']> = {
   guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  level?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   msgAllTime?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   msgDay?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   msgMonth?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
@@ -16950,6 +19252,7 @@ export type UserLevelSumAggregatesResolvers<ContextType = any, ParentType extend
 
 export type UserLevelVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelVariancePopulationAggregates'] = ResolversParentTypes['UserLevelVariancePopulationAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  level?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgAllTime?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgDay?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgMonth?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
@@ -16960,6 +19263,7 @@ export type UserLevelVariancePopulationAggregatesResolvers<ContextType = any, Pa
 
 export type UserLevelVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserLevelVarianceSampleAggregates'] = ResolversParentTypes['UserLevelVarianceSampleAggregates']> = {
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  level?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgAllTime?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgDay?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgMonth?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
@@ -17030,6 +19334,14 @@ export type UserVarianceSampleAggregatesResolvers<ContextType = any, ParentType 
   fishies?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   id?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   rep?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserXpUpdateResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserXpUpdateResult'] = ResolversParentTypes['UserXpUpdateResult']> = {
+  addRoleIds?: Resolver<Maybe<Array<Maybe<ResolversTypes['BigInt']>>>, ParentType, ContextType>;
+  newLevel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  oldLevel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  removeRoleIds?: Resolver<Maybe<Array<Maybe<ResolversTypes['BigInt']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -17260,6 +19572,97 @@ export type WebUsersEdgeResolvers<ContextType = any, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type XpBlockedChannelResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannel'] = ResolversParentTypes['XpBlockedChannel']> = {
+  channelOrRoleId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type XpBlockedChannelAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelAggregates'] = ResolversParentTypes['XpBlockedChannelAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['XpBlockedChannelAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['XpBlockedChannelDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['XpBlockedChannelMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['XpBlockedChannelMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['XpBlockedChannelStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['XpBlockedChannelStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['XpBlockedChannelSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['XpBlockedChannelVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['XpBlockedChannelVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type XpBlockedChannelAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelAverageAggregates'] = ResolversParentTypes['XpBlockedChannelAverageAggregates']> = {
+  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type XpBlockedChannelDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelDistinctCountAggregates'] = ResolversParentTypes['XpBlockedChannelDistinctCountAggregates']> = {
+  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type XpBlockedChannelMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelMaxAggregates'] = ResolversParentTypes['XpBlockedChannelMaxAggregates']> = {
+  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type XpBlockedChannelMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelMinAggregates'] = ResolversParentTypes['XpBlockedChannelMinAggregates']> = {
+  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type XpBlockedChannelStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelStddevPopulationAggregates'] = ResolversParentTypes['XpBlockedChannelStddevPopulationAggregates']> = {
+  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type XpBlockedChannelStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelStddevSampleAggregates'] = ResolversParentTypes['XpBlockedChannelStddevSampleAggregates']> = {
+  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type XpBlockedChannelSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelSumAggregates'] = ResolversParentTypes['XpBlockedChannelSumAggregates']> = {
+  channelOrRoleId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type XpBlockedChannelVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelVariancePopulationAggregates'] = ResolversParentTypes['XpBlockedChannelVariancePopulationAggregates']> = {
+  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type XpBlockedChannelVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelVarianceSampleAggregates'] = ResolversParentTypes['XpBlockedChannelVarianceSampleAggregates']> = {
+  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type XpBlockedChannelsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelsConnection'] = ResolversParentTypes['XpBlockedChannelsConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['XpBlockedChannelAggregates']>, ParentType, ContextType>;
+  edges?: Resolver<Array<ResolversTypes['XpBlockedChannelsEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['XpBlockedChannelAggregates']>>, ParentType, ContextType, RequireFields<XpBlockedChannelsConnectionGroupedAggregatesArgs, 'groupBy'>>;
+  nodes?: Resolver<Array<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type XpBlockedChannelsEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelsEdge'] = ResolversParentTypes['XpBlockedChannelsEdge']> = {
+  cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['XpBlockedChannel'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   AddRoleMenuRolesPayload?: AddRoleMenuRolesPayloadResolvers<ContextType>;
   BigFloat?: GraphQLScalarType;
@@ -17289,6 +19692,8 @@ export type Resolvers<ContextType = any> = {
   CreateFeedSubscriptionPayload?: CreateFeedSubscriptionPayloadResolvers<ContextType>;
   CreateGuildBanPayload?: CreateGuildBanPayloadResolvers<ContextType>;
   CreateGuildConfigPayload?: CreateGuildConfigPayloadResolvers<ContextType>;
+  CreateLevelRoleOverridePayload?: CreateLevelRoleOverridePayloadResolvers<ContextType>;
+  CreateLevelRolePayload?: CreateLevelRolePayloadResolvers<ContextType>;
   CreateMemberPayload?: CreateMemberPayloadResolvers<ContextType>;
   CreateMessagePayload?: CreateMessagePayloadResolvers<ContextType>;
   CreateModLogPayload?: CreateModLogPayloadResolvers<ContextType>;
@@ -17302,6 +19707,7 @@ export type Resolvers<ContextType = any> = {
   CreateUserPayload?: CreateUserPayloadResolvers<ContextType>;
   CreateWebUserGuildPayload?: CreateWebUserGuildPayloadResolvers<ContextType>;
   CreateWebUserPayload?: CreateWebUserPayloadResolvers<ContextType>;
+  CreateXpBlockedChannelPayload?: CreateXpBlockedChannelPayloadResolvers<ContextType>;
   CurrentUserManagedGuildIdEdge?: CurrentUserManagedGuildIdEdgeResolvers<ContextType>;
   CurrentUserManagedGuildIdsConnection?: CurrentUserManagedGuildIdsConnectionResolvers<ContextType>;
   Cursor?: GraphQLScalarType;
@@ -17314,6 +19720,8 @@ export type Resolvers<ContextType = any> = {
   DeleteFeedSubscriptionPayload?: DeleteFeedSubscriptionPayloadResolvers<ContextType>;
   DeleteGuildBanPayload?: DeleteGuildBanPayloadResolvers<ContextType>;
   DeleteGuildConfigPayload?: DeleteGuildConfigPayloadResolvers<ContextType>;
+  DeleteLevelRoleOverridePayload?: DeleteLevelRoleOverridePayloadResolvers<ContextType>;
+  DeleteLevelRolePayload?: DeleteLevelRolePayloadResolvers<ContextType>;
   DeleteMemberPayload?: DeleteMemberPayloadResolvers<ContextType>;
   DeleteModLogPayload?: DeleteModLogPayloadResolvers<ContextType>;
   DeleteMutePayload?: DeleteMutePayloadResolvers<ContextType>;
@@ -17327,6 +19735,7 @@ export type Resolvers<ContextType = any> = {
   DeleteUserPayload?: DeleteUserPayloadResolvers<ContextType>;
   DeleteWebUserGuildPayload?: DeleteWebUserGuildPayloadResolvers<ContextType>;
   DeleteWebUserPayload?: DeleteWebUserPayloadResolvers<ContextType>;
+  DeleteXpBlockedChannelPayload?: DeleteXpBlockedChannelPayloadResolvers<ContextType>;
   Feed?: FeedResolvers<ContextType>;
   FeedAggregates?: FeedAggregatesResolvers<ContextType>;
   FeedDistinctCountAggregates?: FeedDistinctCountAggregatesResolvers<ContextType>;
@@ -17378,6 +19787,32 @@ export type Resolvers<ContextType = any> = {
   GuildConfigsConnection?: GuildConfigsConnectionResolvers<ContextType>;
   GuildConfigsEdge?: GuildConfigsEdgeResolvers<ContextType>;
   JSON?: GraphQLScalarType;
+  LevelRole?: LevelRoleResolvers<ContextType>;
+  LevelRoleAggregates?: LevelRoleAggregatesResolvers<ContextType>;
+  LevelRoleAverageAggregates?: LevelRoleAverageAggregatesResolvers<ContextType>;
+  LevelRoleDistinctCountAggregates?: LevelRoleDistinctCountAggregatesResolvers<ContextType>;
+  LevelRoleMaxAggregates?: LevelRoleMaxAggregatesResolvers<ContextType>;
+  LevelRoleMinAggregates?: LevelRoleMinAggregatesResolvers<ContextType>;
+  LevelRoleOverride?: LevelRoleOverrideResolvers<ContextType>;
+  LevelRoleOverrideAggregates?: LevelRoleOverrideAggregatesResolvers<ContextType>;
+  LevelRoleOverrideAverageAggregates?: LevelRoleOverrideAverageAggregatesResolvers<ContextType>;
+  LevelRoleOverrideDistinctCountAggregates?: LevelRoleOverrideDistinctCountAggregatesResolvers<ContextType>;
+  LevelRoleOverrideMaxAggregates?: LevelRoleOverrideMaxAggregatesResolvers<ContextType>;
+  LevelRoleOverrideMinAggregates?: LevelRoleOverrideMinAggregatesResolvers<ContextType>;
+  LevelRoleOverrideStddevPopulationAggregates?: LevelRoleOverrideStddevPopulationAggregatesResolvers<ContextType>;
+  LevelRoleOverrideStddevSampleAggregates?: LevelRoleOverrideStddevSampleAggregatesResolvers<ContextType>;
+  LevelRoleOverrideSumAggregates?: LevelRoleOverrideSumAggregatesResolvers<ContextType>;
+  LevelRoleOverrideVariancePopulationAggregates?: LevelRoleOverrideVariancePopulationAggregatesResolvers<ContextType>;
+  LevelRoleOverrideVarianceSampleAggregates?: LevelRoleOverrideVarianceSampleAggregatesResolvers<ContextType>;
+  LevelRoleOverridesConnection?: LevelRoleOverridesConnectionResolvers<ContextType>;
+  LevelRoleOverridesEdge?: LevelRoleOverridesEdgeResolvers<ContextType>;
+  LevelRoleStddevPopulationAggregates?: LevelRoleStddevPopulationAggregatesResolvers<ContextType>;
+  LevelRoleStddevSampleAggregates?: LevelRoleStddevSampleAggregatesResolvers<ContextType>;
+  LevelRoleSumAggregates?: LevelRoleSumAggregatesResolvers<ContextType>;
+  LevelRoleVariancePopulationAggregates?: LevelRoleVariancePopulationAggregatesResolvers<ContextType>;
+  LevelRoleVarianceSampleAggregates?: LevelRoleVarianceSampleAggregatesResolvers<ContextType>;
+  LevelRolesConnection?: LevelRolesConnectionResolvers<ContextType>;
+  LevelRolesEdge?: LevelRolesEdgeResolvers<ContextType>;
   LogoutPayload?: LogoutPayloadResolvers<ContextType>;
   Member?: MemberResolvers<ContextType>;
   MemberAggregates?: MemberAggregatesResolvers<ContextType>;
@@ -17518,6 +19953,8 @@ export type Resolvers<ContextType = any> = {
   UpdateFeedSubscriptionPayload?: UpdateFeedSubscriptionPayloadResolvers<ContextType>;
   UpdateGuildBanPayload?: UpdateGuildBanPayloadResolvers<ContextType>;
   UpdateGuildConfigPayload?: UpdateGuildConfigPayloadResolvers<ContextType>;
+  UpdateLevelRoleOverridePayload?: UpdateLevelRoleOverridePayloadResolvers<ContextType>;
+  UpdateLevelRolePayload?: UpdateLevelRolePayloadResolvers<ContextType>;
   UpdateMemberPayload?: UpdateMemberPayloadResolvers<ContextType>;
   UpdateModLogPayload?: UpdateModLogPayloadResolvers<ContextType>;
   UpdateMutePayload?: UpdateMutePayloadResolvers<ContextType>;
@@ -17528,8 +19965,10 @@ export type Resolvers<ContextType = any> = {
   UpdateTagPayload?: UpdateTagPayloadResolvers<ContextType>;
   UpdateUserLevelPayload?: UpdateUserLevelPayloadResolvers<ContextType>;
   UpdateUserPayload?: UpdateUserPayloadResolvers<ContextType>;
+  UpdateUserXpPayload?: UpdateUserXpPayloadResolvers<ContextType>;
   UpdateWebUserGuildPayload?: UpdateWebUserGuildPayloadResolvers<ContextType>;
   UpdateWebUserPayload?: UpdateWebUserPayloadResolvers<ContextType>;
+  UpdateXpBlockedChannelPayload?: UpdateXpBlockedChannelPayloadResolvers<ContextType>;
   UpsertBotStatPayload?: UpsertBotStatPayloadResolvers<ContextType>;
   UpsertCachedGuildPayload?: UpsertCachedGuildPayloadResolvers<ContextType>;
   UpsertCachedUserPayload?: UpsertCachedUserPayloadResolvers<ContextType>;
@@ -17538,6 +19977,8 @@ export type Resolvers<ContextType = any> = {
   UpsertFeedSubscriptionPayload?: UpsertFeedSubscriptionPayloadResolvers<ContextType>;
   UpsertGuildBanPayload?: UpsertGuildBanPayloadResolvers<ContextType>;
   UpsertGuildConfigPayload?: UpsertGuildConfigPayloadResolvers<ContextType>;
+  UpsertLevelRoleOverridePayload?: UpsertLevelRoleOverridePayloadResolvers<ContextType>;
+  UpsertLevelRolePayload?: UpsertLevelRolePayloadResolvers<ContextType>;
   UpsertMemberPayload?: UpsertMemberPayloadResolvers<ContextType>;
   UpsertModLogPayload?: UpsertModLogPayloadResolvers<ContextType>;
   UpsertMutePayload?: UpsertMutePayloadResolvers<ContextType>;
@@ -17550,6 +19991,7 @@ export type Resolvers<ContextType = any> = {
   UpsertUserPayload?: UpsertUserPayloadResolvers<ContextType>;
   UpsertWebUserGuildPayload?: UpsertWebUserGuildPayloadResolvers<ContextType>;
   UpsertWebUserPayload?: UpsertWebUserPayloadResolvers<ContextType>;
+  UpsertXpBlockedChannelPayload?: UpsertXpBlockedChannelPayloadResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserAggregates?: UserAggregatesResolvers<ContextType>;
   UserAverageAggregates?: UserAverageAggregatesResolvers<ContextType>;
@@ -17575,6 +20017,7 @@ export type Resolvers<ContextType = any> = {
   UserSumAggregates?: UserSumAggregatesResolvers<ContextType>;
   UserVariancePopulationAggregates?: UserVariancePopulationAggregatesResolvers<ContextType>;
   UserVarianceSampleAggregates?: UserVarianceSampleAggregatesResolvers<ContextType>;
+  UserXpUpdateResult?: UserXpUpdateResultResolvers<ContextType>;
   UsersConnection?: UsersConnectionResolvers<ContextType>;
   UsersEdge?: UsersEdgeResolvers<ContextType>;
   WebUser?: WebUserResolvers<ContextType>;
@@ -17603,6 +20046,19 @@ export type Resolvers<ContextType = any> = {
   WebUserVarianceSampleAggregates?: WebUserVarianceSampleAggregatesResolvers<ContextType>;
   WebUsersConnection?: WebUsersConnectionResolvers<ContextType>;
   WebUsersEdge?: WebUsersEdgeResolvers<ContextType>;
+  XpBlockedChannel?: XpBlockedChannelResolvers<ContextType>;
+  XpBlockedChannelAggregates?: XpBlockedChannelAggregatesResolvers<ContextType>;
+  XpBlockedChannelAverageAggregates?: XpBlockedChannelAverageAggregatesResolvers<ContextType>;
+  XpBlockedChannelDistinctCountAggregates?: XpBlockedChannelDistinctCountAggregatesResolvers<ContextType>;
+  XpBlockedChannelMaxAggregates?: XpBlockedChannelMaxAggregatesResolvers<ContextType>;
+  XpBlockedChannelMinAggregates?: XpBlockedChannelMinAggregatesResolvers<ContextType>;
+  XpBlockedChannelStddevPopulationAggregates?: XpBlockedChannelStddevPopulationAggregatesResolvers<ContextType>;
+  XpBlockedChannelStddevSampleAggregates?: XpBlockedChannelStddevSampleAggregatesResolvers<ContextType>;
+  XpBlockedChannelSumAggregates?: XpBlockedChannelSumAggregatesResolvers<ContextType>;
+  XpBlockedChannelVariancePopulationAggregates?: XpBlockedChannelVariancePopulationAggregatesResolvers<ContextType>;
+  XpBlockedChannelVarianceSampleAggregates?: XpBlockedChannelVarianceSampleAggregatesResolvers<ContextType>;
+  XpBlockedChannelsConnection?: XpBlockedChannelsConnectionResolvers<ContextType>;
+  XpBlockedChannelsEdge?: XpBlockedChannelsEdgeResolvers<ContextType>;
 };
 
 
@@ -17932,6 +20388,16 @@ export type UserGuildLevelAndRankQueryVariables = Exact<{
 
 
 export type UserGuildLevelAndRankQuery = { __typename?: 'Query', userGuildRank?: { __typename?: 'UserGuildRankResult', lastMsg?: string | null, guildId?: string | null, msgAllTime?: string | null, msgAllTimeRank?: string | null, msgDay?: string | null, msgWeekRank?: string | null, msgWeekTotal?: string | null, msgWeek?: string | null, msgMonthTotal?: string | null, msgMonthRank?: string | null, msgMonth?: string | null, msgDayTotal?: string | null, msgDayRank?: string | null, msgAllTimeTotal?: string | null } | null };
+
+export type UpdateUserXpMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  channelId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
+  roleIds: Array<Scalars['BigInt']> | Scalars['BigInt'];
+}>;
+
+
+export type UpdateUserXpMutation = { __typename?: 'Mutation', updateUserXp?: { __typename?: 'UpdateUserXpPayload', userXpUpdateResult?: { __typename?: 'UserXpUpdateResult', addRoleIds?: Array<string | null> | null, newLevel?: string | null, oldLevel?: string | null, removeRoleIds?: Array<string | null> | null } | null } | null };
 
 export const BanDataFragmentDoc = gql`
     fragment BanData on GuildBan {
@@ -18493,6 +20959,20 @@ export const UserGuildLevelAndRankDocument = gql`
   }
 }
     `;
+export const UpdateUserXpDocument = gql`
+    mutation updateUserXp($guildId: BigInt!, $channelId: BigInt!, $userId: BigInt!, $roleIds: [BigInt!]!) {
+  updateUserXp(
+    input: {channelId: $channelId, userId: $userId, guildId: $guildId, roleIds: $roleIds}
+  ) {
+    userXpUpdateResult {
+      addRoleIds
+      newLevel
+      oldLevel
+      removeRoleIds
+    }
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -18617,6 +21097,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     userGuildLevelAndRank(variables: UserGuildLevelAndRankQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UserGuildLevelAndRankQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserGuildLevelAndRankQuery>(UserGuildLevelAndRankDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'userGuildLevelAndRank', 'query');
+    },
+    updateUserXp(variables: UpdateUserXpMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateUserXpMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateUserXpMutation>(UpdateUserXpDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateUserXp', 'mutation');
     }
   };
 }

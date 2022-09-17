@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { AMQPClient } from "@cloudamqp/amqp-client";
 import * as Sentry from "@sentry/node";
 import log from "./logger";
-import InteractionClient from "./interactions/client";
+import InteractionClient from "./client";
 import { Config } from "./model/config";
 import AmqpGateway from "./gateway/amqp";
 import initI18next from "./i18next";

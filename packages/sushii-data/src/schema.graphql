@@ -1060,6 +1060,76 @@ type CreateGuildConfigPayload {
   query: Query
 }
 
+"""All input for the create `LevelRole` mutation."""
+input CreateLevelRoleInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `LevelRole` to be created by this mutation."""
+  levelRole: LevelRoleInput!
+}
+
+"""All input for the create `LevelRoleOverride` mutation."""
+input CreateLevelRoleOverrideInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `LevelRoleOverride` to be created by this mutation."""
+  levelRoleOverride: LevelRoleOverrideInput!
+}
+
+"""The output of our create `LevelRoleOverride` mutation."""
+type CreateLevelRoleOverridePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `LevelRoleOverride` that was created by this mutation."""
+  levelRoleOverride: LevelRoleOverride
+
+  """An edge for our `LevelRoleOverride`. May be used by Relay 1."""
+  levelRoleOverrideEdge(
+    """The method to use when ordering `LevelRoleOverride`."""
+    orderBy: [LevelRoleOverridesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRoleOverridesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""The output of our create `LevelRole` mutation."""
+type CreateLevelRolePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `LevelRole` that was created by this mutation."""
+  levelRole: LevelRole
+
+  """An edge for our `LevelRole`. May be used by Relay 1."""
+  levelRoleEdge(
+    """The method to use when ordering `LevelRole`."""
+    orderBy: [LevelRolesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRolesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the create `Member` mutation."""
 input CreateMemberInput {
   """
@@ -1527,6 +1597,41 @@ type CreateWebUserPayload {
   ): WebUsersEdge
 }
 
+"""All input for the create `XpBlockedChannel` mutation."""
+input CreateXpBlockedChannelInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `XpBlockedChannel` to be created by this mutation."""
+  xpBlockedChannel: XpBlockedChannelInput!
+}
+
+"""The output of our create `XpBlockedChannel` mutation."""
+type CreateXpBlockedChannelPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `XpBlockedChannel` that was created by this mutation."""
+  xpBlockedChannel: XpBlockedChannel
+
+  """An edge for our `XpBlockedChannel`. May be used by Relay 1."""
+  xpBlockedChannelEdge(
+    """The method to use when ordering `XpBlockedChannel`."""
+    orderBy: [XpBlockedChannelsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): XpBlockedChannelsEdge
+}
+
 """A `BigInt` edge in the connection."""
 type CurrentUserManagedGuildIdEdge {
   """A cursor for use in pagination."""
@@ -1992,6 +2097,107 @@ type DeleteGuildConfigPayload {
     """The method to use when ordering `GuildConfig`."""
     orderBy: [GuildConfigsOrderBy!] = [PRIMARY_KEY_ASC]
   ): GuildConfigsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteLevelRoleByGuildIdAndRoleId` mutation."""
+input DeleteLevelRoleByGuildIdAndRoleIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  roleId: BigInt!
+}
+
+"""All input for the `deleteLevelRole` mutation."""
+input DeleteLevelRoleInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `LevelRole` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""
+All input for the `deleteLevelRoleOverrideByGuildIdAndRoleIdAndUserId` mutation.
+"""
+input DeleteLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  roleId: BigInt!
+  userId: BigInt!
+}
+
+"""All input for the `deleteLevelRoleOverride` mutation."""
+input DeleteLevelRoleOverrideInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `LevelRoleOverride` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `LevelRoleOverride` mutation."""
+type DeleteLevelRoleOverridePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedLevelRoleOverrideId: ID
+
+  """The `LevelRoleOverride` that was deleted by this mutation."""
+  levelRoleOverride: LevelRoleOverride
+
+  """An edge for our `LevelRoleOverride`. May be used by Relay 1."""
+  levelRoleOverrideEdge(
+    """The method to use when ordering `LevelRoleOverride`."""
+    orderBy: [LevelRoleOverridesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRoleOverridesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""The output of our delete `LevelRole` mutation."""
+type DeleteLevelRolePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedLevelRoleId: ID
+
+  """The `LevelRole` that was deleted by this mutation."""
+  levelRole: LevelRole
+
+  """An edge for our `LevelRole`. May be used by Relay 1."""
+  levelRoleEdge(
+    """The method to use when ordering `LevelRole`."""
+    orderBy: [LevelRolesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRolesEdge
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
@@ -2631,6 +2837,58 @@ type DeleteWebUserPayload {
     """The method to use when ordering `WebUser`."""
     orderBy: [WebUsersOrderBy!] = [PRIMARY_KEY_ASC]
   ): WebUsersEdge
+}
+
+"""
+All input for the `deleteXpBlockedChannelByGuildIdAndChannelOrRoleId` mutation.
+"""
+input DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput {
+  channelOrRoleId: BigInt!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+}
+
+"""All input for the `deleteXpBlockedChannel` mutation."""
+input DeleteXpBlockedChannelInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `XpBlockedChannel` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `XpBlockedChannel` mutation."""
+type DeleteXpBlockedChannelPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedXpBlockedChannelId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `XpBlockedChannel` that was deleted by this mutation."""
+  xpBlockedChannel: XpBlockedChannel
+
+  """An edge for our `XpBlockedChannel`. May be used by Relay 1."""
+  xpBlockedChannelEdge(
+    """The method to use when ordering `XpBlockedChannel`."""
+    orderBy: [XpBlockedChannelsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): XpBlockedChannelsEdge
 }
 
 type Feed implements Node {
@@ -4758,6 +5016,816 @@ input JSONFilter {
   notIn: [JSON!]
 }
 
+type LevelRole implements Node {
+  addLevel: BigInt
+  guildId: BigInt!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  removeLevel: BigInt
+  roleId: BigInt!
+}
+
+type LevelRoleAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: LevelRoleAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: LevelRoleDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: LevelRoleMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: LevelRoleMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: LevelRoleStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: LevelRoleStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: LevelRoleSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: LevelRoleVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: LevelRoleVarianceSampleAggregates
+}
+
+type LevelRoleAverageAggregates {
+  """Mean average of addLevel across the matching connection"""
+  addLevel: BigFloat
+
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of removeLevel across the matching connection"""
+  removeLevel: BigFloat
+
+  """Mean average of roleId across the matching connection"""
+  roleId: BigFloat
+}
+
+"""
+A condition to be used against `LevelRole` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input LevelRoleCondition {
+  """Checks for equality with the object’s `addLevel` field."""
+  addLevel: BigInt
+
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `removeLevel` field."""
+  removeLevel: BigInt
+
+  """Checks for equality with the object’s `roleId` field."""
+  roleId: BigInt
+}
+
+type LevelRoleDistinctCountAggregates {
+  """Distinct count of addLevel across the matching connection"""
+  addLevel: BigInt
+
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of removeLevel across the matching connection"""
+  removeLevel: BigInt
+
+  """Distinct count of roleId across the matching connection"""
+  roleId: BigInt
+}
+
+"""
+A filter to be used against `LevelRole` object types. All fields are combined with a logical ‘and.’
+"""
+input LevelRoleFilter {
+  """Filter by the object’s `addLevel` field."""
+  addLevel: BigIntFilter
+
+  """Checks for all expressions in this list."""
+  and: [LevelRoleFilter!]
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Negates the expression."""
+  not: LevelRoleFilter
+
+  """Checks for any expressions in this list."""
+  or: [LevelRoleFilter!]
+
+  """Filter by the object’s `removeLevel` field."""
+  removeLevel: BigIntFilter
+
+  """Filter by the object’s `roleId` field."""
+  roleId: BigIntFilter
+}
+
+"""An input for mutations affecting `LevelRole`"""
+input LevelRoleInput {
+  addLevel: BigInt
+  guildId: BigInt!
+  removeLevel: BigInt
+  roleId: BigInt!
+}
+
+type LevelRoleMaxAggregates {
+  """Maximum of addLevel across the matching connection"""
+  addLevel: BigInt
+
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of removeLevel across the matching connection"""
+  removeLevel: BigInt
+
+  """Maximum of roleId across the matching connection"""
+  roleId: BigInt
+}
+
+type LevelRoleMinAggregates {
+  """Minimum of addLevel across the matching connection"""
+  addLevel: BigInt
+
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of removeLevel across the matching connection"""
+  removeLevel: BigInt
+
+  """Minimum of roleId across the matching connection"""
+  roleId: BigInt
+}
+
+type LevelRoleOverride implements Node {
+  guildId: BigInt!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  roleId: BigInt!
+  type: LevelRoleOverrideType!
+  userId: BigInt!
+}
+
+type LevelRoleOverrideAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: LevelRoleOverrideAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: LevelRoleOverrideDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: LevelRoleOverrideMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: LevelRoleOverrideMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: LevelRoleOverrideStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: LevelRoleOverrideStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: LevelRoleOverrideSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: LevelRoleOverrideVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: LevelRoleOverrideVarianceSampleAggregates
+}
+
+type LevelRoleOverrideAverageAggregates {
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of roleId across the matching connection"""
+  roleId: BigFloat
+
+  """Mean average of userId across the matching connection"""
+  userId: BigFloat
+}
+
+"""
+A condition to be used against `LevelRoleOverride` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input LevelRoleOverrideCondition {
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `roleId` field."""
+  roleId: BigInt
+
+  """Checks for equality with the object’s `type` field."""
+  type: LevelRoleOverrideType
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: BigInt
+}
+
+type LevelRoleOverrideDistinctCountAggregates {
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of roleId across the matching connection"""
+  roleId: BigInt
+
+  """Distinct count of type across the matching connection"""
+  type: BigInt
+
+  """Distinct count of userId across the matching connection"""
+  userId: BigInt
+}
+
+"""
+A filter to be used against `LevelRoleOverride` object types. All fields are combined with a logical ‘and.’
+"""
+input LevelRoleOverrideFilter {
+  """Checks for all expressions in this list."""
+  and: [LevelRoleOverrideFilter!]
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Negates the expression."""
+  not: LevelRoleOverrideFilter
+
+  """Checks for any expressions in this list."""
+  or: [LevelRoleOverrideFilter!]
+
+  """Filter by the object’s `roleId` field."""
+  roleId: BigIntFilter
+
+  """Filter by the object’s `type` field."""
+  type: LevelRoleOverrideTypeFilter
+
+  """Filter by the object’s `userId` field."""
+  userId: BigIntFilter
+}
+
+"""An input for mutations affecting `LevelRoleOverride`"""
+input LevelRoleOverrideInput {
+  guildId: BigInt!
+  roleId: BigInt!
+  type: LevelRoleOverrideType!
+  userId: BigInt!
+}
+
+type LevelRoleOverrideMaxAggregates {
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of roleId across the matching connection"""
+  roleId: BigInt
+
+  """Maximum of userId across the matching connection"""
+  userId: BigInt
+}
+
+type LevelRoleOverrideMinAggregates {
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of roleId across the matching connection"""
+  roleId: BigInt
+
+  """Minimum of userId across the matching connection"""
+  userId: BigInt
+}
+
+"""
+Represents an update to a `LevelRoleOverride`. Fields that are set will be updated.
+"""
+input LevelRoleOverridePatch {
+  guildId: BigInt
+  roleId: BigInt
+  type: LevelRoleOverrideType
+  userId: BigInt
+}
+
+type LevelRoleOverrideStddevPopulationAggregates {
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """Population standard deviation of roleId across the matching connection"""
+  roleId: BigFloat
+
+  """Population standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type LevelRoleOverrideStddevSampleAggregates {
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample standard deviation of roleId across the matching connection"""
+  roleId: BigFloat
+
+  """Sample standard deviation of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type LevelRoleOverrideSumAggregates {
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of roleId across the matching connection"""
+  roleId: BigFloat!
+
+  """Sum of userId across the matching connection"""
+  userId: BigFloat!
+}
+
+enum LevelRoleOverrideType {
+  BLOCK
+  GRANT
+}
+
+"""
+A filter to be used against LevelRoleOverrideType fields. All fields are combined with a logical ‘and.’
+"""
+input LevelRoleOverrideTypeFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: LevelRoleOverrideType
+
+  """Equal to the specified value."""
+  equalTo: LevelRoleOverrideType
+
+  """Greater than the specified value."""
+  greaterThan: LevelRoleOverrideType
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: LevelRoleOverrideType
+
+  """Included in the specified list."""
+  in: [LevelRoleOverrideType!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: LevelRoleOverrideType
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: LevelRoleOverrideType
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: LevelRoleOverrideType
+
+  """Not equal to the specified value."""
+  notEqualTo: LevelRoleOverrideType
+
+  """Not included in the specified list."""
+  notIn: [LevelRoleOverrideType!]
+}
+
+type LevelRoleOverrideVariancePopulationAggregates {
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of roleId across the matching connection"""
+  roleId: BigFloat
+
+  """Population variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
+type LevelRoleOverrideVarianceSampleAggregates {
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of roleId across the matching connection"""
+  roleId: BigFloat
+
+  """Sample variance of userId across the matching connection"""
+  userId: BigFloat
+}
+
+"""A connection to a list of `LevelRoleOverride` values."""
+type LevelRoleOverridesConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: LevelRoleOverrideAggregates
+
+  """
+  A list of edges which contains the `LevelRoleOverride` and cursor to aid in pagination.
+  """
+  edges: [LevelRoleOverridesEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """
+    The method to use when grouping `LevelRoleOverride` for these aggregates.
+    """
+    groupBy: [LevelRoleOverridesGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: LevelRoleOverridesHavingInput
+  ): [LevelRoleOverrideAggregates!]
+
+  """A list of `LevelRoleOverride` objects."""
+  nodes: [LevelRoleOverride!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """
+  The count of *all* `LevelRoleOverride` you could get from the connection.
+  """
+  totalCount: Int!
+}
+
+"""A `LevelRoleOverride` edge in the connection."""
+type LevelRoleOverridesEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `LevelRoleOverride` at the end of the edge."""
+  node: LevelRoleOverride!
+}
+
+"""Grouping methods for `LevelRoleOverride` for usage during aggregation."""
+enum LevelRoleOverridesGroupBy {
+  GUILD_ID
+  ROLE_ID
+  TYPE
+  USER_ID
+}
+
+input LevelRoleOverridesHavingAverageInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input LevelRoleOverridesHavingDistinctCountInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+"""Conditions for `LevelRoleOverride` aggregates."""
+input LevelRoleOverridesHavingInput {
+  AND: [LevelRoleOverridesHavingInput!]
+  OR: [LevelRoleOverridesHavingInput!]
+  average: LevelRoleOverridesHavingAverageInput
+  distinctCount: LevelRoleOverridesHavingDistinctCountInput
+  max: LevelRoleOverridesHavingMaxInput
+  min: LevelRoleOverridesHavingMinInput
+  stddevPopulation: LevelRoleOverridesHavingStddevPopulationInput
+  stddevSample: LevelRoleOverridesHavingStddevSampleInput
+  sum: LevelRoleOverridesHavingSumInput
+  variancePopulation: LevelRoleOverridesHavingVariancePopulationInput
+  varianceSample: LevelRoleOverridesHavingVarianceSampleInput
+}
+
+input LevelRoleOverridesHavingMaxInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input LevelRoleOverridesHavingMinInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input LevelRoleOverridesHavingStddevPopulationInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input LevelRoleOverridesHavingStddevSampleInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input LevelRoleOverridesHavingSumInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input LevelRoleOverridesHavingVariancePopulationInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+input LevelRoleOverridesHavingVarianceSampleInput {
+  guildId: HavingBigintFilter
+  roleId: HavingBigintFilter
+  userId: HavingBigintFilter
+}
+
+"""Methods to use when ordering `LevelRoleOverride`."""
+enum LevelRoleOverridesOrderBy {
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  ROLE_ID_ASC
+  ROLE_ID_DESC
+  TYPE_ASC
+  TYPE_DESC
+  USER_ID_ASC
+  USER_ID_DESC
+}
+
+"""
+Represents an update to a `LevelRole`. Fields that are set will be updated.
+"""
+input LevelRolePatch {
+  addLevel: BigInt
+  guildId: BigInt
+  removeLevel: BigInt
+  roleId: BigInt
+}
+
+type LevelRoleStddevPopulationAggregates {
+  """
+  Population standard deviation of addLevel across the matching connection
+  """
+  addLevel: BigFloat
+
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """
+  Population standard deviation of removeLevel across the matching connection
+  """
+  removeLevel: BigFloat
+
+  """Population standard deviation of roleId across the matching connection"""
+  roleId: BigFloat
+}
+
+type LevelRoleStddevSampleAggregates {
+  """Sample standard deviation of addLevel across the matching connection"""
+  addLevel: BigFloat
+
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """
+  Sample standard deviation of removeLevel across the matching connection
+  """
+  removeLevel: BigFloat
+
+  """Sample standard deviation of roleId across the matching connection"""
+  roleId: BigFloat
+}
+
+type LevelRoleSumAggregates {
+  """Sum of addLevel across the matching connection"""
+  addLevel: BigFloat!
+
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of removeLevel across the matching connection"""
+  removeLevel: BigFloat!
+
+  """Sum of roleId across the matching connection"""
+  roleId: BigFloat!
+}
+
+type LevelRoleVariancePopulationAggregates {
+  """Population variance of addLevel across the matching connection"""
+  addLevel: BigFloat
+
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of removeLevel across the matching connection"""
+  removeLevel: BigFloat
+
+  """Population variance of roleId across the matching connection"""
+  roleId: BigFloat
+}
+
+type LevelRoleVarianceSampleAggregates {
+  """Sample variance of addLevel across the matching connection"""
+  addLevel: BigFloat
+
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of removeLevel across the matching connection"""
+  removeLevel: BigFloat
+
+  """Sample variance of roleId across the matching connection"""
+  roleId: BigFloat
+}
+
+"""A connection to a list of `LevelRole` values."""
+type LevelRolesConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: LevelRoleAggregates
+
+  """
+  A list of edges which contains the `LevelRole` and cursor to aid in pagination.
+  """
+  edges: [LevelRolesEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `LevelRole` for these aggregates."""
+    groupBy: [LevelRolesGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: LevelRolesHavingInput
+  ): [LevelRoleAggregates!]
+
+  """A list of `LevelRole` objects."""
+  nodes: [LevelRole!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `LevelRole` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `LevelRole` edge in the connection."""
+type LevelRolesEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `LevelRole` at the end of the edge."""
+  node: LevelRole!
+}
+
+"""Grouping methods for `LevelRole` for usage during aggregation."""
+enum LevelRolesGroupBy {
+  ADD_LEVEL
+  GUILD_ID
+  REMOVE_LEVEL
+  ROLE_ID
+}
+
+input LevelRolesHavingAverageInput {
+  addLevel: HavingBigintFilter
+  guildId: HavingBigintFilter
+  removeLevel: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input LevelRolesHavingDistinctCountInput {
+  addLevel: HavingBigintFilter
+  guildId: HavingBigintFilter
+  removeLevel: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+"""Conditions for `LevelRole` aggregates."""
+input LevelRolesHavingInput {
+  AND: [LevelRolesHavingInput!]
+  OR: [LevelRolesHavingInput!]
+  average: LevelRolesHavingAverageInput
+  distinctCount: LevelRolesHavingDistinctCountInput
+  max: LevelRolesHavingMaxInput
+  min: LevelRolesHavingMinInput
+  stddevPopulation: LevelRolesHavingStddevPopulationInput
+  stddevSample: LevelRolesHavingStddevSampleInput
+  sum: LevelRolesHavingSumInput
+  variancePopulation: LevelRolesHavingVariancePopulationInput
+  varianceSample: LevelRolesHavingVarianceSampleInput
+}
+
+input LevelRolesHavingMaxInput {
+  addLevel: HavingBigintFilter
+  guildId: HavingBigintFilter
+  removeLevel: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input LevelRolesHavingMinInput {
+  addLevel: HavingBigintFilter
+  guildId: HavingBigintFilter
+  removeLevel: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input LevelRolesHavingStddevPopulationInput {
+  addLevel: HavingBigintFilter
+  guildId: HavingBigintFilter
+  removeLevel: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input LevelRolesHavingStddevSampleInput {
+  addLevel: HavingBigintFilter
+  guildId: HavingBigintFilter
+  removeLevel: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input LevelRolesHavingSumInput {
+  addLevel: HavingBigintFilter
+  guildId: HavingBigintFilter
+  removeLevel: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input LevelRolesHavingVariancePopulationInput {
+  addLevel: HavingBigintFilter
+  guildId: HavingBigintFilter
+  removeLevel: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+input LevelRolesHavingVarianceSampleInput {
+  addLevel: HavingBigintFilter
+  guildId: HavingBigintFilter
+  removeLevel: HavingBigintFilter
+  roleId: HavingBigintFilter
+}
+
+"""Methods to use when ordering `LevelRole`."""
+enum LevelRolesOrderBy {
+  ADD_LEVEL_ASC
+  ADD_LEVEL_DESC
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  REMOVE_LEVEL_ASC
+  REMOVE_LEVEL_DESC
+  ROLE_ID_ASC
+  ROLE_ID_DESC
+}
+
 enum LevelTimeframe {
   ALL_TIME
   DAY
@@ -6306,6 +7374,22 @@ type Mutation {
     input: CreateGuildConfigInput!
   ): CreateGuildConfigPayload
 
+  """Creates a single `LevelRole`."""
+  createLevelRole(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateLevelRoleInput!
+  ): CreateLevelRolePayload
+
+  """Creates a single `LevelRoleOverride`."""
+  createLevelRoleOverride(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateLevelRoleOverrideInput!
+  ): CreateLevelRoleOverridePayload
+
   """Creates a single `Member`."""
   createMember(
     """
@@ -6409,6 +7493,14 @@ type Mutation {
     """
     input: CreateWebUserGuildInput!
   ): CreateWebUserGuildPayload
+
+  """Creates a single `XpBlockedChannel`."""
+  createXpBlockedChannel(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateXpBlockedChannelInput!
+  ): CreateXpBlockedChannelPayload
 
   """Deletes a single `BotStat` using its globally unique id."""
   deleteBotStat(
@@ -6537,6 +7629,38 @@ type Mutation {
     """
     input: DeleteGuildConfigByIdInput!
   ): DeleteGuildConfigPayload
+
+  """Deletes a single `LevelRole` using its globally unique id."""
+  deleteLevelRole(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteLevelRoleInput!
+  ): DeleteLevelRolePayload
+
+  """Deletes a single `LevelRole` using a unique key."""
+  deleteLevelRoleByGuildIdAndRoleId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteLevelRoleByGuildIdAndRoleIdInput!
+  ): DeleteLevelRolePayload
+
+  """Deletes a single `LevelRoleOverride` using its globally unique id."""
+  deleteLevelRoleOverride(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteLevelRoleOverrideInput!
+  ): DeleteLevelRoleOverridePayload
+
+  """Deletes a single `LevelRoleOverride` using a unique key."""
+  deleteLevelRoleOverrideByGuildIdAndRoleIdAndUserId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput!
+  ): DeleteLevelRoleOverridePayload
 
   """Deletes a single `Member` using its globally unique id."""
   deleteMember(
@@ -6735,6 +7859,22 @@ type Mutation {
     """
     input: DeleteWebUserGuildByUserIdAndGuildIdInput!
   ): DeleteWebUserGuildPayload
+
+  """Deletes a single `XpBlockedChannel` using its globally unique id."""
+  deleteXpBlockedChannel(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteXpBlockedChannelInput!
+  ): DeleteXpBlockedChannelPayload
+
+  """Deletes a single `XpBlockedChannel` using a unique key."""
+  deleteXpBlockedChannelByGuildIdAndChannelOrRoleId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput!
+  ): DeleteXpBlockedChannelPayload
   graphql(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -6889,6 +8029,40 @@ type Mutation {
     """
     input: UpdateGuildConfigByIdInput!
   ): UpdateGuildConfigPayload
+
+  """Updates a single `LevelRole` using its globally unique id and a patch."""
+  updateLevelRole(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateLevelRoleInput!
+  ): UpdateLevelRolePayload
+
+  """Updates a single `LevelRole` using a unique key and a patch."""
+  updateLevelRoleByGuildIdAndRoleId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateLevelRoleByGuildIdAndRoleIdInput!
+  ): UpdateLevelRolePayload
+
+  """
+  Updates a single `LevelRoleOverride` using its globally unique id and a patch.
+  """
+  updateLevelRoleOverride(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateLevelRoleOverrideInput!
+  ): UpdateLevelRoleOverridePayload
+
+  """Updates a single `LevelRoleOverride` using a unique key and a patch."""
+  updateLevelRoleOverrideByGuildIdAndRoleIdAndUserId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput!
+  ): UpdateLevelRoleOverridePayload
 
   """Updates a single `Member` using its globally unique id and a patch."""
   updateMember(
@@ -7053,6 +8227,12 @@ type Mutation {
     """
     input: UpdateUserLevelByUserIdAndGuildIdInput!
   ): UpdateUserLevelPayload
+  updateUserXp(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateUserXpInput!
+  ): UpdateUserXpPayload
 
   """Updates a single `WebUser` using its globally unique id and a patch."""
   updateWebUser(
@@ -7087,6 +8267,24 @@ type Mutation {
     """
     input: UpdateWebUserGuildByUserIdAndGuildIdInput!
   ): UpdateWebUserGuildPayload
+
+  """
+  Updates a single `XpBlockedChannel` using its globally unique id and a patch.
+  """
+  updateXpBlockedChannel(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateXpBlockedChannelInput!
+  ): UpdateXpBlockedChannelPayload
+
+  """Updates a single `XpBlockedChannel` using a unique key and a patch."""
+  updateXpBlockedChannelByGuildIdAndChannelOrRoleId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput!
+  ): UpdateXpBlockedChannelPayload
 
   """Upserts a single `BotStat`."""
   upsertBotStat(
@@ -7159,6 +8357,24 @@ type Mutation {
     input: UpsertGuildConfigInput!
     where: UpsertGuildConfigWhere
   ): UpsertGuildConfigPayload
+
+  """Upserts a single `LevelRole`."""
+  upsertLevelRole(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertLevelRoleInput!
+    where: UpsertLevelRoleWhere
+  ): UpsertLevelRolePayload
+
+  """Upserts a single `LevelRoleOverride`."""
+  upsertLevelRoleOverride(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertLevelRoleOverrideInput!
+    where: UpsertLevelRoleOverrideWhere
+  ): UpsertLevelRoleOverridePayload
 
   """Upserts a single `Member`."""
   upsertMember(
@@ -7267,6 +8483,15 @@ type Mutation {
     input: UpsertWebUserGuildInput!
     where: UpsertWebUserGuildWhere
   ): UpsertWebUserGuildPayload
+
+  """Upserts a single `XpBlockedChannel`."""
+  upsertXpBlockedChannel(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertXpBlockedChannelInput!
+    where: UpsertXpBlockedChannelWhere
+  ): UpsertXpBlockedChannelPayload
 }
 
 type Mute implements Node {
@@ -8245,6 +9470,74 @@ type Query implements Node {
     orderBy: [GuildConfigsOrderBy!] = [PRIMARY_KEY_ASC]
   ): GuildConfigsConnection
 
+  """Reads and enables pagination through a set of `LevelRoleOverride`."""
+  allLevelRoleOverrides(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: LevelRoleOverrideCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: LevelRoleOverrideFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `LevelRoleOverride`."""
+    orderBy: [LevelRoleOverridesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRoleOverridesConnection
+
+  """Reads and enables pagination through a set of `LevelRole`."""
+  allLevelRoles(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: LevelRoleCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: LevelRoleFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `LevelRole`."""
+    orderBy: [LevelRolesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRolesConnection
+
   """Reads and enables pagination through a set of `Member`."""
   allMembers(
     """Read all values in the set after (below) this cursor."""
@@ -8688,6 +9981,40 @@ type Query implements Node {
     orderBy: [WebUsersOrderBy!] = [PRIMARY_KEY_ASC]
   ): WebUsersConnection
 
+  """Reads and enables pagination through a set of `XpBlockedChannel`."""
+  allXpBlockedChannels(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: XpBlockedChannelCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: XpBlockedChannelFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `XpBlockedChannel`."""
+    orderBy: [XpBlockedChannelsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): XpBlockedChannelsConnection
+
   """Reads a single `BotStat` using its globally unique `ID`."""
   botStat(
     """The globally unique `ID` to be used in selecting a single `BotStat`."""
@@ -8787,6 +10114,22 @@ type Query implements Node {
     nodeId: ID!
   ): GuildConfig
   guildConfigById(id: BigInt!): GuildConfig
+
+  """Reads a single `LevelRole` using its globally unique `ID`."""
+  levelRole(
+    """The globally unique `ID` to be used in selecting a single `LevelRole`."""
+    nodeId: ID!
+  ): LevelRole
+  levelRoleByGuildIdAndRoleId(guildId: BigInt!, roleId: BigInt!): LevelRole
+
+  """Reads a single `LevelRoleOverride` using its globally unique `ID`."""
+  levelRoleOverride(
+    """
+    The globally unique `ID` to be used in selecting a single `LevelRoleOverride`.
+    """
+    nodeId: ID!
+  ): LevelRoleOverride
+  levelRoleOverrideByGuildIdAndRoleIdAndUserId(guildId: BigInt!, roleId: BigInt!, userId: BigInt!): LevelRoleOverride
 
   """Reads a single `Member` using its globally unique `ID`."""
   member(
@@ -8954,6 +10297,15 @@ type Query implements Node {
     nodeId: ID!
   ): WebUserGuild
   webUserGuildByUserIdAndGuildId(guildId: BigInt!, userId: BigInt!): WebUserGuild
+
+  """Reads a single `XpBlockedChannel` using its globally unique `ID`."""
+  xpBlockedChannel(
+    """
+    The globally unique `ID` to be used in selecting a single `XpBlockedChannel`.
+    """
+    nodeId: ID!
+  ): XpBlockedChannel
+  xpBlockedChannelByGuildIdAndChannelOrRoleId(channelOrRoleId: BigInt!, guildId: BigInt!): XpBlockedChannel
 }
 
 type RedisGuild {
@@ -11444,6 +12796,125 @@ type UpdateGuildConfigPayload {
   query: Query
 }
 
+"""All input for the `updateLevelRoleByGuildIdAndRoleId` mutation."""
+input UpdateLevelRoleByGuildIdAndRoleIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `LevelRole` being updated.
+  """
+  levelRolePatch: LevelRolePatch!
+  roleId: BigInt!
+}
+
+"""All input for the `updateLevelRole` mutation."""
+input UpdateLevelRoleInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `LevelRole` being updated.
+  """
+  levelRolePatch: LevelRolePatch!
+
+  """
+  The globally unique `ID` which will identify a single `LevelRole` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""
+All input for the `updateLevelRoleOverrideByGuildIdAndRoleIdAndUserId` mutation.
+"""
+input UpdateLevelRoleOverrideByGuildIdAndRoleIdAndUserIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `LevelRoleOverride` being updated.
+  """
+  levelRoleOverridePatch: LevelRoleOverridePatch!
+  roleId: BigInt!
+  userId: BigInt!
+}
+
+"""All input for the `updateLevelRoleOverride` mutation."""
+input UpdateLevelRoleOverrideInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `LevelRoleOverride` being updated.
+  """
+  levelRoleOverridePatch: LevelRoleOverridePatch!
+
+  """
+  The globally unique `ID` which will identify a single `LevelRoleOverride` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `LevelRoleOverride` mutation."""
+type UpdateLevelRoleOverridePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `LevelRoleOverride` that was updated by this mutation."""
+  levelRoleOverride: LevelRoleOverride
+
+  """An edge for our `LevelRoleOverride`. May be used by Relay 1."""
+  levelRoleOverrideEdge(
+    """The method to use when ordering `LevelRoleOverride`."""
+    orderBy: [LevelRoleOverridesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRoleOverridesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""The output of our update `LevelRole` mutation."""
+type UpdateLevelRolePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `LevelRole` that was updated by this mutation."""
+  levelRole: LevelRole
+
+  """An edge for our `LevelRole`. May be used by Relay 1."""
+  levelRoleEdge(
+    """The method to use when ordering `LevelRole`."""
+    orderBy: [LevelRolesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRolesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the `updateMemberByGuildIdAndUserId` mutation."""
 input UpdateMemberByGuildIdAndUserIdInput {
   """
@@ -12036,6 +13507,35 @@ type UpdateUserPayload {
   ): UsersEdge
 }
 
+"""All input for the `updateUserXp` mutation."""
+input UpdateUserXpInput {
+  channelId: BigInt
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt
+  roleIds: [BigInt]
+  userId: BigInt
+}
+
+"""The output of our `updateUserXp` mutation."""
+type UpdateUserXpPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+  userXpUpdateResult: UserXpUpdateResult
+}
+
 """All input for the `updateWebUserById` mutation."""
 input UpdateWebUserByIdInput {
   """
@@ -12157,6 +13657,67 @@ type UpdateWebUserPayload {
     """The method to use when ordering `WebUser`."""
     orderBy: [WebUsersOrderBy!] = [PRIMARY_KEY_ASC]
   ): WebUsersEdge
+}
+
+"""
+All input for the `updateXpBlockedChannelByGuildIdAndChannelOrRoleId` mutation.
+"""
+input UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput {
+  channelOrRoleId: BigInt!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `XpBlockedChannel` being updated.
+  """
+  xpBlockedChannelPatch: XpBlockedChannelPatch!
+}
+
+"""All input for the `updateXpBlockedChannel` mutation."""
+input UpdateXpBlockedChannelInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `XpBlockedChannel` to be updated.
+  """
+  nodeId: ID!
+
+  """
+  An object where the defined keys will be set on the `XpBlockedChannel` being updated.
+  """
+  xpBlockedChannelPatch: XpBlockedChannelPatch!
+}
+
+"""The output of our update `XpBlockedChannel` mutation."""
+type UpdateXpBlockedChannelPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `XpBlockedChannel` that was updated by this mutation."""
+  xpBlockedChannel: XpBlockedChannel
+
+  """An edge for our `XpBlockedChannel`. May be used by Relay 1."""
+  xpBlockedChannelEdge(
+    """The method to use when ordering `XpBlockedChannel`."""
+    orderBy: [XpBlockedChannelsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): XpBlockedChannelsEdge
 }
 
 """All input for the upsert `BotStat` mutation."""
@@ -12471,6 +14032,85 @@ type UpsertGuildConfigPayload {
 """Where conditions for the upsert `GuildConfig` mutation."""
 input UpsertGuildConfigWhere {
   id: BigInt
+}
+
+"""All input for the upsert `LevelRole` mutation."""
+input UpsertLevelRoleInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `LevelRole` to be upserted by this mutation."""
+  levelRole: LevelRoleInput!
+}
+
+"""All input for the upsert `LevelRoleOverride` mutation."""
+input UpsertLevelRoleOverrideInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `LevelRoleOverride` to be upserted by this mutation."""
+  levelRoleOverride: LevelRoleOverrideInput!
+}
+
+"""The output of our upsert `LevelRoleOverride` mutation."""
+type UpsertLevelRoleOverridePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `LevelRoleOverride` that was upserted by this mutation."""
+  levelRoleOverride: LevelRoleOverride
+
+  """An edge for our `LevelRoleOverride`. May be used by Relay 1."""
+  levelRoleOverrideEdge(
+    """The method to use when ordering `LevelRoleOverride`."""
+    orderBy: [LevelRoleOverridesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRoleOverridesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `LevelRoleOverride` mutation."""
+input UpsertLevelRoleOverrideWhere {
+  guildId: BigInt
+  roleId: BigInt
+  userId: BigInt
+}
+
+"""The output of our upsert `LevelRole` mutation."""
+type UpsertLevelRolePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `LevelRole` that was upserted by this mutation."""
+  levelRole: LevelRole
+
+  """An edge for our `LevelRole`. May be used by Relay 1."""
+  levelRoleEdge(
+    """The method to use when ordering `LevelRole`."""
+    orderBy: [LevelRolesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRolesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `LevelRole` mutation."""
+input UpsertLevelRoleWhere {
+  guildId: BigInt
+  roleId: BigInt
 }
 
 """All input for the upsert `Member` mutation."""
@@ -12953,6 +14593,45 @@ input UpsertWebUserWhere {
   id: BigInt
 }
 
+"""All input for the upsert `XpBlockedChannel` mutation."""
+input UpsertXpBlockedChannelInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `XpBlockedChannel` to be upserted by this mutation."""
+  xpBlockedChannel: XpBlockedChannelInput!
+}
+
+"""The output of our upsert `XpBlockedChannel` mutation."""
+type UpsertXpBlockedChannelPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """The `XpBlockedChannel` that was upserted by this mutation."""
+  xpBlockedChannel: XpBlockedChannel
+
+  """An edge for our `XpBlockedChannel`. May be used by Relay 1."""
+  xpBlockedChannelEdge(
+    """The method to use when ordering `XpBlockedChannel`."""
+    orderBy: [XpBlockedChannelsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): XpBlockedChannelsEdge
+}
+
+"""Where conditions for the upsert `XpBlockedChannel` mutation."""
+input UpsertXpBlockedChannelWhere {
+  channelOrRoleId: BigInt
+  guildId: BigInt
+}
+
 type User implements Node {
   fishies: BigInt!
   id: BigInt!
@@ -13165,6 +14844,7 @@ input UserInput {
 type UserLevel implements Node {
   guildId: BigInt!
   lastMsg: Datetime!
+  level: BigInt!
   msgAllTime: BigInt!
   msgDay: BigInt!
   msgMonth: BigInt!
@@ -13229,6 +14909,9 @@ type UserLevelAverageAggregates {
   """Mean average of guildId across the matching connection"""
   guildId: BigFloat
 
+  """Mean average of level across the matching connection"""
+  level: BigFloat
+
   """Mean average of msgAllTime across the matching connection"""
   msgAllTime: BigFloat
 
@@ -13256,6 +14939,9 @@ input UserLevelCondition {
   """Checks for equality with the object’s `lastMsg` field."""
   lastMsg: Datetime
 
+  """Checks for equality with the object’s `level` field."""
+  level: BigInt
+
   """Checks for equality with the object’s `msgAllTime` field."""
   msgAllTime: BigInt
 
@@ -13278,6 +14964,9 @@ type UserLevelDistinctCountAggregates {
 
   """Distinct count of lastMsg across the matching connection"""
   lastMsg: BigInt
+
+  """Distinct count of level across the matching connection"""
+  level: BigInt
 
   """Distinct count of msgAllTime across the matching connection"""
   msgAllTime: BigInt
@@ -13308,6 +14997,9 @@ input UserLevelFilter {
   """Filter by the object’s `lastMsg` field."""
   lastMsg: DatetimeFilter
 
+  """Filter by the object’s `level` field."""
+  level: BigIntFilter
+
   """Filter by the object’s `msgAllTime` field."""
   msgAllTime: BigIntFilter
 
@@ -13334,6 +15026,7 @@ input UserLevelFilter {
 input UserLevelInput {
   guildId: BigInt!
   lastMsg: Datetime!
+  level: BigInt
   msgAllTime: BigInt!
   msgDay: BigInt!
   msgMonth: BigInt!
@@ -13344,6 +15037,9 @@ input UserLevelInput {
 type UserLevelMaxAggregates {
   """Maximum of guildId across the matching connection"""
   guildId: BigInt
+
+  """Maximum of level across the matching connection"""
+  level: BigInt
 
   """Maximum of msgAllTime across the matching connection"""
   msgAllTime: BigInt
@@ -13364,6 +15060,9 @@ type UserLevelMaxAggregates {
 type UserLevelMinAggregates {
   """Minimum of guildId across the matching connection"""
   guildId: BigInt
+
+  """Minimum of level across the matching connection"""
+  level: BigInt
 
   """Minimum of msgAllTime across the matching connection"""
   msgAllTime: BigInt
@@ -13387,6 +15086,7 @@ Represents an update to a `UserLevel`. Fields that are set will be updated.
 input UserLevelPatch {
   guildId: BigInt
   lastMsg: Datetime
+  level: BigInt
   msgAllTime: BigInt
   msgDay: BigInt
   msgMonth: BigInt
@@ -13399,6 +15099,9 @@ type UserLevelStddevPopulationAggregates {
   Population standard deviation of guildId across the matching connection
   """
   guildId: BigFloat
+
+  """Population standard deviation of level across the matching connection"""
+  level: BigFloat
 
   """
   Population standard deviation of msgAllTime across the matching connection
@@ -13426,6 +15129,9 @@ type UserLevelStddevSampleAggregates {
   """Sample standard deviation of guildId across the matching connection"""
   guildId: BigFloat
 
+  """Sample standard deviation of level across the matching connection"""
+  level: BigFloat
+
   """Sample standard deviation of msgAllTime across the matching connection"""
   msgAllTime: BigFloat
 
@@ -13445,6 +15151,9 @@ type UserLevelStddevSampleAggregates {
 type UserLevelSumAggregates {
   """Sum of guildId across the matching connection"""
   guildId: BigFloat!
+
+  """Sum of level across the matching connection"""
+  level: BigFloat!
 
   """Sum of msgAllTime across the matching connection"""
   msgAllTime: BigFloat!
@@ -13466,6 +15175,9 @@ type UserLevelVariancePopulationAggregates {
   """Population variance of guildId across the matching connection"""
   guildId: BigFloat
 
+  """Population variance of level across the matching connection"""
+  level: BigFloat
+
   """Population variance of msgAllTime across the matching connection"""
   msgAllTime: BigFloat
 
@@ -13485,6 +15197,9 @@ type UserLevelVariancePopulationAggregates {
 type UserLevelVarianceSampleAggregates {
   """Sample variance of guildId across the matching connection"""
   guildId: BigFloat
+
+  """Sample variance of level across the matching connection"""
+  level: BigFloat
 
   """Sample variance of msgAllTime across the matching connection"""
   msgAllTime: BigFloat
@@ -13550,6 +15265,7 @@ enum UserLevelsGroupBy {
   LAST_MSG
   LAST_MSG_TRUNCATED_TO_DAY
   LAST_MSG_TRUNCATED_TO_HOUR
+  LEVEL
   MSG_ALL_TIME
   MSG_DAY
   MSG_MONTH
@@ -13560,6 +15276,7 @@ enum UserLevelsGroupBy {
 input UserLevelsHavingAverageInput {
   guildId: HavingBigintFilter
   lastMsg: HavingDatetimeFilter
+  level: HavingBigintFilter
   msgAllTime: HavingBigintFilter
   msgDay: HavingBigintFilter
   msgMonth: HavingBigintFilter
@@ -13570,6 +15287,7 @@ input UserLevelsHavingAverageInput {
 input UserLevelsHavingDistinctCountInput {
   guildId: HavingBigintFilter
   lastMsg: HavingDatetimeFilter
+  level: HavingBigintFilter
   msgAllTime: HavingBigintFilter
   msgDay: HavingBigintFilter
   msgMonth: HavingBigintFilter
@@ -13595,6 +15313,7 @@ input UserLevelsHavingInput {
 input UserLevelsHavingMaxInput {
   guildId: HavingBigintFilter
   lastMsg: HavingDatetimeFilter
+  level: HavingBigintFilter
   msgAllTime: HavingBigintFilter
   msgDay: HavingBigintFilter
   msgMonth: HavingBigintFilter
@@ -13605,6 +15324,7 @@ input UserLevelsHavingMaxInput {
 input UserLevelsHavingMinInput {
   guildId: HavingBigintFilter
   lastMsg: HavingDatetimeFilter
+  level: HavingBigintFilter
   msgAllTime: HavingBigintFilter
   msgDay: HavingBigintFilter
   msgMonth: HavingBigintFilter
@@ -13615,6 +15335,7 @@ input UserLevelsHavingMinInput {
 input UserLevelsHavingStddevPopulationInput {
   guildId: HavingBigintFilter
   lastMsg: HavingDatetimeFilter
+  level: HavingBigintFilter
   msgAllTime: HavingBigintFilter
   msgDay: HavingBigintFilter
   msgMonth: HavingBigintFilter
@@ -13625,6 +15346,7 @@ input UserLevelsHavingStddevPopulationInput {
 input UserLevelsHavingStddevSampleInput {
   guildId: HavingBigintFilter
   lastMsg: HavingDatetimeFilter
+  level: HavingBigintFilter
   msgAllTime: HavingBigintFilter
   msgDay: HavingBigintFilter
   msgMonth: HavingBigintFilter
@@ -13635,6 +15357,7 @@ input UserLevelsHavingStddevSampleInput {
 input UserLevelsHavingSumInput {
   guildId: HavingBigintFilter
   lastMsg: HavingDatetimeFilter
+  level: HavingBigintFilter
   msgAllTime: HavingBigintFilter
   msgDay: HavingBigintFilter
   msgMonth: HavingBigintFilter
@@ -13645,6 +15368,7 @@ input UserLevelsHavingSumInput {
 input UserLevelsHavingVariancePopulationInput {
   guildId: HavingBigintFilter
   lastMsg: HavingDatetimeFilter
+  level: HavingBigintFilter
   msgAllTime: HavingBigintFilter
   msgDay: HavingBigintFilter
   msgMonth: HavingBigintFilter
@@ -13655,6 +15379,7 @@ input UserLevelsHavingVariancePopulationInput {
 input UserLevelsHavingVarianceSampleInput {
   guildId: HavingBigintFilter
   lastMsg: HavingDatetimeFilter
+  level: HavingBigintFilter
   msgAllTime: HavingBigintFilter
   msgDay: HavingBigintFilter
   msgMonth: HavingBigintFilter
@@ -13668,6 +15393,8 @@ enum UserLevelsOrderBy {
   GUILD_ID_DESC
   LAST_MSG_ASC
   LAST_MSG_DESC
+  LEVEL_ASC
+  LEVEL_DESC
   MSG_ALL_TIME_ASC
   MSG_ALL_TIME_DESC
   MSG_DAY_ASC
@@ -13773,6 +15500,13 @@ type UserVarianceSampleAggregates {
 
   """Sample variance of rep across the matching connection"""
   rep: BigFloat
+}
+
+type UserXpUpdateResult {
+  addRoleIds: [BigInt]
+  newLevel: BigInt
+  oldLevel: BigInt
+  removeRoleIds: [BigInt]
 }
 
 """A connection to a list of `User` values."""
@@ -14908,4 +16642,309 @@ enum WebUsersOrderBy {
   WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_PERMISSIONS_DESC
   WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_USER_ID_ASC
   WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_USER_ID_DESC
+}
+
+type XpBlockedChannel implements Node {
+  channelOrRoleId: BigInt!
+  guildId: BigInt!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+}
+
+type XpBlockedChannelAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: XpBlockedChannelAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: XpBlockedChannelDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: XpBlockedChannelMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: XpBlockedChannelMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: XpBlockedChannelStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: XpBlockedChannelStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: XpBlockedChannelSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: XpBlockedChannelVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: XpBlockedChannelVarianceSampleAggregates
+}
+
+type XpBlockedChannelAverageAggregates {
+  """Mean average of channelOrRoleId across the matching connection"""
+  channelOrRoleId: BigFloat
+
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+}
+
+"""
+A condition to be used against `XpBlockedChannel` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input XpBlockedChannelCondition {
+  """Checks for equality with the object’s `channelOrRoleId` field."""
+  channelOrRoleId: BigInt
+
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+}
+
+type XpBlockedChannelDistinctCountAggregates {
+  """Distinct count of channelOrRoleId across the matching connection"""
+  channelOrRoleId: BigInt
+
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+}
+
+"""
+A filter to be used against `XpBlockedChannel` object types. All fields are combined with a logical ‘and.’
+"""
+input XpBlockedChannelFilter {
+  """Checks for all expressions in this list."""
+  and: [XpBlockedChannelFilter!]
+
+  """Filter by the object’s `channelOrRoleId` field."""
+  channelOrRoleId: BigIntFilter
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Negates the expression."""
+  not: XpBlockedChannelFilter
+
+  """Checks for any expressions in this list."""
+  or: [XpBlockedChannelFilter!]
+}
+
+"""An input for mutations affecting `XpBlockedChannel`"""
+input XpBlockedChannelInput {
+  channelOrRoleId: BigInt!
+  guildId: BigInt!
+}
+
+type XpBlockedChannelMaxAggregates {
+  """Maximum of channelOrRoleId across the matching connection"""
+  channelOrRoleId: BigInt
+
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+}
+
+type XpBlockedChannelMinAggregates {
+  """Minimum of channelOrRoleId across the matching connection"""
+  channelOrRoleId: BigInt
+
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+}
+
+"""
+Represents an update to a `XpBlockedChannel`. Fields that are set will be updated.
+"""
+input XpBlockedChannelPatch {
+  channelOrRoleId: BigInt
+  guildId: BigInt
+}
+
+type XpBlockedChannelStddevPopulationAggregates {
+  """
+  Population standard deviation of channelOrRoleId across the matching connection
+  """
+  channelOrRoleId: BigFloat
+
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+}
+
+type XpBlockedChannelStddevSampleAggregates {
+  """
+  Sample standard deviation of channelOrRoleId across the matching connection
+  """
+  channelOrRoleId: BigFloat
+
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+}
+
+type XpBlockedChannelSumAggregates {
+  """Sum of channelOrRoleId across the matching connection"""
+  channelOrRoleId: BigFloat!
+
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+}
+
+type XpBlockedChannelVariancePopulationAggregates {
+  """Population variance of channelOrRoleId across the matching connection"""
+  channelOrRoleId: BigFloat
+
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+}
+
+type XpBlockedChannelVarianceSampleAggregates {
+  """Sample variance of channelOrRoleId across the matching connection"""
+  channelOrRoleId: BigFloat
+
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+}
+
+"""A connection to a list of `XpBlockedChannel` values."""
+type XpBlockedChannelsConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: XpBlockedChannelAggregates
+
+  """
+  A list of edges which contains the `XpBlockedChannel` and cursor to aid in pagination.
+  """
+  edges: [XpBlockedChannelsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """
+    The method to use when grouping `XpBlockedChannel` for these aggregates.
+    """
+    groupBy: [XpBlockedChannelsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: XpBlockedChannelsHavingInput
+  ): [XpBlockedChannelAggregates!]
+
+  """A list of `XpBlockedChannel` objects."""
+  nodes: [XpBlockedChannel!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """
+  The count of *all* `XpBlockedChannel` you could get from the connection.
+  """
+  totalCount: Int!
+}
+
+"""A `XpBlockedChannel` edge in the connection."""
+type XpBlockedChannelsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `XpBlockedChannel` at the end of the edge."""
+  node: XpBlockedChannel!
+}
+
+"""Grouping methods for `XpBlockedChannel` for usage during aggregation."""
+enum XpBlockedChannelsGroupBy {
+  CHANNEL_OR_ROLE_ID
+  GUILD_ID
+}
+
+input XpBlockedChannelsHavingAverageInput {
+  channelOrRoleId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input XpBlockedChannelsHavingDistinctCountInput {
+  channelOrRoleId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+"""Conditions for `XpBlockedChannel` aggregates."""
+input XpBlockedChannelsHavingInput {
+  AND: [XpBlockedChannelsHavingInput!]
+  OR: [XpBlockedChannelsHavingInput!]
+  average: XpBlockedChannelsHavingAverageInput
+  distinctCount: XpBlockedChannelsHavingDistinctCountInput
+  max: XpBlockedChannelsHavingMaxInput
+  min: XpBlockedChannelsHavingMinInput
+  stddevPopulation: XpBlockedChannelsHavingStddevPopulationInput
+  stddevSample: XpBlockedChannelsHavingStddevSampleInput
+  sum: XpBlockedChannelsHavingSumInput
+  variancePopulation: XpBlockedChannelsHavingVariancePopulationInput
+  varianceSample: XpBlockedChannelsHavingVarianceSampleInput
+}
+
+input XpBlockedChannelsHavingMaxInput {
+  channelOrRoleId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input XpBlockedChannelsHavingMinInput {
+  channelOrRoleId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input XpBlockedChannelsHavingStddevPopulationInput {
+  channelOrRoleId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input XpBlockedChannelsHavingStddevSampleInput {
+  channelOrRoleId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input XpBlockedChannelsHavingSumInput {
+  channelOrRoleId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input XpBlockedChannelsHavingVariancePopulationInput {
+  channelOrRoleId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input XpBlockedChannelsHavingVarianceSampleInput {
+  channelOrRoleId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+"""Methods to use when ordering `XpBlockedChannel`."""
+enum XpBlockedChannelsOrderBy {
+  CHANNEL_OR_ROLE_ID_ASC
+  CHANNEL_OR_ROLE_ID_DESC
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
 }

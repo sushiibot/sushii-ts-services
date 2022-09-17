@@ -109,6 +109,9 @@ async function execActionUser(
   target: ModActionTarget,
   actionType: ActionType
 ): Promise<Result<ModActionTarget, ActionError>> {
+  // Audit log header max 512 characters
+  const auditLogReason = data.reason?.slice(0, 512);
+
   switch (actionType) {
     case ActionType.Kick: {
       // Member already fetched earlier
@@ -122,7 +125,7 @@ async function execActionUser(
       const res = await ctx.REST.kickMember(
         interaction.guild_id,
         target.user.id,
-        data.reason
+        auditLogReason
       );
 
       if (res.err) {
@@ -138,7 +141,7 @@ async function execActionUser(
       const res = await ctx.REST.banUser(
         interaction.guild_id,
         target.user.id,
-        data.reason,
+        auditLogReason,
         data.deleteMessageDays
       );
 
@@ -155,7 +158,7 @@ async function execActionUser(
       const res = await ctx.REST.unbanUser(
         interaction.guild_id,
         target.user.id,
-        data.reason
+        auditLogReason
       );
 
       if (res.err) {
@@ -182,7 +185,7 @@ async function execActionUser(
         interaction.guild_id,
         target.user.id,
         data.communicationDisabledUntil().unwrap(),
-        data.reason
+        auditLogReason
       );
 
       if (res.err) {
@@ -206,7 +209,7 @@ async function execActionUser(
         interaction.guild_id,
         target.user.id,
         null,
-        data.reason
+        auditLogReason
       );
 
       if (res.err) {
