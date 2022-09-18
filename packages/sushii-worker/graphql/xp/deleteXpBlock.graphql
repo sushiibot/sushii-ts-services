@@ -1,0 +1,9 @@
+mutation deleteXpBlock($guildId: BigInt!, $blockId: BigInt!) {
+  deleteXpBlockByGuildIdAndBlockId(
+    input: { guildId: $guildId, blockId: $blockId }
+  ) {
+    xpBlock {
+      ...XpBlockData
+    }
+  }
+}

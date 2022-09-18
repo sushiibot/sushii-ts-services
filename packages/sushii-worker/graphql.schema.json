@@ -577,6 +577,188 @@
         "possibleTypes": null
       },
       {
+        "kind": "ENUM",
+        "name": "BlockType",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "CHANNEL",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ROLE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "BlockTypeFilter",
+        "description": "A filter to be used against BlockType fields. All fields are combined with a logical ‘and.’",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "distinctFrom",
+            "description": "Not equal to the specified value, treating null like an ordinary value.",
+            "type": {
+              "kind": "ENUM",
+              "name": "BlockType",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "equalTo",
+            "description": "Equal to the specified value.",
+            "type": {
+              "kind": "ENUM",
+              "name": "BlockType",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "greaterThan",
+            "description": "Greater than the specified value.",
+            "type": {
+              "kind": "ENUM",
+              "name": "BlockType",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "greaterThanOrEqualTo",
+            "description": "Greater than or equal to the specified value.",
+            "type": {
+              "kind": "ENUM",
+              "name": "BlockType",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "in",
+            "description": "Included in the specified list.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "BlockType",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "isNull",
+            "description": "Is null (if `true` is specified) or is not null (if `false` is specified).",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lessThan",
+            "description": "Less than the specified value.",
+            "type": {
+              "kind": "ENUM",
+              "name": "BlockType",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lessThanOrEqualTo",
+            "description": "Less than or equal to the specified value.",
+            "type": {
+              "kind": "ENUM",
+              "name": "BlockType",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "notDistinctFrom",
+            "description": "Equal to the specified value, treating null like an ordinary value.",
+            "type": {
+              "kind": "ENUM",
+              "name": "BlockType",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "notEqualTo",
+            "description": "Not equal to the specified value.",
+            "type": {
+              "kind": "ENUM",
+              "name": "BlockType",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "notIn",
+            "description": "Not included in the specified list.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "BlockType",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "SCALAR",
         "name": "Boolean",
         "description": "The `Boolean` scalar type represents `true` or `false`.",
@@ -6985,8 +7167,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "CreateXpBlockedChannelInput",
-        "description": "All input for the create `XpBlockedChannel` mutation.",
+        "name": "CreateXpBlockInput",
+        "description": "All input for the create `XpBlock` mutation.",
         "fields": null,
         "inputFields": [
           {
@@ -7002,14 +7184,14 @@
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannel",
-            "description": "The `XpBlockedChannel` to be created by this mutation.",
+            "name": "xpBlock",
+            "description": "The `XpBlock` to be created by this mutation.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "XpBlockedChannelInput",
+                "name": "XpBlockInput",
                 "ofType": null
               }
             },
@@ -7024,8 +7206,8 @@
       },
       {
         "kind": "OBJECT",
-        "name": "CreateXpBlockedChannelPayload",
-        "description": "The output of our create `XpBlockedChannel` mutation.",
+        "name": "CreateXpBlockPayload",
+        "description": "The output of our create `XpBlock` mutation.",
         "fields": [
           {
             "name": "clientMutationId",
@@ -7052,24 +7234,24 @@
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannel",
-            "description": "The `XpBlockedChannel` that was created by this mutation.",
+            "name": "xpBlock",
+            "description": "The `XpBlock` that was created by this mutation.",
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannel",
+              "name": "XpBlock",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannelEdge",
-            "description": "An edge for our `XpBlockedChannel`. May be used by Relay 1.",
+            "name": "xpBlockEdge",
+            "description": "An edge for our `XpBlock`. May be used by Relay 1.",
             "args": [
               {
                 "name": "orderBy",
-                "description": "The method to use when ordering `XpBlockedChannel`.",
+                "description": "The method to use when ordering `XpBlock`.",
                 "type": {
                   "kind": "LIST",
                   "name": null,
@@ -7078,7 +7260,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
-                      "name": "XpBlockedChannelsOrderBy",
+                      "name": "XpBlocksOrderBy",
                       "ofType": null
                     }
                   }
@@ -7090,7 +7272,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelsEdge",
+              "name": "XpBlocksEdge",
               "ofType": null
             },
             "isDeprecated": false,
@@ -11623,12 +11805,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput",
-        "description": "All input for the `deleteXpBlockedChannelByGuildIdAndChannelOrRoleId` mutation.",
+        "name": "DeleteXpBlockByGuildIdAndBlockIdInput",
+        "description": "All input for the `deleteXpBlockByGuildIdAndBlockId` mutation.",
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -11678,8 +11860,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "DeleteXpBlockedChannelInput",
-        "description": "All input for the `deleteXpBlockedChannel` mutation.",
+        "name": "DeleteXpBlockInput",
+        "description": "All input for the `deleteXpBlock` mutation.",
         "fields": null,
         "inputFields": [
           {
@@ -11696,7 +11878,7 @@
           },
           {
             "name": "nodeId",
-            "description": "The globally unique `ID` which will identify a single `XpBlockedChannel` to be deleted.",
+            "description": "The globally unique `ID` which will identify a single `XpBlock` to be deleted.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -11717,8 +11899,8 @@
       },
       {
         "kind": "OBJECT",
-        "name": "DeleteXpBlockedChannelPayload",
-        "description": "The output of our delete `XpBlockedChannel` mutation.",
+        "name": "DeleteXpBlockPayload",
+        "description": "The output of our delete `XpBlock` mutation.",
         "fields": [
           {
             "name": "clientMutationId",
@@ -11733,7 +11915,7 @@
             "deprecationReason": null
           },
           {
-            "name": "deletedXpBlockedChannelId",
+            "name": "deletedXpBlockId",
             "description": null,
             "args": [],
             "type": {
@@ -11757,24 +11939,24 @@
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannel",
-            "description": "The `XpBlockedChannel` that was deleted by this mutation.",
+            "name": "xpBlock",
+            "description": "The `XpBlock` that was deleted by this mutation.",
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannel",
+              "name": "XpBlock",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannelEdge",
-            "description": "An edge for our `XpBlockedChannel`. May be used by Relay 1.",
+            "name": "xpBlockEdge",
+            "description": "An edge for our `XpBlock`. May be used by Relay 1.",
             "args": [
               {
                 "name": "orderBy",
-                "description": "The method to use when ordering `XpBlockedChannel`.",
+                "description": "The method to use when ordering `XpBlock`.",
                 "type": {
                   "kind": "LIST",
                   "name": null,
@@ -11783,7 +11965,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
-                      "name": "XpBlockedChannelsOrderBy",
+                      "name": "XpBlocksOrderBy",
                       "ofType": null
                     }
                   }
@@ -11795,7 +11977,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelsEdge",
+              "name": "XpBlocksEdge",
               "ofType": null
             },
             "isDeprecated": false,
@@ -35950,8 +36132,8 @@
             "deprecationReason": null
           },
           {
-            "name": "createXpBlockedChannel",
-            "description": "Creates a single `XpBlockedChannel`.",
+            "name": "createXpBlock",
+            "description": "Creates a single `XpBlock`.",
             "args": [
               {
                 "name": "input",
@@ -35961,7 +36143,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "CreateXpBlockedChannelInput",
+                    "name": "CreateXpBlockInput",
                     "ofType": null
                   }
                 },
@@ -35972,7 +36154,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "CreateXpBlockedChannelPayload",
+              "name": "CreateXpBlockPayload",
               "ofType": null
             },
             "isDeprecated": false,
@@ -37284,8 +37466,8 @@
             "deprecationReason": null
           },
           {
-            "name": "deleteXpBlockedChannel",
-            "description": "Deletes a single `XpBlockedChannel` using its globally unique id.",
+            "name": "deleteXpBlock",
+            "description": "Deletes a single `XpBlock` using its globally unique id.",
             "args": [
               {
                 "name": "input",
@@ -37295,7 +37477,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "DeleteXpBlockedChannelInput",
+                    "name": "DeleteXpBlockInput",
                     "ofType": null
                   }
                 },
@@ -37306,15 +37488,15 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "DeleteXpBlockedChannelPayload",
+              "name": "DeleteXpBlockPayload",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "deleteXpBlockedChannelByGuildIdAndChannelOrRoleId",
-            "description": "Deletes a single `XpBlockedChannel` using a unique key.",
+            "name": "deleteXpBlockByGuildIdAndBlockId",
+            "description": "Deletes a single `XpBlock` using a unique key.",
             "args": [
               {
                 "name": "input",
@@ -37324,7 +37506,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput",
+                    "name": "DeleteXpBlockByGuildIdAndBlockIdInput",
                     "ofType": null
                   }
                 },
@@ -37335,7 +37517,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "DeleteXpBlockedChannelPayload",
+              "name": "DeleteXpBlockPayload",
               "ofType": null
             },
             "isDeprecated": false,
@@ -38734,8 +38916,8 @@
             "deprecationReason": null
           },
           {
-            "name": "updateXpBlockedChannel",
-            "description": "Updates a single `XpBlockedChannel` using its globally unique id and a patch.",
+            "name": "updateXpBlock",
+            "description": "Updates a single `XpBlock` using its globally unique id and a patch.",
             "args": [
               {
                 "name": "input",
@@ -38745,7 +38927,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "UpdateXpBlockedChannelInput",
+                    "name": "UpdateXpBlockInput",
                     "ofType": null
                   }
                 },
@@ -38756,15 +38938,15 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "UpdateXpBlockedChannelPayload",
+              "name": "UpdateXpBlockPayload",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "updateXpBlockedChannelByGuildIdAndChannelOrRoleId",
-            "description": "Updates a single `XpBlockedChannel` using a unique key and a patch.",
+            "name": "updateXpBlockByGuildIdAndBlockId",
+            "description": "Updates a single `XpBlock` using a unique key and a patch.",
             "args": [
               {
                 "name": "input",
@@ -38774,7 +38956,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput",
+                    "name": "UpdateXpBlockByGuildIdAndBlockIdInput",
                     "ofType": null
                   }
                 },
@@ -38785,7 +38967,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "UpdateXpBlockedChannelPayload",
+              "name": "UpdateXpBlockPayload",
               "ofType": null
             },
             "isDeprecated": false,
@@ -39694,8 +39876,8 @@
             "deprecationReason": null
           },
           {
-            "name": "upsertXpBlockedChannel",
-            "description": "Upserts a single `XpBlockedChannel`.",
+            "name": "upsertXpBlock",
+            "description": "Upserts a single `XpBlock`.",
             "args": [
               {
                 "name": "input",
@@ -39705,7 +39887,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "UpsertXpBlockedChannelInput",
+                    "name": "UpsertXpBlockInput",
                     "ofType": null
                   }
                 },
@@ -39718,7 +39900,7 @@
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "UpsertXpBlockedChannelWhere",
+                  "name": "UpsertXpBlockWhere",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -39728,7 +39910,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "UpsertXpBlockedChannelPayload",
+              "name": "UpsertXpBlockPayload",
               "ofType": null
             },
             "isDeprecated": false,
@@ -42191,7 +42373,7 @@
           },
           {
             "kind": "OBJECT",
-            "name": "XpBlockedChannel",
+            "name": "XpBlock",
             "ofType": null
           }
         ]
@@ -46430,8 +46612,8 @@
             "deprecationReason": null
           },
           {
-            "name": "allXpBlockedChannels",
-            "description": "Reads and enables pagination through a set of `XpBlockedChannel`.",
+            "name": "allXpBlocks",
+            "description": "Reads and enables pagination through a set of `XpBlock`.",
             "args": [
               {
                 "name": "after",
@@ -46462,7 +46644,7 @@
                 "description": "A condition to be used in determining which values should be returned by the collection.",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "XpBlockedChannelCondition",
+                  "name": "XpBlockCondition",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -46474,7 +46656,7 @@
                 "description": "A filter to be used in determining which values should be returned by the collection.",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "XpBlockedChannelFilter",
+                  "name": "XpBlockFilter",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -46519,7 +46701,7 @@
               },
               {
                 "name": "orderBy",
-                "description": "The method to use when ordering `XpBlockedChannel`.",
+                "description": "The method to use when ordering `XpBlock`.",
                 "type": {
                   "kind": "LIST",
                   "name": null,
@@ -46528,7 +46710,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
-                      "name": "XpBlockedChannelsOrderBy",
+                      "name": "XpBlocksOrderBy",
                       "ofType": null
                     }
                   }
@@ -46540,7 +46722,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelsConnection",
+              "name": "XpBlocksConnection",
               "ofType": null
             },
             "isDeprecated": false,
@@ -48699,12 +48881,12 @@
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannel",
-            "description": "Reads a single `XpBlockedChannel` using its globally unique `ID`.",
+            "name": "xpBlock",
+            "description": "Reads a single `XpBlock` using its globally unique `ID`.",
             "args": [
               {
                 "name": "nodeId",
-                "description": "The globally unique `ID` to be used in selecting a single `XpBlockedChannel`.",
+                "description": "The globally unique `ID` to be used in selecting a single `XpBlock`.",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -48721,18 +48903,18 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannel",
+              "name": "XpBlock",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannelByGuildIdAndChannelOrRoleId",
+            "name": "xpBlockByGuildIdAndBlockId",
             "description": null,
             "args": [
               {
-                "name": "channelOrRoleId",
+                "name": "blockId",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -48766,7 +48948,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannel",
+              "name": "XpBlock",
               "ofType": null
             },
             "isDeprecated": false,
@@ -64282,12 +64464,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput",
-        "description": "All input for the `updateXpBlockedChannelByGuildIdAndChannelOrRoleId` mutation.",
+        "name": "UpdateXpBlockByGuildIdAndBlockIdInput",
+        "description": "All input for the `updateXpBlockByGuildIdAndBlockId` mutation.",
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -64331,14 +64513,14 @@
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannelPatch",
-            "description": "An object where the defined keys will be set on the `XpBlockedChannel` being updated.",
+            "name": "xpBlockPatch",
+            "description": "An object where the defined keys will be set on the `XpBlock` being updated.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "XpBlockedChannelPatch",
+                "name": "XpBlockPatch",
                 "ofType": null
               }
             },
@@ -64353,8 +64535,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UpdateXpBlockedChannelInput",
-        "description": "All input for the `updateXpBlockedChannel` mutation.",
+        "name": "UpdateXpBlockInput",
+        "description": "All input for the `updateXpBlock` mutation.",
         "fields": null,
         "inputFields": [
           {
@@ -64371,7 +64553,7 @@
           },
           {
             "name": "nodeId",
-            "description": "The globally unique `ID` which will identify a single `XpBlockedChannel` to be updated.",
+            "description": "The globally unique `ID` which will identify a single `XpBlock` to be updated.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -64386,14 +64568,14 @@
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannelPatch",
-            "description": "An object where the defined keys will be set on the `XpBlockedChannel` being updated.",
+            "name": "xpBlockPatch",
+            "description": "An object where the defined keys will be set on the `XpBlock` being updated.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "XpBlockedChannelPatch",
+                "name": "XpBlockPatch",
                 "ofType": null
               }
             },
@@ -64408,8 +64590,8 @@
       },
       {
         "kind": "OBJECT",
-        "name": "UpdateXpBlockedChannelPayload",
-        "description": "The output of our update `XpBlockedChannel` mutation.",
+        "name": "UpdateXpBlockPayload",
+        "description": "The output of our update `XpBlock` mutation.",
         "fields": [
           {
             "name": "clientMutationId",
@@ -64436,24 +64618,24 @@
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannel",
-            "description": "The `XpBlockedChannel` that was updated by this mutation.",
+            "name": "xpBlock",
+            "description": "The `XpBlock` that was updated by this mutation.",
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannel",
+              "name": "XpBlock",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannelEdge",
-            "description": "An edge for our `XpBlockedChannel`. May be used by Relay 1.",
+            "name": "xpBlockEdge",
+            "description": "An edge for our `XpBlock`. May be used by Relay 1.",
             "args": [
               {
                 "name": "orderBy",
-                "description": "The method to use when ordering `XpBlockedChannel`.",
+                "description": "The method to use when ordering `XpBlock`.",
                 "type": {
                   "kind": "LIST",
                   "name": null,
@@ -64462,7 +64644,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
-                      "name": "XpBlockedChannelsOrderBy",
+                      "name": "XpBlocksOrderBy",
                       "ofType": null
                     }
                   }
@@ -64474,7 +64656,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelsEdge",
+              "name": "XpBlocksEdge",
               "ofType": null
             },
             "isDeprecated": false,
@@ -67912,8 +68094,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UpsertXpBlockedChannelInput",
-        "description": "All input for the upsert `XpBlockedChannel` mutation.",
+        "name": "UpsertXpBlockInput",
+        "description": "All input for the upsert `XpBlock` mutation.",
         "fields": null,
         "inputFields": [
           {
@@ -67929,14 +68111,14 @@
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannel",
-            "description": "The `XpBlockedChannel` to be upserted by this mutation.",
+            "name": "xpBlock",
+            "description": "The `XpBlock` to be upserted by this mutation.",
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "INPUT_OBJECT",
-                "name": "XpBlockedChannelInput",
+                "name": "XpBlockInput",
                 "ofType": null
               }
             },
@@ -67951,8 +68133,8 @@
       },
       {
         "kind": "OBJECT",
-        "name": "UpsertXpBlockedChannelPayload",
-        "description": "The output of our upsert `XpBlockedChannel` mutation.",
+        "name": "UpsertXpBlockPayload",
+        "description": "The output of our upsert `XpBlock` mutation.",
         "fields": [
           {
             "name": "clientMutationId",
@@ -67979,24 +68161,24 @@
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannel",
-            "description": "The `XpBlockedChannel` that was upserted by this mutation.",
+            "name": "xpBlock",
+            "description": "The `XpBlock` that was upserted by this mutation.",
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannel",
+              "name": "XpBlock",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "xpBlockedChannelEdge",
-            "description": "An edge for our `XpBlockedChannel`. May be used by Relay 1.",
+            "name": "xpBlockEdge",
+            "description": "An edge for our `XpBlock`. May be used by Relay 1.",
             "args": [
               {
                 "name": "orderBy",
-                "description": "The method to use when ordering `XpBlockedChannel`.",
+                "description": "The method to use when ordering `XpBlock`.",
                 "type": {
                   "kind": "LIST",
                   "name": null,
@@ -68005,7 +68187,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "ENUM",
-                      "name": "XpBlockedChannelsOrderBy",
+                      "name": "XpBlocksOrderBy",
                       "ofType": null
                     }
                   }
@@ -68017,7 +68199,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelsEdge",
+              "name": "XpBlocksEdge",
               "ofType": null
             },
             "isDeprecated": false,
@@ -68031,12 +68213,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "UpsertXpBlockedChannelWhere",
-        "description": "Where conditions for the upsert `XpBlockedChannel` mutation.",
+        "name": "UpsertXpBlockWhere",
+        "description": "Where conditions for the upsert `XpBlock` mutation.",
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -79049,11 +79231,11 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannel",
+        "name": "XpBlock",
         "description": null,
         "fields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "args": [],
             "type": {
@@ -79062,6 +79244,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "BigInt",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "blockType",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "BlockType",
                 "ofType": null
               }
             },
@@ -79114,7 +79312,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannelAggregates",
+        "name": "XpBlockAggregates",
         "description": null,
         "fields": [
           {
@@ -79123,7 +79321,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelAverageAggregates",
+              "name": "XpBlockAverageAggregates",
               "ofType": null
             },
             "isDeprecated": false,
@@ -79135,7 +79333,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelDistinctCountAggregates",
+              "name": "XpBlockDistinctCountAggregates",
               "ofType": null
             },
             "isDeprecated": false,
@@ -79167,7 +79365,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelMaxAggregates",
+              "name": "XpBlockMaxAggregates",
               "ofType": null
             },
             "isDeprecated": false,
@@ -79179,7 +79377,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelMinAggregates",
+              "name": "XpBlockMinAggregates",
               "ofType": null
             },
             "isDeprecated": false,
@@ -79191,7 +79389,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelStddevPopulationAggregates",
+              "name": "XpBlockStddevPopulationAggregates",
               "ofType": null
             },
             "isDeprecated": false,
@@ -79203,7 +79401,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelStddevSampleAggregates",
+              "name": "XpBlockStddevSampleAggregates",
               "ofType": null
             },
             "isDeprecated": false,
@@ -79215,7 +79413,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelSumAggregates",
+              "name": "XpBlockSumAggregates",
               "ofType": null
             },
             "isDeprecated": false,
@@ -79227,7 +79425,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelVariancePopulationAggregates",
+              "name": "XpBlockVariancePopulationAggregates",
               "ofType": null
             },
             "isDeprecated": false,
@@ -79239,7 +79437,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelVarianceSampleAggregates",
+              "name": "XpBlockVarianceSampleAggregates",
               "ofType": null
             },
             "isDeprecated": false,
@@ -79253,12 +79451,12 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannelAverageAggregates",
+        "name": "XpBlockAverageAggregates",
         "description": null,
         "fields": [
           {
-            "name": "channelOrRoleId",
-            "description": "Mean average of channelOrRoleId across the matching connection",
+            "name": "blockId",
+            "description": "Mean average of blockId across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -79288,16 +79486,28 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelCondition",
-        "description": "A condition to be used against `XpBlockedChannel` object types. All fields are\ntested for equality and combined with a logical ‘and.’",
+        "name": "XpBlockCondition",
+        "description": "A condition to be used against `XpBlock` object types. All fields are tested for equality and combined with a logical ‘and.’",
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
-            "description": "Checks for equality with the object’s `channelOrRoleId` field.",
+            "name": "blockId",
+            "description": "Checks for equality with the object’s `blockId` field.",
             "type": {
               "kind": "SCALAR",
               "name": "BigInt",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "blockType",
+            "description": "Checks for equality with the object’s `blockType` field.",
+            "type": {
+              "kind": "ENUM",
+              "name": "BlockType",
               "ofType": null
             },
             "defaultValue": null,
@@ -79323,12 +79533,24 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannelDistinctCountAggregates",
+        "name": "XpBlockDistinctCountAggregates",
         "description": null,
         "fields": [
           {
-            "name": "channelOrRoleId",
-            "description": "Distinct count of channelOrRoleId across the matching connection",
+            "name": "blockId",
+            "description": "Distinct count of blockId across the matching connection",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "BigInt",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "blockType",
+            "description": "Distinct count of blockType across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -79358,8 +79580,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelFilter",
-        "description": "A filter to be used against `XpBlockedChannel` object types. All fields are combined with a logical ‘and.’",
+        "name": "XpBlockFilter",
+        "description": "A filter to be used against `XpBlock` object types. All fields are combined with a logical ‘and.’",
         "fields": null,
         "inputFields": [
           {
@@ -79373,7 +79595,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "XpBlockedChannelFilter",
+                  "name": "XpBlockFilter",
                   "ofType": null
                 }
               }
@@ -79383,11 +79605,23 @@
             "deprecationReason": null
           },
           {
-            "name": "channelOrRoleId",
-            "description": "Filter by the object’s `channelOrRoleId` field.",
+            "name": "blockId",
+            "description": "Filter by the object’s `blockId` field.",
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "BigIntFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "blockType",
+            "description": "Filter by the object’s `blockType` field.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "BlockTypeFilter",
               "ofType": null
             },
             "defaultValue": null,
@@ -79411,7 +79645,7 @@
             "description": "Negates the expression.",
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "XpBlockedChannelFilter",
+              "name": "XpBlockFilter",
               "ofType": null
             },
             "defaultValue": null,
@@ -79429,7 +79663,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "XpBlockedChannelFilter",
+                  "name": "XpBlockFilter",
                   "ofType": null
                 }
               }
@@ -79445,12 +79679,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelInput",
-        "description": "An input for mutations affecting `XpBlockedChannel`",
+        "name": "XpBlockInput",
+        "description": "An input for mutations affecting `XpBlock`",
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -79458,6 +79692,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "BigInt",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "blockType",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "BlockType",
                 "ofType": null
               }
             },
@@ -79488,12 +79738,12 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannelMaxAggregates",
+        "name": "XpBlockMaxAggregates",
         "description": null,
         "fields": [
           {
-            "name": "channelOrRoleId",
-            "description": "Maximum of channelOrRoleId across the matching connection",
+            "name": "blockId",
+            "description": "Maximum of blockId across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -79523,12 +79773,12 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannelMinAggregates",
+        "name": "XpBlockMinAggregates",
         "description": null,
         "fields": [
           {
-            "name": "channelOrRoleId",
-            "description": "Minimum of channelOrRoleId across the matching connection",
+            "name": "blockId",
+            "description": "Minimum of blockId across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -79558,16 +79808,28 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelPatch",
-        "description": "Represents an update to a `XpBlockedChannel`. Fields that are set will be updated.",
+        "name": "XpBlockPatch",
+        "description": "Represents an update to a `XpBlock`. Fields that are set will be updated.",
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "BigInt",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "blockType",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "BlockType",
               "ofType": null
             },
             "defaultValue": null,
@@ -79593,12 +79855,12 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannelStddevPopulationAggregates",
+        "name": "XpBlockStddevPopulationAggregates",
         "description": null,
         "fields": [
           {
-            "name": "channelOrRoleId",
-            "description": "Population standard deviation of channelOrRoleId across the matching connection",
+            "name": "blockId",
+            "description": "Population standard deviation of blockId across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -79628,12 +79890,12 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannelStddevSampleAggregates",
+        "name": "XpBlockStddevSampleAggregates",
         "description": null,
         "fields": [
           {
-            "name": "channelOrRoleId",
-            "description": "Sample standard deviation of channelOrRoleId across the matching connection",
+            "name": "blockId",
+            "description": "Sample standard deviation of blockId across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -79663,12 +79925,12 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannelSumAggregates",
+        "name": "XpBlockSumAggregates",
         "description": null,
         "fields": [
           {
-            "name": "channelOrRoleId",
-            "description": "Sum of channelOrRoleId across the matching connection",
+            "name": "blockId",
+            "description": "Sum of blockId across the matching connection",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -79706,12 +79968,12 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannelVariancePopulationAggregates",
+        "name": "XpBlockVariancePopulationAggregates",
         "description": null,
         "fields": [
           {
-            "name": "channelOrRoleId",
-            "description": "Population variance of channelOrRoleId across the matching connection",
+            "name": "blockId",
+            "description": "Population variance of blockId across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -79741,12 +80003,12 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannelVarianceSampleAggregates",
+        "name": "XpBlockVarianceSampleAggregates",
         "description": null,
         "fields": [
           {
-            "name": "channelOrRoleId",
-            "description": "Sample variance of channelOrRoleId across the matching connection",
+            "name": "blockId",
+            "description": "Sample variance of blockId across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -79776,8 +80038,8 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannelsConnection",
-        "description": "A connection to a list of `XpBlockedChannel` values.",
+        "name": "XpBlocksConnection",
+        "description": "A connection to a list of `XpBlock` values.",
         "fields": [
           {
             "name": "aggregates",
@@ -79785,7 +80047,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "XpBlockedChannelAggregates",
+              "name": "XpBlockAggregates",
               "ofType": null
             },
             "isDeprecated": false,
@@ -79793,7 +80055,7 @@
           },
           {
             "name": "edges",
-            "description": "A list of edges which contains the `XpBlockedChannel` and cursor to aid in pagination.",
+            "description": "A list of edges which contains the `XpBlock` and cursor to aid in pagination.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -79806,7 +80068,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "XpBlockedChannelsEdge",
+                    "name": "XpBlocksEdge",
                     "ofType": null
                   }
                 }
@@ -79821,7 +80083,7 @@
             "args": [
               {
                 "name": "groupBy",
-                "description": "The method to use when grouping `XpBlockedChannel` for these aggregates.",
+                "description": "The method to use when grouping `XpBlock` for these aggregates.",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -79833,7 +80095,7 @@
                       "name": null,
                       "ofType": {
                         "kind": "ENUM",
-                        "name": "XpBlockedChannelsGroupBy",
+                        "name": "XpBlocksGroupBy",
                         "ofType": null
                       }
                     }
@@ -79848,7 +80110,7 @@
                 "description": "Conditions on the grouped aggregates.",
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "XpBlockedChannelsHavingInput",
+                  "name": "XpBlocksHavingInput",
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -79864,7 +80126,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "XpBlockedChannelAggregates",
+                  "name": "XpBlockAggregates",
                   "ofType": null
                 }
               }
@@ -79874,7 +80136,7 @@
           },
           {
             "name": "nodes",
-            "description": "A list of `XpBlockedChannel` objects.",
+            "description": "A list of `XpBlock` objects.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -79887,7 +80149,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "XpBlockedChannel",
+                    "name": "XpBlock",
                     "ofType": null
                   }
                 }
@@ -79914,7 +80176,7 @@
           },
           {
             "name": "totalCount",
-            "description": "The count of *all* `XpBlockedChannel` you could get from the connection.",
+            "description": "The count of *all* `XpBlock` you could get from the connection.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -79936,8 +80198,8 @@
       },
       {
         "kind": "OBJECT",
-        "name": "XpBlockedChannelsEdge",
-        "description": "A `XpBlockedChannel` edge in the connection.",
+        "name": "XpBlocksEdge",
+        "description": "A `XpBlock` edge in the connection.",
         "fields": [
           {
             "name": "cursor",
@@ -79953,14 +80215,14 @@
           },
           {
             "name": "node",
-            "description": "The `XpBlockedChannel` at the end of the edge.",
+            "description": "The `XpBlock` at the end of the edge.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "XpBlockedChannel",
+                "name": "XpBlock",
                 "ofType": null
               }
             },
@@ -79975,14 +80237,20 @@
       },
       {
         "kind": "ENUM",
-        "name": "XpBlockedChannelsGroupBy",
-        "description": "Grouping methods for `XpBlockedChannel` for usage during aggregation.",
+        "name": "XpBlocksGroupBy",
+        "description": "Grouping methods for `XpBlock` for usage during aggregation.",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
           {
-            "name": "CHANNEL_OR_ROLE_ID",
+            "name": "BLOCK_ID",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "BLOCK_TYPE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -79998,12 +80266,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelsHavingAverageInput",
+        "name": "XpBlocksHavingAverageInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -80033,12 +80301,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelsHavingDistinctCountInput",
+        "name": "XpBlocksHavingDistinctCountInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -80068,8 +80336,8 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelsHavingInput",
-        "description": "Conditions for `XpBlockedChannel` aggregates.",
+        "name": "XpBlocksHavingInput",
+        "description": "Conditions for `XpBlock` aggregates.",
         "fields": null,
         "inputFields": [
           {
@@ -80083,7 +80351,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "XpBlockedChannelsHavingInput",
+                  "name": "XpBlocksHavingInput",
                   "ofType": null
                 }
               }
@@ -80103,7 +80371,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-                  "name": "XpBlockedChannelsHavingInput",
+                  "name": "XpBlocksHavingInput",
                   "ofType": null
                 }
               }
@@ -80117,7 +80385,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "XpBlockedChannelsHavingAverageInput",
+              "name": "XpBlocksHavingAverageInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -80129,7 +80397,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "XpBlockedChannelsHavingDistinctCountInput",
+              "name": "XpBlocksHavingDistinctCountInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -80141,7 +80409,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "XpBlockedChannelsHavingMaxInput",
+              "name": "XpBlocksHavingMaxInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -80153,7 +80421,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "XpBlockedChannelsHavingMinInput",
+              "name": "XpBlocksHavingMinInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -80165,7 +80433,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "XpBlockedChannelsHavingStddevPopulationInput",
+              "name": "XpBlocksHavingStddevPopulationInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -80177,7 +80445,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "XpBlockedChannelsHavingStddevSampleInput",
+              "name": "XpBlocksHavingStddevSampleInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -80189,7 +80457,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "XpBlockedChannelsHavingSumInput",
+              "name": "XpBlocksHavingSumInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -80201,7 +80469,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "XpBlockedChannelsHavingVariancePopulationInput",
+              "name": "XpBlocksHavingVariancePopulationInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -80213,7 +80481,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "XpBlockedChannelsHavingVarianceSampleInput",
+              "name": "XpBlocksHavingVarianceSampleInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -80227,12 +80495,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelsHavingMaxInput",
+        "name": "XpBlocksHavingMaxInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -80262,12 +80530,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelsHavingMinInput",
+        "name": "XpBlocksHavingMinInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -80297,12 +80565,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelsHavingStddevPopulationInput",
+        "name": "XpBlocksHavingStddevPopulationInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -80332,12 +80600,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelsHavingStddevSampleInput",
+        "name": "XpBlocksHavingStddevSampleInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -80367,12 +80635,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelsHavingSumInput",
+        "name": "XpBlocksHavingSumInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -80402,12 +80670,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelsHavingVariancePopulationInput",
+        "name": "XpBlocksHavingVariancePopulationInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -80437,12 +80705,12 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "XpBlockedChannelsHavingVarianceSampleInput",
+        "name": "XpBlocksHavingVarianceSampleInput",
         "description": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "channelOrRoleId",
+            "name": "blockId",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -80472,20 +80740,32 @@
       },
       {
         "kind": "ENUM",
-        "name": "XpBlockedChannelsOrderBy",
-        "description": "Methods to use when ordering `XpBlockedChannel`.",
+        "name": "XpBlocksOrderBy",
+        "description": "Methods to use when ordering `XpBlock`.",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
           {
-            "name": "CHANNEL_OR_ROLE_ID_ASC",
+            "name": "BLOCK_ID_ASC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "CHANNEL_OR_ROLE_ID_DESC",
+            "name": "BLOCK_ID_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "BLOCK_TYPE_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "BLOCK_TYPE_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

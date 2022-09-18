@@ -142,6 +142,53 @@ input BigIntListFilter {
   overlaps: [BigInt]
 }
 
+enum BlockType {
+  CHANNEL
+  ROLE
+}
+
+"""
+A filter to be used against BlockType fields. All fields are combined with a logical ‘and.’
+"""
+input BlockTypeFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: BlockType
+
+  """Equal to the specified value."""
+  equalTo: BlockType
+
+  """Greater than the specified value."""
+  greaterThan: BlockType
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: BlockType
+
+  """Included in the specified list."""
+  in: [BlockType!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: BlockType
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: BlockType
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: BlockType
+
+  """Not equal to the specified value."""
+  notEqualTo: BlockType
+
+  """Not included in the specified list."""
+  notIn: [BlockType!]
+}
+
 """
 A filter to be used against Boolean fields. All fields are combined with a logical ‘and.’
 """
@@ -1597,20 +1644,20 @@ type CreateWebUserPayload {
   ): WebUsersEdge
 }
 
-"""All input for the create `XpBlockedChannel` mutation."""
-input CreateXpBlockedChannelInput {
+"""All input for the create `XpBlock` mutation."""
+input CreateXpBlockInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
 
-  """The `XpBlockedChannel` to be created by this mutation."""
-  xpBlockedChannel: XpBlockedChannelInput!
+  """The `XpBlock` to be created by this mutation."""
+  xpBlock: XpBlockInput!
 }
 
-"""The output of our create `XpBlockedChannel` mutation."""
-type CreateXpBlockedChannelPayload {
+"""The output of our create `XpBlock` mutation."""
+type CreateXpBlockPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
   unchanged and unused. May be used by a client to track mutations.
@@ -1622,14 +1669,14 @@ type CreateXpBlockedChannelPayload {
   """
   query: Query
 
-  """The `XpBlockedChannel` that was created by this mutation."""
-  xpBlockedChannel: XpBlockedChannel
+  """The `XpBlock` that was created by this mutation."""
+  xpBlock: XpBlock
 
-  """An edge for our `XpBlockedChannel`. May be used by Relay 1."""
-  xpBlockedChannelEdge(
-    """The method to use when ordering `XpBlockedChannel`."""
-    orderBy: [XpBlockedChannelsOrderBy!] = [PRIMARY_KEY_ASC]
-  ): XpBlockedChannelsEdge
+  """An edge for our `XpBlock`. May be used by Relay 1."""
+  xpBlockEdge(
+    """The method to use when ordering `XpBlock`."""
+    orderBy: [XpBlocksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): XpBlocksEdge
 }
 
 """A `BigInt` edge in the connection."""
@@ -2839,11 +2886,9 @@ type DeleteWebUserPayload {
   ): WebUsersEdge
 }
 
-"""
-All input for the `deleteXpBlockedChannelByGuildIdAndChannelOrRoleId` mutation.
-"""
-input DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput {
-  channelOrRoleId: BigInt!
+"""All input for the `deleteXpBlockByGuildIdAndBlockId` mutation."""
+input DeleteXpBlockByGuildIdAndBlockIdInput {
+  blockId: BigInt!
 
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -2853,8 +2898,8 @@ input DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput {
   guildId: BigInt!
 }
 
-"""All input for the `deleteXpBlockedChannel` mutation."""
-input DeleteXpBlockedChannelInput {
+"""All input for the `deleteXpBlock` mutation."""
+input DeleteXpBlockInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
@@ -2862,33 +2907,33 @@ input DeleteXpBlockedChannelInput {
   clientMutationId: String
 
   """
-  The globally unique `ID` which will identify a single `XpBlockedChannel` to be deleted.
+  The globally unique `ID` which will identify a single `XpBlock` to be deleted.
   """
   nodeId: ID!
 }
 
-"""The output of our delete `XpBlockedChannel` mutation."""
-type DeleteXpBlockedChannelPayload {
+"""The output of our delete `XpBlock` mutation."""
+type DeleteXpBlockPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
   unchanged and unused. May be used by a client to track mutations.
   """
   clientMutationId: String
-  deletedXpBlockedChannelId: ID
+  deletedXpBlockId: ID
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
   """
   query: Query
 
-  """The `XpBlockedChannel` that was deleted by this mutation."""
-  xpBlockedChannel: XpBlockedChannel
+  """The `XpBlock` that was deleted by this mutation."""
+  xpBlock: XpBlock
 
-  """An edge for our `XpBlockedChannel`. May be used by Relay 1."""
-  xpBlockedChannelEdge(
-    """The method to use when ordering `XpBlockedChannel`."""
-    orderBy: [XpBlockedChannelsOrderBy!] = [PRIMARY_KEY_ASC]
-  ): XpBlockedChannelsEdge
+  """An edge for our `XpBlock`. May be used by Relay 1."""
+  xpBlockEdge(
+    """The method to use when ordering `XpBlock`."""
+    orderBy: [XpBlocksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): XpBlocksEdge
 }
 
 type Feed implements Node {
@@ -7494,13 +7539,13 @@ type Mutation {
     input: CreateWebUserGuildInput!
   ): CreateWebUserGuildPayload
 
-  """Creates a single `XpBlockedChannel`."""
-  createXpBlockedChannel(
+  """Creates a single `XpBlock`."""
+  createXpBlock(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: CreateXpBlockedChannelInput!
-  ): CreateXpBlockedChannelPayload
+    input: CreateXpBlockInput!
+  ): CreateXpBlockPayload
 
   """Deletes a single `BotStat` using its globally unique id."""
   deleteBotStat(
@@ -7860,21 +7905,21 @@ type Mutation {
     input: DeleteWebUserGuildByUserIdAndGuildIdInput!
   ): DeleteWebUserGuildPayload
 
-  """Deletes a single `XpBlockedChannel` using its globally unique id."""
-  deleteXpBlockedChannel(
+  """Deletes a single `XpBlock` using its globally unique id."""
+  deleteXpBlock(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: DeleteXpBlockedChannelInput!
-  ): DeleteXpBlockedChannelPayload
+    input: DeleteXpBlockInput!
+  ): DeleteXpBlockPayload
 
-  """Deletes a single `XpBlockedChannel` using a unique key."""
-  deleteXpBlockedChannelByGuildIdAndChannelOrRoleId(
+  """Deletes a single `XpBlock` using a unique key."""
+  deleteXpBlockByGuildIdAndBlockId(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput!
-  ): DeleteXpBlockedChannelPayload
+    input: DeleteXpBlockByGuildIdAndBlockIdInput!
+  ): DeleteXpBlockPayload
   graphql(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -8268,23 +8313,21 @@ type Mutation {
     input: UpdateWebUserGuildByUserIdAndGuildIdInput!
   ): UpdateWebUserGuildPayload
 
-  """
-  Updates a single `XpBlockedChannel` using its globally unique id and a patch.
-  """
-  updateXpBlockedChannel(
+  """Updates a single `XpBlock` using its globally unique id and a patch."""
+  updateXpBlock(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: UpdateXpBlockedChannelInput!
-  ): UpdateXpBlockedChannelPayload
+    input: UpdateXpBlockInput!
+  ): UpdateXpBlockPayload
 
-  """Updates a single `XpBlockedChannel` using a unique key and a patch."""
-  updateXpBlockedChannelByGuildIdAndChannelOrRoleId(
+  """Updates a single `XpBlock` using a unique key and a patch."""
+  updateXpBlockByGuildIdAndBlockId(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput!
-  ): UpdateXpBlockedChannelPayload
+    input: UpdateXpBlockByGuildIdAndBlockIdInput!
+  ): UpdateXpBlockPayload
 
   """Upserts a single `BotStat`."""
   upsertBotStat(
@@ -8484,14 +8527,14 @@ type Mutation {
     where: UpsertWebUserGuildWhere
   ): UpsertWebUserGuildPayload
 
-  """Upserts a single `XpBlockedChannel`."""
-  upsertXpBlockedChannel(
+  """Upserts a single `XpBlock`."""
+  upsertXpBlock(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
     """
-    input: UpsertXpBlockedChannelInput!
-    where: UpsertXpBlockedChannelWhere
-  ): UpsertXpBlockedChannelPayload
+    input: UpsertXpBlockInput!
+    where: UpsertXpBlockWhere
+  ): UpsertXpBlockPayload
 }
 
 type Mute implements Node {
@@ -9981,8 +10024,8 @@ type Query implements Node {
     orderBy: [WebUsersOrderBy!] = [PRIMARY_KEY_ASC]
   ): WebUsersConnection
 
-  """Reads and enables pagination through a set of `XpBlockedChannel`."""
-  allXpBlockedChannels(
+  """Reads and enables pagination through a set of `XpBlock`."""
+  allXpBlocks(
     """Read all values in the set after (below) this cursor."""
     after: Cursor
 
@@ -9992,12 +10035,12 @@ type Query implements Node {
     """
     A condition to be used in determining which values should be returned by the collection.
     """
-    condition: XpBlockedChannelCondition
+    condition: XpBlockCondition
 
     """
     A filter to be used in determining which values should be returned by the collection.
     """
-    filter: XpBlockedChannelFilter
+    filter: XpBlockFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -10011,9 +10054,9 @@ type Query implements Node {
     """
     offset: Int
 
-    """The method to use when ordering `XpBlockedChannel`."""
-    orderBy: [XpBlockedChannelsOrderBy!] = [PRIMARY_KEY_ASC]
-  ): XpBlockedChannelsConnection
+    """The method to use when ordering `XpBlock`."""
+    orderBy: [XpBlocksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): XpBlocksConnection
 
   """Reads a single `BotStat` using its globally unique `ID`."""
   botStat(
@@ -10298,14 +10341,12 @@ type Query implements Node {
   ): WebUserGuild
   webUserGuildByUserIdAndGuildId(guildId: BigInt!, userId: BigInt!): WebUserGuild
 
-  """Reads a single `XpBlockedChannel` using its globally unique `ID`."""
-  xpBlockedChannel(
-    """
-    The globally unique `ID` to be used in selecting a single `XpBlockedChannel`.
-    """
+  """Reads a single `XpBlock` using its globally unique `ID`."""
+  xpBlock(
+    """The globally unique `ID` to be used in selecting a single `XpBlock`."""
     nodeId: ID!
-  ): XpBlockedChannel
-  xpBlockedChannelByGuildIdAndChannelOrRoleId(channelOrRoleId: BigInt!, guildId: BigInt!): XpBlockedChannel
+  ): XpBlock
+  xpBlockByGuildIdAndBlockId(blockId: BigInt!, guildId: BigInt!): XpBlock
 }
 
 type RedisGuild {
@@ -13659,11 +13700,9 @@ type UpdateWebUserPayload {
   ): WebUsersEdge
 }
 
-"""
-All input for the `updateXpBlockedChannelByGuildIdAndChannelOrRoleId` mutation.
-"""
-input UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput {
-  channelOrRoleId: BigInt!
+"""All input for the `updateXpBlockByGuildIdAndBlockId` mutation."""
+input UpdateXpBlockByGuildIdAndBlockIdInput {
+  blockId: BigInt!
 
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -13673,13 +13712,13 @@ input UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput {
   guildId: BigInt!
 
   """
-  An object where the defined keys will be set on the `XpBlockedChannel` being updated.
+  An object where the defined keys will be set on the `XpBlock` being updated.
   """
-  xpBlockedChannelPatch: XpBlockedChannelPatch!
+  xpBlockPatch: XpBlockPatch!
 }
 
-"""All input for the `updateXpBlockedChannel` mutation."""
-input UpdateXpBlockedChannelInput {
+"""All input for the `updateXpBlock` mutation."""
+input UpdateXpBlockInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
   payload verbatim. May be used to track mutations by the client.
@@ -13687,18 +13726,18 @@ input UpdateXpBlockedChannelInput {
   clientMutationId: String
 
   """
-  The globally unique `ID` which will identify a single `XpBlockedChannel` to be updated.
+  The globally unique `ID` which will identify a single `XpBlock` to be updated.
   """
   nodeId: ID!
 
   """
-  An object where the defined keys will be set on the `XpBlockedChannel` being updated.
+  An object where the defined keys will be set on the `XpBlock` being updated.
   """
-  xpBlockedChannelPatch: XpBlockedChannelPatch!
+  xpBlockPatch: XpBlockPatch!
 }
 
-"""The output of our update `XpBlockedChannel` mutation."""
-type UpdateXpBlockedChannelPayload {
+"""The output of our update `XpBlock` mutation."""
+type UpdateXpBlockPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
   unchanged and unused. May be used by a client to track mutations.
@@ -13710,14 +13749,14 @@ type UpdateXpBlockedChannelPayload {
   """
   query: Query
 
-  """The `XpBlockedChannel` that was updated by this mutation."""
-  xpBlockedChannel: XpBlockedChannel
+  """The `XpBlock` that was updated by this mutation."""
+  xpBlock: XpBlock
 
-  """An edge for our `XpBlockedChannel`. May be used by Relay 1."""
-  xpBlockedChannelEdge(
-    """The method to use when ordering `XpBlockedChannel`."""
-    orderBy: [XpBlockedChannelsOrderBy!] = [PRIMARY_KEY_ASC]
-  ): XpBlockedChannelsEdge
+  """An edge for our `XpBlock`. May be used by Relay 1."""
+  xpBlockEdge(
+    """The method to use when ordering `XpBlock`."""
+    orderBy: [XpBlocksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): XpBlocksEdge
 }
 
 """All input for the upsert `BotStat` mutation."""
@@ -14593,19 +14632,19 @@ input UpsertWebUserWhere {
   id: BigInt
 }
 
-"""All input for the upsert `XpBlockedChannel` mutation."""
-input UpsertXpBlockedChannelInput {
+"""All input for the upsert `XpBlock` mutation."""
+input UpsertXpBlockInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
   """
   clientMutationId: String
 
-  """The `XpBlockedChannel` to be upserted by this mutation."""
-  xpBlockedChannel: XpBlockedChannelInput!
+  """The `XpBlock` to be upserted by this mutation."""
+  xpBlock: XpBlockInput!
 }
 
-"""The output of our upsert `XpBlockedChannel` mutation."""
-type UpsertXpBlockedChannelPayload {
+"""The output of our upsert `XpBlock` mutation."""
+type UpsertXpBlockPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
   """
@@ -14616,19 +14655,19 @@ type UpsertXpBlockedChannelPayload {
   """
   query: Query
 
-  """The `XpBlockedChannel` that was upserted by this mutation."""
-  xpBlockedChannel: XpBlockedChannel
+  """The `XpBlock` that was upserted by this mutation."""
+  xpBlock: XpBlock
 
-  """An edge for our `XpBlockedChannel`. May be used by Relay 1."""
-  xpBlockedChannelEdge(
-    """The method to use when ordering `XpBlockedChannel`."""
-    orderBy: [XpBlockedChannelsOrderBy!] = [PRIMARY_KEY_ASC]
-  ): XpBlockedChannelsEdge
+  """An edge for our `XpBlock`. May be used by Relay 1."""
+  xpBlockEdge(
+    """The method to use when ordering `XpBlock`."""
+    orderBy: [XpBlocksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): XpBlocksEdge
 }
 
-"""Where conditions for the upsert `XpBlockedChannel` mutation."""
-input UpsertXpBlockedChannelWhere {
-  channelOrRoleId: BigInt
+"""Where conditions for the upsert `XpBlock` mutation."""
+input UpsertXpBlockWhere {
+  blockId: BigInt
   guildId: BigInt
 }
 
@@ -16644,8 +16683,9 @@ enum WebUsersOrderBy {
   WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_USER_ID_DESC
 }
 
-type XpBlockedChannel implements Node {
-  channelOrRoleId: BigInt!
+type XpBlock implements Node {
+  blockId: BigInt!
+  blockType: BlockType!
   guildId: BigInt!
 
   """
@@ -16654,137 +16694,147 @@ type XpBlockedChannel implements Node {
   nodeId: ID!
 }
 
-type XpBlockedChannelAggregates {
+type XpBlockAggregates {
   """
   Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
   """
-  average: XpBlockedChannelAverageAggregates
+  average: XpBlockAverageAggregates
 
   """
   Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
   """
-  distinctCount: XpBlockedChannelDistinctCountAggregates
+  distinctCount: XpBlockDistinctCountAggregates
   keys: [String!]
 
   """
   Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
   """
-  max: XpBlockedChannelMaxAggregates
+  max: XpBlockMaxAggregates
 
   """
   Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
   """
-  min: XpBlockedChannelMinAggregates
+  min: XpBlockMinAggregates
 
   """
   Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
   """
-  stddevPopulation: XpBlockedChannelStddevPopulationAggregates
+  stddevPopulation: XpBlockStddevPopulationAggregates
 
   """
   Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
   """
-  stddevSample: XpBlockedChannelStddevSampleAggregates
+  stddevSample: XpBlockStddevSampleAggregates
 
   """
   Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
   """
-  sum: XpBlockedChannelSumAggregates
+  sum: XpBlockSumAggregates
 
   """
   Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
   """
-  variancePopulation: XpBlockedChannelVariancePopulationAggregates
+  variancePopulation: XpBlockVariancePopulationAggregates
 
   """
   Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
   """
-  varianceSample: XpBlockedChannelVarianceSampleAggregates
+  varianceSample: XpBlockVarianceSampleAggregates
 }
 
-type XpBlockedChannelAverageAggregates {
-  """Mean average of channelOrRoleId across the matching connection"""
-  channelOrRoleId: BigFloat
+type XpBlockAverageAggregates {
+  """Mean average of blockId across the matching connection"""
+  blockId: BigFloat
 
   """Mean average of guildId across the matching connection"""
   guildId: BigFloat
 }
 
 """
-A condition to be used against `XpBlockedChannel` object types. All fields are
-tested for equality and combined with a logical ‘and.’
+A condition to be used against `XpBlock` object types. All fields are tested for equality and combined with a logical ‘and.’
 """
-input XpBlockedChannelCondition {
-  """Checks for equality with the object’s `channelOrRoleId` field."""
-  channelOrRoleId: BigInt
+input XpBlockCondition {
+  """Checks for equality with the object’s `blockId` field."""
+  blockId: BigInt
+
+  """Checks for equality with the object’s `blockType` field."""
+  blockType: BlockType
 
   """Checks for equality with the object’s `guildId` field."""
   guildId: BigInt
 }
 
-type XpBlockedChannelDistinctCountAggregates {
-  """Distinct count of channelOrRoleId across the matching connection"""
-  channelOrRoleId: BigInt
+type XpBlockDistinctCountAggregates {
+  """Distinct count of blockId across the matching connection"""
+  blockId: BigInt
+
+  """Distinct count of blockType across the matching connection"""
+  blockType: BigInt
 
   """Distinct count of guildId across the matching connection"""
   guildId: BigInt
 }
 
 """
-A filter to be used against `XpBlockedChannel` object types. All fields are combined with a logical ‘and.’
+A filter to be used against `XpBlock` object types. All fields are combined with a logical ‘and.’
 """
-input XpBlockedChannelFilter {
+input XpBlockFilter {
   """Checks for all expressions in this list."""
-  and: [XpBlockedChannelFilter!]
+  and: [XpBlockFilter!]
 
-  """Filter by the object’s `channelOrRoleId` field."""
-  channelOrRoleId: BigIntFilter
+  """Filter by the object’s `blockId` field."""
+  blockId: BigIntFilter
+
+  """Filter by the object’s `blockType` field."""
+  blockType: BlockTypeFilter
 
   """Filter by the object’s `guildId` field."""
   guildId: BigIntFilter
 
   """Negates the expression."""
-  not: XpBlockedChannelFilter
+  not: XpBlockFilter
 
   """Checks for any expressions in this list."""
-  or: [XpBlockedChannelFilter!]
+  or: [XpBlockFilter!]
 }
 
-"""An input for mutations affecting `XpBlockedChannel`"""
-input XpBlockedChannelInput {
-  channelOrRoleId: BigInt!
+"""An input for mutations affecting `XpBlock`"""
+input XpBlockInput {
+  blockId: BigInt!
+  blockType: BlockType!
   guildId: BigInt!
 }
 
-type XpBlockedChannelMaxAggregates {
-  """Maximum of channelOrRoleId across the matching connection"""
-  channelOrRoleId: BigInt
+type XpBlockMaxAggregates {
+  """Maximum of blockId across the matching connection"""
+  blockId: BigInt
 
   """Maximum of guildId across the matching connection"""
   guildId: BigInt
 }
 
-type XpBlockedChannelMinAggregates {
-  """Minimum of channelOrRoleId across the matching connection"""
-  channelOrRoleId: BigInt
+type XpBlockMinAggregates {
+  """Minimum of blockId across the matching connection"""
+  blockId: BigInt
 
   """Minimum of guildId across the matching connection"""
   guildId: BigInt
 }
 
 """
-Represents an update to a `XpBlockedChannel`. Fields that are set will be updated.
+Represents an update to a `XpBlock`. Fields that are set will be updated.
 """
-input XpBlockedChannelPatch {
-  channelOrRoleId: BigInt
+input XpBlockPatch {
+  blockId: BigInt
+  blockType: BlockType
   guildId: BigInt
 }
 
-type XpBlockedChannelStddevPopulationAggregates {
+type XpBlockStddevPopulationAggregates {
   """
-  Population standard deviation of channelOrRoleId across the matching connection
+  Population standard deviation of blockId across the matching connection
   """
-  channelOrRoleId: BigFloat
+  blockId: BigFloat
 
   """
   Population standard deviation of guildId across the matching connection
@@ -16792,156 +16842,153 @@ type XpBlockedChannelStddevPopulationAggregates {
   guildId: BigFloat
 }
 
-type XpBlockedChannelStddevSampleAggregates {
-  """
-  Sample standard deviation of channelOrRoleId across the matching connection
-  """
-  channelOrRoleId: BigFloat
+type XpBlockStddevSampleAggregates {
+  """Sample standard deviation of blockId across the matching connection"""
+  blockId: BigFloat
 
   """Sample standard deviation of guildId across the matching connection"""
   guildId: BigFloat
 }
 
-type XpBlockedChannelSumAggregates {
-  """Sum of channelOrRoleId across the matching connection"""
-  channelOrRoleId: BigFloat!
+type XpBlockSumAggregates {
+  """Sum of blockId across the matching connection"""
+  blockId: BigFloat!
 
   """Sum of guildId across the matching connection"""
   guildId: BigFloat!
 }
 
-type XpBlockedChannelVariancePopulationAggregates {
-  """Population variance of channelOrRoleId across the matching connection"""
-  channelOrRoleId: BigFloat
+type XpBlockVariancePopulationAggregates {
+  """Population variance of blockId across the matching connection"""
+  blockId: BigFloat
 
   """Population variance of guildId across the matching connection"""
   guildId: BigFloat
 }
 
-type XpBlockedChannelVarianceSampleAggregates {
-  """Sample variance of channelOrRoleId across the matching connection"""
-  channelOrRoleId: BigFloat
+type XpBlockVarianceSampleAggregates {
+  """Sample variance of blockId across the matching connection"""
+  blockId: BigFloat
 
   """Sample variance of guildId across the matching connection"""
   guildId: BigFloat
 }
 
-"""A connection to a list of `XpBlockedChannel` values."""
-type XpBlockedChannelsConnection {
+"""A connection to a list of `XpBlock` values."""
+type XpBlocksConnection {
   """
   Aggregates across the matching connection (ignoring before/after/first/last/offset)
   """
-  aggregates: XpBlockedChannelAggregates
+  aggregates: XpBlockAggregates
 
   """
-  A list of edges which contains the `XpBlockedChannel` and cursor to aid in pagination.
+  A list of edges which contains the `XpBlock` and cursor to aid in pagination.
   """
-  edges: [XpBlockedChannelsEdge!]!
+  edges: [XpBlocksEdge!]!
 
   """
   Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
   """
   groupedAggregates(
-    """
-    The method to use when grouping `XpBlockedChannel` for these aggregates.
-    """
-    groupBy: [XpBlockedChannelsGroupBy!]!
+    """The method to use when grouping `XpBlock` for these aggregates."""
+    groupBy: [XpBlocksGroupBy!]!
 
     """Conditions on the grouped aggregates."""
-    having: XpBlockedChannelsHavingInput
-  ): [XpBlockedChannelAggregates!]
+    having: XpBlocksHavingInput
+  ): [XpBlockAggregates!]
 
-  """A list of `XpBlockedChannel` objects."""
-  nodes: [XpBlockedChannel!]!
+  """A list of `XpBlock` objects."""
+  nodes: [XpBlock!]!
 
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
-  """
-  The count of *all* `XpBlockedChannel` you could get from the connection.
-  """
+  """The count of *all* `XpBlock` you could get from the connection."""
   totalCount: Int!
 }
 
-"""A `XpBlockedChannel` edge in the connection."""
-type XpBlockedChannelsEdge {
+"""A `XpBlock` edge in the connection."""
+type XpBlocksEdge {
   """A cursor for use in pagination."""
   cursor: Cursor
 
-  """The `XpBlockedChannel` at the end of the edge."""
-  node: XpBlockedChannel!
+  """The `XpBlock` at the end of the edge."""
+  node: XpBlock!
 }
 
-"""Grouping methods for `XpBlockedChannel` for usage during aggregation."""
-enum XpBlockedChannelsGroupBy {
-  CHANNEL_OR_ROLE_ID
+"""Grouping methods for `XpBlock` for usage during aggregation."""
+enum XpBlocksGroupBy {
+  BLOCK_ID
+  BLOCK_TYPE
   GUILD_ID
 }
 
-input XpBlockedChannelsHavingAverageInput {
-  channelOrRoleId: HavingBigintFilter
+input XpBlocksHavingAverageInput {
+  blockId: HavingBigintFilter
   guildId: HavingBigintFilter
 }
 
-input XpBlockedChannelsHavingDistinctCountInput {
-  channelOrRoleId: HavingBigintFilter
+input XpBlocksHavingDistinctCountInput {
+  blockId: HavingBigintFilter
   guildId: HavingBigintFilter
 }
 
-"""Conditions for `XpBlockedChannel` aggregates."""
-input XpBlockedChannelsHavingInput {
-  AND: [XpBlockedChannelsHavingInput!]
-  OR: [XpBlockedChannelsHavingInput!]
-  average: XpBlockedChannelsHavingAverageInput
-  distinctCount: XpBlockedChannelsHavingDistinctCountInput
-  max: XpBlockedChannelsHavingMaxInput
-  min: XpBlockedChannelsHavingMinInput
-  stddevPopulation: XpBlockedChannelsHavingStddevPopulationInput
-  stddevSample: XpBlockedChannelsHavingStddevSampleInput
-  sum: XpBlockedChannelsHavingSumInput
-  variancePopulation: XpBlockedChannelsHavingVariancePopulationInput
-  varianceSample: XpBlockedChannelsHavingVarianceSampleInput
+"""Conditions for `XpBlock` aggregates."""
+input XpBlocksHavingInput {
+  AND: [XpBlocksHavingInput!]
+  OR: [XpBlocksHavingInput!]
+  average: XpBlocksHavingAverageInput
+  distinctCount: XpBlocksHavingDistinctCountInput
+  max: XpBlocksHavingMaxInput
+  min: XpBlocksHavingMinInput
+  stddevPopulation: XpBlocksHavingStddevPopulationInput
+  stddevSample: XpBlocksHavingStddevSampleInput
+  sum: XpBlocksHavingSumInput
+  variancePopulation: XpBlocksHavingVariancePopulationInput
+  varianceSample: XpBlocksHavingVarianceSampleInput
 }
 
-input XpBlockedChannelsHavingMaxInput {
-  channelOrRoleId: HavingBigintFilter
+input XpBlocksHavingMaxInput {
+  blockId: HavingBigintFilter
   guildId: HavingBigintFilter
 }
 
-input XpBlockedChannelsHavingMinInput {
-  channelOrRoleId: HavingBigintFilter
+input XpBlocksHavingMinInput {
+  blockId: HavingBigintFilter
   guildId: HavingBigintFilter
 }
 
-input XpBlockedChannelsHavingStddevPopulationInput {
-  channelOrRoleId: HavingBigintFilter
+input XpBlocksHavingStddevPopulationInput {
+  blockId: HavingBigintFilter
   guildId: HavingBigintFilter
 }
 
-input XpBlockedChannelsHavingStddevSampleInput {
-  channelOrRoleId: HavingBigintFilter
+input XpBlocksHavingStddevSampleInput {
+  blockId: HavingBigintFilter
   guildId: HavingBigintFilter
 }
 
-input XpBlockedChannelsHavingSumInput {
-  channelOrRoleId: HavingBigintFilter
+input XpBlocksHavingSumInput {
+  blockId: HavingBigintFilter
   guildId: HavingBigintFilter
 }
 
-input XpBlockedChannelsHavingVariancePopulationInput {
-  channelOrRoleId: HavingBigintFilter
+input XpBlocksHavingVariancePopulationInput {
+  blockId: HavingBigintFilter
   guildId: HavingBigintFilter
 }
 
-input XpBlockedChannelsHavingVarianceSampleInput {
-  channelOrRoleId: HavingBigintFilter
+input XpBlocksHavingVarianceSampleInput {
+  blockId: HavingBigintFilter
   guildId: HavingBigintFilter
 }
 
-"""Methods to use when ordering `XpBlockedChannel`."""
-enum XpBlockedChannelsOrderBy {
-  CHANNEL_OR_ROLE_ID_ASC
-  CHANNEL_OR_ROLE_ID_DESC
+"""Methods to use when ordering `XpBlock`."""
+enum XpBlocksOrderBy {
+  BLOCK_ID_ASC
+  BLOCK_ID_DESC
+  BLOCK_TYPE_ASC
+  BLOCK_TYPE_DESC
   GUILD_ID_ASC
   GUILD_ID_DESC
   NATURAL

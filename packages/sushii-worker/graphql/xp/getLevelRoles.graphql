@@ -1,0 +1,7 @@
+query getLevelRoles($guildId: BigInt!) {
+  allLevelRoles(condition: { guildId: $guildId }) {
+    nodes {
+      ...LevelRoleData
+    }
+  }
+}

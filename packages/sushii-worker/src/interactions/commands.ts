@@ -26,6 +26,8 @@ import UnbanCommand from "./moderation/UnbanCommand";
 import PruneCommand from "./moderation/PruneCommand";
 import SlowmodeCommand from "./moderation/SlowmodeCommand";
 import NoteCommand from "./moderation/NoteCommand";
+import XpCommand from "./xp/XpCommands";
+import LevelRoleCommand from "./xp/LevelRoleCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -59,6 +61,10 @@ export default function addCommands(
 
     // Roles
     new RoleMenuCommand(),
+
+    // XP
+    new LevelRoleCommand(),
+    new XpCommand(),
 
     // Settings
     new WelcomeCommand()

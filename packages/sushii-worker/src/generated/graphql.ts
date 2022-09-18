@@ -127,6 +127,37 @@ export type BigIntListFilter = {
   overlaps?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
 };
 
+export enum BlockType {
+  Channel = 'CHANNEL',
+  Role = 'ROLE'
+}
+
+/** A filter to be used against BlockType fields. All fields are combined with a logical ‘and.’ */
+export type BlockTypeFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<BlockType>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<BlockType>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<BlockType>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<BlockType>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<BlockType>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<BlockType>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<BlockType>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<BlockType>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<BlockType>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<BlockType>>;
+};
+
 /** A filter to be used against Boolean fields. All fields are combined with a logical ‘and.’ */
 export type BooleanFilter = {
   /** Not equal to the specified value, treating null like an ordinary value. */
@@ -1437,20 +1468,20 @@ export type CreateWebUserPayloadWebUserEdgeArgs = {
   orderBy?: InputMaybe<Array<WebUsersOrderBy>>;
 };
 
-/** All input for the create `XpBlockedChannel` mutation. */
-export type CreateXpBlockedChannelInput = {
+/** All input for the create `XpBlock` mutation. */
+export type CreateXpBlockInput = {
   /**
    * An arbitrary string value with no semantic meaning. Will be included in the
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']>;
-  /** The `XpBlockedChannel` to be created by this mutation. */
-  xpBlockedChannel: XpBlockedChannelInput;
+  /** The `XpBlock` to be created by this mutation. */
+  xpBlock: XpBlockInput;
 };
 
-/** The output of our create `XpBlockedChannel` mutation. */
-export type CreateXpBlockedChannelPayload = {
-  __typename?: 'CreateXpBlockedChannelPayload';
+/** The output of our create `XpBlock` mutation. */
+export type CreateXpBlockPayload = {
+  __typename?: 'CreateXpBlockPayload';
   /**
    * The exact same `clientMutationId` that was provided in the mutation input,
    * unchanged and unused. May be used by a client to track mutations.
@@ -1458,16 +1489,16 @@ export type CreateXpBlockedChannelPayload = {
   clientMutationId?: Maybe<Scalars['String']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** The `XpBlockedChannel` that was created by this mutation. */
-  xpBlockedChannel?: Maybe<XpBlockedChannel>;
-  /** An edge for our `XpBlockedChannel`. May be used by Relay 1. */
-  xpBlockedChannelEdge?: Maybe<XpBlockedChannelsEdge>;
+  /** The `XpBlock` that was created by this mutation. */
+  xpBlock?: Maybe<XpBlock>;
+  /** An edge for our `XpBlock`. May be used by Relay 1. */
+  xpBlockEdge?: Maybe<XpBlocksEdge>;
 };
 
 
-/** The output of our create `XpBlockedChannel` mutation. */
-export type CreateXpBlockedChannelPayloadXpBlockedChannelEdgeArgs = {
-  orderBy?: InputMaybe<Array<XpBlockedChannelsOrderBy>>;
+/** The output of our create `XpBlock` mutation. */
+export type CreateXpBlockPayloadXpBlockEdgeArgs = {
+  orderBy?: InputMaybe<Array<XpBlocksOrderBy>>;
 };
 
 /** A `BigInt` edge in the connection. */
@@ -2541,9 +2572,9 @@ export type DeleteWebUserPayloadWebUserEdgeArgs = {
   orderBy?: InputMaybe<Array<WebUsersOrderBy>>;
 };
 
-/** All input for the `deleteXpBlockedChannelByGuildIdAndChannelOrRoleId` mutation. */
-export type DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput = {
-  channelOrRoleId: Scalars['BigInt'];
+/** All input for the `deleteXpBlockByGuildIdAndBlockId` mutation. */
+export type DeleteXpBlockByGuildIdAndBlockIdInput = {
+  blockId: Scalars['BigInt'];
   /**
    * An arbitrary string value with no semantic meaning. Will be included in the
    * payload verbatim. May be used to track mutations by the client.
@@ -2552,38 +2583,38 @@ export type DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput = {
   guildId: Scalars['BigInt'];
 };
 
-/** All input for the `deleteXpBlockedChannel` mutation. */
-export type DeleteXpBlockedChannelInput = {
+/** All input for the `deleteXpBlock` mutation. */
+export type DeleteXpBlockInput = {
   /**
    * An arbitrary string value with no semantic meaning. Will be included in the
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `XpBlockedChannel` to be deleted. */
+  /** The globally unique `ID` which will identify a single `XpBlock` to be deleted. */
   nodeId: Scalars['ID'];
 };
 
-/** The output of our delete `XpBlockedChannel` mutation. */
-export type DeleteXpBlockedChannelPayload = {
-  __typename?: 'DeleteXpBlockedChannelPayload';
+/** The output of our delete `XpBlock` mutation. */
+export type DeleteXpBlockPayload = {
+  __typename?: 'DeleteXpBlockPayload';
   /**
    * The exact same `clientMutationId` that was provided in the mutation input,
    * unchanged and unused. May be used by a client to track mutations.
    */
   clientMutationId?: Maybe<Scalars['String']>;
-  deletedXpBlockedChannelId?: Maybe<Scalars['ID']>;
+  deletedXpBlockId?: Maybe<Scalars['ID']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** The `XpBlockedChannel` that was deleted by this mutation. */
-  xpBlockedChannel?: Maybe<XpBlockedChannel>;
-  /** An edge for our `XpBlockedChannel`. May be used by Relay 1. */
-  xpBlockedChannelEdge?: Maybe<XpBlockedChannelsEdge>;
+  /** The `XpBlock` that was deleted by this mutation. */
+  xpBlock?: Maybe<XpBlock>;
+  /** An edge for our `XpBlock`. May be used by Relay 1. */
+  xpBlockEdge?: Maybe<XpBlocksEdge>;
 };
 
 
-/** The output of our delete `XpBlockedChannel` mutation. */
-export type DeleteXpBlockedChannelPayloadXpBlockedChannelEdgeArgs = {
-  orderBy?: InputMaybe<Array<XpBlockedChannelsOrderBy>>;
+/** The output of our delete `XpBlock` mutation. */
+export type DeleteXpBlockPayloadXpBlockEdgeArgs = {
+  orderBy?: InputMaybe<Array<XpBlocksOrderBy>>;
 };
 
 export type Feed = Node & {
@@ -6214,8 +6245,8 @@ export type Mutation = {
   createWebUser?: Maybe<CreateWebUserPayload>;
   /** Creates a single `WebUserGuild`. */
   createWebUserGuild?: Maybe<CreateWebUserGuildPayload>;
-  /** Creates a single `XpBlockedChannel`. */
-  createXpBlockedChannel?: Maybe<CreateXpBlockedChannelPayload>;
+  /** Creates a single `XpBlock`. */
+  createXpBlock?: Maybe<CreateXpBlockPayload>;
   /** Deletes a single `BotStat` using its globally unique id. */
   deleteBotStat?: Maybe<DeleteBotStatPayload>;
   /** Deletes a single `BotStat` using a unique key. */
@@ -6305,10 +6336,10 @@ export type Mutation = {
   deleteWebUserGuild?: Maybe<DeleteWebUserGuildPayload>;
   /** Deletes a single `WebUserGuild` using a unique key. */
   deleteWebUserGuildByUserIdAndGuildId?: Maybe<DeleteWebUserGuildPayload>;
-  /** Deletes a single `XpBlockedChannel` using its globally unique id. */
-  deleteXpBlockedChannel?: Maybe<DeleteXpBlockedChannelPayload>;
-  /** Deletes a single `XpBlockedChannel` using a unique key. */
-  deleteXpBlockedChannelByGuildIdAndChannelOrRoleId?: Maybe<DeleteXpBlockedChannelPayload>;
+  /** Deletes a single `XpBlock` using its globally unique id. */
+  deleteXpBlock?: Maybe<DeleteXpBlockPayload>;
+  /** Deletes a single `XpBlock` using a unique key. */
+  deleteXpBlockByGuildIdAndBlockId?: Maybe<DeleteXpBlockPayload>;
   graphql?: Maybe<GraphqlPayload>;
   logout?: Maybe<LogoutPayload>;
   setRoleMenuRoleOrder?: Maybe<SetRoleMenuRoleOrderPayload>;
@@ -6401,10 +6432,10 @@ export type Mutation = {
   updateWebUserGuild?: Maybe<UpdateWebUserGuildPayload>;
   /** Updates a single `WebUserGuild` using a unique key and a patch. */
   updateWebUserGuildByUserIdAndGuildId?: Maybe<UpdateWebUserGuildPayload>;
-  /** Updates a single `XpBlockedChannel` using its globally unique id and a patch. */
-  updateXpBlockedChannel?: Maybe<UpdateXpBlockedChannelPayload>;
-  /** Updates a single `XpBlockedChannel` using a unique key and a patch. */
-  updateXpBlockedChannelByGuildIdAndChannelOrRoleId?: Maybe<UpdateXpBlockedChannelPayload>;
+  /** Updates a single `XpBlock` using its globally unique id and a patch. */
+  updateXpBlock?: Maybe<UpdateXpBlockPayload>;
+  /** Updates a single `XpBlock` using a unique key and a patch. */
+  updateXpBlockByGuildIdAndBlockId?: Maybe<UpdateXpBlockPayload>;
   /** Upserts a single `BotStat`. */
   upsertBotStat?: Maybe<UpsertBotStatPayload>;
   /** Upserts a single `CachedGuild`. */
@@ -6449,8 +6480,8 @@ export type Mutation = {
   upsertWebUser?: Maybe<UpsertWebUserPayload>;
   /** Upserts a single `WebUserGuild`. */
   upsertWebUserGuild?: Maybe<UpsertWebUserGuildPayload>;
-  /** Upserts a single `XpBlockedChannel`. */
-  upsertXpBlockedChannel?: Maybe<UpsertXpBlockedChannelPayload>;
+  /** Upserts a single `XpBlock`. */
+  upsertXpBlock?: Maybe<UpsertXpBlockPayload>;
 };
 
 
@@ -6599,8 +6630,8 @@ export type MutationCreateWebUserGuildArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateXpBlockedChannelArgs = {
-  input: CreateXpBlockedChannelInput;
+export type MutationCreateXpBlockArgs = {
+  input: CreateXpBlockInput;
 };
 
 
@@ -6875,14 +6906,14 @@ export type MutationDeleteWebUserGuildByUserIdAndGuildIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteXpBlockedChannelArgs = {
-  input: DeleteXpBlockedChannelInput;
+export type MutationDeleteXpBlockArgs = {
+  input: DeleteXpBlockInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdArgs = {
-  input: DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput;
+export type MutationDeleteXpBlockByGuildIdAndBlockIdArgs = {
+  input: DeleteXpBlockByGuildIdAndBlockIdInput;
 };
 
 
@@ -7175,14 +7206,14 @@ export type MutationUpdateWebUserGuildByUserIdAndGuildIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateXpBlockedChannelArgs = {
-  input: UpdateXpBlockedChannelInput;
+export type MutationUpdateXpBlockArgs = {
+  input: UpdateXpBlockInput;
 };
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdArgs = {
-  input: UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput;
+export type MutationUpdateXpBlockByGuildIdAndBlockIdArgs = {
+  input: UpdateXpBlockByGuildIdAndBlockIdInput;
 };
 
 
@@ -7341,9 +7372,9 @@ export type MutationUpsertWebUserGuildArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpsertXpBlockedChannelArgs = {
-  input: UpsertXpBlockedChannelInput;
-  where?: InputMaybe<UpsertXpBlockedChannelWhere>;
+export type MutationUpsertXpBlockArgs = {
+  input: UpsertXpBlockInput;
+  where?: InputMaybe<UpsertXpBlockWhere>;
 };
 
 export type Mute = Node & {
@@ -8037,8 +8068,8 @@ export type Query = Node & {
   allWebUserGuilds?: Maybe<WebUserGuildsConnection>;
   /** Reads and enables pagination through a set of `WebUser`. */
   allWebUsers?: Maybe<WebUsersConnection>;
-  /** Reads and enables pagination through a set of `XpBlockedChannel`. */
-  allXpBlockedChannels?: Maybe<XpBlockedChannelsConnection>;
+  /** Reads and enables pagination through a set of `XpBlock`. */
+  allXpBlocks?: Maybe<XpBlocksConnection>;
   /** Reads a single `BotStat` using its globally unique `ID`. */
   botStat?: Maybe<BotStat>;
   botStatByNameAndCategory?: Maybe<BotStat>;
@@ -8129,9 +8160,9 @@ export type Query = Node & {
   /** Reads a single `WebUserGuild` using its globally unique `ID`. */
   webUserGuild?: Maybe<WebUserGuild>;
   webUserGuildByUserIdAndGuildId?: Maybe<WebUserGuild>;
-  /** Reads a single `XpBlockedChannel` using its globally unique `ID`. */
-  xpBlockedChannel?: Maybe<XpBlockedChannel>;
-  xpBlockedChannelByGuildIdAndChannelOrRoleId?: Maybe<XpBlockedChannel>;
+  /** Reads a single `XpBlock` using its globally unique `ID`. */
+  xpBlock?: Maybe<XpBlock>;
+  xpBlockByGuildIdAndBlockId?: Maybe<XpBlock>;
 };
 
 
@@ -8409,15 +8440,15 @@ export type QueryAllWebUsersArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryAllXpBlockedChannelsArgs = {
+export type QueryAllXpBlocksArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
-  condition?: InputMaybe<XpBlockedChannelCondition>;
-  filter?: InputMaybe<XpBlockedChannelFilter>;
+  condition?: InputMaybe<XpBlockCondition>;
+  filter?: InputMaybe<XpBlockFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Array<XpBlockedChannelsOrderBy>>;
+  orderBy?: InputMaybe<Array<XpBlocksOrderBy>>;
 };
 
 
@@ -8776,14 +8807,14 @@ export type QueryWebUserGuildByUserIdAndGuildIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryXpBlockedChannelArgs = {
+export type QueryXpBlockArgs = {
   nodeId: Scalars['ID'];
 };
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryXpBlockedChannelByGuildIdAndChannelOrRoleIdArgs = {
-  channelOrRoleId: Scalars['BigInt'];
+export type QueryXpBlockByGuildIdAndBlockIdArgs = {
+  blockId: Scalars['BigInt'];
   guildId: Scalars['BigInt'];
 };
 
@@ -11522,35 +11553,35 @@ export type UpdateWebUserPayloadWebUserEdgeArgs = {
   orderBy?: InputMaybe<Array<WebUsersOrderBy>>;
 };
 
-/** All input for the `updateXpBlockedChannelByGuildIdAndChannelOrRoleId` mutation. */
-export type UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput = {
-  channelOrRoleId: Scalars['BigInt'];
+/** All input for the `updateXpBlockByGuildIdAndBlockId` mutation. */
+export type UpdateXpBlockByGuildIdAndBlockIdInput = {
+  blockId: Scalars['BigInt'];
   /**
    * An arbitrary string value with no semantic meaning. Will be included in the
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']>;
   guildId: Scalars['BigInt'];
-  /** An object where the defined keys will be set on the `XpBlockedChannel` being updated. */
-  xpBlockedChannelPatch: XpBlockedChannelPatch;
+  /** An object where the defined keys will be set on the `XpBlock` being updated. */
+  xpBlockPatch: XpBlockPatch;
 };
 
-/** All input for the `updateXpBlockedChannel` mutation. */
-export type UpdateXpBlockedChannelInput = {
+/** All input for the `updateXpBlock` mutation. */
+export type UpdateXpBlockInput = {
   /**
    * An arbitrary string value with no semantic meaning. Will be included in the
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `XpBlockedChannel` to be updated. */
+  /** The globally unique `ID` which will identify a single `XpBlock` to be updated. */
   nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `XpBlockedChannel` being updated. */
-  xpBlockedChannelPatch: XpBlockedChannelPatch;
+  /** An object where the defined keys will be set on the `XpBlock` being updated. */
+  xpBlockPatch: XpBlockPatch;
 };
 
-/** The output of our update `XpBlockedChannel` mutation. */
-export type UpdateXpBlockedChannelPayload = {
-  __typename?: 'UpdateXpBlockedChannelPayload';
+/** The output of our update `XpBlock` mutation. */
+export type UpdateXpBlockPayload = {
+  __typename?: 'UpdateXpBlockPayload';
   /**
    * The exact same `clientMutationId` that was provided in the mutation input,
    * unchanged and unused. May be used by a client to track mutations.
@@ -11558,16 +11589,16 @@ export type UpdateXpBlockedChannelPayload = {
   clientMutationId?: Maybe<Scalars['String']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** The `XpBlockedChannel` that was updated by this mutation. */
-  xpBlockedChannel?: Maybe<XpBlockedChannel>;
-  /** An edge for our `XpBlockedChannel`. May be used by Relay 1. */
-  xpBlockedChannelEdge?: Maybe<XpBlockedChannelsEdge>;
+  /** The `XpBlock` that was updated by this mutation. */
+  xpBlock?: Maybe<XpBlock>;
+  /** An edge for our `XpBlock`. May be used by Relay 1. */
+  xpBlockEdge?: Maybe<XpBlocksEdge>;
 };
 
 
-/** The output of our update `XpBlockedChannel` mutation. */
-export type UpdateXpBlockedChannelPayloadXpBlockedChannelEdgeArgs = {
-  orderBy?: InputMaybe<Array<XpBlockedChannelsOrderBy>>;
+/** The output of our update `XpBlock` mutation. */
+export type UpdateXpBlockPayloadXpBlockEdgeArgs = {
+  orderBy?: InputMaybe<Array<XpBlocksOrderBy>>;
 };
 
 /** All input for the upsert `BotStat` mutation. */
@@ -12305,36 +12336,36 @@ export type UpsertWebUserWhere = {
   id?: InputMaybe<Scalars['BigInt']>;
 };
 
-/** All input for the upsert `XpBlockedChannel` mutation. */
-export type UpsertXpBlockedChannelInput = {
+/** All input for the upsert `XpBlock` mutation. */
+export type UpsertXpBlockInput = {
   /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
   clientMutationId?: InputMaybe<Scalars['String']>;
-  /** The `XpBlockedChannel` to be upserted by this mutation. */
-  xpBlockedChannel: XpBlockedChannelInput;
+  /** The `XpBlock` to be upserted by this mutation. */
+  xpBlock: XpBlockInput;
 };
 
-/** The output of our upsert `XpBlockedChannel` mutation. */
-export type UpsertXpBlockedChannelPayload = {
-  __typename?: 'UpsertXpBlockedChannelPayload';
+/** The output of our upsert `XpBlock` mutation. */
+export type UpsertXpBlockPayload = {
+  __typename?: 'UpsertXpBlockPayload';
   /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
   clientMutationId?: Maybe<Scalars['String']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
-  /** The `XpBlockedChannel` that was upserted by this mutation. */
-  xpBlockedChannel?: Maybe<XpBlockedChannel>;
-  /** An edge for our `XpBlockedChannel`. May be used by Relay 1. */
-  xpBlockedChannelEdge?: Maybe<XpBlockedChannelsEdge>;
+  /** The `XpBlock` that was upserted by this mutation. */
+  xpBlock?: Maybe<XpBlock>;
+  /** An edge for our `XpBlock`. May be used by Relay 1. */
+  xpBlockEdge?: Maybe<XpBlocksEdge>;
 };
 
 
-/** The output of our upsert `XpBlockedChannel` mutation. */
-export type UpsertXpBlockedChannelPayloadXpBlockedChannelEdgeArgs = {
-  orderBy?: InputMaybe<Array<XpBlockedChannelsOrderBy>>;
+/** The output of our upsert `XpBlock` mutation. */
+export type UpsertXpBlockPayloadXpBlockEdgeArgs = {
+  orderBy?: InputMaybe<Array<XpBlocksOrderBy>>;
 };
 
-/** Where conditions for the upsert `XpBlockedChannel` mutation. */
-export type UpsertXpBlockedChannelWhere = {
-  channelOrRoleId?: InputMaybe<Scalars['BigInt']>;
+/** Where conditions for the upsert `XpBlock` mutation. */
+export type UpsertXpBlockWhere = {
+  blockId?: InputMaybe<Scalars['BigInt']>;
   guildId?: InputMaybe<Scalars['BigInt']>;
 };
 
@@ -13984,249 +14015,258 @@ export enum WebUsersOrderBy {
   WebUserGuildsByUserIdVarianceSampleUserIdDesc = 'WEB_USER_GUILDS_BY_USER_ID_VARIANCE_SAMPLE_USER_ID_DESC'
 }
 
-export type XpBlockedChannel = Node & {
-  __typename?: 'XpBlockedChannel';
-  channelOrRoleId: Scalars['BigInt'];
+export type XpBlock = Node & {
+  __typename?: 'XpBlock';
+  blockId: Scalars['BigInt'];
+  blockType: BlockType;
   guildId: Scalars['BigInt'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
 };
 
-export type XpBlockedChannelAggregates = {
-  __typename?: 'XpBlockedChannelAggregates';
+export type XpBlockAggregates = {
+  __typename?: 'XpBlockAggregates';
   /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  average?: Maybe<XpBlockedChannelAverageAggregates>;
+  average?: Maybe<XpBlockAverageAggregates>;
   /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  distinctCount?: Maybe<XpBlockedChannelDistinctCountAggregates>;
+  distinctCount?: Maybe<XpBlockDistinctCountAggregates>;
   keys?: Maybe<Array<Scalars['String']>>;
   /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  max?: Maybe<XpBlockedChannelMaxAggregates>;
+  max?: Maybe<XpBlockMaxAggregates>;
   /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  min?: Maybe<XpBlockedChannelMinAggregates>;
+  min?: Maybe<XpBlockMinAggregates>;
   /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  stddevPopulation?: Maybe<XpBlockedChannelStddevPopulationAggregates>;
+  stddevPopulation?: Maybe<XpBlockStddevPopulationAggregates>;
   /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  stddevSample?: Maybe<XpBlockedChannelStddevSampleAggregates>;
+  stddevSample?: Maybe<XpBlockStddevSampleAggregates>;
   /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  sum?: Maybe<XpBlockedChannelSumAggregates>;
+  sum?: Maybe<XpBlockSumAggregates>;
   /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  variancePopulation?: Maybe<XpBlockedChannelVariancePopulationAggregates>;
+  variancePopulation?: Maybe<XpBlockVariancePopulationAggregates>;
   /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  varianceSample?: Maybe<XpBlockedChannelVarianceSampleAggregates>;
+  varianceSample?: Maybe<XpBlockVarianceSampleAggregates>;
 };
 
-export type XpBlockedChannelAverageAggregates = {
-  __typename?: 'XpBlockedChannelAverageAggregates';
-  /** Mean average of channelOrRoleId across the matching connection */
-  channelOrRoleId?: Maybe<Scalars['BigFloat']>;
+export type XpBlockAverageAggregates = {
+  __typename?: 'XpBlockAverageAggregates';
+  /** Mean average of blockId across the matching connection */
+  blockId?: Maybe<Scalars['BigFloat']>;
   /** Mean average of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
 };
 
-/**
- * A condition to be used against `XpBlockedChannel` object types. All fields are
- * tested for equality and combined with a logical ‘and.’
- */
-export type XpBlockedChannelCondition = {
-  /** Checks for equality with the object’s `channelOrRoleId` field. */
-  channelOrRoleId?: InputMaybe<Scalars['BigInt']>;
+/** A condition to be used against `XpBlock` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type XpBlockCondition = {
+  /** Checks for equality with the object’s `blockId` field. */
+  blockId?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `blockType` field. */
+  blockType?: InputMaybe<BlockType>;
   /** Checks for equality with the object’s `guildId` field. */
   guildId?: InputMaybe<Scalars['BigInt']>;
 };
 
-export type XpBlockedChannelDistinctCountAggregates = {
-  __typename?: 'XpBlockedChannelDistinctCountAggregates';
-  /** Distinct count of channelOrRoleId across the matching connection */
-  channelOrRoleId?: Maybe<Scalars['BigInt']>;
+export type XpBlockDistinctCountAggregates = {
+  __typename?: 'XpBlockDistinctCountAggregates';
+  /** Distinct count of blockId across the matching connection */
+  blockId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of blockType across the matching connection */
+  blockType?: Maybe<Scalars['BigInt']>;
   /** Distinct count of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigInt']>;
 };
 
-/** A filter to be used against `XpBlockedChannel` object types. All fields are combined with a logical ‘and.’ */
-export type XpBlockedChannelFilter = {
+/** A filter to be used against `XpBlock` object types. All fields are combined with a logical ‘and.’ */
+export type XpBlockFilter = {
   /** Checks for all expressions in this list. */
-  and?: InputMaybe<Array<XpBlockedChannelFilter>>;
-  /** Filter by the object’s `channelOrRoleId` field. */
-  channelOrRoleId?: InputMaybe<BigIntFilter>;
+  and?: InputMaybe<Array<XpBlockFilter>>;
+  /** Filter by the object’s `blockId` field. */
+  blockId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `blockType` field. */
+  blockType?: InputMaybe<BlockTypeFilter>;
   /** Filter by the object’s `guildId` field. */
   guildId?: InputMaybe<BigIntFilter>;
   /** Negates the expression. */
-  not?: InputMaybe<XpBlockedChannelFilter>;
+  not?: InputMaybe<XpBlockFilter>;
   /** Checks for any expressions in this list. */
-  or?: InputMaybe<Array<XpBlockedChannelFilter>>;
+  or?: InputMaybe<Array<XpBlockFilter>>;
 };
 
-/** An input for mutations affecting `XpBlockedChannel` */
-export type XpBlockedChannelInput = {
-  channelOrRoleId: Scalars['BigInt'];
+/** An input for mutations affecting `XpBlock` */
+export type XpBlockInput = {
+  blockId: Scalars['BigInt'];
+  blockType: BlockType;
   guildId: Scalars['BigInt'];
 };
 
-export type XpBlockedChannelMaxAggregates = {
-  __typename?: 'XpBlockedChannelMaxAggregates';
-  /** Maximum of channelOrRoleId across the matching connection */
-  channelOrRoleId?: Maybe<Scalars['BigInt']>;
+export type XpBlockMaxAggregates = {
+  __typename?: 'XpBlockMaxAggregates';
+  /** Maximum of blockId across the matching connection */
+  blockId?: Maybe<Scalars['BigInt']>;
   /** Maximum of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigInt']>;
 };
 
-export type XpBlockedChannelMinAggregates = {
-  __typename?: 'XpBlockedChannelMinAggregates';
-  /** Minimum of channelOrRoleId across the matching connection */
-  channelOrRoleId?: Maybe<Scalars['BigInt']>;
+export type XpBlockMinAggregates = {
+  __typename?: 'XpBlockMinAggregates';
+  /** Minimum of blockId across the matching connection */
+  blockId?: Maybe<Scalars['BigInt']>;
   /** Minimum of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigInt']>;
 };
 
-/** Represents an update to a `XpBlockedChannel`. Fields that are set will be updated. */
-export type XpBlockedChannelPatch = {
-  channelOrRoleId?: InputMaybe<Scalars['BigInt']>;
+/** Represents an update to a `XpBlock`. Fields that are set will be updated. */
+export type XpBlockPatch = {
+  blockId?: InputMaybe<Scalars['BigInt']>;
+  blockType?: InputMaybe<BlockType>;
   guildId?: InputMaybe<Scalars['BigInt']>;
 };
 
-export type XpBlockedChannelStddevPopulationAggregates = {
-  __typename?: 'XpBlockedChannelStddevPopulationAggregates';
-  /** Population standard deviation of channelOrRoleId across the matching connection */
-  channelOrRoleId?: Maybe<Scalars['BigFloat']>;
+export type XpBlockStddevPopulationAggregates = {
+  __typename?: 'XpBlockStddevPopulationAggregates';
+  /** Population standard deviation of blockId across the matching connection */
+  blockId?: Maybe<Scalars['BigFloat']>;
   /** Population standard deviation of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
 };
 
-export type XpBlockedChannelStddevSampleAggregates = {
-  __typename?: 'XpBlockedChannelStddevSampleAggregates';
-  /** Sample standard deviation of channelOrRoleId across the matching connection */
-  channelOrRoleId?: Maybe<Scalars['BigFloat']>;
+export type XpBlockStddevSampleAggregates = {
+  __typename?: 'XpBlockStddevSampleAggregates';
+  /** Sample standard deviation of blockId across the matching connection */
+  blockId?: Maybe<Scalars['BigFloat']>;
   /** Sample standard deviation of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
 };
 
-export type XpBlockedChannelSumAggregates = {
-  __typename?: 'XpBlockedChannelSumAggregates';
-  /** Sum of channelOrRoleId across the matching connection */
-  channelOrRoleId: Scalars['BigFloat'];
+export type XpBlockSumAggregates = {
+  __typename?: 'XpBlockSumAggregates';
+  /** Sum of blockId across the matching connection */
+  blockId: Scalars['BigFloat'];
   /** Sum of guildId across the matching connection */
   guildId: Scalars['BigFloat'];
 };
 
-export type XpBlockedChannelVariancePopulationAggregates = {
-  __typename?: 'XpBlockedChannelVariancePopulationAggregates';
-  /** Population variance of channelOrRoleId across the matching connection */
-  channelOrRoleId?: Maybe<Scalars['BigFloat']>;
+export type XpBlockVariancePopulationAggregates = {
+  __typename?: 'XpBlockVariancePopulationAggregates';
+  /** Population variance of blockId across the matching connection */
+  blockId?: Maybe<Scalars['BigFloat']>;
   /** Population variance of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
 };
 
-export type XpBlockedChannelVarianceSampleAggregates = {
-  __typename?: 'XpBlockedChannelVarianceSampleAggregates';
-  /** Sample variance of channelOrRoleId across the matching connection */
-  channelOrRoleId?: Maybe<Scalars['BigFloat']>;
+export type XpBlockVarianceSampleAggregates = {
+  __typename?: 'XpBlockVarianceSampleAggregates';
+  /** Sample variance of blockId across the matching connection */
+  blockId?: Maybe<Scalars['BigFloat']>;
   /** Sample variance of guildId across the matching connection */
   guildId?: Maybe<Scalars['BigFloat']>;
 };
 
-/** A connection to a list of `XpBlockedChannel` values. */
-export type XpBlockedChannelsConnection = {
-  __typename?: 'XpBlockedChannelsConnection';
+/** A connection to a list of `XpBlock` values. */
+export type XpBlocksConnection = {
+  __typename?: 'XpBlocksConnection';
   /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  aggregates?: Maybe<XpBlockedChannelAggregates>;
-  /** A list of edges which contains the `XpBlockedChannel` and cursor to aid in pagination. */
-  edges: Array<XpBlockedChannelsEdge>;
+  aggregates?: Maybe<XpBlockAggregates>;
+  /** A list of edges which contains the `XpBlock` and cursor to aid in pagination. */
+  edges: Array<XpBlocksEdge>;
   /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  groupedAggregates?: Maybe<Array<XpBlockedChannelAggregates>>;
-  /** A list of `XpBlockedChannel` objects. */
-  nodes: Array<XpBlockedChannel>;
+  groupedAggregates?: Maybe<Array<XpBlockAggregates>>;
+  /** A list of `XpBlock` objects. */
+  nodes: Array<XpBlock>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The count of *all* `XpBlockedChannel` you could get from the connection. */
+  /** The count of *all* `XpBlock` you could get from the connection. */
   totalCount: Scalars['Int'];
 };
 
 
-/** A connection to a list of `XpBlockedChannel` values. */
-export type XpBlockedChannelsConnectionGroupedAggregatesArgs = {
-  groupBy: Array<XpBlockedChannelsGroupBy>;
-  having?: InputMaybe<XpBlockedChannelsHavingInput>;
+/** A connection to a list of `XpBlock` values. */
+export type XpBlocksConnectionGroupedAggregatesArgs = {
+  groupBy: Array<XpBlocksGroupBy>;
+  having?: InputMaybe<XpBlocksHavingInput>;
 };
 
-/** A `XpBlockedChannel` edge in the connection. */
-export type XpBlockedChannelsEdge = {
-  __typename?: 'XpBlockedChannelsEdge';
+/** A `XpBlock` edge in the connection. */
+export type XpBlocksEdge = {
+  __typename?: 'XpBlocksEdge';
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']>;
-  /** The `XpBlockedChannel` at the end of the edge. */
-  node: XpBlockedChannel;
+  /** The `XpBlock` at the end of the edge. */
+  node: XpBlock;
 };
 
-/** Grouping methods for `XpBlockedChannel` for usage during aggregation. */
-export enum XpBlockedChannelsGroupBy {
-  ChannelOrRoleId = 'CHANNEL_OR_ROLE_ID',
+/** Grouping methods for `XpBlock` for usage during aggregation. */
+export enum XpBlocksGroupBy {
+  BlockId = 'BLOCK_ID',
+  BlockType = 'BLOCK_TYPE',
   GuildId = 'GUILD_ID'
 }
 
-export type XpBlockedChannelsHavingAverageInput = {
-  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+export type XpBlocksHavingAverageInput = {
+  blockId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
 };
 
-export type XpBlockedChannelsHavingDistinctCountInput = {
-  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+export type XpBlocksHavingDistinctCountInput = {
+  blockId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
 };
 
-/** Conditions for `XpBlockedChannel` aggregates. */
-export type XpBlockedChannelsHavingInput = {
-  AND?: InputMaybe<Array<XpBlockedChannelsHavingInput>>;
-  OR?: InputMaybe<Array<XpBlockedChannelsHavingInput>>;
-  average?: InputMaybe<XpBlockedChannelsHavingAverageInput>;
-  distinctCount?: InputMaybe<XpBlockedChannelsHavingDistinctCountInput>;
-  max?: InputMaybe<XpBlockedChannelsHavingMaxInput>;
-  min?: InputMaybe<XpBlockedChannelsHavingMinInput>;
-  stddevPopulation?: InputMaybe<XpBlockedChannelsHavingStddevPopulationInput>;
-  stddevSample?: InputMaybe<XpBlockedChannelsHavingStddevSampleInput>;
-  sum?: InputMaybe<XpBlockedChannelsHavingSumInput>;
-  variancePopulation?: InputMaybe<XpBlockedChannelsHavingVariancePopulationInput>;
-  varianceSample?: InputMaybe<XpBlockedChannelsHavingVarianceSampleInput>;
+/** Conditions for `XpBlock` aggregates. */
+export type XpBlocksHavingInput = {
+  AND?: InputMaybe<Array<XpBlocksHavingInput>>;
+  OR?: InputMaybe<Array<XpBlocksHavingInput>>;
+  average?: InputMaybe<XpBlocksHavingAverageInput>;
+  distinctCount?: InputMaybe<XpBlocksHavingDistinctCountInput>;
+  max?: InputMaybe<XpBlocksHavingMaxInput>;
+  min?: InputMaybe<XpBlocksHavingMinInput>;
+  stddevPopulation?: InputMaybe<XpBlocksHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<XpBlocksHavingStddevSampleInput>;
+  sum?: InputMaybe<XpBlocksHavingSumInput>;
+  variancePopulation?: InputMaybe<XpBlocksHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<XpBlocksHavingVarianceSampleInput>;
 };
 
-export type XpBlockedChannelsHavingMaxInput = {
-  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+export type XpBlocksHavingMaxInput = {
+  blockId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
 };
 
-export type XpBlockedChannelsHavingMinInput = {
-  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+export type XpBlocksHavingMinInput = {
+  blockId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
 };
 
-export type XpBlockedChannelsHavingStddevPopulationInput = {
-  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+export type XpBlocksHavingStddevPopulationInput = {
+  blockId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
 };
 
-export type XpBlockedChannelsHavingStddevSampleInput = {
-  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+export type XpBlocksHavingStddevSampleInput = {
+  blockId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
 };
 
-export type XpBlockedChannelsHavingSumInput = {
-  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+export type XpBlocksHavingSumInput = {
+  blockId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
 };
 
-export type XpBlockedChannelsHavingVariancePopulationInput = {
-  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+export type XpBlocksHavingVariancePopulationInput = {
+  blockId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
 };
 
-export type XpBlockedChannelsHavingVarianceSampleInput = {
-  channelOrRoleId?: InputMaybe<HavingBigintFilter>;
+export type XpBlocksHavingVarianceSampleInput = {
+  blockId?: InputMaybe<HavingBigintFilter>;
   guildId?: InputMaybe<HavingBigintFilter>;
 };
 
-/** Methods to use when ordering `XpBlockedChannel`. */
-export enum XpBlockedChannelsOrderBy {
-  ChannelOrRoleIdAsc = 'CHANNEL_OR_ROLE_ID_ASC',
-  ChannelOrRoleIdDesc = 'CHANNEL_OR_ROLE_ID_DESC',
+/** Methods to use when ordering `XpBlock`. */
+export enum XpBlocksOrderBy {
+  BlockIdAsc = 'BLOCK_ID_ASC',
+  BlockIdDesc = 'BLOCK_ID_DESC',
+  BlockTypeAsc = 'BLOCK_TYPE_ASC',
+  BlockTypeDesc = 'BLOCK_TYPE_DESC',
   GuildIdAsc = 'GUILD_ID_ASC',
   GuildIdDesc = 'GUILD_ID_DESC',
   Natural = 'NATURAL',
@@ -14309,6 +14349,8 @@ export type ResolversTypes = {
   BigInt: ResolverTypeWrapper<Scalars['BigInt']>;
   BigIntFilter: BigIntFilter;
   BigIntListFilter: BigIntListFilter;
+  BlockType: BlockType;
+  BlockTypeFilter: BlockTypeFilter;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BooleanFilter: BooleanFilter;
   BotStat: ResolverTypeWrapper<BotStat>;
@@ -14396,8 +14438,8 @@ export type ResolversTypes = {
   CreateWebUserGuildPayload: ResolverTypeWrapper<CreateWebUserGuildPayload>;
   CreateWebUserInput: CreateWebUserInput;
   CreateWebUserPayload: ResolverTypeWrapper<CreateWebUserPayload>;
-  CreateXpBlockedChannelInput: CreateXpBlockedChannelInput;
-  CreateXpBlockedChannelPayload: ResolverTypeWrapper<CreateXpBlockedChannelPayload>;
+  CreateXpBlockInput: CreateXpBlockInput;
+  CreateXpBlockPayload: ResolverTypeWrapper<CreateXpBlockPayload>;
   CurrentUserManagedGuildIdEdge: ResolverTypeWrapper<CurrentUserManagedGuildIdEdge>;
   CurrentUserManagedGuildIdsConnection: ResolverTypeWrapper<CurrentUserManagedGuildIdsConnection>;
   Cursor: ResolverTypeWrapper<Scalars['Cursor']>;
@@ -14471,9 +14513,9 @@ export type ResolversTypes = {
   DeleteWebUserGuildPayload: ResolverTypeWrapper<DeleteWebUserGuildPayload>;
   DeleteWebUserInput: DeleteWebUserInput;
   DeleteWebUserPayload: ResolverTypeWrapper<DeleteWebUserPayload>;
-  DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput: DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput;
-  DeleteXpBlockedChannelInput: DeleteXpBlockedChannelInput;
-  DeleteXpBlockedChannelPayload: ResolverTypeWrapper<DeleteXpBlockedChannelPayload>;
+  DeleteXpBlockByGuildIdAndBlockIdInput: DeleteXpBlockByGuildIdAndBlockIdInput;
+  DeleteXpBlockInput: DeleteXpBlockInput;
+  DeleteXpBlockPayload: ResolverTypeWrapper<DeleteXpBlockPayload>;
   Feed: ResolverTypeWrapper<Feed>;
   FeedAggregates: ResolverTypeWrapper<FeedAggregates>;
   FeedCondition: FeedCondition;
@@ -14774,7 +14816,7 @@ export type ResolversTypes = {
   MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
   MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
   MutesOrderBy: MutesOrderBy;
-  Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['LevelRole'] | ResolversTypes['LevelRoleOverride'] | ResolversTypes['Member'] | ResolversTypes['ModLog'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['RoleMenuRole'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'] | ResolversTypes['XpBlockedChannel'];
+  Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['LevelRole'] | ResolversTypes['LevelRoleOverride'] | ResolversTypes['Member'] | ResolversTypes['ModLog'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['RoleMenuRole'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'] | ResolversTypes['XpBlock'];
   Notification: ResolverTypeWrapper<Notification>;
   NotificationAggregates: ResolverTypeWrapper<NotificationAggregates>;
   NotificationAverageAggregates: ResolverTypeWrapper<NotificationAverageAggregates>;
@@ -15005,9 +15047,9 @@ export type ResolversTypes = {
   UpdateWebUserGuildPayload: ResolverTypeWrapper<UpdateWebUserGuildPayload>;
   UpdateWebUserInput: UpdateWebUserInput;
   UpdateWebUserPayload: ResolverTypeWrapper<UpdateWebUserPayload>;
-  UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput: UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput;
-  UpdateXpBlockedChannelInput: UpdateXpBlockedChannelInput;
-  UpdateXpBlockedChannelPayload: ResolverTypeWrapper<UpdateXpBlockedChannelPayload>;
+  UpdateXpBlockByGuildIdAndBlockIdInput: UpdateXpBlockByGuildIdAndBlockIdInput;
+  UpdateXpBlockInput: UpdateXpBlockInput;
+  UpdateXpBlockPayload: ResolverTypeWrapper<UpdateXpBlockPayload>;
   UpsertBotStatInput: UpsertBotStatInput;
   UpsertBotStatPayload: ResolverTypeWrapper<UpsertBotStatPayload>;
   UpsertBotStatWhere: UpsertBotStatWhere;
@@ -15074,9 +15116,9 @@ export type ResolversTypes = {
   UpsertWebUserInput: UpsertWebUserInput;
   UpsertWebUserPayload: ResolverTypeWrapper<UpsertWebUserPayload>;
   UpsertWebUserWhere: UpsertWebUserWhere;
-  UpsertXpBlockedChannelInput: UpsertXpBlockedChannelInput;
-  UpsertXpBlockedChannelPayload: ResolverTypeWrapper<UpsertXpBlockedChannelPayload>;
-  UpsertXpBlockedChannelWhere: UpsertXpBlockedChannelWhere;
+  UpsertXpBlockInput: UpsertXpBlockInput;
+  UpsertXpBlockPayload: ResolverTypeWrapper<UpsertXpBlockPayload>;
+  UpsertXpBlockWhere: UpsertXpBlockWhere;
   User: ResolverTypeWrapper<User>;
   UserAggregates: ResolverTypeWrapper<UserAggregates>;
   UserAverageAggregates: ResolverTypeWrapper<UserAverageAggregates>;
@@ -15195,35 +15237,35 @@ export type ResolversTypes = {
   WebUsersHavingVariancePopulationInput: WebUsersHavingVariancePopulationInput;
   WebUsersHavingVarianceSampleInput: WebUsersHavingVarianceSampleInput;
   WebUsersOrderBy: WebUsersOrderBy;
-  XpBlockedChannel: ResolverTypeWrapper<XpBlockedChannel>;
-  XpBlockedChannelAggregates: ResolverTypeWrapper<XpBlockedChannelAggregates>;
-  XpBlockedChannelAverageAggregates: ResolverTypeWrapper<XpBlockedChannelAverageAggregates>;
-  XpBlockedChannelCondition: XpBlockedChannelCondition;
-  XpBlockedChannelDistinctCountAggregates: ResolverTypeWrapper<XpBlockedChannelDistinctCountAggregates>;
-  XpBlockedChannelFilter: XpBlockedChannelFilter;
-  XpBlockedChannelInput: XpBlockedChannelInput;
-  XpBlockedChannelMaxAggregates: ResolverTypeWrapper<XpBlockedChannelMaxAggregates>;
-  XpBlockedChannelMinAggregates: ResolverTypeWrapper<XpBlockedChannelMinAggregates>;
-  XpBlockedChannelPatch: XpBlockedChannelPatch;
-  XpBlockedChannelStddevPopulationAggregates: ResolverTypeWrapper<XpBlockedChannelStddevPopulationAggregates>;
-  XpBlockedChannelStddevSampleAggregates: ResolverTypeWrapper<XpBlockedChannelStddevSampleAggregates>;
-  XpBlockedChannelSumAggregates: ResolverTypeWrapper<XpBlockedChannelSumAggregates>;
-  XpBlockedChannelVariancePopulationAggregates: ResolverTypeWrapper<XpBlockedChannelVariancePopulationAggregates>;
-  XpBlockedChannelVarianceSampleAggregates: ResolverTypeWrapper<XpBlockedChannelVarianceSampleAggregates>;
-  XpBlockedChannelsConnection: ResolverTypeWrapper<XpBlockedChannelsConnection>;
-  XpBlockedChannelsEdge: ResolverTypeWrapper<XpBlockedChannelsEdge>;
-  XpBlockedChannelsGroupBy: XpBlockedChannelsGroupBy;
-  XpBlockedChannelsHavingAverageInput: XpBlockedChannelsHavingAverageInput;
-  XpBlockedChannelsHavingDistinctCountInput: XpBlockedChannelsHavingDistinctCountInput;
-  XpBlockedChannelsHavingInput: XpBlockedChannelsHavingInput;
-  XpBlockedChannelsHavingMaxInput: XpBlockedChannelsHavingMaxInput;
-  XpBlockedChannelsHavingMinInput: XpBlockedChannelsHavingMinInput;
-  XpBlockedChannelsHavingStddevPopulationInput: XpBlockedChannelsHavingStddevPopulationInput;
-  XpBlockedChannelsHavingStddevSampleInput: XpBlockedChannelsHavingStddevSampleInput;
-  XpBlockedChannelsHavingSumInput: XpBlockedChannelsHavingSumInput;
-  XpBlockedChannelsHavingVariancePopulationInput: XpBlockedChannelsHavingVariancePopulationInput;
-  XpBlockedChannelsHavingVarianceSampleInput: XpBlockedChannelsHavingVarianceSampleInput;
-  XpBlockedChannelsOrderBy: XpBlockedChannelsOrderBy;
+  XpBlock: ResolverTypeWrapper<XpBlock>;
+  XpBlockAggregates: ResolverTypeWrapper<XpBlockAggregates>;
+  XpBlockAverageAggregates: ResolverTypeWrapper<XpBlockAverageAggregates>;
+  XpBlockCondition: XpBlockCondition;
+  XpBlockDistinctCountAggregates: ResolverTypeWrapper<XpBlockDistinctCountAggregates>;
+  XpBlockFilter: XpBlockFilter;
+  XpBlockInput: XpBlockInput;
+  XpBlockMaxAggregates: ResolverTypeWrapper<XpBlockMaxAggregates>;
+  XpBlockMinAggregates: ResolverTypeWrapper<XpBlockMinAggregates>;
+  XpBlockPatch: XpBlockPatch;
+  XpBlockStddevPopulationAggregates: ResolverTypeWrapper<XpBlockStddevPopulationAggregates>;
+  XpBlockStddevSampleAggregates: ResolverTypeWrapper<XpBlockStddevSampleAggregates>;
+  XpBlockSumAggregates: ResolverTypeWrapper<XpBlockSumAggregates>;
+  XpBlockVariancePopulationAggregates: ResolverTypeWrapper<XpBlockVariancePopulationAggregates>;
+  XpBlockVarianceSampleAggregates: ResolverTypeWrapper<XpBlockVarianceSampleAggregates>;
+  XpBlocksConnection: ResolverTypeWrapper<XpBlocksConnection>;
+  XpBlocksEdge: ResolverTypeWrapper<XpBlocksEdge>;
+  XpBlocksGroupBy: XpBlocksGroupBy;
+  XpBlocksHavingAverageInput: XpBlocksHavingAverageInput;
+  XpBlocksHavingDistinctCountInput: XpBlocksHavingDistinctCountInput;
+  XpBlocksHavingInput: XpBlocksHavingInput;
+  XpBlocksHavingMaxInput: XpBlocksHavingMaxInput;
+  XpBlocksHavingMinInput: XpBlocksHavingMinInput;
+  XpBlocksHavingStddevPopulationInput: XpBlocksHavingStddevPopulationInput;
+  XpBlocksHavingStddevSampleInput: XpBlocksHavingStddevSampleInput;
+  XpBlocksHavingSumInput: XpBlocksHavingSumInput;
+  XpBlocksHavingVariancePopulationInput: XpBlocksHavingVariancePopulationInput;
+  XpBlocksHavingVarianceSampleInput: XpBlocksHavingVarianceSampleInput;
+  XpBlocksOrderBy: XpBlocksOrderBy;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -15234,6 +15276,7 @@ export type ResolversParentTypes = {
   BigInt: Scalars['BigInt'];
   BigIntFilter: BigIntFilter;
   BigIntListFilter: BigIntListFilter;
+  BlockTypeFilter: BlockTypeFilter;
   Boolean: Scalars['Boolean'];
   BooleanFilter: BooleanFilter;
   BotStat: BotStat;
@@ -15317,8 +15360,8 @@ export type ResolversParentTypes = {
   CreateWebUserGuildPayload: CreateWebUserGuildPayload;
   CreateWebUserInput: CreateWebUserInput;
   CreateWebUserPayload: CreateWebUserPayload;
-  CreateXpBlockedChannelInput: CreateXpBlockedChannelInput;
-  CreateXpBlockedChannelPayload: CreateXpBlockedChannelPayload;
+  CreateXpBlockInput: CreateXpBlockInput;
+  CreateXpBlockPayload: CreateXpBlockPayload;
   CurrentUserManagedGuildIdEdge: CurrentUserManagedGuildIdEdge;
   CurrentUserManagedGuildIdsConnection: CurrentUserManagedGuildIdsConnection;
   Cursor: Scalars['Cursor'];
@@ -15392,9 +15435,9 @@ export type ResolversParentTypes = {
   DeleteWebUserGuildPayload: DeleteWebUserGuildPayload;
   DeleteWebUserInput: DeleteWebUserInput;
   DeleteWebUserPayload: DeleteWebUserPayload;
-  DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput: DeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdInput;
-  DeleteXpBlockedChannelInput: DeleteXpBlockedChannelInput;
-  DeleteXpBlockedChannelPayload: DeleteXpBlockedChannelPayload;
+  DeleteXpBlockByGuildIdAndBlockIdInput: DeleteXpBlockByGuildIdAndBlockIdInput;
+  DeleteXpBlockInput: DeleteXpBlockInput;
+  DeleteXpBlockPayload: DeleteXpBlockPayload;
   Feed: Feed;
   FeedAggregates: FeedAggregates;
   FeedCondition: FeedCondition;
@@ -15671,7 +15714,7 @@ export type ResolversParentTypes = {
   MutesHavingSumInput: MutesHavingSumInput;
   MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
   MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
-  Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['LevelRole'] | ResolversParentTypes['LevelRoleOverride'] | ResolversParentTypes['Member'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['RoleMenuRole'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'] | ResolversParentTypes['XpBlockedChannel'];
+  Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['LevelRole'] | ResolversParentTypes['LevelRoleOverride'] | ResolversParentTypes['Member'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['RoleMenuRole'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'] | ResolversParentTypes['XpBlock'];
   Notification: Notification;
   NotificationAggregates: NotificationAggregates;
   NotificationAverageAggregates: NotificationAverageAggregates;
@@ -15892,9 +15935,9 @@ export type ResolversParentTypes = {
   UpdateWebUserGuildPayload: UpdateWebUserGuildPayload;
   UpdateWebUserInput: UpdateWebUserInput;
   UpdateWebUserPayload: UpdateWebUserPayload;
-  UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput: UpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdInput;
-  UpdateXpBlockedChannelInput: UpdateXpBlockedChannelInput;
-  UpdateXpBlockedChannelPayload: UpdateXpBlockedChannelPayload;
+  UpdateXpBlockByGuildIdAndBlockIdInput: UpdateXpBlockByGuildIdAndBlockIdInput;
+  UpdateXpBlockInput: UpdateXpBlockInput;
+  UpdateXpBlockPayload: UpdateXpBlockPayload;
   UpsertBotStatInput: UpsertBotStatInput;
   UpsertBotStatPayload: UpsertBotStatPayload;
   UpsertBotStatWhere: UpsertBotStatWhere;
@@ -15961,9 +16004,9 @@ export type ResolversParentTypes = {
   UpsertWebUserInput: UpsertWebUserInput;
   UpsertWebUserPayload: UpsertWebUserPayload;
   UpsertWebUserWhere: UpsertWebUserWhere;
-  UpsertXpBlockedChannelInput: UpsertXpBlockedChannelInput;
-  UpsertXpBlockedChannelPayload: UpsertXpBlockedChannelPayload;
-  UpsertXpBlockedChannelWhere: UpsertXpBlockedChannelWhere;
+  UpsertXpBlockInput: UpsertXpBlockInput;
+  UpsertXpBlockPayload: UpsertXpBlockPayload;
+  UpsertXpBlockWhere: UpsertXpBlockWhere;
   User: User;
   UserAggregates: UserAggregates;
   UserAverageAggregates: UserAverageAggregates;
@@ -16074,33 +16117,33 @@ export type ResolversParentTypes = {
   WebUsersHavingSumInput: WebUsersHavingSumInput;
   WebUsersHavingVariancePopulationInput: WebUsersHavingVariancePopulationInput;
   WebUsersHavingVarianceSampleInput: WebUsersHavingVarianceSampleInput;
-  XpBlockedChannel: XpBlockedChannel;
-  XpBlockedChannelAggregates: XpBlockedChannelAggregates;
-  XpBlockedChannelAverageAggregates: XpBlockedChannelAverageAggregates;
-  XpBlockedChannelCondition: XpBlockedChannelCondition;
-  XpBlockedChannelDistinctCountAggregates: XpBlockedChannelDistinctCountAggregates;
-  XpBlockedChannelFilter: XpBlockedChannelFilter;
-  XpBlockedChannelInput: XpBlockedChannelInput;
-  XpBlockedChannelMaxAggregates: XpBlockedChannelMaxAggregates;
-  XpBlockedChannelMinAggregates: XpBlockedChannelMinAggregates;
-  XpBlockedChannelPatch: XpBlockedChannelPatch;
-  XpBlockedChannelStddevPopulationAggregates: XpBlockedChannelStddevPopulationAggregates;
-  XpBlockedChannelStddevSampleAggregates: XpBlockedChannelStddevSampleAggregates;
-  XpBlockedChannelSumAggregates: XpBlockedChannelSumAggregates;
-  XpBlockedChannelVariancePopulationAggregates: XpBlockedChannelVariancePopulationAggregates;
-  XpBlockedChannelVarianceSampleAggregates: XpBlockedChannelVarianceSampleAggregates;
-  XpBlockedChannelsConnection: XpBlockedChannelsConnection;
-  XpBlockedChannelsEdge: XpBlockedChannelsEdge;
-  XpBlockedChannelsHavingAverageInput: XpBlockedChannelsHavingAverageInput;
-  XpBlockedChannelsHavingDistinctCountInput: XpBlockedChannelsHavingDistinctCountInput;
-  XpBlockedChannelsHavingInput: XpBlockedChannelsHavingInput;
-  XpBlockedChannelsHavingMaxInput: XpBlockedChannelsHavingMaxInput;
-  XpBlockedChannelsHavingMinInput: XpBlockedChannelsHavingMinInput;
-  XpBlockedChannelsHavingStddevPopulationInput: XpBlockedChannelsHavingStddevPopulationInput;
-  XpBlockedChannelsHavingStddevSampleInput: XpBlockedChannelsHavingStddevSampleInput;
-  XpBlockedChannelsHavingSumInput: XpBlockedChannelsHavingSumInput;
-  XpBlockedChannelsHavingVariancePopulationInput: XpBlockedChannelsHavingVariancePopulationInput;
-  XpBlockedChannelsHavingVarianceSampleInput: XpBlockedChannelsHavingVarianceSampleInput;
+  XpBlock: XpBlock;
+  XpBlockAggregates: XpBlockAggregates;
+  XpBlockAverageAggregates: XpBlockAverageAggregates;
+  XpBlockCondition: XpBlockCondition;
+  XpBlockDistinctCountAggregates: XpBlockDistinctCountAggregates;
+  XpBlockFilter: XpBlockFilter;
+  XpBlockInput: XpBlockInput;
+  XpBlockMaxAggregates: XpBlockMaxAggregates;
+  XpBlockMinAggregates: XpBlockMinAggregates;
+  XpBlockPatch: XpBlockPatch;
+  XpBlockStddevPopulationAggregates: XpBlockStddevPopulationAggregates;
+  XpBlockStddevSampleAggregates: XpBlockStddevSampleAggregates;
+  XpBlockSumAggregates: XpBlockSumAggregates;
+  XpBlockVariancePopulationAggregates: XpBlockVariancePopulationAggregates;
+  XpBlockVarianceSampleAggregates: XpBlockVarianceSampleAggregates;
+  XpBlocksConnection: XpBlocksConnection;
+  XpBlocksEdge: XpBlocksEdge;
+  XpBlocksHavingAverageInput: XpBlocksHavingAverageInput;
+  XpBlocksHavingDistinctCountInput: XpBlocksHavingDistinctCountInput;
+  XpBlocksHavingInput: XpBlocksHavingInput;
+  XpBlocksHavingMaxInput: XpBlocksHavingMaxInput;
+  XpBlocksHavingMinInput: XpBlocksHavingMinInput;
+  XpBlocksHavingStddevPopulationInput: XpBlocksHavingStddevPopulationInput;
+  XpBlocksHavingStddevSampleInput: XpBlocksHavingStddevSampleInput;
+  XpBlocksHavingSumInput: XpBlocksHavingSumInput;
+  XpBlocksHavingVariancePopulationInput: XpBlocksHavingVariancePopulationInput;
+  XpBlocksHavingVarianceSampleInput: XpBlocksHavingVarianceSampleInput;
 };
 
 export type AddRoleMenuRolesPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddRoleMenuRolesPayload'] = ResolversParentTypes['AddRoleMenuRolesPayload']> = {
@@ -16434,11 +16477,11 @@ export type CreateWebUserPayloadResolvers<ContextType = any, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CreateXpBlockedChannelPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateXpBlockedChannelPayload'] = ResolversParentTypes['CreateXpBlockedChannelPayload']> = {
+export type CreateXpBlockPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateXpBlockPayload'] = ResolversParentTypes['CreateXpBlockPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
-  xpBlockedChannel?: Resolver<Maybe<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType>;
-  xpBlockedChannelEdge?: Resolver<Maybe<ResolversTypes['XpBlockedChannelsEdge']>, ParentType, ContextType, RequireFields<CreateXpBlockedChannelPayloadXpBlockedChannelEdgeArgs, 'orderBy'>>;
+  xpBlock?: Resolver<Maybe<ResolversTypes['XpBlock']>, ParentType, ContextType>;
+  xpBlockEdge?: Resolver<Maybe<ResolversTypes['XpBlocksEdge']>, ParentType, ContextType, RequireFields<CreateXpBlockPayloadXpBlockEdgeArgs, 'orderBy'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -16674,12 +16717,12 @@ export type DeleteWebUserPayloadResolvers<ContextType = any, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type DeleteXpBlockedChannelPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteXpBlockedChannelPayload'] = ResolversParentTypes['DeleteXpBlockedChannelPayload']> = {
+export type DeleteXpBlockPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteXpBlockPayload'] = ResolversParentTypes['DeleteXpBlockPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  deletedXpBlockedChannelId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  deletedXpBlockId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
-  xpBlockedChannel?: Resolver<Maybe<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType>;
-  xpBlockedChannelEdge?: Resolver<Maybe<ResolversTypes['XpBlockedChannelsEdge']>, ParentType, ContextType, RequireFields<DeleteXpBlockedChannelPayloadXpBlockedChannelEdgeArgs, 'orderBy'>>;
+  xpBlock?: Resolver<Maybe<ResolversTypes['XpBlock']>, ParentType, ContextType>;
+  xpBlockEdge?: Resolver<Maybe<ResolversTypes['XpBlocksEdge']>, ParentType, ContextType, RequireFields<DeleteXpBlockPayloadXpBlockEdgeArgs, 'orderBy'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -17746,7 +17789,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createUserLevel?: Resolver<Maybe<ResolversTypes['CreateUserLevelPayload']>, ParentType, ContextType, RequireFields<MutationCreateUserLevelArgs, 'input'>>;
   createWebUser?: Resolver<Maybe<ResolversTypes['CreateWebUserPayload']>, ParentType, ContextType, RequireFields<MutationCreateWebUserArgs, 'input'>>;
   createWebUserGuild?: Resolver<Maybe<ResolversTypes['CreateWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationCreateWebUserGuildArgs, 'input'>>;
-  createXpBlockedChannel?: Resolver<Maybe<ResolversTypes['CreateXpBlockedChannelPayload']>, ParentType, ContextType, RequireFields<MutationCreateXpBlockedChannelArgs, 'input'>>;
+  createXpBlock?: Resolver<Maybe<ResolversTypes['CreateXpBlockPayload']>, ParentType, ContextType, RequireFields<MutationCreateXpBlockArgs, 'input'>>;
   deleteBotStat?: Resolver<Maybe<ResolversTypes['DeleteBotStatPayload']>, ParentType, ContextType, RequireFields<MutationDeleteBotStatArgs, 'input'>>;
   deleteBotStatByNameAndCategory?: Resolver<Maybe<ResolversTypes['DeleteBotStatPayload']>, ParentType, ContextType, RequireFields<MutationDeleteBotStatByNameAndCategoryArgs, 'input'>>;
   deleteCachedGuild?: Resolver<Maybe<ResolversTypes['DeleteCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationDeleteCachedGuildArgs, 'input'>>;
@@ -17792,8 +17835,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteWebUserById?: Resolver<Maybe<ResolversTypes['DeleteWebUserPayload']>, ParentType, ContextType, RequireFields<MutationDeleteWebUserByIdArgs, 'input'>>;
   deleteWebUserGuild?: Resolver<Maybe<ResolversTypes['DeleteWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationDeleteWebUserGuildArgs, 'input'>>;
   deleteWebUserGuildByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['DeleteWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationDeleteWebUserGuildByUserIdAndGuildIdArgs, 'input'>>;
-  deleteXpBlockedChannel?: Resolver<Maybe<ResolversTypes['DeleteXpBlockedChannelPayload']>, ParentType, ContextType, RequireFields<MutationDeleteXpBlockedChannelArgs, 'input'>>;
-  deleteXpBlockedChannelByGuildIdAndChannelOrRoleId?: Resolver<Maybe<ResolversTypes['DeleteXpBlockedChannelPayload']>, ParentType, ContextType, RequireFields<MutationDeleteXpBlockedChannelByGuildIdAndChannelOrRoleIdArgs, 'input'>>;
+  deleteXpBlock?: Resolver<Maybe<ResolversTypes['DeleteXpBlockPayload']>, ParentType, ContextType, RequireFields<MutationDeleteXpBlockArgs, 'input'>>;
+  deleteXpBlockByGuildIdAndBlockId?: Resolver<Maybe<ResolversTypes['DeleteXpBlockPayload']>, ParentType, ContextType, RequireFields<MutationDeleteXpBlockByGuildIdAndBlockIdArgs, 'input'>>;
   graphql?: Resolver<Maybe<ResolversTypes['GraphqlPayload']>, ParentType, ContextType, RequireFields<MutationGraphqlArgs, 'input'>>;
   logout?: Resolver<Maybe<ResolversTypes['LogoutPayload']>, ParentType, ContextType, RequireFields<MutationLogoutArgs, 'input'>>;
   setRoleMenuRoleOrder?: Resolver<Maybe<ResolversTypes['SetRoleMenuRoleOrderPayload']>, ParentType, ContextType, RequireFields<MutationSetRoleMenuRoleOrderArgs, 'input'>>;
@@ -17842,8 +17885,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateWebUserById?: Resolver<Maybe<ResolversTypes['UpdateWebUserPayload']>, ParentType, ContextType, RequireFields<MutationUpdateWebUserByIdArgs, 'input'>>;
   updateWebUserGuild?: Resolver<Maybe<ResolversTypes['UpdateWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpdateWebUserGuildArgs, 'input'>>;
   updateWebUserGuildByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['UpdateWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpdateWebUserGuildByUserIdAndGuildIdArgs, 'input'>>;
-  updateXpBlockedChannel?: Resolver<Maybe<ResolversTypes['UpdateXpBlockedChannelPayload']>, ParentType, ContextType, RequireFields<MutationUpdateXpBlockedChannelArgs, 'input'>>;
-  updateXpBlockedChannelByGuildIdAndChannelOrRoleId?: Resolver<Maybe<ResolversTypes['UpdateXpBlockedChannelPayload']>, ParentType, ContextType, RequireFields<MutationUpdateXpBlockedChannelByGuildIdAndChannelOrRoleIdArgs, 'input'>>;
+  updateXpBlock?: Resolver<Maybe<ResolversTypes['UpdateXpBlockPayload']>, ParentType, ContextType, RequireFields<MutationUpdateXpBlockArgs, 'input'>>;
+  updateXpBlockByGuildIdAndBlockId?: Resolver<Maybe<ResolversTypes['UpdateXpBlockPayload']>, ParentType, ContextType, RequireFields<MutationUpdateXpBlockByGuildIdAndBlockIdArgs, 'input'>>;
   upsertBotStat?: Resolver<Maybe<ResolversTypes['UpsertBotStatPayload']>, ParentType, ContextType, RequireFields<MutationUpsertBotStatArgs, 'input'>>;
   upsertCachedGuild?: Resolver<Maybe<ResolversTypes['UpsertCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpsertCachedGuildArgs, 'input'>>;
   upsertCachedUser?: Resolver<Maybe<ResolversTypes['UpsertCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationUpsertCachedUserArgs, 'input'>>;
@@ -17866,7 +17909,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   upsertUserLevel?: Resolver<Maybe<ResolversTypes['UpsertUserLevelPayload']>, ParentType, ContextType, RequireFields<MutationUpsertUserLevelArgs, 'input'>>;
   upsertWebUser?: Resolver<Maybe<ResolversTypes['UpsertWebUserPayload']>, ParentType, ContextType, RequireFields<MutationUpsertWebUserArgs, 'input'>>;
   upsertWebUserGuild?: Resolver<Maybe<ResolversTypes['UpsertWebUserGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpsertWebUserGuildArgs, 'input'>>;
-  upsertXpBlockedChannel?: Resolver<Maybe<ResolversTypes['UpsertXpBlockedChannelPayload']>, ParentType, ContextType, RequireFields<MutationUpsertXpBlockedChannelArgs, 'input'>>;
+  upsertXpBlock?: Resolver<Maybe<ResolversTypes['UpsertXpBlockPayload']>, ParentType, ContextType, RequireFields<MutationUpsertXpBlockArgs, 'input'>>;
 };
 
 export type MuteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mute'] = ResolversParentTypes['Mute']> = {
@@ -17978,7 +18021,7 @@ export type MutesEdgeResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'BotStat' | 'CachedGuild' | 'CachedUser' | 'Feed' | 'FeedItem' | 'FeedSubscription' | 'GuildBan' | 'GuildConfig' | 'LevelRole' | 'LevelRoleOverride' | 'Member' | 'ModLog' | 'Mute' | 'Notification' | 'Query' | 'Reminder' | 'RoleMenu' | 'RoleMenuRole' | 'Tag' | 'User' | 'UserLevel' | 'WebUser' | 'WebUserGuild' | 'XpBlockedChannel', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'BotStat' | 'CachedGuild' | 'CachedUser' | 'Feed' | 'FeedItem' | 'FeedSubscription' | 'GuildBan' | 'GuildConfig' | 'LevelRole' | 'LevelRoleOverride' | 'Member' | 'ModLog' | 'Mute' | 'Notification' | 'Query' | 'Reminder' | 'RoleMenu' | 'RoleMenuRole' | 'Tag' | 'User' | 'UserLevel' | 'WebUser' | 'WebUserGuild' | 'XpBlock', ParentType, ContextType>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -18119,7 +18162,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   allUsers?: Resolver<Maybe<ResolversTypes['UsersConnection']>, ParentType, ContextType, RequireFields<QueryAllUsersArgs, 'orderBy'>>;
   allWebUserGuilds?: Resolver<Maybe<ResolversTypes['WebUserGuildsConnection']>, ParentType, ContextType, RequireFields<QueryAllWebUserGuildsArgs, 'orderBy'>>;
   allWebUsers?: Resolver<Maybe<ResolversTypes['WebUsersConnection']>, ParentType, ContextType, RequireFields<QueryAllWebUsersArgs, 'orderBy'>>;
-  allXpBlockedChannels?: Resolver<Maybe<ResolversTypes['XpBlockedChannelsConnection']>, ParentType, ContextType, RequireFields<QueryAllXpBlockedChannelsArgs, 'orderBy'>>;
+  allXpBlocks?: Resolver<Maybe<ResolversTypes['XpBlocksConnection']>, ParentType, ContextType, RequireFields<QueryAllXpBlocksArgs, 'orderBy'>>;
   botStat?: Resolver<Maybe<ResolversTypes['BotStat']>, ParentType, ContextType, RequireFields<QueryBotStatArgs, 'nodeId'>>;
   botStatByNameAndCategory?: Resolver<Maybe<ResolversTypes['BotStat']>, ParentType, ContextType, RequireFields<QueryBotStatByNameAndCategoryArgs, 'category' | 'name'>>;
   cachedGuild?: Resolver<Maybe<ResolversTypes['CachedGuild']>, ParentType, ContextType, RequireFields<QueryCachedGuildArgs, 'nodeId'>>;
@@ -18178,8 +18221,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   webUserById?: Resolver<Maybe<ResolversTypes['WebUser']>, ParentType, ContextType, RequireFields<QueryWebUserByIdArgs, 'id'>>;
   webUserGuild?: Resolver<Maybe<ResolversTypes['WebUserGuild']>, ParentType, ContextType, RequireFields<QueryWebUserGuildArgs, 'nodeId'>>;
   webUserGuildByUserIdAndGuildId?: Resolver<Maybe<ResolversTypes['WebUserGuild']>, ParentType, ContextType, RequireFields<QueryWebUserGuildByUserIdAndGuildIdArgs, 'guildId' | 'userId'>>;
-  xpBlockedChannel?: Resolver<Maybe<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType, RequireFields<QueryXpBlockedChannelArgs, 'nodeId'>>;
-  xpBlockedChannelByGuildIdAndChannelOrRoleId?: Resolver<Maybe<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType, RequireFields<QueryXpBlockedChannelByGuildIdAndChannelOrRoleIdArgs, 'channelOrRoleId' | 'guildId'>>;
+  xpBlock?: Resolver<Maybe<ResolversTypes['XpBlock']>, ParentType, ContextType, RequireFields<QueryXpBlockArgs, 'nodeId'>>;
+  xpBlockByGuildIdAndBlockId?: Resolver<Maybe<ResolversTypes['XpBlock']>, ParentType, ContextType, RequireFields<QueryXpBlockByGuildIdAndBlockIdArgs, 'blockId' | 'guildId'>>;
 };
 
 export type RedisGuildResolvers<ContextType = any, ParentType extends ResolversParentTypes['RedisGuild'] = ResolversParentTypes['RedisGuild']> = {
@@ -18880,11 +18923,11 @@ export type UpdateWebUserPayloadResolvers<ContextType = any, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type UpdateXpBlockedChannelPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateXpBlockedChannelPayload'] = ResolversParentTypes['UpdateXpBlockedChannelPayload']> = {
+export type UpdateXpBlockPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateXpBlockPayload'] = ResolversParentTypes['UpdateXpBlockPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
-  xpBlockedChannel?: Resolver<Maybe<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType>;
-  xpBlockedChannelEdge?: Resolver<Maybe<ResolversTypes['XpBlockedChannelsEdge']>, ParentType, ContextType, RequireFields<UpdateXpBlockedChannelPayloadXpBlockedChannelEdgeArgs, 'orderBy'>>;
+  xpBlock?: Resolver<Maybe<ResolversTypes['XpBlock']>, ParentType, ContextType>;
+  xpBlockEdge?: Resolver<Maybe<ResolversTypes['XpBlocksEdge']>, ParentType, ContextType, RequireFields<UpdateXpBlockPayloadXpBlockEdgeArgs, 'orderBy'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -19070,11 +19113,11 @@ export type UpsertWebUserPayloadResolvers<ContextType = any, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type UpsertXpBlockedChannelPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertXpBlockedChannelPayload'] = ResolversParentTypes['UpsertXpBlockedChannelPayload']> = {
+export type UpsertXpBlockPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertXpBlockPayload'] = ResolversParentTypes['UpsertXpBlockPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
-  xpBlockedChannel?: Resolver<Maybe<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType>;
-  xpBlockedChannelEdge?: Resolver<Maybe<ResolversTypes['XpBlockedChannelsEdge']>, ParentType, ContextType, RequireFields<UpsertXpBlockedChannelPayloadXpBlockedChannelEdgeArgs, 'orderBy'>>;
+  xpBlock?: Resolver<Maybe<ResolversTypes['XpBlock']>, ParentType, ContextType>;
+  xpBlockEdge?: Resolver<Maybe<ResolversTypes['XpBlocksEdge']>, ParentType, ContextType, RequireFields<UpsertXpBlockPayloadXpBlockEdgeArgs, 'orderBy'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -19572,94 +19615,96 @@ export type WebUsersEdgeResolvers<ContextType = any, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannel'] = ResolversParentTypes['XpBlockedChannel']> = {
-  channelOrRoleId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+export type XpBlockResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlock'] = ResolversParentTypes['XpBlock']> = {
+  blockId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  blockType?: Resolver<ResolversTypes['BlockType'], ParentType, ContextType>;
   guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelAggregates'] = ResolversParentTypes['XpBlockedChannelAggregates']> = {
-  average?: Resolver<Maybe<ResolversTypes['XpBlockedChannelAverageAggregates']>, ParentType, ContextType>;
-  distinctCount?: Resolver<Maybe<ResolversTypes['XpBlockedChannelDistinctCountAggregates']>, ParentType, ContextType>;
+export type XpBlockAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockAggregates'] = ResolversParentTypes['XpBlockAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['XpBlockAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['XpBlockDistinctCountAggregates']>, ParentType, ContextType>;
   keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
-  max?: Resolver<Maybe<ResolversTypes['XpBlockedChannelMaxAggregates']>, ParentType, ContextType>;
-  min?: Resolver<Maybe<ResolversTypes['XpBlockedChannelMinAggregates']>, ParentType, ContextType>;
-  stddevPopulation?: Resolver<Maybe<ResolversTypes['XpBlockedChannelStddevPopulationAggregates']>, ParentType, ContextType>;
-  stddevSample?: Resolver<Maybe<ResolversTypes['XpBlockedChannelStddevSampleAggregates']>, ParentType, ContextType>;
-  sum?: Resolver<Maybe<ResolversTypes['XpBlockedChannelSumAggregates']>, ParentType, ContextType>;
-  variancePopulation?: Resolver<Maybe<ResolversTypes['XpBlockedChannelVariancePopulationAggregates']>, ParentType, ContextType>;
-  varianceSample?: Resolver<Maybe<ResolversTypes['XpBlockedChannelVarianceSampleAggregates']>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['XpBlockMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['XpBlockMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['XpBlockStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['XpBlockStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['XpBlockSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['XpBlockVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['XpBlockVarianceSampleAggregates']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelAverageAggregates'] = ResolversParentTypes['XpBlockedChannelAverageAggregates']> = {
-  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+export type XpBlockAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockAverageAggregates'] = ResolversParentTypes['XpBlockAverageAggregates']> = {
+  blockId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelDistinctCountAggregates'] = ResolversParentTypes['XpBlockedChannelDistinctCountAggregates']> = {
-  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+export type XpBlockDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockDistinctCountAggregates'] = ResolversParentTypes['XpBlockDistinctCountAggregates']> = {
+  blockId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  blockType?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelMaxAggregates'] = ResolversParentTypes['XpBlockedChannelMaxAggregates']> = {
-  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+export type XpBlockMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockMaxAggregates'] = ResolversParentTypes['XpBlockMaxAggregates']> = {
+  blockId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelMinAggregates'] = ResolversParentTypes['XpBlockedChannelMinAggregates']> = {
-  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+export type XpBlockMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockMinAggregates'] = ResolversParentTypes['XpBlockMinAggregates']> = {
+  blockId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelStddevPopulationAggregates'] = ResolversParentTypes['XpBlockedChannelStddevPopulationAggregates']> = {
-  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+export type XpBlockStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockStddevPopulationAggregates'] = ResolversParentTypes['XpBlockStddevPopulationAggregates']> = {
+  blockId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelStddevSampleAggregates'] = ResolversParentTypes['XpBlockedChannelStddevSampleAggregates']> = {
-  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+export type XpBlockStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockStddevSampleAggregates'] = ResolversParentTypes['XpBlockStddevSampleAggregates']> = {
+  blockId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelSumAggregates'] = ResolversParentTypes['XpBlockedChannelSumAggregates']> = {
-  channelOrRoleId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+export type XpBlockSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockSumAggregates'] = ResolversParentTypes['XpBlockSumAggregates']> = {
+  blockId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelVariancePopulationAggregates'] = ResolversParentTypes['XpBlockedChannelVariancePopulationAggregates']> = {
-  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+export type XpBlockVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockVariancePopulationAggregates'] = ResolversParentTypes['XpBlockVariancePopulationAggregates']> = {
+  blockId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelVarianceSampleAggregates'] = ResolversParentTypes['XpBlockedChannelVarianceSampleAggregates']> = {
-  channelOrRoleId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+export type XpBlockVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockVarianceSampleAggregates'] = ResolversParentTypes['XpBlockVarianceSampleAggregates']> = {
+  blockId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelsConnection'] = ResolversParentTypes['XpBlockedChannelsConnection']> = {
-  aggregates?: Resolver<Maybe<ResolversTypes['XpBlockedChannelAggregates']>, ParentType, ContextType>;
-  edges?: Resolver<Array<ResolversTypes['XpBlockedChannelsEdge']>, ParentType, ContextType>;
-  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['XpBlockedChannelAggregates']>>, ParentType, ContextType, RequireFields<XpBlockedChannelsConnectionGroupedAggregatesArgs, 'groupBy'>>;
-  nodes?: Resolver<Array<ResolversTypes['XpBlockedChannel']>, ParentType, ContextType>;
+export type XpBlocksConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlocksConnection'] = ResolversParentTypes['XpBlocksConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['XpBlockAggregates']>, ParentType, ContextType>;
+  edges?: Resolver<Array<ResolversTypes['XpBlocksEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['XpBlockAggregates']>>, ParentType, ContextType, RequireFields<XpBlocksConnectionGroupedAggregatesArgs, 'groupBy'>>;
+  nodes?: Resolver<Array<ResolversTypes['XpBlock']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type XpBlockedChannelsEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlockedChannelsEdge'] = ResolversParentTypes['XpBlockedChannelsEdge']> = {
+export type XpBlocksEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['XpBlocksEdge'] = ResolversParentTypes['XpBlocksEdge']> = {
   cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['XpBlockedChannel'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['XpBlock'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -19707,7 +19752,7 @@ export type Resolvers<ContextType = any> = {
   CreateUserPayload?: CreateUserPayloadResolvers<ContextType>;
   CreateWebUserGuildPayload?: CreateWebUserGuildPayloadResolvers<ContextType>;
   CreateWebUserPayload?: CreateWebUserPayloadResolvers<ContextType>;
-  CreateXpBlockedChannelPayload?: CreateXpBlockedChannelPayloadResolvers<ContextType>;
+  CreateXpBlockPayload?: CreateXpBlockPayloadResolvers<ContextType>;
   CurrentUserManagedGuildIdEdge?: CurrentUserManagedGuildIdEdgeResolvers<ContextType>;
   CurrentUserManagedGuildIdsConnection?: CurrentUserManagedGuildIdsConnectionResolvers<ContextType>;
   Cursor?: GraphQLScalarType;
@@ -19735,7 +19780,7 @@ export type Resolvers<ContextType = any> = {
   DeleteUserPayload?: DeleteUserPayloadResolvers<ContextType>;
   DeleteWebUserGuildPayload?: DeleteWebUserGuildPayloadResolvers<ContextType>;
   DeleteWebUserPayload?: DeleteWebUserPayloadResolvers<ContextType>;
-  DeleteXpBlockedChannelPayload?: DeleteXpBlockedChannelPayloadResolvers<ContextType>;
+  DeleteXpBlockPayload?: DeleteXpBlockPayloadResolvers<ContextType>;
   Feed?: FeedResolvers<ContextType>;
   FeedAggregates?: FeedAggregatesResolvers<ContextType>;
   FeedDistinctCountAggregates?: FeedDistinctCountAggregatesResolvers<ContextType>;
@@ -19968,7 +20013,7 @@ export type Resolvers<ContextType = any> = {
   UpdateUserXpPayload?: UpdateUserXpPayloadResolvers<ContextType>;
   UpdateWebUserGuildPayload?: UpdateWebUserGuildPayloadResolvers<ContextType>;
   UpdateWebUserPayload?: UpdateWebUserPayloadResolvers<ContextType>;
-  UpdateXpBlockedChannelPayload?: UpdateXpBlockedChannelPayloadResolvers<ContextType>;
+  UpdateXpBlockPayload?: UpdateXpBlockPayloadResolvers<ContextType>;
   UpsertBotStatPayload?: UpsertBotStatPayloadResolvers<ContextType>;
   UpsertCachedGuildPayload?: UpsertCachedGuildPayloadResolvers<ContextType>;
   UpsertCachedUserPayload?: UpsertCachedUserPayloadResolvers<ContextType>;
@@ -19991,7 +20036,7 @@ export type Resolvers<ContextType = any> = {
   UpsertUserPayload?: UpsertUserPayloadResolvers<ContextType>;
   UpsertWebUserGuildPayload?: UpsertWebUserGuildPayloadResolvers<ContextType>;
   UpsertWebUserPayload?: UpsertWebUserPayloadResolvers<ContextType>;
-  UpsertXpBlockedChannelPayload?: UpsertXpBlockedChannelPayloadResolvers<ContextType>;
+  UpsertXpBlockPayload?: UpsertXpBlockPayloadResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserAggregates?: UserAggregatesResolvers<ContextType>;
   UserAverageAggregates?: UserAverageAggregatesResolvers<ContextType>;
@@ -20046,19 +20091,19 @@ export type Resolvers<ContextType = any> = {
   WebUserVarianceSampleAggregates?: WebUserVarianceSampleAggregatesResolvers<ContextType>;
   WebUsersConnection?: WebUsersConnectionResolvers<ContextType>;
   WebUsersEdge?: WebUsersEdgeResolvers<ContextType>;
-  XpBlockedChannel?: XpBlockedChannelResolvers<ContextType>;
-  XpBlockedChannelAggregates?: XpBlockedChannelAggregatesResolvers<ContextType>;
-  XpBlockedChannelAverageAggregates?: XpBlockedChannelAverageAggregatesResolvers<ContextType>;
-  XpBlockedChannelDistinctCountAggregates?: XpBlockedChannelDistinctCountAggregatesResolvers<ContextType>;
-  XpBlockedChannelMaxAggregates?: XpBlockedChannelMaxAggregatesResolvers<ContextType>;
-  XpBlockedChannelMinAggregates?: XpBlockedChannelMinAggregatesResolvers<ContextType>;
-  XpBlockedChannelStddevPopulationAggregates?: XpBlockedChannelStddevPopulationAggregatesResolvers<ContextType>;
-  XpBlockedChannelStddevSampleAggregates?: XpBlockedChannelStddevSampleAggregatesResolvers<ContextType>;
-  XpBlockedChannelSumAggregates?: XpBlockedChannelSumAggregatesResolvers<ContextType>;
-  XpBlockedChannelVariancePopulationAggregates?: XpBlockedChannelVariancePopulationAggregatesResolvers<ContextType>;
-  XpBlockedChannelVarianceSampleAggregates?: XpBlockedChannelVarianceSampleAggregatesResolvers<ContextType>;
-  XpBlockedChannelsConnection?: XpBlockedChannelsConnectionResolvers<ContextType>;
-  XpBlockedChannelsEdge?: XpBlockedChannelsEdgeResolvers<ContextType>;
+  XpBlock?: XpBlockResolvers<ContextType>;
+  XpBlockAggregates?: XpBlockAggregatesResolvers<ContextType>;
+  XpBlockAverageAggregates?: XpBlockAverageAggregatesResolvers<ContextType>;
+  XpBlockDistinctCountAggregates?: XpBlockDistinctCountAggregatesResolvers<ContextType>;
+  XpBlockMaxAggregates?: XpBlockMaxAggregatesResolvers<ContextType>;
+  XpBlockMinAggregates?: XpBlockMinAggregatesResolvers<ContextType>;
+  XpBlockStddevPopulationAggregates?: XpBlockStddevPopulationAggregatesResolvers<ContextType>;
+  XpBlockStddevSampleAggregates?: XpBlockStddevSampleAggregatesResolvers<ContextType>;
+  XpBlockSumAggregates?: XpBlockSumAggregatesResolvers<ContextType>;
+  XpBlockVariancePopulationAggregates?: XpBlockVariancePopulationAggregatesResolvers<ContextType>;
+  XpBlockVarianceSampleAggregates?: XpBlockVarianceSampleAggregatesResolvers<ContextType>;
+  XpBlocksConnection?: XpBlocksConnectionResolvers<ContextType>;
+  XpBlocksEdge?: XpBlocksEdgeResolvers<ContextType>;
 };
 
 
@@ -20389,6 +20434,55 @@ export type UserGuildLevelAndRankQueryVariables = Exact<{
 
 export type UserGuildLevelAndRankQuery = { __typename?: 'Query', userGuildRank?: { __typename?: 'UserGuildRankResult', lastMsg?: string | null, guildId?: string | null, msgAllTime?: string | null, msgAllTimeRank?: string | null, msgDay?: string | null, msgWeekRank?: string | null, msgWeekTotal?: string | null, msgWeek?: string | null, msgMonthTotal?: string | null, msgMonthRank?: string | null, msgMonth?: string | null, msgDayTotal?: string | null, msgDayRank?: string | null, msgAllTimeTotal?: string | null } | null };
 
+export type AddXpBlockMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  blockId: Scalars['BigInt'];
+  blockType: BlockType;
+}>;
+
+
+export type AddXpBlockMutation = { __typename?: 'Mutation', createXpBlock?: { __typename?: 'CreateXpBlockPayload', xpBlock?: { __typename?: 'XpBlock', guildId: string, blockId: string, blockType: BlockType } | null } | null };
+
+export type DeleteLevelRoleMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  roleId: Scalars['BigInt'];
+}>;
+
+
+export type DeleteLevelRoleMutation = { __typename?: 'Mutation', deleteLevelRoleByGuildIdAndRoleId?: { __typename?: 'DeleteLevelRolePayload', levelRole?: { __typename?: 'LevelRole', guildId: string, roleId: string, addLevel?: string | null, removeLevel?: string | null } | null } | null };
+
+export type DeleteXpBlockMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  blockId: Scalars['BigInt'];
+}>;
+
+
+export type DeleteXpBlockMutation = { __typename?: 'Mutation', deleteXpBlockByGuildIdAndBlockId?: { __typename?: 'DeleteXpBlockPayload', xpBlock?: { __typename?: 'XpBlock', guildId: string, blockId: string, blockType: BlockType } | null } | null };
+
+export type GetLevelRoleQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  roleId: Scalars['BigInt'];
+}>;
+
+
+export type GetLevelRoleQuery = { __typename?: 'Query', levelRoleByGuildIdAndRoleId?: { __typename?: 'LevelRole', guildId: string, roleId: string, addLevel?: string | null, removeLevel?: string | null } | null };
+
+export type GetLevelRolesQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+}>;
+
+
+export type GetLevelRolesQuery = { __typename?: 'Query', allLevelRoles?: { __typename?: 'LevelRolesConnection', nodes: Array<{ __typename?: 'LevelRole', guildId: string, roleId: string, addLevel?: string | null, removeLevel?: string | null }> } | null };
+
+export type GetXpBlocksQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+}>;
+
+
+export type GetXpBlocksQuery = { __typename?: 'Query', allXpBlocks?: { __typename?: 'XpBlocksConnection', nodes: Array<{ __typename?: 'XpBlock', guildId: string, blockId: string, blockType: BlockType }> } | null };
+
+export type LevelRoleDataFragment = { __typename?: 'LevelRole', guildId: string, roleId: string, addLevel?: string | null, removeLevel?: string | null };
+
 export type UpdateUserXpMutationVariables = Exact<{
   guildId: Scalars['BigInt'];
   channelId: Scalars['BigInt'];
@@ -20398,6 +20492,18 @@ export type UpdateUserXpMutationVariables = Exact<{
 
 
 export type UpdateUserXpMutation = { __typename?: 'Mutation', updateUserXp?: { __typename?: 'UpdateUserXpPayload', userXpUpdateResult?: { __typename?: 'UserXpUpdateResult', addRoleIds?: Array<string | null> | null, newLevel?: string | null, oldLevel?: string | null, removeRoleIds?: Array<string | null> | null } | null } | null };
+
+export type UpsertLevelRoleMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  roleId: Scalars['BigInt'];
+  removeLevel?: InputMaybe<Scalars['BigInt']>;
+  addLevel?: InputMaybe<Scalars['BigInt']>;
+}>;
+
+
+export type UpsertLevelRoleMutation = { __typename?: 'Mutation', upsertLevelRole?: { __typename?: 'UpsertLevelRolePayload', levelRole?: { __typename?: 'LevelRole', guildId: string, roleId: string, addLevel?: string | null, removeLevel?: string | null } | null } | null };
+
+export type XpBlockDataFragment = { __typename?: 'XpBlock', guildId: string, blockId: string, blockType: BlockType };
 
 export const BanDataFragmentDoc = gql`
     fragment BanData on GuildBan {
@@ -20512,6 +20618,21 @@ export const UserDataFragmentDoc = gql`
   lastfmUsername
   patronEmoji
   profileData
+}
+    `;
+export const LevelRoleDataFragmentDoc = gql`
+    fragment LevelRoleData on LevelRole {
+  guildId
+  roleId
+  addLevel
+  removeLevel
+}
+    `;
+export const XpBlockDataFragmentDoc = gql`
+    fragment XpBlockData on XpBlock {
+  guildId
+  blockId
+  blockType
 }
     `;
 export const GetUserBansDocument = gql`
@@ -20959,6 +21080,60 @@ export const UserGuildLevelAndRankDocument = gql`
   }
 }
     `;
+export const AddXpBlockDocument = gql`
+    mutation addXpBlock($guildId: BigInt!, $blockId: BigInt!, $blockType: BlockType!) {
+  createXpBlock(
+    input: {xpBlock: {guildId: $guildId, blockId: $blockId, blockType: $blockType}}
+  ) {
+    xpBlock {
+      ...XpBlockData
+    }
+  }
+}
+    ${XpBlockDataFragmentDoc}`;
+export const DeleteLevelRoleDocument = gql`
+    mutation deleteLevelRole($guildId: BigInt!, $roleId: BigInt!) {
+  deleteLevelRoleByGuildIdAndRoleId(input: {guildId: $guildId, roleId: $roleId}) {
+    levelRole {
+      ...LevelRoleData
+    }
+  }
+}
+    ${LevelRoleDataFragmentDoc}`;
+export const DeleteXpBlockDocument = gql`
+    mutation deleteXpBlock($guildId: BigInt!, $blockId: BigInt!) {
+  deleteXpBlockByGuildIdAndBlockId(input: {guildId: $guildId, blockId: $blockId}) {
+    xpBlock {
+      ...XpBlockData
+    }
+  }
+}
+    ${XpBlockDataFragmentDoc}`;
+export const GetLevelRoleDocument = gql`
+    query getLevelRole($guildId: BigInt!, $roleId: BigInt!) {
+  levelRoleByGuildIdAndRoleId(guildId: $guildId, roleId: $roleId) {
+    ...LevelRoleData
+  }
+}
+    ${LevelRoleDataFragmentDoc}`;
+export const GetLevelRolesDocument = gql`
+    query getLevelRoles($guildId: BigInt!) {
+  allLevelRoles(condition: {guildId: $guildId}) {
+    nodes {
+      ...LevelRoleData
+    }
+  }
+}
+    ${LevelRoleDataFragmentDoc}`;
+export const GetXpBlocksDocument = gql`
+    query getXpBlocks($guildId: BigInt!) {
+  allXpBlocks(condition: {guildId: $guildId}) {
+    nodes {
+      ...XpBlockData
+    }
+  }
+}
+    ${XpBlockDataFragmentDoc}`;
 export const UpdateUserXpDocument = gql`
     mutation updateUserXp($guildId: BigInt!, $channelId: BigInt!, $userId: BigInt!, $roleIds: [BigInt!]!) {
   updateUserXp(
@@ -20973,6 +21148,17 @@ export const UpdateUserXpDocument = gql`
   }
 }
     `;
+export const UpsertLevelRoleDocument = gql`
+    mutation upsertLevelRole($guildId: BigInt!, $roleId: BigInt!, $removeLevel: BigInt, $addLevel: BigInt) {
+  upsertLevelRole(
+    input: {levelRole: {guildId: $guildId, roleId: $roleId, addLevel: $addLevel, removeLevel: $removeLevel}}
+  ) {
+    levelRole {
+      ...LevelRoleData
+    }
+  }
+}
+    ${LevelRoleDataFragmentDoc}`;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -21098,8 +21284,29 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     userGuildLevelAndRank(variables: UserGuildLevelAndRankQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UserGuildLevelAndRankQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserGuildLevelAndRankQuery>(UserGuildLevelAndRankDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'userGuildLevelAndRank', 'query');
     },
+    addXpBlock(variables: AddXpBlockMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AddXpBlockMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AddXpBlockMutation>(AddXpBlockDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'addXpBlock', 'mutation');
+    },
+    deleteLevelRole(variables: DeleteLevelRoleMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteLevelRoleMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteLevelRoleMutation>(DeleteLevelRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteLevelRole', 'mutation');
+    },
+    deleteXpBlock(variables: DeleteXpBlockMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteXpBlockMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteXpBlockMutation>(DeleteXpBlockDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteXpBlock', 'mutation');
+    },
+    getLevelRole(variables: GetLevelRoleQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetLevelRoleQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetLevelRoleQuery>(GetLevelRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getLevelRole', 'query');
+    },
+    getLevelRoles(variables: GetLevelRolesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetLevelRolesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetLevelRolesQuery>(GetLevelRolesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getLevelRoles', 'query');
+    },
+    getXpBlocks(variables: GetXpBlocksQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetXpBlocksQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetXpBlocksQuery>(GetXpBlocksDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getXpBlocks', 'query');
+    },
     updateUserXp(variables: UpdateUserXpMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateUserXpMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateUserXpMutation>(UpdateUserXpDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateUserXp', 'mutation');
+    },
+    upsertLevelRole(variables: UpsertLevelRoleMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertLevelRoleMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpsertLevelRoleMutation>(UpsertLevelRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertLevelRole', 'mutation');
     }
   };
 }

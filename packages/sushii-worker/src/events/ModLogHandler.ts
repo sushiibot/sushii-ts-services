@@ -11,6 +11,10 @@ export default class ModLogHandler {
     eventType: GatewayDispatchEvents,
     event: GatewayGuildBanModifyDispatchData
   ): Promise<void> {
+    if (eventType !== GatewayDispatchEvents.GuildBanAdd) {
+      return;
+    }
+
     const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
       guildId: event.guild_id,
     });
@@ -27,5 +31,7 @@ export default class ModLogHandler {
     if (eventType === GatewayDispatchEvents.GuildBanAdd) {
       logger.info(event.user);
     }
+
+    // TODO:
   }
 }

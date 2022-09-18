@@ -13,6 +13,7 @@ import {
   APIApplicationCommandAutocompleteInteraction,
   ApplicationCommandOptionType,
   APIApplicationCommandInteractionDataOption,
+  GatewayDispatchPayload,
 } from "discord-api-types/v10";
 import { AMQPMessage } from "@cloudamqp/amqp-client";
 import {
@@ -44,6 +45,7 @@ import getInvokerUser from "./utils/interactions";
 import Metrics from "./model/metrics";
 import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
+import EventHandler from "./events/EventHandler";
 
 interface FocusedOption {
   path: string;
@@ -90,7 +92,7 @@ function findFocusedOption(
   ]);
 }
 
-export default class InteractionClient {
+export default class Client {
   /**
    * Bot configuration
    */
@@ -134,6 +136,11 @@ export default class InteractionClient {
   private buttonHandlers: ButtonHandler[];
 
   /**
+   * Generic non-interaction handlers
+   */
+  private eventHandlers: EventHandler[];
+
+  /**
    * select menu handlers
    */
   private selectMenuHandlers: SelectMenuHandler[];
@@ -148,6 +155,7 @@ export default class InteractionClient {
     this.buttonHandlers = [];
     this.selectMenuHandlers = [];
     this.contextMenuHandlers = new Collection();
+    this.eventHandlers = [];
   }
 
   /**
@@ -206,7 +214,7 @@ export default class InteractionClient {
   /**
    * Add a pure component handler
    *
-   * @param componentHandler ButtonHandler to add
+   * @param buttonHandlers ButtonHandler to add
    */
   public addButtons(...buttonHandlers: ButtonHandler[]): void {
     this.buttonHandlers.push(...buttonHandlers);
@@ -215,10 +223,19 @@ export default class InteractionClient {
   /**
    * Add a pure component handler
    *
-   * @param componentHandler SelectMenuHandler to add
+   * @param componentHandlers SelectMenuHandlers to add
    */
   public addSelectMenus(...componentHandlers: SelectMenuHandler[]): void {
     this.selectMenuHandlers.push(...componentHandlers);
+  }
+
+  /**
+   * Add generic event handlers
+   *
+   * @param handlers EventHandlers to add
+   */
+  public addEventHandlers(...handlers: EventHandler[]): void {
+    this.eventHandlers.push(...handlers);
   }
 
   /**
@@ -632,6 +649,33 @@ export default class InteractionClient {
     return undefined;
   }
 
+  private async handleEvent(event: GatewayDispatchPayload): Promise<void> {
+    const data = event.d;
+
+    const promises = [];
+
+    for (const handler of this.eventHandlers) {
+      if (handler.eventTypes.includes(event.t)) {
+        const p = handler.handler(this.context, event.t, data);
+        promises.push(p);
+      }
+    }
+
+    try {
+      // Run all handlers in parallel
+      Promise.allSettled(promises);
+    } catch (e) {
+      Sentry.captureException(e, {
+        tags: {
+          type: "event",
+          event: event.t,
+        },
+      });
+
+      log.error(e, "error handling event %s", event.t);
+    }
+  }
+
   /**
    * Handles a raw gateway interaction from AMQP
    *
@@ -645,26 +689,28 @@ export default class InteractionClient {
       return;
     }
 
-    const interaction = JSON.parse(msgString);
-    if (!isGatewayDispatchEvent(interaction)) {
+    const event = JSON.parse(msgString);
+    if (!isGatewayDispatchEvent(event)) {
       return;
     }
 
-    this.metrics.handleGatewayDispatchEvent(interaction);
+    this.metrics.handleGatewayDispatchEvent(event);
 
-    if (!isGatewayInteractionCreateDispatch(interaction)) {
-      // log.debug("received non-interaction AMQP message %s", interaction.t);
+    // Handle non interaction event
+    if (!isGatewayInteractionCreateDispatch(event)) {
+      this.handleEvent(event);
+
       return;
     }
 
     try {
       // Not awaited as we don't need to block
-      this.handleAPIInteraction(interaction.d);
-      this.metrics.handleInteraction(interaction.d);
+      this.handleAPIInteraction(event.d);
+      this.metrics.handleInteraction(event.d);
     } catch (e) {
       Sentry.captureException(e);
 
-      log.error(e, "error handling AMQP message %s", interaction.t);
+      log.error(e, "error handling AMQP message %s", event.t);
     }
   }
 }

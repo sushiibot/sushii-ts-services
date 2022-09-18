@@ -1,0 +1,15 @@
+mutation addXpBlock(
+  $guildId: BigInt!
+  $blockId: BigInt!
+  $blockType: BlockType!
+) {
+  createXpBlock(
+    input: {
+      xpBlock: { guildId: $guildId, blockId: $blockId, blockType: $blockType }
+    }
+  ) {
+    xpBlock {
+      ...XpBlockData
+    }
+  }
+}

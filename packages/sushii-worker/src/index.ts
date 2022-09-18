@@ -10,6 +10,7 @@ import initI18next from "./i18next";
 import addCommands from "./interactions/commands";
 import server from "./server";
 import Metrics from "./model/metrics";
+import addEventHandlers from "./events/handlers";
 
 async function main(): Promise<void> {
   dotenv.config();
@@ -32,15 +33,14 @@ async function main(): Promise<void> {
   const rabbitGatewayClient = new AmqpGateway(amqpClient, config);
   const metrics = new Metrics();
 
-  const interactionClient = new InteractionClient(config, metrics);
-  addCommands(interactionClient);
+  const client = new InteractionClient(config, metrics);
+  addCommands(client);
+  addEventHandlers(client);
 
   // Register commands to Discord API
-  await interactionClient.register();
+  await client.register();
 
-  await rabbitGatewayClient.connect((msg) =>
-    interactionClient.handleAMQPMessage(msg)
-  );
+  await rabbitGatewayClient.connect((msg) => client.handleAMQPMessage(msg));
 
   // ---------------------------------------------------------------------------
   // Metrics and healthcheck
