@@ -28,6 +28,7 @@ import SlowmodeCommand from "./moderation/SlowmodeCommand";
 import NoteCommand from "./moderation/NoteCommand";
 import XpCommand from "./xp/XpCommands";
 import LevelRoleCommand from "./xp/LevelRoleCommand";
+import RankCommand from "./user/rank";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -38,6 +39,7 @@ export default function addCommands(
     new FishyCommand(),
     new RepCommand(),
     new AvatarCommand(),
+    new RankCommand(),
 
     // Meta
     new PingCommand(),

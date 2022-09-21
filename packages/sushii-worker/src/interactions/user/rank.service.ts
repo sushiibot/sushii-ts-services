@@ -2,6 +2,7 @@ import {
   APIChatInputApplicationCommandInteraction,
   APIUser,
 } from "discord-api-types/v10";
+import { Err, Ok, Result } from "ts-results";
 import Context from "../../model/context";
 import UserLevelProgress from "./rank.entity";
 
@@ -14,12 +15,12 @@ export async function getUserRank(
   _interaction: APIChatInputApplicationCommandInteraction,
   user: APIUser,
   guildId: string
-): Promise<RankResponse> {
+): Promise<Result<RankResponse, string>> {
   const { userById: userData } = await ctx.sushiiAPI.sdk.userByID({
     id: user.id,
   });
   if (!userData) {
-    throw new Error("User not found");
+    return Err("User not found");
   }
 
   const { userGuildRank: userGuildLevel } =
@@ -28,7 +29,7 @@ export async function getUserRank(
       userId: user.id,
     });
   if (!userGuildLevel) {
-    throw new Error("User has no server XP");
+    return Err("User has no server XP");
   }
 
   const userLevel = new UserLevelProgress(
@@ -42,7 +43,6 @@ export async function getUserRank(
   );
 
   const rankContext: Record<string, string | boolean | number> = {
-    // BASE_URL: sushii_conf.image_server_url,
     CONTENT_COLOR: "0, 184, 148",
     CONTENT_OPACITY: "1",
     // Username stuff
@@ -55,10 +55,9 @@ export async function getUserRank(
     // Rep and fishies
     // Emojis
     IS_PATRON: userData.isPatron,
-    // "PATRON_EMOJI_URL": user_data.profile_data
-    //     .and_then(|d| d.0.patron_emoji_url)
-    //     .unwrap_or_else(|| "https://cdn.discordapp.com/emojis/830976556976963644.png".into()),
-    // levels
+    PATRON_EMOJI_URL:
+      userData.profileData?.patronEmojiURL ||
+      "https://cdn.discordapp.com/emojis/830976556976963644.png",
     LEVEL: userLevel.level,
     CURR_XP: userLevel.nextLevelXpProgress,
     REQ_XP: userLevel.nextLevelXpRequired,
@@ -81,7 +80,7 @@ export async function getUserRank(
 
   const rankBuffer = await ctx.sushiiImageServer.getUserRank(rankContext);
 
-  return {
+  return Ok({
     rankBuffer,
-  };
+  });
 }

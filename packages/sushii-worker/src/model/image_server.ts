@@ -3,11 +3,11 @@ import fetch, { Response, RequestInit } from "node-fetch";
 import { ConfigI } from "./config";
 
 export default class SushiiImageServerClient {
-  private readonly endpoint: string;
+  public readonly endpoint: string;
 
   private readonly agent: Agent;
 
-  constructor(private readonly config: ConfigI) {
+  constructor(config: ConfigI) {
     // Remove trailing slash
     this.endpoint = config.sushiiImageServerURL.replace(/\/$/, "");
     this.agent = new Agent({
@@ -36,6 +36,9 @@ export default class SushiiImageServerClient {
   ): Promise<ArrayBuffer> {
     const res = await this.fetch("/template", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         templateName: "rank",
         width: 500,

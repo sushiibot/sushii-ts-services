@@ -5,6 +5,7 @@ import Context from "../../model/context";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
+import { interactionReplyErrorPlainMessage } from "../responses/error";
 import { getUserRank } from "./rank.service";
 
 export default class RankCommand extends SlashCommandHandler {
@@ -41,6 +42,11 @@ export default class RankCommand extends SlashCommandHandler {
       interaction.guild_id
     );
 
+    if (res.err) {
+      await interactionReplyErrorPlainMessage(ctx, interaction, res.val);
+      return;
+    }
+
     await ctx.REST.interactionReply(
       interaction,
       {
@@ -58,7 +64,7 @@ export default class RankCommand extends SlashCommandHandler {
       [
         {
           fileName: "rank.png",
-          fileData: Buffer.from(res.rankBuffer),
+          fileData: Buffer.from(res.safeUnwrap().rankBuffer),
         },
       ]
     );
