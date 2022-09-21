@@ -21,8 +21,7 @@ services:
             - AMQP_URL=amqp://rabbitmq:5672
             - AMQP_QUEUE_NAME=gateway.recv
             - TWILIGHT_PROXY_URL=http://twilight-http-proxy:80/api
-            # TODO:
-            - SUSHII_IMAGE_SERVER_URL=https://sushii-image-server:3000
+            - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
         networks:
             - sushii_net
         labels:
