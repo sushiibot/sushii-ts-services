@@ -42,6 +42,21 @@ export async function getUserRank(
     parseInt(globalXP?.aggregates?.sum?.msgAllTime || 0, 10)
   );
 
+  const repInt = parseInt(userData.rep, 10);
+
+  // starts at 7 for positive emojis
+  // TODO: Update these to be exponential and not hard coded
+  let repLevel = 7;
+  if (repInt >= 2000) {
+    repLevel = 11;
+  } else if (repInt >= 1000) {
+    repLevel = 10;
+  } else if (repInt >= 100) {
+    repLevel = 9;
+  } else if (repInt >= 50) {
+    repLevel = 8;
+  }
+
   const rankContext: Record<string, string | boolean | number> = {
     CONTENT_COLOR: "0, 184, 148",
     CONTENT_OPACITY: "1",
@@ -50,7 +65,7 @@ export async function getUserRank(
     DISCRIMINATOR: user.discriminator.padStart(4, "0"),
     AVATAR_URL: ctx.CDN.userFaceURL(user, { forceStatic: true }),
     REP: userData.rep,
-    // REP_LEVEL: userData.rep_level(),
+    REP_LEVEL: repLevel.toString().padStart(2, "0"),
     FISHIES: userData.fishies,
     // Rep and fishies
     // Emojis
