@@ -6,7 +6,10 @@ import {
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import { isNoValuesDeletedError } from "../../utils/graphqlError";
+import {
+  isNoValuesDeletedError,
+  isUniqueViolation,
+} from "../../utils/graphqlError";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
@@ -83,13 +86,27 @@ export default class NotificationCommand extends SlashCommandHandler {
 
     const invoker = getInvokerUser(interaction);
 
-    await ctx.sushiiAPI.sdk.createNotification({
-      notification: {
-        guildId: interaction.guild_id,
-        userId: invoker.id,
-        keyword,
-      },
-    });
+    try {
+      await ctx.sushiiAPI.sdk.createNotification({
+        notification: {
+          guildId: interaction.guild_id,
+          userId: invoker.id,
+          keyword,
+        },
+      });
+    } catch (err) {
+      if (!isUniqueViolation(err)) {
+        throw err;
+      }
+
+      await ctx.REST.interactionReply(interaction, {
+        content: t("notification.add.error.duplicate", {
+          ns: "commands",
+          keyword,
+        }),
+        flags: MessageFlags.Ephemeral,
+      });
+    }
 
     const embed = new EmbedBuilder()
       .setTitle("Added notification.")
