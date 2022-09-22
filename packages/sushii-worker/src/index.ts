@@ -11,6 +11,7 @@ import addCommands from "./interactions/commands";
 import server from "./server";
 import Metrics from "./model/metrics";
 import addEventHandlers from "./events/handlers";
+import sdk from "./tracing";
 
 async function main(): Promise<void> {
   dotenv.config();
@@ -60,6 +61,9 @@ async function main(): Promise<void> {
 
       log.info("closing sentry");
       await Sentry.close(2000);
+
+      log.info("closing tracing");
+      await sdk.shutdown();
     },
   });
 }
