@@ -1,5 +1,8 @@
 import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
-import { APIChatInputApplicationCommandGuildInteraction } from "discord-api-types/v10";
+import {
+  APIChatInputApplicationCommandGuildInteraction,
+  PermissionFlagsBits,
+} from "discord-api-types/v10";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { isNoValuesDeletedError } from "../../utils/graphqlError";
@@ -26,6 +29,8 @@ export default class LevelRoleCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("levelrole")
     .setDescription("Configure level roles.")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+    .setDMPermission(false)
     .addSubcommand((c) =>
       c
         .setName(CommandName.LevelRoleNew)
