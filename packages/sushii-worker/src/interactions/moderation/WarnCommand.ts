@@ -13,7 +13,7 @@ import {
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
-import { dmMessageOption, reasonOption, usersOption } from "./options";
+import { reasonOption, usersOption } from "./options";
 
 export default class WarnCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -26,9 +26,8 @@ export default class WarnCommand extends SlashCommandHandler {
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
     .setDMPermission(false)
     .addStringOption(usersOption(ActionType.Warn))
-    .addStringOption(reasonOption(ActionType.Warn))
+    .addStringOption(reasonOption(ActionType.Warn, true))
     // .addAttachmentOption(attachmentOption)
-    .addStringOption(dmMessageOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

@@ -30,13 +30,16 @@ export const sendDMOption = new SlashCommandBooleanOption()
   .setDescription("Set to True if you want to DM the reason to the user.")
   .setRequired(false);
 
-export const reasonOption = (action: ActionType): SlashCommandStringOption =>
+export const reasonOption = (
+  action: ActionType,
+  required: boolean = false
+): SlashCommandStringOption =>
   new SlashCommandStringOption()
     .setName(ModerationOption.Reason)
     .setDescription(
       `Reason for ${ActionType.toPresentTense(action)} this user.`
     )
-    .setRequired(false);
+    .setRequired(required);
 
 export const attachmentOption = new SlashCommandAttachmentOption()
   .setName(ModerationOption.Attachment)
