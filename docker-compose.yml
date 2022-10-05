@@ -5,8 +5,9 @@ services:
             dockerfile: ./dockerfiles/sushii-worker/Dockerfile
             context: .
         logging:
-            max-size: "10m"
-            max-file: "3"
+            options:
+                max-size: "10m"
+                max-file: "3"
         depends_on:
             - sushii_data
         restart: unless-stopped
@@ -34,8 +35,9 @@ services:
             dockerfile: ./dockerfiles/sushii-data/Dockerfile
             context: .
         logging:
-            max-size: "10m"
-            max-file: "3"
+            options:
+                max-size: "10m"
+                max-file: "3"
         restart: unless-stopped
         env_file:
             - .sushii_data.env
@@ -81,8 +83,9 @@ services:
         container_name: twilight-http-proxy
         restart: unless-stopped
         logging:
-            max-size: "10m"
-            max-file: "3"
+            options:
+                max-size: "10m"
+                max-file: "3"
         expose:
             - "80"
         environment:
@@ -142,8 +145,9 @@ services:
         container_name: rabbitmq
         restart: unless-stopped
         logging:
-            max-size: "10m"
-            max-file: "3"
+            options:
+                max-size: "10m"
+                max-file: "3"
         expose:
             - "5672"
             - "15672"
