@@ -1,12 +1,12 @@
 import {
   APIChatInputApplicationCommandGuildInteraction,
+  APIGuildMember,
   APIInteractionDataResolvedGuildMember,
-  APIInteractionGuildMember,
   APIUser,
 } from "discord-api-types/v10";
 import { Err, Ok, Result } from "ts-results";
-import { GetRedisGuildQuery, RedisGuildRole } from "../../generated/graphql";
-import Context from "../../model/context";
+import { GetRedisGuildQuery, RedisGuildRole } from "../generated/graphql";
+import Context from "../model/context";
 
 // getHighestRole returns the highest role of a user in a guild
 function getHighestRole(roles: RedisGuildRole[]): RedisGuildRole | null {
@@ -24,7 +24,7 @@ function getHighestRole(roles: RedisGuildRole[]): RedisGuildRole | null {
 }
 
 export function getHighestMemberRole(
-  member: APIInteractionGuildMember,
+  member: APIGuildMember,
   redisGuild: NonNullable<GetRedisGuildQuery["redisGuildByGuildId"]>
 ): RedisGuildRole | null {
   const rolesMap = redisGuild.roles?.reduce((acc, role) => {

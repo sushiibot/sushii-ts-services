@@ -59,7 +59,7 @@ export default makeExtendSchemaPlugin(() => ({
       vanityUrlCode: String
       verificationLevel: Int
       voiceStates: [String]
-      roles: [RedisGuildRole]
+      roles: [RedisGuildRole!]!
       presences: [String]
       members: [String]
       features: [String]

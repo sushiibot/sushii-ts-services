@@ -1107,6 +1107,41 @@ type CreateGuildConfigPayload {
   query: Query
 }
 
+"""All input for the create `LevelRoleApplyJob` mutation."""
+input CreateLevelRoleApplyJobInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `LevelRoleApplyJob` to be created by this mutation."""
+  levelRoleApplyJob: LevelRoleApplyJobInput!
+}
+
+"""The output of our create `LevelRoleApplyJob` mutation."""
+type CreateLevelRoleApplyJobPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `LevelRoleApplyJob` that was created by this mutation."""
+  levelRoleApplyJob: LevelRoleApplyJob
+
+  """An edge for our `LevelRoleApplyJob`. May be used by Relay 1."""
+  levelRoleApplyJobEdge(
+    """The method to use when ordering `LevelRoleApplyJob`."""
+    orderBy: [LevelRoleApplyJobsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRoleApplyJobsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the create `LevelRole` mutation."""
 input CreateLevelRoleInput {
   """
@@ -2151,6 +2186,64 @@ type DeleteGuildConfigPayload {
   query: Query
 }
 
+"""All input for the `deleteLevelRoleApplyJobByGuildId` mutation."""
+input DeleteLevelRoleApplyJobByGuildIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+}
+
+"""All input for the `deleteLevelRoleApplyJobByInteractionId` mutation."""
+input DeleteLevelRoleApplyJobByInteractionIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  interactionId: BigInt!
+}
+
+"""All input for the `deleteLevelRoleApplyJob` mutation."""
+input DeleteLevelRoleApplyJobInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `LevelRoleApplyJob` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `LevelRoleApplyJob` mutation."""
+type DeleteLevelRoleApplyJobPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedLevelRoleApplyJobId: ID
+
+  """The `LevelRoleApplyJob` that was deleted by this mutation."""
+  levelRoleApplyJob: LevelRoleApplyJob
+
+  """An edge for our `LevelRoleApplyJob`. May be used by Relay 1."""
+  levelRoleApplyJobEdge(
+    """The method to use when ordering `LevelRoleApplyJob`."""
+    orderBy: [LevelRoleApplyJobsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRoleApplyJobsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the `deleteLevelRoleByGuildIdAndRoleId` mutation."""
 input DeleteLevelRoleByGuildIdAndRoleIdInput {
   """
@@ -2934,6 +3027,59 @@ type DeleteXpBlockPayload {
     """The method to use when ordering `XpBlock`."""
     orderBy: [XpBlocksOrderBy!] = [PRIMARY_KEY_ASC]
   ): XpBlocksEdge
+}
+
+type EligibleLevelRole {
+  roleIds: [BigInt]
+  userId: BigInt
+}
+
+"""
+A filter to be used against `EligibleLevelRole` object types. All fields are combined with a logical ‘and.’
+"""
+input EligibleLevelRoleFilter {
+  """Checks for all expressions in this list."""
+  and: [EligibleLevelRoleFilter!]
+
+  """Negates the expression."""
+  not: EligibleLevelRoleFilter
+
+  """Checks for any expressions in this list."""
+  or: [EligibleLevelRoleFilter!]
+
+  """Filter by the object’s `roleIds` field."""
+  roleIds: BigIntListFilter
+
+  """Filter by the object’s `userId` field."""
+  userId: BigIntFilter
+}
+
+"""A connection to a list of `EligibleLevelRole` values."""
+type EligibleLevelRolesConnection {
+  """
+  A list of edges which contains the `EligibleLevelRole` and cursor to aid in pagination.
+  """
+  edges: [EligibleLevelRolesEdge!]!
+
+  """A list of `EligibleLevelRole` objects."""
+  nodes: [EligibleLevelRole!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """
+  The count of *all* `EligibleLevelRole` you could get from the connection.
+  """
+  totalCount: Int!
+}
+
+"""A `EligibleLevelRole` edge in the connection."""
+type EligibleLevelRolesEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `EligibleLevelRole` at the end of the edge."""
+  node: EligibleLevelRole!
 }
 
 type Feed implements Node {
@@ -5119,6 +5265,883 @@ type LevelRoleAggregates {
   Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
   """
   varianceSample: LevelRoleVarianceSampleAggregates
+}
+
+type LevelRoleApplyJob implements Node {
+  channelId: BigInt!
+  createdAt: Datetime!
+  guildId: BigInt!
+  interactionId: BigInt!
+  membersApplied: BigInt!
+  membersNotFound: BigInt!
+  membersSkipped: BigInt!
+  membersTotal: BigInt!
+  membersTotalProcessed: BigInt!
+  messageId: BigInt!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  notifyUserId: BigInt!
+  requestsProcessed: BigInt!
+  requestsTotal: BigInt
+  updatedAt: Datetime!
+}
+
+type LevelRoleApplyJobAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: LevelRoleApplyJobAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: LevelRoleApplyJobDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: LevelRoleApplyJobMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: LevelRoleApplyJobMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: LevelRoleApplyJobStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: LevelRoleApplyJobStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: LevelRoleApplyJobSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: LevelRoleApplyJobVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: LevelRoleApplyJobVarianceSampleAggregates
+}
+
+type LevelRoleApplyJobAverageAggregates {
+  """Mean average of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Mean average of interactionId across the matching connection"""
+  interactionId: BigFloat
+
+  """Mean average of membersApplied across the matching connection"""
+  membersApplied: BigFloat
+
+  """Mean average of membersNotFound across the matching connection"""
+  membersNotFound: BigFloat
+
+  """Mean average of membersSkipped across the matching connection"""
+  membersSkipped: BigFloat
+
+  """Mean average of membersTotal across the matching connection"""
+  membersTotal: BigFloat
+
+  """Mean average of membersTotalProcessed across the matching connection"""
+  membersTotalProcessed: BigFloat
+
+  """Mean average of messageId across the matching connection"""
+  messageId: BigFloat
+
+  """Mean average of notifyUserId across the matching connection"""
+  notifyUserId: BigFloat
+
+  """Mean average of requestsProcessed across the matching connection"""
+  requestsProcessed: BigFloat
+
+  """Mean average of requestsTotal across the matching connection"""
+  requestsTotal: BigFloat
+}
+
+"""
+A condition to be used against `LevelRoleApplyJob` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input LevelRoleApplyJobCondition {
+  """Checks for equality with the object’s `channelId` field."""
+  channelId: BigInt
+
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `interactionId` field."""
+  interactionId: BigInt
+
+  """Checks for equality with the object’s `membersApplied` field."""
+  membersApplied: BigInt
+
+  """Checks for equality with the object’s `membersNotFound` field."""
+  membersNotFound: BigInt
+
+  """Checks for equality with the object’s `membersSkipped` field."""
+  membersSkipped: BigInt
+
+  """Checks for equality with the object’s `membersTotal` field."""
+  membersTotal: BigInt
+
+  """Checks for equality with the object’s `membersTotalProcessed` field."""
+  membersTotalProcessed: BigInt
+
+  """Checks for equality with the object’s `messageId` field."""
+  messageId: BigInt
+
+  """Checks for equality with the object’s `notifyUserId` field."""
+  notifyUserId: BigInt
+
+  """Checks for equality with the object’s `requestsProcessed` field."""
+  requestsProcessed: BigInt
+
+  """Checks for equality with the object’s `requestsTotal` field."""
+  requestsTotal: BigInt
+
+  """Checks for equality with the object’s `updatedAt` field."""
+  updatedAt: Datetime
+}
+
+type LevelRoleApplyJobDistinctCountAggregates {
+  """Distinct count of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Distinct count of createdAt across the matching connection"""
+  createdAt: BigInt
+
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of interactionId across the matching connection"""
+  interactionId: BigInt
+
+  """Distinct count of membersApplied across the matching connection"""
+  membersApplied: BigInt
+
+  """Distinct count of membersNotFound across the matching connection"""
+  membersNotFound: BigInt
+
+  """Distinct count of membersSkipped across the matching connection"""
+  membersSkipped: BigInt
+
+  """Distinct count of membersTotal across the matching connection"""
+  membersTotal: BigInt
+
+  """Distinct count of membersTotalProcessed across the matching connection"""
+  membersTotalProcessed: BigInt
+
+  """Distinct count of messageId across the matching connection"""
+  messageId: BigInt
+
+  """Distinct count of notifyUserId across the matching connection"""
+  notifyUserId: BigInt
+
+  """Distinct count of requestsProcessed across the matching connection"""
+  requestsProcessed: BigInt
+
+  """Distinct count of requestsTotal across the matching connection"""
+  requestsTotal: BigInt
+
+  """Distinct count of updatedAt across the matching connection"""
+  updatedAt: BigInt
+}
+
+"""
+A filter to be used against `LevelRoleApplyJob` object types. All fields are combined with a logical ‘and.’
+"""
+input LevelRoleApplyJobFilter {
+  """Checks for all expressions in this list."""
+  and: [LevelRoleApplyJobFilter!]
+
+  """Filter by the object’s `channelId` field."""
+  channelId: BigIntFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Filter by the object’s `interactionId` field."""
+  interactionId: BigIntFilter
+
+  """Filter by the object’s `membersApplied` field."""
+  membersApplied: BigIntFilter
+
+  """Filter by the object’s `membersNotFound` field."""
+  membersNotFound: BigIntFilter
+
+  """Filter by the object’s `membersSkipped` field."""
+  membersSkipped: BigIntFilter
+
+  """Filter by the object’s `membersTotal` field."""
+  membersTotal: BigIntFilter
+
+  """Filter by the object’s `membersTotalProcessed` field."""
+  membersTotalProcessed: BigIntFilter
+
+  """Filter by the object’s `messageId` field."""
+  messageId: BigIntFilter
+
+  """Negates the expression."""
+  not: LevelRoleApplyJobFilter
+
+  """Filter by the object’s `notifyUserId` field."""
+  notifyUserId: BigIntFilter
+
+  """Checks for any expressions in this list."""
+  or: [LevelRoleApplyJobFilter!]
+
+  """Filter by the object’s `requestsProcessed` field."""
+  requestsProcessed: BigIntFilter
+
+  """Filter by the object’s `requestsTotal` field."""
+  requestsTotal: BigIntFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+}
+
+"""An input for mutations affecting `LevelRoleApplyJob`"""
+input LevelRoleApplyJobInput {
+  channelId: BigInt!
+  createdAt: Datetime
+  guildId: BigInt!
+  interactionId: BigInt!
+  membersApplied: BigInt
+  membersNotFound: BigInt
+  membersSkipped: BigInt
+  membersTotal: BigInt!
+  membersTotalProcessed: BigInt
+  messageId: BigInt!
+  notifyUserId: BigInt!
+  requestsProcessed: BigInt
+  requestsTotal: BigInt
+  updatedAt: Datetime
+}
+
+type LevelRoleApplyJobMaxAggregates {
+  """Maximum of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Maximum of interactionId across the matching connection"""
+  interactionId: BigInt
+
+  """Maximum of membersApplied across the matching connection"""
+  membersApplied: BigInt
+
+  """Maximum of membersNotFound across the matching connection"""
+  membersNotFound: BigInt
+
+  """Maximum of membersSkipped across the matching connection"""
+  membersSkipped: BigInt
+
+  """Maximum of membersTotal across the matching connection"""
+  membersTotal: BigInt
+
+  """Maximum of membersTotalProcessed across the matching connection"""
+  membersTotalProcessed: BigInt
+
+  """Maximum of messageId across the matching connection"""
+  messageId: BigInt
+
+  """Maximum of notifyUserId across the matching connection"""
+  notifyUserId: BigInt
+
+  """Maximum of requestsProcessed across the matching connection"""
+  requestsProcessed: BigInt
+
+  """Maximum of requestsTotal across the matching connection"""
+  requestsTotal: BigInt
+}
+
+type LevelRoleApplyJobMinAggregates {
+  """Minimum of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Minimum of interactionId across the matching connection"""
+  interactionId: BigInt
+
+  """Minimum of membersApplied across the matching connection"""
+  membersApplied: BigInt
+
+  """Minimum of membersNotFound across the matching connection"""
+  membersNotFound: BigInt
+
+  """Minimum of membersSkipped across the matching connection"""
+  membersSkipped: BigInt
+
+  """Minimum of membersTotal across the matching connection"""
+  membersTotal: BigInt
+
+  """Minimum of membersTotalProcessed across the matching connection"""
+  membersTotalProcessed: BigInt
+
+  """Minimum of messageId across the matching connection"""
+  messageId: BigInt
+
+  """Minimum of notifyUserId across the matching connection"""
+  notifyUserId: BigInt
+
+  """Minimum of requestsProcessed across the matching connection"""
+  requestsProcessed: BigInt
+
+  """Minimum of requestsTotal across the matching connection"""
+  requestsTotal: BigInt
+}
+
+"""
+Represents an update to a `LevelRoleApplyJob`. Fields that are set will be updated.
+"""
+input LevelRoleApplyJobPatch {
+  channelId: BigInt
+  createdAt: Datetime
+  guildId: BigInt
+  interactionId: BigInt
+  membersApplied: BigInt
+  membersNotFound: BigInt
+  membersSkipped: BigInt
+  membersTotal: BigInt
+  membersTotalProcessed: BigInt
+  messageId: BigInt
+  notifyUserId: BigInt
+  requestsProcessed: BigInt
+  requestsTotal: BigInt
+  updatedAt: Datetime
+}
+
+type LevelRoleApplyJobStddevPopulationAggregates {
+  """
+  Population standard deviation of channelId across the matching connection
+  """
+  channelId: BigFloat
+
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+
+  """
+  Population standard deviation of interactionId across the matching connection
+  """
+  interactionId: BigFloat
+
+  """
+  Population standard deviation of membersApplied across the matching connection
+  """
+  membersApplied: BigFloat
+
+  """
+  Population standard deviation of membersNotFound across the matching connection
+  """
+  membersNotFound: BigFloat
+
+  """
+  Population standard deviation of membersSkipped across the matching connection
+  """
+  membersSkipped: BigFloat
+
+  """
+  Population standard deviation of membersTotal across the matching connection
+  """
+  membersTotal: BigFloat
+
+  """
+  Population standard deviation of membersTotalProcessed across the matching connection
+  """
+  membersTotalProcessed: BigFloat
+
+  """
+  Population standard deviation of messageId across the matching connection
+  """
+  messageId: BigFloat
+
+  """
+  Population standard deviation of notifyUserId across the matching connection
+  """
+  notifyUserId: BigFloat
+
+  """
+  Population standard deviation of requestsProcessed across the matching connection
+  """
+  requestsProcessed: BigFloat
+
+  """
+  Population standard deviation of requestsTotal across the matching connection
+  """
+  requestsTotal: BigFloat
+}
+
+type LevelRoleApplyJobStddevSampleAggregates {
+  """Sample standard deviation of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """
+  Sample standard deviation of interactionId across the matching connection
+  """
+  interactionId: BigFloat
+
+  """
+  Sample standard deviation of membersApplied across the matching connection
+  """
+  membersApplied: BigFloat
+
+  """
+  Sample standard deviation of membersNotFound across the matching connection
+  """
+  membersNotFound: BigFloat
+
+  """
+  Sample standard deviation of membersSkipped across the matching connection
+  """
+  membersSkipped: BigFloat
+
+  """
+  Sample standard deviation of membersTotal across the matching connection
+  """
+  membersTotal: BigFloat
+
+  """
+  Sample standard deviation of membersTotalProcessed across the matching connection
+  """
+  membersTotalProcessed: BigFloat
+
+  """Sample standard deviation of messageId across the matching connection"""
+  messageId: BigFloat
+
+  """
+  Sample standard deviation of notifyUserId across the matching connection
+  """
+  notifyUserId: BigFloat
+
+  """
+  Sample standard deviation of requestsProcessed across the matching connection
+  """
+  requestsProcessed: BigFloat
+
+  """
+  Sample standard deviation of requestsTotal across the matching connection
+  """
+  requestsTotal: BigFloat
+}
+
+type LevelRoleApplyJobSumAggregates {
+  """Sum of channelId across the matching connection"""
+  channelId: BigFloat!
+
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+
+  """Sum of interactionId across the matching connection"""
+  interactionId: BigFloat!
+
+  """Sum of membersApplied across the matching connection"""
+  membersApplied: BigFloat!
+
+  """Sum of membersNotFound across the matching connection"""
+  membersNotFound: BigFloat!
+
+  """Sum of membersSkipped across the matching connection"""
+  membersSkipped: BigFloat!
+
+  """Sum of membersTotal across the matching connection"""
+  membersTotal: BigFloat!
+
+  """Sum of membersTotalProcessed across the matching connection"""
+  membersTotalProcessed: BigFloat!
+
+  """Sum of messageId across the matching connection"""
+  messageId: BigFloat!
+
+  """Sum of notifyUserId across the matching connection"""
+  notifyUserId: BigFloat!
+
+  """Sum of requestsProcessed across the matching connection"""
+  requestsProcessed: BigFloat!
+
+  """Sum of requestsTotal across the matching connection"""
+  requestsTotal: BigFloat!
+}
+
+type LevelRoleApplyJobVariancePopulationAggregates {
+  """Population variance of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Population variance of interactionId across the matching connection"""
+  interactionId: BigFloat
+
+  """Population variance of membersApplied across the matching connection"""
+  membersApplied: BigFloat
+
+  """Population variance of membersNotFound across the matching connection"""
+  membersNotFound: BigFloat
+
+  """Population variance of membersSkipped across the matching connection"""
+  membersSkipped: BigFloat
+
+  """Population variance of membersTotal across the matching connection"""
+  membersTotal: BigFloat
+
+  """
+  Population variance of membersTotalProcessed across the matching connection
+  """
+  membersTotalProcessed: BigFloat
+
+  """Population variance of messageId across the matching connection"""
+  messageId: BigFloat
+
+  """Population variance of notifyUserId across the matching connection"""
+  notifyUserId: BigFloat
+
+  """
+  Population variance of requestsProcessed across the matching connection
+  """
+  requestsProcessed: BigFloat
+
+  """Population variance of requestsTotal across the matching connection"""
+  requestsTotal: BigFloat
+}
+
+type LevelRoleApplyJobVarianceSampleAggregates {
+  """Sample variance of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+
+  """Sample variance of interactionId across the matching connection"""
+  interactionId: BigFloat
+
+  """Sample variance of membersApplied across the matching connection"""
+  membersApplied: BigFloat
+
+  """Sample variance of membersNotFound across the matching connection"""
+  membersNotFound: BigFloat
+
+  """Sample variance of membersSkipped across the matching connection"""
+  membersSkipped: BigFloat
+
+  """Sample variance of membersTotal across the matching connection"""
+  membersTotal: BigFloat
+
+  """
+  Sample variance of membersTotalProcessed across the matching connection
+  """
+  membersTotalProcessed: BigFloat
+
+  """Sample variance of messageId across the matching connection"""
+  messageId: BigFloat
+
+  """Sample variance of notifyUserId across the matching connection"""
+  notifyUserId: BigFloat
+
+  """Sample variance of requestsProcessed across the matching connection"""
+  requestsProcessed: BigFloat
+
+  """Sample variance of requestsTotal across the matching connection"""
+  requestsTotal: BigFloat
+}
+
+"""A connection to a list of `LevelRoleApplyJob` values."""
+type LevelRoleApplyJobsConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: LevelRoleApplyJobAggregates
+
+  """
+  A list of edges which contains the `LevelRoleApplyJob` and cursor to aid in pagination.
+  """
+  edges: [LevelRoleApplyJobsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """
+    The method to use when grouping `LevelRoleApplyJob` for these aggregates.
+    """
+    groupBy: [LevelRoleApplyJobsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: LevelRoleApplyJobsHavingInput
+  ): [LevelRoleApplyJobAggregates!]
+
+  """A list of `LevelRoleApplyJob` objects."""
+  nodes: [LevelRoleApplyJob!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """
+  The count of *all* `LevelRoleApplyJob` you could get from the connection.
+  """
+  totalCount: Int!
+}
+
+"""A `LevelRoleApplyJob` edge in the connection."""
+type LevelRoleApplyJobsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `LevelRoleApplyJob` at the end of the edge."""
+  node: LevelRoleApplyJob!
+}
+
+"""Grouping methods for `LevelRoleApplyJob` for usage during aggregation."""
+enum LevelRoleApplyJobsGroupBy {
+  CHANNEL_ID
+  CREATED_AT
+  CREATED_AT_TRUNCATED_TO_DAY
+  CREATED_AT_TRUNCATED_TO_HOUR
+  MEMBERS_APPLIED
+  MEMBERS_NOT_FOUND
+  MEMBERS_SKIPPED
+  MEMBERS_TOTAL
+  MEMBERS_TOTAL_PROCESSED
+  MESSAGE_ID
+  NOTIFY_USER_ID
+  REQUESTS_PROCESSED
+  REQUESTS_TOTAL
+  UPDATED_AT
+  UPDATED_AT_TRUNCATED_TO_DAY
+  UPDATED_AT_TRUNCATED_TO_HOUR
+}
+
+input LevelRoleApplyJobsHavingAverageInput {
+  channelId: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  interactionId: HavingBigintFilter
+  membersApplied: HavingBigintFilter
+  membersNotFound: HavingBigintFilter
+  membersSkipped: HavingBigintFilter
+  membersTotal: HavingBigintFilter
+  membersTotalProcessed: HavingBigintFilter
+  messageId: HavingBigintFilter
+  notifyUserId: HavingBigintFilter
+  requestsProcessed: HavingBigintFilter
+  requestsTotal: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input LevelRoleApplyJobsHavingDistinctCountInput {
+  channelId: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  interactionId: HavingBigintFilter
+  membersApplied: HavingBigintFilter
+  membersNotFound: HavingBigintFilter
+  membersSkipped: HavingBigintFilter
+  membersTotal: HavingBigintFilter
+  membersTotalProcessed: HavingBigintFilter
+  messageId: HavingBigintFilter
+  notifyUserId: HavingBigintFilter
+  requestsProcessed: HavingBigintFilter
+  requestsTotal: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+"""Conditions for `LevelRoleApplyJob` aggregates."""
+input LevelRoleApplyJobsHavingInput {
+  AND: [LevelRoleApplyJobsHavingInput!]
+  OR: [LevelRoleApplyJobsHavingInput!]
+  average: LevelRoleApplyJobsHavingAverageInput
+  distinctCount: LevelRoleApplyJobsHavingDistinctCountInput
+  max: LevelRoleApplyJobsHavingMaxInput
+  min: LevelRoleApplyJobsHavingMinInput
+  stddevPopulation: LevelRoleApplyJobsHavingStddevPopulationInput
+  stddevSample: LevelRoleApplyJobsHavingStddevSampleInput
+  sum: LevelRoleApplyJobsHavingSumInput
+  variancePopulation: LevelRoleApplyJobsHavingVariancePopulationInput
+  varianceSample: LevelRoleApplyJobsHavingVarianceSampleInput
+}
+
+input LevelRoleApplyJobsHavingMaxInput {
+  channelId: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  interactionId: HavingBigintFilter
+  membersApplied: HavingBigintFilter
+  membersNotFound: HavingBigintFilter
+  membersSkipped: HavingBigintFilter
+  membersTotal: HavingBigintFilter
+  membersTotalProcessed: HavingBigintFilter
+  messageId: HavingBigintFilter
+  notifyUserId: HavingBigintFilter
+  requestsProcessed: HavingBigintFilter
+  requestsTotal: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input LevelRoleApplyJobsHavingMinInput {
+  channelId: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  interactionId: HavingBigintFilter
+  membersApplied: HavingBigintFilter
+  membersNotFound: HavingBigintFilter
+  membersSkipped: HavingBigintFilter
+  membersTotal: HavingBigintFilter
+  membersTotalProcessed: HavingBigintFilter
+  messageId: HavingBigintFilter
+  notifyUserId: HavingBigintFilter
+  requestsProcessed: HavingBigintFilter
+  requestsTotal: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input LevelRoleApplyJobsHavingStddevPopulationInput {
+  channelId: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  interactionId: HavingBigintFilter
+  membersApplied: HavingBigintFilter
+  membersNotFound: HavingBigintFilter
+  membersSkipped: HavingBigintFilter
+  membersTotal: HavingBigintFilter
+  membersTotalProcessed: HavingBigintFilter
+  messageId: HavingBigintFilter
+  notifyUserId: HavingBigintFilter
+  requestsProcessed: HavingBigintFilter
+  requestsTotal: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input LevelRoleApplyJobsHavingStddevSampleInput {
+  channelId: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  interactionId: HavingBigintFilter
+  membersApplied: HavingBigintFilter
+  membersNotFound: HavingBigintFilter
+  membersSkipped: HavingBigintFilter
+  membersTotal: HavingBigintFilter
+  membersTotalProcessed: HavingBigintFilter
+  messageId: HavingBigintFilter
+  notifyUserId: HavingBigintFilter
+  requestsProcessed: HavingBigintFilter
+  requestsTotal: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input LevelRoleApplyJobsHavingSumInput {
+  channelId: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  interactionId: HavingBigintFilter
+  membersApplied: HavingBigintFilter
+  membersNotFound: HavingBigintFilter
+  membersSkipped: HavingBigintFilter
+  membersTotal: HavingBigintFilter
+  membersTotalProcessed: HavingBigintFilter
+  messageId: HavingBigintFilter
+  notifyUserId: HavingBigintFilter
+  requestsProcessed: HavingBigintFilter
+  requestsTotal: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input LevelRoleApplyJobsHavingVariancePopulationInput {
+  channelId: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  interactionId: HavingBigintFilter
+  membersApplied: HavingBigintFilter
+  membersNotFound: HavingBigintFilter
+  membersSkipped: HavingBigintFilter
+  membersTotal: HavingBigintFilter
+  membersTotalProcessed: HavingBigintFilter
+  messageId: HavingBigintFilter
+  notifyUserId: HavingBigintFilter
+  requestsProcessed: HavingBigintFilter
+  requestsTotal: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+input LevelRoleApplyJobsHavingVarianceSampleInput {
+  channelId: HavingBigintFilter
+  createdAt: HavingDatetimeFilter
+  guildId: HavingBigintFilter
+  interactionId: HavingBigintFilter
+  membersApplied: HavingBigintFilter
+  membersNotFound: HavingBigintFilter
+  membersSkipped: HavingBigintFilter
+  membersTotal: HavingBigintFilter
+  membersTotalProcessed: HavingBigintFilter
+  messageId: HavingBigintFilter
+  notifyUserId: HavingBigintFilter
+  requestsProcessed: HavingBigintFilter
+  requestsTotal: HavingBigintFilter
+  updatedAt: HavingDatetimeFilter
+}
+
+"""Methods to use when ordering `LevelRoleApplyJob`."""
+enum LevelRoleApplyJobsOrderBy {
+  CHANNEL_ID_ASC
+  CHANNEL_ID_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  INTERACTION_ID_ASC
+  INTERACTION_ID_DESC
+  MEMBERS_APPLIED_ASC
+  MEMBERS_APPLIED_DESC
+  MEMBERS_NOT_FOUND_ASC
+  MEMBERS_NOT_FOUND_DESC
+  MEMBERS_SKIPPED_ASC
+  MEMBERS_SKIPPED_DESC
+  MEMBERS_TOTAL_ASC
+  MEMBERS_TOTAL_DESC
+  MEMBERS_TOTAL_PROCESSED_ASC
+  MEMBERS_TOTAL_PROCESSED_DESC
+  MESSAGE_ID_ASC
+  MESSAGE_ID_DESC
+  NATURAL
+  NOTIFY_USER_ID_ASC
+  NOTIFY_USER_ID_DESC
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  REQUESTS_PROCESSED_ASC
+  REQUESTS_PROCESSED_DESC
+  REQUESTS_TOTAL_ASC
+  REQUESTS_TOTAL_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
 }
 
 type LevelRoleAverageAggregates {
@@ -7427,6 +8450,14 @@ type Mutation {
     input: CreateLevelRoleInput!
   ): CreateLevelRolePayload
 
+  """Creates a single `LevelRoleApplyJob`."""
+  createLevelRoleApplyJob(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateLevelRoleApplyJobInput!
+  ): CreateLevelRoleApplyJobPayload
+
   """Creates a single `LevelRoleOverride`."""
   createLevelRoleOverride(
     """
@@ -7682,6 +8713,30 @@ type Mutation {
     """
     input: DeleteLevelRoleInput!
   ): DeleteLevelRolePayload
+
+  """Deletes a single `LevelRoleApplyJob` using its globally unique id."""
+  deleteLevelRoleApplyJob(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteLevelRoleApplyJobInput!
+  ): DeleteLevelRoleApplyJobPayload
+
+  """Deletes a single `LevelRoleApplyJob` using a unique key."""
+  deleteLevelRoleApplyJobByGuildId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteLevelRoleApplyJobByGuildIdInput!
+  ): DeleteLevelRoleApplyJobPayload
+
+  """Deletes a single `LevelRoleApplyJob` using a unique key."""
+  deleteLevelRoleApplyJobByInteractionId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteLevelRoleApplyJobByInteractionIdInput!
+  ): DeleteLevelRoleApplyJobPayload
 
   """Deletes a single `LevelRole` using a unique key."""
   deleteLevelRoleByGuildIdAndRoleId(
@@ -8083,6 +9138,32 @@ type Mutation {
     input: UpdateLevelRoleInput!
   ): UpdateLevelRolePayload
 
+  """
+  Updates a single `LevelRoleApplyJob` using its globally unique id and a patch.
+  """
+  updateLevelRoleApplyJob(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateLevelRoleApplyJobInput!
+  ): UpdateLevelRoleApplyJobPayload
+
+  """Updates a single `LevelRoleApplyJob` using a unique key and a patch."""
+  updateLevelRoleApplyJobByGuildId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateLevelRoleApplyJobByGuildIdInput!
+  ): UpdateLevelRoleApplyJobPayload
+
+  """Updates a single `LevelRoleApplyJob` using a unique key and a patch."""
+  updateLevelRoleApplyJobByInteractionId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateLevelRoleApplyJobByInteractionIdInput!
+  ): UpdateLevelRoleApplyJobPayload
+
   """Updates a single `LevelRole` using a unique key and a patch."""
   updateLevelRoleByGuildIdAndRoleId(
     """
@@ -8409,6 +9490,15 @@ type Mutation {
     input: UpsertLevelRoleInput!
     where: UpsertLevelRoleWhere
   ): UpsertLevelRolePayload
+
+  """Upserts a single `LevelRoleApplyJob`."""
+  upsertLevelRoleApplyJob(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertLevelRoleApplyJobInput!
+    where: UpsertLevelRoleApplyJobWhere
+  ): UpsertLevelRoleApplyJobPayload
 
   """Upserts a single `LevelRoleOverride`."""
   upsertLevelRoleOverride(
@@ -9513,6 +10603,40 @@ type Query implements Node {
     orderBy: [GuildConfigsOrderBy!] = [PRIMARY_KEY_ASC]
   ): GuildConfigsConnection
 
+  """Reads and enables pagination through a set of `LevelRoleApplyJob`."""
+  allLevelRoleApplyJobs(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: LevelRoleApplyJobCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: LevelRoleApplyJobFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `LevelRoleApplyJob`."""
+    orderBy: [LevelRoleApplyJobsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRoleApplyJobsConnection
+
   """Reads and enables pagination through a set of `LevelRoleOverride`."""
   allLevelRoleOverrides(
     """Read all values in the set after (below) this cursor."""
@@ -10142,6 +11266,34 @@ type Query implements Node {
   ): FeedSubscription
   feedSubscriptionByFeedIdAndChannelId(channelId: BigInt!, feedId: String!): FeedSubscription
 
+  """Reads and enables pagination through a set of `EligibleLevelRole`."""
+  getEligibleLevelRoles(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: EligibleLevelRoleFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+    guildId: BigInt
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+    userIds: [BigInt]
+  ): EligibleLevelRolesConnection
+
   """Reads a single `GuildBan` using its globally unique `ID`."""
   guildBan(
     """The globally unique `ID` to be used in selecting a single `GuildBan`."""
@@ -10163,6 +11315,16 @@ type Query implements Node {
     """The globally unique `ID` to be used in selecting a single `LevelRole`."""
     nodeId: ID!
   ): LevelRole
+
+  """Reads a single `LevelRoleApplyJob` using its globally unique `ID`."""
+  levelRoleApplyJob(
+    """
+    The globally unique `ID` to be used in selecting a single `LevelRoleApplyJob`.
+    """
+    nodeId: ID!
+  ): LevelRoleApplyJob
+  levelRoleApplyJobByGuildId(guildId: BigInt!): LevelRoleApplyJob
+  levelRoleApplyJobByInteractionId(interactionId: BigInt!): LevelRoleApplyJob
   levelRoleByGuildIdAndRoleId(guildId: BigInt!, roleId: BigInt!): LevelRole
 
   """Reads a single `LevelRoleOverride` using its globally unique `ID`."""
@@ -10377,7 +11539,7 @@ type RedisGuild {
   premiumSubscriptionCount: Int
   premiumTier: Int!
   presences: [String]
-  roles: [RedisGuildRole]
+  roles: [RedisGuildRole!]!
   rulesChannelId: String
   splash: String
   systemChannelFlags: Int
@@ -12837,6 +13999,78 @@ type UpdateGuildConfigPayload {
   query: Query
 }
 
+"""All input for the `updateLevelRoleApplyJobByGuildId` mutation."""
+input UpdateLevelRoleApplyJobByGuildIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `LevelRoleApplyJob` being updated.
+  """
+  levelRoleApplyJobPatch: LevelRoleApplyJobPatch!
+}
+
+"""All input for the `updateLevelRoleApplyJobByInteractionId` mutation."""
+input UpdateLevelRoleApplyJobByInteractionIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  interactionId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `LevelRoleApplyJob` being updated.
+  """
+  levelRoleApplyJobPatch: LevelRoleApplyJobPatch!
+}
+
+"""All input for the `updateLevelRoleApplyJob` mutation."""
+input UpdateLevelRoleApplyJobInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `LevelRoleApplyJob` being updated.
+  """
+  levelRoleApplyJobPatch: LevelRoleApplyJobPatch!
+
+  """
+  The globally unique `ID` which will identify a single `LevelRoleApplyJob` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `LevelRoleApplyJob` mutation."""
+type UpdateLevelRoleApplyJobPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `LevelRoleApplyJob` that was updated by this mutation."""
+  levelRoleApplyJob: LevelRoleApplyJob
+
+  """An edge for our `LevelRoleApplyJob`. May be used by Relay 1."""
+  levelRoleApplyJobEdge(
+    """The method to use when ordering `LevelRoleApplyJob`."""
+    orderBy: [LevelRoleApplyJobsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRoleApplyJobsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the `updateLevelRoleByGuildIdAndRoleId` mutation."""
 input UpdateLevelRoleByGuildIdAndRoleIdInput {
   """
@@ -14071,6 +15305,45 @@ type UpsertGuildConfigPayload {
 """Where conditions for the upsert `GuildConfig` mutation."""
 input UpsertGuildConfigWhere {
   id: BigInt
+}
+
+"""All input for the upsert `LevelRoleApplyJob` mutation."""
+input UpsertLevelRoleApplyJobInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `LevelRoleApplyJob` to be upserted by this mutation."""
+  levelRoleApplyJob: LevelRoleApplyJobInput!
+}
+
+"""The output of our upsert `LevelRoleApplyJob` mutation."""
+type UpsertLevelRoleApplyJobPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `LevelRoleApplyJob` that was upserted by this mutation."""
+  levelRoleApplyJob: LevelRoleApplyJob
+
+  """An edge for our `LevelRoleApplyJob`. May be used by Relay 1."""
+  levelRoleApplyJobEdge(
+    """The method to use when ordering `LevelRoleApplyJob`."""
+    orderBy: [LevelRoleApplyJobsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): LevelRoleApplyJobsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `LevelRoleApplyJob` mutation."""
+input UpsertLevelRoleApplyJobWhere {
+  guildId: BigInt
+  interactionId: BigInt
 }
 
 """All input for the upsert `LevelRole` mutation."""

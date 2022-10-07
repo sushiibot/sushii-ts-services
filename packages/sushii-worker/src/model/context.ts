@@ -1,4 +1,5 @@
 import { GraphQLClient } from "graphql-request";
+import { APIUser } from "discord-api-types/v10";
 import CDNClient from "./cdn";
 import { ConfigI } from "./config";
 import SushiiImageServerClient from "./image_server";
@@ -6,6 +7,7 @@ import RESTClient from "./rest";
 import { getSdk, SdkFunctionWrapper } from "../generated/graphql";
 import SushiiSDK from "./api";
 import Metrics from "./metrics";
+import AmqpGateway from "./AmqpGateway";
 
 function clientMetricsWrapper(metrics: Metrics): SdkFunctionWrapper {
   return async <T>(action: () => Promise<T>): Promise<T> => {
@@ -28,7 +30,11 @@ export default class Context {
 
   public readonly CDN: CDNClient;
 
-  constructor(config: ConfigI, metrics: Metrics) {
+  public readonly gateway: AmqpGateway;
+
+  private currentUser?: APIUser;
+
+  constructor(config: ConfigI, metrics: Metrics, gateway: AmqpGateway) {
     this.graphQLClient = new GraphQLClient(config.graphqlApiURL, {
       headers: {
         Authorization: `Bearer ${config.graphqlApiToken}`,
@@ -41,5 +47,16 @@ export default class Context {
     this.sushiiImageServer = new SushiiImageServerClient(config);
     this.REST = new RESTClient(config);
     this.CDN = new CDNClient();
+    this.gateway = gateway;
+  }
+
+  async getCurrentUser(): Promise<APIUser> {
+    // Fetch once on the first time if not already fetched
+    if (!this.currentUser) {
+      const currentUserRes = await this.REST.getCurrentUser();
+      this.currentUser = currentUserRes.unwrap();
+    }
+
+    return this.currentUser;
   }
 }

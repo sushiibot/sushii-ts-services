@@ -18,7 +18,6 @@ export interface ConfigI {
   graphqlApiToken: string;
   sushiiImageServerURL: string;
   amqpUrl: string;
-  amqpQueueName: string;
 
   // Example: 'https://discord.com/api'
   proxyUrl: string;
@@ -40,8 +39,6 @@ export class Config implements ConfigI {
 
   public amqpUrl: string;
 
-  public amqpQueueName: string;
-
   public proxyUrl: string;
 
   constructor() {
@@ -53,7 +50,6 @@ export class Config implements ConfigI {
     this.graphqlApiToken = requiredEnv("SUSHII_GRAPHQL_TOKEN");
     this.sushiiImageServerURL = requiredEnv("SUSHII_IMAGE_SERVER_URL");
     this.amqpUrl = requiredEnv("AMQP_URL");
-    this.amqpQueueName = requiredEnv("AMQP_QUEUE_NAME");
     this.proxyUrl = requiredEnv("TWILIGHT_PROXY_URL");
   }
 }

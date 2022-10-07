@@ -46,6 +46,7 @@ import Metrics from "./model/metrics";
 import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
 import EventHandler from "./events/EventHandler";
+import AmqpGateway from "./model/AmqpGateway";
 
 interface FocusedOption {
   path: string;
@@ -145,10 +146,10 @@ export default class Client {
    */
   private selectMenuHandlers: SelectMenuHandler[];
 
-  constructor(config: ConfigI, metrics: Metrics) {
+  constructor(config: ConfigI, metrics: Metrics, gateway: AmqpGateway) {
     this.config = config;
     this.metrics = metrics;
-    this.context = new Context(config, metrics);
+    this.context = new Context(config, metrics, gateway);
     this.commands = new Collection();
     this.autocompleteHandlers = new Collection();
     this.modalHandlers = new Collection();

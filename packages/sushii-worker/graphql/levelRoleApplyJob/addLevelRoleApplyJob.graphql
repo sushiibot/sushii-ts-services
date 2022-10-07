@@ -1,0 +1,27 @@
+mutation createLevelRoleApplyJob(
+  $guildId: BigInt!
+  $interactionId: BigInt!
+  $notifyUserId: BigInt!
+  $channelId: BigInt!
+  $messageId: BigInt!
+  $requestsTotal: BigInt!
+  $membersTotal: BigInt!
+) {
+  createLevelRoleApplyJob(
+    input: {
+      levelRoleApplyJob: {
+        guildId: $guildId
+        interactionId: $interactionId
+        notifyUserId: $notifyUserId
+        channelId: $channelId
+        messageId: $messageId
+        requestsTotal: $requestsTotal
+        membersTotal: $membersTotal
+      }
+    }
+  ) {
+    levelRoleApplyJob {
+      ...LevelRoleApplyJobData
+    }
+  }
+}

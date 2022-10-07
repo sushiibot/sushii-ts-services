@@ -5,7 +5,10 @@ import Context from "../../model/context";
 import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
 import CommandInteractionOptionResolver from "../resolver";
-import { interactionReplyErrorPlainMessage } from "../responses/error";
+import {
+  interactionReplyErrorMessage,
+  interactionReplyErrorPlainMessage,
+} from "../responses/error";
 import { getUserRank } from "./rank.service";
 
 export default class RankCommand extends SlashCommandHandler {
@@ -28,6 +31,13 @@ export default class RankCommand extends SlashCommandHandler {
       throw new Error("Guild missing");
     }
 
+    const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
+    if (ackRes.err) {
+      await interactionReplyErrorMessage(ctx, interaction, ackRes.val.message);
+
+      return;
+    }
+
     const options = new CommandInteractionOptionResolver(
       interaction.data.options,
       interaction.data.resolved
@@ -47,7 +57,7 @@ export default class RankCommand extends SlashCommandHandler {
       return;
     }
 
-    await ctx.REST.interactionReply(
+    await ctx.REST.interactionEditOriginal(
       interaction,
       {
         attachments: [

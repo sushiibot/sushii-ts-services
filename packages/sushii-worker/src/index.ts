@@ -5,7 +5,7 @@ import * as Sentry from "@sentry/node";
 import log from "./logger";
 import InteractionClient from "./client";
 import { Config } from "./model/config";
-import AmqpGateway from "./gateway/amqp";
+import AmqpGateway from "./model/AmqpGateway";
 import initI18next from "./i18next";
 import addCommands from "./interactions/commands";
 import server from "./server";
@@ -34,7 +34,7 @@ async function main(): Promise<void> {
   const rabbitGatewayClient = new AmqpGateway(amqpClient, config);
   const metrics = new Metrics();
 
-  const client = new InteractionClient(config, metrics);
+  const client = new InteractionClient(config, metrics, rabbitGatewayClient);
   addCommands(client);
   addEventHandlers(client);
 

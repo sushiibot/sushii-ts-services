@@ -25,7 +25,7 @@ import Color from "../../utils/colors";
 import parseEmoji from "../../utils/parseEmoji";
 import customIds from "../customIds";
 import { SlashCommandHandler } from "../handlers";
-import { getHighestMemberRole } from "../moderation/hasPermission";
+import { getHighestMemberRole } from "../../utils/hasPermission";
 import CommandInteractionOptionResolver from "../resolver";
 import {
   interactionReplyErrorMessage,

@@ -12,7 +12,7 @@ import Context from "../../model/context";
 import Color from "../../utils/colors";
 import toSentenceCase from "../../utils/toSentenceCase";
 import { ActionType } from "./ActionType";
-import hasPermissionTargetingMember from "./hasPermission";
+import hasPermissionTargetingMember from "../../utils/hasPermission";
 import ModActionData, { ModActionTarget } from "./ModActionData";
 import sendModActionDM from "./sendDm";
 

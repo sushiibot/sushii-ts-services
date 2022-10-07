@@ -115,7 +115,8 @@ export default class RESTClient {
 
   public interactionEditOriginal(
     interaction: APIInteraction,
-    msg: APIInteractionResponseCallbackData
+    msg: APIInteractionResponseCallbackData,
+    files?: RawFile[]
   ): APIPromiseResult<RESTPatchAPIWebhookWithTokenMessageResult> {
     // Webhooks use application id not interaction id
     return this.handleError(
@@ -123,6 +124,7 @@ export default class RESTClient {
         Routes.webhookMessage(interaction.application_id, interaction.token),
         {
           body: msg,
+          files,
         }
       )
     );
@@ -214,6 +216,10 @@ export default class RESTClient {
     return this.handleError(
       this.rest.delete(Routes.channelMessage(channelID, messageID))
     );
+  }
+
+  public getCurrentUser(): APIPromiseResult<RESTGetAPIUserResult> {
+    return this.handleError(this.rest.get(Routes.user()));
   }
 
   public getUser(userId: string): APIPromiseResult<RESTGetAPIUserResult> {

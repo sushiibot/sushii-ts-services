@@ -1,0 +1,15 @@
+mutation updateLevelRoleApplyJob(
+  $guildId: BigInt!
+  $levelRoleApplyJobPatch: LevelRoleApplyJobPatch!
+) {
+  updateLevelRoleApplyJobByGuildId(
+    input: {
+      levelRoleApplyJobPatch: $levelRoleApplyJobPatch
+      guildId: $guildId
+    }
+  ) {
+    levelRoleApplyJob {
+      ...LevelRoleApplyJobData
+    }
+  }
+}
