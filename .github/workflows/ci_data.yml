@@ -1,19 +1,16 @@
-name: Node.js CI
+name: sushii data CI
 
 on:
   push:
+    paths:
+      - packages/sushii-data/**
   pull_request:
     branches: [ main ]
 
 jobs:
-  build:
+  build_data:
+    name: Build and test sushii-data
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        app:
-          - sushii-data
-          - sushii-worker
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node.js
@@ -21,5 +18,5 @@ jobs:
         with:
           node-version: 16
       - run: yarn install --immutable
-      - run: yarn workspace @sushiibot/${{matrix.app}} build
-      - run: yarn workspace @sushiibot/${{matrix.app}} test
+      - run: yarn workspace @sushiibot/sushii-data build
+      - run: yarn workspace @sushiibot/sushii-data test

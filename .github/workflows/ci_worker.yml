@@ -1,0 +1,74 @@
+name: sushii worker CI
+
+on:
+  push:
+    paths:
+      - packages/sushii-worker/**
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build_worker:
+    name: Build and test sushii-worker
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: timescale/timescaledb:latest-pg14
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+      redis:
+        image: eqalpha/keydb:latest
+        ports:
+          - 6379:6379
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install sushii-worker dependencies
+        run: yarn install --immutable
+      - name: Build sushii-worker
+        run: yarn workspace @sushiibot/sushii-worker build
+
+      - name: Checkout sushii-db migrations
+        uses: actions/checkout@v3
+        with:
+          repository: sushiibot/sushii-db
+          path: ./sushii-db
+
+      - name: Install sushii-db dependencies
+        working-directory: ./sushii-db
+        run: yarn install
+
+      - name: Initialize database
+        working-directory: ./sushii-db
+        run: |
+          cp .env.ci .env
+          yarn dotenv -- yarn gm compile ./migrations/afterReset.sql | psql postgresql://postgres:postgres@localhost:5432/postgres
+
+      - name: Run sushii-db migrations
+        working-directory: ./sushii-db
+        run: yarn dotenv -- yarn migrate
+
+      - name: Start sushii-data
+        run: |
+          cp ./packages/sushii-data/.env.ci ./packages/sushii-data/.env
+          yarn workspace @sushiibot/sushii-data build
+          yarn workspace @sushiibot/sushii-data start:prod &
+
+      - name: Test sushii-worker
+        run: |
+          cp ./packages/sushii-worker/.env.ci ./packages/sushii-worker/.env
+          yarn workspace @sushiibot/sushii-worker test
