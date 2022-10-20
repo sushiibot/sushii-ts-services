@@ -24,11 +24,7 @@ function parseUnicodeEmoji(s: string): ParsedEmoji | null {
   };
 }
 
-export default function parseEmoji(s?: string): ParsedEmoji | null {
-  if (!s) {
-    return null;
-  }
-
+export default function parseEmoji(s: string): ParsedEmoji | null {
   const match = s.match(RE_EMOJI);
 
   if (!match || !match.groups) {

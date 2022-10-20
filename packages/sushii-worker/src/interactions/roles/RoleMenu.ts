@@ -948,15 +948,21 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
-    const parsedEmoji = parseEmoji(emojiStr);
-    if (!parsedEmoji) {
-      await interactionReplyErrorMessage(
-        ctx,
-        interaction,
-        t("rolemenu.roleoptions.error.invalid_emoji")
-      );
+    // Only parseEmoji if emojiStr is provided
+    let parsedEmoji;
+    if (emojiStr) {
+      parsedEmoji = parseEmoji(emojiStr);
 
-      return;
+      // Error only sent when emojiStr is provided
+      if (!parsedEmoji) {
+        await interactionReplyErrorMessage(
+          ctx,
+          interaction,
+          t("rolemenu.roleoptions.error.invalid_emoji")
+        );
+
+        return;
+      }
     }
 
     if (description && description.length > 100) {
@@ -974,12 +980,12 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       menuName,
       roleId: role.id,
       description,
-      emoji: parsedEmoji.string,
+      emoji: parsedEmoji?.string,
     });
 
     const fields = [];
 
-    if (emojiStr) {
+    if (parsedEmoji) {
       fields.push({
         name: "Emoji",
         value: parsedEmoji.string,

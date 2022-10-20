@@ -5,6 +5,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "test:worker": "yarn workspace @sushiibot/sushii-worker test"
+  },
   "resolutions": {
     "discord-api-types": "0.29.0",
     "form-data": "4.0.0"
