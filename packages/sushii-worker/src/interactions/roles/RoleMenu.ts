@@ -1233,7 +1233,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     if (res.err) {
       logger.error(res.val, "Error sending role menu message");
       await ctx.REST.interactionReply(interaction, {
-        content: t("rolemenu.edit.error.send_message"),
+        content: t("rolemenu.send.error.send_message"),
       });
 
       return;
