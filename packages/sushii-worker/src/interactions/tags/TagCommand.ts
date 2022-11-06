@@ -346,6 +346,8 @@ export default class TagCommand extends SlashCommandHandler {
             .toJSON(),
         ],
       });
+
+      return;
     }
 
     const embedDataRes = await getFieldsAndFiles(tagContent, tagAttachment);
@@ -1002,7 +1004,7 @@ export default class TagCommand extends SlashCommandHandler {
       .setFields([
         {
           name: t("tag.delete.success.content", { ns: "commands" }),
-          value: tag.tagByGuildIdAndTagName.content,
+          value: tag.tagByGuildIdAndTagName.content || "No content",
         },
         {
           name: t("tag.delete.success.owner", { ns: "commands" }),
