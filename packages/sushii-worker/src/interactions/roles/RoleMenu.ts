@@ -727,7 +727,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     // First match to get the ID group
     const roleIds = [...roles.matchAll(RE_ROLE)].map((match) => match[1]);
-    if (!roleIds) {
+    if (roleIds.length === 0) {
       await ctx.REST.interactionReply(interaction, {
         content: t("rolemenu.addroles.error.no_roles_given"),
       });
@@ -782,16 +782,16 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     }
 
     // Add new roles to the menu
-    let newRoleIds =
+    let newAllRoleIds =
       roleMenu
         .safeUnwrap()
         .roleMenuRolesByGuildIdAndMenuName.nodes.map((n) => n.roleId) || [];
-    newRoleIds = newRoleIds.concat(roleIds);
+    newAllRoleIds = newAllRoleIds.concat(roleIds);
 
     // Deduplicate -- sets are ordered so this should preserve order
-    newRoleIds = [...new Set(newRoleIds)];
+    newAllRoleIds = [...new Set(newAllRoleIds)];
 
-    if (newRoleIds.length > 25) {
+    if (newAllRoleIds.length > 25) {
       await ctx.REST.interactionReply(interaction, {
         content: t("rolemenu.addroles.error.too_many_roles"),
       });
@@ -816,7 +816,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             },
             {
               name: "New menu roles",
-              value: newRoleIds.map((id) => `<@&${id}>`).join(" "),
+              value: newAllRoleIds.map((id) => `<@&${id}>`).join(" "),
             },
           ])
           .setColor(Color.Success)
