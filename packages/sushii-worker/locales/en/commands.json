@@ -117,7 +117,7 @@
       "error": {
         "menu_has_no_roles": "The role menu has no roles, add some roles with `/rolemenu addroles` before sending it!",
         "menu_has_less_roles_than_max": "The role menu has less roles than the maximum allowed, add more roles with `/rolemenu addroles` or reduce the max roles with `/rolemenu edit` before sending it! ",
-        "send_message": "Failed to send the role menu message. :("
+        "send_message": "Failed to send the role menu message. :( Make sure I have permission to send messages in the desired channel!"
       }
     }
   },
