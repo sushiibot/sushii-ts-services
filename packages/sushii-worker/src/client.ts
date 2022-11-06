@@ -348,20 +348,28 @@ export default class Client {
     } catch (e) {
       const invoker = getInvokerUser(interaction);
 
-      Sentry.captureException(e, {
-        user: {
-          id: invoker.id,
-          username: invoker.username,
-        },
-        tags: {
-          type: "command",
-          command_name: getFullCommandName(interaction),
-        },
-        contexts: {
-          validationError: {
-            value: validationErrorToString(e),
+      Sentry.withScope((scope) => {
+        scope.addAttachment({
+          filename: "interaction.json",
+          data: JSON.stringify(interaction, null, 2),
+          contentType: "application/json",
+        });
+
+        Sentry.captureException(e, {
+          user: {
+            id: invoker.id,
+            username: invoker.username,
           },
-        },
+          tags: {
+            type: "command",
+            command_name: getFullCommandName(interaction),
+          },
+          contexts: {
+            validationError: {
+              value: validationErrorToString(e),
+            },
+          },
+        });
       });
 
       log.error(e, "error running command %s", interaction.data.name);
