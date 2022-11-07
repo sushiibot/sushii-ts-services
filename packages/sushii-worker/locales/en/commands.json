@@ -95,7 +95,7 @@
     },
     "addroles": {
       "error": {
-        "no_roles_given": "Please provide at least one role to add.",
+        "no_roles_given": "Please provide at least one role to add. Make sure to use role **@mentions** and not just the name or ID!",
         "higher_role_given": "You cannot add a role higher than your highest role.",
         "too_many_roles": "You can only add up to 25 roles."
       }
