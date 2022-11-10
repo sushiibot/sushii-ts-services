@@ -147,7 +147,8 @@
         "title": "Tag {{tagName}}",
         "content": "Content",
         "owner": "Owner",
-        "use_count": "Use Count"
+        "use_count": "Use Count",
+        "attachment": "Attachment"
       }
     },
     "fulllist": {

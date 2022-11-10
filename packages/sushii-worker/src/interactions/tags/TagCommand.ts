@@ -465,6 +465,16 @@ export default class TagCommand extends SlashCommandHandler {
         parse: [],
       },
     });
+
+    const newUseCount = parseInt(tag.tagByGuildIdAndTagName.useCount, 10) + 1;
+
+    await ctx.sushiiAPI.sdk.updateTag({
+      guildId: interaction.guild_id,
+      tagName,
+      tagPatch: {
+        useCount: newUseCount.toString(),
+      },
+    });
   }
 
   static async randomHandler(
@@ -568,7 +578,11 @@ export default class TagCommand extends SlashCommandHandler {
       .setFields([
         {
           name: t("tag.info.success.content", { ns: "commands" }),
-          value: tag.tagByGuildIdAndTagName.content,
+          value: tag.tagByGuildIdAndTagName.content || "No content",
+        },
+        {
+          name: t("tag.info.success.attachment", { ns: "commands" }),
+          value: tag.tagByGuildIdAndTagName.attachment || "No attachment",
         },
         {
           name: t("tag.info.success.owner", { ns: "commands" }),
@@ -579,6 +593,7 @@ export default class TagCommand extends SlashCommandHandler {
           value: tag.tagByGuildIdAndTagName.useCount,
         },
       ])
+      .setImage(tag.tagByGuildIdAndTagName.attachment || null)
       .setTimestamp(dayjs(tag.tagByGuildIdAndTagName.created).toDate());
 
     await ctx.REST.interactionReply(interaction, {
