@@ -59,6 +59,16 @@ export default class TimeoutCommand extends SlashCommandHandler {
     }
 
     const data = new ModActionData(interaction);
+    if (data.communicationDisabledUntil().err) {
+      await interactionReplyErrorMessage(
+        ctx,
+        interaction,
+        "Invalid duration! Please use a valid duration such as 1d, 6h, etc."
+      );
+
+      return;
+    }
+
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
       await interactionReplyErrorMessage(ctx, interaction, fetchTargetsRes.val);
