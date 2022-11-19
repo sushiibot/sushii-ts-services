@@ -56,6 +56,7 @@ jobs:
         working-directory: ./sushii-db
         run: |
           cp .env.ci .env
+          yarn dotenv -- yarn gm compile ./init.sql | psql postgresql://postgres:postgres@localhost:5432/postgres
           yarn dotenv -- yarn gm compile ./migrations/afterReset.sql | psql postgresql://postgres:postgres@localhost:5432/postgres
 
       - name: Run sushii-db migrations
