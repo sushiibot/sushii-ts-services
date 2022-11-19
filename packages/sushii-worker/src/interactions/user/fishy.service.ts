@@ -82,6 +82,9 @@ export enum CatchableType {
   // Patreon Fishies
   Gunnie = "gunnie 🔫",
   Wawa = "wawa 🍉",
+  Dan = "dan",
+  Crazy = "crazy fishy 🤪",
+  Jae = "jae fishy",
 }
 
 const scaledTypes = [
@@ -209,8 +212,10 @@ function getFishyValueRange(catchable: CatchableType): FishyValueRange {
       return { min: 1, max: 2, skew: 1 };
     // Patreon
     case CatchableType.Gunnie:
-      return { min: 20, max: 80, skew: 2 };
     case CatchableType.Wawa:
+    case CatchableType.Dan:
+    case CatchableType.Crazy:
+    case CatchableType.Jae:
       return { min: 20, max: 80, skew: 2 };
   }
 }
