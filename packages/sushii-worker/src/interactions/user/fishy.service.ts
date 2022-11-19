@@ -67,18 +67,21 @@ export enum CatchableType {
   Halibut = "halibut",
   SeaBass = "sea bass",
   YellowfinTuna = "yellow tuna",
-  PufferFish = "puffer",
+  PufferFish = "puffer fishy",
   WildKingSalmon = "wild king salmon",
-  SwordFish = "swordfish", // fish appended to end of name
+  SwordFish = "swordfish fish", // fish appended to end of name
   BluefinTuna = "bluefin tuna",
   // Constant probability catchable types
   Seaweed = "seaweed",
   Algae = "algae",
   // Special fishy types with custom rarities
-  Golden = "golden",
-  Rotten = "rotten",
-  MrsPuff = "Mrs. Puff", // sorry Mrs. Puff
-  RustySpoon = "rusty spoon",
+  Golden = "golden fishy <:goldenFishy:418504966337069057>",
+  Rotten = "rotten 🦴",
+  MrsPuff = "Mrs. Puff 🐡", // sorry Mrs. Puff
+  RustySpoon = "rusty spoon 🥄",
+  // Patreon Fishies
+  Gunnie = "gunnie 🔫",
+  Wawa = "wawa 🍉",
 }
 
 const scaledTypes = [
@@ -93,6 +96,24 @@ const scaledTypes = [
   CatchableType.WildKingSalmon,
   CatchableType.SwordFish,
   CatchableType.BluefinTuna,
+  CatchableType.Gunnie,
+  CatchableType.Wawa,
+];
+
+const scaledTypeWeights = [
+  100, // CatchableType.Anchovy
+  70, // CatchableType.Salmon
+  60, // CatchableType.AtlanticSalmon
+  50, // CatchableType.Tuna
+  70, // CatchableType.Halibut
+  30, // CatchableType.SeaBass
+  40, // CatchableType.YellowfinTuna
+  20, // CatchableType.PufferFish
+  70, // CatchableType.WildKingSalmon
+  20, // CatchableType.SwordFish
+  40, // CatchableType.BluefinTuna
+  40, // CatchableType.Gunnie,
+  40, // CatchableType.Wawa,
 ];
 
 const normalTypes = [CatchableType.Seaweed, CatchableType.Algae];
@@ -103,6 +124,25 @@ const rareTypes = [
   CatchableType.MrsPuff,
   CatchableType.RustySpoon,
 ];
+
+function weightedRandom<T>(items: T[], weights: number[]): T {
+  let i;
+  const weightsCopy = weights.slice();
+
+  for (i = 0; i < weightsCopy.length; i += 1) {
+    weightsCopy[i] += weightsCopy[i - 1] || 0;
+  }
+
+  const random = Math.random() * weightsCopy[weightsCopy.length - 1];
+
+  for (i = 0; i < weightsCopy.length; i += 1) {
+    if (weightsCopy[i] > random) {
+      break;
+    }
+  }
+
+  return items[i];
+}
 
 /**
  * Gets a random fishy type, skewed towards lower indexed types as common
@@ -116,14 +156,11 @@ function getRandomCatchable(): CatchableType {
     return rareTypes[randInt];
   }
 
-  // Check normal types
-  if (randInt < normalTypes.length + rareTypes.length) {
+  if (randInt < rareTypes.length + normalTypes.length * 2) {
     return normalTypes[randInt % normalTypes.length];
   }
 
-  // Scaled types - Lower index fishies more common
-  const idx = Math.floor(randDistNumber(0, scaledTypes.length, 2));
-  return scaledTypes[idx];
+  return weightedRandom(scaledTypes, scaledTypeWeights);
 }
 
 export interface FishyValueRange {
@@ -145,15 +182,15 @@ function getFishyValueRange(catchable: CatchableType): FishyValueRange {
     case CatchableType.AtlanticSalmon:
       return { min: 20, max: 25, skew: 3 };
     case CatchableType.Tuna:
-      return { min: 30, max: 40, skew: 3 };
+      return { min: 30, max: 80, skew: 3 };
     case CatchableType.SeaBass:
       return { min: 40, max: 50, skew: 3 };
     case CatchableType.YellowfinTuna:
       return { min: 40, max: 50, skew: 3 };
     case CatchableType.PufferFish:
-      return { min: 20, max: 30, skew: 3 };
+      return { min: 20, max: 50, skew: 3 };
     case CatchableType.WildKingSalmon:
-      return { min: 20, max: 30, skew: 3 };
+      return { min: 20, max: 50, skew: 3 };
     case CatchableType.SwordFish:
       return { min: 40, max: 60, skew: 3 };
     case CatchableType.BluefinTuna:
@@ -163,13 +200,18 @@ function getFishyValueRange(catchable: CatchableType): FishyValueRange {
     case CatchableType.Algae:
       return { min: 1, max: 5, skew: 1 };
     case CatchableType.Golden:
-      return { min: 100, max: 300, skew: 3 };
+      return { min: 100, max: 400, skew: 3 };
     case CatchableType.Rotten:
       return { min: 1, max: 5, skew: 3 };
     case CatchableType.MrsPuff:
       return { min: 50, max: 80, skew: 3 };
     case CatchableType.RustySpoon:
       return { min: 1, max: 2, skew: 1 };
+    // Patreon
+    case CatchableType.Gunnie:
+      return { min: 20, max: 80, skew: 2 };
+    case CatchableType.Wawa:
+      return { min: 20, max: 80, skew: 2 };
   }
 }
 
@@ -208,7 +250,7 @@ export async function fishyForUser(
   if (nextFishies.isAfter(dayjs.utc())) {
     // Time is still before nextfishies time
     // User has already caught fishies today
-    return nextFishies;
+    // return nextFishies;
   }
 
   logger.debug(dbTargetUser, "target before");
