@@ -255,7 +255,7 @@ export async function fishyForUser(
   if (nextFishies.isAfter(dayjs.utc())) {
     // Time is still before nextfishies time
     // User has already caught fishies today
-    // return nextFishies;
+    return nextFishies;
   }
 
   logger.debug(dbTargetUser, "target before");
