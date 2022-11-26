@@ -221,7 +221,8 @@ services:
             - POSTGRES_PASSWORD=$SHLINK_DB_PASSWORD
 networks:
     web:
-        internal: false
+        external: true
+        name: sushii-2_web
     sushii_net:
-        external:
-            name: sushii-2_sushii_net
+        external: true
+        name: sushii-2_sushii_net
