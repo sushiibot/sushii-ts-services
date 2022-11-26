@@ -6,6 +6,7 @@ import {
   GatewayMessageDeleteDispatchData,
   GatewayMessageUpdateDispatchData,
 } from "discord-api-types/v10";
+import { None, Option, Some } from "ts-results";
 import { Message, MsgLogBlockType } from "../generated/graphql";
 import logger from "../logger";
 import Context from "../model/context";
@@ -16,6 +17,10 @@ type EventData =
   | GatewayMessageDeleteDispatchData
   | GatewayMessageDeleteBulkDispatchData
   | GatewayMessageUpdateDispatchData;
+
+function quoteMarkdownString(str: string): string {
+  return str.split("\n").join("\n> ");
+}
 
 function isChannelIgnored(
   eventType: GatewayDispatchEvents,
@@ -54,18 +59,45 @@ function getMessageIDs(event: EventData): string[] {
 }
 
 function buildEmbed(
+  ctx: Context,
   eventType: GatewayDispatchEvents,
   event: EventData,
   messages: Message[]
-): EmbedBuilder {
+): Option<EmbedBuilder> {
   let title;
   let color;
-  let description;
+  let description = "";
 
   if (eventType === GatewayDispatchEvents.MessageDelete) {
     title = "Message Deleted";
     color = Color.Error;
-    description = messages[0].msg as Partial<APIMessage>;
+
+    const msg = messages[0].msg as Partial<APIMessage>;
+
+    if (msg.content) {
+      description += "**Content**";
+      description += "\n";
+      description += msg.content;
+      description += "\n";
+    }
+
+    if (msg.sticker_items && msg.sticker_items.length > 0) {
+      const sticker = msg.sticker_items[0];
+      const stickerURL = ctx.CDN.cdn.sticker(sticker.id);
+
+      description += "**Stickers**";
+      description += "\n";
+      description += `> [${sticker.name}](${stickerURL})`;
+      description += "\n";
+    }
+
+    if (msg.attachments && msg.attachments.length > 0) {
+      const attachments = msg.attachments.map((a) => `> ${a.url}`).join("\n");
+
+      description += "**Attachments**";
+      description += "\n";
+      description += attachments;
+    }
   } else if (eventType === GatewayDispatchEvents.MessageDeleteBulk) {
     title = "Multiple Messages Deleted";
     color = Color.Error;
@@ -73,21 +105,39 @@ function buildEmbed(
       .map((m) => `<@${m.authorId}>: ${m.content}`)
       .join("\n");
   } else if (eventType === GatewayDispatchEvents.MessageUpdate) {
+    const updateEvent = event as GatewayMessageUpdateDispatchData;
+
+    // Ignore edits for messages without content
+    if (!updateEvent.content) {
+      return None;
+    }
+
+    // No changes, e.g. could be proxy url updated
+    if (updateEvent.content === messages[0].content) {
+      return None;
+    }
+
     title = "Message Edited";
     color = Color.Info;
 
-    const updateEvent = event as GatewayMessageUpdateDispatchData;
-
-    description = `**Before:** ${messages[0].content}\n**After:** ${updateEvent.content}`;
+    description = "**Before:**";
+    description += "\n";
+    description += quoteMarkdownString(messages[0].content);
+    description += "\n";
+    description += "**After:**";
+    description += "\n";
+    description += quoteMarkdownString(updateEvent.content);
   } else {
     throw new Error(`Invalid event type ${eventType}`);
   }
 
-  return new EmbedBuilder()
-    .setTitle(title)
-    .setDescription(description)
-    .setColor(color)
-    .setTimestamp(new Date());
+  return Some(
+    new EmbedBuilder()
+      .setTitle(title)
+      .setDescription(description)
+      .setColor(color)
+      .setTimestamp(new Date())
+  );
 }
 
 export default class MsgLogHandler extends EventHandler {
@@ -147,10 +197,15 @@ export default class MsgLogHandler extends EventHandler {
       return;
     }
 
-    const embed = buildEmbed(eventType, event, messages);
+    const embed = buildEmbed(ctx, eventType, event, messages);
+
+    if (embed.none) {
+      // No embed to send, could be just proxy url getting updated
+      return;
+    }
 
     await ctx.REST.sendChannelMessage(guildConfigById.logMsg, {
-      embeds: [embed.toJSON()],
+      embeds: [embed.safeUnwrap().toJSON()],
     });
   }
 }
