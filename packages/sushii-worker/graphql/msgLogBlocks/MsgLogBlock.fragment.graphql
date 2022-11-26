@@ -1,0 +1,5 @@
+fragment MsgLogBlockData on MsgLogBlock {
+  guildId
+  channelId
+  blockType
+}

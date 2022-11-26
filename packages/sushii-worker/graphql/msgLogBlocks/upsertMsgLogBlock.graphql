@@ -1,0 +1,19 @@
+mutation upsertMsgLogBlock(
+  $guildId: BigInt!
+  $channelId: BigInt!
+  $blockType: MsgLogBlockType!
+) {
+  upsertMsgLogBlock(
+    input: {
+      msgLogBlock: {
+        guildId: $guildId
+        channelId: $channelId
+        blockType: $blockType
+      }
+    }
+  ) {
+    msgLogBlock {
+      ...MsgLogBlockData
+    }
+  }
+}

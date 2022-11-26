@@ -1317,6 +1317,41 @@ type CreateModLogPayload {
   query: Query
 }
 
+"""All input for the create `MsgLogBlock` mutation."""
+input CreateMsgLogBlockInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `MsgLogBlock` to be created by this mutation."""
+  msgLogBlock: MsgLogBlockInput!
+}
+
+"""The output of our create `MsgLogBlock` mutation."""
+type CreateMsgLogBlockPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `MsgLogBlock` that was created by this mutation."""
+  msgLogBlock: MsgLogBlock
+
+  """An edge for our `MsgLogBlock`. May be used by Relay 1."""
+  msgLogBlockEdge(
+    """The method to use when ordering `MsgLogBlock`."""
+    orderBy: [MsgLogBlocksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MsgLogBlocksEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the create `Mute` mutation."""
 input CreateMuteInput {
   """
@@ -2437,6 +2472,56 @@ type DeleteModLogPayload {
     """The method to use when ordering `ModLog`."""
     orderBy: [ModLogsOrderBy!] = [PRIMARY_KEY_ASC]
   ): ModLogsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteMsgLogBlockByGuildIdAndChannelId` mutation."""
+input DeleteMsgLogBlockByGuildIdAndChannelIdInput {
+  channelId: BigInt!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+}
+
+"""All input for the `deleteMsgLogBlock` mutation."""
+input DeleteMsgLogBlockInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `MsgLogBlock` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `MsgLogBlock` mutation."""
+type DeleteMsgLogBlockPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedMsgLogBlockId: ID
+
+  """The `MsgLogBlock` that was deleted by this mutation."""
+  msgLogBlock: MsgLogBlock
+
+  """An edge for our `MsgLogBlock`. May be used by Relay 1."""
+  msgLogBlockEdge(
+    """The method to use when ordering `MsgLogBlock`."""
+    orderBy: [MsgLogBlocksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MsgLogBlocksEdge
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
@@ -8367,6 +8452,368 @@ enum ModLogsOrderBy {
   USER_TAG_DESC
 }
 
+type MsgLogBlock implements Node {
+  blockType: MsgLogBlockType!
+  channelId: BigInt!
+  guildId: BigInt!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+}
+
+type MsgLogBlockAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: MsgLogBlockAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: MsgLogBlockDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: MsgLogBlockMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: MsgLogBlockMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: MsgLogBlockStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: MsgLogBlockStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: MsgLogBlockSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: MsgLogBlockVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: MsgLogBlockVarianceSampleAggregates
+}
+
+type MsgLogBlockAverageAggregates {
+  """Mean average of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+}
+
+"""
+A condition to be used against `MsgLogBlock` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input MsgLogBlockCondition {
+  """Checks for equality with the object’s `blockType` field."""
+  blockType: MsgLogBlockType
+
+  """Checks for equality with the object’s `channelId` field."""
+  channelId: BigInt
+
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+}
+
+type MsgLogBlockDistinctCountAggregates {
+  """Distinct count of blockType across the matching connection"""
+  blockType: BigInt
+
+  """Distinct count of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+}
+
+"""
+A filter to be used against `MsgLogBlock` object types. All fields are combined with a logical ‘and.’
+"""
+input MsgLogBlockFilter {
+  """Checks for all expressions in this list."""
+  and: [MsgLogBlockFilter!]
+
+  """Filter by the object’s `blockType` field."""
+  blockType: MsgLogBlockTypeFilter
+
+  """Filter by the object’s `channelId` field."""
+  channelId: BigIntFilter
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Negates the expression."""
+  not: MsgLogBlockFilter
+
+  """Checks for any expressions in this list."""
+  or: [MsgLogBlockFilter!]
+}
+
+"""An input for mutations affecting `MsgLogBlock`"""
+input MsgLogBlockInput {
+  blockType: MsgLogBlockType!
+  channelId: BigInt!
+  guildId: BigInt!
+}
+
+type MsgLogBlockMaxAggregates {
+  """Maximum of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+}
+
+type MsgLogBlockMinAggregates {
+  """Minimum of channelId across the matching connection"""
+  channelId: BigInt
+
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+}
+
+"""
+Represents an update to a `MsgLogBlock`. Fields that are set will be updated.
+"""
+input MsgLogBlockPatch {
+  blockType: MsgLogBlockType
+  channelId: BigInt
+  guildId: BigInt
+}
+
+type MsgLogBlockStddevPopulationAggregates {
+  """
+  Population standard deviation of channelId across the matching connection
+  """
+  channelId: BigFloat
+
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+}
+
+type MsgLogBlockStddevSampleAggregates {
+  """Sample standard deviation of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+}
+
+type MsgLogBlockSumAggregates {
+  """Sum of channelId across the matching connection"""
+  channelId: BigFloat!
+
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+}
+
+enum MsgLogBlockType {
+  ALL
+  DELETES
+  EDITS
+}
+
+"""
+A filter to be used against MsgLogBlockType fields. All fields are combined with a logical ‘and.’
+"""
+input MsgLogBlockTypeFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: MsgLogBlockType
+
+  """Equal to the specified value."""
+  equalTo: MsgLogBlockType
+
+  """Greater than the specified value."""
+  greaterThan: MsgLogBlockType
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: MsgLogBlockType
+
+  """Included in the specified list."""
+  in: [MsgLogBlockType!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: MsgLogBlockType
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: MsgLogBlockType
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: MsgLogBlockType
+
+  """Not equal to the specified value."""
+  notEqualTo: MsgLogBlockType
+
+  """Not included in the specified list."""
+  notIn: [MsgLogBlockType!]
+}
+
+type MsgLogBlockVariancePopulationAggregates {
+  """Population variance of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+}
+
+type MsgLogBlockVarianceSampleAggregates {
+  """Sample variance of channelId across the matching connection"""
+  channelId: BigFloat
+
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+}
+
+"""A connection to a list of `MsgLogBlock` values."""
+type MsgLogBlocksConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: MsgLogBlockAggregates
+
+  """
+  A list of edges which contains the `MsgLogBlock` and cursor to aid in pagination.
+  """
+  edges: [MsgLogBlocksEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """The method to use when grouping `MsgLogBlock` for these aggregates."""
+    groupBy: [MsgLogBlocksGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: MsgLogBlocksHavingInput
+  ): [MsgLogBlockAggregates!]
+
+  """A list of `MsgLogBlock` objects."""
+  nodes: [MsgLogBlock!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `MsgLogBlock` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `MsgLogBlock` edge in the connection."""
+type MsgLogBlocksEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `MsgLogBlock` at the end of the edge."""
+  node: MsgLogBlock!
+}
+
+"""Grouping methods for `MsgLogBlock` for usage during aggregation."""
+enum MsgLogBlocksGroupBy {
+  BLOCK_TYPE
+  CHANNEL_ID
+  GUILD_ID
+}
+
+input MsgLogBlocksHavingAverageInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input MsgLogBlocksHavingDistinctCountInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+"""Conditions for `MsgLogBlock` aggregates."""
+input MsgLogBlocksHavingInput {
+  AND: [MsgLogBlocksHavingInput!]
+  OR: [MsgLogBlocksHavingInput!]
+  average: MsgLogBlocksHavingAverageInput
+  distinctCount: MsgLogBlocksHavingDistinctCountInput
+  max: MsgLogBlocksHavingMaxInput
+  min: MsgLogBlocksHavingMinInput
+  stddevPopulation: MsgLogBlocksHavingStddevPopulationInput
+  stddevSample: MsgLogBlocksHavingStddevSampleInput
+  sum: MsgLogBlocksHavingSumInput
+  variancePopulation: MsgLogBlocksHavingVariancePopulationInput
+  varianceSample: MsgLogBlocksHavingVarianceSampleInput
+}
+
+input MsgLogBlocksHavingMaxInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input MsgLogBlocksHavingMinInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input MsgLogBlocksHavingStddevPopulationInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input MsgLogBlocksHavingStddevSampleInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input MsgLogBlocksHavingSumInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input MsgLogBlocksHavingVariancePopulationInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+input MsgLogBlocksHavingVarianceSampleInput {
+  channelId: HavingBigintFilter
+  guildId: HavingBigintFilter
+}
+
+"""Methods to use when ordering `MsgLogBlock`."""
+enum MsgLogBlocksOrderBy {
+  BLOCK_TYPE_ASC
+  BLOCK_TYPE_DESC
+  CHANNEL_ID_ASC
+  CHANNEL_ID_DESC
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+}
+
 """
 The root mutation type which contains root level fields which mutate data.
 """
@@ -8489,6 +8936,14 @@ type Mutation {
     """
     input: CreateModLogInput!
   ): CreateModLogPayload
+
+  """Creates a single `MsgLogBlock`."""
+  createMsgLogBlock(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateMsgLogBlockInput!
+  ): CreateMsgLogBlockPayload
 
   """Creates a single `Mute`."""
   createMute(
@@ -8793,6 +9248,22 @@ type Mutation {
     """
     input: DeleteModLogByGuildIdAndCaseIdInput!
   ): DeleteModLogPayload
+
+  """Deletes a single `MsgLogBlock` using its globally unique id."""
+  deleteMsgLogBlock(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteMsgLogBlockInput!
+  ): DeleteMsgLogBlockPayload
+
+  """Deletes a single `MsgLogBlock` using a unique key."""
+  deleteMsgLogBlockByGuildIdAndChannelId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteMsgLogBlockByGuildIdAndChannelIdInput!
+  ): DeleteMsgLogBlockPayload
 
   """Deletes a single `Mute` using its globally unique id."""
   deleteMute(
@@ -9222,6 +9693,24 @@ type Mutation {
     input: UpdateModLogByGuildIdAndCaseIdInput!
   ): UpdateModLogPayload
 
+  """
+  Updates a single `MsgLogBlock` using its globally unique id and a patch.
+  """
+  updateMsgLogBlock(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateMsgLogBlockInput!
+  ): UpdateMsgLogBlockPayload
+
+  """Updates a single `MsgLogBlock` using a unique key and a patch."""
+  updateMsgLogBlockByGuildIdAndChannelId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateMsgLogBlockByGuildIdAndChannelIdInput!
+  ): UpdateMsgLogBlockPayload
+
   """Updates a single `Mute` using its globally unique id and a patch."""
   updateMute(
     """
@@ -9526,6 +10015,15 @@ type Mutation {
     input: UpsertModLogInput!
     where: UpsertModLogWhere
   ): UpsertModLogPayload
+
+  """Upserts a single `MsgLogBlock`."""
+  upsertMsgLogBlock(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertMsgLogBlockInput!
+    where: UpsertMsgLogBlockWhere
+  ): UpsertMsgLogBlockPayload
 
   """Upserts a single `Mute`."""
   upsertMute(
@@ -10807,6 +11305,40 @@ type Query implements Node {
     orderBy: [ModLogsOrderBy!] = [PRIMARY_KEY_ASC]
   ): ModLogsConnection
 
+  """Reads and enables pagination through a set of `MsgLogBlock`."""
+  allMsgLogBlocks(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: MsgLogBlockCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: MsgLogBlockFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `MsgLogBlock`."""
+    orderBy: [MsgLogBlocksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MsgLogBlocksConnection
+
   """Reads and enables pagination through a set of `Mute`."""
   allMutes(
     """Read all values in the set after (below) this cursor."""
@@ -11349,6 +11881,15 @@ type Query implements Node {
     nodeId: ID!
   ): ModLog
   modLogByGuildIdAndCaseId(caseId: BigInt!, guildId: BigInt!): ModLog
+
+  """Reads a single `MsgLogBlock` using its globally unique `ID`."""
+  msgLogBlock(
+    """
+    The globally unique `ID` to be used in selecting a single `MsgLogBlock`.
+    """
+    nodeId: ID!
+  ): MsgLogBlock
+  msgLogBlockByGuildIdAndChannelId(channelId: BigInt!, guildId: BigInt!): MsgLogBlock
 
   """Reads a single `Mute` using its globally unique `ID`."""
   mute(
@@ -14307,6 +14848,65 @@ type UpdateModLogPayload {
   query: Query
 }
 
+"""All input for the `updateMsgLogBlockByGuildIdAndChannelId` mutation."""
+input UpdateMsgLogBlockByGuildIdAndChannelIdInput {
+  channelId: BigInt!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `MsgLogBlock` being updated.
+  """
+  msgLogBlockPatch: MsgLogBlockPatch!
+}
+
+"""All input for the `updateMsgLogBlock` mutation."""
+input UpdateMsgLogBlockInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `MsgLogBlock` being updated.
+  """
+  msgLogBlockPatch: MsgLogBlockPatch!
+
+  """
+  The globally unique `ID` which will identify a single `MsgLogBlock` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `MsgLogBlock` mutation."""
+type UpdateMsgLogBlockPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `MsgLogBlock` that was updated by this mutation."""
+  msgLogBlock: MsgLogBlock
+
+  """An edge for our `MsgLogBlock`. May be used by Relay 1."""
+  msgLogBlockEdge(
+    """The method to use when ordering `MsgLogBlock`."""
+    orderBy: [MsgLogBlocksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MsgLogBlocksEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the `updateMuteByGuildIdAndUserId` mutation."""
 input UpdateMuteByGuildIdAndUserIdInput {
   """
@@ -15500,6 +16100,45 @@ type UpsertModLogPayload {
 """Where conditions for the upsert `ModLog` mutation."""
 input UpsertModLogWhere {
   caseId: BigInt
+  guildId: BigInt
+}
+
+"""All input for the upsert `MsgLogBlock` mutation."""
+input UpsertMsgLogBlockInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `MsgLogBlock` to be upserted by this mutation."""
+  msgLogBlock: MsgLogBlockInput!
+}
+
+"""The output of our upsert `MsgLogBlock` mutation."""
+type UpsertMsgLogBlockPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `MsgLogBlock` that was upserted by this mutation."""
+  msgLogBlock: MsgLogBlock
+
+  """An edge for our `MsgLogBlock`. May be used by Relay 1."""
+  msgLogBlockEdge(
+    """The method to use when ordering `MsgLogBlock`."""
+    orderBy: [MsgLogBlocksOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MsgLogBlocksEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `MsgLogBlock` mutation."""
+input UpsertMsgLogBlockWhere {
+  channelId: BigInt
   guildId: BigInt
 }
 

@@ -1163,6 +1163,39 @@ export type CreateModLogPayloadModLogEdgeArgs = {
   orderBy?: InputMaybe<Array<ModLogsOrderBy>>;
 };
 
+/** All input for the create `MsgLogBlock` mutation. */
+export type CreateMsgLogBlockInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `MsgLogBlock` to be created by this mutation. */
+  msgLogBlock: MsgLogBlockInput;
+};
+
+/** The output of our create `MsgLogBlock` mutation. */
+export type CreateMsgLogBlockPayload = {
+  __typename?: 'CreateMsgLogBlockPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `MsgLogBlock` that was created by this mutation. */
+  msgLogBlock?: Maybe<MsgLogBlock>;
+  /** An edge for our `MsgLogBlock`. May be used by Relay 1. */
+  msgLogBlockEdge?: Maybe<MsgLogBlocksEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `MsgLogBlock` mutation. */
+export type CreateMsgLogBlockPayloadMsgLogBlockEdgeArgs = {
+  orderBy?: InputMaybe<Array<MsgLogBlocksOrderBy>>;
+};
+
 /** All input for the create `Mute` mutation. */
 export type CreateMuteInput = {
   /**
@@ -2173,6 +2206,51 @@ export type DeleteModLogPayload = {
 /** The output of our delete `ModLog` mutation. */
 export type DeleteModLogPayloadModLogEdgeArgs = {
   orderBy?: InputMaybe<Array<ModLogsOrderBy>>;
+};
+
+/** All input for the `deleteMsgLogBlockByGuildIdAndChannelId` mutation. */
+export type DeleteMsgLogBlockByGuildIdAndChannelIdInput = {
+  channelId: Scalars['BigInt'];
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteMsgLogBlock` mutation. */
+export type DeleteMsgLogBlockInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `MsgLogBlock` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `MsgLogBlock` mutation. */
+export type DeleteMsgLogBlockPayload = {
+  __typename?: 'DeleteMsgLogBlockPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedMsgLogBlockId?: Maybe<Scalars['ID']>;
+  /** The `MsgLogBlock` that was deleted by this mutation. */
+  msgLogBlock?: Maybe<MsgLogBlock>;
+  /** An edge for our `MsgLogBlock`. May be used by Relay 1. */
+  msgLogBlockEdge?: Maybe<MsgLogBlocksEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `MsgLogBlock` mutation. */
+export type DeleteMsgLogBlockPayloadMsgLogBlockEdgeArgs = {
+  orderBy?: InputMaybe<Array<MsgLogBlocksOrderBy>>;
 };
 
 /** All input for the `deleteMuteByGuildIdAndUserId` mutation. */
@@ -6988,6 +7066,300 @@ export enum ModLogsOrderBy {
   UserTagDesc = 'USER_TAG_DESC'
 }
 
+export type MsgLogBlock = Node & {
+  __typename?: 'MsgLogBlock';
+  blockType: MsgLogBlockType;
+  channelId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+};
+
+export type MsgLogBlockAggregates = {
+  __typename?: 'MsgLogBlockAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<MsgLogBlockAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<MsgLogBlockDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<MsgLogBlockMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<MsgLogBlockMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<MsgLogBlockStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<MsgLogBlockStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<MsgLogBlockSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<MsgLogBlockVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<MsgLogBlockVarianceSampleAggregates>;
+};
+
+export type MsgLogBlockAverageAggregates = {
+  __typename?: 'MsgLogBlockAverageAggregates';
+  /** Mean average of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+/**
+ * A condition to be used against `MsgLogBlock` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type MsgLogBlockCondition = {
+  /** Checks for equality with the object’s `blockType` field. */
+  blockType?: InputMaybe<MsgLogBlockType>;
+  /** Checks for equality with the object’s `channelId` field. */
+  channelId?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `guildId` field. */
+  guildId?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type MsgLogBlockDistinctCountAggregates = {
+  __typename?: 'MsgLogBlockDistinctCountAggregates';
+  /** Distinct count of blockType across the matching connection */
+  blockType?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `MsgLogBlock` object types. All fields are combined with a logical ‘and.’ */
+export type MsgLogBlockFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<MsgLogBlockFilter>>;
+  /** Filter by the object’s `blockType` field. */
+  blockType?: InputMaybe<MsgLogBlockTypeFilter>;
+  /** Filter by the object’s `channelId` field. */
+  channelId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<MsgLogBlockFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<MsgLogBlockFilter>>;
+};
+
+/** An input for mutations affecting `MsgLogBlock` */
+export type MsgLogBlockInput = {
+  blockType: MsgLogBlockType;
+  channelId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+};
+
+export type MsgLogBlockMaxAggregates = {
+  __typename?: 'MsgLogBlockMaxAggregates';
+  /** Maximum of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+};
+
+export type MsgLogBlockMinAggregates = {
+  __typename?: 'MsgLogBlockMinAggregates';
+  /** Minimum of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+};
+
+/** Represents an update to a `MsgLogBlock`. Fields that are set will be updated. */
+export type MsgLogBlockPatch = {
+  blockType?: InputMaybe<MsgLogBlockType>;
+  channelId?: InputMaybe<Scalars['BigInt']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+};
+
+export type MsgLogBlockStddevPopulationAggregates = {
+  __typename?: 'MsgLogBlockStddevPopulationAggregates';
+  /** Population standard deviation of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type MsgLogBlockStddevSampleAggregates = {
+  __typename?: 'MsgLogBlockStddevSampleAggregates';
+  /** Sample standard deviation of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type MsgLogBlockSumAggregates = {
+  __typename?: 'MsgLogBlockSumAggregates';
+  /** Sum of channelId across the matching connection */
+  channelId: Scalars['BigFloat'];
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+};
+
+export enum MsgLogBlockType {
+  All = 'ALL',
+  Deletes = 'DELETES',
+  Edits = 'EDITS'
+}
+
+/** A filter to be used against MsgLogBlockType fields. All fields are combined with a logical ‘and.’ */
+export type MsgLogBlockTypeFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<MsgLogBlockType>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<MsgLogBlockType>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<MsgLogBlockType>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<MsgLogBlockType>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<MsgLogBlockType>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<MsgLogBlockType>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<MsgLogBlockType>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<MsgLogBlockType>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<MsgLogBlockType>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<MsgLogBlockType>>;
+};
+
+export type MsgLogBlockVariancePopulationAggregates = {
+  __typename?: 'MsgLogBlockVariancePopulationAggregates';
+  /** Population variance of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type MsgLogBlockVarianceSampleAggregates = {
+  __typename?: 'MsgLogBlockVarianceSampleAggregates';
+  /** Sample variance of channelId across the matching connection */
+  channelId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A connection to a list of `MsgLogBlock` values. */
+export type MsgLogBlocksConnection = {
+  __typename?: 'MsgLogBlocksConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<MsgLogBlockAggregates>;
+  /** A list of edges which contains the `MsgLogBlock` and cursor to aid in pagination. */
+  edges: Array<MsgLogBlocksEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<MsgLogBlockAggregates>>;
+  /** A list of `MsgLogBlock` objects. */
+  nodes: Array<MsgLogBlock>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `MsgLogBlock` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `MsgLogBlock` values. */
+export type MsgLogBlocksConnectionGroupedAggregatesArgs = {
+  groupBy: Array<MsgLogBlocksGroupBy>;
+  having?: InputMaybe<MsgLogBlocksHavingInput>;
+};
+
+/** A `MsgLogBlock` edge in the connection. */
+export type MsgLogBlocksEdge = {
+  __typename?: 'MsgLogBlocksEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `MsgLogBlock` at the end of the edge. */
+  node: MsgLogBlock;
+};
+
+/** Grouping methods for `MsgLogBlock` for usage during aggregation. */
+export enum MsgLogBlocksGroupBy {
+  BlockType = 'BLOCK_TYPE',
+  ChannelId = 'CHANNEL_ID',
+  GuildId = 'GUILD_ID'
+}
+
+export type MsgLogBlocksHavingAverageInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MsgLogBlocksHavingDistinctCountInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Conditions for `MsgLogBlock` aggregates. */
+export type MsgLogBlocksHavingInput = {
+  AND?: InputMaybe<Array<MsgLogBlocksHavingInput>>;
+  OR?: InputMaybe<Array<MsgLogBlocksHavingInput>>;
+  average?: InputMaybe<MsgLogBlocksHavingAverageInput>;
+  distinctCount?: InputMaybe<MsgLogBlocksHavingDistinctCountInput>;
+  max?: InputMaybe<MsgLogBlocksHavingMaxInput>;
+  min?: InputMaybe<MsgLogBlocksHavingMinInput>;
+  stddevPopulation?: InputMaybe<MsgLogBlocksHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<MsgLogBlocksHavingStddevSampleInput>;
+  sum?: InputMaybe<MsgLogBlocksHavingSumInput>;
+  variancePopulation?: InputMaybe<MsgLogBlocksHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<MsgLogBlocksHavingVarianceSampleInput>;
+};
+
+export type MsgLogBlocksHavingMaxInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MsgLogBlocksHavingMinInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MsgLogBlocksHavingStddevPopulationInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MsgLogBlocksHavingStddevSampleInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MsgLogBlocksHavingSumInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MsgLogBlocksHavingVariancePopulationInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+export type MsgLogBlocksHavingVarianceSampleInput = {
+  channelId?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+};
+
+/** Methods to use when ordering `MsgLogBlock`. */
+export enum MsgLogBlocksOrderBy {
+  BlockTypeAsc = 'BLOCK_TYPE_ASC',
+  BlockTypeDesc = 'BLOCK_TYPE_DESC',
+  ChannelIdAsc = 'CHANNEL_ID_ASC',
+  ChannelIdDesc = 'CHANNEL_ID_DESC',
+  GuildIdAsc = 'GUILD_ID_ASC',
+  GuildIdDesc = 'GUILD_ID_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
+}
+
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
@@ -7020,6 +7392,8 @@ export type Mutation = {
   createMessage?: Maybe<CreateMessagePayload>;
   /** Creates a single `ModLog`. */
   createModLog?: Maybe<CreateModLogPayload>;
+  /** Creates a single `MsgLogBlock`. */
+  createMsgLogBlock?: Maybe<CreateMsgLogBlockPayload>;
   /** Creates a single `Mute`. */
   createMute?: Maybe<CreateMutePayload>;
   /** Creates a single `Notification`. */
@@ -7096,6 +7470,10 @@ export type Mutation = {
   deleteModLog?: Maybe<DeleteModLogPayload>;
   /** Deletes a single `ModLog` using a unique key. */
   deleteModLogByGuildIdAndCaseId?: Maybe<DeleteModLogPayload>;
+  /** Deletes a single `MsgLogBlock` using its globally unique id. */
+  deleteMsgLogBlock?: Maybe<DeleteMsgLogBlockPayload>;
+  /** Deletes a single `MsgLogBlock` using a unique key. */
+  deleteMsgLogBlockByGuildIdAndChannelId?: Maybe<DeleteMsgLogBlockPayload>;
   /** Deletes a single `Mute` using its globally unique id. */
   deleteMute?: Maybe<DeleteMutePayload>;
   /** Deletes a single `Mute` using a unique key. */
@@ -7198,6 +7576,10 @@ export type Mutation = {
   updateModLog?: Maybe<UpdateModLogPayload>;
   /** Updates a single `ModLog` using a unique key and a patch. */
   updateModLogByGuildIdAndCaseId?: Maybe<UpdateModLogPayload>;
+  /** Updates a single `MsgLogBlock` using its globally unique id and a patch. */
+  updateMsgLogBlock?: Maybe<UpdateMsgLogBlockPayload>;
+  /** Updates a single `MsgLogBlock` using a unique key and a patch. */
+  updateMsgLogBlockByGuildIdAndChannelId?: Maybe<UpdateMsgLogBlockPayload>;
   /** Updates a single `Mute` using its globally unique id and a patch. */
   updateMute?: Maybe<UpdateMutePayload>;
   /** Updates a single `Mute` using a unique key and a patch. */
@@ -7269,6 +7651,8 @@ export type Mutation = {
   upsertMember?: Maybe<UpsertMemberPayload>;
   /** Upserts a single `ModLog`. */
   upsertModLog?: Maybe<UpsertModLogPayload>;
+  /** Upserts a single `MsgLogBlock`. */
+  upsertMsgLogBlock?: Maybe<UpsertMsgLogBlockPayload>;
   /** Upserts a single `Mute`. */
   upsertMute?: Maybe<UpsertMutePayload>;
   /** Upserts a single `Notification`. */
@@ -7381,6 +7765,12 @@ export type MutationCreateMessageArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateModLogArgs = {
   input: CreateModLogInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateMsgLogBlockArgs = {
+  input: CreateMsgLogBlockInput;
 };
 
 
@@ -7609,6 +7999,18 @@ export type MutationDeleteModLogArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteModLogByGuildIdAndCaseIdArgs = {
   input: DeleteModLogByGuildIdAndCaseIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteMsgLogBlockArgs = {
+  input: DeleteMsgLogBlockInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteMsgLogBlockByGuildIdAndChannelIdArgs = {
+  input: DeleteMsgLogBlockByGuildIdAndChannelIdInput;
 };
 
 
@@ -7931,6 +8333,18 @@ export type MutationUpdateModLogByGuildIdAndCaseIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateMsgLogBlockArgs = {
+  input: UpdateMsgLogBlockInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateMsgLogBlockByGuildIdAndChannelIdArgs = {
+  input: UpdateMsgLogBlockByGuildIdAndChannelIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateMuteArgs = {
   input: UpdateMuteInput;
 };
@@ -8156,6 +8570,13 @@ export type MutationUpsertMemberArgs = {
 export type MutationUpsertModLogArgs = {
   input: UpsertModLogInput;
   where?: InputMaybe<UpsertModLogWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertMsgLogBlockArgs = {
+  input: UpsertMsgLogBlockInput;
+  where?: InputMaybe<UpsertMsgLogBlockWhere>;
 };
 
 
@@ -8907,6 +9328,8 @@ export type Query = Node & {
   allMessages?: Maybe<MessagesConnection>;
   /** Reads and enables pagination through a set of `ModLog`. */
   allModLogs?: Maybe<ModLogsConnection>;
+  /** Reads and enables pagination through a set of `MsgLogBlock`. */
+  allMsgLogBlocks?: Maybe<MsgLogBlocksConnection>;
   /** Reads and enables pagination through a set of `Mute`. */
   allMutes?: Maybe<MutesConnection>;
   /** Reads and enables pagination through a set of `Notification`. */
@@ -8980,6 +9403,9 @@ export type Query = Node & {
   /** Reads a single `ModLog` using its globally unique `ID`. */
   modLog?: Maybe<ModLog>;
   modLogByGuildIdAndCaseId?: Maybe<ModLog>;
+  /** Reads a single `MsgLogBlock` using its globally unique `ID`. */
+  msgLogBlock?: Maybe<MsgLogBlock>;
+  msgLogBlockByGuildIdAndChannelId?: Maybe<MsgLogBlock>;
   /** Reads a single `Mute` using its globally unique `ID`. */
   mute?: Maybe<Mute>;
   muteByGuildIdAndUserId?: Maybe<Mute>;
@@ -9185,6 +9611,19 @@ export type QueryAllModLogsArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<ModLogsOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllMsgLogBlocksArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<MsgLogBlockCondition>;
+  filter?: InputMaybe<MsgLogBlockFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<MsgLogBlocksOrderBy>>;
 };
 
 
@@ -9522,6 +9961,19 @@ export type QueryModLogArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryModLogByGuildIdAndCaseIdArgs = {
   caseId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryMsgLogBlockArgs = {
+  nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryMsgLogBlockByGuildIdAndChannelIdArgs = {
+  channelId: Scalars['BigInt'];
   guildId: Scalars['BigInt'];
 };
 
@@ -12007,6 +12459,54 @@ export type UpdateModLogPayloadModLogEdgeArgs = {
   orderBy?: InputMaybe<Array<ModLogsOrderBy>>;
 };
 
+/** All input for the `updateMsgLogBlockByGuildIdAndChannelId` mutation. */
+export type UpdateMsgLogBlockByGuildIdAndChannelIdInput = {
+  channelId: Scalars['BigInt'];
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  /** An object where the defined keys will be set on the `MsgLogBlock` being updated. */
+  msgLogBlockPatch: MsgLogBlockPatch;
+};
+
+/** All input for the `updateMsgLogBlock` mutation. */
+export type UpdateMsgLogBlockInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `MsgLogBlock` being updated. */
+  msgLogBlockPatch: MsgLogBlockPatch;
+  /** The globally unique `ID` which will identify a single `MsgLogBlock` to be updated. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our update `MsgLogBlock` mutation. */
+export type UpdateMsgLogBlockPayload = {
+  __typename?: 'UpdateMsgLogBlockPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `MsgLogBlock` that was updated by this mutation. */
+  msgLogBlock?: Maybe<MsgLogBlock>;
+  /** An edge for our `MsgLogBlock`. May be used by Relay 1. */
+  msgLogBlockEdge?: Maybe<MsgLogBlocksEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `MsgLogBlock` mutation. */
+export type UpdateMsgLogBlockPayloadMsgLogBlockEdgeArgs = {
+  orderBy?: InputMaybe<Array<MsgLogBlocksOrderBy>>;
+};
+
 /** All input for the `updateMuteByGuildIdAndUserId` mutation. */
 export type UpdateMuteByGuildIdAndUserIdInput = {
   /**
@@ -12997,6 +13497,39 @@ export type UpsertModLogPayloadModLogEdgeArgs = {
 /** Where conditions for the upsert `ModLog` mutation. */
 export type UpsertModLogWhere = {
   caseId?: InputMaybe<Scalars['BigInt']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `MsgLogBlock` mutation. */
+export type UpsertMsgLogBlockInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `MsgLogBlock` to be upserted by this mutation. */
+  msgLogBlock: MsgLogBlockInput;
+};
+
+/** The output of our upsert `MsgLogBlock` mutation. */
+export type UpsertMsgLogBlockPayload = {
+  __typename?: 'UpsertMsgLogBlockPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `MsgLogBlock` that was upserted by this mutation. */
+  msgLogBlock?: Maybe<MsgLogBlock>;
+  /** An edge for our `MsgLogBlock`. May be used by Relay 1. */
+  msgLogBlockEdge?: Maybe<MsgLogBlocksEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `MsgLogBlock` mutation. */
+export type UpsertMsgLogBlockPayloadMsgLogBlockEdgeArgs = {
+  orderBy?: InputMaybe<Array<MsgLogBlocksOrderBy>>;
+};
+
+/** Where conditions for the upsert `MsgLogBlock` mutation. */
+export type UpsertMsgLogBlockWhere = {
+  channelId?: InputMaybe<Scalars['BigInt']>;
   guildId?: InputMaybe<Scalars['BigInt']>;
 };
 
@@ -15422,6 +15955,8 @@ export type ResolversTypes = {
   CreateMessagePayload: ResolverTypeWrapper<CreateMessagePayload>;
   CreateModLogInput: CreateModLogInput;
   CreateModLogPayload: ResolverTypeWrapper<CreateModLogPayload>;
+  CreateMsgLogBlockInput: CreateMsgLogBlockInput;
+  CreateMsgLogBlockPayload: ResolverTypeWrapper<CreateMsgLogBlockPayload>;
   CreateMuteInput: CreateMuteInput;
   CreateMutePayload: ResolverTypeWrapper<CreateMutePayload>;
   CreateNotificationInput: CreateNotificationInput;
@@ -15489,6 +16024,9 @@ export type ResolversTypes = {
   DeleteModLogByGuildIdAndCaseIdInput: DeleteModLogByGuildIdAndCaseIdInput;
   DeleteModLogInput: DeleteModLogInput;
   DeleteModLogPayload: ResolverTypeWrapper<DeleteModLogPayload>;
+  DeleteMsgLogBlockByGuildIdAndChannelIdInput: DeleteMsgLogBlockByGuildIdAndChannelIdInput;
+  DeleteMsgLogBlockInput: DeleteMsgLogBlockInput;
+  DeleteMsgLogBlockPayload: ResolverTypeWrapper<DeleteMsgLogBlockPayload>;
   DeleteMuteByGuildIdAndUserIdInput: DeleteMuteByGuildIdAndUserIdInput;
   DeleteMuteInput: DeleteMuteInput;
   DeleteMutePayload: ResolverTypeWrapper<DeleteMutePayload>;
@@ -15827,6 +16365,37 @@ export type ResolversTypes = {
   ModLogsHavingVariancePopulationInput: ModLogsHavingVariancePopulationInput;
   ModLogsHavingVarianceSampleInput: ModLogsHavingVarianceSampleInput;
   ModLogsOrderBy: ModLogsOrderBy;
+  MsgLogBlock: ResolverTypeWrapper<MsgLogBlock>;
+  MsgLogBlockAggregates: ResolverTypeWrapper<MsgLogBlockAggregates>;
+  MsgLogBlockAverageAggregates: ResolverTypeWrapper<MsgLogBlockAverageAggregates>;
+  MsgLogBlockCondition: MsgLogBlockCondition;
+  MsgLogBlockDistinctCountAggregates: ResolverTypeWrapper<MsgLogBlockDistinctCountAggregates>;
+  MsgLogBlockFilter: MsgLogBlockFilter;
+  MsgLogBlockInput: MsgLogBlockInput;
+  MsgLogBlockMaxAggregates: ResolverTypeWrapper<MsgLogBlockMaxAggregates>;
+  MsgLogBlockMinAggregates: ResolverTypeWrapper<MsgLogBlockMinAggregates>;
+  MsgLogBlockPatch: MsgLogBlockPatch;
+  MsgLogBlockStddevPopulationAggregates: ResolverTypeWrapper<MsgLogBlockStddevPopulationAggregates>;
+  MsgLogBlockStddevSampleAggregates: ResolverTypeWrapper<MsgLogBlockStddevSampleAggregates>;
+  MsgLogBlockSumAggregates: ResolverTypeWrapper<MsgLogBlockSumAggregates>;
+  MsgLogBlockType: MsgLogBlockType;
+  MsgLogBlockTypeFilter: MsgLogBlockTypeFilter;
+  MsgLogBlockVariancePopulationAggregates: ResolverTypeWrapper<MsgLogBlockVariancePopulationAggregates>;
+  MsgLogBlockVarianceSampleAggregates: ResolverTypeWrapper<MsgLogBlockVarianceSampleAggregates>;
+  MsgLogBlocksConnection: ResolverTypeWrapper<MsgLogBlocksConnection>;
+  MsgLogBlocksEdge: ResolverTypeWrapper<MsgLogBlocksEdge>;
+  MsgLogBlocksGroupBy: MsgLogBlocksGroupBy;
+  MsgLogBlocksHavingAverageInput: MsgLogBlocksHavingAverageInput;
+  MsgLogBlocksHavingDistinctCountInput: MsgLogBlocksHavingDistinctCountInput;
+  MsgLogBlocksHavingInput: MsgLogBlocksHavingInput;
+  MsgLogBlocksHavingMaxInput: MsgLogBlocksHavingMaxInput;
+  MsgLogBlocksHavingMinInput: MsgLogBlocksHavingMinInput;
+  MsgLogBlocksHavingStddevPopulationInput: MsgLogBlocksHavingStddevPopulationInput;
+  MsgLogBlocksHavingStddevSampleInput: MsgLogBlocksHavingStddevSampleInput;
+  MsgLogBlocksHavingSumInput: MsgLogBlocksHavingSumInput;
+  MsgLogBlocksHavingVariancePopulationInput: MsgLogBlocksHavingVariancePopulationInput;
+  MsgLogBlocksHavingVarianceSampleInput: MsgLogBlocksHavingVarianceSampleInput;
+  MsgLogBlocksOrderBy: MsgLogBlocksOrderBy;
   Mutation: ResolverTypeWrapper<{}>;
   Mute: ResolverTypeWrapper<Mute>;
   MuteAggregates: ResolverTypeWrapper<MuteAggregates>;
@@ -15857,7 +16426,7 @@ export type ResolversTypes = {
   MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
   MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
   MutesOrderBy: MutesOrderBy;
-  Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['LevelRole'] | ResolversTypes['LevelRoleApplyJob'] | ResolversTypes['LevelRoleOverride'] | ResolversTypes['Member'] | ResolversTypes['ModLog'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['RoleMenuRole'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'] | ResolversTypes['XpBlock'];
+  Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['LevelRole'] | ResolversTypes['LevelRoleApplyJob'] | ResolversTypes['LevelRoleOverride'] | ResolversTypes['Member'] | ResolversTypes['ModLog'] | ResolversTypes['MsgLogBlock'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['RoleMenuRole'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'] | ResolversTypes['XpBlock'];
   Notification: ResolverTypeWrapper<Notification>;
   NotificationAggregates: ResolverTypeWrapper<NotificationAggregates>;
   NotificationAverageAggregates: ResolverTypeWrapper<NotificationAverageAggregates>;
@@ -16060,6 +16629,9 @@ export type ResolversTypes = {
   UpdateModLogByGuildIdAndCaseIdInput: UpdateModLogByGuildIdAndCaseIdInput;
   UpdateModLogInput: UpdateModLogInput;
   UpdateModLogPayload: ResolverTypeWrapper<UpdateModLogPayload>;
+  UpdateMsgLogBlockByGuildIdAndChannelIdInput: UpdateMsgLogBlockByGuildIdAndChannelIdInput;
+  UpdateMsgLogBlockInput: UpdateMsgLogBlockInput;
+  UpdateMsgLogBlockPayload: ResolverTypeWrapper<UpdateMsgLogBlockPayload>;
   UpdateMuteByGuildIdAndUserIdInput: UpdateMuteByGuildIdAndUserIdInput;
   UpdateMuteInput: UpdateMuteInput;
   UpdateMutePayload: ResolverTypeWrapper<UpdateMutePayload>;
@@ -16134,6 +16706,9 @@ export type ResolversTypes = {
   UpsertModLogInput: UpsertModLogInput;
   UpsertModLogPayload: ResolverTypeWrapper<UpsertModLogPayload>;
   UpsertModLogWhere: UpsertModLogWhere;
+  UpsertMsgLogBlockInput: UpsertMsgLogBlockInput;
+  UpsertMsgLogBlockPayload: ResolverTypeWrapper<UpsertMsgLogBlockPayload>;
+  UpsertMsgLogBlockWhere: UpsertMsgLogBlockWhere;
   UpsertMuteInput: UpsertMuteInput;
   UpsertMutePayload: ResolverTypeWrapper<UpsertMutePayload>;
   UpsertMuteWhere: UpsertMuteWhere;
@@ -16390,6 +16965,8 @@ export type ResolversParentTypes = {
   CreateMessagePayload: CreateMessagePayload;
   CreateModLogInput: CreateModLogInput;
   CreateModLogPayload: CreateModLogPayload;
+  CreateMsgLogBlockInput: CreateMsgLogBlockInput;
+  CreateMsgLogBlockPayload: CreateMsgLogBlockPayload;
   CreateMuteInput: CreateMuteInput;
   CreateMutePayload: CreateMutePayload;
   CreateNotificationInput: CreateNotificationInput;
@@ -16457,6 +17034,9 @@ export type ResolversParentTypes = {
   DeleteModLogByGuildIdAndCaseIdInput: DeleteModLogByGuildIdAndCaseIdInput;
   DeleteModLogInput: DeleteModLogInput;
   DeleteModLogPayload: DeleteModLogPayload;
+  DeleteMsgLogBlockByGuildIdAndChannelIdInput: DeleteMsgLogBlockByGuildIdAndChannelIdInput;
+  DeleteMsgLogBlockInput: DeleteMsgLogBlockInput;
+  DeleteMsgLogBlockPayload: DeleteMsgLogBlockPayload;
   DeleteMuteByGuildIdAndUserIdInput: DeleteMuteByGuildIdAndUserIdInput;
   DeleteMuteInput: DeleteMuteInput;
   DeleteMutePayload: DeleteMutePayload;
@@ -16771,6 +17351,34 @@ export type ResolversParentTypes = {
   ModLogsHavingSumInput: ModLogsHavingSumInput;
   ModLogsHavingVariancePopulationInput: ModLogsHavingVariancePopulationInput;
   ModLogsHavingVarianceSampleInput: ModLogsHavingVarianceSampleInput;
+  MsgLogBlock: MsgLogBlock;
+  MsgLogBlockAggregates: MsgLogBlockAggregates;
+  MsgLogBlockAverageAggregates: MsgLogBlockAverageAggregates;
+  MsgLogBlockCondition: MsgLogBlockCondition;
+  MsgLogBlockDistinctCountAggregates: MsgLogBlockDistinctCountAggregates;
+  MsgLogBlockFilter: MsgLogBlockFilter;
+  MsgLogBlockInput: MsgLogBlockInput;
+  MsgLogBlockMaxAggregates: MsgLogBlockMaxAggregates;
+  MsgLogBlockMinAggregates: MsgLogBlockMinAggregates;
+  MsgLogBlockPatch: MsgLogBlockPatch;
+  MsgLogBlockStddevPopulationAggregates: MsgLogBlockStddevPopulationAggregates;
+  MsgLogBlockStddevSampleAggregates: MsgLogBlockStddevSampleAggregates;
+  MsgLogBlockSumAggregates: MsgLogBlockSumAggregates;
+  MsgLogBlockTypeFilter: MsgLogBlockTypeFilter;
+  MsgLogBlockVariancePopulationAggregates: MsgLogBlockVariancePopulationAggregates;
+  MsgLogBlockVarianceSampleAggregates: MsgLogBlockVarianceSampleAggregates;
+  MsgLogBlocksConnection: MsgLogBlocksConnection;
+  MsgLogBlocksEdge: MsgLogBlocksEdge;
+  MsgLogBlocksHavingAverageInput: MsgLogBlocksHavingAverageInput;
+  MsgLogBlocksHavingDistinctCountInput: MsgLogBlocksHavingDistinctCountInput;
+  MsgLogBlocksHavingInput: MsgLogBlocksHavingInput;
+  MsgLogBlocksHavingMaxInput: MsgLogBlocksHavingMaxInput;
+  MsgLogBlocksHavingMinInput: MsgLogBlocksHavingMinInput;
+  MsgLogBlocksHavingStddevPopulationInput: MsgLogBlocksHavingStddevPopulationInput;
+  MsgLogBlocksHavingStddevSampleInput: MsgLogBlocksHavingStddevSampleInput;
+  MsgLogBlocksHavingSumInput: MsgLogBlocksHavingSumInput;
+  MsgLogBlocksHavingVariancePopulationInput: MsgLogBlocksHavingVariancePopulationInput;
+  MsgLogBlocksHavingVarianceSampleInput: MsgLogBlocksHavingVarianceSampleInput;
   Mutation: {};
   Mute: Mute;
   MuteAggregates: MuteAggregates;
@@ -16799,7 +17407,7 @@ export type ResolversParentTypes = {
   MutesHavingSumInput: MutesHavingSumInput;
   MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
   MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
-  Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['LevelRole'] | ResolversParentTypes['LevelRoleApplyJob'] | ResolversParentTypes['LevelRoleOverride'] | ResolversParentTypes['Member'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['RoleMenuRole'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'] | ResolversParentTypes['XpBlock'];
+  Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['LevelRole'] | ResolversParentTypes['LevelRoleApplyJob'] | ResolversParentTypes['LevelRoleOverride'] | ResolversParentTypes['Member'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['MsgLogBlock'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['RoleMenuRole'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'] | ResolversParentTypes['XpBlock'];
   Notification: Notification;
   NotificationAggregates: NotificationAggregates;
   NotificationAverageAggregates: NotificationAverageAggregates;
@@ -16992,6 +17600,9 @@ export type ResolversParentTypes = {
   UpdateModLogByGuildIdAndCaseIdInput: UpdateModLogByGuildIdAndCaseIdInput;
   UpdateModLogInput: UpdateModLogInput;
   UpdateModLogPayload: UpdateModLogPayload;
+  UpdateMsgLogBlockByGuildIdAndChannelIdInput: UpdateMsgLogBlockByGuildIdAndChannelIdInput;
+  UpdateMsgLogBlockInput: UpdateMsgLogBlockInput;
+  UpdateMsgLogBlockPayload: UpdateMsgLogBlockPayload;
   UpdateMuteByGuildIdAndUserIdInput: UpdateMuteByGuildIdAndUserIdInput;
   UpdateMuteInput: UpdateMuteInput;
   UpdateMutePayload: UpdateMutePayload;
@@ -17066,6 +17677,9 @@ export type ResolversParentTypes = {
   UpsertModLogInput: UpsertModLogInput;
   UpsertModLogPayload: UpsertModLogPayload;
   UpsertModLogWhere: UpsertModLogWhere;
+  UpsertMsgLogBlockInput: UpsertMsgLogBlockInput;
+  UpsertMsgLogBlockPayload: UpsertMsgLogBlockPayload;
+  UpsertMsgLogBlockWhere: UpsertMsgLogBlockWhere;
   UpsertMuteInput: UpsertMuteInput;
   UpsertMutePayload: UpsertMutePayload;
   UpsertMuteWhere: UpsertMuteWhere;
@@ -17493,6 +18107,14 @@ export type CreateModLogPayloadResolvers<ContextType = any, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CreateMsgLogBlockPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateMsgLogBlockPayload'] = ResolversParentTypes['CreateMsgLogBlockPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  msgLogBlock?: Resolver<Maybe<ResolversTypes['MsgLogBlock']>, ParentType, ContextType>;
+  msgLogBlockEdge?: Resolver<Maybe<ResolversTypes['MsgLogBlocksEdge']>, ParentType, ContextType, RequireFields<CreateMsgLogBlockPayloadMsgLogBlockEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CreateMutePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateMutePayload'] = ResolversParentTypes['CreateMutePayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   modLogByGuildIdAndCaseId?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType>;
@@ -17721,6 +18343,15 @@ export type DeleteModLogPayloadResolvers<ContextType = any, ParentType extends R
   deletedModLogId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   modLog?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType>;
   modLogEdge?: Resolver<Maybe<ResolversTypes['ModLogsEdge']>, ParentType, ContextType, RequireFields<DeleteModLogPayloadModLogEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteMsgLogBlockPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteMsgLogBlockPayload'] = ResolversParentTypes['DeleteMsgLogBlockPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedMsgLogBlockId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  msgLogBlock?: Resolver<Maybe<ResolversTypes['MsgLogBlock']>, ParentType, ContextType>;
+  msgLogBlockEdge?: Resolver<Maybe<ResolversTypes['MsgLogBlocksEdge']>, ParentType, ContextType, RequireFields<DeleteMsgLogBlockPayloadMsgLogBlockEdgeArgs, 'orderBy'>>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -19088,6 +19719,99 @@ export type ModLogsEdgeResolvers<ContextType = any, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MsgLogBlockResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlock'] = ResolversParentTypes['MsgLogBlock']> = {
+  blockType?: Resolver<ResolversTypes['MsgLogBlockType'], ParentType, ContextType>;
+  channelId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MsgLogBlockAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlockAggregates'] = ResolversParentTypes['MsgLogBlockAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['MsgLogBlockAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['MsgLogBlockDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['MsgLogBlockMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['MsgLogBlockMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['MsgLogBlockStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['MsgLogBlockStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['MsgLogBlockSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['MsgLogBlockVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['MsgLogBlockVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MsgLogBlockAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlockAverageAggregates'] = ResolversParentTypes['MsgLogBlockAverageAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MsgLogBlockDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlockDistinctCountAggregates'] = ResolversParentTypes['MsgLogBlockDistinctCountAggregates']> = {
+  blockType?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MsgLogBlockMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlockMaxAggregates'] = ResolversParentTypes['MsgLogBlockMaxAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MsgLogBlockMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlockMinAggregates'] = ResolversParentTypes['MsgLogBlockMinAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MsgLogBlockStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlockStddevPopulationAggregates'] = ResolversParentTypes['MsgLogBlockStddevPopulationAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MsgLogBlockStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlockStddevSampleAggregates'] = ResolversParentTypes['MsgLogBlockStddevSampleAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MsgLogBlockSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlockSumAggregates'] = ResolversParentTypes['MsgLogBlockSumAggregates']> = {
+  channelId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MsgLogBlockVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlockVariancePopulationAggregates'] = ResolversParentTypes['MsgLogBlockVariancePopulationAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MsgLogBlockVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlockVarianceSampleAggregates'] = ResolversParentTypes['MsgLogBlockVarianceSampleAggregates']> = {
+  channelId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MsgLogBlocksConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlocksConnection'] = ResolversParentTypes['MsgLogBlocksConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['MsgLogBlockAggregates']>, ParentType, ContextType>;
+  edges?: Resolver<Array<ResolversTypes['MsgLogBlocksEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['MsgLogBlockAggregates']>>, ParentType, ContextType, RequireFields<MsgLogBlocksConnectionGroupedAggregatesArgs, 'groupBy'>>;
+  nodes?: Resolver<Array<ResolversTypes['MsgLogBlock']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MsgLogBlocksEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['MsgLogBlocksEdge'] = ResolversParentTypes['MsgLogBlocksEdge']> = {
+  cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['MsgLogBlock'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addRoleMenuRoles?: Resolver<Maybe<ResolversTypes['AddRoleMenuRolesPayload']>, ParentType, ContextType, RequireFields<MutationAddRoleMenuRolesArgs, 'input'>>;
   createBotStat?: Resolver<Maybe<ResolversTypes['CreateBotStatPayload']>, ParentType, ContextType, RequireFields<MutationCreateBotStatArgs, 'input'>>;
@@ -19104,6 +19828,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createMember?: Resolver<Maybe<ResolversTypes['CreateMemberPayload']>, ParentType, ContextType, RequireFields<MutationCreateMemberArgs, 'input'>>;
   createMessage?: Resolver<Maybe<ResolversTypes['CreateMessagePayload']>, ParentType, ContextType, RequireFields<MutationCreateMessageArgs, 'input'>>;
   createModLog?: Resolver<Maybe<ResolversTypes['CreateModLogPayload']>, ParentType, ContextType, RequireFields<MutationCreateModLogArgs, 'input'>>;
+  createMsgLogBlock?: Resolver<Maybe<ResolversTypes['CreateMsgLogBlockPayload']>, ParentType, ContextType, RequireFields<MutationCreateMsgLogBlockArgs, 'input'>>;
   createMute?: Resolver<Maybe<ResolversTypes['CreateMutePayload']>, ParentType, ContextType, RequireFields<MutationCreateMuteArgs, 'input'>>;
   createNotification?: Resolver<Maybe<ResolversTypes['CreateNotificationPayload']>, ParentType, ContextType, RequireFields<MutationCreateNotificationArgs, 'input'>>;
   createReminder?: Resolver<Maybe<ResolversTypes['CreateReminderPayload']>, ParentType, ContextType, RequireFields<MutationCreateReminderArgs, 'input'>>;
@@ -19142,6 +19867,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteMemberByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['DeleteMemberPayload']>, ParentType, ContextType, RequireFields<MutationDeleteMemberByGuildIdAndUserIdArgs, 'input'>>;
   deleteModLog?: Resolver<Maybe<ResolversTypes['DeleteModLogPayload']>, ParentType, ContextType, RequireFields<MutationDeleteModLogArgs, 'input'>>;
   deleteModLogByGuildIdAndCaseId?: Resolver<Maybe<ResolversTypes['DeleteModLogPayload']>, ParentType, ContextType, RequireFields<MutationDeleteModLogByGuildIdAndCaseIdArgs, 'input'>>;
+  deleteMsgLogBlock?: Resolver<Maybe<ResolversTypes['DeleteMsgLogBlockPayload']>, ParentType, ContextType, RequireFields<MutationDeleteMsgLogBlockArgs, 'input'>>;
+  deleteMsgLogBlockByGuildIdAndChannelId?: Resolver<Maybe<ResolversTypes['DeleteMsgLogBlockPayload']>, ParentType, ContextType, RequireFields<MutationDeleteMsgLogBlockByGuildIdAndChannelIdArgs, 'input'>>;
   deleteMute?: Resolver<Maybe<ResolversTypes['DeleteMutePayload']>, ParentType, ContextType, RequireFields<MutationDeleteMuteArgs, 'input'>>;
   deleteMuteByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['DeleteMutePayload']>, ParentType, ContextType, RequireFields<MutationDeleteMuteByGuildIdAndUserIdArgs, 'input'>>;
   deleteNotification?: Resolver<Maybe<ResolversTypes['DeleteNotificationPayload']>, ParentType, ContextType, RequireFields<MutationDeleteNotificationArgs, 'input'>>;
@@ -19195,6 +19922,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateMemberByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['UpdateMemberPayload']>, ParentType, ContextType, RequireFields<MutationUpdateMemberByGuildIdAndUserIdArgs, 'input'>>;
   updateModLog?: Resolver<Maybe<ResolversTypes['UpdateModLogPayload']>, ParentType, ContextType, RequireFields<MutationUpdateModLogArgs, 'input'>>;
   updateModLogByGuildIdAndCaseId?: Resolver<Maybe<ResolversTypes['UpdateModLogPayload']>, ParentType, ContextType, RequireFields<MutationUpdateModLogByGuildIdAndCaseIdArgs, 'input'>>;
+  updateMsgLogBlock?: Resolver<Maybe<ResolversTypes['UpdateMsgLogBlockPayload']>, ParentType, ContextType, RequireFields<MutationUpdateMsgLogBlockArgs, 'input'>>;
+  updateMsgLogBlockByGuildIdAndChannelId?: Resolver<Maybe<ResolversTypes['UpdateMsgLogBlockPayload']>, ParentType, ContextType, RequireFields<MutationUpdateMsgLogBlockByGuildIdAndChannelIdArgs, 'input'>>;
   updateMute?: Resolver<Maybe<ResolversTypes['UpdateMutePayload']>, ParentType, ContextType, RequireFields<MutationUpdateMuteArgs, 'input'>>;
   updateMuteByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['UpdateMutePayload']>, ParentType, ContextType, RequireFields<MutationUpdateMuteByGuildIdAndUserIdArgs, 'input'>>;
   updateNotification?: Resolver<Maybe<ResolversTypes['UpdateNotificationPayload']>, ParentType, ContextType, RequireFields<MutationUpdateNotificationArgs, 'input'>>;
@@ -19231,6 +19960,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   upsertLevelRoleOverride?: Resolver<Maybe<ResolversTypes['UpsertLevelRoleOverridePayload']>, ParentType, ContextType, RequireFields<MutationUpsertLevelRoleOverrideArgs, 'input'>>;
   upsertMember?: Resolver<Maybe<ResolversTypes['UpsertMemberPayload']>, ParentType, ContextType, RequireFields<MutationUpsertMemberArgs, 'input'>>;
   upsertModLog?: Resolver<Maybe<ResolversTypes['UpsertModLogPayload']>, ParentType, ContextType, RequireFields<MutationUpsertModLogArgs, 'input'>>;
+  upsertMsgLogBlock?: Resolver<Maybe<ResolversTypes['UpsertMsgLogBlockPayload']>, ParentType, ContextType, RequireFields<MutationUpsertMsgLogBlockArgs, 'input'>>;
   upsertMute?: Resolver<Maybe<ResolversTypes['UpsertMutePayload']>, ParentType, ContextType, RequireFields<MutationUpsertMuteArgs, 'input'>>;
   upsertNotification?: Resolver<Maybe<ResolversTypes['UpsertNotificationPayload']>, ParentType, ContextType, RequireFields<MutationUpsertNotificationArgs, 'input'>>;
   upsertReminder?: Resolver<Maybe<ResolversTypes['UpsertReminderPayload']>, ParentType, ContextType, RequireFields<MutationUpsertReminderArgs, 'input'>>;
@@ -19353,7 +20083,7 @@ export type MutesEdgeResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'BotStat' | 'CachedGuild' | 'CachedUser' | 'Feed' | 'FeedItem' | 'FeedSubscription' | 'GuildBan' | 'GuildConfig' | 'LevelRole' | 'LevelRoleApplyJob' | 'LevelRoleOverride' | 'Member' | 'ModLog' | 'Mute' | 'Notification' | 'Query' | 'Reminder' | 'RoleMenu' | 'RoleMenuRole' | 'Tag' | 'User' | 'UserLevel' | 'WebUser' | 'WebUserGuild' | 'XpBlock', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'BotStat' | 'CachedGuild' | 'CachedUser' | 'Feed' | 'FeedItem' | 'FeedSubscription' | 'GuildBan' | 'GuildConfig' | 'LevelRole' | 'LevelRoleApplyJob' | 'LevelRoleOverride' | 'Member' | 'ModLog' | 'MsgLogBlock' | 'Mute' | 'Notification' | 'Query' | 'Reminder' | 'RoleMenu' | 'RoleMenuRole' | 'Tag' | 'User' | 'UserLevel' | 'WebUser' | 'WebUserGuild' | 'XpBlock', ParentType, ContextType>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -19484,6 +20214,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   allMembers?: Resolver<Maybe<ResolversTypes['MembersConnection']>, ParentType, ContextType, RequireFields<QueryAllMembersArgs, 'orderBy'>>;
   allMessages?: Resolver<Maybe<ResolversTypes['MessagesConnection']>, ParentType, ContextType, RequireFields<QueryAllMessagesArgs, 'orderBy'>>;
   allModLogs?: Resolver<Maybe<ResolversTypes['ModLogsConnection']>, ParentType, ContextType, RequireFields<QueryAllModLogsArgs, 'orderBy'>>;
+  allMsgLogBlocks?: Resolver<Maybe<ResolversTypes['MsgLogBlocksConnection']>, ParentType, ContextType, RequireFields<QueryAllMsgLogBlocksArgs, 'orderBy'>>;
   allMutes?: Resolver<Maybe<ResolversTypes['MutesConnection']>, ParentType, ContextType, RequireFields<QueryAllMutesArgs, 'orderBy'>>;
   allNotifications?: Resolver<Maybe<ResolversTypes['NotificationsConnection']>, ParentType, ContextType, RequireFields<QueryAllNotificationsArgs, 'orderBy'>>;
   allRedisGuildIds?: Resolver<Array<ResolversTypes['BigInt']>, ParentType, ContextType>;
@@ -19529,6 +20260,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   memberByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<QueryMemberByGuildIdAndUserIdArgs, 'guildId' | 'userId'>>;
   modLog?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType, RequireFields<QueryModLogArgs, 'nodeId'>>;
   modLogByGuildIdAndCaseId?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType, RequireFields<QueryModLogByGuildIdAndCaseIdArgs, 'caseId' | 'guildId'>>;
+  msgLogBlock?: Resolver<Maybe<ResolversTypes['MsgLogBlock']>, ParentType, ContextType, RequireFields<QueryMsgLogBlockArgs, 'nodeId'>>;
+  msgLogBlockByGuildIdAndChannelId?: Resolver<Maybe<ResolversTypes['MsgLogBlock']>, ParentType, ContextType, RequireFields<QueryMsgLogBlockByGuildIdAndChannelIdArgs, 'channelId' | 'guildId'>>;
   mute?: Resolver<Maybe<ResolversTypes['Mute']>, ParentType, ContextType, RequireFields<QueryMuteArgs, 'nodeId'>>;
   muteByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['Mute']>, ParentType, ContextType, RequireFields<QueryMuteByGuildIdAndUserIdArgs, 'guildId' | 'userId'>>;
   nextCaseId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType, Partial<QueryNextCaseIdArgs>>;
@@ -20177,6 +20910,14 @@ export type UpdateModLogPayloadResolvers<ContextType = any, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateMsgLogBlockPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateMsgLogBlockPayload'] = ResolversParentTypes['UpdateMsgLogBlockPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  msgLogBlock?: Resolver<Maybe<ResolversTypes['MsgLogBlock']>, ParentType, ContextType>;
+  msgLogBlockEdge?: Resolver<Maybe<ResolversTypes['MsgLogBlocksEdge']>, ParentType, ContextType, RequireFields<UpdateMsgLogBlockPayloadMsgLogBlockEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UpdateMutePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateMutePayload'] = ResolversParentTypes['UpdateMutePayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   modLogByGuildIdAndCaseId?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType>;
@@ -20378,6 +21119,14 @@ export type UpsertModLogPayloadResolvers<ContextType = any, ParentType extends R
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   modLog?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType>;
   modLogEdge?: Resolver<Maybe<ResolversTypes['ModLogsEdge']>, ParentType, ContextType, RequireFields<UpsertModLogPayloadModLogEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertMsgLogBlockPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertMsgLogBlockPayload'] = ResolversParentTypes['UpsertMsgLogBlockPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  msgLogBlock?: Resolver<Maybe<ResolversTypes['MsgLogBlock']>, ParentType, ContextType>;
+  msgLogBlockEdge?: Resolver<Maybe<ResolversTypes['MsgLogBlocksEdge']>, ParentType, ContextType, RequireFields<UpsertMsgLogBlockPayloadMsgLogBlockEdgeArgs, 'orderBy'>>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -21096,6 +21845,7 @@ export type Resolvers<ContextType = any> = {
   CreateMemberPayload?: CreateMemberPayloadResolvers<ContextType>;
   CreateMessagePayload?: CreateMessagePayloadResolvers<ContextType>;
   CreateModLogPayload?: CreateModLogPayloadResolvers<ContextType>;
+  CreateMsgLogBlockPayload?: CreateMsgLogBlockPayloadResolvers<ContextType>;
   CreateMutePayload?: CreateMutePayloadResolvers<ContextType>;
   CreateNotificationPayload?: CreateNotificationPayloadResolvers<ContextType>;
   CreateReminderPayload?: CreateReminderPayloadResolvers<ContextType>;
@@ -21124,6 +21874,7 @@ export type Resolvers<ContextType = any> = {
   DeleteLevelRolePayload?: DeleteLevelRolePayloadResolvers<ContextType>;
   DeleteMemberPayload?: DeleteMemberPayloadResolvers<ContextType>;
   DeleteModLogPayload?: DeleteModLogPayloadResolvers<ContextType>;
+  DeleteMsgLogBlockPayload?: DeleteMsgLogBlockPayloadResolvers<ContextType>;
   DeleteMutePayload?: DeleteMutePayloadResolvers<ContextType>;
   DeleteNotificationPayload?: DeleteNotificationPayloadResolvers<ContextType>;
   DeleteReminderPayload?: DeleteReminderPayloadResolvers<ContextType>;
@@ -21269,6 +22020,19 @@ export type Resolvers<ContextType = any> = {
   ModLogVarianceSampleAggregates?: ModLogVarianceSampleAggregatesResolvers<ContextType>;
   ModLogsConnection?: ModLogsConnectionResolvers<ContextType>;
   ModLogsEdge?: ModLogsEdgeResolvers<ContextType>;
+  MsgLogBlock?: MsgLogBlockResolvers<ContextType>;
+  MsgLogBlockAggregates?: MsgLogBlockAggregatesResolvers<ContextType>;
+  MsgLogBlockAverageAggregates?: MsgLogBlockAverageAggregatesResolvers<ContextType>;
+  MsgLogBlockDistinctCountAggregates?: MsgLogBlockDistinctCountAggregatesResolvers<ContextType>;
+  MsgLogBlockMaxAggregates?: MsgLogBlockMaxAggregatesResolvers<ContextType>;
+  MsgLogBlockMinAggregates?: MsgLogBlockMinAggregatesResolvers<ContextType>;
+  MsgLogBlockStddevPopulationAggregates?: MsgLogBlockStddevPopulationAggregatesResolvers<ContextType>;
+  MsgLogBlockStddevSampleAggregates?: MsgLogBlockStddevSampleAggregatesResolvers<ContextType>;
+  MsgLogBlockSumAggregates?: MsgLogBlockSumAggregatesResolvers<ContextType>;
+  MsgLogBlockVariancePopulationAggregates?: MsgLogBlockVariancePopulationAggregatesResolvers<ContextType>;
+  MsgLogBlockVarianceSampleAggregates?: MsgLogBlockVarianceSampleAggregatesResolvers<ContextType>;
+  MsgLogBlocksConnection?: MsgLogBlocksConnectionResolvers<ContextType>;
+  MsgLogBlocksEdge?: MsgLogBlocksEdgeResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Mute?: MuteResolvers<ContextType>;
   MuteAggregates?: MuteAggregatesResolvers<ContextType>;
@@ -21374,6 +22138,7 @@ export type Resolvers<ContextType = any> = {
   UpdateLevelRolePayload?: UpdateLevelRolePayloadResolvers<ContextType>;
   UpdateMemberPayload?: UpdateMemberPayloadResolvers<ContextType>;
   UpdateModLogPayload?: UpdateModLogPayloadResolvers<ContextType>;
+  UpdateMsgLogBlockPayload?: UpdateMsgLogBlockPayloadResolvers<ContextType>;
   UpdateMutePayload?: UpdateMutePayloadResolvers<ContextType>;
   UpdateNotificationPayload?: UpdateNotificationPayloadResolvers<ContextType>;
   UpdateReminderPayload?: UpdateReminderPayloadResolvers<ContextType>;
@@ -21399,6 +22164,7 @@ export type Resolvers<ContextType = any> = {
   UpsertLevelRolePayload?: UpsertLevelRolePayloadResolvers<ContextType>;
   UpsertMemberPayload?: UpsertMemberPayloadResolvers<ContextType>;
   UpsertModLogPayload?: UpsertModLogPayloadResolvers<ContextType>;
+  UpsertMsgLogBlockPayload?: UpsertMsgLogBlockPayloadResolvers<ContextType>;
   UpsertMutePayload?: UpsertMutePayloadResolvers<ContextType>;
   UpsertNotificationPayload?: UpsertNotificationPayloadResolvers<ContextType>;
   UpsertReminderPayload?: UpsertReminderPayloadResolvers<ContextType>;
@@ -21641,6 +22407,51 @@ export type UpdateModLogMutationVariables = Exact<{
 
 
 export type UpdateModLogMutation = { __typename?: 'Mutation', updateModLogByGuildIdAndCaseId?: { __typename?: 'UpdateModLogPayload', modLog?: { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string } | null } | null };
+
+export type GetMessagesQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  channelId: Scalars['BigInt'];
+  in: Array<Scalars['BigInt']> | Scalars['BigInt'];
+}>;
+
+
+export type GetMessagesQuery = { __typename?: 'Query', allMessages?: { __typename?: 'MessagesConnection', nodes: Array<{ __typename?: 'Message', guildId: string, channelId: string, authorId: string, messageId: string, content: string, msg: { [key: string]: any }, created: string }> } | null };
+
+export type MessageDataFragment = { __typename?: 'Message', guildId: string, channelId: string, authorId: string, messageId: string, content: string, msg: { [key: string]: any }, created: string };
+
+export type MsgLogBlockDataFragment = { __typename?: 'MsgLogBlock', guildId: string, channelId: string, blockType: MsgLogBlockType };
+
+export type DeleteMsgLogBlockMutationVariables = Exact<{
+  channelId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+}>;
+
+
+export type DeleteMsgLogBlockMutation = { __typename?: 'Mutation', deleteMsgLogBlockByGuildIdAndChannelId?: { __typename?: 'DeleteMsgLogBlockPayload', msgLogBlock?: { __typename?: 'MsgLogBlock', guildId: string, channelId: string, blockType: MsgLogBlockType } | null } | null };
+
+export type GetMsgLogBlockQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  channelId: Scalars['BigInt'];
+}>;
+
+
+export type GetMsgLogBlockQuery = { __typename?: 'Query', msgLogBlockByGuildIdAndChannelId?: { __typename?: 'MsgLogBlock', guildId: string, channelId: string, blockType: MsgLogBlockType } | null };
+
+export type GetMsgLogBlocksQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+}>;
+
+
+export type GetMsgLogBlocksQuery = { __typename?: 'Query', allMsgLogBlocks?: { __typename?: 'MsgLogBlocksConnection', nodes: Array<{ __typename?: 'MsgLogBlock', guildId: string, channelId: string, blockType: MsgLogBlockType }> } | null };
+
+export type UpsertMsgLogBlockMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  channelId: Scalars['BigInt'];
+  blockType: MsgLogBlockType;
+}>;
+
+
+export type UpsertMsgLogBlockMutation = { __typename?: 'Mutation', upsertMsgLogBlock?: { __typename?: 'UpsertMsgLogBlockPayload', msgLogBlock?: { __typename?: 'MsgLogBlock', guildId: string, channelId: string, blockType: MsgLogBlockType } | null } | null };
 
 export type CreateNotificationMutationVariables = Exact<{
   notification: NotificationInput;
@@ -22000,6 +22811,24 @@ export const ModLogDataFragmentDoc = gql`
   userTag
 }
     `;
+export const MessageDataFragmentDoc = gql`
+    fragment MessageData on Message {
+  guildId
+  channelId
+  authorId
+  messageId
+  content
+  msg
+  created
+}
+    `;
+export const MsgLogBlockDataFragmentDoc = gql`
+    fragment MsgLogBlockData on MsgLogBlock {
+  guildId
+  channelId
+  blockType
+}
+    `;
 export const NotificationDataFragmentDoc = gql`
     fragment NotificationData on Notification {
   guildId
@@ -22284,6 +23113,57 @@ export const UpdateModLogDocument = gql`
   }
 }
     ${ModLogDataFragmentDoc}`;
+export const GetMessagesDocument = gql`
+    query getMessages($guildId: BigInt!, $channelId: BigInt!, $in: [BigInt!]!) {
+  allMessages(
+    condition: {guildId: $guildId, channelId: $channelId}
+    orderBy: CREATED_DESC
+    filter: {messageId: {in: $in}}
+  ) {
+    nodes {
+      ...MessageData
+    }
+  }
+}
+    ${MessageDataFragmentDoc}`;
+export const DeleteMsgLogBlockDocument = gql`
+    mutation deleteMsgLogBlock($channelId: BigInt!, $guildId: BigInt!) {
+  deleteMsgLogBlockByGuildIdAndChannelId(
+    input: {guildId: $guildId, channelId: $channelId}
+  ) {
+    msgLogBlock {
+      ...MsgLogBlockData
+    }
+  }
+}
+    ${MsgLogBlockDataFragmentDoc}`;
+export const GetMsgLogBlockDocument = gql`
+    query getMsgLogBlock($guildId: BigInt!, $channelId: BigInt!) {
+  msgLogBlockByGuildIdAndChannelId(guildId: $guildId, channelId: $channelId) {
+    ...MsgLogBlockData
+  }
+}
+    ${MsgLogBlockDataFragmentDoc}`;
+export const GetMsgLogBlocksDocument = gql`
+    query getMsgLogBlocks($guildId: BigInt!) {
+  allMsgLogBlocks(condition: {guildId: $guildId}) {
+    nodes {
+      ...MsgLogBlockData
+    }
+  }
+}
+    ${MsgLogBlockDataFragmentDoc}`;
+export const UpsertMsgLogBlockDocument = gql`
+    mutation upsertMsgLogBlock($guildId: BigInt!, $channelId: BigInt!, $blockType: MsgLogBlockType!) {
+  upsertMsgLogBlock(
+    input: {msgLogBlock: {guildId: $guildId, channelId: $channelId, blockType: $blockType}}
+  ) {
+    msgLogBlock {
+      ...MsgLogBlockData
+    }
+  }
+}
+    ${MsgLogBlockDataFragmentDoc}`;
 export const CreateNotificationDocument = gql`
     mutation createNotification($notification: NotificationInput!) {
   createNotification(input: {notification: $notification}) {
@@ -22707,6 +23587,21 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     updateModLog(variables: UpdateModLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateModLogMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateModLogMutation>(UpdateModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateModLog', 'mutation');
+    },
+    getMessages(variables: GetMessagesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetMessagesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetMessagesQuery>(GetMessagesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getMessages', 'query');
+    },
+    deleteMsgLogBlock(variables: DeleteMsgLogBlockMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteMsgLogBlockMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteMsgLogBlockMutation>(DeleteMsgLogBlockDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteMsgLogBlock', 'mutation');
+    },
+    getMsgLogBlock(variables: GetMsgLogBlockQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetMsgLogBlockQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetMsgLogBlockQuery>(GetMsgLogBlockDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getMsgLogBlock', 'query');
+    },
+    getMsgLogBlocks(variables: GetMsgLogBlocksQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetMsgLogBlocksQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetMsgLogBlocksQuery>(GetMsgLogBlocksDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getMsgLogBlocks', 'query');
+    },
+    upsertMsgLogBlock(variables: UpsertMsgLogBlockMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertMsgLogBlockMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpsertMsgLogBlockMutation>(UpsertMsgLogBlockDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertMsgLogBlock', 'mutation');
     },
     createNotification(variables: CreateNotificationMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateNotificationMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateNotificationMutation>(CreateNotificationDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createNotification', 'mutation');

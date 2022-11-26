@@ -1,0 +1,5 @@
+query getMsgLogBlock($guildId: BigInt!, $channelId: BigInt!) {
+  msgLogBlockByGuildIdAndChannelId(guildId: $guildId, channelId: $channelId) {
+    ...MsgLogBlockData
+  }
+}

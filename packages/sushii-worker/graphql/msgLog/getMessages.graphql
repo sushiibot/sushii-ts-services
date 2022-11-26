@@ -1,0 +1,11 @@
+query getMessages($guildId: BigInt!, $channelId: BigInt!, $in: [BigInt!]!) {
+  allMessages(
+    condition: { guildId: $guildId, channelId: $channelId }
+    orderBy: CREATED_DESC
+    filter: { messageId: { in: $in } }
+  ) {
+    nodes {
+      ...MessageData
+    }
+  }
+}

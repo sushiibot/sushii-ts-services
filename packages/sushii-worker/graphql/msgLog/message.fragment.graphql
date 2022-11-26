@@ -1,0 +1,9 @@
+fragment MessageData on Message {
+  guildId
+  channelId
+  authorId
+  messageId
+  content
+  msg
+  created
+}
