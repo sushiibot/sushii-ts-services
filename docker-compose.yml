@@ -173,6 +173,49 @@ services:
             - sushii_net
         labels:
             - "traefik.enable=false"
+    shlink:
+        image: shlinkio/shlink:stable
+        container_name: shlink
+        restart: unless-stopped
+        depends_on:
+            - shlink_db
+        expose:
+            - "8080"
+        networks:
+            - sushii_net
+            - sushii_web
+        env_file:
+            - .shlink.env
+        environment:
+            - IS_HTTPS_ENABLED=true
+            - DB_DRIVER=postgres
+            - DB_HOST=shlink_db
+            - DB_PORT=5432
+            - DB_NAME=shlink
+            - DB_USER=shlink
+            # DB_PASSWORD in .shlink.en
+        labels:
+            - "traefik.docker.network=sushii-2_web"
+            - "traefik.http.services.shlink.loadbalancer.server.port=8080"
+            - "traefik.http.routers.shlink.rule=Host(`a.sushii.xyz`)"
+            - "traefik.http.routers.shlink.entrypoints=secure"
+            - "traefik.http.routers.shlink.tls.certresolver=acme"
+    shlink_db:
+        image: postgres:15.1-bullseye
+        container_name: shlink_db
+        restart: unless-stopped
+        volumes:
+            - ~/docker/shlink_postgres/15:/var/lib/postgresql/data
+        expose:
+            - "5432"
+        networks:
+            - sushii_net
+        env_file:
+            - .shlink_db.env
+        environment:
+            - POSTGRES_USER=shlink
+            - POSTGRES_DB=shlink
+            # POSTGRES_PASSWORD in .shlink_db.env
 networks:
     web:
         internal: false
