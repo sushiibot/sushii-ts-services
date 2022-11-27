@@ -11,6 +11,7 @@ import SushiiEmoji from "../constants/SushiiEmoji";
 import { Message, MsgLogBlockType } from "../generated/graphql";
 import logger from "../logger";
 import Context from "../model/context";
+import buildChunks from "../utils/buildChunks";
 import Color from "../utils/colors";
 import EventHandler from "./EventHandler";
 
@@ -137,17 +138,25 @@ function buildBulkDeleteEmbed(
   ctx: Context,
   event: GatewayMessageDeleteBulkDispatchData,
   messages: Message[]
-): EmbedBuilder {
+): EmbedBuilder[] {
   const description = `${SushiiEmoji.MessageDelete} **${messages.length} messages deleted in <#${event.channel_id}>**\n`;
 
-  const messagesStr = messages
-    .map((m) => `<@${m.authorId}>: ${m.content}`)
-    .join("\n");
+  const messagesStrs = messages.map((m) => `<@${m.authorId}>: ${m.content}`);
 
-  return new EmbedBuilder()
-    .setDescription(description + messagesStr)
-    .setColor(Color.Error)
-    .setTimestamp(new Date());
+  // Split into chunks of 4096 characters
+  const embedChunks = buildChunks([description, ...messagesStrs], "\n", 4096);
+
+  // Build an embed for each chunk
+  const embeds = embedChunks.map((chunk) =>
+    new EmbedBuilder().setDescription(chunk).setColor(Color.Error)
+  );
+
+  // Add timestamp to last embed
+  embeds[embeds.length - 1] = embeds[embeds.length - 1].setTimestamp(
+    new Date()
+  );
+
+  return embeds;
 }
 
 function buildEmbeds(
@@ -163,13 +172,13 @@ function buildEmbeds(
   }
 
   if (eventType === GatewayDispatchEvents.MessageDeleteBulk) {
-    const embed = buildBulkDeleteEmbed(
+    const embeds = buildBulkDeleteEmbed(
       ctx,
       event as GatewayMessageDeleteBulkDispatchData,
       messages
     );
 
-    return Some([embed]);
+    return Some(embeds);
   }
 
   if (eventType === GatewayDispatchEvents.MessageUpdate) {
