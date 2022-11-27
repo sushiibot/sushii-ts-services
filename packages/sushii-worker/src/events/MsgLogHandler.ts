@@ -7,6 +7,7 @@ import {
   GatewayMessageUpdateDispatchData,
 } from "discord-api-types/v10";
 import { None, Option, Some } from "ts-results";
+import SushiiEmoji from "../constants/SushiiEmoji";
 import { Message, MsgLogBlockType } from "../generated/graphql";
 import logger from "../logger";
 import Context from "../model/context";
@@ -22,7 +23,7 @@ function quoteMarkdownString(str: string): string {
   return str.split("\n").join("\n> ");
 }
 
-function isChannelIgnored(
+export function isChannelIgnored(
   eventType: GatewayDispatchEvents,
   blockType: MsgLogBlockType
 ): boolean {
@@ -58,86 +59,124 @@ function getMessageIDs(event: EventData): string[] {
   throw new Error("Invalid event data");
 }
 
-function buildEmbed(
+function buildDeleteEmbed(
+  ctx: Context,
+  event: EventData,
+  message: Message
+): EmbedBuilder {
+  let description = `${SushiiEmoji.MessageDelete} **Message deleted in <#${event.channel_id}>**\n`;
+
+  const msg = message.msg as Partial<APIMessage>;
+
+  if (msg.content) {
+    description += "**Content**";
+    description += "\n";
+    description += msg.content;
+    description += "\n";
+  }
+
+  if (msg.sticker_items && msg.sticker_items.length > 0) {
+    const sticker = msg.sticker_items[0];
+    const stickerURL = ctx.CDN.cdn.sticker(sticker.id);
+
+    description += "**Stickers**";
+    description += "\n";
+    description += `> [${sticker.name}](${stickerURL})`;
+    description += "\n";
+  }
+
+  if (msg.attachments && msg.attachments.length > 0) {
+    const attachments = msg.attachments.map((a) => `> ${a.url}`).join("\n");
+
+    description += "**Attachments**";
+    description += "\n";
+    description += attachments;
+  }
+
+  return new EmbedBuilder()
+    .setDescription(description)
+    .setColor(Color.DiscordEmbedGrey)
+    .setTimestamp(new Date());
+}
+
+function buildEditEmbed(
+  ctx: Context,
+  event: EventData,
+  message: Message
+): Option<EmbedBuilder> {
+  const updateEvent = event as GatewayMessageUpdateDispatchData;
+
+  // Ignore edits for messages without content
+  if (!updateEvent.content) {
+    return None;
+  }
+
+  // No changes, e.g. could be proxy url updated
+  if (updateEvent.content === message.content) {
+    return None;
+  }
+
+  let description = `${SushiiEmoji.MessageEdit} **Message edited in <#${event.channel_id}>**\n`;
+  description = "**Before:**";
+  description += "\n";
+  description += quoteMarkdownString(message.content);
+  description += "\n";
+  description += "**After:**";
+  description += "\n";
+  description += quoteMarkdownString(updateEvent.content);
+
+  const embed = new EmbedBuilder()
+    .setDescription(description)
+    .setColor(Color.Info)
+    .setTimestamp(new Date());
+
+  return Some(embed);
+}
+
+function buildBulkDeleteEmbed(
+  ctx: Context,
+  event: GatewayMessageDeleteBulkDispatchData,
+  messages: Message[]
+): EmbedBuilder {
+  const description = `${SushiiEmoji.MessageDelete} **${messages.length} messages deleted in <#${event.channel_id}>**\n`;
+
+  const messagesStr = messages
+    .map((m) => `<@${m.authorId}>: ${m.content}`)
+    .join("\n");
+
+  return new EmbedBuilder()
+    .setDescription(description + messagesStr)
+    .setColor(Color.Error)
+    .setTimestamp(new Date());
+}
+
+function buildEmbeds(
   ctx: Context,
   eventType: GatewayDispatchEvents,
   event: EventData,
   messages: Message[]
-): Option<EmbedBuilder> {
-  let title;
-  let color;
-  let description = "";
+): Option<EmbedBuilder[]> {
+  if (eventType === GatewayDispatchEvents.MessageDelete && event) {
+    const embed = buildDeleteEmbed(ctx, event, messages[0]);
 
-  if (eventType === GatewayDispatchEvents.MessageDelete) {
-    title = "Message Deleted";
-    color = Color.Error;
-
-    const msg = messages[0].msg as Partial<APIMessage>;
-
-    if (msg.content) {
-      description += "**Content**";
-      description += "\n";
-      description += msg.content;
-      description += "\n";
-    }
-
-    if (msg.sticker_items && msg.sticker_items.length > 0) {
-      const sticker = msg.sticker_items[0];
-      const stickerURL = ctx.CDN.cdn.sticker(sticker.id);
-
-      description += "**Stickers**";
-      description += "\n";
-      description += `> [${sticker.name}](${stickerURL})`;
-      description += "\n";
-    }
-
-    if (msg.attachments && msg.attachments.length > 0) {
-      const attachments = msg.attachments.map((a) => `> ${a.url}`).join("\n");
-
-      description += "**Attachments**";
-      description += "\n";
-      description += attachments;
-    }
-  } else if (eventType === GatewayDispatchEvents.MessageDeleteBulk) {
-    title = "Multiple Messages Deleted";
-    color = Color.Error;
-    description = messages
-      .map((m) => `<@${m.authorId}>: ${m.content}`)
-      .join("\n");
-  } else if (eventType === GatewayDispatchEvents.MessageUpdate) {
-    const updateEvent = event as GatewayMessageUpdateDispatchData;
-
-    // Ignore edits for messages without content
-    if (!updateEvent.content) {
-      return None;
-    }
-
-    // No changes, e.g. could be proxy url updated
-    if (updateEvent.content === messages[0].content) {
-      return None;
-    }
-
-    title = "Message Edited";
-    color = Color.Info;
-
-    description = "**Before:**";
-    description += "\n";
-    description += quoteMarkdownString(messages[0].content);
-    description += "\n";
-    description += "**After:**";
-    description += "\n";
-    description += quoteMarkdownString(updateEvent.content);
-  } else {
-    throw new Error(`Invalid event type ${eventType}`);
+    return Some([embed]);
   }
 
-  return Some(
-    new EmbedBuilder()
-      .setTitle(title)
-      .setDescription(description)
-      .setColor(color)
-      .setTimestamp(new Date())
-  );
+  if (eventType === GatewayDispatchEvents.MessageDeleteBulk) {
+    const embed = buildBulkDeleteEmbed(
+      ctx,
+      event as GatewayMessageDeleteBulkDispatchData,
+      messages
+    );
+
+    return Some([embed]);
+  }
+
+  if (eventType === GatewayDispatchEvents.MessageUpdate) {
+    return buildEditEmbed(ctx, event, messages[0]).map((e) => [e]);
+  }
+
+  throw new Error(`Invalid event type ${eventType}`);
 }
 
 export default class MsgLogHandler extends EventHandler {
@@ -197,15 +236,30 @@ export default class MsgLogHandler extends EventHandler {
       return;
     }
 
-    const embed = buildEmbed(ctx, eventType, event, messages);
+    const embeds = buildEmbeds(ctx, eventType, event, messages);
 
-    if (embed.none) {
+    if (embeds.none) {
       // No embed to send, could be just proxy url getting updated
       return;
     }
 
+    if (embeds.val.length === 0) {
+      return;
+    }
+
+    if (embeds.val.length > 10) {
+      logger.error(
+        `Too many embeds to send for message ID ${messageIDs}, ignoring last ${
+          embeds.val.length - 10
+        }`
+      );
+      return;
+    }
+
+    const embedsJson = embeds.val.slice(0, 10).map((e) => e.toJSON());
+
     await ctx.REST.sendChannelMessage(guildConfigById.logMsg, {
-      embeds: [embed.safeUnwrap().toJSON()],
+      embeds: embedsJson,
     });
   }
 }
