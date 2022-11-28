@@ -50,7 +50,8 @@ export default function server(
     beforeShutdown: async () => {
       logger.info("shutting down");
     },
-    logger: logger.error,
+    // Error object needs to be first argument instead of last for pino
+    logger: (msg, err) => logger.error(err, msg),
   });
 
   const port = process.env.PORT || 3000;

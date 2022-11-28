@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import logger from "../logger";
 import Context from "../model/context";
 import PeriodicJob from "./PeriodicJob";
 
@@ -13,9 +14,16 @@ const job: PeriodicJob = {
   cronTime: "0 0 * * *",
 
   async onTick(ctx: Context): Promise<void> {
-    await ctx.sushiiAPI.sdk.deleteMessagesBefore({
-      before: dayjs().utc().subtract(RETAIN_DURATION).toISOString(),
-    });
+    const { deleteMessagesBefore } =
+      await ctx.sushiiAPI.sdk.deleteMessagesBefore({
+        before: dayjs().utc().subtract(RETAIN_DURATION).toISOString(),
+      });
+
+    if (!deleteMessagesBefore) {
+      return;
+    }
+
+    logger.info("Deleted %d messages", deleteMessagesBefore.bigInt || 0);
   },
 };
 

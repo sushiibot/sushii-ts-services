@@ -67,11 +67,9 @@ function buildDeleteEmbed(
 ): EmbedBuilder {
   let description = `${SushiiEmoji.MessageDelete} **Message deleted in <#${event.channel_id}>**\n`;
 
-  const msg = message.msg as Partial<APIMessage>;
+  const msg = message.msg as APIMessage;
 
-  if (msg.content) {
-    description += "**Content**";
-    description += "\n";
+  if (message.content) {
     description += msg.content;
     description += "\n";
   }
@@ -94,9 +92,18 @@ function buildDeleteEmbed(
     description += attachments;
   }
 
+  const authorIcon =
+    (msg.member &&
+      ctx.CDN.memberFaceURL(event.guild_id!, msg.member, msg.author.id)) ||
+    ctx.CDN.userFaceURL(msg.author);
+
   return new EmbedBuilder()
+    .setAuthor({
+      name: msg.author?.username || msg.member?.user?.username || "Unknown",
+      iconURL: authorIcon || undefined,
+    })
     .setDescription(description)
-    .setColor(Color.DiscordEmbedGrey)
+    .setColor(Color.Error)
     .setTimestamp(new Date());
 }
 
@@ -117,8 +124,11 @@ function buildEditEmbed(
     return None;
   }
 
+  // Is this Partial<API.Message>?
+  const msg = message.msg as APIMessage;
+
   let description = `${SushiiEmoji.MessageEdit} **Message edited in <#${event.channel_id}>**\n`;
-  description = "**Before:**";
+  description += "**Before:**";
   description += "\n";
   description += quoteMarkdownString(message.content);
   description += "\n";
@@ -126,7 +136,16 @@ function buildEditEmbed(
   description += "\n";
   description += quoteMarkdownString(updateEvent.content);
 
+  const authorIcon =
+    (msg.member &&
+      ctx.CDN.memberFaceURL(event.guild_id!, msg.member, msg.author.id)) ||
+    ctx.CDN.userFaceURL(msg.author);
+
   const embed = new EmbedBuilder()
+    .setAuthor({
+      name: msg.author?.username || msg.member?.user?.username || "Unknown",
+      iconURL: authorIcon || undefined,
+    })
     .setDescription(description.substring(0, 4096))
     .setColor(Color.Info)
     .setTimestamp(new Date());
@@ -139,7 +158,9 @@ function buildBulkDeleteEmbed(
   event: GatewayMessageDeleteBulkDispatchData,
   messages: Message[]
 ): EmbedBuilder[] {
-  const description = `${SushiiEmoji.MessageDelete} **${messages.length} messages deleted in <#${event.channel_id}>**\n`;
+  const deleteCount = messages.length.toLocaleString();
+  // No new-line at the end of this since it's joined in buildChunks
+  const description = `${SushiiEmoji.MessageDelete} **${deleteCount} messages deleted in <#${event.channel_id}>**`;
 
   const messagesStrs = messages.map((m) => `<@${m.authorId}>: ${m.content}`);
 

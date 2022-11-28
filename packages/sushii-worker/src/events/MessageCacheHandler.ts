@@ -28,6 +28,11 @@ export default class MessageCacheHandler extends EventHandler {
       return;
     }
 
+    // Ignore bots
+    if (event.author?.bot || event.member?.user?.bot) {
+      return;
+    }
+
     const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
       guildId: event.guild_id,
     });
@@ -59,7 +64,6 @@ export default class MessageCacheHandler extends EventHandler {
       return;
     }
 
-    logger.debug("Caching message id %s", event.id);
     // Save message to db
     await ctx.sushiiAPI.sdk.upsertMessage({
       message: {
@@ -68,8 +72,8 @@ export default class MessageCacheHandler extends EventHandler {
         guildId: event.guild_id,
         authorId,
         content: event.content || "",
-        msg: event,
         created: event.timestamp!,
+        msg: event,
       },
     });
   }
