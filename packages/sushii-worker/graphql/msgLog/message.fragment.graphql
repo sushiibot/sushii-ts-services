@@ -6,4 +6,5 @@ fragment MessageData on Message {
   content
   msg
   created
+  nodeId
 }

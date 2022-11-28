@@ -12,6 +12,8 @@ import server from "./server";
 import Metrics from "./model/metrics";
 import addEventHandlers from "./events/handlers";
 import sdk from "./tracing";
+import Context from "./model/context";
+import startJobs from "./jobs/startJobs";
 
 async function main(): Promise<void> {
   dotenv.config();
@@ -34,14 +36,19 @@ async function main(): Promise<void> {
   const rabbitGatewayClient = new AmqpGateway(amqpClient, config);
   const metrics = new Metrics();
 
-  const client = new InteractionClient(config, metrics, rabbitGatewayClient);
+  const ctx = new Context(config, metrics, rabbitGatewayClient);
+  const client = new InteractionClient(ctx, config, metrics);
   addCommands(client);
   addEventHandlers(client);
 
   // Register commands to Discord API
   await client.register();
 
+  // Connect to event gateway
   await rabbitGatewayClient.connect((msg) => client.handleAMQPMessage(msg));
+
+  // Start background jobs
+  await startJobs(ctx);
 
   // ---------------------------------------------------------------------------
   // Metrics and healthcheck
@@ -64,6 +71,8 @@ async function main(): Promise<void> {
 
       log.info("closing tracing");
       await sdk.shutdown();
+
+      log.flush();
     },
   });
 }

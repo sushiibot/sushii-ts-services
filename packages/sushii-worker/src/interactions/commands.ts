@@ -29,6 +29,7 @@ import NoteCommand from "./moderation/NoteCommand";
 import XpCommand from "./xp/XpCommands";
 import LevelRoleCommand from "./xp/LevelRoleCommand";
 import RankCommand from "./user/rank";
+import MessageLogCommand from "./settings/MessageLogChannel";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -69,7 +70,8 @@ export default function addCommands(
     new XpCommand(),
 
     // Settings
-    new WelcomeCommand()
+    new WelcomeCommand(),
+    new MessageLogCommand()
   );
 
   interactionClient.addContextMenu(new UserInfoHandler());

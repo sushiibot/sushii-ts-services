@@ -46,7 +46,6 @@ import Metrics from "./model/metrics";
 import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
 import EventHandler from "./events/EventHandler";
-import AmqpGateway from "./model/AmqpGateway";
 
 interface FocusedOption {
   path: string;
@@ -146,10 +145,10 @@ export default class Client {
    */
   private selectMenuHandlers: SelectMenuHandler[];
 
-  constructor(config: ConfigI, metrics: Metrics, gateway: AmqpGateway) {
+  constructor(ctx: Context, config: ConfigI, metrics: Metrics) {
     this.config = config;
     this.metrics = metrics;
-    this.context = new Context(config, metrics, gateway);
+    this.context = ctx;
     this.commands = new Collection();
     this.autocompleteHandlers = new Collection();
     this.modalHandlers = new Collection();
@@ -670,18 +669,20 @@ export default class Client {
       }
     }
 
-    try {
-      // Run all handlers in parallel
-      Promise.allSettled(promises);
-    } catch (e) {
-      Sentry.captureException(e, {
-        tags: {
-          type: "event",
-          event: event.t,
-        },
-      });
+    // Run all handlers in parallel
+    const results = await Promise.allSettled(promises);
 
-      log.error(e, "error handling event %s", event.t);
+    for (const result of results) {
+      if (result.status === "rejected") {
+        Sentry.captureException(result.reason, {
+          tags: {
+            type: "event",
+            event: event.t,
+          },
+        });
+
+        log.error(result.reason, "error handling event %s", event.t);
+      }
     }
   }
 

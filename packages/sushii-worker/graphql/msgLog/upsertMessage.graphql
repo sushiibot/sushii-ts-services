@@ -1,0 +1,7 @@
+mutation upsertMessage($message: MessageInput!) {
+  upsertMessage(input: { message: $message }) {
+    message {
+      ...MessageData
+    }
+  }
+}

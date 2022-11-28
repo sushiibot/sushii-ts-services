@@ -1273,7 +1273,7 @@ type CreateMessagePayload {
   """An edge for our `Message`. May be used by Relay 1."""
   messageEdge(
     """The method to use when ordering `Message`."""
-    orderBy: [MessagesOrderBy!] = [NATURAL]
+    orderBy: [MessagesOrderBy!] = [PRIMARY_KEY_ASC]
   ): MessagesEdge
 
   """
@@ -2422,6 +2422,81 @@ type DeleteMemberPayload {
     """The method to use when ordering `Member`."""
     orderBy: [MembersOrderBy!] = [PRIMARY_KEY_ASC]
   ): MembersEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteMessageByMessageId` mutation."""
+input DeleteMessageByMessageIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  messageId: BigInt!
+}
+
+"""All input for the `deleteMessage` mutation."""
+input DeleteMessageInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `Message` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `Message` mutation."""
+type DeleteMessagePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedMessageId: ID
+
+  """The `Message` that was deleted by this mutation."""
+  message: Message
+
+  """An edge for our `Message`. May be used by Relay 1."""
+  messageEdge(
+    """The method to use when ordering `Message`."""
+    orderBy: [MessagesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MessagesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the `deleteMessagesBefore` mutation."""
+input DeleteMessagesBeforeInput {
+  before: Datetime
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+}
+
+"""The output of our `deleteMessagesBefore` mutation."""
+type DeleteMessagesBeforePayload {
+  bigInt: BigInt
+
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
@@ -7331,7 +7406,7 @@ enum MembersOrderBy {
   USER_ID_DESC
 }
 
-type Message {
+type Message implements Node {
   authorId: BigInt!
   channelId: BigInt!
   content: String!
@@ -7339,6 +7414,11 @@ type Message {
   guildId: BigInt!
   messageId: BigInt!
   msg: JSON!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
 }
 
 type MessageAggregates {
@@ -7526,6 +7606,19 @@ type MessageMinAggregates {
   messageId: BigInt
 }
 
+"""
+Represents an update to a `Message`. Fields that are set will be updated.
+"""
+input MessagePatch {
+  authorId: BigInt
+  channelId: BigInt
+  content: String
+  created: Datetime
+  guildId: BigInt
+  messageId: BigInt
+  msg: JSON
+}
+
 type MessageStddevPopulationAggregates {
   """
   Population standard deviation of authorId across the matching connection
@@ -7655,7 +7748,6 @@ enum MessagesGroupBy {
   CREATED_TRUNCATED_TO_DAY
   CREATED_TRUNCATED_TO_HOUR
   GUILD_ID
-  MESSAGE_ID
   MSG
 }
 
@@ -7763,6 +7855,8 @@ enum MessagesOrderBy {
   MSG_ASC
   MSG_DESC
   NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
 }
 
 type ModLog implements Node {
@@ -9233,6 +9327,28 @@ type Mutation {
     input: DeleteMemberByGuildIdAndUserIdInput!
   ): DeleteMemberPayload
 
+  """Deletes a single `Message` using its globally unique id."""
+  deleteMessage(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteMessageInput!
+  ): DeleteMessagePayload
+
+  """Deletes a single `Message` using a unique key."""
+  deleteMessageByMessageId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteMessageByMessageIdInput!
+  ): DeleteMessagePayload
+  deleteMessagesBefore(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteMessagesBeforeInput!
+  ): DeleteMessagesBeforePayload
+
   """Deletes a single `ModLog` using its globally unique id."""
   deleteModLog(
     """
@@ -9677,6 +9793,22 @@ type Mutation {
     input: UpdateMemberByGuildIdAndUserIdInput!
   ): UpdateMemberPayload
 
+  """Updates a single `Message` using its globally unique id and a patch."""
+  updateMessage(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateMessageInput!
+  ): UpdateMessagePayload
+
+  """Updates a single `Message` using a unique key and a patch."""
+  updateMessageByMessageId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateMessageByMessageIdInput!
+  ): UpdateMessagePayload
+
   """Updates a single `ModLog` using its globally unique id and a patch."""
   updateModLog(
     """
@@ -10006,6 +10138,15 @@ type Mutation {
     input: UpsertMemberInput!
     where: UpsertMemberWhere
   ): UpsertMemberPayload
+
+  """Upserts a single `Message`."""
+  upsertMessage(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertMessageInput!
+    where: UpsertMessageWhere
+  ): UpsertMessagePayload
 
   """Upserts a single `ModLog`."""
   upsertModLog(
@@ -11268,7 +11409,7 @@ type Query implements Node {
     offset: Int
 
     """The method to use when ordering `Message`."""
-    orderBy: [MessagesOrderBy!] = [NATURAL]
+    orderBy: [MessagesOrderBy!] = [PRIMARY_KEY_ASC]
   ): MessagesConnection
 
   """Reads and enables pagination through a set of `ModLog`."""
@@ -11874,6 +12015,13 @@ type Query implements Node {
     nodeId: ID!
   ): Member
   memberByGuildIdAndUserId(guildId: BigInt!, userId: BigInt!): Member
+
+  """Reads a single `Message` using its globally unique `ID`."""
+  message(
+    """The globally unique `ID` to be used in selecting a single `Message`."""
+    nodeId: ID!
+  ): Message
+  messageByMessageId(messageId: BigInt!): Message
 
   """Reads a single `ModLog` using its globally unique `ID`."""
   modLog(
@@ -14789,6 +14937,63 @@ type UpdateMemberPayload {
   query: Query
 }
 
+"""All input for the `updateMessageByMessageId` mutation."""
+input UpdateMessageByMessageIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  messageId: BigInt!
+
+  """
+  An object where the defined keys will be set on the `Message` being updated.
+  """
+  messagePatch: MessagePatch!
+}
+
+"""All input for the `updateMessage` mutation."""
+input UpdateMessageInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `Message` being updated.
+  """
+  messagePatch: MessagePatch!
+
+  """
+  The globally unique `ID` which will identify a single `Message` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `Message` mutation."""
+type UpdateMessagePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Message` that was updated by this mutation."""
+  message: Message
+
+  """An edge for our `Message`. May be used by Relay 1."""
+  messageEdge(
+    """The method to use when ordering `Message`."""
+    orderBy: [MessagesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MessagesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the `updateModLogByGuildIdAndCaseId` mutation."""
 input UpdateModLogByGuildIdAndCaseIdInput {
   caseId: BigInt!
@@ -16062,6 +16267,44 @@ type UpsertMemberPayload {
 input UpsertMemberWhere {
   guildId: BigInt
   userId: BigInt
+}
+
+"""All input for the upsert `Message` mutation."""
+input UpsertMessageInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `Message` to be upserted by this mutation."""
+  message: MessageInput!
+}
+
+"""The output of our upsert `Message` mutation."""
+type UpsertMessagePayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `Message` that was upserted by this mutation."""
+  message: Message
+
+  """An edge for our `Message`. May be used by Relay 1."""
+  messageEdge(
+    """The method to use when ordering `Message`."""
+    orderBy: [MessagesOrderBy!] = [PRIMARY_KEY_ASC]
+  ): MessagesEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `Message` mutation."""
+input UpsertMessageWhere {
+  messageId: BigInt
 }
 
 """All input for the upsert `ModLog` mutation."""

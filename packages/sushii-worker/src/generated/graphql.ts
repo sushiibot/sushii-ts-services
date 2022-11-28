@@ -2163,6 +2163,73 @@ export type DeleteMemberPayloadMemberEdgeArgs = {
   orderBy?: InputMaybe<Array<MembersOrderBy>>;
 };
 
+/** All input for the `deleteMessageByMessageId` mutation. */
+export type DeleteMessageByMessageIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  messageId: Scalars['BigInt'];
+};
+
+/** All input for the `deleteMessage` mutation. */
+export type DeleteMessageInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `Message` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `Message` mutation. */
+export type DeleteMessagePayload = {
+  __typename?: 'DeleteMessagePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedMessageId?: Maybe<Scalars['ID']>;
+  /** The `Message` that was deleted by this mutation. */
+  message?: Maybe<Message>;
+  /** An edge for our `Message`. May be used by Relay 1. */
+  messageEdge?: Maybe<MessagesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Message` mutation. */
+export type DeleteMessagePayloadMessageEdgeArgs = {
+  orderBy?: InputMaybe<Array<MessagesOrderBy>>;
+};
+
+/** All input for the `deleteMessagesBefore` mutation. */
+export type DeleteMessagesBeforeInput = {
+  before?: InputMaybe<Scalars['Datetime']>;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+};
+
+/** The output of our `deleteMessagesBefore` mutation. */
+export type DeleteMessagesBeforePayload = {
+  __typename?: 'DeleteMessagesBeforePayload';
+  bigInt?: Maybe<Scalars['BigInt']>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
 /** All input for the `deleteModLogByGuildIdAndCaseId` mutation. */
 export type DeleteModLogByGuildIdAndCaseIdInput = {
   caseId: Scalars['BigInt'];
@@ -6148,7 +6215,7 @@ export enum MembersOrderBy {
   UserIdDesc = 'USER_ID_DESC'
 }
 
-export type Message = {
+export type Message = Node & {
   __typename?: 'Message';
   authorId: Scalars['BigInt'];
   channelId: Scalars['BigInt'];
@@ -6157,6 +6224,8 @@ export type Message = {
   guildId: Scalars['BigInt'];
   messageId: Scalars['BigInt'];
   msg: Scalars['JSON'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
 };
 
 export type MessageAggregates = {
@@ -6289,6 +6358,17 @@ export type MessageMinAggregates = {
   messageId?: Maybe<Scalars['BigInt']>;
 };
 
+/** Represents an update to a `Message`. Fields that are set will be updated. */
+export type MessagePatch = {
+  authorId?: InputMaybe<Scalars['BigInt']>;
+  channelId?: InputMaybe<Scalars['BigInt']>;
+  content?: InputMaybe<Scalars['String']>;
+  created?: InputMaybe<Scalars['Datetime']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  messageId?: InputMaybe<Scalars['BigInt']>;
+  msg?: InputMaybe<Scalars['JSON']>;
+};
+
 export type MessageStddevPopulationAggregates = {
   __typename?: 'MessageStddevPopulationAggregates';
   /** Population standard deviation of authorId across the matching connection */
@@ -6391,7 +6471,6 @@ export enum MessagesGroupBy {
   CreatedTruncatedToDay = 'CREATED_TRUNCATED_TO_DAY',
   CreatedTruncatedToHour = 'CREATED_TRUNCATED_TO_HOUR',
   GuildId = 'GUILD_ID',
-  MessageId = 'MESSAGE_ID',
   Msg = 'MSG'
 }
 
@@ -6498,7 +6577,9 @@ export enum MessagesOrderBy {
   MessageIdDesc = 'MESSAGE_ID_DESC',
   MsgAsc = 'MSG_ASC',
   MsgDesc = 'MSG_DESC',
-  Natural = 'NATURAL'
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
 export type ModLog = Node & {
@@ -7466,6 +7547,11 @@ export type Mutation = {
   deleteMember?: Maybe<DeleteMemberPayload>;
   /** Deletes a single `Member` using a unique key. */
   deleteMemberByGuildIdAndUserId?: Maybe<DeleteMemberPayload>;
+  /** Deletes a single `Message` using its globally unique id. */
+  deleteMessage?: Maybe<DeleteMessagePayload>;
+  /** Deletes a single `Message` using a unique key. */
+  deleteMessageByMessageId?: Maybe<DeleteMessagePayload>;
+  deleteMessagesBefore?: Maybe<DeleteMessagesBeforePayload>;
   /** Deletes a single `ModLog` using its globally unique id. */
   deleteModLog?: Maybe<DeleteModLogPayload>;
   /** Deletes a single `ModLog` using a unique key. */
@@ -7572,6 +7658,10 @@ export type Mutation = {
   updateMember?: Maybe<UpdateMemberPayload>;
   /** Updates a single `Member` using a unique key and a patch. */
   updateMemberByGuildIdAndUserId?: Maybe<UpdateMemberPayload>;
+  /** Updates a single `Message` using its globally unique id and a patch. */
+  updateMessage?: Maybe<UpdateMessagePayload>;
+  /** Updates a single `Message` using a unique key and a patch. */
+  updateMessageByMessageId?: Maybe<UpdateMessagePayload>;
   /** Updates a single `ModLog` using its globally unique id and a patch. */
   updateModLog?: Maybe<UpdateModLogPayload>;
   /** Updates a single `ModLog` using a unique key and a patch. */
@@ -7649,6 +7739,8 @@ export type Mutation = {
   upsertLevelRoleOverride?: Maybe<UpsertLevelRoleOverridePayload>;
   /** Upserts a single `Member`. */
   upsertMember?: Maybe<UpsertMemberPayload>;
+  /** Upserts a single `Message`. */
+  upsertMessage?: Maybe<UpsertMessagePayload>;
   /** Upserts a single `ModLog`. */
   upsertModLog?: Maybe<UpsertModLogPayload>;
   /** Upserts a single `MsgLogBlock`. */
@@ -7991,6 +8083,24 @@ export type MutationDeleteMemberByGuildIdAndUserIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteMessageArgs = {
+  input: DeleteMessageInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteMessageByMessageIdArgs = {
+  input: DeleteMessageByMessageIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteMessagesBeforeArgs = {
+  input: DeleteMessagesBeforeInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteModLogArgs = {
   input: DeleteModLogInput;
 };
@@ -8321,6 +8431,18 @@ export type MutationUpdateMemberByGuildIdAndUserIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateMessageArgs = {
+  input: UpdateMessageInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateMessageByMessageIdArgs = {
+  input: UpdateMessageByMessageIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateModLogArgs = {
   input: UpdateModLogInput;
 };
@@ -8563,6 +8685,13 @@ export type MutationUpsertLevelRoleOverrideArgs = {
 export type MutationUpsertMemberArgs = {
   input: UpsertMemberInput;
   where?: InputMaybe<UpsertMemberWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertMessageArgs = {
+  input: UpsertMessageInput;
+  where?: InputMaybe<UpsertMessageWhere>;
 };
 
 
@@ -9400,6 +9529,9 @@ export type Query = Node & {
   /** Reads a single `Member` using its globally unique `ID`. */
   member?: Maybe<Member>;
   memberByGuildIdAndUserId?: Maybe<Member>;
+  /** Reads a single `Message` using its globally unique `ID`. */
+  message?: Maybe<Message>;
+  messageByMessageId?: Maybe<Message>;
   /** Reads a single `ModLog` using its globally unique `ID`. */
   modLog?: Maybe<ModLog>;
   modLogByGuildIdAndCaseId?: Maybe<ModLog>;
@@ -9949,6 +10081,18 @@ export type QueryMemberArgs = {
 export type QueryMemberByGuildIdAndUserIdArgs = {
   guildId: Scalars['BigInt'];
   userId: Scalars['BigInt'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryMessageArgs = {
+  nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryMessageByMessageIdArgs = {
+  messageId: Scalars['BigInt'];
 };
 
 
@@ -12411,6 +12555,53 @@ export type UpdateMemberPayloadMemberEdgeArgs = {
   orderBy?: InputMaybe<Array<MembersOrderBy>>;
 };
 
+/** All input for the `updateMessageByMessageId` mutation. */
+export type UpdateMessageByMessageIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  messageId: Scalars['BigInt'];
+  /** An object where the defined keys will be set on the `Message` being updated. */
+  messagePatch: MessagePatch;
+};
+
+/** All input for the `updateMessage` mutation. */
+export type UpdateMessageInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `Message` being updated. */
+  messagePatch: MessagePatch;
+  /** The globally unique `ID` which will identify a single `Message` to be updated. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our update `Message` mutation. */
+export type UpdateMessagePayload = {
+  __typename?: 'UpdateMessagePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `Message` that was updated by this mutation. */
+  message?: Maybe<Message>;
+  /** An edge for our `Message`. May be used by Relay 1. */
+  messageEdge?: Maybe<MessagesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `Message` mutation. */
+export type UpdateMessagePayloadMessageEdgeArgs = {
+  orderBy?: InputMaybe<Array<MessagesOrderBy>>;
+};
+
 /** All input for the `updateModLogByGuildIdAndCaseId` mutation. */
 export type UpdateModLogByGuildIdAndCaseIdInput = {
   caseId: Scalars['BigInt'];
@@ -13465,6 +13656,38 @@ export type UpsertMemberPayloadMemberEdgeArgs = {
 export type UpsertMemberWhere = {
   guildId?: InputMaybe<Scalars['BigInt']>;
   userId?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `Message` mutation. */
+export type UpsertMessageInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `Message` to be upserted by this mutation. */
+  message: MessageInput;
+};
+
+/** The output of our upsert `Message` mutation. */
+export type UpsertMessagePayload = {
+  __typename?: 'UpsertMessagePayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `Message` that was upserted by this mutation. */
+  message?: Maybe<Message>;
+  /** An edge for our `Message`. May be used by Relay 1. */
+  messageEdge?: Maybe<MessagesEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `Message` mutation. */
+export type UpsertMessagePayloadMessageEdgeArgs = {
+  orderBy?: InputMaybe<Array<MessagesOrderBy>>;
+};
+
+/** Where conditions for the upsert `Message` mutation. */
+export type UpsertMessageWhere = {
+  messageId?: InputMaybe<Scalars['BigInt']>;
 };
 
 /** All input for the upsert `ModLog` mutation. */
@@ -16021,6 +16244,11 @@ export type ResolversTypes = {
   DeleteMemberByGuildIdAndUserIdInput: DeleteMemberByGuildIdAndUserIdInput;
   DeleteMemberInput: DeleteMemberInput;
   DeleteMemberPayload: ResolverTypeWrapper<DeleteMemberPayload>;
+  DeleteMessageByMessageIdInput: DeleteMessageByMessageIdInput;
+  DeleteMessageInput: DeleteMessageInput;
+  DeleteMessagePayload: ResolverTypeWrapper<DeleteMessagePayload>;
+  DeleteMessagesBeforeInput: DeleteMessagesBeforeInput;
+  DeleteMessagesBeforePayload: ResolverTypeWrapper<DeleteMessagesBeforePayload>;
   DeleteModLogByGuildIdAndCaseIdInput: DeleteModLogByGuildIdAndCaseIdInput;
   DeleteModLogInput: DeleteModLogInput;
   DeleteModLogPayload: ResolverTypeWrapper<DeleteModLogPayload>;
@@ -16317,6 +16545,7 @@ export type ResolversTypes = {
   MessageInput: MessageInput;
   MessageMaxAggregates: ResolverTypeWrapper<MessageMaxAggregates>;
   MessageMinAggregates: ResolverTypeWrapper<MessageMinAggregates>;
+  MessagePatch: MessagePatch;
   MessageStddevPopulationAggregates: ResolverTypeWrapper<MessageStddevPopulationAggregates>;
   MessageStddevSampleAggregates: ResolverTypeWrapper<MessageStddevSampleAggregates>;
   MessageSumAggregates: ResolverTypeWrapper<MessageSumAggregates>;
@@ -16426,7 +16655,7 @@ export type ResolversTypes = {
   MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
   MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
   MutesOrderBy: MutesOrderBy;
-  Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['LevelRole'] | ResolversTypes['LevelRoleApplyJob'] | ResolversTypes['LevelRoleOverride'] | ResolversTypes['Member'] | ResolversTypes['ModLog'] | ResolversTypes['MsgLogBlock'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['RoleMenuRole'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'] | ResolversTypes['XpBlock'];
+  Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['LevelRole'] | ResolversTypes['LevelRoleApplyJob'] | ResolversTypes['LevelRoleOverride'] | ResolversTypes['Member'] | ResolversTypes['Message'] | ResolversTypes['ModLog'] | ResolversTypes['MsgLogBlock'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['RoleMenuRole'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'] | ResolversTypes['XpBlock'];
   Notification: ResolverTypeWrapper<Notification>;
   NotificationAggregates: ResolverTypeWrapper<NotificationAggregates>;
   NotificationAverageAggregates: ResolverTypeWrapper<NotificationAverageAggregates>;
@@ -16626,6 +16855,9 @@ export type ResolversTypes = {
   UpdateMemberByGuildIdAndUserIdInput: UpdateMemberByGuildIdAndUserIdInput;
   UpdateMemberInput: UpdateMemberInput;
   UpdateMemberPayload: ResolverTypeWrapper<UpdateMemberPayload>;
+  UpdateMessageByMessageIdInput: UpdateMessageByMessageIdInput;
+  UpdateMessageInput: UpdateMessageInput;
+  UpdateMessagePayload: ResolverTypeWrapper<UpdateMessagePayload>;
   UpdateModLogByGuildIdAndCaseIdInput: UpdateModLogByGuildIdAndCaseIdInput;
   UpdateModLogInput: UpdateModLogInput;
   UpdateModLogPayload: ResolverTypeWrapper<UpdateModLogPayload>;
@@ -16703,6 +16935,9 @@ export type ResolversTypes = {
   UpsertMemberInput: UpsertMemberInput;
   UpsertMemberPayload: ResolverTypeWrapper<UpsertMemberPayload>;
   UpsertMemberWhere: UpsertMemberWhere;
+  UpsertMessageInput: UpsertMessageInput;
+  UpsertMessagePayload: ResolverTypeWrapper<UpsertMessagePayload>;
+  UpsertMessageWhere: UpsertMessageWhere;
   UpsertModLogInput: UpsertModLogInput;
   UpsertModLogPayload: ResolverTypeWrapper<UpsertModLogPayload>;
   UpsertModLogWhere: UpsertModLogWhere;
@@ -17031,6 +17266,11 @@ export type ResolversParentTypes = {
   DeleteMemberByGuildIdAndUserIdInput: DeleteMemberByGuildIdAndUserIdInput;
   DeleteMemberInput: DeleteMemberInput;
   DeleteMemberPayload: DeleteMemberPayload;
+  DeleteMessageByMessageIdInput: DeleteMessageByMessageIdInput;
+  DeleteMessageInput: DeleteMessageInput;
+  DeleteMessagePayload: DeleteMessagePayload;
+  DeleteMessagesBeforeInput: DeleteMessagesBeforeInput;
+  DeleteMessagesBeforePayload: DeleteMessagesBeforePayload;
   DeleteModLogByGuildIdAndCaseIdInput: DeleteModLogByGuildIdAndCaseIdInput;
   DeleteModLogInput: DeleteModLogInput;
   DeleteModLogPayload: DeleteModLogPayload;
@@ -17307,6 +17547,7 @@ export type ResolversParentTypes = {
   MessageInput: MessageInput;
   MessageMaxAggregates: MessageMaxAggregates;
   MessageMinAggregates: MessageMinAggregates;
+  MessagePatch: MessagePatch;
   MessageStddevPopulationAggregates: MessageStddevPopulationAggregates;
   MessageStddevSampleAggregates: MessageStddevSampleAggregates;
   MessageSumAggregates: MessageSumAggregates;
@@ -17407,7 +17648,7 @@ export type ResolversParentTypes = {
   MutesHavingSumInput: MutesHavingSumInput;
   MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
   MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
-  Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['LevelRole'] | ResolversParentTypes['LevelRoleApplyJob'] | ResolversParentTypes['LevelRoleOverride'] | ResolversParentTypes['Member'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['MsgLogBlock'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['RoleMenuRole'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'] | ResolversParentTypes['XpBlock'];
+  Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['LevelRole'] | ResolversParentTypes['LevelRoleApplyJob'] | ResolversParentTypes['LevelRoleOverride'] | ResolversParentTypes['Member'] | ResolversParentTypes['Message'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['MsgLogBlock'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['RoleMenuRole'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'] | ResolversParentTypes['XpBlock'];
   Notification: Notification;
   NotificationAggregates: NotificationAggregates;
   NotificationAverageAggregates: NotificationAverageAggregates;
@@ -17597,6 +17838,9 @@ export type ResolversParentTypes = {
   UpdateMemberByGuildIdAndUserIdInput: UpdateMemberByGuildIdAndUserIdInput;
   UpdateMemberInput: UpdateMemberInput;
   UpdateMemberPayload: UpdateMemberPayload;
+  UpdateMessageByMessageIdInput: UpdateMessageByMessageIdInput;
+  UpdateMessageInput: UpdateMessageInput;
+  UpdateMessagePayload: UpdateMessagePayload;
   UpdateModLogByGuildIdAndCaseIdInput: UpdateModLogByGuildIdAndCaseIdInput;
   UpdateModLogInput: UpdateModLogInput;
   UpdateModLogPayload: UpdateModLogPayload;
@@ -17674,6 +17918,9 @@ export type ResolversParentTypes = {
   UpsertMemberInput: UpsertMemberInput;
   UpsertMemberPayload: UpsertMemberPayload;
   UpsertMemberWhere: UpsertMemberWhere;
+  UpsertMessageInput: UpsertMessageInput;
+  UpsertMessagePayload: UpsertMessagePayload;
+  UpsertMessageWhere: UpsertMessageWhere;
   UpsertModLogInput: UpsertModLogInput;
   UpsertModLogPayload: UpsertModLogPayload;
   UpsertModLogWhere: UpsertModLogWhere;
@@ -18334,6 +18581,22 @@ export type DeleteMemberPayloadResolvers<ContextType = any, ParentType extends R
   deletedMemberId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType>;
   memberEdge?: Resolver<Maybe<ResolversTypes['MembersEdge']>, ParentType, ContextType, RequireFields<DeleteMemberPayloadMemberEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteMessagePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteMessagePayload'] = ResolversParentTypes['DeleteMessagePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedMessageId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType>;
+  messageEdge?: Resolver<Maybe<ResolversTypes['MessagesEdge']>, ParentType, ContextType, RequireFields<DeleteMessagePayloadMessageEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteMessagesBeforePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteMessagesBeforePayload'] = ResolversParentTypes['DeleteMessagesBeforePayload']> = {
+  bigInt?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -19477,6 +19740,7 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
   guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   messageId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   msg?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -19865,6 +20129,9 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteLevelRoleOverrideByGuildIdAndRoleIdAndUserId?: Resolver<Maybe<ResolversTypes['DeleteLevelRoleOverridePayload']>, ParentType, ContextType, RequireFields<MutationDeleteLevelRoleOverrideByGuildIdAndRoleIdAndUserIdArgs, 'input'>>;
   deleteMember?: Resolver<Maybe<ResolversTypes['DeleteMemberPayload']>, ParentType, ContextType, RequireFields<MutationDeleteMemberArgs, 'input'>>;
   deleteMemberByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['DeleteMemberPayload']>, ParentType, ContextType, RequireFields<MutationDeleteMemberByGuildIdAndUserIdArgs, 'input'>>;
+  deleteMessage?: Resolver<Maybe<ResolversTypes['DeleteMessagePayload']>, ParentType, ContextType, RequireFields<MutationDeleteMessageArgs, 'input'>>;
+  deleteMessageByMessageId?: Resolver<Maybe<ResolversTypes['DeleteMessagePayload']>, ParentType, ContextType, RequireFields<MutationDeleteMessageByMessageIdArgs, 'input'>>;
+  deleteMessagesBefore?: Resolver<Maybe<ResolversTypes['DeleteMessagesBeforePayload']>, ParentType, ContextType, RequireFields<MutationDeleteMessagesBeforeArgs, 'input'>>;
   deleteModLog?: Resolver<Maybe<ResolversTypes['DeleteModLogPayload']>, ParentType, ContextType, RequireFields<MutationDeleteModLogArgs, 'input'>>;
   deleteModLogByGuildIdAndCaseId?: Resolver<Maybe<ResolversTypes['DeleteModLogPayload']>, ParentType, ContextType, RequireFields<MutationDeleteModLogByGuildIdAndCaseIdArgs, 'input'>>;
   deleteMsgLogBlock?: Resolver<Maybe<ResolversTypes['DeleteMsgLogBlockPayload']>, ParentType, ContextType, RequireFields<MutationDeleteMsgLogBlockArgs, 'input'>>;
@@ -19920,6 +20187,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateLevelRoleOverrideByGuildIdAndRoleIdAndUserId?: Resolver<Maybe<ResolversTypes['UpdateLevelRoleOverridePayload']>, ParentType, ContextType, RequireFields<MutationUpdateLevelRoleOverrideByGuildIdAndRoleIdAndUserIdArgs, 'input'>>;
   updateMember?: Resolver<Maybe<ResolversTypes['UpdateMemberPayload']>, ParentType, ContextType, RequireFields<MutationUpdateMemberArgs, 'input'>>;
   updateMemberByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['UpdateMemberPayload']>, ParentType, ContextType, RequireFields<MutationUpdateMemberByGuildIdAndUserIdArgs, 'input'>>;
+  updateMessage?: Resolver<Maybe<ResolversTypes['UpdateMessagePayload']>, ParentType, ContextType, RequireFields<MutationUpdateMessageArgs, 'input'>>;
+  updateMessageByMessageId?: Resolver<Maybe<ResolversTypes['UpdateMessagePayload']>, ParentType, ContextType, RequireFields<MutationUpdateMessageByMessageIdArgs, 'input'>>;
   updateModLog?: Resolver<Maybe<ResolversTypes['UpdateModLogPayload']>, ParentType, ContextType, RequireFields<MutationUpdateModLogArgs, 'input'>>;
   updateModLogByGuildIdAndCaseId?: Resolver<Maybe<ResolversTypes['UpdateModLogPayload']>, ParentType, ContextType, RequireFields<MutationUpdateModLogByGuildIdAndCaseIdArgs, 'input'>>;
   updateMsgLogBlock?: Resolver<Maybe<ResolversTypes['UpdateMsgLogBlockPayload']>, ParentType, ContextType, RequireFields<MutationUpdateMsgLogBlockArgs, 'input'>>;
@@ -19959,6 +20228,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   upsertLevelRoleApplyJob?: Resolver<Maybe<ResolversTypes['UpsertLevelRoleApplyJobPayload']>, ParentType, ContextType, RequireFields<MutationUpsertLevelRoleApplyJobArgs, 'input'>>;
   upsertLevelRoleOverride?: Resolver<Maybe<ResolversTypes['UpsertLevelRoleOverridePayload']>, ParentType, ContextType, RequireFields<MutationUpsertLevelRoleOverrideArgs, 'input'>>;
   upsertMember?: Resolver<Maybe<ResolversTypes['UpsertMemberPayload']>, ParentType, ContextType, RequireFields<MutationUpsertMemberArgs, 'input'>>;
+  upsertMessage?: Resolver<Maybe<ResolversTypes['UpsertMessagePayload']>, ParentType, ContextType, RequireFields<MutationUpsertMessageArgs, 'input'>>;
   upsertModLog?: Resolver<Maybe<ResolversTypes['UpsertModLogPayload']>, ParentType, ContextType, RequireFields<MutationUpsertModLogArgs, 'input'>>;
   upsertMsgLogBlock?: Resolver<Maybe<ResolversTypes['UpsertMsgLogBlockPayload']>, ParentType, ContextType, RequireFields<MutationUpsertMsgLogBlockArgs, 'input'>>;
   upsertMute?: Resolver<Maybe<ResolversTypes['UpsertMutePayload']>, ParentType, ContextType, RequireFields<MutationUpsertMuteArgs, 'input'>>;
@@ -20083,7 +20353,7 @@ export type MutesEdgeResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'BotStat' | 'CachedGuild' | 'CachedUser' | 'Feed' | 'FeedItem' | 'FeedSubscription' | 'GuildBan' | 'GuildConfig' | 'LevelRole' | 'LevelRoleApplyJob' | 'LevelRoleOverride' | 'Member' | 'ModLog' | 'MsgLogBlock' | 'Mute' | 'Notification' | 'Query' | 'Reminder' | 'RoleMenu' | 'RoleMenuRole' | 'Tag' | 'User' | 'UserLevel' | 'WebUser' | 'WebUserGuild' | 'XpBlock', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'BotStat' | 'CachedGuild' | 'CachedUser' | 'Feed' | 'FeedItem' | 'FeedSubscription' | 'GuildBan' | 'GuildConfig' | 'LevelRole' | 'LevelRoleApplyJob' | 'LevelRoleOverride' | 'Member' | 'Message' | 'ModLog' | 'MsgLogBlock' | 'Mute' | 'Notification' | 'Query' | 'Reminder' | 'RoleMenu' | 'RoleMenuRole' | 'Tag' | 'User' | 'UserLevel' | 'WebUser' | 'WebUserGuild' | 'XpBlock', ParentType, ContextType>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -20258,6 +20528,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   levelRoleOverrideByGuildIdAndRoleIdAndUserId?: Resolver<Maybe<ResolversTypes['LevelRoleOverride']>, ParentType, ContextType, RequireFields<QueryLevelRoleOverrideByGuildIdAndRoleIdAndUserIdArgs, 'guildId' | 'roleId' | 'userId'>>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<QueryMemberArgs, 'nodeId'>>;
   memberByGuildIdAndUserId?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<QueryMemberByGuildIdAndUserIdArgs, 'guildId' | 'userId'>>;
+  message?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType, RequireFields<QueryMessageArgs, 'nodeId'>>;
+  messageByMessageId?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType, RequireFields<QueryMessageByMessageIdArgs, 'messageId'>>;
   modLog?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType, RequireFields<QueryModLogArgs, 'nodeId'>>;
   modLogByGuildIdAndCaseId?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType, RequireFields<QueryModLogByGuildIdAndCaseIdArgs, 'caseId' | 'guildId'>>;
   msgLogBlock?: Resolver<Maybe<ResolversTypes['MsgLogBlock']>, ParentType, ContextType, RequireFields<QueryMsgLogBlockArgs, 'nodeId'>>;
@@ -20902,6 +21174,14 @@ export type UpdateMemberPayloadResolvers<ContextType = any, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateMessagePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateMessagePayload'] = ResolversParentTypes['UpdateMessagePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType>;
+  messageEdge?: Resolver<Maybe<ResolversTypes['MessagesEdge']>, ParentType, ContextType, RequireFields<UpdateMessagePayloadMessageEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UpdateModLogPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateModLogPayload'] = ResolversParentTypes['UpdateModLogPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   modLog?: Resolver<Maybe<ResolversTypes['ModLog']>, ParentType, ContextType>;
@@ -21111,6 +21391,14 @@ export type UpsertMemberPayloadResolvers<ContextType = any, ParentType extends R
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType>;
   memberEdge?: Resolver<Maybe<ResolversTypes['MembersEdge']>, ParentType, ContextType, RequireFields<UpsertMemberPayloadMemberEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertMessagePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertMessagePayload'] = ResolversParentTypes['UpsertMessagePayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['Message']>, ParentType, ContextType>;
+  messageEdge?: Resolver<Maybe<ResolversTypes['MessagesEdge']>, ParentType, ContextType, RequireFields<UpsertMessagePayloadMessageEdgeArgs, 'orderBy'>>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -21873,6 +22161,8 @@ export type Resolvers<ContextType = any> = {
   DeleteLevelRoleOverridePayload?: DeleteLevelRoleOverridePayloadResolvers<ContextType>;
   DeleteLevelRolePayload?: DeleteLevelRolePayloadResolvers<ContextType>;
   DeleteMemberPayload?: DeleteMemberPayloadResolvers<ContextType>;
+  DeleteMessagePayload?: DeleteMessagePayloadResolvers<ContextType>;
+  DeleteMessagesBeforePayload?: DeleteMessagesBeforePayloadResolvers<ContextType>;
   DeleteModLogPayload?: DeleteModLogPayloadResolvers<ContextType>;
   DeleteMsgLogBlockPayload?: DeleteMsgLogBlockPayloadResolvers<ContextType>;
   DeleteMutePayload?: DeleteMutePayloadResolvers<ContextType>;
@@ -22137,6 +22427,7 @@ export type Resolvers<ContextType = any> = {
   UpdateLevelRoleOverridePayload?: UpdateLevelRoleOverridePayloadResolvers<ContextType>;
   UpdateLevelRolePayload?: UpdateLevelRolePayloadResolvers<ContextType>;
   UpdateMemberPayload?: UpdateMemberPayloadResolvers<ContextType>;
+  UpdateMessagePayload?: UpdateMessagePayloadResolvers<ContextType>;
   UpdateModLogPayload?: UpdateModLogPayloadResolvers<ContextType>;
   UpdateMsgLogBlockPayload?: UpdateMsgLogBlockPayloadResolvers<ContextType>;
   UpdateMutePayload?: UpdateMutePayloadResolvers<ContextType>;
@@ -22163,6 +22454,7 @@ export type Resolvers<ContextType = any> = {
   UpsertLevelRoleOverridePayload?: UpsertLevelRoleOverridePayloadResolvers<ContextType>;
   UpsertLevelRolePayload?: UpsertLevelRolePayloadResolvers<ContextType>;
   UpsertMemberPayload?: UpsertMemberPayloadResolvers<ContextType>;
+  UpsertMessagePayload?: UpsertMessagePayloadResolvers<ContextType>;
   UpsertModLogPayload?: UpsertModLogPayloadResolvers<ContextType>;
   UpsertMsgLogBlockPayload?: UpsertMsgLogBlockPayloadResolvers<ContextType>;
   UpsertMutePayload?: UpsertMutePayloadResolvers<ContextType>;
@@ -22408,6 +22700,13 @@ export type UpdateModLogMutationVariables = Exact<{
 
 export type UpdateModLogMutation = { __typename?: 'Mutation', updateModLogByGuildIdAndCaseId?: { __typename?: 'UpdateModLogPayload', modLog?: { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string } | null } | null };
 
+export type DeleteMessagesBeforeMutationVariables = Exact<{
+  before: Scalars['Datetime'];
+}>;
+
+
+export type DeleteMessagesBeforeMutation = { __typename?: 'Mutation', deleteMessagesBefore?: { __typename?: 'DeleteMessagesBeforePayload', bigInt?: string | null } | null };
+
 export type GetMessagesQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
   channelId: Scalars['BigInt'];
@@ -22415,9 +22714,16 @@ export type GetMessagesQueryVariables = Exact<{
 }>;
 
 
-export type GetMessagesQuery = { __typename?: 'Query', allMessages?: { __typename?: 'MessagesConnection', nodes: Array<{ __typename?: 'Message', guildId: string, channelId: string, authorId: string, messageId: string, content: string, msg: { [key: string]: any }, created: string }> } | null };
+export type GetMessagesQuery = { __typename?: 'Query', allMessages?: { __typename?: 'MessagesConnection', nodes: Array<{ __typename?: 'Message', guildId: string, channelId: string, authorId: string, messageId: string, content: string, msg: { [key: string]: any }, created: string, nodeId: string }> } | null };
 
-export type MessageDataFragment = { __typename?: 'Message', guildId: string, channelId: string, authorId: string, messageId: string, content: string, msg: { [key: string]: any }, created: string };
+export type MessageDataFragment = { __typename?: 'Message', guildId: string, channelId: string, authorId: string, messageId: string, content: string, msg: { [key: string]: any }, created: string, nodeId: string };
+
+export type UpsertMessageMutationVariables = Exact<{
+  message: MessageInput;
+}>;
+
+
+export type UpsertMessageMutation = { __typename?: 'Mutation', upsertMessage?: { __typename?: 'UpsertMessagePayload', message?: { __typename?: 'Message', guildId: string, channelId: string, authorId: string, messageId: string, content: string, msg: { [key: string]: any }, created: string, nodeId: string } | null } | null };
 
 export type MsgLogBlockDataFragment = { __typename?: 'MsgLogBlock', guildId: string, channelId: string, blockType: MsgLogBlockType };
 
@@ -22820,6 +23126,7 @@ export const MessageDataFragmentDoc = gql`
   content
   msg
   created
+  nodeId
 }
     `;
 export const MsgLogBlockDataFragmentDoc = gql`
@@ -23113,6 +23420,13 @@ export const UpdateModLogDocument = gql`
   }
 }
     ${ModLogDataFragmentDoc}`;
+export const DeleteMessagesBeforeDocument = gql`
+    mutation deleteMessagesBefore($before: Datetime!) {
+  deleteMessagesBefore(input: {before: $before}) {
+    bigInt
+  }
+}
+    `;
 export const GetMessagesDocument = gql`
     query getMessages($guildId: BigInt!, $channelId: BigInt!, $in: [BigInt!]!) {
   allMessages(
@@ -23121,6 +23435,15 @@ export const GetMessagesDocument = gql`
     filter: {messageId: {in: $in}}
   ) {
     nodes {
+      ...MessageData
+    }
+  }
+}
+    ${MessageDataFragmentDoc}`;
+export const UpsertMessageDocument = gql`
+    mutation upsertMessage($message: MessageInput!) {
+  upsertMessage(input: {message: $message}) {
+    message {
       ...MessageData
     }
   }
@@ -23588,8 +23911,14 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     updateModLog(variables: UpdateModLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateModLogMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateModLogMutation>(UpdateModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateModLog', 'mutation');
     },
+    deleteMessagesBefore(variables: DeleteMessagesBeforeMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteMessagesBeforeMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteMessagesBeforeMutation>(DeleteMessagesBeforeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteMessagesBefore', 'mutation');
+    },
     getMessages(variables: GetMessagesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetMessagesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetMessagesQuery>(GetMessagesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getMessages', 'query');
+    },
+    upsertMessage(variables: UpsertMessageMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertMessageMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpsertMessageMutation>(UpsertMessageDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertMessage', 'mutation');
     },
     deleteMsgLogBlock(variables: DeleteMsgLogBlockMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteMsgLogBlockMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeleteMsgLogBlockMutation>(DeleteMsgLogBlockDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteMsgLogBlock', 'mutation');

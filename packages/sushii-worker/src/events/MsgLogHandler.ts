@@ -127,7 +127,7 @@ function buildEditEmbed(
   description += quoteMarkdownString(updateEvent.content);
 
   const embed = new EmbedBuilder()
-    .setDescription(description)
+    .setDescription(description.substring(0, 4096))
     .setColor(Color.Info)
     .setTimestamp(new Date());
 
