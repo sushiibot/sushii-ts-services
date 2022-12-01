@@ -59,7 +59,7 @@ function buildResponseEmbed(
 
   // Unban and note never has dm, no need for field
   if (![ActionType.BanRemove, ActionType.Note].includes(action)) {
-    let userDMValue = "📭 Members were **not** sent a DM.";
+    let userDMValue;
 
     if (data.shouldDMReason(action) || data.dmMessage) {
       userDMValue = "📬 Members were sent a DM with the following.";
@@ -84,10 +84,13 @@ function buildResponseEmbed(
         "\n\n**Note:** Some messages were not sent to users not in this server.";
     }
 
-    fields.push({
-      name: "User DM",
-      value: userDMValue,
-    });
+    // Do not include field if no dm
+    if (userDMValue) {
+      fields.push({
+        name: "User DM",
+        value: userDMValue,
+      });
+    }
   }
 
   return new EmbedBuilder()

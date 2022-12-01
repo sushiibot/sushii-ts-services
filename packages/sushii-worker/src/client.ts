@@ -257,7 +257,7 @@ export default class Client {
    * @returns
    */
   public async register(): Promise<void> {
-    log.info("registering %s slash commands", this.commands.size);
+    log.info("registering %s global commands...", this.commands.size);
 
     // Actual global commands
     if (this.config.guildIds.length === 0) {
@@ -266,7 +266,7 @@ export default class Client {
         { body: this.getCommandsArray() }
       );
 
-      log.info("registered %s global commands", this.commands.size);
+      log.info("commands registered!");
       return;
     }
 
