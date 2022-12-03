@@ -853,7 +853,8 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const roleIdsToRemove = [...roles.matchAll(RE_ROLE)].map(
       (match) => match[1]
     );
-    if (!roleIdsToRemove) {
+
+    if (roleIdsToRemove.length === 0) {
       await ctx.REST.interactionReply(interaction, {
         content: t("rolemenu.removeroles.error.no_roles_given"),
       });
