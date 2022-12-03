@@ -24,6 +24,12 @@ export default class LevelHandler implements EventHandler {
       return;
     }
 
+    if (!event.member) {
+      // This shouldn't happen as member should exist in message create events.
+      logger.warn(event, "No member found for message");
+      return;
+    }
+
     const { updateUserXp } = await ctx.sushiiAPI.sdk.updateUserXp({
       guildId: event.guild_id,
       userId: event.author.id,
@@ -56,6 +62,17 @@ export default class LevelHandler implements EventHandler {
       for (const roleId of removeRoles) {
         newRoles.delete(roleId);
       }
+    }
+
+    // Do not do any api requests if there are no role changes, e.g. user already
+    // has all eligible level roles.
+    //
+    // This is going to be the most common case. As the sushii API will always
+    // return all level roles the user should have, instead of only when the
+    // user levels up.
+    const noRoleChanges = event.member?.roles.every((r) => newRoles.has(r));
+    if (noRoleChanges) {
+      return;
     }
 
     if (
