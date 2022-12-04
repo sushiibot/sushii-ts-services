@@ -2,9 +2,9 @@ import { CronJob } from "cron";
 import * as Sentry from "@sentry/node";
 import logger from "../logger";
 import Context from "../model/context";
-import deleteOldMessages from "./DeleteOldMessagesJob";
+import deleteOldMessages from "./DeleteOldMessagesTask";
 
-export default async function startJobs(ctx: Context): Promise<void> {
+export default async function startTasks(ctx: Context): Promise<void> {
   const jobs = [deleteOldMessages];
 
   logger.info("Starting background tasks");

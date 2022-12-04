@@ -13,7 +13,7 @@ import Metrics from "./model/metrics";
 import addEventHandlers from "./events/handlers";
 import sdk from "./tracing";
 import Context from "./model/context";
-import startJobs from "./jobs/startJobs";
+import startTasks from "./tasks/startTasks";
 
 async function main(): Promise<void> {
   dotenv.config();
@@ -48,7 +48,7 @@ async function main(): Promise<void> {
   await rabbitGatewayClient.connect((msg) => client.handleAMQPMessage(msg));
 
   // Start background jobs
-  await startJobs(ctx);
+  await startTasks(ctx);
 
   // ---------------------------------------------------------------------------
   // Metrics and healthcheck

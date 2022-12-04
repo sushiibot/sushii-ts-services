@@ -1,13 +1,13 @@
 import dayjs from "dayjs";
 import logger from "../logger";
 import Context from "../model/context";
-import PeriodicJob from "./PeriodicJob";
+import BackgroundTask from "./BackgroundTask";
 
 const RETAIN_DURATION = dayjs.duration({
   days: 7,
 });
 
-const job: PeriodicJob = {
+const task: BackgroundTask = {
   name: "Delete messages older than 7 days",
 
   // Once a day
@@ -27,4 +27,4 @@ const job: PeriodicJob = {
   },
 };
 
-export default job;
+export default task;
