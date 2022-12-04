@@ -97,9 +97,11 @@ function buildDeleteEmbed(
       ctx.CDN.memberFaceURL(event.guild_id!, msg.member, msg.author.id)) ||
     ctx.CDN.userFaceURL(msg.author);
 
+  const user = msg.member?.user || msg.author;
+
   return new EmbedBuilder()
     .setAuthor({
-      name: msg.author?.username || msg.member?.user?.username || "Unknown",
+      name: `${user.username}#${user.discriminator} (ID: ${user.id})`,
       iconURL: authorIcon || undefined,
     })
     .setDescription(description)
@@ -141,9 +143,11 @@ function buildEditEmbed(
       ctx.CDN.memberFaceURL(event.guild_id!, msg.member, msg.author.id)) ||
     ctx.CDN.userFaceURL(msg.author);
 
+  const user = msg.member?.user || msg.author;
+
   const embed = new EmbedBuilder()
     .setAuthor({
-      name: msg.author?.username || msg.member?.user?.username || "Unknown",
+      name: `${user.username}#${user.discriminator} (ID: ${user.id})`,
       iconURL: authorIcon || undefined,
     })
     .setDescription(description.substring(0, 4096))
