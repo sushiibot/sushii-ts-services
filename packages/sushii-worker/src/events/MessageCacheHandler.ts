@@ -64,6 +64,15 @@ export default class MessageCacheHandler extends EventHandler {
       return;
     }
 
+    logger.debug(
+      {
+        authorId,
+        guildId: event.guild_id,
+        content: event.content,
+      },
+      "Caching message"
+    );
+
     // Save message to db
     await ctx.sushiiAPI.sdk.upsertMessage({
       message: {
