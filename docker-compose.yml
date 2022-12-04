@@ -41,12 +41,6 @@ services:
         restart: unless-stopped
         env_file:
             - .sushii_data.env
-        environment:
-            - DATABASE_VISITOR=sushii_visitor
-            - REDIS_URL=redis://keydb:6379
-            # Required secret env vars:
-            # - DATABASE_URL
-            # - JWT_PUB_KEY
         networks:
             - sushii_net
         labels:

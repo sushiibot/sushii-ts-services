@@ -13,6 +13,7 @@ import redis from "./extended_schema/redis";
 
 const logger = pino({
   name: "postgraphile",
+  level: process.env.LOG_LEVEL || "info",
 });
 
 async function main() {
@@ -23,7 +24,11 @@ async function main() {
 
   // ---------------------------------------------------------------------------
 
-  app.use(pinoHttp());
+  app.use(
+    pinoHttp({
+      logger,
+    }),
+  );
   app.use(compression({ threshold: 0 }));
   app.use(helmet());
 
