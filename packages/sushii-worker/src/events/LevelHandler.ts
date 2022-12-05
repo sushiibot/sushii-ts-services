@@ -44,7 +44,7 @@ export default class LevelHandler implements EventHandler {
     }
 
     // New roles to assign to the member, including their current ones
-    const newRoles = new Set(event.member?.roles || []);
+    const newRoles = new Set(event.member.roles || []);
 
     if (updateRes.addRoleIds) {
       const addRoles = updateRes.addRoleIds.filter((r): r is string => !!r);
@@ -70,7 +70,12 @@ export default class LevelHandler implements EventHandler {
     // This is going to be the most common case. As the sushii API will always
     // return all level roles the user should have, instead of only when the
     // user levels up.
-    const noRoleChanges = event.member?.roles.every((r) => newRoles.has(r));
+    //
+    // Need to ensure the size matches, as if there are added roles, the second
+    // part of the every() check will still be true.
+    const noRoleChanges =
+      newRoles.size === event.member.roles.length &&
+      event.member.roles.every((r) => newRoles.has(r));
     if (noRoleChanges) {
       return;
     }
