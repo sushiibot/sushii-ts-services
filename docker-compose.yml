@@ -90,7 +90,7 @@ services:
         labels:
             - "traefik.enable=false"
     twilight-dispatch:
-        image: chamburr/twilight-dispatch:latest
+        image: chamburr/twilight-dispatch:0.4.3
         restart: unless-stopped
         expose:
             - "8005" # prometheus
@@ -109,7 +109,7 @@ services:
             - LARGE_THRESHOLD=250
             - STATUS=online
             - ACTIVITY_TYPE=0
-            - ACTIVITY_NAME=meow
+            - ACTIVITY_NAME=sushii.xyz
             # Discord channel logs
             - LOG_CHANNEL=749822555019280434
             - LOG_GUILD_CHANNEL=749822555019280434
