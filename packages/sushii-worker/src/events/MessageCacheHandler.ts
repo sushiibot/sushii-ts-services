@@ -3,10 +3,10 @@ import {
   GatewayMessageCreateDispatchData,
   GatewayMessageUpdateDispatchData,
 } from "discord-api-types/v10";
+import { MsgLogBlockType } from "../generated/graphql";
 import logger from "../logger";
 import Context from "../model/context";
 import EventHandler from "./EventHandler";
-import { isChannelIgnored } from "./MsgLogHandler";
 
 type EventData =
   | GatewayMessageCreateDispatchData
@@ -53,8 +53,9 @@ export default class MessageCacheHandler extends EventHandler {
         channelId: event.channel_id,
       });
 
-    // Don't log ignored channels
-    if (channelBlock && isChannelIgnored(eventType, channelBlock.blockType)) {
+    // Only prevent saving if *all* types are blocked. e.g.
+    // If edits are not logged, we still want to keep track of edit events for deletes
+    if (channelBlock && channelBlock.blockType === MsgLogBlockType.All) {
       return;
     }
 
