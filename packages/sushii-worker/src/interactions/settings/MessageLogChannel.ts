@@ -208,8 +208,12 @@ export default class MessageLogCommand extends SlashCommandHandler {
     await ctx.REST.interactionReply(interaction, {
       embeds: [
         new EmbedBuilder()
-          .setTitle("Message log updated")
-          .setDescription(`<#${channel.id}>`)
+          .setTitle("Added new message log ignore")
+          .setDescription(
+            `ignoring ${blockTypeToString(blockType as MsgLogBlockType)} in <#${
+              channel.id
+            }>`
+          )
           .setColor(Color.Success)
           .toJSON(),
       ],
