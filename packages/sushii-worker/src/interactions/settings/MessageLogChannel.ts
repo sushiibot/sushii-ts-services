@@ -25,6 +25,17 @@ enum MsgLogOptionName {
   BlockType = "ignore_type",
 }
 
+function blockTypeToString(type: MsgLogBlockType): string {
+  switch (type) {
+    case MsgLogBlockType.All:
+      return "edits and deletes";
+    case MsgLogBlockType.Deletes:
+      return "deletes only";
+    case MsgLogBlockType.Edits:
+      return "edits only";
+  }
+}
+
 export default class MessageLogCommand extends SlashCommandHandler {
   serverOnly = true;
 
@@ -185,7 +196,8 @@ export default class MessageLogCommand extends SlashCommandHandler {
       throw new Error("missing channel");
     }
 
-    const blockType = options.getString(MsgLogOptionName.BlockType);
+    const blockType =
+      options.getString(MsgLogOptionName.BlockType) || MsgLogBlockType.All;
 
     await ctx.sushiiAPI.sdk.upsertMsgLogBlock({
       guildId: interaction.guild_id,
@@ -214,7 +226,7 @@ export default class MessageLogCommand extends SlashCommandHandler {
 
     const ignoredChannelsStr =
       ignoredChannels.allMsgLogBlocks?.nodes
-        .map((c) => `<#${c.channelId}>`)
+        .map((c) => `<#${c.channelId}> - ${blockTypeToString(c.blockType)}`)
         .join("\n") || "No channels are ignored";
 
     await ctx.REST.interactionReply(interaction, {
