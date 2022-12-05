@@ -60,18 +60,9 @@ export default class MessageCacheHandler extends EventHandler {
 
     const authorId = event.author?.id || event.member?.user?.id;
     if (!authorId) {
-      logger.error(event, "Message author not found");
+      logger.warn(event, "Message author not found");
       return;
     }
-
-    logger.debug(
-      {
-        authorId,
-        guildId: event.guild_id,
-        content: event.content,
-      },
-      "Caching message"
-    );
 
     // Save message to db
     await ctx.sushiiAPI.sdk.upsertMessage({
