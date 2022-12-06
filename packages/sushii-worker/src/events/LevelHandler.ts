@@ -43,6 +43,14 @@ export default class LevelHandler implements EventHandler {
       return;
     }
 
+    // If no roles to add or remove
+    if (
+      (updateRes.addRoleIds && updateRes.addRoleIds.length === 0) ||
+      (updateRes.removeRoleIds && updateRes.removeRoleIds.length === 0)
+    ) {
+      return;
+    }
+
     // New roles to assign to the member, including their current ones
     const newRoles = new Set(event.member.roles || []);
 
@@ -80,30 +88,25 @@ export default class LevelHandler implements EventHandler {
       return;
     }
 
-    if (
-      (updateRes.addRoleIds && updateRes.addRoleIds.length > 0) ||
-      (updateRes.removeRoleIds && updateRes.removeRoleIds.length > 0)
-    ) {
-      await ctx.REST.setMemberRoles(
-        event.guild_id,
-        event.author.id,
-        [...newRoles],
-        `Level role ${updateRes.newLevel}`
-      );
+    await ctx.REST.setMemberRoles(
+      event.guild_id,
+      event.author.id,
+      [...newRoles],
+      `Level role ${updateRes.newLevel}`
+    );
 
-      logger.debug(
-        {
-          guildId: event.guild_id,
-          channelId: event.channel_id,
-          userId: event.author.id,
-          oldLevel: updateRes.oldLevel,
-          newLevel: updateRes.newLevel,
-          addRoleIds: updateRes.addRoleIds,
-          removeRoleIds: updateRes.removeRoleIds,
-          newMemberRoles: [...newRoles],
-        },
-        "Level role update"
-      );
-    }
+    logger.debug(
+      {
+        guildId: event.guild_id,
+        channelId: event.channel_id,
+        userId: event.author.id,
+        oldLevel: updateRes.oldLevel,
+        newLevel: updateRes.newLevel,
+        addRoleIds: updateRes.addRoleIds,
+        removeRoleIds: updateRes.removeRoleIds,
+        newMemberRoles: [...newRoles],
+      },
+      "Level role update"
+    );
   }
 }
