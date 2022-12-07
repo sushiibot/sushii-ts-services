@@ -43,10 +43,16 @@ export default class LevelHandler implements EventHandler {
       return;
     }
 
+    if (!updateRes.addRoleIds && !updateRes.removeRoleIds) {
+      return;
+    }
+
     // If no roles to add or remove
     if (
-      (updateRes.addRoleIds && updateRes.addRoleIds.length === 0) ||
-      (updateRes.removeRoleIds && updateRes.removeRoleIds.length === 0)
+      updateRes.addRoleIds &&
+      updateRes.addRoleIds.length === 0 &&
+      updateRes.removeRoleIds &&
+      updateRes.removeRoleIds.length === 0
     ) {
       return;
     }

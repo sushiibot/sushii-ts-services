@@ -268,7 +268,6 @@ export default class MsgLogHandler extends EventHandler {
 
     // No cached message found for deleted or edited message in DB, ignore
     if (messages.length === 0) {
-      logger.debug(`No cached message found for message ID ${messageIDs}`);
       return;
     }
 
