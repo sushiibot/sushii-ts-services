@@ -1,5 +1,7 @@
 import { GraphQLClient } from "graphql-request";
 import { APIUser } from "discord-api-types/v10";
+import fetch, { RequestInfo, RequestInit, Response } from "node-fetch";
+import http from "http";
 import CDNClient from "./cdn";
 import { ConfigI } from "./config";
 import SushiiImageServerClient from "./image_server";
@@ -17,6 +19,25 @@ function clientMetricsWrapper(metrics: Metrics): SdkFunctionWrapper {
 
     return result;
   };
+}
+
+type FetchMethod = (url: RequestInfo, init?: RequestInit) => Promise<Response>;
+
+/**
+ *
+ * @returns A fetch method that uses a keep-alive agent
+ */
+function getFetch(): FetchMethod {
+  const agent = new http.Agent({
+    keepAlive: true,
+    maxSockets: Infinity,
+  });
+
+  return (url, options) =>
+    fetch(url, {
+      ...options,
+      agent,
+    });
 }
 
 export default class Context {
@@ -39,6 +60,8 @@ export default class Context {
       headers: {
         Authorization: `Bearer ${config.graphqlApiToken}`,
       },
+      keepalive: true,
+      fetch: getFetch(),
     });
     this.sushiiAPI = new SushiiSDK(
       getSdk(this.graphQLClient, clientMetricsWrapper(metrics))
