@@ -30,7 +30,7 @@ type FetchMethod = (url: RequestInfo, init?: RequestInit) => Promise<Response>;
 function getFetch(): FetchMethod {
   const agent = new http.Agent({
     keepAlive: true,
-    maxSockets: Infinity,
+    maxSockets: 32,
   });
 
   return (url, options) =>
@@ -63,6 +63,7 @@ export default class Context {
       keepalive: true,
       fetch: getFetch(),
     });
+
     this.sushiiAPI = new SushiiSDK(
       getSdk(this.graphQLClient, clientMetricsWrapper(metrics))
     );
