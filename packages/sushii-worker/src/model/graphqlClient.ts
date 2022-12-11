@@ -1,8 +1,15 @@
-import { Client, ExecutionResult, SubscribePayload } from "graphql-ws";
+import {
+  Client,
+  createClient,
+  ExecutionResult,
+  SubscribePayload,
+} from "graphql-ws";
 import { DocumentNode, Kind, OperationTypeNode, print } from "graphql";
-
+import ws from "ws";
 import { getSdk, Requester } from "../generated/generic";
 import Metrics from "./metrics";
+import { ConfigI } from "./config";
+import logger from "../logger";
 
 const validDocDefOps = ["mutation", "query", "subscription"];
 
@@ -99,3 +106,36 @@ export function getSdkWebsocket(
 }
 
 export type Sdk = ReturnType<typeof getSdkWebsocket>;
+
+export function getWsClient(config: ConfigI): Client {
+  return createClient({
+    webSocketImpl: ws,
+    url: config.graphqlApiWebsocketURL,
+    connectionParams: {
+      Authorization: `Bearer ${config.graphqlApiToken}`,
+    },
+    lazy: false,
+    retryAttempts: Infinity,
+    shouldRetry: () => true,
+    on: {
+      connected: () => {
+        logger.info("Websocket connected to sushii API");
+      },
+      error: (err) => {
+        logger.error({ err }, "Websocket error");
+      },
+      ping: (data) => {
+        logger.info(data, "Websocket ping");
+      },
+      pong: (data) => {
+        logger.info(data, "Websocket pong");
+      },
+      closed: (res) => {
+        logger.info(res, "Websocket closed");
+      },
+    },
+    onNonLazyError: (err) => {
+      logger.error({ err }, "Websocket non-lazy error");
+    },
+  });
+}

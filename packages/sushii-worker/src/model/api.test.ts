@@ -6,6 +6,7 @@ import Context from "./context";
 import SushiiSDK from "./api";
 import Metrics from "./metrics";
 import AmqpGateway from "./AmqpGateway";
+import { getSdkWebsocket, getWsClient } from "./graphqlClient";
 
 describe("SushiiSDK", () => {
   let sushiiSDK: SushiiSDK;
@@ -15,10 +16,14 @@ describe("SushiiSDK", () => {
     const conf = new Config();
 
     const amqpClient = new AMQPClient(conf.amqpUrl);
+    const wsClient = getWsClient(conf);
+    const wsSdk = getSdkWebsocket(wsClient);
+
     const ctx = new Context(
       conf,
       new Metrics(),
-      new AmqpGateway(amqpClient, conf)
+      new AmqpGateway(amqpClient, conf),
+      wsSdk
     );
 
     sushiiSDK = ctx.sushiiAPI;
