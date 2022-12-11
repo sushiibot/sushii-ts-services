@@ -11,17 +11,16 @@ services:
         depends_on:
             - sushii_data
         restart: unless-stopped
-        env_file:
-            # Token
-            - .sushii_interactions.env
         environment:
             - NODE_ENV=production
+            - SUSHII_GRAPHQL_TOKEN=$SUSHII_GRAPHQL_TOKEN
             - DISCORD_TOKEN=$DISCORD_TOKEN
             # sushiiDev application ID, different from bot user id
             - APPLICATION_ID=193163942502072320
             # No per guild commands
             # - GUILD_ID=167058919611564043,418504865543749642
             - SUSHII_GRAPHQL_URL=http://sushii_data:8080/graphql
+            - SUSHII_GRAPHQL_WS_URL=ws://sushii_data:8080/graphql
             - AMQP_URL=amqp://rabbitmq:5672
             - AMQP_QUEUE_NAME=gateway.recv
             - TWILIGHT_PROXY_URL=http://twilight-http-proxy:80/api
