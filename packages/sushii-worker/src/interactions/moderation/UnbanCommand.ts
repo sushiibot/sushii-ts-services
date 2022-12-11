@@ -62,6 +62,7 @@ export default class UnbanCommand extends SlashCommandHandler {
     const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
     ackRes.unwrap();
 
+    logger.debug(ackRes, "UnbanCommand: interaction defer");
     const res = await executeAction(
       ctx,
       interaction,

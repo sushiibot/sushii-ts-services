@@ -4,7 +4,6 @@ import {
   GatewayMessageUpdateDispatchData,
 } from "discord-api-types/v10";
 import { MsgLogBlockType } from "../generated/graphql";
-import logger from "../logger";
 import Context from "../model/context";
 import EventHandler from "./EventHandler";
 
@@ -61,7 +60,6 @@ export default class MessageCacheHandler extends EventHandler {
 
     const authorId = event.author?.id || event.member?.user?.id;
     if (!authorId) {
-      logger.warn(event, "Message author not found");
       return;
     }
 
