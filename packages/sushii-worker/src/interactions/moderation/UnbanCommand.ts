@@ -3,6 +3,7 @@ import {
   APIChatInputApplicationCommandGuildInteraction,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
+import logger from "../../logger";
 import Context from "../../model/context";
 import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
@@ -67,6 +68,8 @@ export default class UnbanCommand extends SlashCommandHandler {
       data,
       ActionType.BanRemove
     );
+    logger.debug(res, "UnbanCommand: executeAction res: ");
+
     if (res.err) {
       await ctx.REST.interactionEditOriginal(
         interaction,
