@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { AMQPClient } from "@cloudamqp/amqp-client";
 import * as Sentry from "@sentry/node";
 import { Client, createClient } from "graphql-ws";
+import ws from "ws";
 import log from "./logger";
 import InteractionClient from "./client";
 import { Config } from "./model/config";
@@ -15,12 +16,11 @@ import addEventHandlers from "./events/handlers";
 import sdk from "./tracing";
 import Context from "./model/context";
 import startTasks from "./tasks/startTasks";
-import getHeadersWebSocket from "./model/Websocket";
 import { getSdkWebsocket } from "./model/graphqlClient";
 
 function getWsClient(config: Config): Client {
   return createClient({
-    webSocketImpl: getHeadersWebSocket(config),
+    webSocketImpl: ws,
     url: config.graphqlApiWebsocketURL,
     connectionParams: {
       Authorization: `Bearer ${config.graphqlApiToken}`,
