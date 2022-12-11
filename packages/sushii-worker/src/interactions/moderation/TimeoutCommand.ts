@@ -80,7 +80,7 @@ export default class TimeoutCommand extends SlashCommandHandler {
     const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
     ackRes.unwrap();
 
-    const res = await executeAction(ctx, interaction, data, ActionType.Ban);
+    const res = await executeAction(ctx, interaction, data, ActionType.Timeout);
     if (res.err) {
       await ctx.REST.interactionEditOriginal(
         interaction,
