@@ -1,4 +1,4 @@
-import { User, Sdk } from "../generated/graphql";
+import { User, Sdk } from "../generated/generic";
 
 type DBUser = Omit<User, "nodeId">;
 

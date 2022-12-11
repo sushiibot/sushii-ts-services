@@ -44,8 +44,19 @@ async function main() {
 
   createTerminus(server, {
     healthChecks: {
-      "/health": async ({ state }: { state: TerminusState }) =>
-        !state.isShuttingDown,
+      "/health": async ({ state }: { state: TerminusState }) => {
+        if (state.isShuttingDown) {
+          return Promise.reject(new Error("shutting down"));
+        }
+
+        if ((await redis.ping()) !== "PONG") {
+          return Promise.reject(
+            new Error("redis not available (ping failed or mismatch)"),
+          );
+        }
+
+        return Promise.resolve();
+      },
     },
     onShutdown: async () => {
       logger.info("bye!");

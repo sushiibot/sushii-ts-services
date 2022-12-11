@@ -19,5 +19,15 @@ export function isUniqueViolation(err: unknown): boolean {
     return false;
   }
 
-  return err.response.errors?.at(0)?.extensions?.exception.errcode === "23505";
+  const exception = err.response.errors?.at(0)?.extensions?.exception;
+
+  if (!exception) {
+    return false;
+  }
+
+  if (typeof exception !== "object") {
+    return false;
+  }
+
+  return (exception as any).errcode === "23505";
 }

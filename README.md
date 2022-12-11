@@ -8,7 +8,8 @@ into RabbitMQ. `sushii-worker` service then processes these events.
 Discord Gateway -> RabbitMQ -> sushii-worker
 
 For any persisted data, services can query and mutate via the graphql
-`sushii-data` service.
+`sushii-data` service. Sushii-worker does GraphQL queries and mutations over
+a websocket connection due to the high request rate.
 
 ## Packages
 

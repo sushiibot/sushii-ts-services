@@ -6,11 +6,13 @@ import CDNClient from "./cdn";
 import { ConfigI } from "./config";
 import SushiiImageServerClient from "./image_server";
 import RESTClient from "./rest";
-import { getSdk, SdkFunctionWrapper } from "../generated/graphql";
+// import { SdkFunctionWrapper } from "../generated/graphql";
 import SushiiSDK from "./api";
 import Metrics from "./metrics";
 import AmqpGateway from "./AmqpGateway";
+import { getSdkWebsocket } from "./graphqlClient";
 
+/*
 function clientMetricsWrapper(metrics: Metrics): SdkFunctionWrapper {
   return async <T>(action: () => Promise<T>): Promise<T> => {
     const end = metrics.sushiiAPIStartTimer();
@@ -20,6 +22,7 @@ function clientMetricsWrapper(metrics: Metrics): SdkFunctionWrapper {
     return result;
   };
 }
+*/
 
 type FetchMethod = (url: RequestInfo, init?: RequestInit) => Promise<Response>;
 
@@ -55,7 +58,12 @@ export default class Context {
 
   private currentUser?: APIUser;
 
-  constructor(config: ConfigI, metrics: Metrics, gateway: AmqpGateway) {
+  constructor(
+    config: ConfigI,
+    metrics: Metrics,
+    gateway: AmqpGateway,
+    wsSdkClient: ReturnType<typeof getSdkWebsocket>
+  ) {
     this.graphQLClient = new GraphQLClient(config.graphqlApiURL, {
       headers: {
         Authorization: `Bearer ${config.graphqlApiToken}`,
@@ -64,9 +72,7 @@ export default class Context {
       fetch: getFetch(),
     });
 
-    this.sushiiAPI = new SushiiSDK(
-      getSdk(this.graphQLClient, clientMetricsWrapper(metrics))
-    );
+    this.sushiiAPI = new SushiiSDK(wsSdkClient);
 
     this.sushiiImageServer = new SushiiImageServerClient(config);
     this.REST = new RESTClient(config);

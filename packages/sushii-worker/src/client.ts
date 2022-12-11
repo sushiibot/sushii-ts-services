@@ -681,7 +681,7 @@ export default class Client {
           },
         });
 
-        log.error(result.reason, "error handling event %s", event.t);
+        log.error(result, "error handling event %s", event.t);
       }
     }
   }

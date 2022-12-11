@@ -15,6 +15,7 @@ export interface ConfigI {
   // If using guild commands for testing
   guildIds: string[];
   graphqlApiURL: string;
+  graphqlApiWebsocketURL: string;
   graphqlApiToken: string;
   sushiiImageServerURL: string;
   amqpUrl: string;
@@ -33,6 +34,8 @@ export class Config implements ConfigI {
 
   public graphqlApiURL: string;
 
+  public graphqlApiWebsocketURL: string;
+
   public graphqlApiToken: string;
 
   public sushiiImageServerURL: string;
@@ -47,6 +50,7 @@ export class Config implements ConfigI {
     this.sentryDsn = process.env.SENTRY_DSN;
     this.guildIds = process.env.GUILD_IDS?.split(",") || [];
     this.graphqlApiURL = requiredEnv("SUSHII_GRAPHQL_URL");
+    this.graphqlApiWebsocketURL = requiredEnv("SUSHII_GRAPHQL_WS_URL");
     this.graphqlApiToken = requiredEnv("SUSHII_GRAPHQL_TOKEN");
     this.sushiiImageServerURL = requiredEnv("SUSHII_IMAGE_SERVER_URL");
     this.amqpUrl = requiredEnv("AMQP_URL");

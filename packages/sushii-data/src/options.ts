@@ -42,6 +42,7 @@ export const options: PostGraphileOptions = {
   graphiql: true,
   enhanceGraphiql: true,
   subscriptions: true,
+  websocketOperations: "all",
   dynamicJson: true,
   setofFunctionsContainNulls: false,
   ignoreRBAC: false,

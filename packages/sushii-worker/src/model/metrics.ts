@@ -3,7 +3,11 @@ import {
   GatewayDispatchPayload,
   InteractionType,
 } from "discord-api-types/v10";
-import client, { collectDefaultMetrics, Registry } from "prom-client";
+import client, {
+  collectDefaultMetrics,
+  Histogram,
+  Registry,
+} from "prom-client";
 import logger from "../logger";
 
 export default class Metrics {
@@ -110,7 +114,7 @@ export default class Metrics {
   }
 
   public sushiiAPIStartTimer(): ReturnType<
-    typeof this.sushiiApiHistogram.startTimer
+    InstanceType<typeof Histogram>["startTimer"]
   > {
     return this.sushiiApiHistogram.startTimer();
   }
