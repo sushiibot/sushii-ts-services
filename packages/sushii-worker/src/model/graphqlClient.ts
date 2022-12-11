@@ -21,8 +21,8 @@ async function execute<T>(
     let result: T;
     client.subscribe<T>(payload, {
       next: (execRes: ExecutionResult<T, unknown>) => {
-        if (execRes.errors) {
-          reject(execRes.errors);
+        if (execRes.errors && execRes.errors.length > 0) {
+          reject(execRes.errors[0]);
         }
 
         if (execRes.data) {
@@ -82,7 +82,7 @@ export function getSdkWebsocket(
           end = metrics.sushiiAPIStartTimer();
         }
 
-        const result = execute<R>(client, {
+        const result = await execute<R>(client, {
           operationName: definition.name?.value,
           query: fullQuery,
           variables: variables as Record<string, unknown> | null,

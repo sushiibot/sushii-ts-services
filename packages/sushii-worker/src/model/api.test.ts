@@ -1,6 +1,7 @@
 import { ClientError } from "graphql-request";
 import dotenv from "dotenv";
 import { AMQPClient } from "@cloudamqp/amqp-client";
+import { GraphQLError } from "graphql";
 import { Config } from "./config";
 import Context from "./context";
 import SushiiSDK from "./api";
@@ -11,7 +12,7 @@ import { getSdkWebsocket, getWsClient } from "./graphqlClient";
 describe("SushiiSDK", () => {
   let sushiiSDK: SushiiSDK;
 
-  beforeEach(() => {
+  beforeAll(() => {
     dotenv.config();
     const conf = new Config();
 
@@ -53,7 +54,13 @@ describe("SushiiSDK", () => {
   });
 
   it("should throw error creating user already exists", async () => {
-    const res = sushiiSDK.sdk.createUser({ id: "1234" });
-    return expect(res).rejects.toThrowError(ClientError);
+    try {
+      await sushiiSDK.sdk.createUser({ id: "1234" });
+    } catch (e) {
+      expect(e).toBeInstanceOf(Object);
+      expect((e as GraphQLError).message).toBe(
+        'duplicate key value violates unique constraint "users_pkey"'
+      );
+    }
   });
 });
