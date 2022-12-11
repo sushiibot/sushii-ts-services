@@ -383,6 +383,8 @@ export default async function executeAction(
     guild_id: interaction.guild_id,
   });
 
+  logger.debug(redisGuild, "fetched redis guild");
+
   if (!redisGuild.redisGuildByGuildId) {
     return Err(new Error("Failed to get redis guild"));
   }
@@ -403,6 +405,8 @@ export default async function executeAction(
       actionType,
       redisGuild.redisGuildByGuildId
     );
+
+    logger.debug(res, "executeActionUser");
 
     if (res.err) {
       msg += `:x: <@${res.val.target.user.id}> (\`${res.val.target.user.id}\`) - ${res.val.message}`;
