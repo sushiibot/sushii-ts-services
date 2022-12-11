@@ -5,7 +5,10 @@ import {
 } from "discord-api-types/v10";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
-import { interactionReplyErrorMessage } from "../responses/error";
+import {
+  getErrorMessage,
+  interactionReplyErrorMessage,
+} from "../responses/error";
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
@@ -40,15 +43,14 @@ export default class NoteCommand extends SlashCommandHandler {
     }
 
     const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
-    if (ackRes.err) {
-      await interactionReplyErrorMessage(ctx, interaction, ackRes.val.message);
+    ackRes.unwrap();
 
-      return;
-    }
-
-    const res = await executeAction(ctx, interaction, data, ActionType.Note);
+    const res = await executeAction(ctx, interaction, data, ActionType.Ban);
     if (res.err) {
-      await interactionReplyErrorMessage(ctx, interaction, res.val.message);
+      await ctx.REST.interactionEditOriginal(
+        interaction,
+        getErrorMessage("Error", res.val.message)
+      );
 
       return;
     }

@@ -7,6 +7,7 @@ import Context from "../../model/context";
 import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
 import {
+  getErrorMessage,
   interactionReplyErrorMessage,
   interactionReplyErrorPermission,
 } from "../responses/error";
@@ -61,15 +62,14 @@ export default class KickCommand extends SlashCommandHandler {
     }
 
     const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
-    if (ackRes.err) {
-      await interactionReplyErrorMessage(ctx, interaction, ackRes.val.message);
+    ackRes.unwrap();
 
-      return;
-    }
-
-    const res = await executeAction(ctx, interaction, data, ActionType.Kick);
+    const res = await executeAction(ctx, interaction, data, ActionType.Ban);
     if (res.err) {
-      await interactionReplyErrorMessage(ctx, interaction, res.val.message);
+      await ctx.REST.interactionEditOriginal(
+        interaction,
+        getErrorMessage("Error", res.val.message)
+      );
 
       return;
     }

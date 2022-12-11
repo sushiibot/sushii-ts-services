@@ -1,18 +1,20 @@
 import { EmbedBuilder } from "@discordjs/builders";
-import { APIInteraction, MessageFlags } from "discord-api-types/v10";
+import {
+  APIInteraction,
+  MessageFlags,
+  APIInteractionResponseCallbackData,
+} from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../model/context";
 import { APIPromiseResult } from "../../model/rest";
 import Color from "../../utils/colors";
 
-export function interactionReplyError(
-  ctx: Context,
-  interaction: APIInteraction,
+export function getErrorMessage(
   title: string,
   description: string,
   ephemeral: boolean = false
-): APIPromiseResult<void> {
-  return ctx.REST.interactionReply(interaction, {
+): APIInteractionResponseCallbackData {
+  return {
     embeds: [
       new EmbedBuilder()
         .setTitle(title)
@@ -21,7 +23,20 @@ export function interactionReplyError(
         .toJSON(),
     ],
     flags: ephemeral ? MessageFlags.Ephemeral : undefined,
-  });
+  };
+}
+
+export function interactionReplyError(
+  ctx: Context,
+  interaction: APIInteraction,
+  title: string,
+  description: string,
+  ephemeral: boolean = false
+): APIPromiseResult<void> {
+  return ctx.REST.interactionReply(
+    interaction,
+    getErrorMessage(title, description, ephemeral)
+  );
 }
 
 export function interactionReplyErrorPermission(
