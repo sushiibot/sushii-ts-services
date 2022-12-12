@@ -379,13 +379,18 @@ export default async function executeAction(
   data: ModActionData,
   actionType: ActionType
 ): Promise<Result<EmbedBuilder, Error>> {
-  const redisGuild = await ctx.sushiiAPI.sdk.getRedisGuild({
-    guild_id: interaction.guild_id,
-  });
+  let redisGuild;
+  try {
+    redisGuild = await ctx.sushiiAPI.sdk.getRedisGuild({
+      guild_id: interaction.guild_id,
+    });
+  } catch (err) {
+    logger.debug(err, "failed to fetch redis guild");
+  }
 
   logger.debug(redisGuild, "fetched redis guild");
 
-  if (!redisGuild.redisGuildByGuildId) {
+  if (!redisGuild?.redisGuildByGuildId) {
     return Err(new Error("Failed to get redis guild"));
   }
 
