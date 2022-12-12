@@ -63,12 +63,20 @@ export default class UnbanCommand extends SlashCommandHandler {
     ackRes.unwrap();
 
     logger.debug(ackRes, "UnbanCommand: interaction defer");
-    const res = await executeAction(
-      ctx,
-      interaction,
-      data,
-      ActionType.BanRemove
-    );
+    let res;
+    try {
+      res = await executeAction(ctx, interaction, data, ActionType.BanRemove);
+    } catch (err) {
+      logger.debug(err, "UnbanCommand: executeAction err");
+
+      await ctx.REST.interactionEditOriginal(
+        interaction,
+        getErrorMessage("Error", "hmm something failed")
+      );
+
+      return;
+    }
+
     logger.debug(res, "UnbanCommand: executeAction res: ");
 
     if (res.err) {
