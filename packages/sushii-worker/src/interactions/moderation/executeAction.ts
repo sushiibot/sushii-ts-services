@@ -406,8 +406,6 @@ export default async function executeAction(
       redisGuild.redisGuildByGuildId
     );
 
-    logger.debug(res, "fetched redis guild");
-
     if (res.err) {
       msg += `:x: <@${res.val.target.user.id}> (\`${res.val.target.user.id}\`) - ${res.val.message}`;
     } else {
