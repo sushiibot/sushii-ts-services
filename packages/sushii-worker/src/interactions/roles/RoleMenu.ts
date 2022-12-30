@@ -32,7 +32,7 @@ import {
   interactionReplyErrorPlainMessage,
 } from "../responses/error";
 
-const RE_ROLE = /<@&(\d{17,20})>/g;
+const RE_ROLE = /(?:<@&)?(\d{17,20})>?/g;
 
 enum RoleMenuOption {
   Name = "menu_name",
