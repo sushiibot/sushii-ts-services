@@ -13,7 +13,6 @@ import {
   APIApplicationCommandAutocompleteInteraction,
   ApplicationCommandOptionType,
   APIApplicationCommandInteractionDataOption,
-  GatewayDispatchPayload,
 } from "discord-api-types/v10";
 import { AMQPMessage } from "@cloudamqp/amqp-client";
 import {
@@ -46,6 +45,7 @@ import Metrics from "./model/metrics";
 import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
 import EventHandler from "./events/EventHandler";
+import { GatewayDispatchPayloadWithOld } from "./model/GatewayDispatchPayloadWithOld";
 
 interface FocusedOption {
   path: string;
@@ -657,14 +657,16 @@ export default class Client {
     return undefined;
   }
 
-  private async handleEvent(event: GatewayDispatchPayload): Promise<void> {
+  private async handleEvent(
+    event: GatewayDispatchPayloadWithOld
+  ): Promise<void> {
     const data = event.d;
 
     const promises = [];
 
     for (const handler of this.eventHandlers) {
       if (handler.eventTypes.includes(event.t)) {
-        const p = handler.handler(this.context, event.t, data);
+        const p = handler.handler(this.context, event.t, data, event.old);
         promises.push(p);
       }
     }

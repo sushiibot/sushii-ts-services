@@ -10,6 +10,7 @@ export default abstract class EventHandler {
   abstract handler(
     ctx: Context,
     eventType: GatewayDispatchEvents,
-    data: unknown
+    data: unknown,
+    old: unknown | undefined
   ): Promise<void>;
 }

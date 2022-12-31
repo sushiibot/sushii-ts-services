@@ -5,11 +5,11 @@ import {
   APIChatInputApplicationCommandInteraction,
   APIInteraction,
   GatewayDispatchEvents,
-  GatewayDispatchPayload,
   GatewayInteractionCreateDispatch,
   GatewayOpcodes,
   InteractionType,
 } from "discord-api-types/v10";
+import { GatewayDispatchPayloadWithOld } from "../model/GatewayDispatchPayloadWithOld";
 
 export function isGuildInteraction(
   interaction: APIChatInputApplicationCommandInteraction
@@ -33,7 +33,7 @@ export function isDMInteraction(
 
 export function isGatewayDispatchEvent(
   msg: any
-): msg is GatewayDispatchPayload {
+): msg is GatewayDispatchPayloadWithOld {
   return msg && msg.op === GatewayOpcodes.Dispatch;
 }
 
