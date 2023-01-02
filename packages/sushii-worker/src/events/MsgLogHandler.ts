@@ -9,7 +9,6 @@ import {
 import { None, Option, Some } from "ts-results";
 import SushiiEmoji from "../constants/SushiiEmoji";
 import { Message, MsgLogBlockType } from "../generated/graphql";
-import logger from "../logger";
 import Context from "../model/context";
 import buildChunks from "../utils/buildChunks";
 import Color from "../utils/colors";
@@ -202,7 +201,7 @@ function buildEmbeds(
     const embeds = buildBulkDeleteEmbed(
       ctx,
       event as GatewayMessageDeleteBulkDispatchData,
-      messages
+      messages.reverse()
     );
 
     return Some(embeds);
@@ -282,19 +281,15 @@ export default class MsgLogHandler extends EventHandler {
       return;
     }
 
-    if (embeds.val.length > 10) {
-      logger.error(
-        `Too many embeds to send for message ID ${messageIDs}, ignoring last ${
-          embeds.val.length - 10
-        }`
-      );
-      return;
+    // Split embeds into chunks of 10
+    const chunkSize = 10;
+    for (let i = 0; i < embeds.val.length; i += chunkSize) {
+      const chunk = embeds.val.slice(i, i + chunkSize).map((e) => e.toJSON());
+
+      // eslint-disable-next-line no-await-in-loop
+      await ctx.REST.sendChannelMessage(guildConfigById.logMsg, {
+        embeds: chunk,
+      });
     }
-
-    const embedsJson = embeds.val.slice(0, 10).map((e) => e.toJSON());
-
-    await ctx.REST.sendChannelMessage(guildConfigById.logMsg, {
-      embeds: embedsJson,
-    });
   }
 }
