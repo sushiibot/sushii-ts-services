@@ -1,5 +1,5 @@
 import { GraphQLClient } from "graphql-request";
-import { APIUser } from "discord-api-types/v10";
+import { APIApplicationCommand, APIUser } from "discord-api-types/v10";
 import fetch, { RequestInfo, RequestInit, Response } from "node-fetch";
 import http from "http";
 import CDNClient from "./cdn";
@@ -58,6 +58,8 @@ export default class Context {
 
   private currentUser?: APIUser;
 
+  private commands: APIApplicationCommand[];
+
   constructor(
     config: ConfigI,
     metrics: Metrics,
@@ -78,6 +80,8 @@ export default class Context {
     this.REST = new RESTClient(config);
     this.CDN = new CDNClient();
     this.gateway = gateway;
+
+    this.commands = [];
   }
 
   async getCurrentUser(): Promise<APIUser> {
@@ -88,5 +92,36 @@ export default class Context {
     }
 
     return this.currentUser;
+  }
+
+  setCommands(commands: APIApplicationCommand[]): void {
+    this.commands = commands;
+  }
+
+  private getPlainCommandString(commandName: string): string {
+    return `\`/${commandName}\``;
+  }
+
+  getCommandMention(commandName: string): string {
+    if (!this.commands) {
+      return this.getPlainCommandString(commandName);
+    }
+
+    // Subcommands aren't used for searching
+    const primaryName = commandName.split(" ").at(0);
+
+    // Empty string or something
+    if (!primaryName) {
+      return this.getPlainCommandString(commandName);
+    }
+
+    const command = this.commands.find((c) => c.name === primaryName);
+
+    if (!command) {
+      return this.getPlainCommandString(commandName);
+    }
+
+    // No validation on subcommand name
+    return `</${commandName}:${command.id}`;
   }
 }

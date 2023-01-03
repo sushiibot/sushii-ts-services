@@ -22680,6 +22680,15 @@ export type GetNextCaseIdQueryVariables = Exact<{
 
 export type GetNextCaseIdQuery = { __typename?: 'Query', nextCaseId?: string | null };
 
+export type GetPendingModLogQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  userId: Scalars['BigInt'];
+  action: Scalars['String'];
+}>;
+
+
+export type GetPendingModLogQuery = { __typename?: 'Query', allModLogs?: { __typename?: 'ModLogsConnection', nodes: Array<{ __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string }> } | null };
+
 export type GetUserModLogHistoryQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
   userId: Scalars['BigInt'];
@@ -23398,6 +23407,18 @@ export const GetNextCaseIdDocument = gql`
   nextCaseId(guildId: $guildId)
 }
     `;
+export const GetPendingModLogDocument = gql`
+    query getPendingModLog($guildId: BigInt!, $userId: BigInt!, $action: String!) {
+  allModLogs(
+    condition: {guildId: $guildId, userId: $userId, pending: true, action: $action}
+    orderBy: ACTION_TIME_DESC
+  ) {
+    nodes {
+      ...ModLogData
+    }
+  }
+}
+    ${ModLogDataFragmentDoc}`;
 export const GetUserModLogHistoryDocument = gql`
     query getUserModLogHistory($guildId: BigInt!, $userId: BigInt!) {
   allModLogs(condition: {guildId: $guildId, userId: $userId}) {
@@ -23898,6 +23919,9 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
     },
     getNextCaseID(variables: GetNextCaseIdQueryVariables, options?: C): Promise<GetNextCaseIdQuery> {
       return requester<GetNextCaseIdQuery, GetNextCaseIdQueryVariables>(GetNextCaseIdDocument, variables, options) as Promise<GetNextCaseIdQuery>;
+    },
+    getPendingModLog(variables: GetPendingModLogQueryVariables, options?: C): Promise<GetPendingModLogQuery> {
+      return requester<GetPendingModLogQuery, GetPendingModLogQueryVariables>(GetPendingModLogDocument, variables, options) as Promise<GetPendingModLogQuery>;
     },
     getUserModLogHistory(variables: GetUserModLogHistoryQueryVariables, options?: C): Promise<GetUserModLogHistoryQuery> {
       return requester<GetUserModLogHistoryQuery, GetUserModLogHistoryQueryVariables>(GetUserModLogHistoryDocument, variables, options) as Promise<GetUserModLogHistoryQuery>;

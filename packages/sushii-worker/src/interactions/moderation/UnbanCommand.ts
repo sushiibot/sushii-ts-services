@@ -3,7 +3,6 @@ import {
   APIChatInputApplicationCommandGuildInteraction,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
-import logger from "../../logger";
 import Context from "../../model/context";
 import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
@@ -62,13 +61,10 @@ export default class UnbanCommand extends SlashCommandHandler {
     const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
     ackRes.unwrap();
 
-    logger.debug(ackRes, "UnbanCommand: interaction defer");
     let res;
     try {
       res = await executeAction(ctx, interaction, data, ActionType.BanRemove);
     } catch (err) {
-      logger.debug(err, "UnbanCommand: executeAction err");
-
       await ctx.REST.interactionEditOriginal(
         interaction,
         getErrorMessage("Error", "hmm something failed")
@@ -76,8 +72,6 @@ export default class UnbanCommand extends SlashCommandHandler {
 
       return;
     }
-
-    logger.debug(res, "UnbanCommand: executeAction res: ");
 
     if (res.err) {
       await ctx.REST.interactionEditOriginal(

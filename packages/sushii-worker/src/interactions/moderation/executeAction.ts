@@ -383,8 +383,6 @@ export default async function executeAction(
     guild_id: interaction.guild_id,
   });
 
-  logger.debug(redisGuild, "fetched redis guild");
-
   if (!redisGuild.redisGuildByGuildId) {
     return Err(new Error("Failed to get redis guild"));
   }

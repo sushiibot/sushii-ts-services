@@ -1,3 +1,5 @@
+import Color from "../../utils/colors";
+
 export enum ActionType {
   Ban = "ban",
   BanRemove = "unban",
@@ -136,6 +138,22 @@ export namespace ActionType {
         return "📜";
       case ActionType.Lookup:
         return "🔍";
+    }
+  }
+
+  export function toColor(actionType: ActionType): Color | null {
+    switch (actionType) {
+      case ActionType.Ban:
+        return Color.Error;
+      case ActionType.BanRemove:
+        return Color.Success;
+      case ActionType.Timeout:
+        return Color.Warning;
+      case ActionType.TimeoutAdjust:
+      case ActionType.TimeoutRemove:
+        return Color.Info;
+      default:
+        return null;
     }
   }
 }

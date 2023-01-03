@@ -27,6 +27,9 @@ import {
   RESTPostAPIChannelMessagesBulkDeleteResult,
   RESTPatchAPIChannelJSONBody,
   RESTPatchAPIChannelResult,
+  APIModalInteractionResponseCallbackData,
+  RESTPostAPIApplicationCommandsJSONBody,
+  RESTPostAPIApplicationCommandsResult,
 } from "discord-api-types/v10";
 import { Ok, Err, Result } from "ts-results";
 import { ConfigI } from "./config";
@@ -41,6 +44,16 @@ export default class RESTClient {
       version: "10",
       api: this.config.proxyUrl,
     }).setToken(config.token);
+  }
+
+  public registerCommands(
+    commands: RESTPostAPIApplicationCommandsJSONBody[]
+  ): APIPromiseResult<RESTPostAPIApplicationCommandsResult[]> {
+    return this.handleError(
+      this.rest.put(Routes.applicationCommands(this.config.applicationId), {
+        body: commands,
+      })
+    );
   }
 
   /**
@@ -69,6 +82,19 @@ export default class RESTClient {
   ): APIPromiseResult<void> {
     return this.interactionCallback(interaction, {
       type: InteractionResponseType.DeferredChannelMessageWithSource,
+    });
+  }
+
+  /**
+   * Responds to an interaction by opening a modal
+   */
+  public interactionReplyModal(
+    interaction: APIInteraction,
+    modal: APIModalInteractionResponseCallbackData
+  ): APIPromiseResult<void> {
+    return this.interactionCallback(interaction, {
+      type: InteractionResponseType.Modal,
+      data: modal,
     });
   }
 

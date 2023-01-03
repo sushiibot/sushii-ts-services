@@ -17,6 +17,9 @@ export default class ModLogCommand extends SlashCommandHandler {
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .setDMPermission(false)
     .addSubcommand((c) =>
+      c.setName("get").setDescription("Get the current moderation log channel.")
+    )
+    .addSubcommand((c) =>
       c
         .setName("set")
         .setDescription("Set a channel for moderation logs.")
@@ -41,11 +44,39 @@ export default class ModLogCommand extends SlashCommandHandler {
 
     const subcommand = options.getSubcommand();
     switch (subcommand) {
+      case "get":
+        return this.getHandler(ctx, interaction);
       case "set":
         return this.setHandler(ctx, interaction, options);
       default:
         throw new Error("Invalid subcommand.");
     }
+  }
+
+  async getHandler(
+    ctx: Context,
+    interaction: APIChatInputApplicationCommandGuildInteraction
+  ): Promise<void> {
+    const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
+      guildId: interaction.guild_id,
+    });
+
+    const channelId = guildConfigById?.logMod;
+    const modLogSetCmd = ctx.getCommandMention("modlog set");
+
+    const description = channelId
+      ? `The mod log is currently set to <#${channelId}>`
+      : `There is no mod log set. Use ${modLogSetCmd} to set one.`;
+
+    await ctx.REST.interactionReply(interaction, {
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("Mod log")
+          .setDescription(description)
+          .setColor(Color.Success)
+          .toJSON(),
+      ],
+    });
   }
 
   async setHandler(

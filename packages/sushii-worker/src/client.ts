@@ -128,7 +128,7 @@ export default class Client {
    * side effects or logic, they should be handled in the command handler with
    * await modals.
    */
-  private modalHandlers: Collection<string, ModalHandler>;
+  private modalHandlers: ModalHandler[];
 
   /**
    * Button handlers
@@ -151,7 +151,7 @@ export default class Client {
     this.context = ctx;
     this.commands = new Collection();
     this.autocompleteHandlers = new Collection();
-    this.modalHandlers = new Collection();
+    this.modalHandlers = [];
     this.buttonHandlers = [];
     this.selectMenuHandlers = [];
     this.contextMenuHandlers = new Collection();
@@ -207,8 +207,8 @@ export default class Client {
    *
    * @param modalHandler ModalHandler to add
    */
-  public addModal(modalHandler: ModalHandler): void {
-    this.modalHandlers.set(modalHandler.modalId, modalHandler);
+  public addModalHandlers(...modalHandlers: ModalHandler[]): void {
+    this.modalHandlers.push(...modalHandlers);
   }
 
   /**
@@ -261,10 +261,13 @@ export default class Client {
 
     // Actual global commands
     if (this.config.guildIds.length === 0) {
-      await this.context.REST.rest.put(
-        Routes.applicationCommands(this.config.applicationId),
-        { body: this.getCommandsArray() }
+      const res = await this.context.REST.registerCommands(
+        this.getCommandsArray()
       );
+
+      if (res.ok) {
+        this.context.setCommands(res.val);
+      }
 
       log.info("commands registered!");
       return;
@@ -526,7 +529,9 @@ export default class Client {
   private async handleModalSubmit(
     interaction: APIModalSubmitInteraction
   ): Promise<void> {
-    const modalHandler = this.modalHandlers.get(interaction.data.custom_id);
+    const modalHandler = this.modalHandlers.find(
+      (handler) => handler.customIDMatch(interaction.data.custom_id) !== false
+    );
 
     if (!modalHandler) {
       log.error(
@@ -683,7 +688,7 @@ export default class Client {
           },
         });
 
-        log.error(result, "error handling event %s", event.t);
+        log.error({ err: result.reason }, "error handling event %s", event.t);
       }
     }
   }

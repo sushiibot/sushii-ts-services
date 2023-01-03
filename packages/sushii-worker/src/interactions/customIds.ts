@@ -12,6 +12,7 @@ enum Paths {
   RoleMenuSelect = "/rolemenu/select",
   ModerationAction = "/moderation/action/:actionType/:targetId",
   LevelRoleApplyMemberRequest = "/l/:guildId",
+  ModLogReason = "/modlog/reason/:caseId",
 }
 
 type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
@@ -30,6 +31,10 @@ type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
   : T extends Paths.LevelRoleApplyMemberRequest
   ? {
       guildId: string;
+    }
+  : T extends Paths.ModLogReason
+  ? {
+      caseId: string;
     }
   : never;
 
@@ -78,6 +83,7 @@ const customIds = {
   levelRoleApplyMemberRequest: createCustomID(
     Paths.LevelRoleApplyMemberRequest
   ),
+  modLogReason: createCustomID(Paths.ModLogReason),
 };
 
 export default customIds;

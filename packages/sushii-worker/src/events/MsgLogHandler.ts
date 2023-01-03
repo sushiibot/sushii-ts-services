@@ -201,6 +201,7 @@ function buildEmbeds(
     const embeds = buildBulkDeleteEmbed(
       ctx,
       event as GatewayMessageDeleteBulkDispatchData,
+      // Reverse so the oldest message is first, newest is at the bottom most embed
       messages.reverse()
     );
 

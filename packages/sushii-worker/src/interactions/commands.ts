@@ -30,6 +30,9 @@ import XpCommand from "./xp/XpCommands";
 import LevelRoleCommand from "./xp/LevelRoleCommand";
 import RankCommand from "./user/rank";
 import MessageLogCommand from "./settings/MessageLogChannel";
+import ModLogReasonButtonHandler from "./moderation/ReasonButton";
+import ModLogReasonModalHandler from "./moderation/ReasonModal";
+import ModLogCommand from "./settings/ModLogChannel";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -71,19 +74,12 @@ export default function addCommands(
 
     // Settings
     new WelcomeCommand(),
-    new MessageLogCommand()
+    new MessageLogCommand(),
+    new ModLogCommand()
   );
 
-  interactionClient.addContextMenu(new UserInfoHandler());
-
-  interactionClient.addButtons(
-    new ContextLookUpButtonHandler(),
-
-    new RoleMenuButtonHandler()
-  );
-
-  interactionClient.addSelectMenus(new RoleMenuSelectMenuHandler());
-
+  // ----------------------------------------
+  // Autocomplete
   interactionClient.addAutocompleteHandlers(
     new NotificationListAutocomplete(),
 
@@ -93,4 +89,26 @@ export default function addCommands(
 
     new RoleMenuAutocomplete()
   );
+
+  // ----------------------------------------
+  // Context menus
+  interactionClient.addContextMenu(new UserInfoHandler());
+
+  // ----------------------------------------
+  // Buttons
+  interactionClient.addButtons(
+    new ContextLookUpButtonHandler(),
+
+    new RoleMenuButtonHandler(),
+
+    new ModLogReasonButtonHandler()
+  );
+
+  // ----------------------------------------
+  // Select menus
+  interactionClient.addSelectMenus(new RoleMenuSelectMenuHandler());
+
+  // ----------------------------------------
+  // Modals
+  interactionClient.addModalHandlers(new ModLogReasonModalHandler());
 }

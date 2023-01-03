@@ -1,0 +1,15 @@
+query getPendingModLog($guildId: BigInt!, $userId: BigInt!, $action: String!) {
+  allModLogs(
+    condition: {
+      guildId: $guildId
+      userId: $userId
+      pending: true
+      action: $action
+    }
+    orderBy: ACTION_TIME_DESC
+  ) {
+    nodes {
+      ...ModLogData
+    }
+  }
+}
