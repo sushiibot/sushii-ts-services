@@ -79,6 +79,11 @@ function buildModLogComponents(
   event: EventData,
   modCase: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">
 ): APIActionRowComponent<APIMessageActionRowComponent>[] {
+  if (actionType !== ActionType.Ban) {
+    // Currently only add button for ban
+    return [];
+  }
+
   if (modCase.reason) {
     // Already has reason, no need to add button
     return [];
@@ -197,10 +202,6 @@ export default class ModLogHandler extends EventHandler {
       logger.debug("Created new mod log case %s", nextCaseId);
 
       matchingCase = newModLog.createModLog.modLog;
-    }
-
-    if (eventType === GatewayDispatchEvents.GuildBanAdd) {
-      logger.info(event.user);
     }
 
     const embed = await buildModLogEmbed(

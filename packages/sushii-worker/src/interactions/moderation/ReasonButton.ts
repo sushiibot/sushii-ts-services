@@ -42,7 +42,7 @@ export default class ModLogReasonButtonHandler extends ButtonHandler {
     );
 
     await ctx.REST.interactionReplyModal(interaction, {
-      title: `Reason for case #${caseId}`,
+      title: `Case #${caseId}`,
       custom_id: interaction.data.custom_id,
       components: [row.toJSON()],
     });
