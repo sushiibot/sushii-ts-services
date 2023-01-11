@@ -79,6 +79,16 @@ export default class ModActionData {
     this.dmMessage = this.options.getString(ModerationOption.DMMessage);
   }
 
+  /**
+   * Should DM user, whether it be reason or a custom dm message, or both
+   *
+   * @param actionType
+   * @returns
+   */
+  shouldDM(actionType: ActionType): boolean {
+    return this.shouldDMReason(actionType) || !!this.DMReason;
+  }
+
   shouldDMReason(actionType: ActionType): boolean {
     // Unban never sends DM
     if (actionType === ActionType.BanRemove) {

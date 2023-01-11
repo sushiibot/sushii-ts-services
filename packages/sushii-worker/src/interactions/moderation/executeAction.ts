@@ -303,11 +303,10 @@ async function executeActionUser(
     },
   });
 
-  // Only DM if should DM AND if target is in the server.
-  const shouldDM = data.shouldDMReason(actionType) && target.member !== null;
+  // Only DM if (dm_reason true or has dm_message) AND if target is in the server.
+  const shouldDM = data.shouldDM(actionType) && target.member !== null;
 
-  const triedDMNonMember =
-    data.shouldDMReason(actionType) && target.member === null;
+  const triedDMNonMember = data.shouldDM(actionType) && target.member === null;
 
   let dmRes: Result<APIMessage, string> | null = null;
   // DM before for ban and send dm
