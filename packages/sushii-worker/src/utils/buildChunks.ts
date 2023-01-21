@@ -8,12 +8,19 @@ export default function buildChunks(
   let currentChunk = "";
 
   for (const str of strings) {
+    // This will exceed the chunk limit, so finalize the chunk and create a new
+    // current chunk
     if (currentChunk.length + str.length > maxChunkLength) {
       chunks.push(currentChunk);
       currentChunk = "";
     }
 
-    currentChunk += joiner + str;
+    if (currentChunk === "") {
+      currentChunk = str;
+    } else {
+      // Only add joiner if chunk is non-empty
+      currentChunk += joiner + str;
+    }
   }
 
   if (currentChunk.length > 0) {
