@@ -1,6 +1,5 @@
 import { EmbedBuilder, TimestampStyles } from "@discordjs/builders";
 import dayjs from "dayjs";
-import { Duration } from "dayjs/plugin/duration";
 import { APIMessage, APIUser, RESTJSONErrorCodes } from "discord-api-types/v10";
 import { Err, Result } from "ts-results";
 import Context from "../../model/context";

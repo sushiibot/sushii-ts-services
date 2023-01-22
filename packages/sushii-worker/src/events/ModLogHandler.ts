@@ -3,6 +3,8 @@ import {
   APIActionRowComponent,
   APIMessageActionRowComponent,
   ButtonStyle,
+  AuditLogEvent,
+  GatewayGuildAuditLogEntryCreateDispatchData,
 } from "discord-api-types/v10";
 import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
 import dayjs from "dayjs";
@@ -12,18 +14,13 @@ import EventHandler from "./EventHandler";
 import { ModLog } from "../generated/graphql";
 import { ActionType } from "../interactions/moderation/ActionType";
 import customIds from "../interactions/customIds";
-import {
-  EventData,
-  getUserFromEventData,
-  getUserIDFromEventData,
-  isAuditLogEntryCreate,
-} from "../types/ModLogEventData";
 import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
 import buildModLogEmbed from "../builders/buildModLogEmbed";
 import { buildDMEmbed } from "../interactions/moderation/sendDm";
 
 interface ActionTypeEventData {
   actionType: ActionType;
+  targetId: string;
   executorId?: string;
   reason?: string;
   timeoutChange?: TimeoutChange;
@@ -31,46 +28,61 @@ interface ActionTypeEventData {
 
 function getActionTypeFromEvent(
   eventType: GatewayDispatchEvents,
-  event: EventData
-): ActionTypeEventData | null {
-  switch (eventType) {
-    case GatewayDispatchEvents.GuildBanAdd:
+  event: GatewayGuildAuditLogEntryCreateDispatchData
+): ActionTypeEventData | undefined {
+  if (!event.target_id) {
+    return;
+  }
+
+  const base = {
+    targetId: event.target_id,
+    executorId: event.user_id || undefined,
+    reason: event.reason || undefined,
+  };
+
+  // Executor and reason are only used for NEW mod cases.
+  // This means actionss with commands, e.g. ban with command will not use
+  // these executorId/reason values since these are set by sushii
+  switch (event.action_type) {
+    case AuditLogEvent.MemberBanAdd: {
       return {
         actionType: ActionType.Ban,
+        ...base,
       };
-    case GatewayDispatchEvents.GuildBanRemove:
+    }
+    case AuditLogEvent.MemberBanRemove: {
       return {
         actionType: ActionType.BanRemove,
+        ...base,
       };
-    case GatewayDispatchEvents.GuildAuditLogEntryCreate: {
-      if (!isAuditLogEntryCreate(event)) {
-        return null;
-      }
-
+    }
+    case AuditLogEvent.MemberKick: {
+      return {
+        actionType: ActionType.Kick,
+        ...base,
+      };
+    }
+    case AuditLogEvent.MemberUpdate: {
       const timeoutData = getTimeoutChangeData(event);
 
       // Not timed out, likely a profile update
       if (!timeoutData) {
-        return null;
+        return;
       }
 
       return {
         actionType: timeoutData.actionType,
-        executorId: event.user_id || undefined,
-        reason: event.reason || undefined,
-        timeoutChange: timeoutData,
+        ...base,
       };
     }
-
     default:
-      return null;
   }
 }
 
 function buildModLogComponents(
   ctx: Context,
   actionType: ActionType,
-  event: EventData,
+  event: GatewayGuildAuditLogEntryCreateDispatchData,
   modCase: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">
 ): APIActionRowComponent<APIMessageActionRowComponent>[] {
   if (actionType !== ActionType.Ban) {
@@ -102,17 +114,14 @@ function buildModLogComponents(
 
 export default class ModLogHandler extends EventHandler {
   eventTypes = [
-    GatewayDispatchEvents.GuildBanAdd,
-    GatewayDispatchEvents.GuildBanRemove,
-    // Timeouts
+    // All mod events, bans, kicks and timeouts
     GatewayDispatchEvents.GuildAuditLogEntryCreate,
   ];
 
   async handler(
     ctx: Context,
     eventType: GatewayDispatchEvents,
-    event: EventData,
-    old: unknown | undefined
+    event: GatewayGuildAuditLogEntryCreateDispatchData
   ): Promise<void> {
     const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
       guildId: event.guild_id,
@@ -135,20 +144,18 @@ export default class ModLogHandler extends EventHandler {
     const { actionType, executorId, reason, timeoutChange } = actionTypeData;
     logger.debug("received mod log type %s", actionType);
 
-    const targetUserID = getUserIDFromEventData(event);
-    if (!targetUserID) {
+    // No target ID found in event, ignore
+    if (!event.target_id) {
       // Unrelated audit log event
       return;
     }
 
-    const targetUser = await getUserFromEventData(ctx, event);
-    if (!targetUser) {
-      return;
-    }
+    const userRes = await ctx.REST.getUser(event.target_id);
+    const targetUser = userRes.unwrap();
 
     const pendingCases = await ctx.sushiiAPI.sdk.getPendingModLog({
       guildId: event.guild_id,
-      userId: targetUserID,
+      userId: event.target_id,
       action: actionType,
     });
 
@@ -202,7 +209,7 @@ export default class ModLogHandler extends EventHandler {
         modLog: {
           guildId: event.guild_id,
           caseId: nextCaseId,
-          userId: targetUserID,
+          userId: event.target_id,
           action: actionType,
           reason,
           actionTime: dayjs().utc().toISOString(),
@@ -276,7 +283,7 @@ export default class ModLogHandler extends EventHandler {
         timeoutChange.new || undefined
       );
 
-      await ctx.REST.dmUser(targetUserID, {
+      await ctx.REST.dmUser(event.target_id, {
         embeds: [dmEmbed.toJSON()],
       });
     }
