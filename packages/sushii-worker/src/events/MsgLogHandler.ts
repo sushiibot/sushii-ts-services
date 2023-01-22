@@ -93,16 +93,11 @@ function buildDeleteEmbed(
     description += attachments;
   }
 
-  const authorIcon =
-    (msg.member &&
-      ctx.CDN.memberFaceURL(event.guild_id!, msg.member, msg.author.id)) ||
-    ctx.CDN.userFaceURL(msg.author);
-
-  const user = msg.member?.user || msg.author;
+  const authorIcon = ctx.CDN.userFaceURL(msg.author);
 
   return new EmbedBuilder()
     .setAuthor({
-      name: `${user.username}#${user.discriminator} (ID: ${user.id})`,
+      name: `${msg.author.username}#${msg.author.discriminator} (ID: ${msg.author.id})`,
       iconURL: authorIcon || undefined,
     })
     .setDescription(description)
@@ -139,16 +134,11 @@ function buildEditEmbed(
   description += "\n";
   description += quoteMarkdownString(updateEvent.content);
 
-  const authorIcon =
-    (msg.member &&
-      ctx.CDN.memberFaceURL(event.guild_id!, msg.member, msg.author.id)) ||
-    ctx.CDN.userFaceURL(msg.author);
-
-  const user = msg.member?.user || msg.author;
+  const authorIcon = ctx.CDN.userFaceURL(msg.author);
 
   const embed = new EmbedBuilder()
     .setAuthor({
-      name: `${user.username}#${user.discriminator} (ID: ${user.id})`,
+      name: `${msg.author.username}#${msg.author.discriminator} (ID: ${msg.author.id})`,
       iconURL: authorIcon || undefined,
     })
     .setDescription(description.substring(0, 4096))

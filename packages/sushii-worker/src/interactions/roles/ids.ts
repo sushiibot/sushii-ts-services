@@ -1,7 +1,7 @@
 import {
   APIButtonComponentWithCustomId,
   APIMessageComponentButtonInteraction,
-  APISelectMenuComponent,
+  APIStringSelectComponent,
   ComponentType,
 } from "discord-api-types/v10";
 import customIds from "../customIds";
@@ -92,8 +92,8 @@ export function getRoleMenuMessageSelectRoles(
     .map((row) =>
       row.components
         .filter(
-          (component): component is APISelectMenuComponent =>
-            component.type === ComponentType.SelectMenu
+          (component): component is APIStringSelectComponent =>
+            component.type === ComponentType.StringSelect
         )
         .flatMap((selectMenu) =>
           selectMenu.options.map((option) => ({

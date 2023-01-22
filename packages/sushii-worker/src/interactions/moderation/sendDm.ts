@@ -1,55 +1,55 @@
-import { EmbedBuilder } from "@discordjs/builders";
-import {
-  APIChatInputApplicationCommandGuildInteraction,
-  APIMessage,
-  APIUser,
-  RESTJSONErrorCodes,
-} from "discord-api-types/v10";
+import { EmbedBuilder, TimestampStyles } from "@discordjs/builders";
+import dayjs from "dayjs";
+import { Duration } from "dayjs/plugin/duration";
+import { APIMessage, APIUser, RESTJSONErrorCodes } from "discord-api-types/v10";
 import { Err, Result } from "ts-results";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
+import toTimestamp from "../../utils/toTimestamp";
 import { ActionType } from "./ActionType";
 import ModActionData from "./ModActionData";
 
-async function buildDMEmbed(
+export async function buildDMEmbed(
   ctx: Context,
-  interaction: APIChatInputApplicationCommandGuildInteraction,
-  data: ModActionData,
-  action: ActionType
+  guildId: string,
+  action: ActionType,
+  shouldDMReason: boolean,
+  reason: string | undefined,
+  dmMessage: string | undefined,
+  timeoutEnd: dayjs.Dayjs | undefined
 ): Promise<EmbedBuilder> {
   const { redisGuildByGuildId } = await ctx.sushiiAPI.sdk.getRedisGuild({
-    guild_id: interaction.guild_id,
+    guild_id: guildId,
   });
 
-  const guildName =
-    redisGuildByGuildId?.name || `Server ID ${interaction.guild_id}`;
+  const guildName = redisGuildByGuildId?.name || `Server ID ${guildId}`;
   const guildIcon = redisGuildByGuildId?.icon
-    ? ctx.CDN.cdn.icon(interaction.guild_id, redisGuildByGuildId?.icon)
+    ? ctx.CDN.cdn.icon(guildId, redisGuildByGuildId?.icon)
     : undefined;
 
   const fields = [];
 
-  if (data.shouldDMReason(action) && data.reason) {
+  if (shouldDMReason && reason) {
     fields.push({
       name: "Reason",
-      value: data.reason,
+      value: reason,
     });
   }
 
-  if (data.dmMessage) {
+  if (dmMessage) {
     fields.push({
       name: "Message",
-      value: data.dmMessage,
+      value: dmMessage,
     });
   }
 
-  if (data.timeoutDuration) {
-    // Fine to unwrap as it is checked before calling sendModActionDM
-    const timeoutUntil = data.communicationDisabledUntil().unwrap();
-
+  if (timeoutEnd) {
     fields.push({
-      name: "Duration",
-      value: `${data.timeoutDuration.humanize()} - Expires <t:${timeoutUntil.unix()}:R>`,
+      name: "Timeout Duration",
+      value: `Your timeout will expire ${toTimestamp(
+        timeoutEnd,
+        TimestampStyles.RelativeTime
+      )}`,
     });
   }
 
@@ -65,12 +65,20 @@ async function buildDMEmbed(
 
 export default async function sendModActionDM(
   ctx: Context,
-  interaction: APIChatInputApplicationCommandGuildInteraction,
+  guildId: string,
   data: ModActionData,
   target: APIUser,
   action: ActionType
 ): Promise<Result<APIMessage, string>> {
-  const embed = await buildDMEmbed(ctx, interaction, data, action);
+  const embed = await buildDMEmbed(
+    ctx,
+    guildId,
+    action,
+    data.shouldDMReason(action),
+    data.reason,
+    data.dmMessage,
+    data.communicationDisabledUntil().unwrapOr(undefined)
+  );
 
   const res = await ctx.REST.dmUser(target.id, {
     embeds: [embed.toJSON()],

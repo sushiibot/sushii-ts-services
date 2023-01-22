@@ -86,7 +86,7 @@ export default class ModActionData {
    * @returns
    */
   shouldDM(actionType: ActionType): boolean {
-    return this.shouldDMReason(actionType) || !!this.DMReason;
+    return this.shouldDMReason(actionType) || !!this.dmMessage;
   }
 
   shouldDMReason(actionType: ActionType): boolean {

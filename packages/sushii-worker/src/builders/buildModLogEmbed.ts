@@ -1,16 +1,19 @@
-import { EmbedBuilder } from "@discordjs/builders";
+import { EmbedBuilder, TimestampStyles } from "@discordjs/builders";
 import { APIEmbedField, APIUser } from "discord-api-types/v10";
 import path from "path";
 import { ModLog } from "../generated/generic";
 import { ActionType } from "../interactions/moderation/ActionType";
 import Context from "../model/context";
 import logger from "../logger";
+import toTimestamp from "../utils/toTimestamp";
+import { TimeoutChange } from "../types/TimeoutChange";
 
 export default async function buildModLogEmbed(
   ctx: Context,
   actionType: ActionType,
   targetUser: APIUser,
-  modCase: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">
+  modCase: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">,
+  timeoutChange?: TimeoutChange
 ): Promise<EmbedBuilder> {
   let executorUser;
   if (modCase.executorId) {
@@ -40,6 +43,61 @@ export default async function buildModLogEmbed(
     value: modCase.reason || "No reason provided.",
     inline: false,
   });
+
+  if (timeoutChange) {
+    if (timeoutChange.actionType === ActionType.Timeout) {
+      const newTsR = toTimestamp(
+        timeoutChange.new,
+        TimestampStyles.RelativeTime
+      );
+      const dur = timeoutChange.duration.humanize();
+
+      fields.push({
+        name: "Timeout Duration",
+        value: `${dur}\nExpiring ${newTsR}`,
+        inline: false,
+      });
+    }
+
+    if (timeoutChange.actionType === ActionType.TimeoutAdjust) {
+      const newTsR = toTimestamp(
+        timeoutChange.new,
+        TimestampStyles.RelativeTime
+      );
+      const dur = timeoutChange.duration.humanize();
+
+      const oldTsR = toTimestamp(
+        timeoutChange.old,
+        TimestampStyles.RelativeTime
+      );
+
+      fields.push(
+        {
+          name: "Timeout Duration",
+          value: `${dur}\nExpiring ${newTsR}`,
+          inline: false,
+        },
+        {
+          name: "Previous Timeout",
+          value: `Would have expired ${oldTsR}`,
+          inline: false,
+        }
+      );
+    }
+
+    if (timeoutChange.actionType === ActionType.TimeoutRemove) {
+      const oldTsR = toTimestamp(
+        timeoutChange.old,
+        TimestampStyles.RelativeTime
+      );
+
+      fields.push({
+        name: "Removed Timeout",
+        value: `Would have expired ${oldTsR}`,
+        inline: false,
+      });
+    }
+  }
 
   if (modCase.attachments.length > 0) {
     const attachments = modCase.attachments.filter((a): a is string => !!a);

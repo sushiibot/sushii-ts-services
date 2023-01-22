@@ -3034,7 +3034,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.12.0
     cron: ^2.1.0
     dayjs: ^1.10.7
-    discord-api-types: ^0.37.5
+    discord-api-types: "file:../../../discordjs/discord-api-types"
     discord.js: ^14.5.0
     dotenv: ^16.0.0
     eslint: ^8.9.0
@@ -5477,10 +5477,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:0.29.0":
-  version: 0.29.0
-  resolution: "discord-api-types@npm:0.29.0"
-  checksum: 1ca74693b4e9c611c3de17f604714425d81d537ee81669d040a8c37fb23fb634a6918dd7d21056ccb90a3f4741bc2750509f6c8dd922bf2b3ed544d18bd0f32a
+"discord-api-types@file:../../../discordjs/discord-api-types::locator=%40sushiibot%2Fsushii-worker%40workspace%3Apackages%2Fsushii-worker":
+  version: 0.37.28
+  resolution: "discord-api-types@file:../../../discordjs/discord-api-types#../../../discordjs/discord-api-types::hash=0ce4bf&locator=%40sushiibot%2Fsushii-worker%40workspace%3Apackages%2Fsushii-worker"
+  checksum: 310ce321233ecc0fcee90d72db8202bdc1972bf9b98d57805d37505daa900ee4914335ecfe4c9121868b474603419ed8390f728a72354a457c7383c677068456
+  languageName: node
+  linkType: hard
+
+"discord-api-types@npm:^0.26.1":
+  version: 0.26.1
+  resolution: "discord-api-types@npm:0.26.1"
+  checksum: e53bfa7589b24108e6b403dbe213da34c4592f72e2b8fde6800dcb6c703065887ecbd644e1cdf694e4c7796954bc51462ced868f26ec45dc1e0dc4fa8d3c723c
+  languageName: node
+  linkType: hard
+
+"discord-api-types@npm:^0.37.10, discord-api-types@npm:^0.37.3":
+  version: 0.37.28
+  resolution: "discord-api-types@npm:0.37.28"
+  checksum: c033b9c82d5ecb3f273d563db578e21e982a35d106cc66e7ea42d7ef0a79817ca43badd3aade8a5ddb491bc8679ed08b1bcccc105e64ecd1ea5a53a11c2b1f8b
   languageName: node
   linkType: hard
 

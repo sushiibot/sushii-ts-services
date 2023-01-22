@@ -1,7 +1,5 @@
 import {
   GatewayDispatchEvents,
-  GatewayGuildMemberUpdateDispatchData,
-  APIGuildMember,
   APIActionRowComponent,
   APIMessageActionRowComponent,
   ButtonStyle,
@@ -14,58 +12,54 @@ import EventHandler from "./EventHandler";
 import { ModLog } from "../generated/graphql";
 import { ActionType } from "../interactions/moderation/ActionType";
 import customIds from "../interactions/customIds";
-import { EventData } from "../types/ModLogEventData";
+import {
+  EventData,
+  getUserFromEventData,
+  getUserIDFromEventData,
+  isAuditLogEntryCreate,
+} from "../types/ModLogEventData";
+import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
 import buildModLogEmbed from "../builders/buildModLogEmbed";
+import { buildDMEmbed } from "../interactions/moderation/sendDm";
+
+interface ActionTypeEventData {
+  actionType: ActionType;
+  executorId?: string;
+  reason?: string;
+  timeoutChange?: TimeoutChange;
+}
 
 function getActionTypeFromEvent(
   eventType: GatewayDispatchEvents,
-  event: EventData,
-  old: EventData
-): ActionType | null {
+  event: EventData
+): ActionTypeEventData | null {
   switch (eventType) {
     case GatewayDispatchEvents.GuildBanAdd:
-      return ActionType.Ban;
+      return {
+        actionType: ActionType.Ban,
+      };
     case GatewayDispatchEvents.GuildBanRemove:
-      return ActionType.BanRemove;
-    case GatewayDispatchEvents.GuildMemberUpdate: {
-      const oldMember = old as APIGuildMember;
-      const e = event as GatewayGuildMemberUpdateDispatchData;
-
-      // No change in timeout
-      if (
-        oldMember.communication_disabled_until ===
-        e.communication_disabled_until
-      ) {
+      return {
+        actionType: ActionType.BanRemove,
+      };
+    case GatewayDispatchEvents.GuildAuditLogEntryCreate: {
+      if (!isAuditLogEntryCreate(event)) {
         return null;
       }
 
-      // New timeout
-      if (
-        !oldMember.communication_disabled_until &&
-        e.communication_disabled_until
-      ) {
-        return ActionType.Timeout;
+      const timeoutData = getTimeoutChangeData(event);
+
+      // Not timed out, likely a profile update
+      if (!timeoutData) {
+        return null;
       }
 
-      // Timeout removed
-      // This won't happen for all timeouts! Only when manually removed when it
-      // is still active. Otherwise, timeouts naturally expire without an event
-      if (
-        oldMember.communication_disabled_until &&
-        !e.communication_disabled_until
-      ) {
-        return ActionType.TimeoutRemove;
-      }
-
-      // Timeout updated
-      if (
-        oldMember.communication_disabled_until !==
-        e.communication_disabled_until
-      ) {
-        return ActionType.TimeoutAdjust;
-      }
-
-      return null;
+      return {
+        actionType: timeoutData.actionType,
+        executorId: event.user_id || undefined,
+        reason: event.reason || undefined,
+        timeoutChange: timeoutData,
+      };
     }
 
     default:
@@ -110,15 +104,15 @@ export default class ModLogHandler extends EventHandler {
   eventTypes = [
     GatewayDispatchEvents.GuildBanAdd,
     GatewayDispatchEvents.GuildBanRemove,
-    // Timeout
-    GatewayDispatchEvents.GuildMemberUpdate,
+    // Timeouts
+    GatewayDispatchEvents.GuildAuditLogEntryCreate,
   ];
 
   async handler(
     ctx: Context,
     eventType: GatewayDispatchEvents,
     event: EventData,
-    old: EventData
+    old: unknown | undefined
   ): Promise<void> {
     const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
       guildId: event.guild_id,
@@ -133,16 +127,28 @@ export default class ModLogHandler extends EventHandler {
       return;
     }
 
-    const actionType = getActionTypeFromEvent(eventType, event, old);
+    const actionTypeData = getActionTypeFromEvent(eventType, event);
+    if (!actionTypeData) {
+      return;
+    }
+
+    const { actionType, executorId, reason, timeoutChange } = actionTypeData;
     logger.debug("received mod log type %s", actionType);
 
-    if (!actionType) {
+    const targetUserID = getUserIDFromEventData(event);
+    if (!targetUserID) {
+      // Unrelated audit log event
+      return;
+    }
+
+    const targetUser = await getUserFromEventData(ctx, event);
+    if (!targetUser) {
       return;
     }
 
     const pendingCases = await ctx.sushiiAPI.sdk.getPendingModLog({
       guildId: event.guild_id,
-      userId: event.user.id,
+      userId: targetUserID,
       action: actionType,
     });
 
@@ -166,10 +172,19 @@ export default class ModLogHandler extends EventHandler {
         guildId: event.guild_id,
         caseId: matchingCase.caseId,
         modLogPatch: {
+          // There is already executor ID if this was found
           pending: false,
         },
       });
     }
+
+    // If this is a native manual timeout, we want to DM the user the reason.
+    // ONLY DM if it is a **timeout,** ban reasons cannot be DM'd here
+    // No DM for adjust, since regular users cannot use it
+    const shouldDMReason =
+      !matchingCase &&
+      (ActionType.Timeout === actionType ||
+        ActionType.TimeoutRemove === actionType);
 
     // Create a new case if there isn't a pending case
     if (!matchingCase) {
@@ -187,11 +202,13 @@ export default class ModLogHandler extends EventHandler {
         modLog: {
           guildId: event.guild_id,
           caseId: nextCaseId,
-          userId: event.user.id,
+          userId: targetUserID,
           action: actionType,
+          reason,
           actionTime: dayjs().utc().toISOString(),
           pending: false,
-          userTag: `${event.user.username}#${event.user.discriminator}`,
+          executorId,
+          userTag: `${targetUser.username}#${targetUser.discriminator}`,
         },
       });
 
@@ -199,7 +216,10 @@ export default class ModLogHandler extends EventHandler {
         throw new Error("Failed to create mod log");
       }
 
-      logger.debug("Created new mod log case %s", nextCaseId);
+      logger.debug(
+        { newModLog: newModLog.createModLog.modLog },
+        "Created new mod log case"
+      );
 
       matchingCase = newModLog.createModLog.modLog;
     }
@@ -207,8 +227,9 @@ export default class ModLogHandler extends EventHandler {
     const embed = await buildModLogEmbed(
       ctx,
       actionType,
-      event.user,
-      matchingCase
+      targetUser,
+      matchingCase,
+      timeoutChange
     );
     const components = buildModLogComponents(
       ctx,
@@ -235,5 +256,29 @@ export default class ModLogHandler extends EventHandler {
         msgId: sentMsg.id,
       },
     });
+
+    if (
+      shouldDMReason &&
+      (timeoutChange?.actionType === ActionType.Timeout ||
+        timeoutChange?.actionType === ActionType.TimeoutRemove)
+    ) {
+      // DM the user the reason if it is a timeout
+      // Ignore cases where timeout is adjusted, since that can only done through a bot command.
+      // Users can only add or remove timeouts.
+
+      const dmEmbed = await buildDMEmbed(
+        ctx,
+        event.guild_id,
+        actionType,
+        true, // should dm reason
+        reason, // reason
+        undefined, // dm message
+        timeoutChange.new || undefined
+      );
+
+      await ctx.REST.dmUser(targetUserID, {
+        embeds: [dmEmbed.toJSON()],
+      });
+    }
   }
 }

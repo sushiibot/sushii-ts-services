@@ -313,7 +313,7 @@ async function executeActionUser(
   if (actionType === ActionType.Ban && shouldDM) {
     dmRes = await sendModActionDM(
       ctx,
-      interaction,
+      interaction.guild_id,
       data,
       target.user,
       actionType
@@ -328,7 +328,7 @@ async function executeActionUser(
   if (actionType !== ActionType.Ban && shouldDM) {
     dmRes = await sendModActionDM(
       ctx,
-      interaction,
+      interaction.guild_id,
       data,
       target.user,
       actionType
