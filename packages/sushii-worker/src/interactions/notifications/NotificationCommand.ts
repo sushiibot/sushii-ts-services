@@ -20,6 +20,7 @@ export default class NotificationCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("notification")
     .setDescription("Get notifications when someone says something.")
+    .setDMPermission(false)
     .addSubcommand((c) =>
       c
         .setName("add")
@@ -126,6 +127,7 @@ export default class NotificationCommand extends SlashCommandHandler {
     const invoker = getInvokerUser(interaction);
 
     const notifications = await ctx.sushiiAPI.sdk.getUserNotifications({
+      guildId: interaction.guild_id,
       userId: invoker.id,
     });
 

@@ -22785,6 +22785,7 @@ export type DeleteNotificationMutationVariables = Exact<{
 export type DeleteNotificationMutation = { __typename?: 'Mutation', deleteNotificationByUserIdAndGuildIdAndKeyword?: { __typename?: 'DeleteNotificationPayload', notification?: { __typename?: 'Notification', guildId: string, keyword: string, nodeId: string, userId: string } | null } | null };
 
 export type GetUserNotificationsQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
   userId: Scalars['BigInt'];
 }>;
 
@@ -23529,8 +23530,8 @@ export const DeleteNotificationDocument = gql`
 }
     ${NotificationDataFragmentDoc}`;
 export const GetUserNotificationsDocument = gql`
-    query getUserNotifications($userId: BigInt!) {
-  allNotifications(condition: {userId: $userId}) {
+    query getUserNotifications($guildId: BigInt!, $userId: BigInt!) {
+  allNotifications(condition: {guildId: $guildId, userId: $userId}) {
     nodes {
       ...NotificationData
     }
