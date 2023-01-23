@@ -33,6 +33,7 @@ import MessageLogCommand from "./settings/MessageLogChannel";
 import ModLogReasonButtonHandler from "./moderation/ReasonButton";
 import ModLogReasonModalHandler from "./moderation/ReasonModal";
 import ModLogCommand from "./settings/ModLogChannel";
+import ReasonCommand from "./moderation/ReasonCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -56,6 +57,7 @@ export default function addCommands(
     new WarnCommand(),
     new NoteCommand(),
     new HistoryCommand(),
+    new ReasonCommand(),
     new PruneCommand(),
     new SlowmodeCommand(),
 
