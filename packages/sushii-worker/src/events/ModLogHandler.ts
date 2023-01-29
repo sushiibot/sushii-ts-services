@@ -85,10 +85,14 @@ function buildModLogComponents(
   event: GatewayGuildAuditLogEntryCreateDispatchData,
   modCase: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">
 ): APIActionRowComponent<APIMessageActionRowComponent>[] {
-  if (actionType !== ActionType.Ban) {
-    // Currently only add button for ban
+  // Currently only add button for ban and timeout
+  if (actionType !== ActionType.Ban && actionType !== ActionType.Timeout) {
     return [];
   }
+
+  // TODO: Add buttons for DM sent, DM delete
+  // This requires the dm status to be set in database as it is sent async
+  // in a command vs this is the detached event handler
 
   if (modCase.reason) {
     // Already has reason, no need to add button

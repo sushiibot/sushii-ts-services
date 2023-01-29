@@ -9565,6 +9565,8 @@ export type Query = Node & {
   /** Reads a single `RoleMenuRole` using its globally unique `ID`. */
   roleMenuRole?: Maybe<RoleMenuRole>;
   roleMenuRoleByGuildIdAndMenuNameAndRoleId?: Maybe<RoleMenuRole>;
+  /** Reads and enables pagination through a set of `ModLog`. */
+  searchModLogs?: Maybe<ModLogsConnection>;
   /** Reads a single `Tag` using its globally unique `ID`. */
   tag?: Maybe<Tag>;
   tagByGuildIdAndTagName?: Maybe<Tag>;
@@ -10225,6 +10227,20 @@ export type QueryRoleMenuRoleByGuildIdAndMenuNameAndRoleIdArgs = {
   guildId: Scalars['BigInt'];
   menuName: Scalars['String'];
   roleId: Scalars['BigInt'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QuerySearchModLogsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<ModLogFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  last?: InputMaybe<Scalars['Int']>;
+  maxResults?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  searchCaseId?: InputMaybe<Scalars['BigInt']>;
 };
 
 
@@ -20550,6 +20566,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   roleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuByGuildIdAndMenuNameArgs, 'guildId' | 'menuName'>>;
   roleMenuRole?: Resolver<Maybe<ResolversTypes['RoleMenuRole']>, ParentType, ContextType, RequireFields<QueryRoleMenuRoleArgs, 'nodeId'>>;
   roleMenuRoleByGuildIdAndMenuNameAndRoleId?: Resolver<Maybe<ResolversTypes['RoleMenuRole']>, ParentType, ContextType, RequireFields<QueryRoleMenuRoleByGuildIdAndMenuNameAndRoleIdArgs, 'guildId' | 'menuName' | 'roleId'>>;
+  searchModLogs?: Resolver<Maybe<ResolversTypes['ModLogsConnection']>, ParentType, ContextType, Partial<QuerySearchModLogsArgs>>;
   tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'nodeId'>>;
   tagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagByGuildIdAndTagNameArgs, 'guildId' | 'tagName'>>;
   timeframeUserLevels?: Resolver<Maybe<ResolversTypes['TimeframeUserLevelsConnection']>, ParentType, ContextType, Partial<QueryTimeframeUserLevelsArgs>>;
@@ -22673,6 +22690,13 @@ export type GetModLogQueryVariables = Exact<{
 
 export type GetModLogQuery = { __typename?: 'Query', modLogByGuildIdAndCaseId?: { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string } | null };
 
+export type GetRecentModLogsQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+}>;
+
+
+export type GetRecentModLogsQuery = { __typename?: 'Query', allModLogs?: { __typename?: 'ModLogsConnection', nodes: Array<{ __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string }> } | null };
+
 export type GetNextCaseIdQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
 }>;
@@ -22698,6 +22722,14 @@ export type GetUserModLogHistoryQueryVariables = Exact<{
 export type GetUserModLogHistoryQuery = { __typename?: 'Query', allModLogs?: { __typename?: 'ModLogsConnection', totalCount: number, nodes: Array<{ __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string }> } | null };
 
 export type ModLogDataFragment = { __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string };
+
+export type SearchModLogsQueryVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  searchCaseId: Scalars['BigInt'];
+}>;
+
+
+export type SearchModLogsQuery = { __typename?: 'Query', searchModLogs?: { __typename?: 'ModLogsConnection', nodes: Array<{ __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string }> } | null };
 
 export type UpdateModLogMutationVariables = Exact<{
   caseId: Scalars['BigInt'];
@@ -23403,6 +23435,19 @@ export const GetModLogDocument = gql`
   }
 }
     ${ModLogDataFragmentDoc}`;
+export const GetRecentModLogsDocument = gql`
+    query getRecentModLogs($guildId: BigInt!) {
+  allModLogs(
+    condition: {guildId: $guildId, pending: false}
+    first: 25
+    orderBy: CASE_ID_DESC
+  ) {
+    nodes {
+      ...ModLogData
+    }
+  }
+}
+    ${ModLogDataFragmentDoc}`;
 export const GetNextCaseIdDocument = gql`
     query getNextCaseID($guildId: BigInt!) {
   nextCaseId(guildId: $guildId)
@@ -23427,6 +23472,15 @@ export const GetUserModLogHistoryDocument = gql`
       ...ModLogData
     }
     totalCount
+  }
+}
+    ${ModLogDataFragmentDoc}`;
+export const SearchModLogsDocument = gql`
+    query searchModLogs($guildId: BigInt!, $searchCaseId: BigInt!) {
+  searchModLogs(guildId: $guildId, searchCaseId: $searchCaseId, maxResults: 25) {
+    nodes {
+      ...ModLogData
+    }
   }
 }
     ${ModLogDataFragmentDoc}`;
@@ -23918,6 +23972,9 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
     getModLog(variables: GetModLogQueryVariables, options?: C): Promise<GetModLogQuery> {
       return requester<GetModLogQuery, GetModLogQueryVariables>(GetModLogDocument, variables, options) as Promise<GetModLogQuery>;
     },
+    getRecentModLogs(variables: GetRecentModLogsQueryVariables, options?: C): Promise<GetRecentModLogsQuery> {
+      return requester<GetRecentModLogsQuery, GetRecentModLogsQueryVariables>(GetRecentModLogsDocument, variables, options) as Promise<GetRecentModLogsQuery>;
+    },
     getNextCaseID(variables: GetNextCaseIdQueryVariables, options?: C): Promise<GetNextCaseIdQuery> {
       return requester<GetNextCaseIdQuery, GetNextCaseIdQueryVariables>(GetNextCaseIdDocument, variables, options) as Promise<GetNextCaseIdQuery>;
     },
@@ -23926,6 +23983,9 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
     },
     getUserModLogHistory(variables: GetUserModLogHistoryQueryVariables, options?: C): Promise<GetUserModLogHistoryQuery> {
       return requester<GetUserModLogHistoryQuery, GetUserModLogHistoryQueryVariables>(GetUserModLogHistoryDocument, variables, options) as Promise<GetUserModLogHistoryQuery>;
+    },
+    searchModLogs(variables: SearchModLogsQueryVariables, options?: C): Promise<SearchModLogsQuery> {
+      return requester<SearchModLogsQuery, SearchModLogsQueryVariables>(SearchModLogsDocument, variables, options) as Promise<SearchModLogsQuery>;
     },
     updateModLog(variables: UpdateModLogMutationVariables, options?: C): Promise<UpdateModLogMutation> {
       return requester<UpdateModLogMutation, UpdateModLogMutationVariables>(UpdateModLogDocument, variables, options) as Promise<UpdateModLogMutation>;

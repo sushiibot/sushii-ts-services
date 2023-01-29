@@ -293,7 +293,7 @@ async function executeActionUser(
       action: ActionType.toModLogString(actionType),
       pending: true,
       userId: target.user.id,
-      userTag: target.user.discriminator,
+      userTag: `${target.user.username}#${target.user.discriminator}`,
       executorId: data.invoker.id,
       actionTime: dayjs().utc().toISOString(),
       reason: data.reason,

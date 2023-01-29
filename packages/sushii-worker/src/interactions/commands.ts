@@ -30,10 +30,11 @@ import XpCommand from "./xp/XpCommands";
 import LevelRoleCommand from "./xp/LevelRoleCommand";
 import RankCommand from "./user/rank";
 import MessageLogCommand from "./settings/MessageLogChannel";
-import ModLogReasonButtonHandler from "./moderation/ReasonButton";
-import ModLogReasonModalHandler from "./moderation/ReasonModal";
+import ModLogReasonButtonHandler from "./moderation/reason/ReasonButton";
+import ModLogReasonModalHandler from "./moderation/reason/ReasonModal";
 import ModLogCommand from "./settings/ModLogChannel";
-import ReasonCommand from "./moderation/ReasonCommand";
+import ReasonCommand from "./moderation/reason/ReasonCommand";
+import ReasonAutocomplete from "./moderation/reason/ReasonAutocomplete";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -89,7 +90,9 @@ export default function addCommands(
 
     new ReminderDeleteAutocomplete(),
 
-    new RoleMenuAutocomplete()
+    new RoleMenuAutocomplete(),
+
+    new ReasonAutocomplete()
   );
 
   // ----------------------------------------

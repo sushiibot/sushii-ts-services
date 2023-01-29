@@ -1,0 +1,11 @@
+query getRecentModLogs($guildId: BigInt!) {
+  allModLogs(
+    condition: { guildId: $guildId, pending: false }
+    first: 25
+    orderBy: CASE_ID_DESC
+  ) {
+    nodes {
+      ...ModLogData
+    }
+  }
+}

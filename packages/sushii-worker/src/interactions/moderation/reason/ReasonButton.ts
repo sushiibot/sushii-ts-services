@@ -5,9 +5,9 @@ import {
   APIMessageComponentButtonInteraction,
   TextInputStyle,
 } from "discord-api-types/v10";
-import Context from "../../model/context";
-import customIds from "../customIds";
-import { ButtonHandler } from "../handlers";
+import Context from "../../../model/context";
+import customIds from "../../customIds";
+import { ButtonHandler } from "../../handlers";
 
 // Button on mod log opens a modal
 export default class ModLogReasonButtonHandler extends ButtonHandler {

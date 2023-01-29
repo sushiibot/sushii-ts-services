@@ -1,13 +1,13 @@
 import { APIModalSubmitInteraction, MessageFlags } from "discord-api-types/v10";
 import { isGuildInteraction } from "discord-api-types/utils/v10";
 import { EmbedBuilder } from "@discordjs/builders";
-import Context from "../../model/context";
-import customIds from "../customIds";
-import { ModalHandler } from "../handlers";
-import Color from "../../utils/colors";
-import { interactionReplyErrorPlainMessage } from "../responses/error";
-import buildModLogEmbed from "../../builders/buildModLogEmbed";
-import { ActionType } from "./ActionType";
+import Context from "../../../model/context";
+import customIds from "../../customIds";
+import { ModalHandler } from "../../handlers";
+import Color from "../../../utils/colors";
+import { interactionReplyErrorPlainMessage } from "../../responses/error";
+import buildModLogEmbed from "../../../builders/buildModLogEmbed";
+import { ActionType } from "../ActionType";
 
 // When modal submitted, update mod log message and save the reason
 export default class ModLogReasonModalHandler extends ModalHandler {

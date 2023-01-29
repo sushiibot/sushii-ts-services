@@ -12124,6 +12124,35 @@ type Query implements Node {
   ): RoleMenuRole
   roleMenuRoleByGuildIdAndMenuNameAndRoleId(guildId: BigInt!, menuName: String!, roleId: BigInt!): RoleMenuRole
 
+  """Reads and enables pagination through a set of `ModLog`."""
+  searchModLogs(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: ModLogFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+    guildId: BigInt
+
+    """Only read the last `n` values of the set."""
+    last: Int
+    maxResults: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+    searchCaseId: BigInt
+  ): ModLogsConnection
+
   """Reads a single `Tag` using its globally unique `ID`."""
   tag(
     """The globally unique `ID` to be used in selecting a single `Tag`."""

@@ -5,6 +5,8 @@ import {
   SelectMenuBuilder,
   ActionRowBuilder,
   ButtonBuilder,
+  RoleSelectMenuBuilder,
+  UserSelectMenuBuilder,
 } from "@discordjs/builders";
 import { isGuildInteraction } from "discord-api-types/utils/v10";
 import {
@@ -332,7 +334,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       case "editorder":
         return this.editOrderHandler(ctx, interaction, options);
       case "addroles":
-        return this.addRolesHandler(ctx, interaction, options);
+        return this.addRolesHandlerMenu(ctx, interaction, options);
       case "removeroles":
         return this.removeRolesHandler(ctx, interaction, options);
       case "roleoptions":
@@ -391,6 +393,8 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       },
     });
 
+    // TODO: Add role select menu to this message, so that the user can
+    // immediately add roles to the menu.
     await ctx.REST.interactionReply(interaction, {
       embeds: [
         new EmbedBuilder()
@@ -698,6 +702,65 @@ export default class RoleMenuCommand extends SlashCommandHandler {
           .setColor(Color.Success)
           .toJSON(),
       ],
+    });
+  }
+
+  private async addRolesHandlerMenu(
+    ctx: Context,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: CommandInteractionOptionResolver
+  ): Promise<void> {
+    const menuName = options.getString(RoleMenuOption.Name);
+    if (!menuName) {
+      throw new Error("No menu name provided.");
+    }
+
+    const roleMenu = await this.getMenu(ctx, interaction, menuName);
+    if (roleMenu.none) {
+      await ctx.REST.interactionReply(interaction, {
+        content: t("rolemenu.edit.error.menu_not_found"),
+      });
+
+      return;
+    }
+
+    const currentRoleIDs =
+      roleMenu.val.roleMenuRolesByGuildIdAndMenuName.nodes.map((r) => r.roleId);
+
+    const selectMenu = new RoleSelectMenuBuilder()
+      .setPlaceholder("Select roles to add to menu")
+      .setMaxValues(25)
+      .setCustomId(customIds.roleMenuAddRolesSelect.path);
+
+    const userSelectMenu = new UserSelectMenuBuilder()
+      .setPlaceholder("Select user")
+      .setMaxValues(25)
+      .setCustomId("moo");
+
+    const rows = [
+      new ActionRowBuilder<RoleSelectMenuBuilder>().addComponents(selectMenu),
+      new ActionRowBuilder<UserSelectMenuBuilder>().addComponents(
+        userSelectMenu
+      ),
+    ];
+
+    // Send message with role menu select
+    await ctx.REST.interactionReply(interaction, {
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("Add roles to menu")
+          .setFields([
+            {
+              name: "Current roles",
+              value:
+                currentRoleIDs.map((id) => `<@&${id}>`).join(" ") ||
+                "No roles added yet.",
+            },
+          ])
+          .setColor(Color.Success)
+          .toJSON(),
+      ],
+      components: rows.map((r) => r.toJSON()),
     });
   }
 

@@ -10,6 +10,7 @@ import { ActionType } from "./moderation/ActionType";
 enum Paths {
   RoleMenuButton = "/rolemenu/button/:roleId",
   RoleMenuSelect = "/rolemenu/select",
+  RoleMenuAddRolesSelect = "/rolemenu/addRoles/select",
   ModerationAction = "/moderation/action/:actionType/:targetId",
   LevelRoleApplyMemberRequest = "/l/:guildId",
   ModLogReason = "/modlog/reason/:caseId",
@@ -22,6 +23,10 @@ type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
   : T extends Paths.RoleMenuSelect
   ? {
       // No params
+    }
+  : T extends Paths.RoleMenuAddRolesSelect
+  ? {
+      // /rolemenu addroles - No params since it is select menu
     }
   : T extends Paths.ModerationAction
   ? {
@@ -79,6 +84,7 @@ function createCustomID<T extends Paths>(path: T): CustomIDPath<PathParams<T>> {
 const customIds = {
   roleMenuButton: createCustomID(Paths.RoleMenuButton),
   roleMenuSelect: createCustomID(Paths.RoleMenuSelect),
+  roleMenuAddRolesSelect: createCustomID(Paths.RoleMenuAddRolesSelect),
   lookupButton: createCustomID(Paths.ModerationAction),
   levelRoleApplyMemberRequest: createCustomID(
     Paths.LevelRoleApplyMemberRequest

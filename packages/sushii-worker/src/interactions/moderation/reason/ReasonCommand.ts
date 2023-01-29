@@ -3,13 +3,15 @@ import {
   APIChatInputApplicationCommandGuildInteraction,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
-import Context from "../../model/context";
-import { SlashCommandHandler } from "../handlers";
-import CommandInteractionOptionResolver from "../resolver";
+import Context from "../../../model/context";
+import Color from "../../../utils/colors";
+import { SlashCommandHandler } from "../../handlers";
+import CommandInteractionOptionResolver from "../../resolver";
 import {
   getErrorMessage,
   interactionReplyErrorPlainMessage,
-} from "../responses/error";
+} from "../../responses/error";
+import { caseSpecCount, parseCaseId } from "./caseId";
 
 export default class ReasonCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -19,16 +21,17 @@ export default class ReasonCommand extends SlashCommandHandler {
     .setDescription("Set the reason for a mod case.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
     .setDMPermission(false)
-    .addNumberOption((o) =>
+    .addStringOption((o) =>
       o
-        .setName("case_number")
-        .setDescription("The case number you want to set the reason for.")
+        .setName("case")
+        .setDescription("Case number you want to set the reason for.")
+        .setAutocomplete(true)
         .setRequired(true)
     )
     .addStringOption((o) =>
       o
         .setName("reason")
-        .setDescription("The reason for the mod case.")
+        .setDescription("Reason for the mod case.")
         .setRequired(true)
     )
     .toJSON();
@@ -43,8 +46,8 @@ export default class ReasonCommand extends SlashCommandHandler {
       interaction.data.resolved
     );
 
-    const caseId = options.getNumber("case_number");
-    if (!caseId) {
+    const caseRange = options.getString("case");
+    if (!caseRange) {
       throw new Error("no case number provided");
     }
 
@@ -63,6 +66,28 @@ export default class ReasonCommand extends SlashCommandHandler {
       !guildConfigById.logMod || // No mod log set
       !guildConfigById.logModEnabled // Mod log disabled
     ) {
+      return;
+    }
+
+    const caseSpec = parseCaseId(caseRange);
+    if (!caseSpec) {
+      await interactionReplyErrorPlainMessage(
+        ctx,
+        interaction,
+        "Invalid case range, examples: 123 or 123-150 or latest or latest~3"
+      );
+
+      return;
+    }
+
+    const affectedCaseCount = caseSpecCount(caseSpec);
+    if (affectedCaseCount && affectedCaseCount > 25) {
+      await interactionReplyErrorPlainMessage(
+        ctx,
+        interaction,
+        `You can only modify up to 25 cases at a time (${affectedCaseCount} > 25)`
+      );
+
       return;
     }
 
@@ -128,7 +153,8 @@ export default class ReasonCommand extends SlashCommandHandler {
           name: "Reason",
           value: reason,
         },
-      ]);
+      ])
+      .setColor(Color.Success);
 
     if (!modCase.msgId) {
       const responseEmbedMsgMissing = responseEmbed.setDescription(
