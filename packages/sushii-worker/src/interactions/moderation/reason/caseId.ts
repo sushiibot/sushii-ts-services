@@ -36,7 +36,10 @@ export function caseSpecCount(cs: CaseSpec): number | undefined {
   }
 }
 
-export function parseCaseId(value: string): CaseSpec | undefined {
+export function parseCaseId(
+  value: string,
+  ignoreRangeOrder: boolean = false
+): CaseSpec | undefined {
   // 10-15 range, must require both start and end
   const rangeSplit = value.split("-");
   if (rangeSplit.length === 2) {
@@ -71,7 +74,9 @@ export function parseCaseId(value: string): CaseSpec | undefined {
     }
 
     // Make sure start is less than end, swap values if not
-    if (startId > endId) {
+    // Only do this if ensureRangeOrder is false, since we might not want to
+    // actually swap them when the user is still typing it in autocomplete
+    if (!ignoreRangeOrder && startId > endId) {
       [startId, endId] = [endId, startId];
     }
 

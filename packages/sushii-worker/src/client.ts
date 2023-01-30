@@ -412,7 +412,15 @@ export default class Client {
       return;
     }
 
-    log.info("received %s autocomplete", focusedOption.path);
+    log.info(
+      {
+        path: focusedOption.path,
+        option: focusedOption.option,
+        guildId: interaction.guild_id,
+        userId: interaction.user?.id,
+      },
+      "received autocomplete"
+    );
 
     try {
       // Server only check is not done since that's on the command side

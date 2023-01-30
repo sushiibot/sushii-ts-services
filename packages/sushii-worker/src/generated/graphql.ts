@@ -464,6 +464,33 @@ export enum BotStatsOrderBy {
   UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
 
+/** All input for the `bulkUpdateModLogReason` mutation. */
+export type BulkUpdateModLogReasonInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  endCaseId: Scalars['BigInt'];
+  executorId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+  reason: Scalars['String'];
+  startCaseId: Scalars['BigInt'];
+};
+
+/** The output of our `bulkUpdateModLogReason` mutation. */
+export type BulkUpdateModLogReasonPayload = {
+  __typename?: 'BulkUpdateModLogReasonPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  modLogs?: Maybe<Array<ModLog>>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
 export type CachedGuild = Node & {
   __typename?: 'CachedGuild';
   banner?: Maybe<Scalars['String']>;
@@ -7445,6 +7472,7 @@ export enum MsgLogBlocksOrderBy {
 export type Mutation = {
   __typename?: 'Mutation';
   addRoleMenuRoles?: Maybe<AddRoleMenuRolesPayload>;
+  bulkUpdateModLogReason?: Maybe<BulkUpdateModLogReasonPayload>;
   /** Creates a single `BotStat`. */
   createBotStat?: Maybe<CreateBotStatPayload>;
   /** Creates a single `CachedGuild`. */
@@ -7773,6 +7801,12 @@ export type Mutation = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationAddRoleMenuRolesArgs = {
   input: AddRoleMenuRolesInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationBulkUpdateModLogReasonArgs = {
+  input: BulkUpdateModLogReasonInput;
 };
 
 
@@ -10237,11 +10271,11 @@ export type QuerySearchModLogsArgs = {
   before?: InputMaybe<Scalars['Cursor']>;
   filter?: InputMaybe<ModLogFilter>;
   first?: InputMaybe<Scalars['Int']>;
-  guildId?: InputMaybe<Scalars['BigInt']>;
+  guildId: Scalars['BigInt'];
   last?: InputMaybe<Scalars['Int']>;
   maxResults?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  searchCaseId?: InputMaybe<Scalars['BigInt']>;
+  searchCaseId: Scalars['BigInt'];
 };
 
 
@@ -16156,6 +16190,8 @@ export type ResolversTypes = {
   BotStatsHavingVariancePopulationInput: BotStatsHavingVariancePopulationInput;
   BotStatsHavingVarianceSampleInput: BotStatsHavingVarianceSampleInput;
   BotStatsOrderBy: BotStatsOrderBy;
+  BulkUpdateModLogReasonInput: BulkUpdateModLogReasonInput;
+  BulkUpdateModLogReasonPayload: ResolverTypeWrapper<BulkUpdateModLogReasonPayload>;
   CachedGuild: ResolverTypeWrapper<CachedGuild>;
   CachedGuildInput: CachedGuildInput;
   CachedGuildPatch: CachedGuildPatch;
@@ -17180,6 +17216,8 @@ export type ResolversParentTypes = {
   BotStatsHavingSumInput: BotStatsHavingSumInput;
   BotStatsHavingVariancePopulationInput: BotStatsHavingVariancePopulationInput;
   BotStatsHavingVarianceSampleInput: BotStatsHavingVarianceSampleInput;
+  BulkUpdateModLogReasonInput: BulkUpdateModLogReasonInput;
+  BulkUpdateModLogReasonPayload: BulkUpdateModLogReasonPayload;
   CachedGuild: CachedGuild;
   CachedGuildInput: CachedGuildInput;
   CachedGuildPatch: CachedGuildPatch;
@@ -18216,6 +18254,13 @@ export type BotStatsConnectionResolvers<ContextType = any, ParentType extends Re
 export type BotStatsEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatsEdge'] = ResolversParentTypes['BotStatsEdge']> = {
   cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
   node?: Resolver<ResolversTypes['BotStat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BulkUpdateModLogReasonPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['BulkUpdateModLogReasonPayload'] = ResolversParentTypes['BulkUpdateModLogReasonPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  modLogs?: Resolver<Maybe<Array<ResolversTypes['ModLog']>>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -20094,6 +20139,7 @@ export type MsgLogBlocksEdgeResolvers<ContextType = any, ParentType extends Reso
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addRoleMenuRoles?: Resolver<Maybe<ResolversTypes['AddRoleMenuRolesPayload']>, ParentType, ContextType, RequireFields<MutationAddRoleMenuRolesArgs, 'input'>>;
+  bulkUpdateModLogReason?: Resolver<Maybe<ResolversTypes['BulkUpdateModLogReasonPayload']>, ParentType, ContextType, RequireFields<MutationBulkUpdateModLogReasonArgs, 'input'>>;
   createBotStat?: Resolver<Maybe<ResolversTypes['CreateBotStatPayload']>, ParentType, ContextType, RequireFields<MutationCreateBotStatArgs, 'input'>>;
   createCachedGuild?: Resolver<Maybe<ResolversTypes['CreateCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationCreateCachedGuildArgs, 'input'>>;
   createCachedUser?: Resolver<Maybe<ResolversTypes['CreateCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationCreateCachedUserArgs, 'input'>>;
@@ -20567,7 +20613,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   roleMenuByGuildIdAndMenuName?: Resolver<Maybe<ResolversTypes['RoleMenu']>, ParentType, ContextType, RequireFields<QueryRoleMenuByGuildIdAndMenuNameArgs, 'guildId' | 'menuName'>>;
   roleMenuRole?: Resolver<Maybe<ResolversTypes['RoleMenuRole']>, ParentType, ContextType, RequireFields<QueryRoleMenuRoleArgs, 'nodeId'>>;
   roleMenuRoleByGuildIdAndMenuNameAndRoleId?: Resolver<Maybe<ResolversTypes['RoleMenuRole']>, ParentType, ContextType, RequireFields<QueryRoleMenuRoleByGuildIdAndMenuNameAndRoleIdArgs, 'guildId' | 'menuName' | 'roleId'>>;
-  searchModLogs?: Resolver<Maybe<ResolversTypes['ModLogsConnection']>, ParentType, ContextType, Partial<QuerySearchModLogsArgs>>;
+  searchModLogs?: Resolver<Maybe<ResolversTypes['ModLogsConnection']>, ParentType, ContextType, RequireFields<QuerySearchModLogsArgs, 'guildId' | 'searchCaseId'>>;
   tag?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagArgs, 'nodeId'>>;
   tagByGuildIdAndTagName?: Resolver<Maybe<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryTagByGuildIdAndTagNameArgs, 'guildId' | 'tagName'>>;
   timeframeUserLevels?: Resolver<Maybe<ResolversTypes['TimeframeUserLevelsConnection']>, ParentType, ContextType, Partial<QueryTimeframeUserLevelsArgs>>;
@@ -22132,6 +22178,7 @@ export type Resolvers<ContextType = any> = {
   BotStatVarianceSampleAggregates?: BotStatVarianceSampleAggregatesResolvers<ContextType>;
   BotStatsConnection?: BotStatsConnectionResolvers<ContextType>;
   BotStatsEdge?: BotStatsEdgeResolvers<ContextType>;
+  BulkUpdateModLogReasonPayload?: BulkUpdateModLogReasonPayloadResolvers<ContextType>;
   CachedGuild?: CachedGuildResolvers<ContextType>;
   CachedGuildsEdge?: CachedGuildsEdgeResolvers<ContextType>;
   CachedUser?: CachedUserResolvers<ContextType>;
@@ -22667,6 +22714,17 @@ export type UpsertLevelRoleMutationVariables = Exact<{
 
 
 export type UpsertLevelRoleMutation = { __typename?: 'Mutation', upsertLevelRole?: { __typename?: 'UpsertLevelRolePayload', levelRole?: { __typename?: 'LevelRole', guildId: string, roleId: string, addLevel?: string | null, removeLevel?: string | null } | null } | null };
+
+export type BulkUpdateModLogReasonMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  startCaseId: Scalars['BigInt'];
+  endCaseId: Scalars['BigInt'];
+  executorId: Scalars['BigInt'];
+  reason: Scalars['String'];
+}>;
+
+
+export type BulkUpdateModLogReasonMutation = { __typename?: 'Mutation', bulkUpdateModLogReason?: { __typename?: 'BulkUpdateModLogReasonPayload', modLogs?: Array<{ __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string }> | null } | null };
 
 export type CreateModLogMutationVariables = Exact<{
   modLog: ModLogInput;
@@ -23411,6 +23469,17 @@ export const UpsertLevelRoleDocument = gql`
   }
 }
     ${LevelRoleDataFragmentDoc}`;
+export const BulkUpdateModLogReasonDocument = gql`
+    mutation bulkUpdateModLogReason($guildId: BigInt!, $startCaseId: BigInt!, $endCaseId: BigInt!, $executorId: BigInt!, $reason: String!) {
+  bulkUpdateModLogReason(
+    input: {guildId: $guildId, startCaseId: $startCaseId, endCaseId: $endCaseId, executorId: $executorId, reason: $reason}
+  ) {
+    modLogs {
+      ...ModLogData
+    }
+  }
+}
+    ${ModLogDataFragmentDoc}`;
 export const CreateModLogDocument = gql`
     mutation createModLog($modLog: ModLogInput!) {
   createModLog(input: {modLog: $modLog}) {
@@ -23968,6 +24037,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     upsertLevelRole(variables: UpsertLevelRoleMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpsertLevelRoleMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpsertLevelRoleMutation>(UpsertLevelRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'upsertLevelRole', 'mutation');
+    },
+    bulkUpdateModLogReason(variables: BulkUpdateModLogReasonMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<BulkUpdateModLogReasonMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<BulkUpdateModLogReasonMutation>(BulkUpdateModLogReasonDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'bulkUpdateModLogReason', 'mutation');
     },
     createModLog(variables: CreateModLogMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateModLogMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateModLogMutation>(CreateModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createModLog', 'mutation');

@@ -41,7 +41,10 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
       return;
     }
 
-    const caseSpec = parseCaseId(option.value);
+    // ignoreRangeOrder is true, meaning the endCaseId can be lower than the
+    // startCaseId. This is necessary since user might be still typing a case
+    // and we don't want it to flip around.
+    const caseSpec = parseCaseId(option.value, true);
     if (!caseSpec) {
       // Invalid case
       await ctx.REST.interactionCallback(interaction, {

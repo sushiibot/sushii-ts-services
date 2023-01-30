@@ -7,11 +7,14 @@ import Context from "../../../model/context";
 import Color from "../../../utils/colors";
 import { SlashCommandHandler } from "../../handlers";
 import CommandInteractionOptionResolver from "../../resolver";
-import {
-  getErrorMessage,
-  interactionReplyErrorPlainMessage,
-} from "../../responses/error";
+import { interactionReplyErrorPlainMessage } from "../../responses/error";
 import { caseSpecCount, parseCaseId } from "./caseId";
+
+enum ReasonError {
+  UserFetch,
+  MsgIdMissing,
+  MsgLogFetch,
+}
 
 export default class ReasonCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -91,21 +94,56 @@ export default class ReasonCommand extends SlashCommandHandler {
       return;
     }
 
-    const modCaseRes = await ctx.sushiiAPI.sdk.getModLog({
-      guildId: interaction.guild_id,
-      caseId: caseId.toString(),
-    });
+    // Always a range even if it's single or latest
+    // Range is INCLUSIVE of both start and end
+    let caseStartId;
+    let caseEndId;
 
-    const modCase = modCaseRes.modLogByGuildIdAndCaseId;
+    // TODO: Bulk update mod log
+    switch (caseSpec.type) {
+      case "single": {
+        const { modLogByGuildIdAndCaseId } = await ctx.sushiiAPI.sdk.getModLog({
+          guildId: interaction.guild_id,
+          caseId: caseSpec.id.toString(),
+        });
 
-    if (!modCase) {
-      await interactionReplyErrorPlainMessage(
-        ctx,
-        interaction,
-        `Case \`#${caseId}\` not found. Make sure you have the correct case number.`
-      );
+        // Early pre-check for single case updates
+        if (!modLogByGuildIdAndCaseId) {
+          await interactionReplyErrorPlainMessage(
+            ctx,
+            interaction,
+            `Case \`#${caseSpec.id}\` not found. Make sure you have the correct case number.`
+          );
 
-      return;
+          return;
+        }
+
+        caseStartId = caseSpec.id;
+        caseEndId = caseSpec.id;
+        break;
+      }
+      case "range": {
+        caseStartId = caseSpec.startId;
+        caseEndId = caseSpec.endId;
+        break;
+      }
+      case "latest": {
+        const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
+          guildId: interaction.guild_id,
+        });
+
+        if (!nextCaseId) {
+          throw new Error("nextCaseId not found");
+        }
+
+        const latestCaseId = parseInt(nextCaseId, 10) - 1;
+        caseStartId = latestCaseId - caseSpec.count + 1;
+        caseEndId = latestCaseId;
+      }
+    }
+
+    if (!caseStartId || !caseEndId) {
+      throw new Error("caseStartId or caseEndId should be defined");
     }
 
     // -------------------------------------------------------------------------
@@ -114,27 +152,24 @@ export default class ReasonCommand extends SlashCommandHandler {
     const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
     ackRes.unwrap();
 
-    await ctx.sushiiAPI.sdk.updateModLog({
-      guildId: interaction.guild_id,
-      caseId: modCase.caseId,
-      modLogPatch: {
-        reason,
+    const { bulkUpdateModLogReason } =
+      await ctx.sushiiAPI.sdk.bulkUpdateModLogReason({
+        guildId: interaction.guild_id,
+        startCaseId: caseStartId.toString(),
+        endCaseId: caseEndId.toString(),
         executorId: interaction.member.user.id,
-      },
-    });
+        reason,
+      });
 
-    // -------------------------------------------------------------------------
-    // Fetch the target user
-
-    const targetUser = await ctx.REST.getUser(modCase.userId);
-    if (targetUser.err) {
-      const errMsg = getErrorMessage(
-        "Failed to update reason",
-        `I couldn't fetch the user for case \`#${modCase.caseId}\`, but I still updated the reason in the user's history.`
+    if (
+      !bulkUpdateModLogReason?.modLogs ||
+      bulkUpdateModLogReason.modLogs.length === 0
+    ) {
+      await interactionReplyErrorPlainMessage(
+        ctx,
+        interaction,
+        "Hmm... there weren't any cases to be updated."
       );
-
-      // Stop any further processing
-      await ctx.REST.interactionEditOriginal(interaction, errMsg);
 
       return;
     }
@@ -142,71 +177,120 @@ export default class ReasonCommand extends SlashCommandHandler {
     // -------------------------------------------------------------------------
     // Create interaction reply embed
 
+    const rangeStr =
+      caseStartId === caseEndId
+        ? `#${caseStartId}`
+        : `#${caseStartId} - #${caseEndId}`;
+
+    // error type -> caseIds
+    const errs = new Map<ReasonError, string[]>();
+
+    const uniqueAffectedUsers = new Set<string>(
+      bulkUpdateModLogReason.modLogs.map((m) => `<@${m.userId}>`)
+    );
+
     const responseEmbed = new EmbedBuilder()
-      .setTitle(`Reason updated for case #${modCase.caseId}`)
+      .setTitle(`Reason updated for case ${rangeStr}`)
       .addFields([
-        {
-          name: "User",
-          value: `<@${modCase.userId}> (${targetUser.val.username}#${targetUser.val.discriminator})`,
-        },
         {
           name: "Reason",
           value: reason,
         },
+        {
+          name: "Affected user histories",
+          value: [...uniqueAffectedUsers].join(", "),
+        },
       ])
       .setColor(Color.Success);
 
-    if (!modCase.msgId) {
-      const responseEmbedMsgMissing = responseEmbed.setDescription(
-        "The mod log message wasn't found for this case, but I still updated the reason in the user's history."
+    for (const modCase of bulkUpdateModLogReason.modLogs) {
+      // -------------------------------------------------------------------------
+      // Fetch the target user
+
+      // eslint-disable-next-line no-await-in-loop
+      const targetUser = await ctx.REST.getUser(modCase.userId);
+      if (targetUser.err) {
+        const arr = errs.get(ReasonError.UserFetch) || [];
+        errs.set(ReasonError.UserFetch, [...arr, modCase.caseId]);
+
+        continue;
+      }
+
+      if (!modCase.msgId) {
+        const arr = errs.get(ReasonError.MsgIdMissing) || [];
+        errs.set(ReasonError.MsgIdMissing, [...arr, modCase.caseId]);
+
+        continue;
+      }
+
+      // -------------------------------------------------------------------------
+      // Edit the mod log message
+
+      // Fetch the message so we can selectively edit the embed
+      // eslint-disable-next-line no-await-in-loop
+      const modLogMsg = await ctx.REST.getChannelMessage(
+        guildConfigById.logMod,
+        modCase.msgId
+      );
+      if (modLogMsg.err) {
+        const arr = errs.get(ReasonError.MsgLogFetch) || [];
+        errs.set(ReasonError.MsgLogFetch, [...arr, modCase.caseId]);
+
+        continue;
+      }
+
+      const oldFields = modLogMsg.val.embeds[0].fields || [];
+      const indexOfReasonField = oldFields.findIndex(
+        (f) => f.name === "Reason"
       );
 
-      await ctx.REST.interactionEditOriginal(interaction, {
-        embeds: [responseEmbedMsgMissing.toJSON()],
-      });
+      const newEmbed = new EmbedBuilder(modLogMsg.val.embeds[0])
+        .setAuthor({
+          name: `${interaction.member.user.username}#${interaction.member.user.discriminator}`,
+          iconURL: ctx.CDN.userFaceURL(interaction.member.user),
+        })
+        // Replaces 1 element at index `indexOfReasonField`
+        .spliceFields(indexOfReasonField, 1, {
+          name: "Reason",
+          value: reason,
+          inline: false,
+        });
 
-      return;
+      // Edit the original message to show the updated reason
+      // eslint-disable-next-line no-await-in-loop
+      await ctx.REST.editChannelMessage(guildConfigById.logMod, modCase.msgId, {
+        embeds: [newEmbed.toJSON()],
+      });
     }
 
-    // -------------------------------------------------------------------------
-    // Edit the mod log message
+    const errStrs = Array.from(errs.entries()).map(([reasonErr, caseIds]) => {
+      const caseStr = caseIds.join(", ");
 
-    // Fetch the message so we can selectively edit the embed
-    const modLogMsg = await ctx.REST.getChannelMessage(
-      guildConfigById.logMod,
-      modCase.msgId
-    );
-    if (modLogMsg.err) {
-      const errMsg = getErrorMessage(
-        "Failed to update reason",
-        `I couldn't fetch the mod log message for case, but I still updated the reason in the user's history. This could be due to the mod log channel being changed, or I don't have permission to view the mod log channel (<#${guildConfigById.logMod}>).`
-      );
-
-      // Stop any further processing
-      await ctx.REST.interactionEditOriginal(interaction, errMsg);
-
-      return;
-    }
-
-    const oldFields = modLogMsg.val.embeds[0].fields || [];
-    const indexOfReasonField = oldFields.findIndex((f) => f.name === "Reason");
-
-    const newEmbed = new EmbedBuilder(modLogMsg.val.embeds[0])
-      .setAuthor({
-        name: `${interaction.member.user.username}#${interaction.member.user.discriminator}`,
-        iconURL: ctx.CDN.userFaceURL(interaction.member.user),
-      })
-      // Replaces 1 element at index `indexOfReasonField`
-      .spliceFields(indexOfReasonField, 1, {
-        name: "Reason",
-        value: reason,
-        inline: false,
-      });
-
-    // Edit the original message to show the updated reason
-    await ctx.REST.editChannelMessage(guildConfigById.logMod, modCase.msgId, {
-      embeds: [newEmbed.toJSON()],
+      switch (reasonErr) {
+        case ReasonError.UserFetch:
+          return `Could not fetch user for cases: ${caseStr}`;
+        case ReasonError.MsgIdMissing:
+          return `Mod log message missing for cases: ${caseStr}`;
+        case ReasonError.MsgLogFetch:
+          return `Could not fetch mod log message for cases: ${caseStr}`;
+        default:
+          return `Unknown error for case: ${caseStr}`;
+      }
     });
+
+    if (errStrs.length > 0) {
+      let errMessage = `I updated the reason in the users' histories, but some \
+        cases may not have been updated in the mod log channel. This could be due \
+        to the mod log channel being changed, or I don't have permission to view \
+        the mod log channel (<#${guildConfigById.logMod}>).`;
+      errMessage += "\n";
+      errMessage += `${errStrs.join("\n")}`;
+
+      responseEmbed.addFields({
+        name: "Note",
+        value: errMessage,
+      });
+    }
 
     await ctx.REST.interactionEditOriginal(interaction, {
       embeds: [responseEmbed.toJSON()],

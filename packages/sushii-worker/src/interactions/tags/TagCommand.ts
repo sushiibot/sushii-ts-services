@@ -299,7 +299,8 @@ export default class TagCommand extends SlashCommandHandler {
     interaction: APIChatInputApplicationCommandGuildInteraction,
     options: CommandInteractionOptionResolver
   ): Promise<void> {
-    const tagName = options.getString("name");
+    // Make new tags case insensitive - always lowercase
+    const tagName = options.getString("name")?.toLowerCase();
     if (!tagName) {
       throw new Error("Missing tag name");
     }
