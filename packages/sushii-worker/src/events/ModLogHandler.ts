@@ -127,8 +127,11 @@ export default class ModLogHandler extends EventHandler {
     eventType: GatewayDispatchEvents,
     event: GatewayGuildAuditLogEntryCreateDispatchData
   ): Promise<void> {
-    // Initial deployment guild only in bp
-    if (event.guild_id !== "187450744427773963") {
+    // Initial deployment guilds, bp and test
+    if (
+      event.guild_id !== "187450744427773963" &&
+      event.guild_id !== "167058919611564043"
+    ) {
       return;
     }
 
@@ -196,7 +199,10 @@ export default class ModLogHandler extends EventHandler {
 
     // If this is a native manual timeout, we want to DM the user the reason.
     // ONLY DM if it is a **timeout,** ban reasons cannot be DM'd here
-    // No DM for adjust, since regular users cannot use it
+    // No DM for adjust, since regular users cannot use it.
+    //
+    // Not necessary to check if the target is a member, since you cannot
+    // timeout a non-member.
     const shouldDMReason =
       !matchingCase &&
       (ActionType.Timeout === actionType ||
