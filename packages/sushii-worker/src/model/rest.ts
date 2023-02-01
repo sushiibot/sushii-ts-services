@@ -30,6 +30,7 @@ import {
   APIModalInteractionResponseCallbackData,
   RESTPostAPIApplicationCommandsJSONBody,
   RESTPostAPIApplicationCommandsResult,
+  RESTGetAPIGuildBansResult,
 } from "discord-api-types/v10";
 import { Ok, Err, Result } from "ts-results";
 import { ConfigI } from "./config";
@@ -362,6 +363,57 @@ export default class RESTClient {
   ): APIPromiseResult<RESTGetAPIGuildRolesResult> {
     return this.handleError(this.rest.get(Routes.guildRoles(guildId)));
   }
+
+  public async getAllGuildGuildBans(
+    guildId: string
+  ): APIPromiseResult<RESTGetAPIGuildBansResult> {
+    // Users will always be returned in ascending order by user.id
+    // Last order is the highest user.id
+
+    const bans = [];
+    let after = null;
+
+    /* eslint-disable no-await-in-loop */
+    while (true) {
+      const params: Record<string, string> = {
+        limit: "1000",
+      };
+
+      // Only add after query param if we have one
+      if (after) {
+        params.after = after;
+      }
+
+      // Cannot do this in parallel since we need to know the last user id
+      // in the response to use for pagination
+      const res: Result<RESTGetAPIGuildBansResult, DiscordAPIError> =
+        await this.handleError(
+          this.rest.get(Routes.guildBans(guildId), {
+            query: new URLSearchParams(params),
+          })
+        );
+
+      // Return error if we have one
+      if (res.err) {
+        return res;
+      }
+
+      // Add users to the list
+      bans.push(...res.val);
+
+      // Empty array OR < 1000 means we are done. Pages should always be 1000
+      // unless we are on the last page.
+      // Possible we query an extra page it is fine, since if it returns an
+      // empty list it will still return
+      if (res.val.length < 1000) {
+        return Ok(bans);
+      }
+
+      // Use the last user id as the next after value for pagination
+      after = res.val[res.val.length - 1].user.id;
+    }
+  }
+  /* eslint-disable */
 
   // User
   public dmUser(

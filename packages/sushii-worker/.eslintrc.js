@@ -27,7 +27,13 @@ module.exports = {
     "no-bitwise": "off",
     "class-methods-use-this": "off",
     "no-restricted-syntax": "off",
-    "no-continue": "off"
+    "no-continue": "off",
+    "no-constant-condition": [
+      "warn",
+      {
+        "checkLoops": false
+      },
+    ]
   },
   settings: {
     "import/resolver": {
