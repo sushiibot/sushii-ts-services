@@ -72,6 +72,7 @@ function getActionTypeFromEvent(
 
       return {
         actionType: timeoutData.actionType,
+        timeoutChange: timeoutData,
         ...base,
       };
     }
