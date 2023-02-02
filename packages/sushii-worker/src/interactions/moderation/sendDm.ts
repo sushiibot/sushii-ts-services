@@ -52,8 +52,13 @@ export async function buildDMEmbed(
     });
   }
 
+  const title =
+    action === ActionType.TimeoutRemove
+      ? "Your timeout was removed"
+      : `You have been ${ActionType.toPastTense(action)}`;
+
   return new EmbedBuilder()
-    .setTitle(`You have been ${ActionType.toPastTense(action)} in a server`)
+    .setTitle(title)
     .setAuthor({
       name: guildName,
       iconURL: guildIcon,
