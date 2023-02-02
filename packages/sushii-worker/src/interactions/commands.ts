@@ -35,6 +35,7 @@ import ModLogReasonModalHandler from "./moderation/reason/ReasonModal";
 import ModLogCommand from "./settings/ModLogChannel";
 import ReasonCommand from "./moderation/reason/ReasonCommand";
 import ReasonAutocomplete from "./moderation/reason/ReasonAutocomplete";
+import UnTimeoutCommand from "./moderation/UnTimeoutCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -55,6 +56,7 @@ export default function addCommands(
     new UnbanCommand(),
     new KickCommand(),
     new TimeoutCommand(),
+    new UnTimeoutCommand(),
     new WarnCommand(),
     new NoteCommand(),
     new HistoryCommand(),
