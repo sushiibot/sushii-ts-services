@@ -101,6 +101,7 @@ export default class SettingsCommand extends SlashCommandHandler {
     const invoker = getInvokerUser(interaction);
 
     const notifications = await ctx.sushiiAPI.sdk.getUserNotifications({
+      guildId: interaction.guild_id,
       userId: invoker.id,
     });
 
