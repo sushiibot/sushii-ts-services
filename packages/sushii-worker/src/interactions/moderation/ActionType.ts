@@ -5,8 +5,8 @@ export enum ActionType {
   BanRemove = "unban",
   Kick = "kick",
   Timeout = "timeout",
-  TimeoutRemove = "remove timeout",
-  TimeoutAdjust = "adjust timeout",
+  TimeoutRemove = "timeout_remove",
+  TimeoutAdjust = "timeout_adjust",
   Warn = "warn",
   Note = "note",
   History = "history",
@@ -14,7 +14,7 @@ export enum ActionType {
 }
 
 export namespace ActionType {
-  export function toModLogString(action: ActionType): string {
+  export function toString(action: ActionType): string {
     switch (action) {
       case ActionType.Ban:
         return "ban";
@@ -25,15 +25,17 @@ export namespace ActionType {
       case ActionType.Timeout:
         return "timeout";
       case ActionType.TimeoutRemove:
-        return "timeout_remove";
+        return "timeout remove";
       case ActionType.TimeoutAdjust:
-        return "timeout_adjust";
+        return "timeout adjust";
       case ActionType.Warn:
         return "warn";
       case ActionType.Note:
         return "note";
-      default:
-        throw new Error("Action type not supported for mod log");
+      case ActionType.History:
+        return "history";
+      case ActionType.Lookup:
+        return "lookup";
     }
   }
 

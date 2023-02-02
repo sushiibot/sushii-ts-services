@@ -290,7 +290,7 @@ async function executeActionUser(
     modLog: {
       guildId: interaction.guild_id,
       caseId: nextCaseId,
-      action: ActionType.toModLogString(actionType),
+      action: actionType,
       pending: true,
       userId: target.user.id,
       userTag: `${target.user.username}#${target.user.discriminator}`,

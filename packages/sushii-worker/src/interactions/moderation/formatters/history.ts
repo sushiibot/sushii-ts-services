@@ -52,7 +52,7 @@ export default function buildUserHistoryEmbed(
     let s =
       `${ActionType.toEmoji(action)} ` +
       `\`#${c.caseId}\` - ` +
-      `**${c.action}** ` +
+      `**${ActionType.toString(action)}** ` +
       `<t:${dayjs.utc(c.actionTime).unix()}:R> `;
 
     if (c.reason && c.executorId) {
