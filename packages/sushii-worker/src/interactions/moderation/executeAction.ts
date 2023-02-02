@@ -4,6 +4,7 @@ import {
   APIChatInputApplicationCommandGuildInteraction,
   APIMessage,
   APIUser,
+  RESTJSONErrorCodes,
 } from "discord-api-types/v10";
 import { Err, Ok, Result } from "ts-results";
 import { GetRedisGuildQuery } from "../../generated/graphql";
@@ -192,6 +193,14 @@ async function execActionUser(
       );
 
       if (res.err) {
+        if (res.val.code === RESTJSONErrorCodes.MissingPermissions) {
+          return Err({
+            target,
+            message:
+              "I don't have permission to timeout, please give me the `Timeout Members` permission.",
+          });
+        }
+
         return Err({
           target,
           message: res.val.message,
