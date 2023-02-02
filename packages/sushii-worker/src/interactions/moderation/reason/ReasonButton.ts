@@ -34,7 +34,7 @@ export default class ModLogReasonButtonHandler extends ButtonHandler {
     const textInput = new TextInputBuilder()
       .setLabel("Reason")
       .setRequired(true)
-      .setPlaceholder("Rule 1")
+      .setPlaceholder("Enter a reason. This will be saved in the mod log.")
       .setStyle(TextInputStyle.Paragraph)
       .setCustomId("reason");
     const row = new ActionRowBuilder<TextInputBuilder>().addComponents(
