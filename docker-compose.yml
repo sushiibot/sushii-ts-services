@@ -14,6 +14,7 @@ services:
         environment:
             - NODE_ENV=production
             - SUSHII_GRAPHQL_TOKEN=$SUSHII_GRAPHQL_TOKEN
+            - SENTRY_DSN=$SENTRY_DSN
             - DISCORD_TOKEN=$DISCORD_TOKEN
             # sushiiDev application ID, different from bot user id
             - APPLICATION_ID=193163942502072320
