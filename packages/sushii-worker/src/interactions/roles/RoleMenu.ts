@@ -612,7 +612,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             {
               name: "Required Role",
               value: requiredRoleId
-                ? `<@&${menuData.requiredRole}>`
+                ? `<@&${requiredRoleId}>`
                 : "No required role.",
             },
           ])
