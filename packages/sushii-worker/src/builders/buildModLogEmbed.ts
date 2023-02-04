@@ -33,7 +33,7 @@ export default async function buildModLogEmbed(
   const fields: APIEmbedField[] = [];
 
   fields.push({
-    name: `User ${actionType}`,
+    name: `User ${ActionType.toString(actionType)}`,
     value: `<@${targetUser.id}> \`${targetUser.username}#${targetUser.discriminator}\` | \`${targetUser.id}\``,
     inline: false,
   });

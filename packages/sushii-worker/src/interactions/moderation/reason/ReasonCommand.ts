@@ -260,6 +260,8 @@ export default class ReasonCommand extends SlashCommandHandler {
       // eslint-disable-next-line no-await-in-loop
       await ctx.REST.editChannelMessage(guildConfigById.logMod, modCase.msgId, {
         embeds: [newEmbed.toJSON()],
+        // Clear reason button
+        components: [],
       });
     }
 
