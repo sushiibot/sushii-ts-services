@@ -23,9 +23,20 @@ export function getRoleMenuRequiredRole(
     return null;
   }
 
-  return (
-    embed.fields?.find((field) => field.name === "Required role")?.value || null
-  );
+  const roleMention = embed.fields?.find(
+    (field) => field.name === "Required role"
+  )?.value;
+
+  if (!roleMention) {
+    return null;
+  }
+
+  const match = roleMention.match(/<@&(\d+)>/);
+  if (!match) {
+    return null;
+  }
+
+  return match[1];
 }
 
 export function getRoleMenuMaxRoles(
