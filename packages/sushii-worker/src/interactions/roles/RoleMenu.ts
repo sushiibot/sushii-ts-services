@@ -334,7 +334,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       case "editorder":
         return this.editOrderHandler(ctx, interaction, options);
       case "addroles":
-        return this.addRolesHandlerMenu(ctx, interaction, options);
+        return this.addRolesHandler(ctx, interaction, options);
       case "removeroles":
         return this.removeRolesHandler(ctx, interaction, options);
       case "roleoptions":
@@ -414,7 +414,9 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             },
             {
               name: "Required Role",
-              value: requiredRole ? `<&@${requiredRole}>` : "No required role.",
+              value: requiredRole
+                ? `<&@${requiredRole.id}>`
+                : "No required role.",
             },
           ])
           .setColor(Color.Success)
