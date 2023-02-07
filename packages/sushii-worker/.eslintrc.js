@@ -33,7 +33,8 @@ module.exports = {
       {
         "checkLoops": false
       },
-    ]
+    ],
+    "no-multi-str": "off"
   },
   settings: {
     "import/resolver": {

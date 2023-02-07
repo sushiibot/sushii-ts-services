@@ -146,6 +146,7 @@ export namespace ActionType {
   export function toColor(actionType: ActionType): Color | null {
     switch (actionType) {
       case ActionType.Ban:
+      case ActionType.Kick:
         return Color.Error;
       case ActionType.BanRemove:
         return Color.Success;
