@@ -81,12 +81,12 @@ export default class ReasonCommand extends SlashCommandHandler {
             .setTitle("Invalid case range")
             .setDescription(
               `The cases you provided was invalid. Here are some examples to update cases:\n\n\
-              ${SushiiEmoji.BlueDot}A single case: \`120\` - Updates case 120\n\
-              ${SushiiEmoji.BlueDot}A range of cases: \`120-130\` - Updates all cases including and between 120 to 130\n\
-              ${SushiiEmoji.BlueDot}The latest case: \`latest\` - Updates the latest case\n\
-              ${SushiiEmoji.BlueDot}Multiple latest cases: \`latest~3\` - Updates the latest 3 cases\n\n\
-              Note that if you are updating multiple cases, you can only update up to 25 cases at a time.\n\
-              If you're only updating 1 case, it may be easier to use the button in your mod log to set reasons.`
+${SushiiEmoji.BlueDot}A single case: \`120\` - Updates case 120\n\
+${SushiiEmoji.BlueDot}A range of cases: \`120-130\` - Updates all cases including and between 120 to 130\n\
+${SushiiEmoji.BlueDot}The latest case: \`latest\` - Updates the latest case\n\
+${SushiiEmoji.BlueDot}Multiple latest cases: \`latest~3\` - Updates the latest 3 cases\n\n\
+Note that if you are updating multiple cases, you can only update up to 25 cases at a time.\n\
+If you're only updating 1 case, it may be easier to use the button in your mod log to set reasons.`
             )
             .setColor(Color.Error)
             .toJSON(),
@@ -295,9 +295,9 @@ export default class ReasonCommand extends SlashCommandHandler {
 
     if (errStrs.length > 0) {
       let errMessage = `I updated the reason in the users' histories, but some \
-        cases may not have been updated in the mod log channel. This could be due \
-        to the mod log channel being changed, or I don't have permission to view \
-        the mod log channel (<#${guildConfigById.logMod}>).`;
+cases may not have been updated in the mod log channel. This could be due \
+to the mod log channel being changed, or I don't have permission to view \
+the mod log channel (<#${guildConfigById.logMod}>).`;
       errMessage += "\n";
       errMessage += `${errStrs.join("\n")}`;
 

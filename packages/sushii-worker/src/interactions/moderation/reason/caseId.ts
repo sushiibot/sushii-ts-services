@@ -53,7 +53,7 @@ export function parseCaseId(
 
     let startId = parseInt(start, 10);
 
-    // If either value is NaN
+    // If start is NaN, invalid range
     if (Number.isNaN(startId)) {
       return;
     }
