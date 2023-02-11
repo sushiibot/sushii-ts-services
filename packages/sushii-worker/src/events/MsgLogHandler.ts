@@ -157,7 +157,40 @@ function buildBulkDeleteEmbed(
   // No new-line at the end of this since it's joined in buildChunks
   const description = `${SushiiEmoji.MessageDelete} **${deleteCount} messages deleted in <#${event.channel_id}>**`;
 
-  const messagesStrs = messages.map((m) => `<@${m.authorId}>: ${m.content}`);
+  const messagesStrs = messages.map((m) => {
+    if (m.content) {
+      return `<@${m.authorId}>: ${m.content}`;
+    }
+
+    const msg = m.msg as APIMessage;
+
+    if (msg.sticker_items && msg.sticker_items.length > 0) {
+      const sticker = msg.sticker_items[0];
+      const stickerURL = ctx.CDN.cdn.sticker(sticker.id);
+
+      // Can have both message and sticker
+      if (msg.content) {
+        return `<@${m.authorId}>: ${msg.content}\n> **Sticker:** [${sticker.name}](${stickerURL})`;
+      }
+
+      return `<@${m.authorId}>: [${sticker.name}](${stickerURL})`;
+    }
+
+    if (msg.attachments && msg.attachments.length > 0) {
+      const attachments = msg.attachments
+        .map((a) => `> [${a.filename}](${a.url})`)
+        .join("\n");
+
+      if (msg.content) {
+        return `<@${m.authorId}>: ${msg.content}\n> **Attachments:**\n${attachments}`;
+      }
+
+      // Multiple attachments
+      return `<@${m.authorId}>: **Attachments:**\n${attachments}`;
+    }
+
+    return `<@${m.authorId}>: ${m.content}`;
+  });
 
   // Split into chunks of 4096 characters
   const embedChunks = buildChunks([description, ...messagesStrs], "\n", 4096);

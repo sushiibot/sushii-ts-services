@@ -298,7 +298,7 @@ If you're only updating 1 case, it may be easier to use the button in your mod l
 cases may not have been updated in the mod log channel. This could be due \
 to the mod log channel being changed, or I don't have permission to view \
 the mod log channel (<#${guildConfigById.logMod}>).`;
-      errMessage += "\n";
+      errMessage += "\n\n";
       errMessage += `${errStrs.join("\n")}`;
 
       responseEmbed.addFields({
