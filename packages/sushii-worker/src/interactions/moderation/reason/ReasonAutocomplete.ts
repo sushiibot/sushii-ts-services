@@ -11,6 +11,16 @@ import { AutocompleteHandler } from "../../handlers";
 import { AutocompleteOption } from "../../handlers/AutocompleteHandler";
 import { parseCaseId } from "./caseId";
 
+const MAX_CHOICE_NAME_LEN = 100;
+
+function truncateWithEllipsis(str: string, len: number): string {
+  if (str.length <= len) {
+    return str;
+  }
+
+  return `${str.slice(0, len - 3)}...`;
+}
+
 export default class ReasonAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = ["reason"];
 
@@ -107,9 +117,12 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
           const latestCount = latestCaseId - parseInt(s.caseId, 10) + 1;
 
           return {
-            name: `latest~${latestCount} - ${s.action} ${s.userTag} - ${
-              s.reason || "No reason set"
-            }`,
+            name: truncateWithEllipsis(
+              `latest~${latestCount} - ${s.action} ${s.userTag} - ${
+                s.reason || "No reason set"
+              }`,
+              MAX_CHOICE_NAME_LEN
+            ),
             value: `latest~${latestCount}`,
           };
         });
@@ -146,9 +159,12 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
         }
 
         choices = endCases.slice(0, 25).map((s) => ({
-          name: `${caseSpec.startId}-${s.caseId} - ${s.action} ${s.userTag} - ${
-            s.reason || "No reason set"
-          }`,
+          name: truncateWithEllipsis(
+            `${caseSpec.startId}-${s.caseId} - ${s.action} ${s.userTag} - ${
+              s.reason || "No reason set"
+            }`,
+            MAX_CHOICE_NAME_LEN
+          ),
           value: `${caseSpec.startId}-${s.caseId}`,
         }));
         break;
@@ -177,9 +193,11 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
   private formatCaseName(
     modLog: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">
   ): string {
-    return `#${modLog.caseId} - ${modLog.action} ${modLog.userTag} - ${
+    const s = `#${modLog.caseId} - ${modLog.action} ${modLog.userTag} - ${
       modLog.reason || "No reason set"
     }`;
+
+    return truncateWithEllipsis(s, MAX_CHOICE_NAME_LEN);
   }
 
   private formatCases(
