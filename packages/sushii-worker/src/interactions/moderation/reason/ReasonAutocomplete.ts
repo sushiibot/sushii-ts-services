@@ -5,6 +5,7 @@ import {
   InteractionResponseType,
 } from "discord-api-types/v10";
 import { ModLog } from "../../../generated/generic";
+import logger from "../../../logger";
 import Context from "../../../model/context";
 import { AutocompleteHandler } from "../../handlers";
 import { AutocompleteOption } from "../../handlers/AutocompleteHandler";
@@ -28,6 +29,14 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
       const { allModLogs } = await ctx.sushiiAPI.sdk.getRecentModLogs({
         guildId: interaction.guild_id,
       });
+
+      logger.debug(
+        {
+          guildId: interaction.guild_id,
+          recentCount: allModLogs?.nodes.length || 0,
+        },
+        "empty case autocomplete"
+      );
 
       const choices = this.formatCases(allModLogs?.nodes || []);
 
@@ -76,6 +85,14 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
         });
 
         if (!nextCaseId) {
+          logger.warn(
+            {
+              guildId: interaction.guild_id,
+              value: option.value,
+            },
+            "No next case ID found for reason latest autocomplete"
+          );
+
           return;
         }
 

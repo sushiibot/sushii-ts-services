@@ -417,7 +417,7 @@ export default class Client {
         path: focusedOption.path,
         option: focusedOption.option,
         guildId: interaction.guild_id,
-        userId: interaction.user?.id,
+        userId: interaction.member?.user.id || interaction.user?.id,
       },
       "received autocomplete"
     );
