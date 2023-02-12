@@ -36,6 +36,7 @@ import ModLogCommand from "./settings/ModLogChannel";
 import ReasonCommand from "./moderation/reason/ReasonCommand";
 import ReasonAutocomplete from "./moderation/reason/ReasonAutocomplete";
 import UnTimeoutCommand from "./moderation/UnTimeoutCommand";
+import UncaseCommand from "./moderation/reason/UncaseCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -61,6 +62,7 @@ export default function addCommands(
     new NoteCommand(),
     new HistoryCommand(),
     new ReasonCommand(),
+    new UncaseCommand(),
     new PruneCommand(),
     new SlowmodeCommand(),
 
