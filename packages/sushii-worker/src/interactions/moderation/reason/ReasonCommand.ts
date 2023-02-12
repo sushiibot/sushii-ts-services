@@ -3,13 +3,13 @@ import {
   APIChatInputApplicationCommandGuildInteraction,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
-import SushiiEmoji from "../../../constants/SushiiEmoji";
 import Context from "../../../model/context";
 import Color from "../../../utils/colors";
 import { SlashCommandHandler } from "../../handlers";
 import CommandInteractionOptionResolver from "../../resolver";
 import { interactionReplyErrorPlainMessage } from "../../responses/error";
-import { caseSpecCount, parseCaseId } from "./caseId";
+import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
+import { invalidCaseRangeEmbed } from "./Messages";
 
 enum ReasonError {
   UserFetch,
@@ -22,13 +22,13 @@ export default class ReasonCommand extends SlashCommandHandler {
 
   command = new SlashCommandBuilder()
     .setName("reason")
-    .setDescription("Set the reason for a mod case.")
+    .setDescription("Set the reason for mod cases.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
     .setDMPermission(false)
     .addStringOption((o) =>
       o
         .setName("case")
-        .setDescription("Case number you want to set the reason for.")
+        .setDescription("Case numbers you want to set the reason for.")
         .setAutocomplete(true)
         .setRequired(true)
     )
@@ -50,8 +50,8 @@ export default class ReasonCommand extends SlashCommandHandler {
       interaction.data.resolved
     );
 
-    const caseRange = options.getString("case");
-    if (!caseRange) {
+    const caseRangeStr = options.getString("case");
+    if (!caseRangeStr) {
       throw new Error("no case number provided");
     }
 
@@ -73,24 +73,10 @@ export default class ReasonCommand extends SlashCommandHandler {
       return;
     }
 
-    const caseSpec = parseCaseId(caseRange);
+    const caseSpec = parseCaseId(caseRangeStr);
     if (!caseSpec) {
       await ctx.REST.interactionReply(interaction, {
-        embeds: [
-          new EmbedBuilder()
-            .setTitle("Invalid case range")
-            .setDescription(
-              `The cases you provided was invalid. Here are some examples to update cases:\n\n\
-${SushiiEmoji.BlueDot}A single case: \`120\` - Updates case 120\n\
-${SushiiEmoji.BlueDot}A range of cases: \`120-130\` - Updates all cases including and between 120 to 130\n\
-${SushiiEmoji.BlueDot}The latest case: \`latest\` - Updates the latest case\n\
-${SushiiEmoji.BlueDot}Multiple latest cases: \`latest~3\` - Updates the latest 3 cases\n\n\
-Note that if you are updating multiple cases, you can only update up to 25 cases at a time.\n\
-If you're only updating 1 case, it may be easier to use the button in your mod log to set reasons.`
-            )
-            .setColor(Color.Error)
-            .toJSON(),
-        ],
+        embeds: [invalidCaseRangeEmbed],
       });
 
       return;
@@ -107,57 +93,16 @@ If you're only updating 1 case, it may be easier to use the button in your mod l
       return;
     }
 
-    // Always a range even if it's single or latest
-    // Range is INCLUSIVE of both start and end
-    let caseStartId;
-    let caseEndId;
+    const caseRange = await getCaseRange(ctx, interaction.guild_id, caseSpec);
+    if (!caseRange) {
+      await ctx.REST.interactionReply(interaction, {
+        embeds: [invalidCaseRangeEmbed],
+      });
 
-    // TODO: Bulk update mod log
-    switch (caseSpec.type) {
-      case "single": {
-        const { modLogByGuildIdAndCaseId } = await ctx.sushiiAPI.sdk.getModLog({
-          guildId: interaction.guild_id,
-          caseId: caseSpec.id.toString(),
-        });
-
-        // Early pre-check for single case updates
-        if (!modLogByGuildIdAndCaseId) {
-          await interactionReplyErrorPlainMessage(
-            ctx,
-            interaction,
-            `Case \`#${caseSpec.id}\` not found. Make sure you have the correct case number.`
-          );
-
-          return;
-        }
-
-        caseStartId = caseSpec.id;
-        caseEndId = caseSpec.id;
-        break;
-      }
-      case "range": {
-        caseStartId = caseSpec.startId;
-        caseEndId = caseSpec.endId;
-        break;
-      }
-      case "latest": {
-        const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
-          guildId: interaction.guild_id,
-        });
-
-        if (!nextCaseId) {
-          throw new Error("nextCaseId not found");
-        }
-
-        const latestCaseId = parseInt(nextCaseId, 10) - 1;
-        caseStartId = latestCaseId - caseSpec.count + 1;
-        caseEndId = latestCaseId;
-      }
+      return;
     }
 
-    if (!caseStartId || !caseEndId) {
-      throw new Error("caseStartId or caseEndId should be defined");
-    }
+    const [caseStartId, caseEndId] = caseRange;
 
     // -------------------------------------------------------------------------
     // Update mod log in DB

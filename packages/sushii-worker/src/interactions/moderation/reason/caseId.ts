@@ -1,3 +1,5 @@
+import Context from "../../../model/context";
+
 type CaseRange = {
   type: "range";
   startId: number;
@@ -116,5 +118,51 @@ export function parseCaseId(
       type: "latest",
       count,
     };
+  }
+}
+
+export async function getCaseRange(
+  ctx: Context,
+  guildId: string,
+  caseSpec: CaseSpec,
+  validate: boolean = true
+): Promise<[number, number] | undefined> {
+  switch (caseSpec.type) {
+    case "single": {
+      if (validate) {
+        const { modLogByGuildIdAndCaseId } = await ctx.sushiiAPI.sdk.getModLog({
+          guildId,
+          caseId: caseSpec.id.toString(),
+        });
+
+        // Early pre-check for single case updates
+        if (!modLogByGuildIdAndCaseId) {
+          return;
+        }
+      }
+
+      return [caseSpec.id, caseSpec.id];
+    }
+    case "range": {
+      if (!caseSpec.endId) {
+        return;
+      }
+
+      return [caseSpec.startId, caseSpec.endId];
+    }
+    case "latest": {
+      const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
+        guildId,
+      });
+
+      if (!nextCaseId) {
+        throw new Error("nextCaseId not found");
+      }
+
+      const latestCaseId = parseInt(nextCaseId, 10) - 1;
+      const caseStartId = latestCaseId - caseSpec.count + 1;
+
+      return [caseStartId, latestCaseId];
+    }
   }
 }

@@ -1,0 +1,17 @@
+mutation bulkDeleteModLog(
+  $guildId: BigInt!
+  $startCaseId: BigInt!
+  $endCaseId: BigInt!
+) {
+  bulkDeleteModLog(
+    input: {
+      guildId: $guildId
+      startCaseId: $startCaseId
+      endCaseId: $endCaseId
+    }
+  ) {
+    modLogs {
+      ...ModLogData
+    }
+  }
+}

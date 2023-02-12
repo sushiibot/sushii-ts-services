@@ -463,6 +463,31 @@ export enum BotStatsOrderBy {
   UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
 
+/** All input for the `bulkDeleteModLog` mutation. */
+export type BulkDeleteModLogInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  endCaseId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+  startCaseId: Scalars['BigInt'];
+};
+
+/** The output of our `bulkDeleteModLog` mutation. */
+export type BulkDeleteModLogPayload = {
+  __typename?: 'BulkDeleteModLogPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  modLogs?: Maybe<Array<ModLog>>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
 /** All input for the `bulkUpdateModLogReason` mutation. */
 export type BulkUpdateModLogReasonInput = {
   /**
@@ -7471,6 +7496,7 @@ export enum MsgLogBlocksOrderBy {
 export type Mutation = {
   __typename?: 'Mutation';
   addRoleMenuRoles?: Maybe<AddRoleMenuRolesPayload>;
+  bulkDeleteModLog?: Maybe<BulkDeleteModLogPayload>;
   bulkUpdateModLogReason?: Maybe<BulkUpdateModLogReasonPayload>;
   /** Creates a single `BotStat`. */
   createBotStat?: Maybe<CreateBotStatPayload>;
@@ -7800,6 +7826,12 @@ export type Mutation = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationAddRoleMenuRolesArgs = {
   input: AddRoleMenuRolesInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationBulkDeleteModLogArgs = {
+  input: BulkDeleteModLogInput;
 };
 
 
@@ -16189,6 +16221,8 @@ export type ResolversTypes = {
   BotStatsHavingVariancePopulationInput: BotStatsHavingVariancePopulationInput;
   BotStatsHavingVarianceSampleInput: BotStatsHavingVarianceSampleInput;
   BotStatsOrderBy: BotStatsOrderBy;
+  BulkDeleteModLogInput: BulkDeleteModLogInput;
+  BulkDeleteModLogPayload: ResolverTypeWrapper<BulkDeleteModLogPayload>;
   BulkUpdateModLogReasonInput: BulkUpdateModLogReasonInput;
   BulkUpdateModLogReasonPayload: ResolverTypeWrapper<BulkUpdateModLogReasonPayload>;
   CachedGuild: ResolverTypeWrapper<CachedGuild>;
@@ -17215,6 +17249,8 @@ export type ResolversParentTypes = {
   BotStatsHavingSumInput: BotStatsHavingSumInput;
   BotStatsHavingVariancePopulationInput: BotStatsHavingVariancePopulationInput;
   BotStatsHavingVarianceSampleInput: BotStatsHavingVarianceSampleInput;
+  BulkDeleteModLogInput: BulkDeleteModLogInput;
+  BulkDeleteModLogPayload: BulkDeleteModLogPayload;
   BulkUpdateModLogReasonInput: BulkUpdateModLogReasonInput;
   BulkUpdateModLogReasonPayload: BulkUpdateModLogReasonPayload;
   CachedGuild: CachedGuild;
@@ -18253,6 +18289,13 @@ export type BotStatsConnectionResolvers<ContextType = any, ParentType extends Re
 export type BotStatsEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['BotStatsEdge'] = ResolversParentTypes['BotStatsEdge']> = {
   cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
   node?: Resolver<ResolversTypes['BotStat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BulkDeleteModLogPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['BulkDeleteModLogPayload'] = ResolversParentTypes['BulkDeleteModLogPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  modLogs?: Resolver<Maybe<Array<ResolversTypes['ModLog']>>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -20138,6 +20181,7 @@ export type MsgLogBlocksEdgeResolvers<ContextType = any, ParentType extends Reso
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addRoleMenuRoles?: Resolver<Maybe<ResolversTypes['AddRoleMenuRolesPayload']>, ParentType, ContextType, RequireFields<MutationAddRoleMenuRolesArgs, 'input'>>;
+  bulkDeleteModLog?: Resolver<Maybe<ResolversTypes['BulkDeleteModLogPayload']>, ParentType, ContextType, RequireFields<MutationBulkDeleteModLogArgs, 'input'>>;
   bulkUpdateModLogReason?: Resolver<Maybe<ResolversTypes['BulkUpdateModLogReasonPayload']>, ParentType, ContextType, RequireFields<MutationBulkUpdateModLogReasonArgs, 'input'>>;
   createBotStat?: Resolver<Maybe<ResolversTypes['CreateBotStatPayload']>, ParentType, ContextType, RequireFields<MutationCreateBotStatArgs, 'input'>>;
   createCachedGuild?: Resolver<Maybe<ResolversTypes['CreateCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationCreateCachedGuildArgs, 'input'>>;
@@ -22177,6 +22221,7 @@ export type Resolvers<ContextType = any> = {
   BotStatVarianceSampleAggregates?: BotStatVarianceSampleAggregatesResolvers<ContextType>;
   BotStatsConnection?: BotStatsConnectionResolvers<ContextType>;
   BotStatsEdge?: BotStatsEdgeResolvers<ContextType>;
+  BulkDeleteModLogPayload?: BulkDeleteModLogPayloadResolvers<ContextType>;
   BulkUpdateModLogReasonPayload?: BulkUpdateModLogReasonPayloadResolvers<ContextType>;
   CachedGuild?: CachedGuildResolvers<ContextType>;
   CachedGuildsEdge?: CachedGuildsEdgeResolvers<ContextType>;
@@ -22713,6 +22758,15 @@ export type UpsertLevelRoleMutationVariables = Exact<{
 
 
 export type UpsertLevelRoleMutation = { __typename?: 'Mutation', upsertLevelRole?: { __typename?: 'UpsertLevelRolePayload', levelRole?: { __typename?: 'LevelRole', guildId: string, roleId: string, addLevel?: string | null, removeLevel?: string | null } | null } | null };
+
+export type BulkDeleteModLogMutationVariables = Exact<{
+  guildId: Scalars['BigInt'];
+  startCaseId: Scalars['BigInt'];
+  endCaseId: Scalars['BigInt'];
+}>;
+
+
+export type BulkDeleteModLogMutation = { __typename?: 'Mutation', bulkDeleteModLog?: { __typename?: 'BulkDeleteModLogPayload', modLogs?: Array<{ __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string }> | null } | null };
 
 export type BulkUpdateModLogReasonMutationVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -23468,6 +23522,17 @@ export const UpsertLevelRoleDocument = gql`
   }
 }
     ${LevelRoleDataFragmentDoc}`;
+export const BulkDeleteModLogDocument = gql`
+    mutation bulkDeleteModLog($guildId: BigInt!, $startCaseId: BigInt!, $endCaseId: BigInt!) {
+  bulkDeleteModLog(
+    input: {guildId: $guildId, startCaseId: $startCaseId, endCaseId: $endCaseId}
+  ) {
+    modLogs {
+      ...ModLogData
+    }
+  }
+}
+    ${ModLogDataFragmentDoc}`;
 export const BulkUpdateModLogReasonDocument = gql`
     mutation bulkUpdateModLogReason($guildId: BigInt!, $startCaseId: BigInt!, $endCaseId: BigInt!, $executorId: BigInt!, $reason: String!) {
   bulkUpdateModLogReason(
@@ -24031,6 +24096,9 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
     },
     upsertLevelRole(variables: UpsertLevelRoleMutationVariables, options?: C): Promise<UpsertLevelRoleMutation> {
       return requester<UpsertLevelRoleMutation, UpsertLevelRoleMutationVariables>(UpsertLevelRoleDocument, variables, options) as Promise<UpsertLevelRoleMutation>;
+    },
+    bulkDeleteModLog(variables: BulkDeleteModLogMutationVariables, options?: C): Promise<BulkDeleteModLogMutation> {
+      return requester<BulkDeleteModLogMutation, BulkDeleteModLogMutationVariables>(BulkDeleteModLogDocument, variables, options) as Promise<BulkDeleteModLogMutation>;
     },
     bulkUpdateModLogReason(variables: BulkUpdateModLogReasonMutationVariables, options?: C): Promise<BulkUpdateModLogReasonMutation> {
       return requester<BulkUpdateModLogReasonMutation, BulkUpdateModLogReasonMutationVariables>(BulkUpdateModLogReasonDocument, variables, options) as Promise<BulkUpdateModLogReasonMutation>;

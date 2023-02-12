@@ -559,6 +559,33 @@ enum BotStatsOrderBy {
   UPDATED_AT_DESC
 }
 
+"""All input for the `bulkDeleteModLog` mutation."""
+input BulkDeleteModLogInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  endCaseId: BigInt!
+  guildId: BigInt!
+  startCaseId: BigInt!
+}
+
+"""The output of our `bulkDeleteModLog` mutation."""
+type BulkDeleteModLogPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  modLogs: [ModLog!]
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the `bulkUpdateModLogReason` mutation."""
 input BulkUpdateModLogReasonInput {
   """
@@ -8947,6 +8974,12 @@ type Mutation {
     """
     input: AddRoleMenuRolesInput!
   ): AddRoleMenuRolesPayload
+  bulkDeleteModLog(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: BulkDeleteModLogInput!
+  ): BulkDeleteModLogPayload
   bulkUpdateModLogReason(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
