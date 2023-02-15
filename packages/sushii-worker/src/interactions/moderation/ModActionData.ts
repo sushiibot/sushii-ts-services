@@ -13,7 +13,7 @@ import getInvokerUser from "../../utils/interactions";
 import parseDuration from "../../utils/parseDuration";
 import CommandInteractionOptionResolver from "../resolver";
 import { ActionType } from "./ActionType";
-import { ModerationOption } from "./options";
+import { DMReasonChoiceValue, ModerationOption } from "./options";
 
 const ID_REGEX = /\d{17,20}/g;
 
@@ -46,8 +46,6 @@ export default class ModActionData {
 
   private DMReason?: boolean;
 
-  public dmMessage?: string;
-
   constructor(interaction: APIChatInputApplicationCommandGuildInteraction) {
     this.options = new CommandInteractionOptionResolver(
       interaction.data.options,
@@ -74,9 +72,10 @@ export default class ModActionData {
       this.timeoutDuration = parseDuration(durationStr) || undefined;
     }
 
-    this.DMReason = this.options.getBoolean(ModerationOption.DMReason);
-
-    this.dmMessage = this.options.getString(ModerationOption.DMMessage);
+    // TODO: Configurable options for DM reason defaults
+    // Current default is No DM reason
+    const dmReasonString = this.options.getString(ModerationOption.DMReason);
+    this.DMReason = dmReasonString === DMReasonChoiceValue.Yes;
   }
 
   /**
@@ -86,11 +85,16 @@ export default class ModActionData {
    * @returns
    */
   shouldDM(actionType: ActionType): boolean {
-    return this.shouldDMReason(actionType) || !!this.dmMessage;
+    return this.shouldDMReason(actionType);
   }
 
   shouldDMReason(actionType: ActionType): boolean {
-    // Unban never sends DM
+    // Don't DM if no reason provided
+    if (!this.reason) {
+      return false;
+    }
+
+    // Unban never sends DM - user can never receive it
     if (actionType === ActionType.BanRemove) {
       return false;
     }
@@ -100,34 +104,13 @@ export default class ModActionData {
       return true;
     }
 
-    // Don't DM if no reason provided
-    if (!this.reason) {
-      return false;
+    // Timeout DMs by default (DMReason undefined), but follows DMReason if provided
+    if (actionType === ActionType.Timeout && this.DMReason === undefined) {
+      return true;
     }
 
     // If not provided, default to no dm.
     return this.DMReason || false;
-  }
-
-  getDmMessage(): string | undefined {
-    // Only DM reason if dm_reason True
-    if (this.DMReason) {
-      return this.reason;
-    }
-
-    // Return DM message if provided
-    return this.dmMessage;
-  }
-
-  dmMessageType(): "reason" | "message" | undefined {
-    // DM message has priority even if dm_reason is true
-    if (this.dmMessage) {
-      return "message";
-    }
-
-    if (this.DMReason) {
-      return "reason";
-    }
   }
 
   async fetchTargets(

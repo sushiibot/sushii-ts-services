@@ -14,7 +14,6 @@ export async function buildDMEmbed(
   action: ActionType,
   shouldDMReason: boolean,
   reason: string | undefined,
-  dmMessage: string | undefined,
   timeoutEnd: dayjs.Dayjs | undefined
 ): Promise<EmbedBuilder> {
   const { redisGuildByGuildId } = await ctx.sushiiAPI.sdk.getRedisGuild({
@@ -32,13 +31,6 @@ export async function buildDMEmbed(
     fields.push({
       name: "Reason",
       value: reason,
-    });
-  }
-
-  if (dmMessage) {
-    fields.push({
-      name: "Message",
-      value: dmMessage,
     });
   }
 
@@ -80,7 +72,6 @@ export default async function sendModActionDM(
     action,
     data.shouldDMReason(action),
     data.reason,
-    data.dmMessage,
     data.communicationDisabledUntil().unwrapOr(undefined)
   );
 

@@ -113,19 +113,22 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
         //                          latestCaseId - selectedCaseId + 1
         // latest~1 = latest case - 100          - 100            + 1 = 1
         // latest~2 = latest 2    - 100          - 99             + 1 = 2
-        choices = cases.map((s) => {
-          const latestCount = latestCaseId - parseInt(s.caseId, 10) + 1;
+        choices = cases
+          // Must be within latest 25 cases
+          .filter((c) => parseInt(c.caseId, 10) > latestCaseId - 25)
+          .map((s) => {
+            const latestCount = latestCaseId - parseInt(s.caseId, 10) + 1;
 
-          return {
-            name: truncateWithEllipsis(
-              `latest~${latestCount} - ${s.action} ${s.userTag} - ${
-                s.reason || "No reason set"
-              }`,
-              MAX_CHOICE_NAME_LEN
-            ),
-            value: `latest~${latestCount}`,
-          };
-        });
+            return {
+              name: truncateWithEllipsis(
+                `latest~${latestCount} - ${s.action} ${s.userTag} - ${
+                  s.reason || "No reason set"
+                }`,
+                MAX_CHOICE_NAME_LEN
+              ),
+              value: `latest~${latestCount}`,
+            };
+          });
 
         break;
       }

@@ -295,7 +295,6 @@ export default class ModLogHandler extends EventHandler {
         actionType,
         true, // should dm reason
         reason, // reason
-        undefined, // dm message
         timeoutChange.new || undefined
       );
 

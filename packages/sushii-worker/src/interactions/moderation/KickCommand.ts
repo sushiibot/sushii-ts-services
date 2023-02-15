@@ -14,12 +14,7 @@ import {
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
-import {
-  dmMessageOption,
-  reasonOption,
-  sendDMOption,
-  usersOption,
-} from "./options";
+import { reasonOption, sendDMReasonOption, usersOption } from "./options";
 
 export default class KickCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -34,8 +29,7 @@ export default class KickCommand extends SlashCommandHandler {
     .addStringOption(usersOption(ActionType.Kick))
     .addStringOption(reasonOption(ActionType.Kick))
     // .addAttachmentOption(attachmentOption)
-    .addBooleanOption(sendDMOption)
-    .addStringOption(dmMessageOption)
+    .addStringOption(sendDMReasonOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

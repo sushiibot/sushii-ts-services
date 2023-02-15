@@ -62,22 +62,9 @@ function buildResponseEmbed(
   if (![ActionType.BanRemove, ActionType.Note].includes(action)) {
     let userDMValue;
 
-    if (data.shouldDMReason(action) || data.dmMessage) {
-      userDMValue = "📬 Members were sent a DM with the following.";
-
-      // Has both reason + message
-      if (data.shouldDMReason(action) && data.dmMessage) {
-        userDMValue += `\n ┣ **Reason:** ${data.reason}`;
-      }
-
-      // Has reason + NO message
-      if (data.shouldDMReason(action) && !data.dmMessage) {
-        userDMValue += `\n ┗ **Reason:** ${data.reason}`;
-      }
-
-      if (data.dmMessage) {
-        userDMValue += `\n┗ **Message:** ${data.dmMessage}`;
-      }
+    if (data.shouldDMReason(action)) {
+      userDMValue = "📬 Members were sent a DM";
+      userDMValue += `\n ┗ **Reason:** ${data.reason}`;
     }
 
     if (triedDMNonMember) {

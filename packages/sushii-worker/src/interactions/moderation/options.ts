@@ -1,6 +1,5 @@
 import {
   SlashCommandAttachmentOption,
-  SlashCommandBooleanOption,
   SlashCommandIntegerOption,
   SlashCommandStringOption,
 } from "@discordjs/builders";
@@ -11,10 +10,14 @@ export enum ModerationOption {
   Reason = "reason",
   Attachment = "attachment",
   DMReason = "dm_reason",
-  DMMessage = "dm_message",
   DaysToDelete = "days_to_delete",
   Duration = "duration",
   Note = "note",
+}
+
+export enum DMReasonChoiceValue {
+  Yes = "yes_dm",
+  No = "no_dm",
 }
 
 export const usersOption = (action: ActionType): SlashCommandStringOption =>
@@ -25,9 +28,19 @@ export const usersOption = (action: ActionType): SlashCommandStringOption =>
     )
     .setRequired(true);
 
-export const sendDMOption = new SlashCommandBooleanOption()
+export const sendDMReasonOption = new SlashCommandStringOption()
   .setName(ModerationOption.DMReason)
-  .setDescription("Set to True if you want to DM the reason to the user.")
+  .setDescription("Do you want to DM the user the reason?")
+  .setChoices(
+    {
+      name: "Yes: DM the user the reason",
+      value: DMReasonChoiceValue.Yes,
+    },
+    {
+      name: "No: Do not DM the user the reason",
+      value: DMReasonChoiceValue.No,
+    }
+  )
   .setRequired(false);
 
 export const reasonOption = (
@@ -44,13 +57,6 @@ export const reasonOption = (
 export const attachmentOption = new SlashCommandAttachmentOption()
   .setName(ModerationOption.Attachment)
   .setDescription("Additional media to attach to the case.")
-  .setRequired(false);
-
-export const dmMessageOption = new SlashCommandStringOption()
-  .setName(ModerationOption.DMMessage)
-  .setDescription(
-    "A message to DM to the user, if you want to send a message different from the reason."
-  )
   .setRequired(false);
 
 export const daysToDeleteOption = new SlashCommandIntegerOption()

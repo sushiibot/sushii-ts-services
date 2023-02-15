@@ -12,12 +12,7 @@ import {
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
-import {
-  dmMessageOption,
-  reasonOption,
-  sendDMOption,
-  usersOption,
-} from "./options";
+import { reasonOption, sendDMReasonOption, usersOption } from "./options";
 
 export default class UnTimeoutCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -31,8 +26,7 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
     .setDMPermission(false)
     .addStringOption(usersOption(ActionType.TimeoutRemove))
     .addStringOption(reasonOption(ActionType.TimeoutRemove))
-    .addBooleanOption(sendDMOption)
-    .addStringOption(dmMessageOption)
+    .addStringOption(sendDMReasonOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
