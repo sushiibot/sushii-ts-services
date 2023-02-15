@@ -33,6 +33,14 @@ export function getTimeoutChangeData(
 
   const now = dayjs.utc();
 
+  // Check if old_value is in the past. Timeout timestamps persist in the
+  // member object even after the timeout has expired. If the old_value is
+  // in the past, it's a new timeout.
+  // Reset old_value to reflect accurate change
+  if (dayjs(timeoutChange.old_value).isBefore(now)) {
+    timeoutChange.old_value = undefined;
+  }
+
   // New Timeout - null -> timeout
   // "changes": [
   //   {
@@ -72,21 +80,11 @@ export function getTimeoutChangeData(
     timeoutChange.new_value &&
     timeoutChange.old_value !== timeoutChange.new_value
   ) {
-    // Check if old_value is in the past. Timeout timestamps persist in the
-    // member object even after the timeout has expired. If the old_value is
-    // in the past, it's a new timeout.
+    // Old is not in the past, it's an adjustment. old_value is checked
+    // earlier in the function to ensure this is a new timeout adjustment.
     const old = dayjs.utc(timeoutChange.old_value);
     const newDate = dayjs(timeoutChange.new_value);
     const duration = dayjs.duration(newDate.diff(old));
-
-    if (old.isBefore(now)) {
-      return {
-        actionType: ActionType.Timeout,
-        old: undefined,
-        new: newDate,
-        duration,
-      };
-    }
 
     return {
       actionType: ActionType.TimeoutAdjust,
