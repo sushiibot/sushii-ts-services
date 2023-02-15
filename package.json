@@ -6,9 +6,15 @@
     "packages/*"
   ],
   "scripts": {
-    "test:worker": "yarn workspace @sushiibot/sushii-worker test"
+    "test:worker": "yarn workspace @sushiibot/sushii-worker test",
+    "dev:data": "yarn workspace @sushiibot/sushii-data dev",
+    "dev:worker": "yarn workspace @sushiibot/sushii-worker dev",
+    "dev": "concurrently -c auto --kill-others \"yarn dev:data\" \"yarn dev:worker\""
   },
   "resolutions": {
     "form-data": "4.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
   }
 }
