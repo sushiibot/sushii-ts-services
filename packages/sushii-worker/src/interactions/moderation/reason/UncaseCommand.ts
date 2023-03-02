@@ -148,11 +148,15 @@ export default class UncaseCommand extends SlashCommandHandler {
       await ctx.REST.deleteChannelMessage(guildConfigById.logMod, modLog.msgId);
     }
 
+    const desc = bulkDeleteModLog.modLogs
+      .map((m) => `#${m.caseId} - ${m.action} <@${m.userId}>`)
+      .join("\n");
+
     await ctx.REST.interactionEditOriginal(interaction, {
       embeds: [
         new EmbedBuilder()
           .setTitle(`Deleted ${affectedCaseCount} cases`)
-          .setDescription("")
+          .setDescription(desc)
           .setColor(Color.Success)
           .toJSON(),
       ],
