@@ -184,7 +184,8 @@ async function execActionUser(
           return Err({
             target,
             message:
-              "I don't have permission to timeout, please give me the `Timeout Members` permission.",
+              "I don't have permission to timeout this user, make sure I have the \
+`Timeout Members` permission or that my role is above the user you are trying to time out.",
           });
         }
 
