@@ -975,7 +975,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const roleMenu = await this.getMenu(ctx, interaction, menuName);
     if (roleMenu.none) {
       await ctx.REST.interactionReply(interaction, {
-        content: t("rolemenu.edit.menu_not_found"),
+        content: t("rolemenu.edit.error.menu_not_found"),
       });
 
       return;
@@ -1125,7 +1125,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const roleMenu = await this.getMenu(ctx, interaction, name);
     if (roleMenu.none) {
       await ctx.REST.interactionReply(interaction, {
-        content: t("rolemenu.edit.menu_not_found"),
+        content: t("rolemenu.edit.error.menu_not_found"),
       });
 
       return;
