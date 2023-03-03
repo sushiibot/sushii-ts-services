@@ -121,7 +121,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
 
             return {
               name: truncateWithEllipsis(
-                `latest~${latestCount} - ${s.action} ${s.userTag} - ${
+                `latest~${latestCount}: ${s.action} ${s.userTag} - ${
                   s.reason || "No reason set"
                 }`,
                 MAX_CHOICE_NAME_LEN
@@ -163,7 +163,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
 
         choices = endCases.slice(0, 25).map((s) => ({
           name: truncateWithEllipsis(
-            `${caseSpec.startId}-${s.caseId} - ${s.action} ${s.userTag} - ${
+            `${caseSpec.startId}-${s.caseId}: ${s.action} ${s.userTag} - ${
               s.reason || "No reason set"
             }`,
             MAX_CHOICE_NAME_LEN
@@ -196,7 +196,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
   private formatCaseName(
     modLog: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">
   ): string {
-    const s = `#${modLog.caseId} - ${modLog.action} ${modLog.userTag} - ${
+    const s = `${modLog.caseId}: ${modLog.action} ${modLog.userTag} - ${
       modLog.reason || "No reason set"
     }`;
 

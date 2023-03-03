@@ -39,12 +39,16 @@ export function caseSpecCount(cs: CaseSpec): number | undefined {
 }
 
 export function parseCaseId(
-  value: string,
+  rawValue: string,
   ignoreRangeOrder: boolean = false
 ): CaseSpec | undefined {
+  // Get the case range from the autocomplete value, otherwise it's just
+  // the current value
+  const value = rawValue.split(":")[0];
+
   // 10-15 range, must require both start and end
   const rangeSplit = value.split("-");
-  if (rangeSplit.length === 2) {
+  if (rangeSplit.length >= 2) {
     const [start, end] = rangeSplit;
 
     // If first value is empty, second one is fine to be empty.
