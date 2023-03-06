@@ -14,6 +14,7 @@ enum Paths {
   ModerationAction = "/moderation/action/:actionType/:targetId",
   LevelRoleApplyMemberRequest = "/l/:guildId",
   ModLogReason = "/modlog/reason/:caseId",
+  ReasonConfirmButton = "reason_confirm/:userId/:buttonId/:action",
 }
 
 type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
@@ -40,6 +41,12 @@ type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
   : T extends Paths.ModLogReason
   ? {
       caseId: string;
+    }
+  : T extends Paths.ReasonConfirmButton
+  ? {
+      userId: string;
+      buttonId: string;
+      action: "override" | "empty" | "cancel";
     }
   : never;
 
@@ -90,6 +97,7 @@ const customIds = {
     Paths.LevelRoleApplyMemberRequest
   ),
   modLogReason: createCustomID(Paths.ModLogReason),
+  reasonConfirmButton: createCustomID(Paths.ReasonConfirmButton),
 };
 
 export default customIds;

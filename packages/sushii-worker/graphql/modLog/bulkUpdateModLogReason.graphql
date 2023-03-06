@@ -4,6 +4,7 @@ mutation bulkUpdateModLogReason(
   $endCaseId: BigInt!
   $executorId: BigInt!
   $reason: String!
+  $onlyEmptyReason: Boolean!
 ) {
   bulkUpdateModLogReason(
     input: {
@@ -12,6 +13,7 @@ mutation bulkUpdateModLogReason(
       endCaseId: $endCaseId
       executorId: $executorId
       reason: $reason
+      onlyEmptyReason: $onlyEmptyReason
     }
   ) {
     modLogs {

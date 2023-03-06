@@ -11,6 +11,7 @@ import SushiiSDK from "./api";
 import Metrics from "./metrics";
 import AmqpGateway from "./AmqpGateway";
 import { getSdkWebsocket } from "./graphqlClient";
+import MemoryStore from "./MemoryStore";
 
 /*
 function clientMetricsWrapper(metrics: Metrics): SdkFunctionWrapper {
@@ -56,6 +57,8 @@ export default class Context {
 
   public readonly gateway: AmqpGateway;
 
+  public memoryStore: MemoryStore;
+
   private currentUser?: APIUser;
 
   private commands: APIApplicationCommand[];
@@ -79,6 +82,7 @@ export default class Context {
     this.sushiiImageServer = new SushiiImageServerClient(config);
     this.REST = new RESTClient(config);
     this.CDN = new CDNClient();
+    this.memoryStore = new MemoryStore();
     this.gateway = gateway;
 
     this.commands = [];

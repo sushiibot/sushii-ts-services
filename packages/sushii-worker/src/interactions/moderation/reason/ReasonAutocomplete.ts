@@ -22,7 +22,7 @@ function truncateWithEllipsis(str: string, len: number): string {
 }
 
 export default class ReasonAutocomplete extends AutocompleteHandler {
-  fullCommandNamePath = ["reason"];
+  fullCommandNamePath = ["reason", "uncase"];
 
   // eslint-disable-next-line class-methods-use-this
   async handler(

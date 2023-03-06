@@ -498,6 +498,7 @@ export type BulkUpdateModLogReasonInput = {
   endCaseId: Scalars['BigInt'];
   executorId: Scalars['BigInt'];
   guildId: Scalars['BigInt'];
+  onlyEmptyReason?: InputMaybe<Scalars['Boolean']>;
   reason: Scalars['String'];
   startCaseId: Scalars['BigInt'];
 };
@@ -845,6 +846,39 @@ export type CreateCachedUserPayload = {
 /** The output of our create `CachedUser` mutation. */
 export type CreateCachedUserPayloadCachedUserEdgeArgs = {
   orderBy?: InputMaybe<Array<CachedUsersOrderBy>>;
+};
+
+/** All input for the create `EmojiStickerStat` mutation. */
+export type CreateEmojiStickerStatInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `EmojiStickerStat` to be created by this mutation. */
+  emojiStickerStat: EmojiStickerStatInput;
+};
+
+/** The output of our create `EmojiStickerStat` mutation. */
+export type CreateEmojiStickerStatPayload = {
+  __typename?: 'CreateEmojiStickerStatPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `EmojiStickerStat` that was created by this mutation. */
+  emojiStickerStat?: Maybe<EmojiStickerStat>;
+  /** An edge for our `EmojiStickerStat`. May be used by Relay 1. */
+  emojiStickerStatEdge?: Maybe<EmojiStickerStatsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `EmojiStickerStat` mutation. */
+export type CreateEmojiStickerStatPayloadEmojiStickerStatEdgeArgs = {
+  orderBy?: InputMaybe<Array<EmojiStickerStatsOrderBy>>;
 };
 
 /** All input for the create `Feed` mutation. */
@@ -1795,6 +1829,53 @@ export type DeleteCachedUserPayload = {
 /** The output of our delete `CachedUser` mutation. */
 export type DeleteCachedUserPayloadCachedUserEdgeArgs = {
   orderBy?: InputMaybe<Array<CachedUsersOrderBy>>;
+};
+
+/** All input for the `deleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType` mutation. */
+export type DeleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput = {
+  actionType: EmojiStickerActionType;
+  assetId: Scalars['BigInt'];
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  guildId: Scalars['BigInt'];
+  time: Scalars['Datetime'];
+};
+
+/** All input for the `deleteEmojiStickerStat` mutation. */
+export type DeleteEmojiStickerStatInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The globally unique `ID` which will identify a single `EmojiStickerStat` to be deleted. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our delete `EmojiStickerStat` mutation. */
+export type DeleteEmojiStickerStatPayload = {
+  __typename?: 'DeleteEmojiStickerStatPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  deletedEmojiStickerStatId?: Maybe<Scalars['ID']>;
+  /** The `EmojiStickerStat` that was deleted by this mutation. */
+  emojiStickerStat?: Maybe<EmojiStickerStat>;
+  /** An edge for our `EmojiStickerStat`. May be used by Relay 1. */
+  emojiStickerStatEdge?: Maybe<EmojiStickerStatsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `EmojiStickerStat` mutation. */
+export type DeleteEmojiStickerStatPayloadEmojiStickerStatEdgeArgs = {
+  orderBy?: InputMaybe<Array<EmojiStickerStatsOrderBy>>;
 };
 
 /** All input for the `deleteFeedByFeedId` mutation. */
@@ -2942,6 +3023,377 @@ export type EligibleLevelRolesEdge = {
   node: EligibleLevelRole;
 };
 
+export enum EmojiStickerActionType {
+  Message = 'MESSAGE',
+  Reaction = 'REACTION'
+}
+
+/** A filter to be used against EmojiStickerActionType fields. All fields are combined with a logical ‘and.’ */
+export type EmojiStickerActionTypeFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<EmojiStickerActionType>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<EmojiStickerActionType>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<EmojiStickerActionType>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<EmojiStickerActionType>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<EmojiStickerActionType>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<EmojiStickerActionType>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<EmojiStickerActionType>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<EmojiStickerActionType>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<EmojiStickerActionType>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<EmojiStickerActionType>>;
+};
+
+export type EmojiStickerStat = Node & {
+  __typename?: 'EmojiStickerStat';
+  actionType: EmojiStickerActionType;
+  assetId: Scalars['BigInt'];
+  assetType: GuildAssetType;
+  count: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars['ID'];
+  time: Scalars['Datetime'];
+};
+
+export type EmojiStickerStatAggregates = {
+  __typename?: 'EmojiStickerStatAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<EmojiStickerStatAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<EmojiStickerStatDistinctCountAggregates>;
+  keys?: Maybe<Array<Scalars['String']>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<EmojiStickerStatMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<EmojiStickerStatMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<EmojiStickerStatStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<EmojiStickerStatStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<EmojiStickerStatSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<EmojiStickerStatVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<EmojiStickerStatVarianceSampleAggregates>;
+};
+
+export type EmojiStickerStatAverageAggregates = {
+  __typename?: 'EmojiStickerStatAverageAggregates';
+  /** Mean average of assetId across the matching connection */
+  assetId?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of count across the matching connection */
+  count?: Maybe<Scalars['BigFloat']>;
+  /** Mean average of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+/**
+ * A condition to be used against `EmojiStickerStat` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type EmojiStickerStatCondition = {
+  /** Checks for equality with the object’s `actionType` field. */
+  actionType?: InputMaybe<EmojiStickerActionType>;
+  /** Checks for equality with the object’s `assetId` field. */
+  assetId?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `assetType` field. */
+  assetType?: InputMaybe<GuildAssetType>;
+  /** Checks for equality with the object’s `count` field. */
+  count?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `guildId` field. */
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  /** Checks for equality with the object’s `time` field. */
+  time?: InputMaybe<Scalars['Datetime']>;
+};
+
+export type EmojiStickerStatDistinctCountAggregates = {
+  __typename?: 'EmojiStickerStatDistinctCountAggregates';
+  /** Distinct count of actionType across the matching connection */
+  actionType?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of assetId across the matching connection */
+  assetId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of assetType across the matching connection */
+  assetType?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of count across the matching connection */
+  count?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of time across the matching connection */
+  time?: Maybe<Scalars['BigInt']>;
+};
+
+/** A filter to be used against `EmojiStickerStat` object types. All fields are combined with a logical ‘and.’ */
+export type EmojiStickerStatFilter = {
+  /** Filter by the object’s `actionType` field. */
+  actionType?: InputMaybe<EmojiStickerActionTypeFilter>;
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<EmojiStickerStatFilter>>;
+  /** Filter by the object’s `assetId` field. */
+  assetId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `assetType` field. */
+  assetType?: InputMaybe<GuildAssetTypeFilter>;
+  /** Filter by the object’s `count` field. */
+  count?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `guildId` field. */
+  guildId?: InputMaybe<BigIntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<EmojiStickerStatFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<EmojiStickerStatFilter>>;
+  /** Filter by the object’s `time` field. */
+  time?: InputMaybe<DatetimeFilter>;
+};
+
+/** An input for mutations affecting `EmojiStickerStatIncrementDatum` */
+export type EmojiStickerStatIncrementDatumInput = {
+  assetId?: InputMaybe<Scalars['BigInt']>;
+  assetType?: InputMaybe<GuildAssetType>;
+};
+
+/** An input for mutations affecting `EmojiStickerStat` */
+export type EmojiStickerStatInput = {
+  actionType: EmojiStickerActionType;
+  assetId: Scalars['BigInt'];
+  assetType: GuildAssetType;
+  count: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+  time: Scalars['Datetime'];
+};
+
+export type EmojiStickerStatMaxAggregates = {
+  __typename?: 'EmojiStickerStatMaxAggregates';
+  /** Maximum of assetId across the matching connection */
+  assetId?: Maybe<Scalars['BigInt']>;
+  /** Maximum of count across the matching connection */
+  count?: Maybe<Scalars['BigInt']>;
+  /** Maximum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+};
+
+export type EmojiStickerStatMinAggregates = {
+  __typename?: 'EmojiStickerStatMinAggregates';
+  /** Minimum of assetId across the matching connection */
+  assetId?: Maybe<Scalars['BigInt']>;
+  /** Minimum of count across the matching connection */
+  count?: Maybe<Scalars['BigInt']>;
+  /** Minimum of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigInt']>;
+};
+
+/** Represents an update to a `EmojiStickerStat`. Fields that are set will be updated. */
+export type EmojiStickerStatPatch = {
+  actionType?: InputMaybe<EmojiStickerActionType>;
+  assetId?: InputMaybe<Scalars['BigInt']>;
+  assetType?: InputMaybe<GuildAssetType>;
+  count?: InputMaybe<Scalars['BigInt']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  time?: InputMaybe<Scalars['Datetime']>;
+};
+
+export type EmojiStickerStatStddevPopulationAggregates = {
+  __typename?: 'EmojiStickerStatStddevPopulationAggregates';
+  /** Population standard deviation of assetId across the matching connection */
+  assetId?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of count across the matching connection */
+  count?: Maybe<Scalars['BigFloat']>;
+  /** Population standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type EmojiStickerStatStddevSampleAggregates = {
+  __typename?: 'EmojiStickerStatStddevSampleAggregates';
+  /** Sample standard deviation of assetId across the matching connection */
+  assetId?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of count across the matching connection */
+  count?: Maybe<Scalars['BigFloat']>;
+  /** Sample standard deviation of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type EmojiStickerStatSumAggregates = {
+  __typename?: 'EmojiStickerStatSumAggregates';
+  /** Sum of assetId across the matching connection */
+  assetId: Scalars['BigFloat'];
+  /** Sum of count across the matching connection */
+  count: Scalars['BigFloat'];
+  /** Sum of guildId across the matching connection */
+  guildId: Scalars['BigFloat'];
+};
+
+export type EmojiStickerStatVariancePopulationAggregates = {
+  __typename?: 'EmojiStickerStatVariancePopulationAggregates';
+  /** Population variance of assetId across the matching connection */
+  assetId?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of count across the matching connection */
+  count?: Maybe<Scalars['BigFloat']>;
+  /** Population variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+export type EmojiStickerStatVarianceSampleAggregates = {
+  __typename?: 'EmojiStickerStatVarianceSampleAggregates';
+  /** Sample variance of assetId across the matching connection */
+  assetId?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of count across the matching connection */
+  count?: Maybe<Scalars['BigFloat']>;
+  /** Sample variance of guildId across the matching connection */
+  guildId?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A connection to a list of `EmojiStickerStat` values. */
+export type EmojiStickerStatsConnection = {
+  __typename?: 'EmojiStickerStatsConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<EmojiStickerStatAggregates>;
+  /** A list of edges which contains the `EmojiStickerStat` and cursor to aid in pagination. */
+  edges: Array<EmojiStickerStatsEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<EmojiStickerStatAggregates>>;
+  /** A list of `EmojiStickerStat` objects. */
+  nodes: Array<EmojiStickerStat>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `EmojiStickerStat` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+
+/** A connection to a list of `EmojiStickerStat` values. */
+export type EmojiStickerStatsConnectionGroupedAggregatesArgs = {
+  groupBy: Array<EmojiStickerStatsGroupBy>;
+  having?: InputMaybe<EmojiStickerStatsHavingInput>;
+};
+
+/** A `EmojiStickerStat` edge in the connection. */
+export type EmojiStickerStatsEdge = {
+  __typename?: 'EmojiStickerStatsEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `EmojiStickerStat` at the end of the edge. */
+  node: EmojiStickerStat;
+};
+
+/** Grouping methods for `EmojiStickerStat` for usage during aggregation. */
+export enum EmojiStickerStatsGroupBy {
+  ActionType = 'ACTION_TYPE',
+  AssetId = 'ASSET_ID',
+  AssetType = 'ASSET_TYPE',
+  Count = 'COUNT',
+  GuildId = 'GUILD_ID',
+  Time = 'TIME',
+  TimeTruncatedToDay = 'TIME_TRUNCATED_TO_DAY',
+  TimeTruncatedToHour = 'TIME_TRUNCATED_TO_HOUR'
+}
+
+export type EmojiStickerStatsHavingAverageInput = {
+  assetId?: InputMaybe<HavingBigintFilter>;
+  count?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  time?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiStickerStatsHavingDistinctCountInput = {
+  assetId?: InputMaybe<HavingBigintFilter>;
+  count?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  time?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `EmojiStickerStat` aggregates. */
+export type EmojiStickerStatsHavingInput = {
+  AND?: InputMaybe<Array<EmojiStickerStatsHavingInput>>;
+  OR?: InputMaybe<Array<EmojiStickerStatsHavingInput>>;
+  average?: InputMaybe<EmojiStickerStatsHavingAverageInput>;
+  distinctCount?: InputMaybe<EmojiStickerStatsHavingDistinctCountInput>;
+  max?: InputMaybe<EmojiStickerStatsHavingMaxInput>;
+  min?: InputMaybe<EmojiStickerStatsHavingMinInput>;
+  stddevPopulation?: InputMaybe<EmojiStickerStatsHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<EmojiStickerStatsHavingStddevSampleInput>;
+  sum?: InputMaybe<EmojiStickerStatsHavingSumInput>;
+  variancePopulation?: InputMaybe<EmojiStickerStatsHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<EmojiStickerStatsHavingVarianceSampleInput>;
+};
+
+export type EmojiStickerStatsHavingMaxInput = {
+  assetId?: InputMaybe<HavingBigintFilter>;
+  count?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  time?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiStickerStatsHavingMinInput = {
+  assetId?: InputMaybe<HavingBigintFilter>;
+  count?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  time?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiStickerStatsHavingStddevPopulationInput = {
+  assetId?: InputMaybe<HavingBigintFilter>;
+  count?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  time?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiStickerStatsHavingStddevSampleInput = {
+  assetId?: InputMaybe<HavingBigintFilter>;
+  count?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  time?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiStickerStatsHavingSumInput = {
+  assetId?: InputMaybe<HavingBigintFilter>;
+  count?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  time?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiStickerStatsHavingVariancePopulationInput = {
+  assetId?: InputMaybe<HavingBigintFilter>;
+  count?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  time?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiStickerStatsHavingVarianceSampleInput = {
+  assetId?: InputMaybe<HavingBigintFilter>;
+  count?: InputMaybe<HavingBigintFilter>;
+  guildId?: InputMaybe<HavingBigintFilter>;
+  time?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Methods to use when ordering `EmojiStickerStat`. */
+export enum EmojiStickerStatsOrderBy {
+  ActionTypeAsc = 'ACTION_TYPE_ASC',
+  ActionTypeDesc = 'ACTION_TYPE_DESC',
+  AssetIdAsc = 'ASSET_ID_ASC',
+  AssetIdDesc = 'ASSET_ID_DESC',
+  AssetTypeAsc = 'ASSET_TYPE_ASC',
+  AssetTypeDesc = 'ASSET_TYPE_DESC',
+  CountAsc = 'COUNT_ASC',
+  CountDesc = 'COUNT_DESC',
+  GuildIdAsc = 'GUILD_ID_ASC',
+  GuildIdDesc = 'GUILD_ID_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  TimeAsc = 'TIME_ASC',
+  TimeDesc = 'TIME_DESC'
+}
+
 export type Feed = Node & {
   __typename?: 'Feed';
   feedId: Scalars['String'];
@@ -3583,6 +4035,37 @@ export type GraphqlPayload = {
   json?: Maybe<Scalars['JSON']>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
   query?: Maybe<Query>;
+};
+
+export enum GuildAssetType {
+  Emoji = 'EMOJI',
+  Sticker = 'STICKER'
+}
+
+/** A filter to be used against GuildAssetType fields. All fields are combined with a logical ‘and.’ */
+export type GuildAssetTypeFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<GuildAssetType>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<GuildAssetType>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<GuildAssetType>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<GuildAssetType>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<GuildAssetType>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<GuildAssetType>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<GuildAssetType>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<GuildAssetType>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<GuildAssetType>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<GuildAssetType>>;
 };
 
 export type GuildBan = Node & {
@@ -4586,6 +5069,30 @@ export type HavingIntFilter = {
   lessThan?: InputMaybe<Scalars['Int']>;
   lessThanOrEqualTo?: InputMaybe<Scalars['Int']>;
   notEqualTo?: InputMaybe<Scalars['Int']>;
+};
+
+/** All input for the `incrementEmojiStickerStat` mutation. */
+export type IncrementEmojiStickerStatInput = {
+  actionType: EmojiStickerActionType;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  data: Array<InputMaybe<EmojiStickerStatIncrementDatumInput>>;
+  guildId: Scalars['BigInt'];
+};
+
+/** The output of our `incrementEmojiStickerStat` mutation. */
+export type IncrementEmojiStickerStatPayload = {
+  __typename?: 'IncrementEmojiStickerStatPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
 };
 
 /** A filter to be used against Int fields. All fields are combined with a logical ‘and.’ */
@@ -7504,6 +8011,8 @@ export type Mutation = {
   createCachedGuild?: Maybe<CreateCachedGuildPayload>;
   /** Creates a single `CachedUser`. */
   createCachedUser?: Maybe<CreateCachedUserPayload>;
+  /** Creates a single `EmojiStickerStat`. */
+  createEmojiStickerStat?: Maybe<CreateEmojiStickerStatPayload>;
   /** Creates a single `Feed`. */
   createFeed?: Maybe<CreateFeedPayload>;
   /** Creates a single `FeedItem`. */
@@ -7562,6 +8071,10 @@ export type Mutation = {
   deleteCachedUser?: Maybe<DeleteCachedUserPayload>;
   /** Deletes a single `CachedUser` using a unique key. */
   deleteCachedUserById?: Maybe<DeleteCachedUserPayload>;
+  /** Deletes a single `EmojiStickerStat` using its globally unique id. */
+  deleteEmojiStickerStat?: Maybe<DeleteEmojiStickerStatPayload>;
+  /** Deletes a single `EmojiStickerStat` using a unique key. */
+  deleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType?: Maybe<DeleteEmojiStickerStatPayload>;
   /** Deletes a single `Feed` using its globally unique id. */
   deleteFeed?: Maybe<DeleteFeedPayload>;
   /** Deletes a single `Feed` using a unique key. */
@@ -7659,6 +8172,7 @@ export type Mutation = {
   /** Deletes a single `XpBlock` using a unique key. */
   deleteXpBlockByGuildIdAndBlockId?: Maybe<DeleteXpBlockPayload>;
   graphql?: Maybe<GraphqlPayload>;
+  incrementEmojiStickerStat?: Maybe<IncrementEmojiStickerStatPayload>;
   logout?: Maybe<LogoutPayload>;
   setRoleMenuRoleOrder?: Maybe<SetRoleMenuRoleOrderPayload>;
   /** Updates a single `BotStat` using its globally unique id and a patch. */
@@ -7673,6 +8187,10 @@ export type Mutation = {
   updateCachedUser?: Maybe<UpdateCachedUserPayload>;
   /** Updates a single `CachedUser` using a unique key and a patch. */
   updateCachedUserById?: Maybe<UpdateCachedUserPayload>;
+  /** Updates a single `EmojiStickerStat` using its globally unique id and a patch. */
+  updateEmojiStickerStat?: Maybe<UpdateEmojiStickerStatPayload>;
+  /** Updates a single `EmojiStickerStat` using a unique key and a patch. */
+  updateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType?: Maybe<UpdateEmojiStickerStatPayload>;
   /** Updates a single `Feed` using its globally unique id and a patch. */
   updateFeed?: Maybe<UpdateFeedPayload>;
   /** Updates a single `Feed` using a unique key and a patch. */
@@ -7774,6 +8292,8 @@ export type Mutation = {
   upsertCachedGuild?: Maybe<UpsertCachedGuildPayload>;
   /** Upserts a single `CachedUser`. */
   upsertCachedUser?: Maybe<UpsertCachedUserPayload>;
+  /** Upserts a single `EmojiStickerStat`. */
+  upsertEmojiStickerStat?: Maybe<UpsertEmojiStickerStatPayload>;
   /** Upserts a single `Feed`. */
   upsertFeed?: Maybe<UpsertFeedPayload>;
   /** Upserts a single `FeedItem`. */
@@ -7856,6 +8376,12 @@ export type MutationCreateCachedGuildArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateCachedUserArgs = {
   input: CreateCachedUserInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateEmojiStickerStatArgs = {
+  input: CreateEmojiStickerStatInput;
 };
 
 
@@ -8030,6 +8556,18 @@ export type MutationDeleteCachedUserArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteCachedUserByIdArgs = {
   input: DeleteCachedUserByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteEmojiStickerStatArgs = {
+  input: DeleteEmojiStickerStatInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeArgs = {
+  input: DeleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput;
 };
 
 
@@ -8334,6 +8872,12 @@ export type MutationGraphqlArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationIncrementEmojiStickerStatArgs = {
+  input: IncrementEmojiStickerStatInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationLogoutArgs = {
   input: LogoutInput;
 };
@@ -8378,6 +8922,18 @@ export type MutationUpdateCachedUserArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateCachedUserByIdArgs = {
   input: UpdateCachedUserByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateEmojiStickerStatArgs = {
+  input: UpdateEmojiStickerStatInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeArgs = {
+  input: UpdateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput;
 };
 
 
@@ -8687,6 +9243,13 @@ export type MutationUpsertCachedGuildArgs = {
 export type MutationUpsertCachedUserArgs = {
   input: UpsertCachedUserInput;
   where?: InputMaybe<UpsertCachedUserWhere>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpsertEmojiStickerStatArgs = {
+  input: UpsertEmojiStickerStatInput;
+  where?: InputMaybe<UpsertEmojiStickerStatWhere>;
 };
 
 
@@ -9500,6 +10063,8 @@ export type Query = Node & {
   __typename?: 'Query';
   /** Reads and enables pagination through a set of `BotStat`. */
   allBotStats?: Maybe<BotStatsConnection>;
+  /** Reads and enables pagination through a set of `EmojiStickerStat`. */
+  allEmojiStickerStats?: Maybe<EmojiStickerStatsConnection>;
   /** Reads and enables pagination through a set of `FeedItem`. */
   allFeedItems?: Maybe<FeedItemsConnection>;
   /** Reads and enables pagination through a set of `FeedSubscription`. */
@@ -9564,6 +10129,9 @@ export type Query = Node & {
   /** Handy method to get the current user ID for use in RLS policies, etc; in GraphQL, use `currentUser{id}` instead. */
   currentUserId?: Maybe<Scalars['BigInt']>;
   currentUserManagedGuildIds?: Maybe<CurrentUserManagedGuildIdsConnection>;
+  /** Reads a single `EmojiStickerStat` using its globally unique `ID`. */
+  emojiStickerStat?: Maybe<EmojiStickerStat>;
+  emojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType?: Maybe<EmojiStickerStat>;
   /** Reads a single `Feed` using its globally unique `ID`. */
   feed?: Maybe<Feed>;
   feedByFeedId?: Maybe<Feed>;
@@ -9667,6 +10235,19 @@ export type QueryAllBotStatsArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<BotStatsOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllEmojiStickerStatsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<EmojiStickerStatCondition>;
+  filter?: InputMaybe<EmojiStickerStatFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<EmojiStickerStatsOrderBy>>;
 };
 
 
@@ -10014,6 +10595,21 @@ export type QueryCurrentUserManagedGuildIdsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryEmojiStickerStatArgs = {
+  nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeArgs = {
+  actionType: EmojiStickerActionType;
+  assetId: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+  time: Scalars['Datetime'];
 };
 
 
@@ -12190,6 +12786,56 @@ export type UpdateCachedUserPayloadCachedUserEdgeArgs = {
   orderBy?: InputMaybe<Array<CachedUsersOrderBy>>;
 };
 
+/** All input for the `updateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType` mutation. */
+export type UpdateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput = {
+  actionType: EmojiStickerActionType;
+  assetId: Scalars['BigInt'];
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `EmojiStickerStat` being updated. */
+  emojiStickerStatPatch: EmojiStickerStatPatch;
+  guildId: Scalars['BigInt'];
+  time: Scalars['Datetime'];
+};
+
+/** All input for the `updateEmojiStickerStat` mutation. */
+export type UpdateEmojiStickerStatInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `EmojiStickerStat` being updated. */
+  emojiStickerStatPatch: EmojiStickerStatPatch;
+  /** The globally unique `ID` which will identify a single `EmojiStickerStat` to be updated. */
+  nodeId: Scalars['ID'];
+};
+
+/** The output of our update `EmojiStickerStat` mutation. */
+export type UpdateEmojiStickerStatPayload = {
+  __typename?: 'UpdateEmojiStickerStatPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `EmojiStickerStat` that was updated by this mutation. */
+  emojiStickerStat?: Maybe<EmojiStickerStat>;
+  /** An edge for our `EmojiStickerStat`. May be used by Relay 1. */
+  emojiStickerStatEdge?: Maybe<EmojiStickerStatsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `EmojiStickerStat` mutation. */
+export type UpdateEmojiStickerStatPayloadEmojiStickerStatEdgeArgs = {
+  orderBy?: InputMaybe<Array<EmojiStickerStatsOrderBy>>;
+};
+
 /** All input for the `updateFeedByFeedId` mutation. */
 export type UpdateFeedByFeedIdInput = {
   /**
@@ -13437,6 +14083,41 @@ export type UpsertCachedUserPayloadCachedUserEdgeArgs = {
 /** Where conditions for the upsert `CachedUser` mutation. */
 export type UpsertCachedUserWhere = {
   id?: InputMaybe<Scalars['BigInt']>;
+};
+
+/** All input for the upsert `EmojiStickerStat` mutation. */
+export type UpsertEmojiStickerStatInput = {
+  /** An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The `EmojiStickerStat` to be upserted by this mutation. */
+  emojiStickerStat: EmojiStickerStatInput;
+};
+
+/** The output of our upsert `EmojiStickerStat` mutation. */
+export type UpsertEmojiStickerStatPayload = {
+  __typename?: 'UpsertEmojiStickerStatPayload';
+  /** The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The `EmojiStickerStat` that was upserted by this mutation. */
+  emojiStickerStat?: Maybe<EmojiStickerStat>;
+  /** An edge for our `EmojiStickerStat`. May be used by Relay 1. */
+  emojiStickerStatEdge?: Maybe<EmojiStickerStatsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our upsert `EmojiStickerStat` mutation. */
+export type UpsertEmojiStickerStatPayloadEmojiStickerStatEdgeArgs = {
+  orderBy?: InputMaybe<Array<EmojiStickerStatsOrderBy>>;
+};
+
+/** Where conditions for the upsert `EmojiStickerStat` mutation. */
+export type UpsertEmojiStickerStatWhere = {
+  actionType?: InputMaybe<EmojiStickerActionType>;
+  assetId?: InputMaybe<Scalars['BigInt']>;
+  guildId?: InputMaybe<Scalars['BigInt']>;
+  time?: InputMaybe<Scalars['Datetime']>;
 };
 
 /** All input for the upsert `Feed` mutation. */
@@ -16241,6 +16922,8 @@ export type ResolversTypes = {
   CreateCachedGuildPayload: ResolverTypeWrapper<CreateCachedGuildPayload>;
   CreateCachedUserInput: CreateCachedUserInput;
   CreateCachedUserPayload: ResolverTypeWrapper<CreateCachedUserPayload>;
+  CreateEmojiStickerStatInput: CreateEmojiStickerStatInput;
+  CreateEmojiStickerStatPayload: ResolverTypeWrapper<CreateEmojiStickerStatPayload>;
   CreateFeedInput: CreateFeedInput;
   CreateFeedItemInput: CreateFeedItemInput;
   CreateFeedItemPayload: ResolverTypeWrapper<CreateFeedItemPayload>;
@@ -16301,6 +16984,9 @@ export type ResolversTypes = {
   DeleteCachedUserByIdInput: DeleteCachedUserByIdInput;
   DeleteCachedUserInput: DeleteCachedUserInput;
   DeleteCachedUserPayload: ResolverTypeWrapper<DeleteCachedUserPayload>;
+  DeleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput: DeleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput;
+  DeleteEmojiStickerStatInput: DeleteEmojiStickerStatInput;
+  DeleteEmojiStickerStatPayload: ResolverTypeWrapper<DeleteEmojiStickerStatPayload>;
   DeleteFeedByFeedIdInput: DeleteFeedByFeedIdInput;
   DeleteFeedInput: DeleteFeedInput;
   DeleteFeedItemByFeedIdAndItemIdInput: DeleteFeedItemByFeedIdAndItemIdInput;
@@ -16379,6 +17065,38 @@ export type ResolversTypes = {
   EligibleLevelRoleFilter: EligibleLevelRoleFilter;
   EligibleLevelRolesConnection: ResolverTypeWrapper<EligibleLevelRolesConnection>;
   EligibleLevelRolesEdge: ResolverTypeWrapper<EligibleLevelRolesEdge>;
+  EmojiStickerActionType: EmojiStickerActionType;
+  EmojiStickerActionTypeFilter: EmojiStickerActionTypeFilter;
+  EmojiStickerStat: ResolverTypeWrapper<EmojiStickerStat>;
+  EmojiStickerStatAggregates: ResolverTypeWrapper<EmojiStickerStatAggregates>;
+  EmojiStickerStatAverageAggregates: ResolverTypeWrapper<EmojiStickerStatAverageAggregates>;
+  EmojiStickerStatCondition: EmojiStickerStatCondition;
+  EmojiStickerStatDistinctCountAggregates: ResolverTypeWrapper<EmojiStickerStatDistinctCountAggregates>;
+  EmojiStickerStatFilter: EmojiStickerStatFilter;
+  EmojiStickerStatIncrementDatumInput: EmojiStickerStatIncrementDatumInput;
+  EmojiStickerStatInput: EmojiStickerStatInput;
+  EmojiStickerStatMaxAggregates: ResolverTypeWrapper<EmojiStickerStatMaxAggregates>;
+  EmojiStickerStatMinAggregates: ResolverTypeWrapper<EmojiStickerStatMinAggregates>;
+  EmojiStickerStatPatch: EmojiStickerStatPatch;
+  EmojiStickerStatStddevPopulationAggregates: ResolverTypeWrapper<EmojiStickerStatStddevPopulationAggregates>;
+  EmojiStickerStatStddevSampleAggregates: ResolverTypeWrapper<EmojiStickerStatStddevSampleAggregates>;
+  EmojiStickerStatSumAggregates: ResolverTypeWrapper<EmojiStickerStatSumAggregates>;
+  EmojiStickerStatVariancePopulationAggregates: ResolverTypeWrapper<EmojiStickerStatVariancePopulationAggregates>;
+  EmojiStickerStatVarianceSampleAggregates: ResolverTypeWrapper<EmojiStickerStatVarianceSampleAggregates>;
+  EmojiStickerStatsConnection: ResolverTypeWrapper<EmojiStickerStatsConnection>;
+  EmojiStickerStatsEdge: ResolverTypeWrapper<EmojiStickerStatsEdge>;
+  EmojiStickerStatsGroupBy: EmojiStickerStatsGroupBy;
+  EmojiStickerStatsHavingAverageInput: EmojiStickerStatsHavingAverageInput;
+  EmojiStickerStatsHavingDistinctCountInput: EmojiStickerStatsHavingDistinctCountInput;
+  EmojiStickerStatsHavingInput: EmojiStickerStatsHavingInput;
+  EmojiStickerStatsHavingMaxInput: EmojiStickerStatsHavingMaxInput;
+  EmojiStickerStatsHavingMinInput: EmojiStickerStatsHavingMinInput;
+  EmojiStickerStatsHavingStddevPopulationInput: EmojiStickerStatsHavingStddevPopulationInput;
+  EmojiStickerStatsHavingStddevSampleInput: EmojiStickerStatsHavingStddevSampleInput;
+  EmojiStickerStatsHavingSumInput: EmojiStickerStatsHavingSumInput;
+  EmojiStickerStatsHavingVariancePopulationInput: EmojiStickerStatsHavingVariancePopulationInput;
+  EmojiStickerStatsHavingVarianceSampleInput: EmojiStickerStatsHavingVarianceSampleInput;
+  EmojiStickerStatsOrderBy: EmojiStickerStatsOrderBy;
   Feed: ResolverTypeWrapper<Feed>;
   FeedAggregates: ResolverTypeWrapper<FeedAggregates>;
   FeedCondition: FeedCondition;
@@ -16434,6 +17152,8 @@ export type ResolversTypes = {
   FeedsOrderBy: FeedsOrderBy;
   GraphqlInput: GraphqlInput;
   GraphqlPayload: ResolverTypeWrapper<GraphqlPayload>;
+  GuildAssetType: GuildAssetType;
+  GuildAssetTypeFilter: GuildAssetTypeFilter;
   GuildBan: ResolverTypeWrapper<GuildBan>;
   GuildBanAggregates: ResolverTypeWrapper<GuildBanAggregates>;
   GuildBanAverageAggregates: ResolverTypeWrapper<GuildBanAverageAggregates>;
@@ -16496,6 +17216,8 @@ export type ResolversTypes = {
   HavingDatetimeFilter: HavingDatetimeFilter;
   HavingIntFilter: HavingIntFilter;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  IncrementEmojiStickerStatInput: IncrementEmojiStickerStatInput;
+  IncrementEmojiStickerStatPayload: ResolverTypeWrapper<IncrementEmojiStickerStatPayload>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   IntFilter: IntFilter;
   JSON: ResolverTypeWrapper<Scalars['JSON']>;
@@ -16740,7 +17462,7 @@ export type ResolversTypes = {
   MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
   MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
   MutesOrderBy: MutesOrderBy;
-  Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['LevelRole'] | ResolversTypes['LevelRoleApplyJob'] | ResolversTypes['LevelRoleOverride'] | ResolversTypes['Member'] | ResolversTypes['Message'] | ResolversTypes['ModLog'] | ResolversTypes['MsgLogBlock'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['RoleMenuRole'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'] | ResolversTypes['XpBlock'];
+  Node: ResolversTypes['BotStat'] | ResolversTypes['CachedGuild'] | ResolversTypes['CachedUser'] | ResolversTypes['EmojiStickerStat'] | ResolversTypes['Feed'] | ResolversTypes['FeedItem'] | ResolversTypes['FeedSubscription'] | ResolversTypes['GuildBan'] | ResolversTypes['GuildConfig'] | ResolversTypes['LevelRole'] | ResolversTypes['LevelRoleApplyJob'] | ResolversTypes['LevelRoleOverride'] | ResolversTypes['Member'] | ResolversTypes['Message'] | ResolversTypes['ModLog'] | ResolversTypes['MsgLogBlock'] | ResolversTypes['Mute'] | ResolversTypes['Notification'] | ResolversTypes['Query'] | ResolversTypes['Reminder'] | ResolversTypes['RoleMenu'] | ResolversTypes['RoleMenuRole'] | ResolversTypes['Tag'] | ResolversTypes['User'] | ResolversTypes['UserLevel'] | ResolversTypes['WebUser'] | ResolversTypes['WebUserGuild'] | ResolversTypes['XpBlock'];
   Notification: ResolverTypeWrapper<Notification>;
   NotificationAggregates: ResolverTypeWrapper<NotificationAggregates>;
   NotificationAverageAggregates: ResolverTypeWrapper<NotificationAverageAggregates>;
@@ -16912,6 +17634,9 @@ export type ResolversTypes = {
   UpdateCachedUserByIdInput: UpdateCachedUserByIdInput;
   UpdateCachedUserInput: UpdateCachedUserInput;
   UpdateCachedUserPayload: ResolverTypeWrapper<UpdateCachedUserPayload>;
+  UpdateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput: UpdateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput;
+  UpdateEmojiStickerStatInput: UpdateEmojiStickerStatInput;
+  UpdateEmojiStickerStatPayload: ResolverTypeWrapper<UpdateEmojiStickerStatPayload>;
   UpdateFeedByFeedIdInput: UpdateFeedByFeedIdInput;
   UpdateFeedInput: UpdateFeedInput;
   UpdateFeedItemByFeedIdAndItemIdInput: UpdateFeedItemByFeedIdAndItemIdInput;
@@ -16993,6 +17718,9 @@ export type ResolversTypes = {
   UpsertCachedUserInput: UpsertCachedUserInput;
   UpsertCachedUserPayload: ResolverTypeWrapper<UpsertCachedUserPayload>;
   UpsertCachedUserWhere: UpsertCachedUserWhere;
+  UpsertEmojiStickerStatInput: UpsertEmojiStickerStatInput;
+  UpsertEmojiStickerStatPayload: ResolverTypeWrapper<UpsertEmojiStickerStatPayload>;
+  UpsertEmojiStickerStatWhere: UpsertEmojiStickerStatWhere;
   UpsertFeedInput: UpsertFeedInput;
   UpsertFeedItemInput: UpsertFeedItemInput;
   UpsertFeedItemPayload: ResolverTypeWrapper<UpsertFeedItemPayload>;
@@ -17267,6 +17995,8 @@ export type ResolversParentTypes = {
   CreateCachedGuildPayload: CreateCachedGuildPayload;
   CreateCachedUserInput: CreateCachedUserInput;
   CreateCachedUserPayload: CreateCachedUserPayload;
+  CreateEmojiStickerStatInput: CreateEmojiStickerStatInput;
+  CreateEmojiStickerStatPayload: CreateEmojiStickerStatPayload;
   CreateFeedInput: CreateFeedInput;
   CreateFeedItemInput: CreateFeedItemInput;
   CreateFeedItemPayload: CreateFeedItemPayload;
@@ -17327,6 +18057,9 @@ export type ResolversParentTypes = {
   DeleteCachedUserByIdInput: DeleteCachedUserByIdInput;
   DeleteCachedUserInput: DeleteCachedUserInput;
   DeleteCachedUserPayload: DeleteCachedUserPayload;
+  DeleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput: DeleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput;
+  DeleteEmojiStickerStatInput: DeleteEmojiStickerStatInput;
+  DeleteEmojiStickerStatPayload: DeleteEmojiStickerStatPayload;
   DeleteFeedByFeedIdInput: DeleteFeedByFeedIdInput;
   DeleteFeedInput: DeleteFeedInput;
   DeleteFeedItemByFeedIdAndItemIdInput: DeleteFeedItemByFeedIdAndItemIdInput;
@@ -17405,6 +18138,35 @@ export type ResolversParentTypes = {
   EligibleLevelRoleFilter: EligibleLevelRoleFilter;
   EligibleLevelRolesConnection: EligibleLevelRolesConnection;
   EligibleLevelRolesEdge: EligibleLevelRolesEdge;
+  EmojiStickerActionTypeFilter: EmojiStickerActionTypeFilter;
+  EmojiStickerStat: EmojiStickerStat;
+  EmojiStickerStatAggregates: EmojiStickerStatAggregates;
+  EmojiStickerStatAverageAggregates: EmojiStickerStatAverageAggregates;
+  EmojiStickerStatCondition: EmojiStickerStatCondition;
+  EmojiStickerStatDistinctCountAggregates: EmojiStickerStatDistinctCountAggregates;
+  EmojiStickerStatFilter: EmojiStickerStatFilter;
+  EmojiStickerStatIncrementDatumInput: EmojiStickerStatIncrementDatumInput;
+  EmojiStickerStatInput: EmojiStickerStatInput;
+  EmojiStickerStatMaxAggregates: EmojiStickerStatMaxAggregates;
+  EmojiStickerStatMinAggregates: EmojiStickerStatMinAggregates;
+  EmojiStickerStatPatch: EmojiStickerStatPatch;
+  EmojiStickerStatStddevPopulationAggregates: EmojiStickerStatStddevPopulationAggregates;
+  EmojiStickerStatStddevSampleAggregates: EmojiStickerStatStddevSampleAggregates;
+  EmojiStickerStatSumAggregates: EmojiStickerStatSumAggregates;
+  EmojiStickerStatVariancePopulationAggregates: EmojiStickerStatVariancePopulationAggregates;
+  EmojiStickerStatVarianceSampleAggregates: EmojiStickerStatVarianceSampleAggregates;
+  EmojiStickerStatsConnection: EmojiStickerStatsConnection;
+  EmojiStickerStatsEdge: EmojiStickerStatsEdge;
+  EmojiStickerStatsHavingAverageInput: EmojiStickerStatsHavingAverageInput;
+  EmojiStickerStatsHavingDistinctCountInput: EmojiStickerStatsHavingDistinctCountInput;
+  EmojiStickerStatsHavingInput: EmojiStickerStatsHavingInput;
+  EmojiStickerStatsHavingMaxInput: EmojiStickerStatsHavingMaxInput;
+  EmojiStickerStatsHavingMinInput: EmojiStickerStatsHavingMinInput;
+  EmojiStickerStatsHavingStddevPopulationInput: EmojiStickerStatsHavingStddevPopulationInput;
+  EmojiStickerStatsHavingStddevSampleInput: EmojiStickerStatsHavingStddevSampleInput;
+  EmojiStickerStatsHavingSumInput: EmojiStickerStatsHavingSumInput;
+  EmojiStickerStatsHavingVariancePopulationInput: EmojiStickerStatsHavingVariancePopulationInput;
+  EmojiStickerStatsHavingVarianceSampleInput: EmojiStickerStatsHavingVarianceSampleInput;
   Feed: Feed;
   FeedAggregates: FeedAggregates;
   FeedCondition: FeedCondition;
@@ -17454,6 +18216,7 @@ export type ResolversParentTypes = {
   FeedsHavingInput: FeedsHavingInput;
   GraphqlInput: GraphqlInput;
   GraphqlPayload: GraphqlPayload;
+  GuildAssetTypeFilter: GuildAssetTypeFilter;
   GuildBan: GuildBan;
   GuildBanAggregates: GuildBanAggregates;
   GuildBanAverageAggregates: GuildBanAverageAggregates;
@@ -17512,6 +18275,8 @@ export type ResolversParentTypes = {
   HavingDatetimeFilter: HavingDatetimeFilter;
   HavingIntFilter: HavingIntFilter;
   ID: Scalars['ID'];
+  IncrementEmojiStickerStatInput: IncrementEmojiStickerStatInput;
+  IncrementEmojiStickerStatPayload: IncrementEmojiStickerStatPayload;
   Int: Scalars['Int'];
   IntFilter: IntFilter;
   JSON: Scalars['JSON'];
@@ -17737,7 +18502,7 @@ export type ResolversParentTypes = {
   MutesHavingSumInput: MutesHavingSumInput;
   MutesHavingVariancePopulationInput: MutesHavingVariancePopulationInput;
   MutesHavingVarianceSampleInput: MutesHavingVarianceSampleInput;
-  Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['LevelRole'] | ResolversParentTypes['LevelRoleApplyJob'] | ResolversParentTypes['LevelRoleOverride'] | ResolversParentTypes['Member'] | ResolversParentTypes['Message'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['MsgLogBlock'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['RoleMenuRole'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'] | ResolversParentTypes['XpBlock'];
+  Node: ResolversParentTypes['BotStat'] | ResolversParentTypes['CachedGuild'] | ResolversParentTypes['CachedUser'] | ResolversParentTypes['EmojiStickerStat'] | ResolversParentTypes['Feed'] | ResolversParentTypes['FeedItem'] | ResolversParentTypes['FeedSubscription'] | ResolversParentTypes['GuildBan'] | ResolversParentTypes['GuildConfig'] | ResolversParentTypes['LevelRole'] | ResolversParentTypes['LevelRoleApplyJob'] | ResolversParentTypes['LevelRoleOverride'] | ResolversParentTypes['Member'] | ResolversParentTypes['Message'] | ResolversParentTypes['ModLog'] | ResolversParentTypes['MsgLogBlock'] | ResolversParentTypes['Mute'] | ResolversParentTypes['Notification'] | ResolversParentTypes['Query'] | ResolversParentTypes['Reminder'] | ResolversParentTypes['RoleMenu'] | ResolversParentTypes['RoleMenuRole'] | ResolversParentTypes['Tag'] | ResolversParentTypes['User'] | ResolversParentTypes['UserLevel'] | ResolversParentTypes['WebUser'] | ResolversParentTypes['WebUserGuild'] | ResolversParentTypes['XpBlock'];
   Notification: Notification;
   NotificationAggregates: NotificationAggregates;
   NotificationAverageAggregates: NotificationAverageAggregates;
@@ -17899,6 +18664,9 @@ export type ResolversParentTypes = {
   UpdateCachedUserByIdInput: UpdateCachedUserByIdInput;
   UpdateCachedUserInput: UpdateCachedUserInput;
   UpdateCachedUserPayload: UpdateCachedUserPayload;
+  UpdateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput: UpdateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput;
+  UpdateEmojiStickerStatInput: UpdateEmojiStickerStatInput;
+  UpdateEmojiStickerStatPayload: UpdateEmojiStickerStatPayload;
   UpdateFeedByFeedIdInput: UpdateFeedByFeedIdInput;
   UpdateFeedInput: UpdateFeedInput;
   UpdateFeedItemByFeedIdAndItemIdInput: UpdateFeedItemByFeedIdAndItemIdInput;
@@ -17980,6 +18748,9 @@ export type ResolversParentTypes = {
   UpsertCachedUserInput: UpsertCachedUserInput;
   UpsertCachedUserPayload: UpsertCachedUserPayload;
   UpsertCachedUserWhere: UpsertCachedUserWhere;
+  UpsertEmojiStickerStatInput: UpsertEmojiStickerStatInput;
+  UpsertEmojiStickerStatPayload: UpsertEmojiStickerStatPayload;
+  UpsertEmojiStickerStatWhere: UpsertEmojiStickerStatWhere;
   UpsertFeedInput: UpsertFeedInput;
   UpsertFeedItemInput: UpsertFeedItemInput;
   UpsertFeedItemPayload: UpsertFeedItemPayload;
@@ -18367,6 +19138,14 @@ export type CreateCachedUserPayloadResolvers<ContextType = any, ParentType exten
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CreateEmojiStickerStatPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateEmojiStickerStatPayload'] = ResolversParentTypes['CreateEmojiStickerStatPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  emojiStickerStat?: Resolver<Maybe<ResolversTypes['EmojiStickerStat']>, ParentType, ContextType>;
+  emojiStickerStatEdge?: Resolver<Maybe<ResolversTypes['EmojiStickerStatsEdge']>, ParentType, ContextType, RequireFields<CreateEmojiStickerStatPayloadEmojiStickerStatEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CreateFeedItemPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateFeedItemPayload'] = ResolversParentTypes['CreateFeedItemPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   feedItem?: Resolver<Maybe<ResolversTypes['FeedItem']>, ParentType, ContextType>;
@@ -18601,6 +19380,15 @@ export type DeleteCachedUserPayloadResolvers<ContextType = any, ParentType exten
   cachedUserEdge?: Resolver<Maybe<ResolversTypes['CachedUsersEdge']>, ParentType, ContextType, RequireFields<DeleteCachedUserPayloadCachedUserEdgeArgs, 'orderBy'>>;
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deletedCachedUserId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteEmojiStickerStatPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteEmojiStickerStatPayload'] = ResolversParentTypes['DeleteEmojiStickerStatPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deletedEmojiStickerStatId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  emojiStickerStat?: Resolver<Maybe<ResolversTypes['EmojiStickerStat']>, ParentType, ContextType>;
+  emojiStickerStatEdge?: Resolver<Maybe<ResolversTypes['EmojiStickerStatsEdge']>, ParentType, ContextType, RequireFields<DeleteEmojiStickerStatPayloadEmojiStickerStatEdgeArgs, 'orderBy'>>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -18849,6 +19637,113 @@ export type EligibleLevelRolesConnectionResolvers<ContextType = any, ParentType 
 export type EligibleLevelRolesEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['EligibleLevelRolesEdge'] = ResolversParentTypes['EligibleLevelRolesEdge']> = {
   cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
   node?: Resolver<ResolversTypes['EligibleLevelRole'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStat'] = ResolversParentTypes['EmojiStickerStat']> = {
+  actionType?: Resolver<ResolversTypes['EmojiStickerActionType'], ParentType, ContextType>;
+  assetId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  assetType?: Resolver<ResolversTypes['GuildAssetType'], ParentType, ContextType>;
+  count?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  time?: Resolver<ResolversTypes['Datetime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStatAggregates'] = ResolversParentTypes['EmojiStickerStatAggregates']> = {
+  average?: Resolver<Maybe<ResolversTypes['EmojiStickerStatAverageAggregates']>, ParentType, ContextType>;
+  distinctCount?: Resolver<Maybe<ResolversTypes['EmojiStickerStatDistinctCountAggregates']>, ParentType, ContextType>;
+  keys?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  max?: Resolver<Maybe<ResolversTypes['EmojiStickerStatMaxAggregates']>, ParentType, ContextType>;
+  min?: Resolver<Maybe<ResolversTypes['EmojiStickerStatMinAggregates']>, ParentType, ContextType>;
+  stddevPopulation?: Resolver<Maybe<ResolversTypes['EmojiStickerStatStddevPopulationAggregates']>, ParentType, ContextType>;
+  stddevSample?: Resolver<Maybe<ResolversTypes['EmojiStickerStatStddevSampleAggregates']>, ParentType, ContextType>;
+  sum?: Resolver<Maybe<ResolversTypes['EmojiStickerStatSumAggregates']>, ParentType, ContextType>;
+  variancePopulation?: Resolver<Maybe<ResolversTypes['EmojiStickerStatVariancePopulationAggregates']>, ParentType, ContextType>;
+  varianceSample?: Resolver<Maybe<ResolversTypes['EmojiStickerStatVarianceSampleAggregates']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatAverageAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStatAverageAggregates'] = ResolversParentTypes['EmojiStickerStatAverageAggregates']> = {
+  assetId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  count?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatDistinctCountAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStatDistinctCountAggregates'] = ResolversParentTypes['EmojiStickerStatDistinctCountAggregates']> = {
+  actionType?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  assetId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  assetType?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  count?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  time?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatMaxAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStatMaxAggregates'] = ResolversParentTypes['EmojiStickerStatMaxAggregates']> = {
+  assetId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  count?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatMinAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStatMinAggregates'] = ResolversParentTypes['EmojiStickerStatMinAggregates']> = {
+  assetId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  count?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatStddevPopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStatStddevPopulationAggregates'] = ResolversParentTypes['EmojiStickerStatStddevPopulationAggregates']> = {
+  assetId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  count?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatStddevSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStatStddevSampleAggregates'] = ResolversParentTypes['EmojiStickerStatStddevSampleAggregates']> = {
+  assetId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  count?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatSumAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStatSumAggregates'] = ResolversParentTypes['EmojiStickerStatSumAggregates']> = {
+  assetId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  count?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  guildId?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatVariancePopulationAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStatVariancePopulationAggregates'] = ResolversParentTypes['EmojiStickerStatVariancePopulationAggregates']> = {
+  assetId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  count?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatVarianceSampleAggregatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStatVarianceSampleAggregates'] = ResolversParentTypes['EmojiStickerStatVarianceSampleAggregates']> = {
+  assetId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  count?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  guildId?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStatsConnection'] = ResolversParentTypes['EmojiStickerStatsConnection']> = {
+  aggregates?: Resolver<Maybe<ResolversTypes['EmojiStickerStatAggregates']>, ParentType, ContextType>;
+  edges?: Resolver<Array<ResolversTypes['EmojiStickerStatsEdge']>, ParentType, ContextType>;
+  groupedAggregates?: Resolver<Maybe<Array<ResolversTypes['EmojiStickerStatAggregates']>>, ParentType, ContextType, RequireFields<EmojiStickerStatsConnectionGroupedAggregatesArgs, 'groupBy'>>;
+  nodes?: Resolver<Array<ResolversTypes['EmojiStickerStat']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EmojiStickerStatsEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmojiStickerStatsEdge'] = ResolversParentTypes['EmojiStickerStatsEdge']> = {
+  cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['EmojiStickerStat'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -19320,6 +20215,12 @@ export type GuildConfigsConnectionResolvers<ContextType = any, ParentType extend
 export type GuildConfigsEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['GuildConfigsEdge'] = ResolversParentTypes['GuildConfigsEdge']> = {
   cursor?: Resolver<Maybe<ResolversTypes['Cursor']>, ParentType, ContextType>;
   node?: Resolver<ResolversTypes['GuildConfig'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type IncrementEmojiStickerStatPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['IncrementEmojiStickerStatPayload'] = ResolversParentTypes['IncrementEmojiStickerStatPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -20186,6 +21087,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createBotStat?: Resolver<Maybe<ResolversTypes['CreateBotStatPayload']>, ParentType, ContextType, RequireFields<MutationCreateBotStatArgs, 'input'>>;
   createCachedGuild?: Resolver<Maybe<ResolversTypes['CreateCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationCreateCachedGuildArgs, 'input'>>;
   createCachedUser?: Resolver<Maybe<ResolversTypes['CreateCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationCreateCachedUserArgs, 'input'>>;
+  createEmojiStickerStat?: Resolver<Maybe<ResolversTypes['CreateEmojiStickerStatPayload']>, ParentType, ContextType, RequireFields<MutationCreateEmojiStickerStatArgs, 'input'>>;
   createFeed?: Resolver<Maybe<ResolversTypes['CreateFeedPayload']>, ParentType, ContextType, RequireFields<MutationCreateFeedArgs, 'input'>>;
   createFeedItem?: Resolver<Maybe<ResolversTypes['CreateFeedItemPayload']>, ParentType, ContextType, RequireFields<MutationCreateFeedItemArgs, 'input'>>;
   createFeedSubscription?: Resolver<Maybe<ResolversTypes['CreateFeedSubscriptionPayload']>, ParentType, ContextType, RequireFields<MutationCreateFeedSubscriptionArgs, 'input'>>;
@@ -20215,6 +21117,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteCachedGuildById?: Resolver<Maybe<ResolversTypes['DeleteCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationDeleteCachedGuildByIdArgs, 'input'>>;
   deleteCachedUser?: Resolver<Maybe<ResolversTypes['DeleteCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationDeleteCachedUserArgs, 'input'>>;
   deleteCachedUserById?: Resolver<Maybe<ResolversTypes['DeleteCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationDeleteCachedUserByIdArgs, 'input'>>;
+  deleteEmojiStickerStat?: Resolver<Maybe<ResolversTypes['DeleteEmojiStickerStatPayload']>, ParentType, ContextType, RequireFields<MutationDeleteEmojiStickerStatArgs, 'input'>>;
+  deleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType?: Resolver<Maybe<ResolversTypes['DeleteEmojiStickerStatPayload']>, ParentType, ContextType, RequireFields<MutationDeleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeArgs, 'input'>>;
   deleteFeed?: Resolver<Maybe<ResolversTypes['DeleteFeedPayload']>, ParentType, ContextType, RequireFields<MutationDeleteFeedArgs, 'input'>>;
   deleteFeedByFeedId?: Resolver<Maybe<ResolversTypes['DeleteFeedPayload']>, ParentType, ContextType, RequireFields<MutationDeleteFeedByFeedIdArgs, 'input'>>;
   deleteFeedItem?: Resolver<Maybe<ResolversTypes['DeleteFeedItemPayload']>, ParentType, ContextType, RequireFields<MutationDeleteFeedItemArgs, 'input'>>;
@@ -20265,6 +21169,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteXpBlock?: Resolver<Maybe<ResolversTypes['DeleteXpBlockPayload']>, ParentType, ContextType, RequireFields<MutationDeleteXpBlockArgs, 'input'>>;
   deleteXpBlockByGuildIdAndBlockId?: Resolver<Maybe<ResolversTypes['DeleteXpBlockPayload']>, ParentType, ContextType, RequireFields<MutationDeleteXpBlockByGuildIdAndBlockIdArgs, 'input'>>;
   graphql?: Resolver<Maybe<ResolversTypes['GraphqlPayload']>, ParentType, ContextType, RequireFields<MutationGraphqlArgs, 'input'>>;
+  incrementEmojiStickerStat?: Resolver<Maybe<ResolversTypes['IncrementEmojiStickerStatPayload']>, ParentType, ContextType, RequireFields<MutationIncrementEmojiStickerStatArgs, 'input'>>;
   logout?: Resolver<Maybe<ResolversTypes['LogoutPayload']>, ParentType, ContextType, RequireFields<MutationLogoutArgs, 'input'>>;
   setRoleMenuRoleOrder?: Resolver<Maybe<ResolversTypes['SetRoleMenuRoleOrderPayload']>, ParentType, ContextType, RequireFields<MutationSetRoleMenuRoleOrderArgs, 'input'>>;
   updateBotStat?: Resolver<Maybe<ResolversTypes['UpdateBotStatPayload']>, ParentType, ContextType, RequireFields<MutationUpdateBotStatArgs, 'input'>>;
@@ -20273,6 +21178,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateCachedGuildById?: Resolver<Maybe<ResolversTypes['UpdateCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpdateCachedGuildByIdArgs, 'input'>>;
   updateCachedUser?: Resolver<Maybe<ResolversTypes['UpdateCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationUpdateCachedUserArgs, 'input'>>;
   updateCachedUserById?: Resolver<Maybe<ResolversTypes['UpdateCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationUpdateCachedUserByIdArgs, 'input'>>;
+  updateEmojiStickerStat?: Resolver<Maybe<ResolversTypes['UpdateEmojiStickerStatPayload']>, ParentType, ContextType, RequireFields<MutationUpdateEmojiStickerStatArgs, 'input'>>;
+  updateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType?: Resolver<Maybe<ResolversTypes['UpdateEmojiStickerStatPayload']>, ParentType, ContextType, RequireFields<MutationUpdateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeArgs, 'input'>>;
   updateFeed?: Resolver<Maybe<ResolversTypes['UpdateFeedPayload']>, ParentType, ContextType, RequireFields<MutationUpdateFeedArgs, 'input'>>;
   updateFeedByFeedId?: Resolver<Maybe<ResolversTypes['UpdateFeedPayload']>, ParentType, ContextType, RequireFields<MutationUpdateFeedByFeedIdArgs, 'input'>>;
   updateFeedItem?: Resolver<Maybe<ResolversTypes['UpdateFeedItemPayload']>, ParentType, ContextType, RequireFields<MutationUpdateFeedItemArgs, 'input'>>;
@@ -20324,6 +21231,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   upsertBotStat?: Resolver<Maybe<ResolversTypes['UpsertBotStatPayload']>, ParentType, ContextType, RequireFields<MutationUpsertBotStatArgs, 'input'>>;
   upsertCachedGuild?: Resolver<Maybe<ResolversTypes['UpsertCachedGuildPayload']>, ParentType, ContextType, RequireFields<MutationUpsertCachedGuildArgs, 'input'>>;
   upsertCachedUser?: Resolver<Maybe<ResolversTypes['UpsertCachedUserPayload']>, ParentType, ContextType, RequireFields<MutationUpsertCachedUserArgs, 'input'>>;
+  upsertEmojiStickerStat?: Resolver<Maybe<ResolversTypes['UpsertEmojiStickerStatPayload']>, ParentType, ContextType, RequireFields<MutationUpsertEmojiStickerStatArgs, 'input'>>;
   upsertFeed?: Resolver<Maybe<ResolversTypes['UpsertFeedPayload']>, ParentType, ContextType, RequireFields<MutationUpsertFeedArgs, 'input'>>;
   upsertFeedItem?: Resolver<Maybe<ResolversTypes['UpsertFeedItemPayload']>, ParentType, ContextType, RequireFields<MutationUpsertFeedItemArgs, 'input'>>;
   upsertFeedSubscription?: Resolver<Maybe<ResolversTypes['UpsertFeedSubscriptionPayload']>, ParentType, ContextType, RequireFields<MutationUpsertFeedSubscriptionArgs, 'input'>>;
@@ -20458,7 +21366,7 @@ export type MutesEdgeResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'BotStat' | 'CachedGuild' | 'CachedUser' | 'Feed' | 'FeedItem' | 'FeedSubscription' | 'GuildBan' | 'GuildConfig' | 'LevelRole' | 'LevelRoleApplyJob' | 'LevelRoleOverride' | 'Member' | 'Message' | 'ModLog' | 'MsgLogBlock' | 'Mute' | 'Notification' | 'Query' | 'Reminder' | 'RoleMenu' | 'RoleMenuRole' | 'Tag' | 'User' | 'UserLevel' | 'WebUser' | 'WebUserGuild' | 'XpBlock', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'BotStat' | 'CachedGuild' | 'CachedUser' | 'EmojiStickerStat' | 'Feed' | 'FeedItem' | 'FeedSubscription' | 'GuildBan' | 'GuildConfig' | 'LevelRole' | 'LevelRoleApplyJob' | 'LevelRoleOverride' | 'Member' | 'Message' | 'ModLog' | 'MsgLogBlock' | 'Mute' | 'Notification' | 'Query' | 'Reminder' | 'RoleMenu' | 'RoleMenuRole' | 'Tag' | 'User' | 'UserLevel' | 'WebUser' | 'WebUserGuild' | 'XpBlock', ParentType, ContextType>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -20578,6 +21486,7 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   allBotStats?: Resolver<Maybe<ResolversTypes['BotStatsConnection']>, ParentType, ContextType, RequireFields<QueryAllBotStatsArgs, 'orderBy'>>;
+  allEmojiStickerStats?: Resolver<Maybe<ResolversTypes['EmojiStickerStatsConnection']>, ParentType, ContextType, RequireFields<QueryAllEmojiStickerStatsArgs, 'orderBy'>>;
   allFeedItems?: Resolver<Maybe<ResolversTypes['FeedItemsConnection']>, ParentType, ContextType, RequireFields<QueryAllFeedItemsArgs, 'orderBy'>>;
   allFeedSubscriptions?: Resolver<Maybe<ResolversTypes['FeedSubscriptionsConnection']>, ParentType, ContextType, RequireFields<QueryAllFeedSubscriptionsArgs, 'orderBy'>>;
   allFeeds?: Resolver<Maybe<ResolversTypes['FeedsConnection']>, ParentType, ContextType, RequireFields<QueryAllFeedsArgs, 'orderBy'>>;
@@ -20613,6 +21522,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   currentUserDiscordId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   currentUserId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   currentUserManagedGuildIds?: Resolver<Maybe<ResolversTypes['CurrentUserManagedGuildIdsConnection']>, ParentType, ContextType, Partial<QueryCurrentUserManagedGuildIdsArgs>>;
+  emojiStickerStat?: Resolver<Maybe<ResolversTypes['EmojiStickerStat']>, ParentType, ContextType, RequireFields<QueryEmojiStickerStatArgs, 'nodeId'>>;
+  emojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType?: Resolver<Maybe<ResolversTypes['EmojiStickerStat']>, ParentType, ContextType, RequireFields<QueryEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeArgs, 'actionType' | 'assetId' | 'guildId' | 'time'>>;
   feed?: Resolver<Maybe<ResolversTypes['Feed']>, ParentType, ContextType, RequireFields<QueryFeedArgs, 'nodeId'>>;
   feedByFeedId?: Resolver<Maybe<ResolversTypes['Feed']>, ParentType, ContextType, RequireFields<QueryFeedByFeedIdArgs, 'feedId'>>;
   feedItem?: Resolver<Maybe<ResolversTypes['FeedItem']>, ParentType, ContextType, RequireFields<QueryFeedItemArgs, 'nodeId'>>;
@@ -21206,6 +22117,14 @@ export type UpdateCachedUserPayloadResolvers<ContextType = any, ParentType exten
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateEmojiStickerStatPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateEmojiStickerStatPayload'] = ResolversParentTypes['UpdateEmojiStickerStatPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  emojiStickerStat?: Resolver<Maybe<ResolversTypes['EmojiStickerStat']>, ParentType, ContextType>;
+  emojiStickerStatEdge?: Resolver<Maybe<ResolversTypes['EmojiStickerStatsEdge']>, ParentType, ContextType, RequireFields<UpdateEmojiStickerStatPayloadEmojiStickerStatEdgeArgs, 'orderBy'>>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UpdateFeedItemPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateFeedItemPayload'] = ResolversParentTypes['UpdateFeedItemPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   feedItem?: Resolver<Maybe<ResolversTypes['FeedItem']>, ParentType, ContextType>;
@@ -21423,6 +22342,14 @@ export type UpsertCachedUserPayloadResolvers<ContextType = any, ParentType exten
   cachedUser?: Resolver<Maybe<ResolversTypes['CachedUser']>, ParentType, ContextType>;
   cachedUserEdge?: Resolver<Maybe<ResolversTypes['CachedUsersEdge']>, ParentType, ContextType, RequireFields<UpsertCachedUserPayloadCachedUserEdgeArgs, 'orderBy'>>;
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpsertEmojiStickerStatPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpsertEmojiStickerStatPayload'] = ResolversParentTypes['UpsertEmojiStickerStatPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  emojiStickerStat?: Resolver<Maybe<ResolversTypes['EmojiStickerStat']>, ParentType, ContextType>;
+  emojiStickerStatEdge?: Resolver<Maybe<ResolversTypes['EmojiStickerStatsEdge']>, ParentType, ContextType, RequireFields<UpsertEmojiStickerStatPayloadEmojiStickerStatEdgeArgs, 'orderBy'>>;
   query?: Resolver<Maybe<ResolversTypes['Query']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -22230,6 +23157,7 @@ export type Resolvers<ContextType = any> = {
   CreateBotStatPayload?: CreateBotStatPayloadResolvers<ContextType>;
   CreateCachedGuildPayload?: CreateCachedGuildPayloadResolvers<ContextType>;
   CreateCachedUserPayload?: CreateCachedUserPayloadResolvers<ContextType>;
+  CreateEmojiStickerStatPayload?: CreateEmojiStickerStatPayloadResolvers<ContextType>;
   CreateFeedItemPayload?: CreateFeedItemPayloadResolvers<ContextType>;
   CreateFeedPayload?: CreateFeedPayloadResolvers<ContextType>;
   CreateFeedSubscriptionPayload?: CreateFeedSubscriptionPayloadResolvers<ContextType>;
@@ -22260,6 +23188,7 @@ export type Resolvers<ContextType = any> = {
   DeleteBotStatPayload?: DeleteBotStatPayloadResolvers<ContextType>;
   DeleteCachedGuildPayload?: DeleteCachedGuildPayloadResolvers<ContextType>;
   DeleteCachedUserPayload?: DeleteCachedUserPayloadResolvers<ContextType>;
+  DeleteEmojiStickerStatPayload?: DeleteEmojiStickerStatPayloadResolvers<ContextType>;
   DeleteFeedItemPayload?: DeleteFeedItemPayloadResolvers<ContextType>;
   DeleteFeedPayload?: DeleteFeedPayloadResolvers<ContextType>;
   DeleteFeedSubscriptionPayload?: DeleteFeedSubscriptionPayloadResolvers<ContextType>;
@@ -22288,6 +23217,19 @@ export type Resolvers<ContextType = any> = {
   EligibleLevelRole?: EligibleLevelRoleResolvers<ContextType>;
   EligibleLevelRolesConnection?: EligibleLevelRolesConnectionResolvers<ContextType>;
   EligibleLevelRolesEdge?: EligibleLevelRolesEdgeResolvers<ContextType>;
+  EmojiStickerStat?: EmojiStickerStatResolvers<ContextType>;
+  EmojiStickerStatAggregates?: EmojiStickerStatAggregatesResolvers<ContextType>;
+  EmojiStickerStatAverageAggregates?: EmojiStickerStatAverageAggregatesResolvers<ContextType>;
+  EmojiStickerStatDistinctCountAggregates?: EmojiStickerStatDistinctCountAggregatesResolvers<ContextType>;
+  EmojiStickerStatMaxAggregates?: EmojiStickerStatMaxAggregatesResolvers<ContextType>;
+  EmojiStickerStatMinAggregates?: EmojiStickerStatMinAggregatesResolvers<ContextType>;
+  EmojiStickerStatStddevPopulationAggregates?: EmojiStickerStatStddevPopulationAggregatesResolvers<ContextType>;
+  EmojiStickerStatStddevSampleAggregates?: EmojiStickerStatStddevSampleAggregatesResolvers<ContextType>;
+  EmojiStickerStatSumAggregates?: EmojiStickerStatSumAggregatesResolvers<ContextType>;
+  EmojiStickerStatVariancePopulationAggregates?: EmojiStickerStatVariancePopulationAggregatesResolvers<ContextType>;
+  EmojiStickerStatVarianceSampleAggregates?: EmojiStickerStatVarianceSampleAggregatesResolvers<ContextType>;
+  EmojiStickerStatsConnection?: EmojiStickerStatsConnectionResolvers<ContextType>;
+  EmojiStickerStatsEdge?: EmojiStickerStatsEdgeResolvers<ContextType>;
   Feed?: FeedResolvers<ContextType>;
   FeedAggregates?: FeedAggregatesResolvers<ContextType>;
   FeedDistinctCountAggregates?: FeedDistinctCountAggregatesResolvers<ContextType>;
@@ -22338,6 +23280,7 @@ export type Resolvers<ContextType = any> = {
   GuildConfigVarianceSampleAggregates?: GuildConfigVarianceSampleAggregatesResolvers<ContextType>;
   GuildConfigsConnection?: GuildConfigsConnectionResolvers<ContextType>;
   GuildConfigsEdge?: GuildConfigsEdgeResolvers<ContextType>;
+  IncrementEmojiStickerStatPayload?: IncrementEmojiStickerStatPayloadResolvers<ContextType>;
   JSON?: GraphQLScalarType;
   LevelRole?: LevelRoleResolvers<ContextType>;
   LevelRoleAggregates?: LevelRoleAggregatesResolvers<ContextType>;
@@ -22526,6 +23469,7 @@ export type Resolvers<ContextType = any> = {
   UpdateBotStatPayload?: UpdateBotStatPayloadResolvers<ContextType>;
   UpdateCachedGuildPayload?: UpdateCachedGuildPayloadResolvers<ContextType>;
   UpdateCachedUserPayload?: UpdateCachedUserPayloadResolvers<ContextType>;
+  UpdateEmojiStickerStatPayload?: UpdateEmojiStickerStatPayloadResolvers<ContextType>;
   UpdateFeedItemPayload?: UpdateFeedItemPayloadResolvers<ContextType>;
   UpdateFeedPayload?: UpdateFeedPayloadResolvers<ContextType>;
   UpdateFeedSubscriptionPayload?: UpdateFeedSubscriptionPayloadResolvers<ContextType>;
@@ -22553,6 +23497,7 @@ export type Resolvers<ContextType = any> = {
   UpsertBotStatPayload?: UpsertBotStatPayloadResolvers<ContextType>;
   UpsertCachedGuildPayload?: UpsertCachedGuildPayloadResolvers<ContextType>;
   UpsertCachedUserPayload?: UpsertCachedUserPayloadResolvers<ContextType>;
+  UpsertEmojiStickerStatPayload?: UpsertEmojiStickerStatPayloadResolvers<ContextType>;
   UpsertFeedItemPayload?: UpsertFeedItemPayloadResolvers<ContextType>;
   UpsertFeedPayload?: UpsertFeedPayloadResolvers<ContextType>;
   UpsertFeedSubscriptionPayload?: UpsertFeedSubscriptionPayloadResolvers<ContextType>;
@@ -22774,6 +23719,7 @@ export type BulkUpdateModLogReasonMutationVariables = Exact<{
   endCaseId: Scalars['BigInt'];
   executorId: Scalars['BigInt'];
   reason: Scalars['String'];
+  onlyEmptyReason: Scalars['Boolean'];
 }>;
 
 
@@ -22808,6 +23754,15 @@ export type GetRecentModLogsQueryVariables = Exact<{
 
 
 export type GetRecentModLogsQuery = { __typename?: 'Query', allModLogs?: { __typename?: 'ModLogsConnection', nodes: Array<{ __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string }> } | null };
+
+export type GetModLogsInRangeQueryVariables = Exact<{
+  greaterThanOrEqualTo: Scalars['BigInt'];
+  lessThanOrEqualTo: Scalars['BigInt'];
+  guildId: Scalars['BigInt'];
+}>;
+
+
+export type GetModLogsInRangeQuery = { __typename?: 'Query', allModLogs?: { __typename?: 'ModLogsConnection', nodes: Array<{ __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string }> } | null };
 
 export type GetNextCaseIdQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -23534,9 +24489,9 @@ export const BulkDeleteModLogDocument = gql`
 }
     ${ModLogDataFragmentDoc}`;
 export const BulkUpdateModLogReasonDocument = gql`
-    mutation bulkUpdateModLogReason($guildId: BigInt!, $startCaseId: BigInt!, $endCaseId: BigInt!, $executorId: BigInt!, $reason: String!) {
+    mutation bulkUpdateModLogReason($guildId: BigInt!, $startCaseId: BigInt!, $endCaseId: BigInt!, $executorId: BigInt!, $reason: String!, $onlyEmptyReason: Boolean!) {
   bulkUpdateModLogReason(
-    input: {guildId: $guildId, startCaseId: $startCaseId, endCaseId: $endCaseId, executorId: $executorId, reason: $reason}
+    input: {guildId: $guildId, startCaseId: $startCaseId, endCaseId: $endCaseId, executorId: $executorId, reason: $reason, onlyEmptyReason: $onlyEmptyReason}
   ) {
     modLogs {
       ...ModLogData
@@ -23575,6 +24530,19 @@ export const GetRecentModLogsDocument = gql`
     condition: {guildId: $guildId, pending: false}
     first: 25
     orderBy: CASE_ID_DESC
+  ) {
+    nodes {
+      ...ModLogData
+    }
+  }
+}
+    ${ModLogDataFragmentDoc}`;
+export const GetModLogsInRangeDocument = gql`
+    query getModLogsInRange($greaterThanOrEqualTo: BigInt!, $lessThanOrEqualTo: BigInt!, $guildId: BigInt!) {
+  allModLogs(
+    orderBy: CASE_ID_DESC
+    condition: {guildId: $guildId, pending: false}
+    filter: {caseId: {greaterThanOrEqualTo: $greaterThanOrEqualTo, lessThanOrEqualTo: $lessThanOrEqualTo}}
   ) {
     nodes {
       ...ModLogData
@@ -24114,6 +25082,9 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
     },
     getRecentModLogs(variables: GetRecentModLogsQueryVariables, options?: C): Promise<GetRecentModLogsQuery> {
       return requester<GetRecentModLogsQuery, GetRecentModLogsQueryVariables>(GetRecentModLogsDocument, variables, options) as Promise<GetRecentModLogsQuery>;
+    },
+    getModLogsInRange(variables: GetModLogsInRangeQueryVariables, options?: C): Promise<GetModLogsInRangeQuery> {
+      return requester<GetModLogsInRangeQuery, GetModLogsInRangeQueryVariables>(GetModLogsInRangeDocument, variables, options) as Promise<GetModLogsInRangeQuery>;
     },
     getNextCaseID(variables: GetNextCaseIdQueryVariables, options?: C): Promise<GetNextCaseIdQuery> {
       return requester<GetNextCaseIdQuery, GetNextCaseIdQueryVariables>(GetNextCaseIdDocument, variables, options) as Promise<GetNextCaseIdQuery>;

@@ -596,6 +596,7 @@ input BulkUpdateModLogReasonInput {
   endCaseId: BigInt!
   executorId: BigInt!
   guildId: BigInt!
+  onlyEmptyReason: Boolean
   reason: String!
   startCaseId: BigInt!
 }
@@ -975,6 +976,41 @@ type CreateCachedUserPayload {
   unchanged and unused. May be used by a client to track mutations.
   """
   clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""All input for the create `EmojiStickerStat` mutation."""
+input CreateEmojiStickerStatInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `EmojiStickerStat` to be created by this mutation."""
+  emojiStickerStat: EmojiStickerStatInput!
+}
+
+"""The output of our create `EmojiStickerStat` mutation."""
+type CreateEmojiStickerStatPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `EmojiStickerStat` that was created by this mutation."""
+  emojiStickerStat: EmojiStickerStat
+
+  """An edge for our `EmojiStickerStat`. May be used by Relay 1."""
+  emojiStickerStatEdge(
+    """The method to use when ordering `EmojiStickerStat`."""
+    orderBy: [EmojiStickerStatsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): EmojiStickerStatsEdge
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
@@ -2018,6 +2054,60 @@ type DeleteCachedUserPayload {
   """
   clientMutationId: String
   deletedCachedUserId: ID
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""
+All input for the `deleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType` mutation.
+"""
+input DeleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput {
+  actionType: EmojiStickerActionType!
+  assetId: BigInt!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  guildId: BigInt!
+  time: Datetime!
+}
+
+"""All input for the `deleteEmojiStickerStat` mutation."""
+input DeleteEmojiStickerStatInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  The globally unique `ID` which will identify a single `EmojiStickerStat` to be deleted.
+  """
+  nodeId: ID!
+}
+
+"""The output of our delete `EmojiStickerStat` mutation."""
+type DeleteEmojiStickerStatPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+  deletedEmojiStickerStatId: ID
+
+  """The `EmojiStickerStat` that was deleted by this mutation."""
+  emojiStickerStat: EmojiStickerStat
+
+  """An edge for our `EmojiStickerStat`. May be used by Relay 1."""
+  emojiStickerStatEdge(
+    """The method to use when ordering `EmojiStickerStat`."""
+    orderBy: [EmojiStickerStatsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): EmojiStickerStatsEdge
 
   """
   Our root query field type. Allows us to run any query from our mutation payload.
@@ -3298,6 +3388,466 @@ type EligibleLevelRolesEdge {
   node: EligibleLevelRole!
 }
 
+enum EmojiStickerActionType {
+  MESSAGE
+  REACTION
+}
+
+"""
+A filter to be used against EmojiStickerActionType fields. All fields are combined with a logical ‘and.’
+"""
+input EmojiStickerActionTypeFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: EmojiStickerActionType
+
+  """Equal to the specified value."""
+  equalTo: EmojiStickerActionType
+
+  """Greater than the specified value."""
+  greaterThan: EmojiStickerActionType
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: EmojiStickerActionType
+
+  """Included in the specified list."""
+  in: [EmojiStickerActionType!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: EmojiStickerActionType
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: EmojiStickerActionType
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: EmojiStickerActionType
+
+  """Not equal to the specified value."""
+  notEqualTo: EmojiStickerActionType
+
+  """Not included in the specified list."""
+  notIn: [EmojiStickerActionType!]
+}
+
+type EmojiStickerStat implements Node {
+  actionType: EmojiStickerActionType!
+  assetId: BigInt!
+  assetType: GuildAssetType!
+  count: BigInt!
+  guildId: BigInt!
+
+  """
+  A globally unique identifier. Can be used in various places throughout the system to identify this single value.
+  """
+  nodeId: ID!
+  time: Datetime!
+}
+
+type EmojiStickerStatAggregates {
+  """
+  Mean average aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  average: EmojiStickerStatAverageAggregates
+
+  """
+  Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  distinctCount: EmojiStickerStatDistinctCountAggregates
+  keys: [String!]
+
+  """
+  Maximum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  max: EmojiStickerStatMaxAggregates
+
+  """
+  Minimum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  min: EmojiStickerStatMinAggregates
+
+  """
+  Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevPopulation: EmojiStickerStatStddevPopulationAggregates
+
+  """
+  Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  stddevSample: EmojiStickerStatStddevSampleAggregates
+
+  """
+  Sum aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  sum: EmojiStickerStatSumAggregates
+
+  """
+  Population variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  variancePopulation: EmojiStickerStatVariancePopulationAggregates
+
+  """
+  Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  varianceSample: EmojiStickerStatVarianceSampleAggregates
+}
+
+type EmojiStickerStatAverageAggregates {
+  """Mean average of assetId across the matching connection"""
+  assetId: BigFloat
+
+  """Mean average of count across the matching connection"""
+  count: BigFloat
+
+  """Mean average of guildId across the matching connection"""
+  guildId: BigFloat
+}
+
+"""
+A condition to be used against `EmojiStickerStat` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input EmojiStickerStatCondition {
+  """Checks for equality with the object’s `actionType` field."""
+  actionType: EmojiStickerActionType
+
+  """Checks for equality with the object’s `assetId` field."""
+  assetId: BigInt
+
+  """Checks for equality with the object’s `assetType` field."""
+  assetType: GuildAssetType
+
+  """Checks for equality with the object’s `count` field."""
+  count: BigInt
+
+  """Checks for equality with the object’s `guildId` field."""
+  guildId: BigInt
+
+  """Checks for equality with the object’s `time` field."""
+  time: Datetime
+}
+
+type EmojiStickerStatDistinctCountAggregates {
+  """Distinct count of actionType across the matching connection"""
+  actionType: BigInt
+
+  """Distinct count of assetId across the matching connection"""
+  assetId: BigInt
+
+  """Distinct count of assetType across the matching connection"""
+  assetType: BigInt
+
+  """Distinct count of count across the matching connection"""
+  count: BigInt
+
+  """Distinct count of guildId across the matching connection"""
+  guildId: BigInt
+
+  """Distinct count of time across the matching connection"""
+  time: BigInt
+}
+
+"""
+A filter to be used against `EmojiStickerStat` object types. All fields are combined with a logical ‘and.’
+"""
+input EmojiStickerStatFilter {
+  """Filter by the object’s `actionType` field."""
+  actionType: EmojiStickerActionTypeFilter
+
+  """Checks for all expressions in this list."""
+  and: [EmojiStickerStatFilter!]
+
+  """Filter by the object’s `assetId` field."""
+  assetId: BigIntFilter
+
+  """Filter by the object’s `assetType` field."""
+  assetType: GuildAssetTypeFilter
+
+  """Filter by the object’s `count` field."""
+  count: BigIntFilter
+
+  """Filter by the object’s `guildId` field."""
+  guildId: BigIntFilter
+
+  """Negates the expression."""
+  not: EmojiStickerStatFilter
+
+  """Checks for any expressions in this list."""
+  or: [EmojiStickerStatFilter!]
+
+  """Filter by the object’s `time` field."""
+  time: DatetimeFilter
+}
+
+"""An input for mutations affecting `EmojiStickerStatIncrementDatum`"""
+input EmojiStickerStatIncrementDatumInput {
+  assetId: BigInt
+  assetType: GuildAssetType
+}
+
+"""An input for mutations affecting `EmojiStickerStat`"""
+input EmojiStickerStatInput {
+  actionType: EmojiStickerActionType!
+  assetId: BigInt!
+  assetType: GuildAssetType!
+  count: BigInt!
+  guildId: BigInt!
+  time: Datetime!
+}
+
+type EmojiStickerStatMaxAggregates {
+  """Maximum of assetId across the matching connection"""
+  assetId: BigInt
+
+  """Maximum of count across the matching connection"""
+  count: BigInt
+
+  """Maximum of guildId across the matching connection"""
+  guildId: BigInt
+}
+
+type EmojiStickerStatMinAggregates {
+  """Minimum of assetId across the matching connection"""
+  assetId: BigInt
+
+  """Minimum of count across the matching connection"""
+  count: BigInt
+
+  """Minimum of guildId across the matching connection"""
+  guildId: BigInt
+}
+
+"""
+Represents an update to a `EmojiStickerStat`. Fields that are set will be updated.
+"""
+input EmojiStickerStatPatch {
+  actionType: EmojiStickerActionType
+  assetId: BigInt
+  assetType: GuildAssetType
+  count: BigInt
+  guildId: BigInt
+  time: Datetime
+}
+
+type EmojiStickerStatStddevPopulationAggregates {
+  """
+  Population standard deviation of assetId across the matching connection
+  """
+  assetId: BigFloat
+
+  """Population standard deviation of count across the matching connection"""
+  count: BigFloat
+
+  """
+  Population standard deviation of guildId across the matching connection
+  """
+  guildId: BigFloat
+}
+
+type EmojiStickerStatStddevSampleAggregates {
+  """Sample standard deviation of assetId across the matching connection"""
+  assetId: BigFloat
+
+  """Sample standard deviation of count across the matching connection"""
+  count: BigFloat
+
+  """Sample standard deviation of guildId across the matching connection"""
+  guildId: BigFloat
+}
+
+type EmojiStickerStatSumAggregates {
+  """Sum of assetId across the matching connection"""
+  assetId: BigFloat!
+
+  """Sum of count across the matching connection"""
+  count: BigFloat!
+
+  """Sum of guildId across the matching connection"""
+  guildId: BigFloat!
+}
+
+type EmojiStickerStatVariancePopulationAggregates {
+  """Population variance of assetId across the matching connection"""
+  assetId: BigFloat
+
+  """Population variance of count across the matching connection"""
+  count: BigFloat
+
+  """Population variance of guildId across the matching connection"""
+  guildId: BigFloat
+}
+
+type EmojiStickerStatVarianceSampleAggregates {
+  """Sample variance of assetId across the matching connection"""
+  assetId: BigFloat
+
+  """Sample variance of count across the matching connection"""
+  count: BigFloat
+
+  """Sample variance of guildId across the matching connection"""
+  guildId: BigFloat
+}
+
+"""A connection to a list of `EmojiStickerStat` values."""
+type EmojiStickerStatsConnection {
+  """
+  Aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  aggregates: EmojiStickerStatAggregates
+
+  """
+  A list of edges which contains the `EmojiStickerStat` and cursor to aid in pagination.
+  """
+  edges: [EmojiStickerStatsEdge!]!
+
+  """
+  Grouped aggregates across the matching connection (ignoring before/after/first/last/offset)
+  """
+  groupedAggregates(
+    """
+    The method to use when grouping `EmojiStickerStat` for these aggregates.
+    """
+    groupBy: [EmojiStickerStatsGroupBy!]!
+
+    """Conditions on the grouped aggregates."""
+    having: EmojiStickerStatsHavingInput
+  ): [EmojiStickerStatAggregates!]
+
+  """A list of `EmojiStickerStat` objects."""
+  nodes: [EmojiStickerStat!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """
+  The count of *all* `EmojiStickerStat` you could get from the connection.
+  """
+  totalCount: Int!
+}
+
+"""A `EmojiStickerStat` edge in the connection."""
+type EmojiStickerStatsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `EmojiStickerStat` at the end of the edge."""
+  node: EmojiStickerStat!
+}
+
+"""Grouping methods for `EmojiStickerStat` for usage during aggregation."""
+enum EmojiStickerStatsGroupBy {
+  ACTION_TYPE
+  ASSET_ID
+  ASSET_TYPE
+  COUNT
+  GUILD_ID
+  TIME
+  TIME_TRUNCATED_TO_DAY
+  TIME_TRUNCATED_TO_HOUR
+}
+
+input EmojiStickerStatsHavingAverageInput {
+  assetId: HavingBigintFilter
+  count: HavingBigintFilter
+  guildId: HavingBigintFilter
+  time: HavingDatetimeFilter
+}
+
+input EmojiStickerStatsHavingDistinctCountInput {
+  assetId: HavingBigintFilter
+  count: HavingBigintFilter
+  guildId: HavingBigintFilter
+  time: HavingDatetimeFilter
+}
+
+"""Conditions for `EmojiStickerStat` aggregates."""
+input EmojiStickerStatsHavingInput {
+  AND: [EmojiStickerStatsHavingInput!]
+  OR: [EmojiStickerStatsHavingInput!]
+  average: EmojiStickerStatsHavingAverageInput
+  distinctCount: EmojiStickerStatsHavingDistinctCountInput
+  max: EmojiStickerStatsHavingMaxInput
+  min: EmojiStickerStatsHavingMinInput
+  stddevPopulation: EmojiStickerStatsHavingStddevPopulationInput
+  stddevSample: EmojiStickerStatsHavingStddevSampleInput
+  sum: EmojiStickerStatsHavingSumInput
+  variancePopulation: EmojiStickerStatsHavingVariancePopulationInput
+  varianceSample: EmojiStickerStatsHavingVarianceSampleInput
+}
+
+input EmojiStickerStatsHavingMaxInput {
+  assetId: HavingBigintFilter
+  count: HavingBigintFilter
+  guildId: HavingBigintFilter
+  time: HavingDatetimeFilter
+}
+
+input EmojiStickerStatsHavingMinInput {
+  assetId: HavingBigintFilter
+  count: HavingBigintFilter
+  guildId: HavingBigintFilter
+  time: HavingDatetimeFilter
+}
+
+input EmojiStickerStatsHavingStddevPopulationInput {
+  assetId: HavingBigintFilter
+  count: HavingBigintFilter
+  guildId: HavingBigintFilter
+  time: HavingDatetimeFilter
+}
+
+input EmojiStickerStatsHavingStddevSampleInput {
+  assetId: HavingBigintFilter
+  count: HavingBigintFilter
+  guildId: HavingBigintFilter
+  time: HavingDatetimeFilter
+}
+
+input EmojiStickerStatsHavingSumInput {
+  assetId: HavingBigintFilter
+  count: HavingBigintFilter
+  guildId: HavingBigintFilter
+  time: HavingDatetimeFilter
+}
+
+input EmojiStickerStatsHavingVariancePopulationInput {
+  assetId: HavingBigintFilter
+  count: HavingBigintFilter
+  guildId: HavingBigintFilter
+  time: HavingDatetimeFilter
+}
+
+input EmojiStickerStatsHavingVarianceSampleInput {
+  assetId: HavingBigintFilter
+  count: HavingBigintFilter
+  guildId: HavingBigintFilter
+  time: HavingDatetimeFilter
+}
+
+"""Methods to use when ordering `EmojiStickerStat`."""
+enum EmojiStickerStatsOrderBy {
+  ACTION_TYPE_ASC
+  ACTION_TYPE_DESC
+  ASSET_ID_ASC
+  ASSET_ID_DESC
+  ASSET_TYPE_ASC
+  ASSET_TYPE_DESC
+  COUNT_ASC
+  COUNT_DESC
+  GUILD_ID_ASC
+  GUILD_ID_DESC
+  NATURAL
+  PRIMARY_KEY_ASC
+  PRIMARY_KEY_DESC
+  TIME_ASC
+  TIME_DESC
+}
+
 type Feed implements Node {
   feedId: String!
 
@@ -4075,6 +4625,53 @@ type GraphqlPayload {
   Our root query field type. Allows us to run any query from our mutation payload.
   """
   query: Query
+}
+
+enum GuildAssetType {
+  EMOJI
+  STICKER
+}
+
+"""
+A filter to be used against GuildAssetType fields. All fields are combined with a logical ‘and.’
+"""
+input GuildAssetTypeFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: GuildAssetType
+
+  """Equal to the specified value."""
+  equalTo: GuildAssetType
+
+  """Greater than the specified value."""
+  greaterThan: GuildAssetType
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: GuildAssetType
+
+  """Included in the specified list."""
+  in: [GuildAssetType!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: GuildAssetType
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: GuildAssetType
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: GuildAssetType
+
+  """Not equal to the specified value."""
+  notEqualTo: GuildAssetType
+
+  """Not included in the specified list."""
+  notIn: [GuildAssetType!]
 }
 
 type GuildBan implements Node {
@@ -5317,6 +5914,33 @@ input HavingIntFilter {
   lessThan: Int
   lessThanOrEqualTo: Int
   notEqualTo: Int
+}
+
+"""All input for the `incrementEmojiStickerStat` mutation."""
+input IncrementEmojiStickerStatInput {
+  actionType: EmojiStickerActionType!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  data: [EmojiStickerStatIncrementDatumInput]!
+  guildId: BigInt!
+}
+
+"""The output of our `incrementEmojiStickerStat` mutation."""
+type IncrementEmojiStickerStatPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
 }
 
 """
@@ -9011,6 +9635,14 @@ type Mutation {
     input: CreateCachedUserInput!
   ): CreateCachedUserPayload
 
+  """Creates a single `EmojiStickerStat`."""
+  createEmojiStickerStat(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateEmojiStickerStatInput!
+  ): CreateEmojiStickerStatPayload
+
   """Creates a single `Feed`."""
   createFeed(
     """
@@ -9242,6 +9874,22 @@ type Mutation {
     """
     input: DeleteCachedUserByIdInput!
   ): DeleteCachedUserPayload
+
+  """Deletes a single `EmojiStickerStat` using its globally unique id."""
+  deleteEmojiStickerStat(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteEmojiStickerStatInput!
+  ): DeleteEmojiStickerStatPayload
+
+  """Deletes a single `EmojiStickerStat` using a unique key."""
+  deleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: DeleteEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput!
+  ): DeleteEmojiStickerStatPayload
 
   """Deletes a single `Feed` using its globally unique id."""
   deleteFeed(
@@ -9636,6 +10284,12 @@ type Mutation {
     """
     input: GraphqlInput!
   ): GraphqlPayload
+  incrementEmojiStickerStat(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: IncrementEmojiStickerStatInput!
+  ): IncrementEmojiStickerStatPayload
   logout(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -9700,6 +10354,24 @@ type Mutation {
     """
     input: UpdateCachedUserByIdInput!
   ): UpdateCachedUserPayload
+
+  """
+  Updates a single `EmojiStickerStat` using its globally unique id and a patch.
+  """
+  updateEmojiStickerStat(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateEmojiStickerStatInput!
+  ): UpdateEmojiStickerStatPayload
+
+  """Updates a single `EmojiStickerStat` using a unique key and a patch."""
+  updateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpdateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput!
+  ): UpdateEmojiStickerStatPayload
 
   """Updates a single `Feed` using its globally unique id and a patch."""
   updateFeed(
@@ -10125,6 +10797,15 @@ type Mutation {
     input: UpsertCachedUserInput!
     where: UpsertCachedUserWhere
   ): UpsertCachedUserPayload
+
+  """Upserts a single `EmojiStickerStat`."""
+  upsertEmojiStickerStat(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: UpsertEmojiStickerStatInput!
+    where: UpsertEmojiStickerStatWhere
+  ): UpsertEmojiStickerStatPayload
 
   """Upserts a single `Feed`."""
   upsertFeed(
@@ -11140,6 +11821,40 @@ type Query implements Node {
     orderBy: [BotStatsOrderBy!] = [PRIMARY_KEY_ASC]
   ): BotStatsConnection
 
+  """Reads and enables pagination through a set of `EmojiStickerStat`."""
+  allEmojiStickerStats(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: EmojiStickerStatCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: EmojiStickerStatFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `EmojiStickerStat`."""
+    orderBy: [EmojiStickerStatsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): EmojiStickerStatsConnection
+
   """Reads and enables pagination through a set of `FeedItem`."""
   allFeedItems(
     """Read all values in the set after (below) this cursor."""
@@ -11983,6 +12698,15 @@ type Query implements Node {
     """
     offset: Int
   ): CurrentUserManagedGuildIdsConnection
+
+  """Reads a single `EmojiStickerStat` using its globally unique `ID`."""
+  emojiStickerStat(
+    """
+    The globally unique `ID` to be used in selecting a single `EmojiStickerStat`.
+    """
+    nodeId: ID!
+  ): EmojiStickerStat
+  emojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType(actionType: EmojiStickerActionType!, assetId: BigInt!, guildId: BigInt!, time: Datetime!): EmojiStickerStat
 
   """Reads a single `Feed` using its globally unique `ID`."""
   feed(
@@ -14488,6 +15212,69 @@ type UpdateCachedUserPayload {
   query: Query
 }
 
+"""
+All input for the `updateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionType` mutation.
+"""
+input UpdateEmojiStickerStatByTimeAndGuildIdAndAssetIdAndActionTypeInput {
+  actionType: EmojiStickerActionType!
+  assetId: BigInt!
+
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `EmojiStickerStat` being updated.
+  """
+  emojiStickerStatPatch: EmojiStickerStatPatch!
+  guildId: BigInt!
+  time: Datetime!
+}
+
+"""All input for the `updateEmojiStickerStat` mutation."""
+input UpdateEmojiStickerStatInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """
+  An object where the defined keys will be set on the `EmojiStickerStat` being updated.
+  """
+  emojiStickerStatPatch: EmojiStickerStatPatch!
+
+  """
+  The globally unique `ID` which will identify a single `EmojiStickerStat` to be updated.
+  """
+  nodeId: ID!
+}
+
+"""The output of our update `EmojiStickerStat` mutation."""
+type UpdateEmojiStickerStatPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `EmojiStickerStat` that was updated by this mutation."""
+  emojiStickerStat: EmojiStickerStat
+
+  """An edge for our `EmojiStickerStat`. May be used by Relay 1."""
+  emojiStickerStatEdge(
+    """The method to use when ordering `EmojiStickerStat`."""
+    orderBy: [EmojiStickerStatsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): EmojiStickerStatsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the `updateFeedByFeedId` mutation."""
 input UpdateFeedByFeedIdInput {
   """
@@ -16008,6 +16795,47 @@ type UpsertCachedUserPayload {
 """Where conditions for the upsert `CachedUser` mutation."""
 input UpsertCachedUserWhere {
   id: BigInt
+}
+
+"""All input for the upsert `EmojiStickerStat` mutation."""
+input UpsertEmojiStickerStatInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `EmojiStickerStat` to be upserted by this mutation."""
+  emojiStickerStat: EmojiStickerStatInput!
+}
+
+"""The output of our upsert `EmojiStickerStat` mutation."""
+type UpsertEmojiStickerStatPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `EmojiStickerStat` that was upserted by this mutation."""
+  emojiStickerStat: EmojiStickerStat
+
+  """An edge for our `EmojiStickerStat`. May be used by Relay 1."""
+  emojiStickerStatEdge(
+    """The method to use when ordering `EmojiStickerStat`."""
+    orderBy: [EmojiStickerStatsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): EmojiStickerStatsEdge
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
+"""Where conditions for the upsert `EmojiStickerStat` mutation."""
+input UpsertEmojiStickerStatWhere {
+  actionType: EmojiStickerActionType
+  assetId: BigInt
+  guildId: BigInt
+  time: Datetime
 }
 
 """All input for the upsert `Feed` mutation."""

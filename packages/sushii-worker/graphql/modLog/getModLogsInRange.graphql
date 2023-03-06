@@ -1,0 +1,20 @@
+query getModLogsInRange(
+  $greaterThanOrEqualTo: BigInt!
+  $lessThanOrEqualTo: BigInt!
+  $guildId: BigInt!
+) {
+  allModLogs(
+    orderBy: CASE_ID_DESC
+    condition: { guildId: $guildId, pending: false }
+    filter: {
+      caseId: {
+        greaterThanOrEqualTo: $greaterThanOrEqualTo
+        lessThanOrEqualTo: $lessThanOrEqualTo
+      }
+    }
+  ) {
+    nodes {
+      ...ModLogData
+    }
+  }
+}
