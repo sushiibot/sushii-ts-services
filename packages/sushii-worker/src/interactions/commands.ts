@@ -37,6 +37,7 @@ import ReasonCommand from "./moderation/reason/ReasonCommand";
 import ReasonAutocomplete from "./moderation/reason/ReasonAutocomplete";
 import UnTimeoutCommand from "./moderation/UnTimeoutCommand";
 import UncaseCommand from "./moderation/reason/UncaseCommand";
+import ReasonConfirmButtonHandler from "./moderation/reason/ReasonConfirmButtonHandler";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -110,7 +111,9 @@ export default function addCommands(
 
     new RoleMenuButtonHandler(),
 
-    new ModLogReasonButtonHandler()
+    new ModLogReasonButtonHandler(),
+
+    new ReasonConfirmButtonHandler()
   );
 
   // ----------------------------------------

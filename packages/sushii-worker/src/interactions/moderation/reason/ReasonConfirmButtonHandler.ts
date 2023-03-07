@@ -57,6 +57,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
       // Edit the message the comment is attached to
       await ctx.REST.interactionEdit(interaction, {
         embeds: [embed.toJSON()],
+        components: [],
       });
 
       return;
@@ -76,6 +77,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
       // Edit the message the comment is attached to
       await ctx.REST.interactionEdit(interaction, {
         embeds: [embed.toJSON()],
+        components: [],
       });
 
       return;
@@ -98,6 +100,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
 
       await ctx.REST.interactionEdit(interaction, {
         embeds: [embed.toJSON()],
+        components: [],
       });
 
       return;
@@ -111,8 +114,8 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
       interaction.member.user.id,
       [caseStartId, caseEndId],
       reason,
-      // update all cases, not just empty reasons
-      false
+      // onlyEmptyReason
+      action === "empty"
     );
 
     if (!responseEmbed) {
@@ -122,6 +125,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
     // Edit the message the button is attached to with the update result
     await ctx.REST.interactionEdit(interaction, {
       embeds: [responseEmbed.toJSON()],
+      components: [],
     });
   }
 }

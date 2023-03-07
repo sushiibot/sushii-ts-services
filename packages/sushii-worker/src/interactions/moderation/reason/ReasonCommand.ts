@@ -31,30 +31,37 @@ enum ReasonError {
 
 function getReasonConfirmComponents(
   userId: string,
-  interactionId: string
+  interactionId: string,
+  hidePartialUpdateButton: boolean
 ): ActionRowBuilder<ButtonBuilder> {
-  const overrideButton = new ButtonBuilder()
-    .setStyle(ButtonStyle.Danger)
-    .setLabel("Overwrite all")
-    .setCustomId(
-      customIds.reasonConfirmButton.compile({
-        userId,
-        // Tie the buttons to this specific interaction
-        buttonId: interactionId,
-        action: "override",
-      })
-    );
+  const buttons = [
+    new ButtonBuilder()
+      .setStyle(ButtonStyle.Danger)
+      .setLabel("Overwrite all")
+      .setCustomId(
+        customIds.reasonConfirmButton.compile({
+          userId,
+          // Tie the buttons to this specific interaction
+          buttonId: interactionId,
+          action: "override",
+        })
+      ),
+  ];
 
-  const emptyButton = new ButtonBuilder()
-    .setStyle(ButtonStyle.Primary)
-    .setLabel("Set reasons for cases without reason")
-    .setCustomId(
-      customIds.reasonConfirmButton.compile({
-        userId,
-        buttonId: interactionId,
-        action: "empty",
-      })
-    );
+  if (!hidePartialUpdateButton) {
+    const emptyButton = new ButtonBuilder()
+      .setStyle(ButtonStyle.Primary)
+      .setLabel("Set reasons for cases without reason")
+      .setCustomId(
+        customIds.reasonConfirmButton.compile({
+          userId,
+          buttonId: interactionId,
+          action: "empty",
+        })
+      );
+
+    buttons.push(emptyButton);
+  }
 
   const cancelButton = new ButtonBuilder()
     .setStyle(ButtonStyle.Secondary)
@@ -66,12 +73,9 @@ function getReasonConfirmComponents(
         action: "cancel",
       })
     );
+  buttons.push(cancelButton);
 
-  return new ActionRowBuilder<ButtonBuilder>().addComponents(
-    overrideButton,
-    emptyButton,
-    cancelButton
-  );
+  return new ActionRowBuilder<ButtonBuilder>().addComponents(...buttons);
 }
 
 export async function updateModLogReasons(
@@ -331,8 +335,9 @@ export default class ReasonCommand extends SlashCommandHandler {
         .map((c) => {
           const actionType = ActionType.fromString(c.action);
 
-          let s = `${c.caseId} - ${ActionType.toString(actionType)}`;
-          s += `\n┗ **Reason:** ${c.reason}`;
+          let s = `\`#${c.caseId}\` - **${ActionType.toString(actionType)}**`;
+          s += ` - <@${c.userId}>\n`;
+          s += `┗ **Reason:** ${c.reason}`;
 
           return s;
         }) || [];
@@ -345,13 +350,17 @@ export default class ReasonCommand extends SlashCommandHandler {
     // Buttons should only be clickable by the user who ran the command
     // custom_id: reason_confirm/user_id/uuid
     if (casesWithReason.length > 0) {
-      let description = `${casesWithReason.length} / ${allModLogs?.nodes.length} of specified cases already have reasons set:\n`;
+      let description = `**${casesWithReason.length} / ${allModLogs?.nodes.length}** of specified cases already have reasons set:\n\n`;
       description += `${casesWithReason.join("\n")}`;
       description += "\n\nPick an option below to continue or cancel.";
 
       const embed = new EmbedBuilder()
         .setTitle("Warning")
         .setDescription(description)
+        .setFields({
+          name: "New Reason",
+          value: reason,
+        })
         .setFooter({
           text: "Cancels in 2 minutes",
         })
@@ -359,7 +368,10 @@ export default class ReasonCommand extends SlashCommandHandler {
 
       const components = getReasonConfirmComponents(
         interaction.member.user.id,
-        interaction.id
+        interaction.id,
+        // All cases have reasons set, so it's either override all or cancel.
+        // No option to set for empty reasons only
+        casesWithReason.length === allModLogs?.nodes.length
       );
 
       await ctx.REST.interactionReply(interaction, {
@@ -404,12 +416,13 @@ export default class ReasonCommand extends SlashCommandHandler {
         const expiredEmbed = new EmbedBuilder()
           .setTitle("Confirmation Expired")
           .setDescription(
-            "Reason confirmation expired. Run the reason command if you still want to update the cases."
+            "Reason confirmation expired. Run the `/reason` command again if you still want to update the cases."
           )
           .setColor(Color.Error);
 
         await ctx.REST.interactionEditOriginal(interaction, {
           embeds: [expiredEmbed.toJSON()],
+          components: [],
         });
       }
 
