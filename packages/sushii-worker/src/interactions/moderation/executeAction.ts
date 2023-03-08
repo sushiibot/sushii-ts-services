@@ -27,7 +27,7 @@ function buildResponseEmbed(
   data: ModActionData,
   action: ActionType,
   content: string,
-  triedDMNonMember: boolean
+  triedDMNonMemberCount: number
 ): EmbedBuilder {
   const fields = [];
 
@@ -63,13 +63,18 @@ function buildResponseEmbed(
     let userDMValue;
 
     if (data.shouldDMReason(action)) {
-      userDMValue = "📬 Members were sent a DM";
-      userDMValue += `\n ┗ **Reason:** ${data.reason}`;
+      userDMValue = "📬 Reason sent to member in DMs";
     }
 
-    if (triedDMNonMember) {
+    if (triedDMNonMemberCount > 0) {
       userDMValue +=
         "\n\n**Note:** Some messages were not sent to users not in this server.";
+    }
+
+    // Failed to DM all targets
+    if (data.targets.size === triedDMNonMemberCount) {
+      userDMValue =
+        "❌ Did not send reason to the users as they are not in the server";
     }
 
     // Do not include field if no dm
@@ -386,7 +391,7 @@ export default async function executeAction(
   let msg = "";
 
   // If executor wants to DM, but target is not a member
-  let triedDMNonMember = false;
+  let triedDMNonMemberCount = 0;
 
   for (const [, target] of data.targets) {
     // Should be synchronous so we don't reuse the same case ID
@@ -413,11 +418,13 @@ export default async function executeAction(
       msg += `<@${res.val.user.id}> (\`${res.val.user.id}\`)`;
 
       // Makes triedDMNonMember true if any returned value is true
-      triedDMNonMember = triedDMNonMember || res.val.triedDMNonMember;
+      triedDMNonMemberCount += res.val.triedDMNonMember ? 1 : 0;
     }
 
     msg += "\n";
   }
 
-  return Ok(buildResponseEmbed(ctx, data, actionType, msg, triedDMNonMember));
+  return Ok(
+    buildResponseEmbed(ctx, data, actionType, msg, triedDMNonMemberCount)
+  );
 }

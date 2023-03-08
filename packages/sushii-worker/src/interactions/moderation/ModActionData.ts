@@ -73,9 +73,12 @@ export default class ModActionData {
     }
 
     // TODO: Configurable options for DM reason defaults
-    // Current default is No DM reason
     const dmReasonString = this.options.getString(ModerationOption.DMReason);
-    this.DMReason = dmReasonString === DMReasonChoiceValue.Yes;
+
+    // If dmReasonString not provided, keep it undefined
+    if (dmReasonString !== undefined) {
+      this.DMReason = dmReasonString === DMReasonChoiceValue.Yes;
+    }
   }
 
   /**
