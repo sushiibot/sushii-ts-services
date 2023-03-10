@@ -128,14 +128,6 @@ export default class ModLogHandler extends EventHandler {
     eventType: GatewayDispatchEvents,
     event: GatewayGuildAuditLogEntryCreateDispatchData
   ): Promise<void> {
-    // Initial deployment guilds, bp and test
-    if (
-      event.guild_id !== "187450744427773963" &&
-      event.guild_id !== "167058919611564043"
-    ) {
-      return;
-    }
-
     const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
       guildId: event.guild_id,
     });

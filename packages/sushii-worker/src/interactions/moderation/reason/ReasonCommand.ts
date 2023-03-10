@@ -389,20 +389,12 @@ export default class ReasonCommand extends SlashCommandHandler {
       // Wait 2 minutes
       await sleep(2 * 60 * 1000);
 
-      // Delete the confirmation message
+      // Check if the confirmation in store still exists - not clicked yet
       const pendingConf = ctx.memoryStore.pendingReasonConfirmations.get(
         interaction.id
       );
 
-      logger.debug(
-        {
-          interactionId: interaction.id,
-          pendingConf,
-        },
-        "Checking if confirmation message is still pending"
-      );
-
-      // Still pending, not clicked yet
+      // Still pending, update message and delete
       if (pendingConf) {
         logger.debug(
           {
