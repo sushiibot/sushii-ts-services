@@ -85,7 +85,7 @@ function buildDeleteEmbed(
 
   if (msg.attachments && msg.attachments.length > 0) {
     const attachments = msg.attachments
-      .map((a) => `> [${a.filename}](${a.url})`)
+      .map((a) => `> [${a.filename}](${a.proxy_url})`)
       .join("\n");
 
     description += "**Attachments**";
@@ -178,7 +178,7 @@ function buildBulkDeleteEmbed(
 
     if (msg.attachments && msg.attachments.length > 0) {
       const attachments = msg.attachments
-        .map((a) => `> [${a.filename}](${a.url})`)
+        .map((a) => `> [${a.filename}](${a.proxy_url})`)
         .join("\n");
 
       if (msg.content) {
