@@ -1,16 +1,6 @@
-import {
-  APIApplicationCommandAutocompleteInteraction,
-  APIApplicationCommandInteractionDataIntegerOption,
-  APIApplicationCommandInteractionDataNumberOption,
-  APIApplicationCommandInteractionDataStringOption,
-} from "discord-api-types/v10";
+import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import Context from "../../model/context";
 import InteractionHandler from "./InteractionHandler";
-
-export type AutocompleteOption =
-  | APIApplicationCommandInteractionDataStringOption
-  | APIApplicationCommandInteractionDataIntegerOption
-  | APIApplicationCommandInteractionDataNumberOption;
 
 export default abstract class AutocompleteHandler extends InteractionHandler {
   /**
@@ -25,7 +15,7 @@ export default abstract class AutocompleteHandler extends InteractionHandler {
 
   abstract handler(
     ctx: Context,
-    interaction: APIApplicationCommandAutocompleteInteraction,
-    option: AutocompleteOption
+    interaction: AutocompleteInteraction,
+    option: AutocompleteFocusedOption
   ): Promise<void>;
 }

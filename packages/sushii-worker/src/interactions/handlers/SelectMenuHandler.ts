@@ -1,4 +1,4 @@
-import { APIMessageComponentSelectMenuInteraction } from "discord-api-types/v10";
+import { AnySelectMenuInteraction } from "discord.js";
 import MessageComponentHandler from "./MessageComponentHandler";
 import Context from "../../model/context";
 
@@ -8,6 +8,6 @@ export default abstract class SelectMenuHandler extends MessageComponentHandler 
    */
   abstract handleInteraction(
     ctx: Context,
-    interaction: APIMessageComponentSelectMenuInteraction
+    interaction: AnySelectMenuInteraction
   ): Promise<void>;
 }

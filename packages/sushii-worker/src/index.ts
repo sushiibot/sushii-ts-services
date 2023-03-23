@@ -1,7 +1,7 @@
 import "./dayjs";
 import { AMQPClient } from "@cloudamqp/amqp-client";
 import * as Sentry from "@sentry/node";
-import { Client, Events, GatewayIntentBits, Options } from "discord.js";
+import { Client,  GatewayIntentBits, Options } from "discord.js";
 import log from "./logger";
 import InteractionClient from "./client";
 import AmqpGateway from "./model/AmqpGateway";
@@ -64,10 +64,6 @@ async function main(): Promise<void> {
       // Do not cache messages
       MessageManager: 0,
     }),
-  });
-
-  djsClient.once(Events.ClientReady, (c) => {
-    log.info(`Ready! Logged in as ${c.user.tag}`);
   });
 
   djsClient.login(config.TOKEN);

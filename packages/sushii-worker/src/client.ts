@@ -1,28 +1,18 @@
 import Collection from "@discordjs/collection";
-import {
-  RESTPostAPIApplicationCommandsJSONBody,
-  APIInteraction,
-  APIChatInputApplicationCommandInteraction,
-  APIModalSubmitInteraction,
-  InteractionType,
-  APIContextMenuInteraction,
-  MessageFlags,
-  APIMessageComponentButtonInteraction,
-  APIMessageComponentSelectMenuInteraction,
-  APIApplicationCommandAutocompleteInteraction,
-  ApplicationCommandOptionType,
-  APIApplicationCommandInteractionDataOption,
-} from "discord-api-types/v10";
-import { AMQPMessage } from "@cloudamqp/amqp-client";
-import {
-  isChatInputApplicationCommandInteraction,
-  isContextMenuApplicationCommandInteraction,
-  isGuildInteraction,
-  isMessageComponentButtonInteraction,
-  isMessageComponentSelectMenuInteraction,
-} from "discord-api-types/utils/v10";
+import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v10";
 import * as Sentry from "@sentry/node";
 import { t } from "i18next";
+import {
+  AnySelectMenuInteraction,
+  AutocompleteFocusedOption,
+  AutocompleteInteraction,
+  ButtonInteraction,
+  ChatInputCommandInteraction,
+  ContextMenuCommandInteraction,
+  Interaction,
+  MessageFlags,
+  ModalSubmitInteraction,
+} from "discord.js";
 import Context from "./model/context";
 import log from "./logger";
 import {
@@ -32,13 +22,7 @@ import {
   SelectMenuHandler,
   AutocompleteHandler,
 } from "./interactions/handlers";
-import {
-  isGatewayDispatchEvent,
-  isGatewayInteractionCreateDispatch,
-} from "./utils/interactionTypeGuards";
 import ContextMenuHandler from "./interactions/handlers/ContextMenuHandler";
-import { AutocompleteOption } from "./interactions/handlers/AutocompleteHandler";
-import getInvokerUser from "./utils/interactions";
 import Metrics from "./model/metrics";
 import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
@@ -47,47 +31,37 @@ import { GatewayDispatchPayloadWithOld } from "./model/GatewayDispatchPayloadWit
 
 interface FocusedOption {
   path: string;
-  option: AutocompleteOption;
+  option: AutocompleteFocusedOption;
 }
 
 function findFocusedOptionRecur(
-  options: APIApplicationCommandInteractionDataOption[],
+  options: AutocompleteInteraction["options"],
   parents: string[]
 ): FocusedOption | undefined {
-  // eslint-disable-next-line no-restricted-syntax
-  for (const option of options) {
-    if (
-      (option.type === ApplicationCommandOptionType.String ||
-        option.type === ApplicationCommandOptionType.Integer ||
-        option.type === ApplicationCommandOptionType.Number) &&
-      option.focused
-    ) {
-      return {
-        // Don't include option name, only command and group names
-        path: parents.join("."),
-        option,
-      };
-    }
+  const subGroup = options.getSubcommandGroup();
 
-    if (
-      (option.type === ApplicationCommandOptionType.Subcommand ||
-        option.type === ApplicationCommandOptionType.SubcommandGroup) &&
-      option.options
-    ) {
-      return findFocusedOptionRecur(option.options, [...parents, option.name]);
-    }
+  if (subGroup) {
+    parents.push(subGroup);
   }
 
-  return undefined;
+  const subCommand = options.getSubcommand(false);
+  if (subCommand) {
+    parents.push(subCommand);
+  }
+
+  const focusedOption = options.getFocused(true);
+
+  return {
+    path: [...parents, focusedOption.name].join("."),
+    option: focusedOption,
+  };
 }
 
 function findFocusedOption(
-  interaction: APIApplicationCommandAutocompleteInteraction
+  interaction: AutocompleteInteraction
 ): FocusedOption | undefined {
   // eslint-disable-next-line no-restricted-syntax
-  return findFocusedOptionRecur(interaction.data.options, [
-    interaction.data.name,
-  ]);
+  return findFocusedOptionRecur(interaction.options, [interaction.commandName]);
 }
 
 export default class Client {
@@ -269,48 +243,35 @@ export default class Client {
    * @returns
    */
   private async handleSlashCommandInteraction(
-    interaction: APIChatInputApplicationCommandInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const command = this.commands.get(interaction.data.name);
+    const command = this.commands.get(interaction.commandName);
 
     if (!command) {
-      log.error(`received unknown command: ${interaction.data.name}`);
+      log.error(`received unknown command: ${interaction.commandName}`);
       return;
     }
 
     log.info(
       {
         command: getFullCommandName(interaction),
-        guildId: interaction.guild_id,
-        userId: getInvokerUser(interaction).id,
+        guildId: interaction.guildId,
+        userId: interaction.user.id,
       },
       "received command"
     );
 
     try {
-      if (command.serverOnly) {
-        if (!isGuildInteraction(interaction)) {
-          await this.context.REST.interactionReply(interaction, {
-            content: "This command can only be used in servers.",
-            flags: MessageFlags.Ephemeral,
-          });
-
-          return;
-        }
-      }
-
       // Pre-check
       if (command.check) {
         const checkRes = await command.check(this.context, interaction);
 
         if (!checkRes.pass) {
-          await this.context.REST.interactionReply(interaction, {
-            content: checkRes.message,
-          });
+          await interaction.reply(checkRes.message);
 
           log.info(
             "command %s failed check: %s",
-            interaction.data.name,
+            interaction.commandName,
             checkRes.message
           );
           return;
@@ -319,7 +280,7 @@ export default class Client {
 
       await command.handler(this.context, interaction);
     } catch (e) {
-      const invoker = getInvokerUser(interaction);
+      const invoker = interaction.user;
 
       Sentry.withScope((scope) => {
         scope.addAttachment({
@@ -345,15 +306,13 @@ export default class Client {
         });
       });
 
-      log.error(e, "error running command %s", interaction.data.name);
+      log.error(e, "error running command %s", interaction.commandName);
 
       try {
-        await this.context.REST.interactionReply(interaction, {
-          content: t("generic.error.internal"),
-        });
+        await interaction.reply(t("generic.error.internal"));
       } catch (e2) {
         Sentry.captureException(e2);
-        log.warn(e2, "error replying error %s", interaction.data.name);
+        log.warn(e2, "error replying error %s", interaction.commandName);
       }
     }
   }
@@ -365,14 +324,14 @@ export default class Client {
    * @returns
    */
   private async handleAutocompleteInteraction(
-    interaction: APIApplicationCommandAutocompleteInteraction
+    interaction: AutocompleteInteraction
   ): Promise<void> {
     // Find focused option path, e.g. notification.delete
     const focusedOption = findFocusedOption(interaction);
 
     if (!focusedOption) {
       throw new Error(
-        `no focused option found for autocomplete ${interaction.data.name}`
+        `no focused option found for autocomplete ${interaction.commandName}`
       );
     }
 
@@ -387,8 +346,8 @@ export default class Client {
       {
         path: focusedOption.path,
         option: focusedOption.option,
-        guildId: interaction.guild_id,
-        userId: interaction.member?.user.id || interaction.user?.id,
+        guildId: interaction.guildId,
+        userId: interaction.user.id,
       },
       "received autocomplete"
     );
@@ -400,9 +359,7 @@ export default class Client {
       const checkRes = await autocomplete.check(this.context, interaction);
 
       if (!checkRes.pass) {
-        await this.context.REST.interactionReply(interaction, {
-          content: checkRes.message,
-        });
+        // No reply since autocomplete
 
         log.info(
           "autocomplete %s failed check: %s",
@@ -421,11 +378,11 @@ export default class Client {
       Sentry.captureException(e, {
         tags: {
           type: "autocomplete",
-          custom_id: interaction.data.name,
+          custom_id: interaction.commandName,
         },
       });
 
-      log.error(e, "error running autocomplete %s", interaction.data.name);
+      log.error(e, "error running autocomplete %s", interaction.commandName);
     }
   }
 
@@ -436,42 +393,31 @@ export default class Client {
    * @returns
    */
   private async handleContextMenuInteraction(
-    interaction: APIContextMenuInteraction
+    interaction: ContextMenuCommandInteraction
   ): Promise<void> {
-    const command = this.contextMenuHandlers.get(interaction.data.name);
+    const command = this.contextMenuHandlers.get(interaction.commandName);
 
     if (!command) {
-      log.error(`received unknown command: ${interaction.data.name}`);
+      log.error(`received unknown command: ${interaction.commandName}`);
       return;
     }
 
-    log.info("received %s command", interaction.data.name);
+    log.info("received %s command", interaction.commandName);
 
     try {
-      if (command.serverOnly) {
-        if (interaction.guild_id === undefined) {
-          await this.context.REST.interactionReply(interaction, {
-            content: "This command can only be used in servers.",
-            flags: MessageFlags.Ephemeral,
-          });
-
-          return;
-        }
-      }
-
       // Pre-check
       if (command.check) {
         const checkRes = await command.check(this.context, interaction);
 
         if (!checkRes.pass) {
-          await this.context.REST.interactionReply(interaction, {
+          await interaction.reply({
             content: checkRes.message,
             flags: MessageFlags.Ephemeral,
           });
 
           log.info(
             "command %s failed check: %s",
-            interaction.data.name,
+            interaction.commandName,
             checkRes.message
           );
           return;
@@ -483,19 +429,19 @@ export default class Client {
       Sentry.captureException(e, {
         tags: {
           type: "context_menu",
-          name: interaction.data.name,
+          name: interaction.commandName,
         },
       });
-      log.error(e, "error running command %s", interaction.data.name);
+      log.error(e, "error running command %s", interaction.commandName);
 
       try {
-        await this.context.REST.interactionReply(interaction, {
+        await interaction.reply({
           content: t("generic.error.internal"),
           flags: MessageFlags.Ephemeral,
         });
       } catch (e2) {
         Sentry.captureException(e2);
-        log.warn(e2, "error replying error %s", interaction.data.name);
+        log.warn(e2, "error replying error %s", interaction.commandName);
       }
     }
   }
@@ -506,22 +452,22 @@ export default class Client {
    * @param interaction modal submit interaction
    */
   private async handleModalSubmit(
-    interaction: APIModalSubmitInteraction
+    interaction: ModalSubmitInteraction
   ): Promise<void> {
     const modalHandler = this.modalHandlers.find(
-      (handler) => handler.customIDMatch(interaction.data.custom_id) !== false
+      (handler) => handler.customIDMatch(interaction.customId) !== false
     );
 
     if (!modalHandler) {
       log.error(
         "received unknown modal submit interaction: %s",
-        interaction.data.custom_id
+        interaction.customId
       );
 
       return;
     }
 
-    log.info("received %s modal submit", interaction.data.custom_id);
+    log.info("received %s modal submit", interaction.customId);
 
     try {
       await modalHandler.handleModalSubmit(this.context, interaction);
@@ -529,7 +475,7 @@ export default class Client {
       Sentry.captureException(e, {
         tags: {
           type: "modal",
-          custom_id: interaction.data.custom_id,
+          custom_id: interaction.customId,
         },
       });
 
@@ -543,24 +489,24 @@ export default class Client {
    * @param interaction button interaction
    */
   private async handleButtonSubmit(
-    interaction: APIMessageComponentButtonInteraction
+    interaction: ButtonInteraction
   ): Promise<void> {
     // TODO: button / select menu handlers don't really need to be a collection
     // as we are always iterating through all handlers
     const buttonHandler = this.buttonHandlers.find(
-      (handler) => handler.customIDMatch(interaction.data.custom_id) !== false
+      (handler) => handler.customIDMatch(interaction.customId) !== false
     );
 
     if (!buttonHandler) {
       log.error(
         "received unknown button interaction: %s",
-        interaction.data.custom_id
+        interaction.customId
       );
 
       return;
     }
 
-    log.info("received %s button", interaction.data.custom_id);
+    log.info("received %s button", interaction.customId);
 
     try {
       await buttonHandler.handleInteraction(this.context, interaction);
@@ -568,7 +514,7 @@ export default class Client {
       Sentry.captureException(e, {
         tags: {
           type: "button",
-          custom_id: interaction.data.custom_id,
+          custom_id: interaction.customId,
         },
       });
 
@@ -582,22 +528,22 @@ export default class Client {
    * @param interaction select menu interaction
    */
   private async handleSelectMenuSubmit(
-    interaction: APIMessageComponentSelectMenuInteraction
+    interaction: AnySelectMenuInteraction
   ): Promise<void> {
     const selectMenuHandler = this.selectMenuHandlers.find(
-      (handler) => handler.customIDMatch(interaction.data.custom_id) !== false
+      (handler) => handler.customIDMatch(interaction.customId) !== false
     );
 
     if (!selectMenuHandler) {
       log.error(
         "received unknown select menu interaction: %s",
-        interaction.data.custom_id
+        interaction.customId
       );
 
       return;
     }
 
-    log.info("received %s select menu", interaction.data.custom_id);
+    log.info("received %s select menu", interaction.customId);
 
     try {
       await selectMenuHandler.handleInteraction(this.context, interaction);
@@ -607,44 +553,42 @@ export default class Client {
     }
   }
 
-  private async handleAPIInteraction(
-    interaction: APIInteraction
-  ): Promise<void> {
-    if (interaction.type === InteractionType.ApplicationCommand) {
-      if (isChatInputApplicationCommandInteraction(interaction)) {
-        return this.handleSlashCommandInteraction(interaction);
-      }
+  public async handleAPIInteraction(interaction: Interaction): Promise<void> {
+    this.metrics.handleInteraction(interaction);
 
-      if (isContextMenuApplicationCommandInteraction(interaction)) {
-        return this.handleContextMenuInteraction(interaction);
-      }
+    if (interaction.isChatInputCommand()) {
+      return this.handleSlashCommandInteraction(interaction);
     }
 
-    if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
+    if (interaction.isContextMenuCommand()) {
+      return this.handleContextMenuInteraction(interaction);
+    }
+
+    if (interaction.isAutocomplete()) {
       return this.handleAutocompleteInteraction(interaction);
     }
 
-    if (interaction.type === InteractionType.MessageComponent) {
-      if (isMessageComponentButtonInteraction(interaction)) {
-        return this.handleButtonSubmit(interaction);
-      }
-
-      if (isMessageComponentSelectMenuInteraction(interaction)) {
-        return this.handleSelectMenuSubmit(interaction);
-      }
+    if (interaction.isButton()) {
+      return this.handleButtonSubmit(interaction);
     }
 
-    if (interaction.type === InteractionType.ModalSubmit) {
+    if (interaction.isAnySelectMenu()) {
+      return this.handleSelectMenuSubmit(interaction);
+    }
+
+    if (interaction.isModalSubmit()) {
       return this.handleModalSubmit(interaction);
     }
 
     return undefined;
   }
 
-  private async handleEvent(
+  public async handleEvent(
     event: GatewayDispatchPayloadWithOld
   ): Promise<void> {
     const data = event.d;
+
+    this.metrics.handleGatewayDispatchEvent(event);
 
     const promises = [];
 
@@ -669,44 +613,6 @@ export default class Client {
 
         log.error({ err: result.reason }, "error handling event %s", event.t);
       }
-    }
-  }
-
-  /**
-   * Handles a raw gateway interaction from AMQP
-   *
-   * @param msg AMQP message
-   * @returns
-   */
-  public async handleAMQPMessage(msg: AMQPMessage): Promise<void> {
-    const msgString = msg.bodyToString();
-    if (!msgString) {
-      log.error("received empty AMQP message");
-      return;
-    }
-
-    const event = JSON.parse(msgString);
-    if (!isGatewayDispatchEvent(event)) {
-      return;
-    }
-
-    this.metrics.handleGatewayDispatchEvent(event);
-
-    // Handle non interaction event
-    if (!isGatewayInteractionCreateDispatch(event)) {
-      this.handleEvent(event);
-
-      return;
-    }
-
-    try {
-      // Not awaited as we don't need to block
-      this.handleAPIInteraction(event.d);
-      this.metrics.handleInteraction(event.d);
-    } catch (e) {
-      Sentry.captureException(e);
-
-      log.error(e, "error handling AMQP message %s", event.t);
     }
   }
 }

@@ -1,33 +1,22 @@
-import {
-  APIChatInputApplicationCommandInteraction,
-  ApplicationCommandOptionType,
-} from "discord-api-types/v10";
+import { ChatInputCommandInteraction } from "discord.js";
 
 export default function getFullCommandName(
-  interaction: APIChatInputApplicationCommandInteraction
+  interaction: ChatInputCommandInteraction
 ): string {
-  if (!interaction.data.options || interaction.data.options.length === 0) {
-    return interaction.data.name;
+  const subCommand = interaction.options.getSubcommand(false);
+  const subCommandGroup = interaction.options.getSubcommandGroup();
+
+  if (subCommandGroup && subCommand) {
+    return `${interaction.commandName} ${subCommandGroup} ${subCommand}`;
   }
 
-  let { name } = interaction.data;
-  let { options } = interaction.data;
-
-  // Add subcommand group
-  if (
-    interaction.data.options[0].type ===
-    ApplicationCommandOptionType.SubcommandGroup
-  ) {
-    name += ` ${options[0].name}`;
-    options = interaction.data.options[0].options;
+  if (subCommandGroup) {
+    return `${interaction.commandName} ${subCommandGroup}`;
   }
 
-  // Add subcommand
-  if (
-    interaction.data.options[0].type === ApplicationCommandOptionType.Subcommand
-  ) {
-    name += ` ${options[0].name}`;
+  if (subCommand) {
+    return `${interaction.commandName} ${subCommand}`;
   }
 
-  return name;
+  return interaction.commandName;
 }

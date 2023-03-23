@@ -1,4 +1,4 @@
-import { APIMessageComponentInteraction } from "discord-api-types/v10";
+import { MessageComponentInteraction } from "discord.js";
 import { match } from "path-to-regexp";
 import Context from "../../model/context";
 
@@ -13,6 +13,6 @@ export default abstract class MessageComponentHandler {
    */
   abstract handleInteraction(
     ctx: Context,
-    interaction: APIMessageComponentInteraction
+    interaction: MessageComponentInteraction
   ): Promise<void>;
 }

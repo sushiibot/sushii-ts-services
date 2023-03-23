@@ -1,8 +1,8 @@
 import {
   RESTPostAPIChatInputApplicationCommandsJSONBody,
   RESTPostAPIApplicationCommandsJSONBody,
-  APIChatInputApplicationCommandInteraction,
 } from "discord-api-types/v10";
+import { ChatInputCommandInteraction } from "discord.js";
 import Context from "../../model/context";
 import InteractionHandler from "./InteractionHandler";
 
@@ -19,6 +19,6 @@ export default abstract class SlashCommandHandler extends InteractionHandler {
    */
   abstract handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void>;
 }
