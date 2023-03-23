@@ -1,59 +1,35 @@
-function requiredEnv(envVar: string): string {
-  const value = process.env[envVar];
-  if (!value) {
-    throw new Error(`Missing environment variable: ${envVar}`);
-  }
+import { z } from "zod";
+import * as dotenv from "dotenv";
+import logger from "../logger";
 
-  return value;
-}
+dotenv.config();
 
-export interface ConfigI {
-  token: string;
-  applicationId: string;
-
-  sentryDsn?: string;
-  // If using guild commands for testing
-  guildIds: string[];
-  graphqlApiURL: string;
-  graphqlApiWebsocketURL: string;
-  graphqlApiToken: string;
-  sushiiImageServerURL: string;
-  amqpUrl: string;
+const schema = z.object({
+  TOKEN: z.string(),
+  LOG_LEVEL: z.string().optional().default("info"),
+  APPLICATION_ID: z.string(),
+  SENTRY_DSN: z.string(),
+  GRAPHQL_API_URL: z.string(),
+  GRAPHQL_API_WEBSOCKET_URL: z.string(),
+  GRAPHQL_API_TOKEN: z.string(),
+  SUSHII_IMAGE_SERVER_URL: z.string(),
+  AMQP_URL: z.string(),
 
   // Example: 'https://discord.com/api'
-  proxyUrl: string;
+  PROXY_URL: z.string(),
+});
+
+const parsed = schema.safeParse(process.env);
+
+if (!parsed.success) {
+  logger.error(
+    "❌ Invalid environment variables:",
+    JSON.stringify(parsed.error.format(), null, 4)
+  );
+
+  process.exit(1);
 }
-export class Config implements ConfigI {
-  public token: string;
 
-  public applicationId: string;
+export type ConfigType = z.infer<typeof schema>;
 
-  public sentryDsn?: string;
-
-  public guildIds: string[];
-
-  public graphqlApiURL: string;
-
-  public graphqlApiWebsocketURL: string;
-
-  public graphqlApiToken: string;
-
-  public sushiiImageServerURL: string;
-
-  public amqpUrl: string;
-
-  public proxyUrl: string;
-
-  constructor() {
-    this.token = requiredEnv("DISCORD_TOKEN");
-    this.applicationId = requiredEnv("APPLICATION_ID");
-    this.sentryDsn = process.env.SENTRY_DSN;
-    this.guildIds = process.env.GUILD_IDS?.split(",") || [];
-    this.graphqlApiURL = requiredEnv("SUSHII_GRAPHQL_URL");
-    this.graphqlApiWebsocketURL = requiredEnv("SUSHII_GRAPHQL_WS_URL");
-    this.graphqlApiToken = requiredEnv("SUSHII_GRAPHQL_TOKEN");
-    this.sushiiImageServerURL = requiredEnv("SUSHII_IMAGE_SERVER_URL");
-    this.amqpUrl = requiredEnv("AMQP_URL");
-    this.proxyUrl = requiredEnv("TWILIGHT_PROXY_URL");
-  }
-}
+export default parsed.data;

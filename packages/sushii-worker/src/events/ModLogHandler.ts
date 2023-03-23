@@ -5,8 +5,14 @@ import {
   ButtonStyle,
   AuditLogEvent,
   GatewayGuildAuditLogEntryCreateDispatchData,
+  GatewayGuildBanAddDispatchData,
+  PermissionFlagsBits,
 } from "discord-api-types/v10";
-import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+} from "@discordjs/builders";
 import dayjs from "dayjs";
 import logger from "../logger";
 import Context from "../model/context";
@@ -17,6 +23,10 @@ import customIds from "../interactions/customIds";
 import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
 import buildModLogEmbed from "../builders/buildModLogEmbed";
 import { buildDMEmbed } from "../interactions/moderation/sendDm";
+import { hasPermission } from "../utils/permissions";
+import Color from "../utils/colors";
+
+const notifiedCache = new Set<string>();
 
 interface ActionTypeEventData {
   actionType: ActionType;
@@ -117,20 +127,42 @@ function buildModLogComponents(
   return [row.toJSON()];
 }
 
+function isGatewayAuditLogEntryCreate(
+  event:
+    | GatewayGuildAuditLogEntryCreateDispatchData
+    | GatewayGuildBanAddDispatchData
+): event is GatewayGuildAuditLogEntryCreateDispatchData {
+  return "target_id" in event;
+}
+
 export default class ModLogHandler extends EventHandler {
   eventTypes = [
     // All mod events, bans, kicks and timeouts
     GatewayDispatchEvents.GuildAuditLogEntryCreate,
+
+    // Legacy event - only used to notify if audit log permission is not enabled
+    GatewayDispatchEvents.GuildBanAdd,
   ];
 
   async handler(
     ctx: Context,
     eventType: GatewayDispatchEvents,
-    event: GatewayGuildAuditLogEntryCreateDispatchData
+    event:
+      | GatewayGuildAuditLogEntryCreateDispatchData
+      | GatewayGuildBanAddDispatchData
   ): Promise<void> {
     const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
       guildId: event.guild_id,
     });
+
+    logger.debug(
+      {
+        guildId: event.guild_id,
+        modlogChannelId: guildConfigById?.logMod,
+        modlogEnabled: guildConfigById?.logModEnabled,
+      },
+      "mod log event"
+    );
 
     // No guild config found, ignore
     if (
@@ -138,6 +170,59 @@ export default class ModLogHandler extends EventHandler {
       !guildConfigById.logMod || // No mod log set
       !guildConfigById.logModEnabled // Mod log disabled
     ) {
+      return;
+    }
+
+    // Ban event
+    if (!isGatewayAuditLogEntryCreate(event)) {
+      // Ban event, exit if already sent notification
+      if (notifiedCache.has(event.guild_id)) {
+        logger.debug(
+          { guildId: event.guild_id },
+          "Already notified guild of missing audit log perms"
+        );
+        return;
+      }
+
+      // Let's check if sushii has audit log perms in this guild.
+      // Only fetch guild if not cached
+      const guild = await ctx.REST.getGuild(event.guild_id);
+
+      if (guild.err) {
+        logger.error({ err: guild.err }, "Failed to get guild for ban event");
+        return;
+      }
+
+      if (guild.ok && guild.val.permissions) {
+        // sushii doesn't have audit log perms, notify
+        if (
+          !hasPermission(
+            guild.val.permissions,
+            PermissionFlagsBits.ViewAuditLog
+          )
+        ) {
+          // Guild doesn't have audit log perms, notify
+          const embed = new EmbedBuilder()
+            .setTitle("Missing audit log permissions")
+            .setDescription(
+              "sushii now needs extra permissions to log mod actions, please make sure my role has the `View Audit Log` permission!"
+            )
+            .setColor(Color.Error);
+
+          await ctx.REST.sendChannelMessage(guildConfigById.logMod, {
+            embeds: [embed.toJSON()],
+          });
+
+          // Prevent logging again in this guild
+          notifiedCache.add(event.guild_id);
+
+          logger.debug(
+            { guildId: event.guild_id },
+            "Notified guild of missing audit log perms (ban event)"
+          );
+        }
+      }
+
       return;
     }
 

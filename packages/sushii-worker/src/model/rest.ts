@@ -31,27 +31,28 @@ import {
   RESTPostAPIApplicationCommandsJSONBody,
   RESTPostAPIApplicationCommandsResult,
   RESTGetAPIGuildBansResult,
+  RESTGetAPIGuildResult,
 } from "discord-api-types/v10";
 import { Ok, Err, Result } from "ts-results";
-import { ConfigI } from "./config";
+import config from "./config";
 
 export type APIPromiseResult<T> = Promise<Result<T, DiscordAPIError>>;
 
 export default class RESTClient {
   public readonly rest: REST;
 
-  constructor(private readonly config: ConfigI) {
+  constructor() {
     this.rest = new REST({
       version: "10",
-      api: this.config.proxyUrl,
-    }).setToken(config.token);
+      api: config.PROXY_URL,
+    }).setToken(config.TOKEN);
   }
 
   public registerCommands(
     commands: RESTPostAPIApplicationCommandsJSONBody[]
   ): APIPromiseResult<RESTPostAPIApplicationCommandsResult[]> {
     return this.handleError(
-      this.rest.put(Routes.applicationCommands(this.config.applicationId), {
+      this.rest.put(Routes.applicationCommands(config.APPLICATION_ID), {
         body: commands,
       })
     );
@@ -259,6 +260,12 @@ export default class RESTClient {
   ): APIPromiseResult<RESTGetAPIGuildMemberResult> {
     return this.handleError<RESTGetAPIGuildMemberResult>(
       this.rest.get(Routes.guildMember(guildId, userId))
+    );
+  }
+
+  public getGuild(guildId: string): APIPromiseResult<RESTGetAPIGuildResult> {
+    return this.handleError<RESTGetAPIGuildResult>(
+      this.rest.get(Routes.guild(guildId))
     );
   }
 

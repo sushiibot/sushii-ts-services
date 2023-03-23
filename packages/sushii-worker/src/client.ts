@@ -1,6 +1,5 @@
 import Collection from "@discordjs/collection";
 import {
-  Routes,
   RESTPostAPIApplicationCommandsJSONBody,
   APIInteraction,
   APIChatInputApplicationCommandInteraction,
@@ -24,7 +23,6 @@ import {
 } from "discord-api-types/utils/v10";
 import * as Sentry from "@sentry/node";
 import { t } from "i18next";
-import { ConfigI } from "./model/config";
 import Context from "./model/context";
 import log from "./logger";
 import {
@@ -94,11 +92,6 @@ function findFocusedOption(
 
 export default class Client {
   /**
-   * Bot configuration
-   */
-  private config: ConfigI;
-
-  /**
    * Prometheus metrics
    */
   private metrics: Metrics;
@@ -145,8 +138,7 @@ export default class Client {
    */
   private selectMenuHandlers: SelectMenuHandler[];
 
-  constructor(ctx: Context, config: ConfigI, metrics: Metrics) {
-    this.config = config;
+  constructor(ctx: Context, metrics: Metrics) {
     this.metrics = metrics;
     this.context = ctx;
     this.commands = new Collection();
@@ -259,36 +251,15 @@ export default class Client {
   public async register(): Promise<void> {
     log.info("registering %s global commands...", this.commands.size);
 
-    // Actual global commands
-    if (this.config.guildIds.length === 0) {
-      const res = await this.context.REST.registerCommands(
-        this.getCommandsArray()
-      );
+    const res = await this.context.REST.registerCommands(
+      this.getCommandsArray()
+    );
 
-      if (res.ok) {
-        this.context.setCommands(res.val);
-      }
-
-      log.info("commands registered!");
-      return;
+    if (res.ok) {
+      this.context.setCommands(res.val);
     }
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const guildId of this.config.guildIds) {
-      // Guild only commands for testing
-      // eslint-disable-next-line no-await-in-loop
-      const res = await this.context.REST.rest.put(
-        Routes.applicationGuildCommands(this.config.applicationId, guildId),
-        { body: this.getCommandsArray() }
-      );
-
-      log.info(
-        "registered %s guild commands in %s",
-        this.commands.size,
-        res,
-        guildId
-      );
-    }
+    log.info("commands registered!");
   }
 
   /**

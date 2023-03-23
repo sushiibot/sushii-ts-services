@@ -3,7 +3,7 @@ import { APIApplicationCommand, APIUser } from "discord-api-types/v10";
 import fetch, { RequestInfo, RequestInit, Response } from "node-fetch";
 import http from "http";
 import CDNClient from "./cdn";
-import { ConfigI } from "./config";
+import config from "./config";
 import SushiiImageServerClient from "./image_server";
 import RESTClient from "./rest";
 // import { SdkFunctionWrapper } from "../generated/graphql";
@@ -64,14 +64,13 @@ export default class Context {
   private commands: APIApplicationCommand[];
 
   constructor(
-    config: ConfigI,
     metrics: Metrics,
     gateway: AmqpGateway,
     wsSdkClient: ReturnType<typeof getSdkWebsocket>
   ) {
-    this.graphQLClient = new GraphQLClient(config.graphqlApiURL, {
+    this.graphQLClient = new GraphQLClient(config.GRAPHQL_API_URL, {
       headers: {
-        Authorization: `Bearer ${config.graphqlApiToken}`,
+        Authorization: `Bearer ${config.GRAPHQL_API_TOKEN}`,
       },
       keepalive: true,
       fetch: getFetch(),
@@ -80,7 +79,7 @@ export default class Context {
     this.sushiiAPI = new SushiiSDK(wsSdkClient);
 
     this.sushiiImageServer = new SushiiImageServerClient(config);
-    this.REST = new RESTClient(config);
+    this.REST = new RESTClient();
     this.CDN = new CDNClient();
     this.memoryStore = new MemoryStore();
     this.gateway = gateway;
