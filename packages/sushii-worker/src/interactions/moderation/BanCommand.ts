@@ -1,16 +1,11 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import {
-  APIChatInputApplicationCommandGuildInteraction,
-  PermissionFlagsBits,
-} from "discord-api-types/v10";
+import { PermissionFlagsBits } from "discord-api-types/v10";
 import { ChatInputCommandInteraction, PermissionsBitField } from "discord.js";
 import Context from "../../model/context";
-import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
 import {
   getErrorMessage,
   interactionReplyErrorMessage,
-  interactionReplyErrorPermission,
 } from "../responses/error";
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
@@ -61,7 +56,7 @@ export default class BanCommand extends SlashCommandHandler {
       return;
     }
 
-    await interaction.deferReply({
+    await interaction.editReply({
       embeds: [res.val.toJSON()],
     });
   }

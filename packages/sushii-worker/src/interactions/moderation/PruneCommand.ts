@@ -1,10 +1,6 @@
 import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
-import {
-  APIChatInputApplicationCommandGuildInteraction,
-  MessageFlags,
-  PermissionFlagsBits,
-} from "discord-api-types/v10";
-import CommandInteractionOptionResolver from "../resolver";
+import { MessageFlags, PermissionFlagsBits } from "discord-api-types/v10";
+import { ChatInputCommandInteraction } from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorMessage } from "../responses/error";
@@ -57,8 +53,6 @@ enum PruneBotsOrUsersOption {
 
 export default class PruneCommand extends SlashCommandHandler {
   serverOnly = true;
-
-  requiredBotPermissions = PermissionFlagsBits.ManageMessages.toString();
 
   command = new SlashCommandBuilder()
     .setName("prune")
@@ -138,20 +132,21 @@ export default class PruneCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
+    const afterMessageIDStr = interaction.options.getString(
+      PruneOption.AfterMessageID
     );
-
-    const afterMessageIDStr = options.getString(PruneOption.AfterMessageID);
-    const beforeMessageIDStr = options.getString(PruneOption.BeforeMessageID);
-    const user = options.getUser(PruneOption.User);
-    const maxDeleteCount = options.getInteger(PruneOption.MaxDeleteCount);
-    const skipPinned = options.getBoolean(PruneOption.SkipPinned);
-    const attachments = options.getString(PruneOption.Attachments);
-    const botsOrUsers = options.getString(PruneOption.BotsOrUsers);
+    const beforeMessageIDStr = interaction.options.getString(
+      PruneOption.BeforeMessageID
+    );
+    const user = interaction.options.getUser(PruneOption.User);
+    const maxDeleteCount = interaction.options.getInteger(
+      PruneOption.MaxDeleteCount
+    );
+    const skipPinned = interaction.options.getBoolean(PruneOption.SkipPinned);
+    const attachments = interaction.options.getString(PruneOption.Attachments);
+    const botsOrUsers = interaction.options.getString(PruneOption.BotsOrUsers);
 
     const afterMessageID = afterMessageIDStr
       ? getMessageID(afterMessageIDStr)
@@ -190,7 +185,7 @@ export default class PruneCommand extends SlashCommandHandler {
     };
 
     const msgs = await ctx.REST.getChannelMessages(
-      interaction.channel_id,
+      interaction.channelId,
       getMessagesOptions
     );
 
@@ -269,7 +264,7 @@ export default class PruneCommand extends SlashCommandHandler {
     }, {} as Record<string, number>);
 
     const res = await ctx.REST.bulkDeleteChannelMessages(
-      interaction.channel_id,
+      interaction.channelId,
       trimmedMsgIDs.map((m) => m.id)
     );
 
@@ -315,7 +310,7 @@ export default class PruneCommand extends SlashCommandHandler {
       });
     }
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle(`Deleted ${trimmedMsgIDs.length} messages`)

@@ -1,8 +1,9 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import {
-  APIChatInputApplicationCommandGuildInteraction,
+  ChatInputCommandInteraction,
+  PermissionsBitField,
   PermissionFlagsBits,
-} from "discord-api-types/v10";
+} from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import {
@@ -17,7 +18,7 @@ import { reasonOption, sendDMReasonOption, usersOption } from "./options";
 export default class UnTimeoutCommand extends SlashCommandHandler {
   serverOnly = true;
 
-  requiredBotPermissions = PermissionFlagsBits.ModerateMembers.toString();
+  requiredBotPermissions = new PermissionsBitField().add("ModerateMembers");
 
   command = new SlashCommandBuilder()
     .setName("untimeout")
@@ -32,7 +33,7 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
     const data = new ModActionData(interaction);
 
@@ -43,8 +44,7 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
       return;
     }
 
-    const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
-    ackRes.unwrap();
+    await interaction.deferReply();
 
     const res = await executeAction(
       ctx,
@@ -53,16 +53,13 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
       ActionType.TimeoutRemove
     );
     if (res.err) {
-      await ctx.REST.interactionEditOriginal(
-        interaction,
-        getErrorMessage("Error", res.val.message)
-      );
+      await interaction.editReply(getErrorMessage("Error", res.val.message));
 
       return;
     }
 
-    await ctx.REST.interactionEditOriginal(interaction, {
-      embeds: [res.val.toJSON()],
+    await interaction.editReply({
+      embeds: [res.val],
     });
   }
 }
