@@ -4,17 +4,17 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
 } from "@discordjs/builders";
+import dayjs from "dayjs";
 import {
-  APIChatInputApplicationCommandGuildInteraction,
-  APIMessageComponentGuildInteraction,
+  ButtonInteraction,
+  ChatInputCommandInteraction,
+  CommandInteraction,
   ButtonStyle,
   PermissionFlagsBits,
-} from "discord-api-types/v10";
-import dayjs from "dayjs";
+} from "discord.js";
 import Context from "../../../model/context";
 import Color from "../../../utils/colors";
 import { SlashCommandHandler } from "../../handlers";
-import CommandInteractionOptionResolver from "../../resolver";
 import { interactionReplyErrorPlainMessage } from "../../responses/error";
 import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
 import { invalidCaseRangeEmbed } from "./Messages";
@@ -80,9 +80,7 @@ function getReasonConfirmComponents(
 
 export async function updateModLogReasons(
   ctx: Context,
-  interaction:
-    | APIChatInputApplicationCommandGuildInteraction
-    | APIMessageComponentGuildInteraction,
+  interaction: CommandInteraction | ButtonInteraction,
   guildId: string,
   modLogChannelId: string,
   executorId: string,
@@ -180,8 +178,8 @@ export async function updateModLogReasons(
 
     const newEmbed = new EmbedBuilder(modLogMsg.val.embeds[0])
       .setAuthor({
-        name: `${interaction.member.user.username}#${interaction.member.user.discriminator}`,
-        iconURL: ctx.CDN.userFaceURL(interaction.member.user),
+        name: `${interaction.user.username}#${interaction.user.discriminator}`,
+        iconURL: interaction.user.displayAvatarURL(),
       })
       // Replaces 1 element at index `indexOfReasonField`
       .spliceFields(indexOfReasonField, 1, {
@@ -257,25 +255,13 @@ export default class ReasonCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
-
-    const caseRangeStr = options.getString("case");
-    if (!caseRangeStr) {
-      throw new Error("no case number provided");
-    }
-
-    const reason = options.getString("reason");
-    if (!reason) {
-      throw new Error("no reason provided");
-    }
+    const caseRangeStr = interaction.options.getString("case", true);
+    const reason = interaction.options.getString("reason", true);
 
     const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
     });
 
     // No guild config found, ignore
@@ -289,7 +275,7 @@ export default class ReasonCommand extends SlashCommandHandler {
 
     const caseSpec = parseCaseId(caseRangeStr);
     if (!caseSpec) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [invalidCaseRangeEmbed],
       });
 
@@ -307,9 +293,9 @@ export default class ReasonCommand extends SlashCommandHandler {
       return;
     }
 
-    const caseRange = await getCaseRange(ctx, interaction.guild_id, caseSpec);
+    const caseRange = await getCaseRange(ctx, interaction.guildId, caseSpec);
     if (!caseRange) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [invalidCaseRangeEmbed],
       });
 
@@ -323,7 +309,7 @@ export default class ReasonCommand extends SlashCommandHandler {
 
     // Get all mod logs in range
     const { allModLogs } = await ctx.sushiiAPI.sdk.getModLogsInRange({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       greaterThanOrEqualTo: caseStartId.toString(),
       lessThanOrEqualTo: caseEndId.toString(),
     });
@@ -374,7 +360,7 @@ export default class ReasonCommand extends SlashCommandHandler {
         casesWithReason.length === allModLogs?.nodes.length
       );
 
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [embed.toJSON()],
         components: [components.toJSON()],
       });
@@ -412,7 +398,7 @@ export default class ReasonCommand extends SlashCommandHandler {
           )
           .setColor(Color.Error);
 
-        await ctx.REST.interactionEditOriginal(interaction, {
+        await interaction.editReply({
           embeds: [expiredEmbed.toJSON()],
           components: [],
         });
@@ -422,13 +408,12 @@ export default class ReasonCommand extends SlashCommandHandler {
     }
 
     // Ack AFTER confirmation message, takes long to edit messages, but db queries are quick
-    const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
-    ackRes.unwrap();
+    await interaction.deferReply();
 
     const responseEmbed = await updateModLogReasons(
       ctx,
       interaction,
-      interaction.guild_id,
+      interaction.guildId,
       guildConfigById.logMod,
       interaction.member.user.id,
       caseRange,
@@ -447,7 +432,7 @@ export default class ReasonCommand extends SlashCommandHandler {
       return;
     }
 
-    await ctx.REST.interactionEditOriginal(interaction, {
+    interaction.reply({
       embeds: [responseEmbed.toJSON()],
     });
   }

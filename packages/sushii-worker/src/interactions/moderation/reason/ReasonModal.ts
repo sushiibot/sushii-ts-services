@@ -1,5 +1,4 @@
-import { APIModalSubmitInteraction, MessageFlags } from "discord-api-types/v10";
-import { isGuildInteraction } from "discord-api-types/utils/v10";
+import { MessageFlags, ModalSubmitInteraction } from "discord.js";
 import { EmbedBuilder } from "@discordjs/builders";
 import Context from "../../../model/context";
 import customIds from "../../customIds";
@@ -16,15 +15,13 @@ export default class ModLogReasonModalHandler extends ModalHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleModalSubmit(
     ctx: Context,
-    interaction: APIModalSubmitInteraction
+    interaction: ModalSubmitInteraction
   ): Promise<void> {
-    if (!isGuildInteraction(interaction)) {
+    if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }
 
-    const customIDMatch = customIds.modLogReason.match(
-      interaction.data.custom_id
-    );
+    const customIDMatch = customIds.modLogReason.match(interaction.customId);
     if (!customIDMatch) {
       throw new Error("No mod log reason match");
     }
@@ -32,13 +29,13 @@ export default class ModLogReasonModalHandler extends ModalHandler {
     const { caseId } = customIDMatch.params;
 
     // Only 1 row and 1 component in this modal
-    const reason = interaction.data.components?.at(0)?.components?.at(0)?.value;
+    const reason = interaction.fields.getTextInputValue("reason");
     if (!reason) {
       throw new Error("No reason was set in the modal somehow");
     }
 
     const modCase = await ctx.sushiiAPI.sdk.getModLog({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       caseId,
     });
 
@@ -54,7 +51,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
 
     // Save db reason and executor
     const updatedModCase = await ctx.sushiiAPI.sdk.updateModLog({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       caseId,
       modLogPatch: {
         reason,
@@ -72,7 +69,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       return;
     }
 
-    if (!interaction.channel_id) {
+    if (!interaction.channelId) {
       throw new Error("No channel id in reason modal interaction");
     }
 
@@ -103,8 +100,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
     );
 
     // Edit message to show reason and remove button
-    await ctx.REST.editChannelMessage(
-      interaction.channel_id,
+    await interaction.channel?.messages.edit(
       modCase.modLogByGuildIdAndCaseId.msgId,
       {
         embeds: [newEmbed.toJSON()],
@@ -116,7 +112,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       .setTitle(`Updated reason for case #${caseId}`)
       .setColor(Color.Success);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed.toJSON()],
       flags: MessageFlags.Ephemeral,
     });

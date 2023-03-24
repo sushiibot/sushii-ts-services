@@ -1,14 +1,12 @@
 import {
-  APIApplicationCommandAutocompleteGuildInteraction,
   APIApplicationCommandOptionChoice,
   ApplicationCommandOptionType,
-  InteractionResponseType,
 } from "discord-api-types/v10";
+import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import { ModLog } from "../../../generated/generic";
 import logger from "../../../logger";
 import Context from "../../../model/context";
 import { AutocompleteHandler } from "../../handlers";
-import { AutocompleteOption } from "../../handlers/AutocompleteHandler";
 import { parseCaseId } from "./caseId";
 
 const MAX_CHOICE_NAME_LEN = 100;
@@ -27,9 +25,13 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIApplicationCommandAutocompleteGuildInteraction,
-    option: AutocompleteOption
+    interaction: AutocompleteInteraction,
+    option: AutocompleteFocusedOption
   ): Promise<void> {
+    if (!interaction.inRawGuild()) {
+      throw new Error("Must be in guild.");
+    }
+
     if (option.type !== ApplicationCommandOptionType.String) {
       throw new Error("Option type must be a string.");
     }
@@ -37,12 +39,12 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
     if (!option.value) {
       // Initial case - No value provided, list most recent cases
       const { allModLogs } = await ctx.sushiiAPI.sdk.getRecentModLogs({
-        guildId: interaction.guild_id,
+        guildId: interaction.guildId,
       });
 
       logger.debug(
         {
-          guildId: interaction.guild_id,
+          guildId: interaction.guildId,
           recentCount: allModLogs?.nodes.length || 0,
         },
         "empty case autocomplete"
@@ -50,13 +52,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
 
       const choices = this.formatCases(allModLogs?.nodes || []);
 
-      await ctx.REST.interactionCallback(interaction, {
-        type: InteractionResponseType.ApplicationCommandAutocompleteResult,
-        data: {
-          choices,
-        },
-      });
-
+      await interaction.respond(choices || []);
       return;
     }
 
@@ -66,19 +62,14 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
     const caseSpec = parseCaseId(option.value, true);
     if (!caseSpec) {
       // Invalid case
-      await ctx.REST.interactionCallback(interaction, {
-        type: InteractionResponseType.ApplicationCommandAutocompleteResult,
-        data: {
-          choices: [
-            {
-              // Return with error message in autocomplete, but this can still
-              // be sent by the user.
-              name: "Invalid case range, examples: 123 or 123-150 or latest or latest~3",
-              value: "invalid",
-            },
-          ],
+      await interaction.respond([
+        {
+          // Return with error message in autocomplete, but this can still
+          // be sent by the user.
+          name: "Invalid case range, examples: 123 or 123-150 or latest or latest~3",
+          value: "invalid",
         },
-      });
+      ]);
 
       return;
     }
@@ -87,17 +78,17 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
     switch (caseSpec.type) {
       case "latest": {
         const { allModLogs } = await ctx.sushiiAPI.sdk.getRecentModLogs({
-          guildId: interaction.guild_id,
+          guildId: interaction.guildId,
         });
 
         const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
-          guildId: interaction.guild_id,
+          guildId: interaction.guildId,
         });
 
         if (!nextCaseId) {
           logger.warn(
             {
-              guildId: interaction.guild_id,
+              guildId: interaction.guildId,
               value: option.value,
             },
             "No next case ID found for reason latest autocomplete"
@@ -138,7 +129,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
         // Searching for end ID now - should only include cases that are > startId
         if (!caseSpec.endId) {
           const { allModLogs } = await ctx.sushiiAPI.sdk.getRecentModLogs({
-            guildId: interaction.guild_id,
+            guildId: interaction.guildId,
           });
 
           endCases =
@@ -150,7 +141,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
           // Both start and end ID provided, we are just adding to the last
           // digit
           const { searchModLogs } = await ctx.sushiiAPI.sdk.searchModLogs({
-            guildId: interaction.guild_id,
+            guildId: interaction.guildId,
             searchCaseId: caseSpec.endId.toString(),
           });
 
@@ -174,7 +165,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
       }
       case "single": {
         const { searchModLogs } = await ctx.sushiiAPI.sdk.searchModLogs({
-          guildId: interaction.guild_id,
+          guildId: interaction.guildId,
           searchCaseId: caseSpec.id.toString(),
         });
 
@@ -185,12 +176,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
       }
     }
 
-    await ctx.REST.interactionCallback(interaction, {
-      type: InteractionResponseType.ApplicationCommandAutocompleteResult,
-      data: {
-        choices,
-      },
-    });
+    await interaction.respond(choices);
   }
 
   private formatCaseName(
