@@ -1,8 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
-import {
-  APIChatInputApplicationCommandGuildInteraction,
-  MessageFlags,
-} from "discord-api-types/v10";
+import { MessageFlags, ChatInputCommandInteraction } from "discord.js";
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -10,9 +7,7 @@ import {
   isNoValuesDeletedError,
   isUniqueViolation,
 } from "../../utils/graphqlError";
-import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
-import CommandInteractionOptionResolver from "../resolver";
 
 export default class NotificationCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -54,21 +49,20 @@ export default class NotificationCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Guild not cached");
+    }
 
-    const subcommand = options.getSubcommand();
+    const subcommand = interaction.options.getSubcommand();
     switch (subcommand) {
       case "add":
-        return NotificationCommand.addHandler(ctx, interaction, options);
+        return NotificationCommand.addHandler(ctx, interaction);
       case "list":
         return NotificationCommand.listHandler(ctx, interaction);
       case "delete":
-        return NotificationCommand.deleteHandler(ctx, interaction, options);
+        return NotificationCommand.deleteHandler(ctx, interaction);
 
       default:
         throw new Error("Invalid subcommand.");
@@ -77,21 +71,15 @@ export default class NotificationCommand extends SlashCommandHandler {
 
   static async addHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const keyword = options.getString("keyword");
-    if (!keyword) {
-      throw new Error("Missing keyword.");
-    }
-
-    const invoker = getInvokerUser(interaction);
+    const keyword = interaction.options.getString("keyword", true);
 
     try {
       await ctx.sushiiAPI.sdk.createNotification({
         notification: {
-          guildId: interaction.guild_id,
-          userId: invoker.id,
+          guildId: interaction.guildId,
+          userId: interaction.user.id,
           keyword,
         },
       });
@@ -100,13 +88,15 @@ export default class NotificationCommand extends SlashCommandHandler {
         throw err;
       }
 
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         content: t("notification.add.error.duplicate", {
           ns: "commands",
           keyword,
         }),
         flags: MessageFlags.Ephemeral,
       });
+
+      return;
     }
 
     const embed = new EmbedBuilder()
@@ -114,7 +104,7 @@ export default class NotificationCommand extends SlashCommandHandler {
       .setFields([{ name: "Keyword", value: keyword }])
       .setColor(Color.Success);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed.toJSON()],
       flags: MessageFlags.Ephemeral,
     });
@@ -122,13 +112,11 @@ export default class NotificationCommand extends SlashCommandHandler {
 
   static async listHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const invoker = getInvokerUser(interaction);
-
     const notifications = await ctx.sushiiAPI.sdk.getUserNotifications({
-      guildId: interaction.guild_id,
-      userId: invoker.id,
+      guildId: interaction.guildId,
+      userId: interaction.user.id,
     });
 
     const keywords = notifications.allNotifications?.nodes.map(
@@ -136,7 +124,7 @@ export default class NotificationCommand extends SlashCommandHandler {
     );
 
     if (!keywords || keywords.length === 0) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         content: t("notification.list.empty", {
           ns: "commands",
         }),
@@ -151,7 +139,7 @@ export default class NotificationCommand extends SlashCommandHandler {
       .setDescription(keywords.join("\n"))
       .setColor(Color.Info);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed.toJSON()],
       flags: MessageFlags.Ephemeral,
     });
@@ -159,20 +147,14 @@ export default class NotificationCommand extends SlashCommandHandler {
 
   static async deleteHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const keyword = options.getString("keyword");
-    if (!keyword) {
-      throw new Error("Missing keyword.");
-    }
-
-    const invoker = getInvokerUser(interaction);
+    const keyword = interaction.options.getString("keyword", true);
 
     try {
       await ctx.sushiiAPI.sdk.deleteNotification({
-        guildId: interaction.guild_id,
-        userId: invoker.id,
+        guildId: interaction.guildId,
+        userId: interaction.user.id,
         keyword,
       });
     } catch (err) {
@@ -181,7 +163,7 @@ export default class NotificationCommand extends SlashCommandHandler {
       }
 
       // Returns correct error
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         content: t("notification.delete.not_found", {
           ns: "commands",
           keyword,
@@ -202,7 +184,7 @@ export default class NotificationCommand extends SlashCommandHandler {
       ])
       .setColor(Color.Success);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed.toJSON()],
       flags: MessageFlags.Ephemeral,
     });
