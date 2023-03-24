@@ -1,12 +1,19 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import { MessageFlags } from "discord-api-types/v10";
 import {
+  ButtonInteraction,
   ChatInputCommandInteraction,
   InteractionReplyOptions,
+  ModalSubmitInteraction,
 } from "discord.js";
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
+
+type ReplyableInteraction =
+  | ChatInputCommandInteraction
+  | ButtonInteraction
+  | ModalSubmitInteraction;
 
 export function getErrorMessage(
   title: string,
@@ -27,7 +34,7 @@ export function getErrorMessage(
 
 export async function interactionReplyError(
   ctx: Context,
-  interaction: ChatInputCommandInteraction,
+  interaction: ReplyableInteraction,
   title: string,
   description: string,
   ephemeral: boolean = false
@@ -37,7 +44,7 @@ export async function interactionReplyError(
 
 export async function interactionReplyErrorPermission(
   ctx: Context,
-  interaction: ChatInputCommandInteraction,
+  interaction: ReplyableInteraction,
   permission: string
 ): Promise<void> {
   interactionReplyError(
@@ -50,7 +57,7 @@ export async function interactionReplyErrorPermission(
 
 export async function interactionReplyErrorUnauthorized(
   ctx: Context,
-  interaction: ChatInputCommandInteraction,
+  interaction: ReplyableInteraction,
   message: string
 ): Promise<void> {
   interactionReplyError(
@@ -63,7 +70,7 @@ export async function interactionReplyErrorUnauthorized(
 
 export async function interactionReplyErrorMessage(
   ctx: Context,
-  interaction: ChatInputCommandInteraction,
+  interaction: ReplyableInteraction,
   message: string,
   ephemeral: boolean = false
 ): Promise<void> {
@@ -78,7 +85,7 @@ export async function interactionReplyErrorMessage(
 
 export async function interactionReplyErrorPlainMessage(
   ctx: Context,
-  interaction: ChatInputCommandInteraction,
+  interaction: ReplyableInteraction,
   message: string,
   ephemeral: boolean = false
 ): Promise<void> {
@@ -93,7 +100,7 @@ export async function interactionReplyErrorPlainMessage(
 
 export async function interactionReplyErrorInternal(
   ctx: Context,
-  interaction: ChatInputCommandInteraction
+  interaction: ReplyableInteraction
 ): Promise<void> {
   interactionReplyError(
     ctx,
