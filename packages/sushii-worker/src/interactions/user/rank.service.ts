@@ -1,7 +1,4 @@
-import {
-  APIChatInputApplicationCommandInteraction,
-  APIUser,
-} from "discord-api-types/v10";
+import { User } from "discord.js";
 import { Err, Ok, Result } from "ts-results";
 import Context from "../../model/context";
 import UserLevelProgress from "./rank.entity";
@@ -12,8 +9,7 @@ export interface RankResponse {
 
 export async function getUserRank(
   ctx: Context,
-  _interaction: APIChatInputApplicationCommandInteraction,
-  user: APIUser,
+  user: User,
   guildId: string
 ): Promise<Result<RankResponse, string>> {
   const { userById: userData } = await ctx.sushiiAPI.sdk.userByID({
@@ -63,7 +59,7 @@ export async function getUserRank(
     // Username stuff
     USERNAME: user.username,
     DISCRIMINATOR: user.discriminator.padStart(4, "0"),
-    AVATAR_URL: ctx.CDN.userFaceURL(user, { forceStatic: true }),
+    AVATAR_URL: user.displayAvatarURL({ forceStatic: true }),
     REP: userData.rep,
     REP_LEVEL: repLevel.toString().padStart(2, "0"),
     FISHIES: userData.fishies,

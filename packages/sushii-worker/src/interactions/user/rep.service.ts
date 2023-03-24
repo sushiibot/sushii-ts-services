@@ -1,8 +1,5 @@
 import dayjs from "dayjs";
-import {
-  APIChatInputApplicationCommandInteraction,
-  APIUser,
-} from "discord-api-types/v10";
+import { User } from "discord.js";
 import Context from "../../model/context";
 
 /**
@@ -15,9 +12,8 @@ export interface RepResponse {
 
 export default async function repForUser(
   ctx: Context,
-  _interaction: APIChatInputApplicationCommandInteraction,
-  invoker: APIUser,
-  target: APIUser
+  invoker: User,
+  target: User
 ): Promise<RepResponse | dayjs.Dayjs> {
   // Fetch both target and invoker
   const [dbUser, dbInvokerUser] = await Promise.all([

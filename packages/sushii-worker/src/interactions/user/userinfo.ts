@@ -3,7 +3,7 @@ import {
   isDMInteraction,
   isGuildInteraction,
 } from "discord-api-types/utils/v10";
-import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
+import { ChatInputCommandInteraction } from "discord-api-types/v10";
 import Context from "../../model/context";
 import logger from "../../logger";
 import { SlashCommandHandler } from "../handlers";
@@ -28,7 +28,7 @@ export default class UserinfoHandler extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
     const options = new CommandInteractionOptionResolver(
       interaction.data.options,
