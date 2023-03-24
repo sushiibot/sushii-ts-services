@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import { Duration } from "dayjs/plugin/duration";
 import {
-  APIInteractionDataResolvedGuildMember,
   Attachment,
   ChatInputCommandInteraction,
   Collection,
@@ -11,6 +10,7 @@ import {
 import { Err, Ok, Result } from "ts-results";
 import logger from "../../logger";
 import Context from "../../model/context";
+import isGuildMember from "../../utils/isGuildMember";
 import parseDuration from "../../utils/parseDuration";
 import { ActionType } from "./ActionType";
 import { DMReasonChoiceValue, ModerationOption } from "./options";
@@ -19,7 +19,7 @@ const ID_REGEX = /\d{17,20}/g;
 
 export interface ModActionTarget {
   user: User;
-  member: GuildMember | APIInteractionDataResolvedGuildMember | null;
+  member: GuildMember | null;
 }
 
 /**
@@ -118,8 +118,8 @@ export default class ModActionData {
     interaction: ChatInputCommandInteraction,
     skipMembers?: boolean
   ): Promise<Result<void, string>> {
-    if (!interaction.guild) {
-      return Err("This command can only be used in a guild.");
+    if (!interaction.inCachedGuild()) {
+      return Err("This command can only be used in cached guild.");
     }
 
     // Get IDs from string
@@ -163,13 +163,23 @@ export default class ModActionData {
         targetMemberPromises.push(interaction.guild.members.fetch(id));
       }
 
+      // Fetch member if not cached
+      if (
+        !skipMembers &&
+        !resolvedUser &&
+        resolvedMember &&
+        !isGuildMember(resolvedMember)
+      ) {
+        targetMemberPromises.push(interaction.guild.members.fetch(id));
+      }
+
       // Skipping members, fetch user
       if (skipMembers && !resolvedUser && !resolvedMember) {
         targetUserPromises.push(interaction.client.users.fetch(id));
       }
 
-      // Mentioned and is a member
-      if (resolvedUser && resolvedMember) {
+      // Mentioned and is a member object
+      if (resolvedUser && resolvedMember && isGuildMember(resolvedMember)) {
         this.targets.set(id, {
           user: resolvedUser,
           member: resolvedMember,

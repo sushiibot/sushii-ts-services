@@ -1,8 +1,9 @@
 import { EmbedBuilder, TimestampStyles } from "@discordjs/builders";
 import dayjs from "dayjs";
-import { APIMessage, APIUser, RESTJSONErrorCodes } from "discord-api-types/v10";
+import { Interaction, RESTJSONErrorCodes, Message, User } from "discord.js";
 import { Err, Result } from "ts-results";
 import Context from "../../model/context";
+import catchApiError from "../../utils/catchApiError";
 import Color from "../../utils/colors";
 import toTimestamp from "../../utils/toTimestamp";
 import { ActionType } from "./ActionType";
@@ -13,8 +14,8 @@ export async function buildDMEmbed(
   guildId: string,
   action: ActionType,
   shouldDMReason: boolean,
-  reason: string | undefined,
-  timeoutEnd: dayjs.Dayjs | undefined
+  reason: string | null,
+  timeoutEnd: dayjs.Dayjs | null
 ): Promise<EmbedBuilder> {
   const { redisGuildByGuildId } = await ctx.sushiiAPI.sdk.getRedisGuild({
     guild_id: guildId,
@@ -61,29 +62,34 @@ export async function buildDMEmbed(
 
 export default async function sendModActionDM(
   ctx: Context,
+  interaction: Interaction,
   guildId: string,
   data: ModActionData,
-  target: APIUser,
+  target: User,
   action: ActionType
-): Promise<Result<APIMessage, string>> {
+): Promise<Result<Message, string>> {
   const embed = await buildDMEmbed(
     ctx,
     guildId,
     action,
     data.shouldDMReason(action),
     data.reason,
-    data.communicationDisabledUntil().unwrapOr(undefined)
+    data.communicationDisabledUntil().unwrapOr(null)
   );
 
-  const res = await ctx.REST.dmUser(target.id, {
-    embeds: [embed.toJSON()],
-  });
+  const dmMessage = await catchApiError(() =>
+    interaction.client.users.send(target.id, {
+      embeds: [embed.toJSON()],
+    })
+  );
 
-  if (res.err) {
-    if (res.val.code === RESTJSONErrorCodes.CannotSendMessagesToThisUser) {
+  if (dmMessage.err) {
+    if (
+      dmMessage.val.code === RESTJSONErrorCodes.CannotSendMessagesToThisUser
+    ) {
       return Err("User has DMs disabled or bot is blocked.");
     }
   }
 
-  return res.mapErr((e) => e.message);
+  return dmMessage.mapErr((e) => e.message);
 }

@@ -1,13 +1,12 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import dayjs from "dayjs";
-import {
-  APIChatInputApplicationCommandGuildInteraction,
-  APIMessage,
-  APIUser,
-  RESTJSONErrorCodes,
-} from "discord-api-types/v10";
 import { Err, Ok, Result } from "ts-results";
-import { GetRedisGuildQuery } from "../../generated/graphql";
+import {
+  RESTJSONErrorCodes,
+  ChatInputCommandInteraction,
+  Message,
+  User,
+} from "discord.js";
 import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -16,6 +15,7 @@ import { ActionType } from "./ActionType";
 import hasPermissionTargetingMember from "../../utils/hasPermission";
 import ModActionData, { ModActionTarget } from "./ModActionData";
 import sendModActionDM from "./sendDm";
+import catchApiError from "../../utils/catchApiError";
 
 interface ActionError {
   target: ModActionTarget;
@@ -100,11 +100,15 @@ function buildResponseEmbed(
 
 async function execActionUser(
   ctx: Context,
-  interaction: APIChatInputApplicationCommandGuildInteraction,
+  interaction: ChatInputCommandInteraction,
   data: ModActionData,
   target: ModActionTarget,
   actionType: ActionType
 ): Promise<Result<ModActionTarget, ActionError>> {
+  if (!interaction.inCachedGuild()) {
+    throw new Error("Interaction is not in guild");
+  }
+
   // Audit log header max 512 characters
   const auditLogReason = data.reason?.slice(0, 512);
 
@@ -119,7 +123,7 @@ async function execActionUser(
       }
 
       const res = await ctx.REST.kickMember(
-        interaction.guild_id,
+        interaction.guildId,
         target.user.id,
         auditLogReason
       );
@@ -134,11 +138,11 @@ async function execActionUser(
       break;
     }
     case ActionType.Ban: {
-      const res = await ctx.REST.banUser(
-        interaction.guild_id,
-        target.user.id,
-        auditLogReason,
-        data.deleteMessageDays
+      const res = await catchApiError(() =>
+        interaction.guild.members.ban(target.user.id, {
+          reason: auditLogReason,
+          deleteMessageSeconds: (data.deleteMessageDays || 0) * 86400,
+        })
       );
 
       if (res.err) {
@@ -151,10 +155,8 @@ async function execActionUser(
       break;
     }
     case ActionType.BanRemove: {
-      const res = await ctx.REST.unbanUser(
-        interaction.guild_id,
-        target.user.id,
-        auditLogReason
+      const res = await catchApiError(() =>
+        interaction.guild.members.unban(target.user.id, auditLogReason)
       );
 
       if (res.err) {
@@ -176,12 +178,14 @@ async function execActionUser(
       }
 
       // Timeout and adjust are both same, just update timeout end time
-
-      const res = await ctx.REST.timeoutMember(
-        interaction.guild_id,
-        target.user.id,
-        data.communicationDisabledUntil().unwrap(),
-        auditLogReason
+      const res = await catchApiError(() =>
+        interaction.guild.members.edit(target.user.id, {
+          communicationDisabledUntil: data
+            .communicationDisabledUntil()
+            .unwrap()
+            .toISOString(),
+          reason: auditLogReason,
+        })
       );
 
       if (res.err) {
@@ -210,11 +214,11 @@ async function execActionUser(
         });
       }
 
-      const res = await ctx.REST.timeoutMember(
-        interaction.guild_id,
-        target.user.id,
-        null,
-        auditLogReason
+      const res = await catchApiError(() =>
+        interaction.guild.members.edit(target.user.id, {
+          communicationDisabledUntil: null,
+          reason: auditLogReason,
+        })
       );
 
       if (res.err) {
@@ -249,23 +253,24 @@ async function execActionUser(
 }
 
 interface ExecuteActionUserResult {
-  user: APIUser;
+  user: User;
   dmSent: boolean;
   triedDMNonMember: boolean;
 }
 
 async function executeActionUser(
   ctx: Context,
-  interaction: APIChatInputApplicationCommandGuildInteraction,
+  interaction: ChatInputCommandInteraction,
   data: ModActionData,
   target: ModActionTarget,
-  actionType: ActionType,
-  redisGuild: NonNullable<GetRedisGuildQuery["redisGuildByGuildId"]>
+  actionType: ActionType
 ): Promise<Result<ExecuteActionUserResult, ActionError>> {
+  if (!interaction.inGuild()) {
+    throw new Error("Not in guild");
+  }
+
   const hasPermsTargetingMember = await hasPermissionTargetingMember(
-    ctx,
     interaction,
-    redisGuild,
     target.user,
     target.member || undefined
   );
@@ -278,7 +283,7 @@ async function executeActionUser(
   }
 
   const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
-    guildId: interaction.guild_id,
+    guildId: interaction.guildId,
   });
 
   if (!nextCaseId) {
@@ -290,7 +295,7 @@ async function executeActionUser(
 
   await ctx.sushiiAPI.sdk.createModLog({
     modLog: {
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       caseId: nextCaseId,
       action: actionType,
       pending: true,
@@ -310,12 +315,13 @@ async function executeActionUser(
 
   const triedDMNonMember = data.shouldDM(actionType) && target.member === null;
 
-  let dmRes: Result<APIMessage, string> | null = null;
+  let dmRes: Result<Message, string> | null = null;
   // DM before for ban and send dm
   if (actionType === ActionType.Ban && shouldDM) {
     dmRes = await sendModActionDM(
       ctx,
-      interaction.guild_id,
+      interaction,
+      interaction.guildId,
       data,
       target.user,
       actionType
@@ -330,7 +336,8 @@ async function executeActionUser(
   if (actionType !== ActionType.Ban && shouldDM) {
     dmRes = await sendModActionDM(
       ctx,
-      interaction.guild_id,
+      interaction,
+      interaction.guildId,
       data,
       target.user,
       actionType
@@ -342,16 +349,14 @@ async function executeActionUser(
     // Delete DM reason if it was sent
     let deleteDMPromise;
     if (dmRes && dmRes.ok) {
-      deleteDMPromise = ctx.REST.deleteChannelMessage(
-        dmRes.val.channel_id,
-        dmRes.val.id
-      );
+      // No need to catch err here, not awaited
+      deleteDMPromise = dmRes.unwrap().delete();
     }
 
     const [resDeleteModLog, resDeleteDM] = await Promise.allSettled([
       ctx.sushiiAPI.sdk.deleteModLog({
         caseId: nextCaseId,
-        guildId: interaction.guild_id,
+        guildId: interaction.guildId,
       }),
       deleteDMPromise,
     ]);
@@ -376,16 +381,12 @@ async function executeActionUser(
 
 export default async function executeAction(
   ctx: Context,
-  interaction: APIChatInputApplicationCommandGuildInteraction,
+  interaction: ChatInputCommandInteraction,
   data: ModActionData,
   actionType: ActionType
 ): Promise<Result<EmbedBuilder, Error>> {
-  const redisGuild = await ctx.sushiiAPI.sdk.getRedisGuild({
-    guild_id: interaction.guild_id,
-  });
-
-  if (!redisGuild.redisGuildByGuildId) {
-    return Err(new Error("Failed to get redis guild"));
+  if (!interaction.guildId) {
+    return Err(new Error("Guild ID is missing"));
   }
 
   let msg = "";
@@ -401,8 +402,7 @@ export default async function executeAction(
       interaction,
       data,
       target,
-      actionType,
-      redisGuild.redisGuildByGuildId
+      actionType
     );
 
     if (res.err) {
