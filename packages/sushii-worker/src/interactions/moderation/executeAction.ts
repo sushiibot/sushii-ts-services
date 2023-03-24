@@ -138,11 +138,13 @@ async function execActionUser(
       break;
     }
     case ActionType.Ban: {
-      const res = await catchApiError(() =>
-        interaction.guild.members.ban(target.user.id, {
+      const res = await catchApiError(
+        interaction.guild.members.ban,
+        target.user.id,
+        {
           reason: auditLogReason,
           deleteMessageSeconds: (data.deleteMessageDays || 0) * 86400,
-        })
+        }
       );
 
       if (res.err) {
@@ -155,8 +157,10 @@ async function execActionUser(
       break;
     }
     case ActionType.BanRemove: {
-      const res = await catchApiError(() =>
-        interaction.guild.members.unban(target.user.id, auditLogReason)
+      const res = await catchApiError(
+        interaction.guild.members.unban,
+        target.user.id,
+        auditLogReason
       );
 
       if (res.err) {
@@ -178,14 +182,16 @@ async function execActionUser(
       }
 
       // Timeout and adjust are both same, just update timeout end time
-      const res = await catchApiError(() =>
-        interaction.guild.members.edit(target.user.id, {
+      const res = await catchApiError(
+        interaction.guild.members.edit,
+        target.user.id,
+        {
           communicationDisabledUntil: data
             .communicationDisabledUntil()
             .unwrap()
             .toISOString(),
           reason: auditLogReason,
-        })
+        }
       );
 
       if (res.err) {
@@ -214,11 +220,13 @@ async function execActionUser(
         });
       }
 
-      const res = await catchApiError(() =>
-        interaction.guild.members.edit(target.user.id, {
+      const res = await catchApiError(
+        interaction.guild.members.edit,
+        target.user.id,
+        {
           communicationDisabledUntil: null,
           reason: auditLogReason,
-        })
+        }
       );
 
       if (res.err) {

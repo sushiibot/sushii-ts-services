@@ -5,7 +5,6 @@ import {
   PermissionFlagsBits,
   ChatInputCommandInteraction,
   ChannelType,
-  Channel,
 } from "discord.js";
 import plugin from "dayjs/plugin/duration";
 import Context from "../../model/context";
@@ -110,11 +109,9 @@ export default class SlowmodeCommand extends SlashCommandHandler {
       return;
     }
 
-    const res = await catchApiError<Channel>(() =>
-      targetChanel.edit({
-        rateLimitPerUser: duration!.asSeconds(),
-      })
-    );
+    const res = await catchApiError(targetChanel.edit, {
+      rateLimitPerUser: duration!.asSeconds(),
+    });
 
     if (res.err) {
       await interactionReplyErrorMessage(

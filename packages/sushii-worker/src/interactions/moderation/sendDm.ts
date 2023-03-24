@@ -77,10 +77,12 @@ export default async function sendModActionDM(
     data.communicationDisabledUntil().unwrapOr(null)
   );
 
-  const dmMessage = await catchApiError(() =>
-    interaction.client.users.send(target.id, {
+  const dmMessage = await catchApiError(
+    interaction.client.users.send,
+    target.id,
+    {
       embeds: [embed.toJSON()],
-    })
+    }
   );
 
   if (dmMessage.err) {
