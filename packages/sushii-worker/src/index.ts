@@ -1,10 +1,8 @@
 import "./dayjs";
-import { AMQPClient } from "@cloudamqp/amqp-client";
 import * as Sentry from "@sentry/node";
-import { Client,  GatewayIntentBits, Options } from "discord.js";
+import { Client, GatewayIntentBits, Options } from "discord.js";
 import log from "./logger";
 import InteractionClient from "./client";
-import AmqpGateway from "./model/AmqpGateway";
 import initI18next from "./i18next";
 import addCommands from "./interactions/commands";
 import server from "./server";
@@ -30,14 +28,12 @@ async function main(): Promise<void> {
 
   await initI18next();
 
-  const amqpClient = new AMQPClient(config.AMQP_URL);
-  const rabbitGatewayClient = new AmqpGateway(amqpClient, config);
   const metrics = new Metrics();
 
   const wsClient = getWsClient(config);
   const wsSdk = getSdkWebsocket(wsClient, metrics);
 
-  const ctx = new Context(metrics, rabbitGatewayClient, wsSdk);
+  const ctx = new Context(metrics, wsSdk);
   const client = new InteractionClient(ctx, metrics);
   addCommands(client);
   addEventHandlers(client);
@@ -80,15 +76,14 @@ async function main(): Promise<void> {
 
       return {
         hey: "meow",
-        ampq: rabbitGatewayClient.consumer?.channel.id,
       };
     },
     onShutdown: async () => {
+      log.info("closing Discord client");
+      djsClient.destroy();
+
       log.info("closing websocket connection to sushii API");
       await wsClient.dispose();
-
-      log.info("closing rabbitmq");
-      rabbitGatewayClient.stop();
 
       log.info("closing sentry");
       await Sentry.close(2000);

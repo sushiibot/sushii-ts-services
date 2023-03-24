@@ -9,7 +9,6 @@ import RESTClient from "./rest";
 // import { SdkFunctionWrapper } from "../generated/graphql";
 import SushiiSDK from "./api";
 import Metrics from "./metrics";
-import AmqpGateway from "./AmqpGateway";
 import { getSdkWebsocket } from "./graphqlClient";
 import MemoryStore from "./MemoryStore";
 
@@ -55,8 +54,6 @@ export default class Context {
 
   public readonly CDN: CDNClient;
 
-  public readonly gateway: AmqpGateway;
-
   public memoryStore: MemoryStore;
 
   private currentUser?: APIUser;
@@ -65,7 +62,6 @@ export default class Context {
 
   constructor(
     metrics: Metrics,
-    gateway: AmqpGateway,
     wsSdkClient: ReturnType<typeof getSdkWebsocket>
   ) {
     this.graphQLClient = new GraphQLClient(config.GRAPHQL_API_URL, {
@@ -82,7 +78,6 @@ export default class Context {
     this.REST = new RESTClient();
     this.CDN = new CDNClient();
     this.memoryStore = new MemoryStore();
-    this.gateway = gateway;
 
     this.commands = [];
   }
