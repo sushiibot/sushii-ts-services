@@ -1,12 +1,10 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import { APIEmbed } from "discord-api-types/v10";
 import { GuildMember, User } from "discord.js";
-import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { getCreatedTimestampSeconds } from "../../utils/snowflake";
 
 export default async function getUserinfoEmbed(
-  ctx: Context,
   user: User,
   member: GuildMember | undefined
 ): Promise<APIEmbed> {
