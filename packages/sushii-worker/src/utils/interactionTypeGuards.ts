@@ -1,7 +1,7 @@
 import {
   APIApplicationCommandInteraction,
   APIChatInputApplicationCommandDMInteraction,
-  APIChatInputApplicationCommandGuildInteraction,
+  ChatInputCommandInteraction,
   ChatInputCommandInteraction,
   APIInteraction,
   GatewayDispatchEvents,
@@ -13,10 +13,10 @@ import { GatewayDispatchPayloadWithOld } from "../model/GatewayDispatchPayloadWi
 
 export function isGuildInteraction(
   interaction: ChatInputCommandInteraction
-): interaction is APIChatInputApplicationCommandGuildInteraction {
+): interaction is ChatInputCommandInteraction {
   return (
     interaction.user === undefined &&
-    interaction.guild_id !== undefined &&
+    interaction.guildId !== undefined &&
     interaction.member !== undefined
   );
 }
@@ -26,7 +26,7 @@ export function isDMInteraction(
 ): interaction is APIChatInputApplicationCommandDMInteraction {
   return (
     interaction.user !== undefined &&
-    interaction.guild_id === undefined &&
+    interaction.guildId === undefined &&
     interaction.member === undefined
   );
 }
