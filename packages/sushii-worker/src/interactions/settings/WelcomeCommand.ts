@@ -1,15 +1,10 @@
 import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
-import {
-  APIChatInputApplicationCommandGuildInteraction,
-  MessageFlags,
-  PermissionFlagsBits,
-} from "discord-api-types/v10";
+import { MessageFlags, PermissionFlagsBits } from "discord-api-types/v10";
+import { ChatInputCommandInteraction } from "discord.js";
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
-import CommandInteractionOptionResolver from "../resolver";
 
 export default class WelcomeCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -32,25 +27,20 @@ export default class WelcomeCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
-
-    const message = options.getString("message");
-    if (!message) {
-      throw new Error("missing message");
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Guild not cached.");
     }
 
-    const hasManageGuild = hasPermission(
-      interaction.member.permissions,
+    const message = interaction.options.getString("message", true);
+
+    const hasManageGuild = interaction.member.permissions.has(
       PermissionFlagsBits.ManageGuild
     );
 
     if (!hasManageGuild) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(
@@ -70,13 +60,13 @@ export default class WelcomeCommand extends SlashCommandHandler {
     }
 
     await ctx.sushiiAPI.sdk.updateGuildConfig({
-      id: interaction.guild_id,
+      id: interaction.guildId,
       patch: {
         joinMsg: message,
       },
     });
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle(t("welcome.success.title", { ns: "commands" }))
