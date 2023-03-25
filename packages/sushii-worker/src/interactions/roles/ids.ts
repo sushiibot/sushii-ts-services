@@ -1,9 +1,9 @@
 import {
-  APIButtonComponentWithCustomId,
-  APIMessageComponentButtonInteraction,
-  APIStringSelectComponent,
   ComponentType,
-} from "discord-api-types/v10";
+  ButtonComponent,
+  ButtonInteraction,
+  StringSelectMenuComponent,
+} from "discord.js";
 import customIds from "../customIds";
 
 interface MenuRoleData {
@@ -12,7 +12,7 @@ interface MenuRoleData {
 }
 
 export function getRoleMenuRequiredRole(
-  msg: APIMessageComponentButtonInteraction["message"]
+  msg: ButtonInteraction["message"]
 ): string | null {
   if (!msg.embeds) {
     return null;
@@ -40,7 +40,7 @@ export function getRoleMenuRequiredRole(
 }
 
 export function getRoleMenuMaxRoles(
-  msg: APIMessageComponentButtonInteraction["message"]
+  msg: ButtonInteraction["message"]
 ): number | null {
   if (!msg.embeds) {
     return null;
@@ -66,7 +66,7 @@ export function getRoleMenuMaxRoles(
  * Parse a message to get all the roles contained in buttons.
  */
 export function getRoleMenuMessageButtonRoles(
-  msg: APIMessageComponentButtonInteraction["message"]
+  msg: ButtonInteraction["message"]
 ): MenuRoleData[] {
   if (!msg.components) {
     return [];
@@ -76,11 +76,18 @@ export function getRoleMenuMessageButtonRoles(
     .map((row) =>
       row.components
         .filter(
-          (component): component is APIButtonComponentWithCustomId =>
+          (component): component is ButtonComponent =>
             component.type === ComponentType.Button
         )
         .map((button) => {
-          const match = customIds.roleMenuButton.matchParams(button.custom_id);
+          if (!button.customId) {
+            return {
+              roleId: null,
+              label: button.label!,
+            };
+          }
+
+          const match = customIds.roleMenuButton.matchParams(button.customId);
 
           return {
             roleId: match ? match.roleId : null,
@@ -93,7 +100,7 @@ export function getRoleMenuMessageButtonRoles(
 }
 
 export function getRoleMenuMessageSelectRoles(
-  msg: APIMessageComponentButtonInteraction["message"]
+  msg: ButtonInteraction["message"]
 ): MenuRoleData[] {
   if (!msg.components) {
     return [];
@@ -103,7 +110,7 @@ export function getRoleMenuMessageSelectRoles(
     .map((row) =>
       row.components
         .filter(
-          (component): component is APIStringSelectComponent =>
+          (component): component is StringSelectMenuComponent =>
             component.type === ComponentType.StringSelect
         )
         .flatMap((selectMenu) =>
