@@ -1,6 +1,12 @@
-import { EmbedBuilder, TimestampStyles } from "@discordjs/builders";
+import {
+  EmbedBuilder,
+  TimestampStyles,
+  Interaction,
+  RESTJSONErrorCodes,
+  Message,
+  User,
+} from "discord.js";
 import dayjs from "dayjs";
-import { Interaction, RESTJSONErrorCodes, Message, User } from "discord.js";
 import { Err, Result } from "ts-results";
 import Context from "../../model/context";
 import catchApiError from "../../utils/catchApiError";

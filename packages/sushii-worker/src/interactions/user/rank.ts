@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder } from "discord.js";
 import { AttachmentBuilder, ChatInputCommandInteraction } from "discord.js";
 import logger from "../../logger";
 import Context from "../../model/context";

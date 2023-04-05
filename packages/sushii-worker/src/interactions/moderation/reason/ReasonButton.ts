@@ -1,6 +1,9 @@
-import { ActionRowBuilder, TextInputBuilder } from "@discordjs/builders";
+import {
+  ActionRowBuilder,
+  TextInputBuilder,
+  ButtonInteraction,
+} from "discord.js";
 import { TextInputStyle } from "discord-api-types/v10";
-import { ButtonInteraction } from "discord.js";
 import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";

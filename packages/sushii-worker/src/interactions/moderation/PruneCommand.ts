@@ -1,6 +1,9 @@
-import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
+import {
+  EmbedBuilder,
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+} from "discord.js";
 import { MessageFlags, PermissionFlagsBits } from "discord-api-types/v10";
-import { ChatInputCommandInteraction } from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorMessage } from "../responses/error";

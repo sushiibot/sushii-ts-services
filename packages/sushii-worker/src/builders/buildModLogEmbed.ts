@@ -1,4 +1,4 @@
-import { EmbedBuilder, TimestampStyles } from "@discordjs/builders";
+import { EmbedBuilder, TimestampStyles } from "discord.js";
 import { APIEmbedField, APIUser } from "discord-api-types/v10";
 import path from "path";
 import { ModLog } from "../generated/generic";

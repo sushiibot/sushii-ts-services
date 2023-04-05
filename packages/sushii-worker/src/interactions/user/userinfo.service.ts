@@ -1,4 +1,4 @@
-import { EmbedBuilder } from "@discordjs/builders";
+import { EmbedBuilder } from "discord.js";
 import { APIEmbed } from "discord-api-types/v10";
 import { GuildMember, User } from "discord.js";
 import Color from "../../utils/colors";

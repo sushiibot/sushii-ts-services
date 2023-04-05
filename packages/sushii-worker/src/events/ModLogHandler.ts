@@ -4,9 +4,15 @@ import {
   ButtonStyle,
   AuditLogEvent,
 } from "discord-api-types/v10";
-import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  Events,
+  Guild,
+  GuildAuditLogsEntry,
+  User,
+} from "discord.js";
 import dayjs from "dayjs";
-import { Events, Guild, GuildAuditLogsEntry, User } from "discord.js";
 import logger from "../logger";
 import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";

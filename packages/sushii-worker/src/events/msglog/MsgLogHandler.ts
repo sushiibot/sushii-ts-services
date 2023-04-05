@@ -1,11 +1,10 @@
-import { EmbedBuilder } from "@discordjs/builders";
+import { EmbedBuilder, GatewayDispatchEvents } from "discord.js";
 import {
   APIMessage,
   GatewayMessageDeleteBulkDispatchData,
   GatewayMessageDeleteDispatchData,
   GatewayMessageUpdateDispatchData,
 } from "discord-api-types/v10";
-import { GatewayDispatchEvents } from "discord.js";
 import { None, Option, Some } from "ts-results";
 import SushiiEmoji from "../../constants/SushiiEmoji";
 import { MsgLogBlockType, Message } from "../../generated/graphql";

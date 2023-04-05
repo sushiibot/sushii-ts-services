@@ -1,4 +1,4 @@
-import { EmbedBuilder } from "@discordjs/builders";
+import { EmbedBuilder } from "discord.js";
 import dayjs from "dayjs";
 import { Err, Ok, Result } from "ts-results";
 import {

@@ -1,5 +1,4 @@
-import { MessageFlags, ModalSubmitInteraction } from "discord.js";
-import { EmbedBuilder } from "@discordjs/builders";
+import { MessageFlags, ModalSubmitInteraction, EmbedBuilder } from "discord.js";
 import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ModalHandler } from "../../handlers";

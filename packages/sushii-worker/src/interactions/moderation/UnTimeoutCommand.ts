@@ -1,5 +1,5 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
 import {
+  SlashCommandBuilder,
   ChatInputCommandInteraction,
   PermissionsBitField,
   PermissionFlagsBits,

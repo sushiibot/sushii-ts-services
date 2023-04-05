@@ -1,4 +1,4 @@
-import { EmbedBuilder } from "@discordjs/builders";
+import { EmbedBuilder } from "discord.js";
 import SushiiEmoji from "../../../constants/SushiiEmoji";
 import Color from "../../../utils/colors";
 

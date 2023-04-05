@@ -1,6 +1,5 @@
-import { EmbedBuilder } from "@discordjs/builders";
+import { EmbedBuilder, ButtonInteraction } from "discord.js";
 import { MessageFlags } from "discord-api-types/v10";
-import { ButtonInteraction } from "discord.js";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import customIds from "../customIds";

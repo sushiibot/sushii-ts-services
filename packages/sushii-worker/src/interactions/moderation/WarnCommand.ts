@@ -1,5 +1,8 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { PermissionFlagsBits, ChatInputCommandInteraction } from "discord.js";
+import {
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  ChatInputCommandInteraction,
+} from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import {

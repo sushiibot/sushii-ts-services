@@ -1,6 +1,9 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
+import {
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  PermissionsBitField,
+} from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
-import { ChatInputCommandInteraction, PermissionsBitField } from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import {

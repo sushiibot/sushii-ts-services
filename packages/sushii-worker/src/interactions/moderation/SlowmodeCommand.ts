@@ -1,11 +1,12 @@
-import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
-import dayjs from "dayjs";
 import {
+  EmbedBuilder,
+  SlashCommandBuilder,
   MessageFlags,
   PermissionFlagsBits,
   ChatInputCommandInteraction,
   ChannelType,
 } from "discord.js";
+import dayjs from "dayjs";
 import plugin from "dayjs/plugin/duration";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";

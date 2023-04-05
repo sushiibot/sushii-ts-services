@@ -1,6 +1,9 @@
-import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
+import {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
+} from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
-import { ChatInputCommandInteraction } from "discord.js";
 import { MsgLogBlockType } from "../../generated/graphql";
 import Context from "../../model/context";
 import Color from "../../utils/colors";

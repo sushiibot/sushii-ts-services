@@ -7,15 +7,13 @@ import {
   ButtonBuilder,
   RoleSelectMenuBuilder,
   UserSelectMenuBuilder,
-} from "@discordjs/builders";
-import { t } from "i18next";
-import { None, Option, Some } from "ts-results";
-import {
   ChannelType,
   ChatInputCommandInteraction,
   ButtonStyle,
   PermissionFlagsBits,
 } from "discord.js";
+import { t } from "i18next";
+import { None, Option, Some } from "ts-results";
 import {
   GetRoleMenuQuery,
   RedisGuildRole,

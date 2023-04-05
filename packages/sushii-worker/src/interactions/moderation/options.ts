@@ -2,7 +2,7 @@ import {
   SlashCommandAttachmentOption,
   SlashCommandIntegerOption,
   SlashCommandStringOption,
-} from "@discordjs/builders";
+} from "discord.js";
 import { ActionType } from "./ActionType";
 
 export enum ModerationOption {

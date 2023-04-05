@@ -1,5 +1,9 @@
-import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
-import { MessageFlags, ChatInputCommandInteraction } from "discord.js";
+import {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  MessageFlags,
+  ChatInputCommandInteraction,
+} from "discord.js";
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";

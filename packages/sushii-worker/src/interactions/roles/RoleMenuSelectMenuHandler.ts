@@ -1,6 +1,5 @@
-import { EmbedBuilder } from "@discordjs/builders";
+import { EmbedBuilder, AnySelectMenuInteraction } from "discord.js";
 import { MessageFlags } from "discord-api-types/v10";
-import { AnySelectMenuInteraction } from "discord.js";
 import Context from "../../model/context";
 import catchApiError from "../../utils/catchApiError";
 import Color from "../../utils/colors";

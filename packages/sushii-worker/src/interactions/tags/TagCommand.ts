@@ -1,16 +1,17 @@
-import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
+import {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  Attachment,
+  AttachmentBuilder,
+  ChatInputCommandInteraction,
+  GuildMember,
+} from "discord.js";
 import dayjs from "dayjs";
 import {
   APIEmbedField,
   MessageFlags,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
-import {
-  Attachment,
-  AttachmentBuilder,
-  ChatInputCommandInteraction,
-  GuildMember,
-} from "discord.js";
 import { t } from "i18next";
 import fetch from "node-fetch";
 import { Err, Ok, Result } from "ts-results";

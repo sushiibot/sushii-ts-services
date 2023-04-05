@@ -2,14 +2,14 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ContextMenuCommandBuilder,
-} from "@discordjs/builders";
+  ContextMenuCommandInteraction,
+} from "discord.js";
 import {
   ApplicationCommandType,
   ButtonStyle,
   MessageFlags,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
-import { ContextMenuCommandInteraction } from "discord.js";
 import Context from "../../../model/context";
 import customIds from "../../customIds";
 import ContextMenuHandler from "../../handlers/ContextMenuHandler";
