@@ -14,6 +14,7 @@ import legacyModLogNotifierHandler from "./events/GuildBanAdd/LegacyModLogNotifi
 import modLogHandler from "./events/ModLogHandler";
 import { msgLogHandler } from "./events/msglog/MsgLogHandler";
 import msgLogCacheHandler from "./events/msglog/MessageCacheHandler";
+import levelHandler from "./events/LevelHandler";
 
 async function handleEvent<K extends keyof ClientEvents>(
   ctx: Context,
@@ -136,6 +137,10 @@ export default function registerEventHandlers(
       [legacyModLogNotifierHandler],
       guildBan
     );
+  });
+
+  client.on(Events.MessageCreate, async (msg) => {
+    handleEvent(ctx, Events.MessageCreate, [levelHandler], msg);
   });
 
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {

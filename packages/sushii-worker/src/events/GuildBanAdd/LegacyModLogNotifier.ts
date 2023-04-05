@@ -1,7 +1,10 @@
-import { Events, GuildBan } from "discord.js";
+import { EmbedBuilder, Events, GuildBan } from "discord.js";
 import logger from "../../logger";
 import Context from "../../model/context";
+import Color from "../../utils/colors";
 import { EventHandlerFn } from "../EventHandler";
+
+const notifiedCache = new Set<string>();
 
 const legacyModLogNotifierHandler: EventHandlerFn<Events.GuildBanAdd> = async (
   ctx: Context,
@@ -9,49 +12,64 @@ const legacyModLogNotifierHandler: EventHandlerFn<Events.GuildBanAdd> = async (
 ): Promise<void> => {
   // Ban event
   // Ban event, exit if already sent notification
-  if (notifiedCache.has(guild.id)) {
+  if (notifiedCache.has(ban.guild.id)) {
     logger.debug(
-      { guildId: guild.id },
+      { guildId: ban.guild.id },
       "Already notified guild of missing audit log perms"
     );
     return;
   }
 
-  // Let's check if sushii has audit log perms in this guild.
-  // Only fetch guild if not cached
-  const guild = await ctx.REST.getGuild(guild.id);
+  const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
+    guildId: ban.guild.id,
+  });
 
-  if (guild.err) {
-    logger.error({ err: guild.err }, "Failed to get guild for ban event");
+  // No guild config found, ignore
+  if (
+    !guildConfigById || // Config not found
+    !guildConfigById.logMod || // No msg log set
+    !guildConfigById.logModEnabled // Msg log disabled
+  ) {
     return;
   }
 
-  if (guild.ok && guild.val.permissions) {
-    // sushii doesn't have audit log perms, notify
-    if (
-      !hasPermission(guild.val.permissions, PermissionFlagsBits.ViewAuditLog)
-    ) {
-      // Guild doesn't have audit log perms, notify
-      const embed = new EmbedBuilder()
-        .setTitle("Missing audit log permissions")
-        .setDescription(
-          "sushii now needs extra permissions to log mod actions, please make sure my role has the `View Audit Log` permission!"
-        )
-        .setColor(Color.Error);
+  // Let's check if sushii has audit log perms in this guild.
+  // Only fetch guild if not cached
+  const hasAuditLogPerms =
+    ban.guild.members.me?.permissions.has("ViewAuditLog");
 
-      await ctx.REST.sendChannelMessage(guildConfigById.logMod, {
-        embeds: [embed.toJSON()],
-      });
-
-      // Prevent logging again in this guild
-      notifiedCache.add(guild.id);
-
-      logger.debug(
-        { guildId: guild.id },
-        "Notified guild of missing audit log perms (ban event)"
-      );
-    }
+  // Fine with perms
+  if (hasAuditLogPerms) {
+    return;
   }
+
+  // sushii doesn't have audit log perms, notify
+  // Guild doesn't have audit log perms, notify
+  const embed = new EmbedBuilder()
+    .setTitle("Missing audit log permissions")
+    .setDescription(
+      "sushii now needs extra permissions to log mod actions, please make sure my role has the `View Audit Log` permission!"
+    )
+    .setColor(Color.Error);
+
+  const channel = ban.guild.channels.cache.get(guildConfigById.logMod);
+
+  if (!channel || !channel.isTextBased()) {
+    // Unknown channel, maybe deleted
+    return;
+  }
+
+  await channel.send({
+    embeds: [embed.toJSON()],
+  });
+
+  // Prevent logging again in this guild
+  notifiedCache.add(ban.guild.id);
+
+  logger.debug(
+    { guildId: ban.guild.id },
+    "Notified guild of missing audit log perms (ban event)"
+  );
 };
 
 export default legacyModLogNotifierHandler;
