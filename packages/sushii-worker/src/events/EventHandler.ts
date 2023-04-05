@@ -1,16 +1,13 @@
-import { GatewayDispatchEvents } from "discord-api-types/v10";
+import { ClientEvents, Events, GatewayDispatchPayload } from "discord.js";
 import Context from "../model/context";
 
-export default abstract class EventHandler {
-  abstract readonly eventTypes: GatewayDispatchEvents[];
+export type RawEventHandlerFn<T extends Events> = (
+  ctx: Context,
+  eventType: T,
+  payload: GatewayDispatchPayload
+) => Promise<void>;
 
-  /**
-   * Event handler
-   */
-  abstract handler(
-    ctx: Context,
-    eventType: GatewayDispatchEvents,
-    data: unknown,
-    old: unknown | undefined
-  ): Promise<void>;
-}
+export type EventHandlerFn<K extends keyof ClientEvents> = (
+  ctx: Context,
+  ...data: ClientEvents[K]
+) => Promise<void>;

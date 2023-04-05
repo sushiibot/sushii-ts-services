@@ -13,6 +13,7 @@ import Context from "./model/context";
 import startTasks from "./tasks/startTasks";
 import { getSdkWebsocket, getWsClient } from "./model/graphqlClient";
 import config from "./model/config";
+import registerEventHandlers from "./handlers";
 
 async function main(): Promise<void> {
   Sentry.init({
@@ -61,6 +62,8 @@ async function main(): Promise<void> {
       MessageManager: 0,
     }),
   });
+
+  registerEventHandlers(ctx, djsClient, client);
 
   djsClient.login(config.TOKEN);
 

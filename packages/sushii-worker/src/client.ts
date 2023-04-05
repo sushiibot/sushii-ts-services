@@ -26,8 +26,6 @@ import ContextMenuHandler from "./interactions/handlers/ContextMenuHandler";
 import Metrics from "./model/metrics";
 import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
-import EventHandler from "./events/EventHandler";
-import { GatewayDispatchPayloadWithOld } from "./model/GatewayDispatchPayloadWithOld";
 
 interface FocusedOption {
   path: string;
@@ -103,11 +101,6 @@ export default class Client {
   private buttonHandlers: ButtonHandler[];
 
   /**
-   * Generic non-interaction handlers
-   */
-  private eventHandlers: EventHandler[];
-
-  /**
    * select menu handlers
    */
   private selectMenuHandlers: SelectMenuHandler[];
@@ -121,7 +114,6 @@ export default class Client {
     this.buttonHandlers = [];
     this.selectMenuHandlers = [];
     this.contextMenuHandlers = new Collection();
-    this.eventHandlers = [];
   }
 
   /**
@@ -193,15 +185,6 @@ export default class Client {
    */
   public addSelectMenus(...componentHandlers: SelectMenuHandler[]): void {
     this.selectMenuHandlers.push(...componentHandlers);
-  }
-
-  /**
-   * Add generic event handlers
-   *
-   * @param handlers EventHandlers to add
-   */
-  public addEventHandlers(...handlers: EventHandler[]): void {
-    this.eventHandlers.push(...handlers);
   }
 
   /**
@@ -581,38 +564,5 @@ export default class Client {
     }
 
     return undefined;
-  }
-
-  public async handleEvent(
-    event: GatewayDispatchPayloadWithOld
-  ): Promise<void> {
-    const data = event.d;
-
-    this.metrics.handleGatewayDispatchEvent(event);
-
-    const promises = [];
-
-    for (const handler of this.eventHandlers) {
-      if (handler.eventTypes.includes(event.t)) {
-        const p = handler.handler(this.context, event.t, data, event.old);
-        promises.push(p);
-      }
-    }
-
-    // Run all handlers in parallel
-    const results = await Promise.allSettled(promises);
-
-    for (const result of results) {
-      if (result.status === "rejected") {
-        Sentry.captureException(result.reason, {
-          tags: {
-            type: "event",
-            event: event.t,
-          },
-        });
-
-        log.error({ err: result.reason }, "error handling event %s", event.t);
-      }
-    }
   }
 }

@@ -1,5 +1,5 @@
-import { GatewayDispatchPayload, InteractionType } from "discord-api-types/v10";
-import { Interaction } from "discord.js";
+import { InteractionType } from "discord-api-types/v10";
+import { Events, Interaction } from "discord.js";
 import client, {
   collectDefaultMetrics,
   Histogram,
@@ -108,8 +108,8 @@ export default class Metrics {
     }
   }
 
-  public handleGatewayDispatchEvent(event: GatewayDispatchPayload): void {
-    this.gatewayEventsCounter.inc({ event_name: event.t.toString() });
+  public handleGatewayDispatchEvent(event: Events): void {
+    this.gatewayEventsCounter.inc({ event_name: event });
   }
 
   public sushiiAPIStartTimer(): ReturnType<
