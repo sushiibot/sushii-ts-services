@@ -1,8 +1,5 @@
-import Collection from "@discordjs/collection";
-import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v10";
-import * as Sentry from "@sentry/node";
-import { t } from "i18next";
 import {
+  Collection,
   AnySelectMenuInteraction,
   AutocompleteFocusedOption,
   AutocompleteInteraction,
@@ -13,6 +10,9 @@ import {
   MessageFlags,
   ModalSubmitInteraction,
 } from "discord.js";
+import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v10";
+import * as Sentry from "@sentry/node";
+import { t } from "i18next";
 import Context from "./model/context";
 import log from "./logger";
 import {

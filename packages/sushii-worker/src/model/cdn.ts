@@ -1,4 +1,4 @@
-import { CDN, ImageURLOptions } from "@discordjs/rest";
+import { CDN, ImageURLOptions } from "discord.js";
 import { APIGuildMember, APIUser } from "discord-api-types/v10";
 
 export default class CDNClient {
