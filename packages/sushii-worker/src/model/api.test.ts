@@ -1,12 +1,8 @@
-import { ClientError } from "graphql-request";
 import dotenv from "dotenv";
-import { AMQPClient } from "@cloudamqp/amqp-client";
 import { GraphQLError } from "graphql";
-import { Config } from "./config";
 import Context from "./context";
 import SushiiSDK from "./api";
 import Metrics from "./metrics";
-import AmqpGateway from "./AmqpGateway";
 import { getSdkWebsocket, getWsClient } from "./graphqlClient";
 
 describe("SushiiSDK", () => {
@@ -14,18 +10,11 @@ describe("SushiiSDK", () => {
 
   beforeAll(() => {
     dotenv.config();
-    const conf = new Config();
 
-    const amqpClient = new AMQPClient(conf.amqpUrl);
-    const wsClient = getWsClient(conf);
+    const wsClient = getWsClient();
     const wsSdk = getSdkWebsocket(wsClient);
 
-    const ctx = new Context(
-      conf,
-      new Metrics(),
-      new AmqpGateway(amqpClient, conf),
-      wsSdk
-    );
+    const ctx = new Context(new Metrics(), wsSdk);
 
     sushiiSDK = ctx.sushiiAPI;
   });

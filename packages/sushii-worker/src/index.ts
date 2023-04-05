@@ -7,7 +7,6 @@ import initI18next from "./i18next";
 import addCommands from "./interactions/commands";
 import server from "./server";
 import Metrics from "./model/metrics";
-import addEventHandlers from "./events/handlers";
 import sdk from "./tracing";
 import Context from "./model/context";
 import startTasks from "./tasks/startTasks";
@@ -31,13 +30,12 @@ async function main(): Promise<void> {
 
   const metrics = new Metrics();
 
-  const wsClient = getWsClient(config);
+  const wsClient = getWsClient();
   const wsSdk = getSdkWebsocket(wsClient, metrics);
 
   const ctx = new Context(metrics, wsSdk);
   const client = new InteractionClient(ctx, metrics);
   addCommands(client);
-  addEventHandlers(client);
 
   // Register commands to Discord API
   await client.register();

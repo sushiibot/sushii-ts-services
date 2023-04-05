@@ -74,7 +74,7 @@ export default class Context {
 
     this.sushiiAPI = new SushiiSDK(wsSdkClient);
 
-    this.sushiiImageServer = new SushiiImageServerClient(config);
+    this.sushiiImageServer = new SushiiImageServerClient();
     this.REST = new RESTClient();
     this.CDN = new CDNClient();
     this.memoryStore = new MemoryStore();
