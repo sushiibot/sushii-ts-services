@@ -110,9 +110,9 @@ export type Sdk = ReturnType<typeof getSdkWebsocket>;
 export function getWsClient(): Client {
   return createClient({
     webSocketImpl: ws,
-    url: config.GRAPHQL_API_WEBSOCKET_URL,
+    url: config.SUSHII_GRAPHQL_WS_URL,
     connectionParams: {
-      Authorization: `Bearer ${config.GRAPHQL_API_TOKEN}`,
+      Authorization: `Bearer ${config.SUSHII_GRAPHQL_TOKEN}`,
     },
     lazy: false,
     retryAttempts: Infinity,

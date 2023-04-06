@@ -155,13 +155,12 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   logger.debug("received mod log type %s", actionType);
 
   // No target ID found in event, ignore
-  if (!event.targetId) {
+  if (!event.targetId || event.targetType !== "User") {
     // Unrelated audit log event
     return;
   }
 
-  const userRes = await ctx.REST.getUser(event.targetId);
-  const targetUser = userRes.unwrap();
+  const targetUser = await guild.client.users.fetch(event.targetId);
 
   const pendingCases = await ctx.sushiiAPI.sdk.getPendingModLog({
     guildId: guild.id,
@@ -253,12 +252,16 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   );
   const components = buildModLogComponents(actionType, matchingCase);
 
-  const sentMsgRes = await ctx.REST.sendChannelMessage(guildConfigById.logMod, {
+  const channel = await guild.channels.fetch(guildConfigById.logMod);
+
+  if (!channel?.isTextBased()) {
+    throw new Error("Mod log channel is not text based");
+  }
+
+  const sentMsg = await channel.send({
     embeds: [embed.toJSON()],
     components,
   });
-
-  const sentMsg = sentMsgRes.unwrap();
 
   // Update message ID in db
   await ctx.sushiiAPI.sdk.updateModLog({

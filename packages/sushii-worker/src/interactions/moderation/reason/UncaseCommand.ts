@@ -1,4 +1,8 @@
-import { EmbedBuilder, SlashCommandBuilder , ChatInputCommandInteraction } from "discord.js";
+import {
+  EmbedBuilder,
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+} from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../../model/context";
 import Color from "../../../utils/colors";
@@ -38,6 +42,10 @@ export default class UncaseCommand extends SlashCommandHandler {
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
+    }
+
+    if (!interaction.channel) {
+      throw new Error("No channel");
     }
 
     const caseRangeStr = interaction.options.getString("case", true);
@@ -129,14 +137,11 @@ export default class UncaseCommand extends SlashCommandHandler {
     // Defer reply for deleting messages
     await interaction.deferReply();
 
-    for (const modLog of bulkDeleteModLog.modLogs) {
-      if (!modLog.msgId) {
-        continue;
-      }
+    const deleteIds = bulkDeleteModLog.modLogs
+      .filter((l) => l.msgId)
+      .map((l) => l.msgId!);
 
-      // eslint-disable-next-line no-await-in-loop
-      await ctx.REST.deleteChannelMessage(guildConfigById.logMod, modLog.msgId);
-    }
+    await interaction.channel.bulkDelete(deleteIds);
 
     const desc = bulkDeleteModLog.modLogs
       .map((m) => `#${m.caseId} - ${m.action} <@${m.userId}>`)

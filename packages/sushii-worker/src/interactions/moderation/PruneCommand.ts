@@ -8,6 +8,7 @@ import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorMessage } from "../responses/error";
 import Color from "../../utils/colors";
+import catchApiError from "../../utils/catchApiError";
 
 const RE_MESSAGE_ID = /^\d{17,21}$/;
 const RE_MESSAGE_ID_FROM_URL = /channels\/\d{17,21}\/\d{17,21}\/(\d{17,21})$/;
@@ -137,6 +138,14 @@ export default class PruneCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction
   ): Promise<void> {
+    if (!interaction.inCachedGuild()) {
+      return;
+    }
+
+    if (!interaction.channel?.isTextBased()) {
+      throw new Error("Channel is not text based.");
+    }
+
     const afterMessageIDStr = interaction.options.getString(
       PruneOption.AfterMessageID
     );
@@ -187,8 +196,8 @@ export default class PruneCommand extends SlashCommandHandler {
           : undefined,
     };
 
-    const msgs = await ctx.REST.getChannelMessages(
-      interaction.channelId,
+    const msgs = await catchApiError(
+      interaction.channel.messages.fetch,
       getMessagesOptions
     );
 
@@ -217,7 +226,7 @@ export default class PruneCommand extends SlashCommandHandler {
       // Skip no attachments
       if (
         attachments === PruneAttachmentsOption.WithAttachments &&
-        msg.attachments.length === 0
+        msg.attachments.size === 0
       ) {
         return false;
       }
@@ -225,7 +234,7 @@ export default class PruneCommand extends SlashCommandHandler {
       // Skip with attachments
       if (
         attachments === PruneAttachmentsOption.WithoutAttachments &&
-        msg.attachments.length > 0
+        msg.attachments.size > 0
       ) {
         return false;
       }
@@ -254,7 +263,10 @@ export default class PruneCommand extends SlashCommandHandler {
       return true;
     });
 
-    const trimmedMsgIDs = filteredMsgs.slice(0, maxDeleteCount || 100);
+    const trimmedMsgIDs = Array.from(filteredMsgs.values()).slice(
+      0,
+      maxDeleteCount || 100
+    );
 
     const userDeletedSummary = trimmedMsgIDs.reduce((acc, msg) => {
       if (acc[msg.author.id]) {
@@ -266,8 +278,8 @@ export default class PruneCommand extends SlashCommandHandler {
       return acc;
     }, {} as Record<string, number>);
 
-    const res = await ctx.REST.bulkDeleteChannelMessages(
-      interaction.channelId,
+    const res = await catchApiError(
+      interaction.channel.bulkDelete,
       trimmedMsgIDs.map((m) => m.id)
     );
 

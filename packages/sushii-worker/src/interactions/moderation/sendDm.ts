@@ -29,7 +29,7 @@ export async function buildDMEmbed(
 
   const guildName = redisGuildByGuildId?.name || `Server ID ${guildId}`;
   const guildIcon = redisGuildByGuildId?.icon
-    ? ctx.CDN.cdn.icon(guildId, redisGuildByGuildId?.icon)
+    ? ctx.CDN.icon(guildId, redisGuildByGuildId.icon)
     : undefined;
 
   const fields = [];

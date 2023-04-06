@@ -5,7 +5,6 @@ import {
   SlashCommandBuilder,
   ButtonInteraction,
   ChatInputCommandInteraction,
-  CommandInteraction,
   ButtonStyle,
   PermissionFlagsBits,
 } from "discord.js";
@@ -20,6 +19,7 @@ import { ActionType } from "../ActionType";
 import customIds from "../../customIds";
 import sleep from "../../../utils/sleep";
 import logger from "../../../logger";
+import catchApiError from "../../../utils/catchApiError";
 
 enum ReasonError {
   UserFetch,
@@ -78,7 +78,7 @@ function getReasonConfirmComponents(
 
 export async function updateModLogReasons(
   ctx: Context,
-  interaction: CommandInteraction | ButtonInteraction,
+  interaction: ChatInputCommandInteraction<"cached"> | ButtonInteraction,
   guildId: string,
   modLogChannelId: string,
   executorId: string,
@@ -86,6 +86,10 @@ export async function updateModLogReasons(
   reason: string,
   onlyEmptyReason: boolean
 ): Promise<EmbedBuilder | undefined> {
+  if (!interaction.channel) {
+    throw new Error("Channel not found");
+  }
+
   // -------------------------------------------------------------------------
   // Update mod log in DB
 
@@ -140,7 +144,10 @@ export async function updateModLogReasons(
     // Fetch the target user
 
     // eslint-disable-next-line no-await-in-loop
-    const targetUser = await ctx.REST.getUser(modCase.userId);
+    const targetUser = await catchApiError(
+      interaction.client.users.fetch,
+      modCase.userId
+    );
     if (targetUser.err) {
       const arr = errs.get(ReasonError.UserFetch) || [];
       errs.set(ReasonError.UserFetch, [...arr, modCase.caseId]);
@@ -159,22 +166,21 @@ export async function updateModLogReasons(
     // Edit the mod log message
 
     // Fetch the message so we can selectively edit the embed
-    // eslint-disable-next-line no-await-in-loop
-    const modLogMsg = await ctx.REST.getChannelMessage(
-      modLogChannelId,
-      modCase.msgId
-    );
-    if (modLogMsg.err) {
+    let modLogMsg;
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      modLogMsg = await interaction.channel.messages.fetch(modCase.msgId);
+    } catch (err) {
       const arr = errs.get(ReasonError.MsgLogFetch) || [];
       errs.set(ReasonError.MsgLogFetch, [...arr, modCase.caseId]);
 
       continue;
     }
 
-    const oldFields = modLogMsg.val.embeds[0].fields || [];
+    const oldFields = modLogMsg.embeds[0].fields || [];
     const indexOfReasonField = oldFields.findIndex((f) => f.name === "Reason");
 
-    const newEmbed = new EmbedBuilder(modLogMsg.val.embeds[0])
+    const newEmbed = new EmbedBuilder(modLogMsg.embeds[0].data)
       .setAuthor({
         name: `${interaction.user.username}#${interaction.user.discriminator}`,
         iconURL: interaction.user.displayAvatarURL(),
@@ -188,7 +194,7 @@ export async function updateModLogReasons(
 
     // Edit the original message to show the updated reason
     // eslint-disable-next-line no-await-in-loop
-    await ctx.REST.editChannelMessage(modLogChannelId, modCase.msgId, {
+    await modLogMsg.edit({
       embeds: [newEmbed.toJSON()],
       // Clear reason button
       components: [],

@@ -9,8 +9,10 @@ import {
   Interaction,
   MessageFlags,
   ModalSubmitInteraction,
+  Routes,
+  RESTPutAPIApplicationCommandsResult,
+  RESTPostAPIApplicationCommandsJSONBody,
 } from "discord.js";
-import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v10";
 import * as Sentry from "@sentry/node";
 import { t } from "i18next";
 import Context from "./model/context";
@@ -26,6 +28,8 @@ import ContextMenuHandler from "./interactions/handlers/ContextMenuHandler";
 import Metrics from "./model/metrics";
 import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
+import config from "./model/config";
+import catchApiError from "./utils/catchApiError";
 
 interface FocusedOption {
   path: string;
@@ -208,12 +212,14 @@ export default class Client {
   public async register(): Promise<void> {
     log.info("registering %s global commands...", this.commands.size);
 
-    const res = await this.context.REST.registerCommands(
-      this.getCommandsArray()
+    const res = await catchApiError(
+      this.context.client.rest.put,
+      Routes.applicationCommands(config.APPLICATION_ID),
+      { body: this.getCommandsArray() }
     );
 
     if (res.ok) {
-      this.context.setCommands(res.val);
+      this.context.setCommands(res.val as RESTPutAPIApplicationCommandsResult);
     }
 
     log.info("commands registered!");

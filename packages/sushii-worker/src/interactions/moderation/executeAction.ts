@@ -1,12 +1,12 @@
-import { EmbedBuilder } from "discord.js";
-import dayjs from "dayjs";
-import { Err, Ok, Result } from "ts-results";
 import {
+  EmbedBuilder,
   RESTJSONErrorCodes,
   ChatInputCommandInteraction,
   Message,
   User,
 } from "discord.js";
+import dayjs from "dayjs";
+import { Err, Ok, Result } from "ts-results";
 import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -122,8 +122,8 @@ async function execActionUser(
         });
       }
 
-      const res = await ctx.REST.kickMember(
-        interaction.guildId,
+      const res = await catchApiError(
+        interaction.guild.members.kick,
         target.user.id,
         auditLogReason
       );

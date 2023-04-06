@@ -85,12 +85,7 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
     return;
   }
 
-  await ctx.REST.setMemberRoles(
-    msg.guildId,
-    msg.author.id,
-    [...newRoles],
-    `Level role ${updateRes.newLevel}`
-  );
+  await msg.member.roles.set([...newRoles], `Level role ${updateRes.newLevel}`);
 
   logger.debug(
     {

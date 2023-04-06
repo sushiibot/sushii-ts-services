@@ -1,14 +1,11 @@
 import { GraphQLClient } from "graphql-request";
-import { APIApplicationCommand, APIUser } from "discord-api-types/v10";
+import { APIApplicationCommand } from "discord-api-types/v10";
 import fetch, { RequestInfo, RequestInit, Response } from "node-fetch";
 import http from "http";
-import CDNClient from "./cdn";
+import { Client, CDN } from "discord.js";
 import config from "./config";
 import SushiiImageServerClient from "./image_server";
-import RESTClient from "./rest";
-// import { SdkFunctionWrapper } from "../generated/graphql";
 import SushiiSDK from "./api";
-import Metrics from "./metrics";
 import { getSdkWebsocket } from "./graphqlClient";
 import MemoryStore from "./MemoryStore";
 
@@ -50,23 +47,18 @@ export default class Context {
 
   public readonly sushiiImageServer: SushiiImageServerClient;
 
-  public readonly REST: RESTClient;
+  public readonly client: Client;
 
-  public readonly CDN: CDNClient;
+  public readonly CDN = new CDN();
 
   public memoryStore: MemoryStore;
 
-  private currentUser?: APIUser;
-
   private commands: APIApplicationCommand[];
 
-  constructor(
-    metrics: Metrics,
-    wsSdkClient: ReturnType<typeof getSdkWebsocket>
-  ) {
-    this.graphQLClient = new GraphQLClient(config.GRAPHQL_API_URL, {
+  constructor(client: Client, wsSdkClient: ReturnType<typeof getSdkWebsocket>) {
+    this.graphQLClient = new GraphQLClient(config.SUSHII_GRAPHQL_URL, {
       headers: {
-        Authorization: `Bearer ${config.GRAPHQL_API_TOKEN}`,
+        Authorization: `Bearer ${config.SUSHII_GRAPHQL_TOKEN}`,
       },
       keepalive: true,
       fetch: getFetch(),
@@ -75,21 +67,10 @@ export default class Context {
     this.sushiiAPI = new SushiiSDK(wsSdkClient);
 
     this.sushiiImageServer = new SushiiImageServerClient();
-    this.REST = new RESTClient();
-    this.CDN = new CDNClient();
+    this.client = client;
     this.memoryStore = new MemoryStore();
 
     this.commands = [];
-  }
-
-  async getCurrentUser(): Promise<APIUser> {
-    // Fetch once on the first time if not already fetched
-    if (!this.currentUser) {
-      const currentUserRes = await this.REST.getCurrentUser();
-      this.currentUser = currentUserRes.unwrap();
-    }
-
-    return this.currentUser;
   }
 
   setCommands(commands: APIApplicationCommand[]): void {

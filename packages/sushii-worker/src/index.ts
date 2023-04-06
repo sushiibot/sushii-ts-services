@@ -33,13 +33,6 @@ async function main(): Promise<void> {
   const wsClient = getWsClient();
   const wsSdk = getSdkWebsocket(wsClient, metrics);
 
-  const ctx = new Context(metrics, wsSdk);
-  const client = new InteractionClient(ctx, metrics);
-  addCommands(client);
-
-  // Register commands to Discord API
-  await client.register();
-
   // Create a new client instance
   const djsClient = new Client({
     intents: [
@@ -53,7 +46,7 @@ async function main(): Promise<void> {
     rest: {
       version: "10",
       // Ensure we are using the proxy api url
-      api: config.PROXY_URL,
+      api: config.TWILIGHT_PROXY_URL,
     },
     makeCache: Options.cacheWithLimits({
       // Do not cache messages
@@ -61,9 +54,16 @@ async function main(): Promise<void> {
     }),
   });
 
+  const ctx = new Context(djsClient, wsSdk);
+  const client = new InteractionClient(ctx, metrics);
+  addCommands(client);
+
+  // Register commands to Discord API
+  await client.register();
+
   registerEventHandlers(ctx, djsClient, client);
 
-  djsClient.login(config.TOKEN);
+  djsClient.login(config.DISCORD_TOKEN);
 
   // Start background jobs
   await startTasks(ctx);

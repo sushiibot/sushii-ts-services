@@ -11,6 +11,7 @@ import { MsgLogBlockType, Message } from "../../generated/graphql";
 import Context from "../../model/context";
 import buildChunks from "../../utils/buildChunks";
 import Color from "../../utils/colors";
+import logger from "../../logger";
 
 type EventData =
   | GatewayMessageDeleteDispatchData
@@ -73,7 +74,7 @@ function buildDeleteEmbed(
 
   if (msg.sticker_items && msg.sticker_items.length > 0) {
     const sticker = msg.sticker_items[0];
-    const stickerURL = ctx.CDN.cdn.sticker(sticker.id);
+    const stickerURL = ctx.CDN.sticker(sticker.id);
 
     description += "**Stickers**";
     description += "\n";
@@ -91,7 +92,9 @@ function buildDeleteEmbed(
     description += attachments;
   }
 
-  const authorIcon = ctx.CDN.userFaceURL(msg.author);
+  const authorIcon = msg.author.avatar
+    ? ctx.CDN.avatar(msg.author.id, msg.author.avatar)
+    : ctx.CDN.defaultAvatar(parseInt(msg.author.discriminator, 10));
 
   return new EmbedBuilder()
     .setAuthor({
@@ -132,7 +135,9 @@ function buildEditEmbed(
   description += "\n";
   description += quoteMarkdownString(updateEvent.content);
 
-  const authorIcon = ctx.CDN.userFaceURL(msg.author);
+  const authorIcon = msg.author.avatar
+    ? ctx.CDN.avatar(msg.author.id, msg.author.avatar)
+    : ctx.CDN.defaultAvatar(parseInt(msg.author.discriminator, 10));
 
   const embed = new EmbedBuilder()
     .setAuthor({
@@ -164,7 +169,7 @@ function buildBulkDeleteEmbed(
 
     if (msg.sticker_items && msg.sticker_items.length > 0) {
       const sticker = msg.sticker_items[0];
-      const stickerURL = ctx.CDN.cdn.sticker(sticker.id);
+      const stickerURL = ctx.CDN.sticker(sticker.id);
 
       // Can have both message and sticker
       if (msg.content) {
@@ -299,13 +304,25 @@ export async function msgLogHandler(
     return;
   }
 
+  const channel = ctx.client.channels.cache.get(guildConfigById.logMsg);
+  if (!channel || !channel.isTextBased()) {
+    logger.warn(
+      {
+        guildId: payload.guild_id,
+        channelId: guildConfigById.logMsg,
+      },
+      "Log msg channel not found or not text based"
+    );
+    return;
+  }
+
   // Split embeds into chunks of 10
   const chunkSize = 10;
   for (let i = 0; i < embeds.val.length; i += chunkSize) {
     const chunk = embeds.val.slice(i, i + chunkSize).map((e) => e.toJSON());
 
     // eslint-disable-next-line no-await-in-loop
-    await ctx.REST.sendChannelMessage(guildConfigById.logMsg, {
+    await channel.send({
       embeds: chunk,
     });
   }

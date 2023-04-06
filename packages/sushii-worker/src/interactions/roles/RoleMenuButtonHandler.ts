@@ -9,6 +9,7 @@ import {
   getRoleMenuMessageButtonRoles,
   getRoleMenuRequiredRole,
 } from "./ids";
+import catchApiError from "../../utils/catchApiError";
 
 export default class RoleMenuButtonHandler extends ButtonHandler {
   customIDMatch = customIds.roleMenuButton.match;
@@ -99,17 +100,15 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
     let res;
     let description;
     if (isRemovingRole) {
-      res = await ctx.REST.removeMemberRole(
-        interaction.guildId,
-        interaction.member.user.id,
+      res = await catchApiError(
+        interaction.member.roles.remove,
         roleToAddOrRemove
       );
 
       description = `Removed role <@&${roleToAddOrRemove}>`;
     } else {
-      res = await ctx.REST.addMemberRole(
-        interaction.guildId,
-        interaction.member.user.id,
+      res = await catchApiError(
+        interaction.member.roles.add,
         roleToAddOrRemove
       );
 

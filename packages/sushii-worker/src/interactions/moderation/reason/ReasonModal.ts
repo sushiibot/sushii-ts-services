@@ -76,11 +76,12 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       throw new Error("No message id in mod log case");
     }
 
-    const targetUser = await ctx.REST.getUser(
-      modCase.modLogByGuildIdAndCaseId.userId
-    );
-
-    if (targetUser.err) {
+    let targetUser;
+    try {
+      targetUser = await interaction.client.users.fetch(
+        modCase.modLogByGuildIdAndCaseId.userId
+      );
+    } catch (err) {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
@@ -94,7 +95,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
     const newEmbed = await buildModLogEmbed(
       ctx,
       ActionType.fromString(modCase.modLogByGuildIdAndCaseId.action),
-      targetUser.val,
+      targetUser,
       updatedModCase.updateModLogByGuildIdAndCaseId.modLog
     );
 
