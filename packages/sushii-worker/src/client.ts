@@ -29,7 +29,6 @@ import Metrics from "./model/metrics";
 import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
 import config from "./model/config";
-import catchApiError from "./utils/catchApiError";
 
 interface FocusedOption {
   path: string;
@@ -212,15 +211,14 @@ export default class Client {
   public async register(): Promise<void> {
     log.info("registering %s global commands...", this.commands.size);
 
-    const res = await catchApiError(
-      this.context.client.rest.put,
+    // catchApiError with this is funky, and we don't need to catch error anyways,
+    // fine to throw
+    const res = await this.context.client.rest.put(
       Routes.applicationCommands(config.APPLICATION_ID),
       { body: this.getCommandsArray() }
     );
 
-    if (res.ok) {
-      this.context.setCommands(res.val as RESTPutAPIApplicationCommandsResult);
-    }
+    this.context.setCommands(res as RESTPutAPIApplicationCommandsResult);
 
     log.info("commands registered!");
   }

@@ -54,6 +54,9 @@ async function main(): Promise<void> {
     }),
   });
 
+  // Set token for rest client early for command registration
+  djsClient.rest.setToken(config.DISCORD_TOKEN);
+
   const ctx = new Context(djsClient, wsSdk);
   const client = new InteractionClient(ctx, metrics);
   addCommands(client);
@@ -62,8 +65,6 @@ async function main(): Promise<void> {
   await client.register();
 
   registerEventHandlers(ctx, djsClient, client);
-
-  djsClient.login(config.DISCORD_TOKEN);
 
   // Start background jobs
   await startTasks(ctx);
@@ -95,6 +96,9 @@ async function main(): Promise<void> {
       log.flush();
     },
   });
+
+  // Start client
+  await djsClient.login(config.DISCORD_TOKEN);
 }
 
 main().catch((e) => {
