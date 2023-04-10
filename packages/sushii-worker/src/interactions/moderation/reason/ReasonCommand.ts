@@ -7,6 +7,7 @@ import {
   ChatInputCommandInteraction,
   ButtonStyle,
   PermissionFlagsBits,
+  DiscordAPIError,
 } from "discord.js";
 import dayjs from "dayjs";
 import Context from "../../../model/context";
@@ -19,7 +20,6 @@ import { ActionType } from "../ActionType";
 import customIds from "../../customIds";
 import sleep from "../../../utils/sleep";
 import logger from "../../../logger";
-import catchApiError from "../../../utils/catchApiError";
 
 enum ReasonError {
   UserFetch,
@@ -143,16 +143,18 @@ export async function updateModLogReasons(
     // -------------------------------------------------------------------------
     // Fetch the target user
 
-    // eslint-disable-next-line no-await-in-loop
-    const targetUser = await catchApiError(
-      interaction.client.users.fetch,
-      modCase.userId
-    );
-    if (targetUser.err) {
-      const arr = errs.get(ReasonError.UserFetch) || [];
-      errs.set(ReasonError.UserFetch, [...arr, modCase.caseId]);
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await interaction.client.users.fetch(modCase.userId);
+    } catch (err) {
+      if (err instanceof DiscordAPIError) {
+        const arr = errs.get(ReasonError.UserFetch) || [];
+        errs.set(ReasonError.UserFetch, [...arr, modCase.caseId]);
 
-      continue;
+        continue;
+      }
+
+      throw err;
     }
 
     if (!modCase.msgId) {

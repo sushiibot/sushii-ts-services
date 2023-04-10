@@ -283,7 +283,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
 
     const dmEmbed = await buildDMEmbed(
       ctx,
-      guild.id,
+      guild,
       actionType,
       true, // should dm reason
       reason || null, // reason

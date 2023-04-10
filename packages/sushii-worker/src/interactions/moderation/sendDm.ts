@@ -5,11 +5,12 @@ import {
   RESTJSONErrorCodes,
   Message,
   User,
+  Guild,
+  DiscordAPIError,
 } from "discord.js";
 import dayjs from "dayjs";
-import { Err, Result } from "ts-results";
+import { Err, Ok, Result } from "ts-results";
 import Context from "../../model/context";
-import catchApiError from "../../utils/catchApiError";
 import Color from "../../utils/colors";
 import toTimestamp from "../../utils/toTimestamp";
 import { ActionType } from "./ActionType";
@@ -17,21 +18,12 @@ import ModActionData from "./ModActionData";
 
 export async function buildDMEmbed(
   ctx: Context,
-  guildId: string,
+  guild: Guild,
   action: ActionType,
   shouldDMReason: boolean,
   reason: string | null,
   timeoutEnd: dayjs.Dayjs | null
 ): Promise<EmbedBuilder> {
-  const { redisGuildByGuildId } = await ctx.sushiiAPI.sdk.getRedisGuild({
-    guild_id: guildId,
-  });
-
-  const guildName = redisGuildByGuildId?.name || `Server ID ${guildId}`;
-  const guildIcon = redisGuildByGuildId?.icon
-    ? ctx.CDN.icon(guildId, redisGuildByGuildId.icon)
-    : undefined;
-
   const fields = [];
 
   if (shouldDMReason && reason) {
@@ -59,8 +51,8 @@ export async function buildDMEmbed(
   return new EmbedBuilder()
     .setTitle(title)
     .setAuthor({
-      name: guildName,
-      iconURL: guildIcon,
+      name: guild.name,
+      iconURL: guild.iconURL() || undefined,
     })
     .setFields(fields)
     .setColor(Color.Warning);
@@ -68,36 +60,33 @@ export async function buildDMEmbed(
 
 export default async function sendModActionDM(
   ctx: Context,
-  interaction: Interaction,
-  guildId: string,
+  interaction: Interaction<"cached">,
   data: ModActionData,
   target: User,
   action: ActionType
 ): Promise<Result<Message, string>> {
   const embed = await buildDMEmbed(
     ctx,
-    guildId,
+    interaction.guild,
     action,
     data.shouldDMReason(action),
     data.reason,
     data.communicationDisabledUntil().unwrapOr(null)
   );
 
-  const dmMessage = await catchApiError(
-    interaction.client.users.send,
-    target.id,
-    {
+  try {
+    const dmMessage = await interaction.client.users.send(target.id, {
       embeds: [embed.toJSON()],
-    }
-  );
+    });
 
-  if (dmMessage.err) {
-    if (
-      dmMessage.val.code === RESTJSONErrorCodes.CannotSendMessagesToThisUser
-    ) {
-      return Err("User has DMs disabled or bot is blocked.");
+    return Ok(dmMessage);
+  } catch (err) {
+    if (err instanceof DiscordAPIError) {
+      if (err.code === RESTJSONErrorCodes.CannotSendMessagesToThisUser) {
+        return Err("User has DMs disabled or bot is blocked.");
+      }
     }
+
+    throw err;
   }
-
-  return dmMessage.mapErr((e) => e.message);
 }

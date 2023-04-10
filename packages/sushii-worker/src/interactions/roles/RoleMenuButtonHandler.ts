@@ -1,4 +1,4 @@
-import { EmbedBuilder, ButtonInteraction } from "discord.js";
+import { EmbedBuilder, ButtonInteraction, DiscordAPIError } from "discord.js";
 import { MessageFlags } from "discord-api-types/v10";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -9,7 +9,6 @@ import {
   getRoleMenuMessageButtonRoles,
   getRoleMenuRequiredRole,
 } from "./ids";
-import catchApiError from "../../utils/catchApiError";
 
 export default class RoleMenuButtonHandler extends ButtonHandler {
   customIDMatch = customIds.roleMenuButton.match;
@@ -97,35 +96,32 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
     // -------------------------------------------------------------------------
     // Add role or remove role
 
-    let res;
     let description;
-    if (isRemovingRole) {
-      res = await catchApiError(
-        interaction.member.roles.remove,
-        roleToAddOrRemove
-      );
+    try {
+      if (isRemovingRole) {
+        await interaction.member.roles.remove(roleToAddOrRemove);
 
-      description = `Removed role <@&${roleToAddOrRemove}>`;
-    } else {
-      res = await catchApiError(
-        interaction.member.roles.add,
-        roleToAddOrRemove
-      );
+        description = `Removed role <@&${roleToAddOrRemove}>`;
+      } else {
+        await interaction.member.roles.add(roleToAddOrRemove);
 
-      description = `Added role <@&${roleToAddOrRemove}>`;
-    }
+        description = `Added role <@&${roleToAddOrRemove}>`;
+      }
+    } catch (err) {
+      if (err instanceof DiscordAPIError) {
+        await interaction.reply({
+          embeds: [
+            new EmbedBuilder()
+              .setColor(Color.Error)
+              .setTitle("Failed to update your roles")
+              .setDescription(err.message)
+              .toJSON(),
+          ],
+          flags: MessageFlags.Ephemeral,
+        });
+      }
 
-    if (res.err) {
-      await interaction.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(Color.Error)
-            .setTitle("Failed to update your roles")
-            .setDescription(res.val.message)
-            .toJSON(),
-        ],
-        flags: MessageFlags.Ephemeral,
-      });
+      throw err;
     }
 
     await interaction.reply({

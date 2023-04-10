@@ -2,13 +2,13 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
   ChatInputCommandInteraction,
+  DiscordAPIError,
 } from "discord.js";
 import { MessageFlags, PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorMessage } from "../responses/error";
 import Color from "../../utils/colors";
-import catchApiError from "../../utils/catchApiError";
 
 const RE_MESSAGE_ID = /^\d{17,21}$/;
 const RE_MESSAGE_ID_FROM_URL = /channels\/\d{17,21}\/\d{17,21}\/(\d{17,21})$/;
@@ -196,25 +196,25 @@ export default class PruneCommand extends SlashCommandHandler {
           : undefined,
     };
 
-    const msgs = await catchApiError(
-      interaction.channel.messages.fetch,
-      getMessagesOptions
-    );
+    let msgs;
+    try {
+      msgs = await interaction.channel.messages.fetch(getMessagesOptions);
+    } catch (err) {
+      if (err instanceof DiscordAPIError) {
+        await interactionReplyErrorMessage(
+          ctx,
+          interaction,
+          `Failed to fetch messages: ${err.message}`,
+          true
+        );
 
-    if (msgs.err) {
-      await interactionReplyErrorMessage(
-        ctx,
-        interaction,
-        `Failed to fetch messages: ${msgs.val.message}`,
-        true
-      );
+        return;
+      }
 
-      return;
+      throw err;
     }
 
-    const msgsData = msgs.safeUnwrap();
-
-    const filteredMsgs = msgsData.filter((msg) => {
+    const filteredMsgs = msgs.filter((msg) => {
       if (skipPinned && msg.pinned) {
         return false;
       }
@@ -278,20 +278,17 @@ export default class PruneCommand extends SlashCommandHandler {
       return acc;
     }, {} as Record<string, number>);
 
-    const res = await catchApiError(
-      interaction.channel.bulkDelete,
-      trimmedMsgIDs.map((m) => m.id)
-    );
-
-    if (res.err) {
-      await interactionReplyErrorMessage(
-        ctx,
-        interaction,
-        `Failed to delete messages: ${res.val.message}`,
-        true
-      );
-
-      return;
+    try {
+      await interaction.channel.bulkDelete(trimmedMsgIDs.map((m) => m.id));
+    } catch (err) {
+      if (err instanceof DiscordAPIError) {
+        await interactionReplyErrorMessage(
+          ctx,
+          interaction,
+          `Failed to delete messages: ${err.message}`,
+          true
+        );
+      }
     }
 
     const fields = [];

@@ -1,11 +1,10 @@
-import { EmbedBuilder } from "discord.js";
-import { MessageFlags } from "discord-api-types/v10";
-import {
+import { EmbedBuilder ,
   ButtonInteraction,
   ChatInputCommandInteraction,
   InteractionReplyOptions,
   ModalSubmitInteraction,
 } from "discord.js";
+import { MessageFlags } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";

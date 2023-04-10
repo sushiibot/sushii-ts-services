@@ -5,6 +5,7 @@ import {
   PermissionFlagsBits,
   ChatInputCommandInteraction,
   ChannelType,
+  DiscordAPIError,
 } from "discord.js";
 import dayjs from "dayjs";
 import plugin from "dayjs/plugin/duration";
@@ -16,7 +17,6 @@ import {
 } from "../responses/error";
 import Color from "../../utils/colors";
 import parseDuration from "../../utils/parseDuration";
-import catchApiError from "../../utils/catchApiError";
 
 const RE_ONLY_NUMBERS = /^\d+$/;
 
@@ -110,19 +110,23 @@ export default class SlowmodeCommand extends SlashCommandHandler {
       return;
     }
 
-    const res = await catchApiError(targetChanel.edit, {
-      rateLimitPerUser: duration!.asSeconds(),
-    });
+    try {
+      await targetChanel.edit({
+        rateLimitPerUser: duration!.asSeconds(),
+      });
+    } catch (err) {
+      if (err instanceof DiscordAPIError) {
+        await interactionReplyErrorMessage(
+          ctx,
+          interaction,
+          `Failed to update slowmode: ${err.message}`,
+          true
+        );
 
-    if (res.err) {
-      await interactionReplyErrorMessage(
-        ctx,
-        interaction,
-        `Failed to update slowmode: ${res.val.message}`,
-        true
-      );
+        return;
+      }
 
-      return;
+      throw err;
     }
 
     let formattedDuration = "";

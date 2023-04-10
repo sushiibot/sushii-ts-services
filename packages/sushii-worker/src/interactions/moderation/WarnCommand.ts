@@ -32,6 +32,10 @@ export default class WarnCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction
   ): Promise<void> {
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Not in cached guild");
+    }
+
     const data = new ModActionData(interaction);
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {

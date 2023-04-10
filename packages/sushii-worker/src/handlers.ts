@@ -78,11 +78,7 @@ export default function registerEventHandlers(
   client.once(Events.ClientReady, async (c) => {
     logger.info(`Ready! Logged in as ${c.user.tag}`);
 
-    await webhookLog(
-      `[Shard ${c.shard?.ids}] Ready`,
-      `Logged in as ${c.user.tag}`,
-      Color.Success
-    );
+    await webhookLog("Ready", `Logged in as ${c.user.tag}`, Color.Success);
   });
 
   client.on(Events.ShardDisconnect, async (closeEvent, shardId) => {

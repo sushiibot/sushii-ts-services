@@ -30,6 +30,12 @@ import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
 import config from "./model/config";
 
+// For JSON.stringify()
+// eslint-disable-next-line no-extend-native, func-names
+(BigInt.prototype as any).toJSON = function (): string {
+  return this.toString();
+};
+
 interface FocusedOption {
   path: string;
   option: AutocompleteFocusedOption;
@@ -211,8 +217,6 @@ export default class Client {
   public async register(): Promise<void> {
     log.info("registering %s global commands...", this.commands.size);
 
-    // catchApiError with this is funky, and we don't need to catch error anyways,
-    // fine to throw
     const res = await this.context.client.rest.put(
       Routes.applicationCommands(config.APPLICATION_ID),
       { body: this.getCommandsArray() }
@@ -268,6 +272,7 @@ export default class Client {
       await command.handler(this.context, interaction);
     } catch (e) {
       const invoker = interaction.user;
+      log.error(e, "error running command %s", interaction.commandName);
 
       Sentry.withScope((scope) => {
         scope.addAttachment({
@@ -292,9 +297,6 @@ export default class Client {
           },
         });
       });
-
-      log.error(e, "error running command %s", interaction.commandName);
-
       try {
         await interaction.reply(t("generic.error.internal"));
       } catch (e2) {

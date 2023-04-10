@@ -1,4 +1,8 @@
-import { SlashCommandBuilder , ChatInputCommandInteraction, PermissionsBitField } from "discord.js";
+import {
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  PermissionsBitField,
+} from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
@@ -38,6 +42,10 @@ export default class BanCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction
   ): Promise<void> {
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Not in cached guild");
+    }
+
     const data = new ModActionData(interaction);
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {

@@ -4,6 +4,7 @@ import {
   ChatInputCommandInteraction,
   Message,
   User,
+  DiscordAPIError,
 } from "discord.js";
 import dayjs from "dayjs";
 import { Err, Ok, Result } from "ts-results";
@@ -15,7 +16,6 @@ import { ActionType } from "./ActionType";
 import hasPermissionTargetingMember from "../../utils/hasPermission";
 import ModActionData, { ModActionTarget } from "./ModActionData";
 import sendModActionDM from "./sendDm";
-import catchApiError from "../../utils/catchApiError";
 
 interface ActionError {
   target: ModActionTarget;
@@ -112,149 +112,105 @@ async function execActionUser(
   // Audit log header max 512 characters
   const auditLogReason = data.reason?.slice(0, 512);
 
-  switch (actionType) {
-    case ActionType.Kick: {
-      // Member already fetched earlier
-      if (!target.member) {
-        return Err({
-          target,
-          message: "User is not in the server",
-        });
+  try {
+    switch (actionType) {
+      case ActionType.Kick: {
+        // Member already fetched earlier
+        if (!target.member) {
+          return Err({
+            target,
+            message: "User is not in the server",
+          });
+        }
+
+        await interaction.guild.members.kick(target.user.id, auditLogReason);
+
+        break;
       }
-
-      const res = await catchApiError(
-        interaction.guild.members.kick,
-        target.user.id,
-        auditLogReason
-      );
-
-      if (res.err) {
-        return Err({
-          target,
-          message: res.val.message,
-        });
-      }
-
-      break;
-    }
-    case ActionType.Ban: {
-      const res = await catchApiError(
-        interaction.guild.members.ban,
-        target.user.id,
-        {
+      case ActionType.Ban: {
+        await interaction.guild.members.ban(target.user.id, {
           reason: auditLogReason,
           deleteMessageSeconds: (data.deleteMessageDays || 0) * 86400,
+        });
+
+        break;
+      }
+      case ActionType.BanRemove: {
+        await interaction.guild.members.unban(target.user.id, auditLogReason);
+
+        break;
+      }
+      case ActionType.Timeout:
+      case ActionType.TimeoutAdjust: {
+        if (!target.member) {
+          return Err({
+            target,
+            message: "User is not in the server",
+          });
         }
-      );
 
-      if (res.err) {
-        return Err({
-          target,
-          message: res.val.message,
-        });
-      }
-
-      break;
-    }
-    case ActionType.BanRemove: {
-      const res = await catchApiError(
-        interaction.guild.members.unban,
-        target.user.id,
-        auditLogReason
-      );
-
-      if (res.err) {
-        return Err({
-          target,
-          message: res.val.message,
-        });
-      }
-
-      break;
-    }
-    case ActionType.Timeout:
-    case ActionType.TimeoutAdjust: {
-      if (!target.member) {
-        return Err({
-          target,
-          message: "User is not in the server",
-        });
-      }
-
-      // Timeout and adjust are both same, just update timeout end time
-      const res = await catchApiError(
-        interaction.guild.members.edit,
-        target.user.id,
-        {
+        // Timeout and adjust are both same, just update timeout end time
+        await interaction.guild.members.edit(target.user.id, {
           communicationDisabledUntil: data
             .communicationDisabledUntil()
             .unwrap()
             .toISOString(),
           reason: auditLogReason,
-        }
-      );
+        });
 
-      if (res.err) {
-        if (res.val.code === RESTJSONErrorCodes.MissingPermissions) {
+        break;
+      }
+      case ActionType.TimeoutRemove: {
+        if (!target.member) {
           return Err({
             target,
-            message:
-              "I don't have permission to timeout this user, make sure I have the \
-`Timeout Members` permission or that my role is above the user you are trying to time out.",
+            message: "User is not in the server",
           });
         }
 
-        return Err({
-          target,
-          message: res.val.message,
-        });
-      }
-
-      break;
-    }
-    case ActionType.TimeoutRemove: {
-      if (!target.member) {
-        return Err({
-          target,
-          message: "User is not in the server",
-        });
-      }
-
-      const res = await catchApiError(
-        interaction.guild.members.edit,
-        target.user.id,
-        {
+        await interaction.guild.members.edit(target.user.id, {
           communicationDisabledUntil: null,
           reason: auditLogReason,
+        });
+
+        break;
+      }
+      case ActionType.Warn:
+        if (!target.member) {
+          return Err({
+            target,
+            message: "User is not in the server",
+          });
         }
-      );
 
-      if (res.err) {
-        return Err({
-          target,
-          message: res.val.message,
-        });
-      }
+        // Nothing, only DM
+        break;
+      case ActionType.Note:
+        // Allow for non-members, send no DM
 
-      break;
+        break;
+      case ActionType.Lookup:
+      case ActionType.History:
+        throw new Error(`unsupported action type ${actionType}`);
     }
-    case ActionType.Warn:
-      if (!target.member) {
+  } catch (err) {
+    if (err instanceof DiscordAPIError) {
+      if (err.code === RESTJSONErrorCodes.MissingPermissions) {
         return Err({
           target,
-          message: "User is not in the server",
+          message:
+            "I don't have permission to do this action, make sure I have the \
+`Ban Members` and`Timeout Members` permission or that my role is above the target user.",
         });
       }
 
-      // Nothing, only DM
-      break;
-    case ActionType.Note:
-      // Allow for non-members, send no DM
+      return Err({
+        target,
+        message: err.message,
+      });
+    }
 
-      break;
-    case ActionType.Lookup:
-    case ActionType.History:
-      throw new Error(`unsupported action type ${actionType}`);
+    throw err;
   }
 
   return Ok(target);
@@ -268,7 +224,7 @@ interface ExecuteActionUserResult {
 
 async function executeActionUser(
   ctx: Context,
-  interaction: ChatInputCommandInteraction,
+  interaction: ChatInputCommandInteraction<"cached">,
   data: ModActionData,
   target: ModActionTarget,
   actionType: ActionType
@@ -329,7 +285,6 @@ async function executeActionUser(
     dmRes = await sendModActionDM(
       ctx,
       interaction,
-      interaction.guildId,
       data,
       target.user,
       actionType
@@ -345,7 +300,6 @@ async function executeActionUser(
     dmRes = await sendModActionDM(
       ctx,
       interaction,
-      interaction.guildId,
       data,
       target.user,
       actionType
@@ -389,7 +343,7 @@ async function executeActionUser(
 
 export default async function executeAction(
   ctx: Context,
-  interaction: ChatInputCommandInteraction,
+  interaction: ChatInputCommandInteraction<"cached">,
   data: ModActionData,
   actionType: ActionType
 ): Promise<Result<EmbedBuilder, Error>> {

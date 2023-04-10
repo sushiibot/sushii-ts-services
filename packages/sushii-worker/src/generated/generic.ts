@@ -23587,13 +23587,6 @@ export type GetUserBansQueryVariables = Exact<{
 
 export type GetUserBansQuery = { __typename?: 'Query', allGuildBans?: { __typename?: 'GuildBansConnection', totalCount: number, nodes: Array<{ __typename?: 'GuildBan', guildId: string, nodeId: string, userId: string }> } | null };
 
-export type GetRedisGuildQueryVariables = Exact<{
-  guild_id: Scalars['BigInt'];
-}>;
-
-
-export type GetRedisGuildQuery = { __typename?: 'Query', redisGuildByGuildId?: { __typename?: 'RedisGuild', afkChannelId?: string | null, afkTimeout: number, applicationId?: string | null, banner?: string | null, channels?: Array<string | null> | null, defaultMessageNotifications?: number | null, description?: string | null, discoverySplash?: string | null, explicitContentFilter?: number | null, features?: Array<string | null> | null, icon?: string | null, id: string, joinedAt?: string | null, large?: boolean | null, maxMembers?: number | null, maxVideoChannelUsers?: number | null, memberCount?: number | null, members?: Array<string | null> | null, mfaLevel?: number | null, name: string, nsfwLevel: number, ownerId: string, preferredLocale?: string | null, premiumSubscriptionCount?: number | null, premiumTier: number, presences?: Array<string | null> | null, rulesChannelId?: string | null, splash?: string | null, systemChannelFlags?: number | null, systemChannelId?: string | null, unavailable?: boolean | null, vanityUrlCode?: string | null, verificationLevel?: number | null, voiceStates?: Array<string | null> | null, roles: Array<{ __typename?: 'RedisGuildRole', id: string, color: number, hoist: boolean, icon?: string | null, managed: boolean, mentionable: boolean, position: number, name: string, permissions: string, unicode_emoji?: string | null }> } | null };
-
 export type GuildConfigByIdQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
 }>;
@@ -24312,58 +24305,6 @@ export const GetUserBansDocument = gql`
   }
 }
     ${BanDataFragmentDoc}`;
-export const GetRedisGuildDocument = gql`
-    query getRedisGuild($guild_id: BigInt!) {
-  redisGuildByGuildId(guild_id: $guild_id) {
-    afkChannelId
-    afkTimeout
-    applicationId
-    banner
-    channels
-    defaultMessageNotifications
-    description
-    discoverySplash
-    explicitContentFilter
-    features
-    icon
-    id
-    joinedAt
-    large
-    maxMembers
-    maxVideoChannelUsers
-    memberCount
-    members
-    mfaLevel
-    name
-    nsfwLevel
-    ownerId
-    preferredLocale
-    premiumSubscriptionCount
-    premiumTier
-    presences
-    roles {
-      id
-      color
-      hoist
-      icon
-      managed
-      mentionable
-      position
-      name
-      permissions
-      unicode_emoji
-    }
-    rulesChannelId
-    splash
-    systemChannelFlags
-    systemChannelId
-    unavailable
-    vanityUrlCode
-    verificationLevel
-    voiceStates
-  }
-}
-    `;
 export const GuildConfigByIdDocument = gql`
     query guildConfigByID($guildId: BigInt!) {
   guildConfigById(id: $guildId) {
@@ -25015,9 +24956,6 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
   return {
     getUserBans(variables: GetUserBansQueryVariables, options?: C): Promise<GetUserBansQuery> {
       return requester<GetUserBansQuery, GetUserBansQueryVariables>(GetUserBansDocument, variables, options) as Promise<GetUserBansQuery>;
-    },
-    getRedisGuild(variables: GetRedisGuildQueryVariables, options?: C): Promise<GetRedisGuildQuery> {
-      return requester<GetRedisGuildQuery, GetRedisGuildQueryVariables>(GetRedisGuildDocument, variables, options) as Promise<GetRedisGuildQuery>;
     },
     guildConfigByID(variables: GuildConfigByIdQueryVariables, options?: C): Promise<GuildConfigByIdQuery> {
       return requester<GuildConfigByIdQuery, GuildConfigByIdQueryVariables>(GuildConfigByIdDocument, variables, options) as Promise<GuildConfigByIdQuery>;

@@ -1,5 +1,5 @@
-import { SlashCommandBuilder } from "discord.js";
 import {
+  SlashCommandBuilder,
   PermissionFlagsBits,
   ChatInputCommandInteraction,
   PermissionsBitField,
@@ -42,6 +42,10 @@ export default class TimeoutCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction
   ): Promise<void> {
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Not in cached guild");
+    }
+
     const data = new ModActionData(interaction);
     if (data.communicationDisabledUntil().err) {
       await interactionReplyErrorMessage(

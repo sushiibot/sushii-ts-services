@@ -1,8 +1,6 @@
 import {
   SlashCommandBuilder,
   EmbedBuilder,
-  SelectMenuOptionBuilder,
-  SelectMenuBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   RoleSelectMenuBuilder,
@@ -11,14 +9,14 @@ import {
   ChatInputCommandInteraction,
   ButtonStyle,
   PermissionFlagsBits,
+  StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
+  DiscordAPIError,
+  Role,
 } from "discord.js";
 import { t } from "i18next";
 import { None, Option, Some } from "ts-results";
-import {
-  GetRoleMenuQuery,
-  RedisGuildRole,
-  RoleMenuRole,
-} from "../../generated/graphql";
+import { GetRoleMenuQuery, RoleMenuRole } from "../../generated/graphql";
 import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -29,7 +27,6 @@ import {
   interactionReplyErrorMessage,
   interactionReplyErrorPlainMessage,
 } from "../responses/error";
-import catchApiError from "../../utils/catchApiError";
 
 const RE_ROLE = /(?:<@&)?(\d{17,20})>?/g;
 
@@ -38,7 +35,7 @@ enum RoleMenuOption {
   NewName = "new_menu_name",
   Description = "description",
   Emoji = "emoji",
-  Role = "role",
+  RoleOption = "role",
   Roles = "roles",
   MaxRoles = "max_roles",
   RequiredRole = "required_role",
@@ -239,7 +236,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         )
         .addRoleOption((o) =>
           o
-            .setName(RoleMenuOption.Role)
+            .setName(RoleMenuOption.RoleOption)
             .setDescription("The role to update.")
             .setRequired(true)
         )
@@ -956,7 +953,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
-    const role = interaction.options.getRole(RoleMenuOption.Role);
+    const role = interaction.options.getRole(RoleMenuOption.RoleOption);
     if (!role) {
       throw new Error("No role provided.");
     }
@@ -1115,14 +1112,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     // ------------------------------------------------------------
     // Get guild role names
-    const redisGuild = await ctx.sushiiAPI.sdk.getRedisGuild({
-      guild_id: interaction.guildId,
-    });
-
-    const guildRoles = redisGuild.redisGuildByGuildId?.roles;
-    if (!guildRoles) {
-      throw new Error("No roles found in guild.");
-    }
+    const guildRoles = Array.from(interaction.guild.roles.cache.values());
 
     const guildRolesMap = guildRoles.reduce((map, role) => {
       if (role) {
@@ -1130,7 +1120,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       }
 
       return map;
-    }, new Map<string, RedisGuildRole>());
+    }, new Map<string, Role>());
 
     const roles = roleMenuData.roleMenuRolesByGuildIdAndMenuName.nodes;
     roles.sort(sortRoleMenuRoles);
@@ -1233,7 +1223,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       const selectOptions = [];
 
       for (const { roleId, emoji, description } of roles) {
-        let option = new SelectMenuOptionBuilder()
+        let option = new StringSelectMenuOptionBuilder()
           .setValue(roleId)
           .setLabel(guildRolesMap.get(roleId)?.name || roleId);
 
@@ -1254,7 +1244,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         selectOptions.push(option);
       }
 
-      const selectMenu = new SelectMenuBuilder()
+      const selectMenu = new StringSelectMenuBuilder()
         .setPlaceholder("Select your roles!")
         .setCustomId(customIds.roleMenuSelect.compile())
         .addOptions(selectOptions)
@@ -1263,7 +1253,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         // Default is 1
         .setMinValues(0);
 
-      const row = new ActionRowBuilder<SelectMenuBuilder>()
+      const row = new ActionRowBuilder<StringSelectMenuBuilder>()
         .addComponents([selectMenu])
         .toJSON();
       components.push(row);
@@ -1272,21 +1262,22 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     }
 
     if (sendChannel.isTextBased()) {
-      const res = await catchApiError(await sendChannel.send, {
-        embeds: [embed.toJSON()],
-        components,
-      });
-
-      if (res.err) {
-        logger.error({ err: res.err }, "Error sending role menu message");
-
-        await interaction.reply({
-          content: t("rolemenu.send.error.send_message", {
-            error: res.val.message,
-          }),
+      try {
+        await sendChannel.send({
+          embeds: [embed.toJSON()],
+          components,
         });
+      } catch (err) {
+        logger.error({ err }, "Error sending role menu message");
+        if (err instanceof DiscordAPIError) {
+          await interaction.reply({
+            content: t("rolemenu.send.error.send_message", {
+              error: err.message,
+            }),
+          });
 
-        return;
+          return;
+        }
       }
     }
 

@@ -1,11 +1,15 @@
-import { EmbedBuilder, AnySelectMenuInteraction } from "discord.js";
+import {
+  EmbedBuilder,
+  AnySelectMenuInteraction,
+  DiscordAPIError,
+} from "discord.js";
 import { MessageFlags } from "discord-api-types/v10";
 import Context from "../../model/context";
-import catchApiError from "../../utils/catchApiError";
 import Color from "../../utils/colors";
 import customIds from "../customIds";
 import { SelectMenuHandler } from "../handlers";
 import { getRoleMenuMessageSelectRoles, getRoleMenuRequiredRole } from "./ids";
+import logger from "../../logger";
 
 export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
   customIDMatch = customIds.roleMenuSelect.match;
@@ -89,18 +93,22 @@ export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
       description = "No roles were added or removed";
     }
 
-    const res = await catchApiError(
-      interaction.member.roles.set,
-      Array.from(memberNewRoles)
-    );
+    try {
+      await interaction.member.roles.set(Array.from(memberNewRoles));
+    } catch (err) {
+      logger.warn({ err }, "Failed to update roles via select menu rolemenu ");
 
-    if (res.err) {
+      let desc;
+      if (err instanceof DiscordAPIError) {
+        desc = err.message;
+      }
+
       await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(Color.Error)
             .setTitle("Failed to update your roles")
-            .setDescription(res.val.message)
+            .setDescription(desc || "An unknown error occurred")
             .toJSON(),
         ],
         flags: MessageFlags.Ephemeral,
