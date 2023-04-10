@@ -1,7 +1,0 @@
-mutation deleteLevelRoleApplyJob($guildId: BigInt!) {
-  deleteLevelRoleApplyJobByGuildId(input: { guildId: $guildId }) {
-    levelRoleApplyJob {
-      ...LevelRoleApplyJobData
-    }
-  }
-}

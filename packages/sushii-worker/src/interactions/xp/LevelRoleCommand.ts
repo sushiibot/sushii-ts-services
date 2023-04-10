@@ -15,7 +15,6 @@ enum CommandName {
   LevelRoleNew = "new",
   LevelRoleDelete = "delete",
   LevelRoleList = "list",
-  LevelRoleApply = "apply",
 }
 
 enum LevelRoleOption {
@@ -76,13 +75,6 @@ export default class LevelRoleCommand extends SlashCommandHandler {
     .addSubcommand((c) =>
       c.setName(CommandName.LevelRoleList).setDescription("List level roles.")
     )
-    // Disable due to complexity of applying roles - functionality replaced by
-    // adding eligible roles not just on level up but on any message.
-    // .addSubcommand((c) =>
-    //   c
-    //     .setName(CommandName.LevelRoleApply)
-    //     .setDescription("Apply level roles to all members that are eligible.")
-    // )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this

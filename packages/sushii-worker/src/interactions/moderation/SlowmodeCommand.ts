@@ -154,7 +154,7 @@ export default class SlowmodeCommand extends SlashCommandHandler {
           .addFields(
             {
               name: "Channel",
-              value: `<#${res.val.id}>`,
+              value: `<#${targetChanel.id}>`,
             },
             {
               name: "Duration",
