@@ -15,6 +15,8 @@ import modLogHandler from "./events/ModLogHandler";
 import { msgLogHandler } from "./events/msglog/MsgLogHandler";
 import msgLogCacheHandler from "./events/msglog/MessageCacheHandler";
 import levelHandler from "./events/LevelHandler";
+import webhookLog from "./webhookLogger";
+import Color from "./utils/colors";
 
 async function handleEvent<K extends keyof ClientEvents>(
   ctx: Context,
@@ -73,11 +75,17 @@ export default function registerEventHandlers(
   client: Client,
   interactionHandler: InteractionClient
 ): void {
-  client.once(Events.ClientReady, (c) => {
+  client.once(Events.ClientReady, async (c) => {
     logger.info(`Ready! Logged in as ${c.user.tag}`);
+
+    await webhookLog(
+      `[Shard ${c.shard?.ids}] Ready`,
+      `Logged in as ${c.user.tag}`,
+      Color.Success
+    );
   });
 
-  client.on(Events.ShardDisconnect, (closeEvent, shardId) => {
+  client.on(Events.ShardDisconnect, async (closeEvent, shardId) => {
     logger.info(
       {
         shardId,
@@ -85,9 +93,11 @@ export default function registerEventHandlers(
       },
       "Shard disconnected"
     );
+
+    await webhookLog(`[Shard ${shardId}] Disconnected`, "", Color.Warning);
   });
 
-  client.on(Events.ShardError, (error, shardId) => {
+  client.on(Events.ShardError, async (error, shardId) => {
     logger.error(
       {
         shardId,
@@ -95,24 +105,66 @@ export default function registerEventHandlers(
       },
       "Shard error"
     );
+
+    await webhookLog(`[Shard ${shardId}] Error`, error.message, Color.Error);
   });
 
-  client.on(Events.ShardReconnecting, (shardId) => {
+  client.on(Events.ShardReconnecting, async (shardId) => {
     logger.info(
       {
         shardId,
       },
       "Shard reconnecting"
     );
+
+    await webhookLog(`[Shard ${shardId}] Reconnecting`, "", Color.Warning);
   });
 
-  client.on(Events.ShardResume, (shardId, replayedEvents) => {
+  client.on(Events.ShardResume, async (shardId, replayedEvents) => {
     logger.info(
       {
         shardId,
         replayedEvents,
       },
       "Shard resumed"
+    );
+
+    await webhookLog(
+      `[Shard ${shardId}] Resume`,
+      `replayed ${replayedEvents} events`,
+      Color.Success
+    );
+  });
+
+  client.on(Events.GuildCreate, async (guild) => {
+    logger.info(
+      {
+        guildId: guild.id,
+      },
+      "Joined guild %s",
+      guild.name
+    );
+
+    await webhookLog(
+      "Joined guild",
+      `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
+      Color.Info
+    );
+  });
+
+  client.on(Events.GuildDelete, async (guild) => {
+    logger.info(
+      {
+        guildId: guild.id,
+      },
+      "Removed guild %s",
+      guild.name
+    );
+
+    await webhookLog(
+      "Left guild",
+      `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
+      Color.Error
     );
   });
 
@@ -145,22 +197,23 @@ export default function registerEventHandlers(
 
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
     if (event.t === GatewayDispatchEvents.MessageDelete) {
-      runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
+      await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
     }
 
     if (event.t === GatewayDispatchEvents.MessageDeleteBulk) {
-      runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
+      await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
     }
 
     if (event.t === GatewayDispatchEvents.MessageUpdate) {
-      runParallel(event.t, [
-        msgLogHandler(ctx, event.t, event.d),
-        msgLogCacheHandler(ctx, event.t, event.d),
-      ]);
+      // Log first to keep old message, then cache after for new update.
+      // Fine to await since each event is a specific type, no other types that
+      // this blocks.
+      await msgLogHandler(ctx, event.t, event.d);
+      await msgLogCacheHandler(ctx, event.t, event.d);
     }
 
     if (event.t === GatewayDispatchEvents.MessageCreate) {
-      runParallel(event.t, [msgLogCacheHandler(ctx, event.t, event.d)]);
+      await runParallel(event.t, [msgLogCacheHandler(ctx, event.t, event.d)]);
     }
   });
 }

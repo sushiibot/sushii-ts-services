@@ -13,10 +13,13 @@ const schema = z.object({
   SUSHII_GRAPHQL_WS_URL: z.string(),
   SUSHII_GRAPHQL_TOKEN: z.string(),
   SUSHII_IMAGE_SERVER_URL: z.string(),
-  AMQP_URL: z.string(),
+  DATABASE_URL: z.string(),
 
   // Example: 'https://discord.com/api'
   TWILIGHT_PROXY_URL: z.string(),
+
+  NOTIFY_WEBHOOK_URL: z.string().optional(),
+  NOTIFY_WEBHOOK_USERNAME: z.string().optional(),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -26,7 +29,7 @@ if (!parsed.success) {
     {
       error: parsed.error.format(),
     },
-    "❌ Invalid environment variables:"
+    "❌ Invalid environment variables"
   );
 
   process.exit(1);

@@ -53,7 +53,7 @@ function findFocusedOptionRecur(
   const focusedOption = options.getFocused(true);
 
   return {
-    path: [...parents, focusedOption.name].join("."),
+    path: parents.join("."),
     option: focusedOption,
   };
 }

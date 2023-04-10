@@ -15,24 +15,11 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A floating point number that requires more precision than IEEE 754 binary 64 */
   BigFloat: any;
-  /**
-   * A signed eight-byte integer. The upper big integer values are greater than the
-   * max value for a JavaScript number. Therefore all big integers will be output as
-   * strings and not numbers.
-   */
   BigInt: string;
-  /** A location in a connection that can be used for resuming pagination. */
   Cursor: any;
-  /**
-   * A point in time as described by the [ISO
-   * 8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
-   */
   Datetime: string;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { [key: string]: any };
-  /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: any;
 };
 
