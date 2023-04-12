@@ -52,7 +52,8 @@ export default class AvatarCommand extends SlashCommandHandler {
       try {
         const member = await interaction.guild.members.fetch(target.id);
 
-        const memberFaceURL = member.displayAvatarURL({
+        // Not displayAvatarURL since we don't want it to fallback to user pfp
+        const memberFaceURL = member.avatarURL({
           size: 4096,
         });
 

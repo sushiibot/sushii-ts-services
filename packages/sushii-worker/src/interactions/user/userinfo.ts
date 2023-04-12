@@ -1,5 +1,4 @@
-import { SlashCommandBuilder } from "discord.js";
-import { ChatInputCommandInteraction } from "discord.js";
+import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import Context from "../../model/context";
 import logger from "../../logger";
 import { SlashCommandHandler } from "../handlers";

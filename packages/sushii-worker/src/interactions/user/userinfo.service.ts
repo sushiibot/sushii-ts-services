@@ -1,6 +1,5 @@
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, GuildMember, User } from "discord.js";
 import { APIEmbed } from "discord-api-types/v10";
-import { GuildMember, User } from "discord.js";
 import Color from "../../utils/colors";
 import { getCreatedTimestampSeconds } from "../../utils/snowflake";
 
@@ -39,9 +38,11 @@ export default async function getUserinfoEmbed(
   ]);
 
   if (member) {
+    embed = embed.setColor(member.displayColor);
+
     // 1024 char limit, 40 roles * 25 length each mention = 1000
     const trimmedRoles = [...member.roles.cache.values()].slice(0, 40);
-    let rolesStr = trimmedRoles.map((id) => `<@&${id}>`).join(" ");
+    let rolesStr = trimmedRoles.map((role) => role.toString()).join(" ");
 
     if (member.roles.cache.size > 40) {
       rolesStr += ` and ${member.roles.cache.size - 40} more roles...`;

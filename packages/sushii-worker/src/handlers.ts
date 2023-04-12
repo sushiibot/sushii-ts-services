@@ -17,6 +17,7 @@ import msgLogCacheHandler from "./events/msglog/MessageCacheHandler";
 import levelHandler from "./events/LevelHandler";
 import webhookLog from "./webhookLogger";
 import Color from "./utils/colors";
+import { StatName, updateStat } from "./tasks/StatsTask";
 
 async function handleEvent<K extends keyof ClientEvents>(
   ctx: Context,
@@ -165,7 +166,19 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.InteractionCreate, async (interaction) => {
-    interactionHandler.handleAPIInteraction(interaction);
+    try {
+      interactionHandler.handleAPIInteraction(interaction);
+
+      await updateStat(StatName.CommandCount, 1, "add");
+    } catch (err) {
+      logger.error(
+        {
+          err,
+          interaction,
+        },
+        "Error handling interaction"
+      );
+    }
   });
 
   client.on(Events.GuildAuditLogEntryCreate, async (entry, guild) => {
