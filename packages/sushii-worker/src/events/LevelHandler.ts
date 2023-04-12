@@ -1,7 +1,20 @@
 import { Events, Message } from "discord.js";
+import { sql } from "kysely";
+import { z } from "zod";
 import logger from "../logger";
 import Context from "../model/context";
+import db from "../model/db";
 import { EventHandlerFn } from "./EventHandler";
+
+// Must match sql response, snake case
+const UpdateUserXpResultSchema = z.object({
+  old_level: z.string().optional().nullable(),
+  new_level: z.string().optional().nullable(),
+  add_role_ids: z.array(z.string()).optional().nullable(),
+  remove_role_ids: z.array(z.string()).optional().nullable(),
+});
+
+type UpdateUserXpResult = z.infer<typeof UpdateUserXpResultSchema>;
 
 const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
   ctx: Context,
@@ -23,50 +36,76 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
     return;
   }
 
-  const { updateUserXp } = await ctx.sushiiAPI.sdk.updateUserXp({
-    guildId: msg.guildId,
-    userId: msg.author.id,
-    channelId: msg.channelId,
-    roleIds: msg.member?.roles.cache.map((r) => r.id) || [],
-  });
+  // guild_id   bigint,
+  // channel_id bigint,
+  // user_id    bigint,
+  // role_ids   bigint[]
+  const res = await db
+    .selectFrom(
+      sql<UpdateUserXpResult>`app_public.update_user_xp(
+        ${msg.guildId},
+        ${msg.channelId},
+        ${msg.author.id},
+        ${msg.member.roles.cache.map((r) => r.id)}
+      )`.as("q")
+    )
+    .selectAll()
+    .executeTakeFirst();
 
-  const updateRes = updateUserXp?.userXpUpdateResult;
-  if (!updateRes || !updateRes.newLevel || !updateRes.oldLevel) {
+  // Parse to enforce schema matches, this throws if returned object doesn't match.
+  // Discard result as we only care about checking error.
+  UpdateUserXpResultSchema.parse(res);
+
+  if (!res) {
+    // Empty response
+    logger.warn(
+      {
+        guildId: msg.guildId,
+        channelId: msg.channelId,
+        userId: msg.author.id,
+      },
+      "Empty response from update_user_xp"
+    );
+    return;
+  }
+
+  // Default empty add/remove roles
+  const {
+    old_level: oldLevel,
+    new_level: newLevel,
+    add_role_ids, // eslint-disable-line @typescript-eslint/naming-convention
+    remove_role_ids, // eslint-disable-line @typescript-eslint/naming-convention
+  } = res;
+
+  if (!newLevel || !oldLevel) {
     // No xp updates, e.g. already sent message within past 1 minute
     return;
   }
 
-  if (!updateRes.addRoleIds && !updateRes.removeRoleIds) {
-    return;
+  let addRoleIds: string[] = [];
+  let removeRoleIds: string[] = [];
+  if (add_role_ids) {
+    addRoleIds = add_role_ids;
   }
 
-  // If no roles to add or remove
-  if (
-    updateRes.addRoleIds &&
-    updateRes.addRoleIds.length === 0 &&
-    updateRes.removeRoleIds &&
-    updateRes.removeRoleIds.length === 0
-  ) {
+  if (remove_role_ids) {
+    removeRoleIds = remove_role_ids;
+  }
+
+  // Both empty, no role updates
+  if (addRoleIds.length === 0 && removeRoleIds.length === 0) {
     return;
   }
 
   // New roles to assign to the member, including their current ones
   const newRoles = new Set(msg.member.roles.cache.keys() || []);
 
-  if (updateRes.addRoleIds) {
-    const addRoles = updateRes.addRoleIds.filter((r): r is string => !!r);
-
-    for (const roleId of addRoles) {
-      newRoles.add(roleId);
-    }
+  for (const roleId of addRoleIds) {
+    newRoles.add(roleId);
   }
 
-  if (updateRes.removeRoleIds) {
-    const removeRoles = updateRes.removeRoleIds.filter((r): r is string => !!r);
-
-    for (const roleId of removeRoles) {
-      newRoles.delete(roleId);
-    }
+  for (const roleId of removeRoleIds) {
+    newRoles.delete(roleId);
   }
 
   // Do not do any api requests if there are no role changes, e.g. user already
@@ -85,17 +124,17 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
     return;
   }
 
-  await msg.member.roles.set([...newRoles], `Level role ${updateRes.newLevel}`);
+  await msg.member.roles.set([...newRoles], `Level role ${newLevel}`);
 
   logger.debug(
     {
       guildId: msg.guildId,
       channelId: msg.channelId,
       userId: msg.author.id,
-      oldLevel: updateRes.oldLevel,
-      newLevel: updateRes.newLevel,
-      addRoleIds: updateRes.addRoleIds,
-      removeRoleIds: updateRes.removeRoleIds,
+      oldLevel,
+      newLevel,
+      addRoleIds,
+      removeRoleIds,
       newMemberRoles: [...newRoles],
     },
     "Level role update"
