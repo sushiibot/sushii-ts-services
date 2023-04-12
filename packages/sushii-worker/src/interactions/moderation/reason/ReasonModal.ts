@@ -6,6 +6,7 @@ import Color from "../../../utils/colors";
 import { interactionReplyErrorPlainMessage } from "../../responses/error";
 import buildModLogEmbed from "../../../builders/buildModLogEmbed";
 import { ActionType } from "../ActionType";
+import sleep from "../../../utils/sleep";
 
 // When modal submitted, update mod log message and save the reason
 export default class ModLogReasonModalHandler extends ModalHandler {
@@ -110,11 +111,18 @@ export default class ModLogReasonModalHandler extends ModalHandler {
 
     const embed = new EmbedBuilder()
       .setTitle(`Updated reason for case #${caseId}`)
+      .setFooter({
+        text: "This message will be deleted in 5 seconds",
+      })
       .setColor(Color.Success);
 
-    await interaction.reply({
+    const reply = await interaction.reply({
       embeds: [embed.toJSON()],
       flags: MessageFlags.Ephemeral,
     });
+
+    // Delete reply after 5 seconds
+    await sleep(5000);
+    await reply.delete();
   }
 }

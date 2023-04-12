@@ -9,6 +9,7 @@ import {
   getRoleMenuMessageButtonRoles,
   getRoleMenuRequiredRole,
 } from "./ids";
+import sleep from "../../utils/sleep";
 
 export default class RoleMenuButtonHandler extends ButtonHandler {
   customIDMatch = customIds.roleMenuButton.match;
@@ -124,7 +125,7 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
       throw err;
     }
 
-    await interaction.reply({
+    const reply = await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setColor(Color.Success)
@@ -134,5 +135,9 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
       ],
       flags: MessageFlags.Ephemeral,
     });
+
+    // Delete reply after 5 seconds
+    await sleep(5000);
+    await reply.delete();
   }
 }
