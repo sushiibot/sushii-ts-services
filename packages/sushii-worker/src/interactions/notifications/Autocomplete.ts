@@ -20,12 +20,15 @@ export default class NotificationListAutocomplete extends AutocompleteHandler {
       throw new Error("Option type must be string.");
     }
 
+    // Escape any % characters
+    const val = option.value.replace(/%/g, "%%");
+
     const matching = await db
       .selectFrom("app_public.notifications")
       .select("keyword")
       .where("guild_id", "=", interaction.guildId)
       .where("user_id", "=", interaction.user.id)
-      .where("keyword", "ilike", `${option.value}%`)
+      .where("keyword", "ilike", `${val}%`)
       .execute();
 
     const choices = matching.slice(0, 25).map((row) => ({
