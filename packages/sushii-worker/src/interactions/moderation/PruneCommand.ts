@@ -3,12 +3,15 @@ import {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   DiscordAPIError,
+  Message,
+  User,
 } from "discord.js";
 import { MessageFlags, PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorMessage } from "../responses/error";
 import Color from "../../utils/colors";
+import logger from "../../logger";
 
 const RE_MESSAGE_ID = /^\d{17,21}$/;
 const RE_MESSAGE_ID_FROM_URL = /channels\/\d{17,21}\/\d{17,21}\/(\d{17,21})$/;
@@ -38,7 +41,7 @@ function getMessageID(s: string): string | null {
 enum PruneOption {
   BeforeMessageID = "before_message_id",
   AfterMessageID = "after_message_id",
-  User = "user",
+  UserOption = "user",
   MaxDeleteCount = "max_delete_count",
   Attachments = "attachments",
   SkipPinned = "skip_pinned",
@@ -55,6 +58,100 @@ enum PruneBotsOrUsersOption {
   UsersOnly = "users_only",
 }
 
+type FilterOptions = {
+  beforeMessageID: string | null;
+  afterMessageID: string | null;
+  user: User | null;
+  maxDeleteCount: number | null;
+  skipPinned: boolean | null;
+  attachments: string | null;
+  botsOrUsers: string | null;
+};
+
+type FilterResponse = {
+  filteredMessages: Message[];
+  userDeletedSummary: Record<string, number>;
+};
+
+export function filterMessages(
+  msgs: Message[],
+  {
+    afterMessageID,
+    beforeMessageID,
+    skipPinned,
+    user,
+    attachments,
+    botsOrUsers,
+    maxDeleteCount,
+  }: FilterOptions
+): FilterResponse {
+  const filteredMsgs = msgs.filter((msg) => {
+    if (skipPinned && msg.pinned) {
+      return false;
+    }
+
+    if (user && msg.author.id !== user.id) {
+      return false;
+    }
+
+    // Skip no attachments
+    if (
+      attachments === PruneAttachmentsOption.WithAttachments &&
+      msg.attachments.size === 0
+    ) {
+      return false;
+    }
+
+    // Skip with attachments
+    if (
+      attachments === PruneAttachmentsOption.WithoutAttachments &&
+      msg.attachments.size > 0
+    ) {
+      return false;
+    }
+
+    // Bots only, but user is not a bot, skip
+    if (botsOrUsers === PruneBotsOrUsersOption.BotsOnly && !msg.author.bot) {
+      return false;
+    }
+
+    // Users only, but user is a bot, skip
+    if (botsOrUsers === PruneBotsOrUsersOption.UsersOnly && msg.author.bot) {
+      return false;
+    }
+
+    const msgIDBigInt = BigInt(msg.id);
+    // All message IDs must be smaller than before message ID
+    if (beforeMessageID && msgIDBigInt >= BigInt(beforeMessageID)) {
+      return false;
+    }
+
+    // All message IDs must be larger than after message ID
+    if (afterMessageID && msgIDBigInt <= BigInt(afterMessageID)) {
+      return false;
+    }
+
+    return true;
+  });
+
+  const trimmedMsgs = filteredMsgs.slice(0, maxDeleteCount || 100);
+
+  const userDeletedSummary = trimmedMsgs.reduce((acc, msg) => {
+    if (acc[msg.author.id]) {
+      acc[msg.author.id] += 1;
+    } else {
+      acc[msg.author.id] = 1;
+    }
+
+    return acc;
+  }, {} as Record<string, number>);
+
+  return {
+    filteredMessages: trimmedMsgs,
+    userDeletedSummary,
+  };
+}
+
 export default class PruneCommand extends SlashCommandHandler {
   serverOnly = true;
 
@@ -63,6 +160,14 @@ export default class PruneCommand extends SlashCommandHandler {
     .setDescription("Bulk delete messages with optional filters.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .setDMPermission(false)
+    .addIntegerOption((o) =>
+      o
+        .setName(PruneOption.MaxDeleteCount)
+        .setDescription("Max messages to delete. (2-100)")
+        .setMinValue(2)
+        .setMaxValue(100)
+        .setRequired(true)
+    )
     .addStringOption((o) =>
       o
         .setName(PruneOption.AfterMessageID)
@@ -81,16 +186,8 @@ export default class PruneCommand extends SlashCommandHandler {
     )
     .addUserOption((o) =>
       o
-        .setName(PruneOption.User)
+        .setName(PruneOption.UserOption)
         .setDescription("Delete messages from only this user.")
-        .setRequired(false)
-    )
-    .addIntegerOption((o) =>
-      o
-        .setName(PruneOption.MaxDeleteCount)
-        .setDescription("Max messages to delete. (2-100)")
-        .setMinValue(2)
-        .setMaxValue(100)
         .setRequired(false)
     )
     .addBooleanOption((o) =>
@@ -105,11 +202,11 @@ export default class PruneCommand extends SlashCommandHandler {
         .setDescription("Filter by messages by bots or users.")
         .setChoices(
           {
-            name: "Only delete messages by users",
+            name: "Only delete messages by USERS",
             value: PruneBotsOrUsersOption.UsersOnly,
           },
           {
-            name: "Only delete messages by bots",
+            name: "Only delete messages by BOTS",
             value: PruneBotsOrUsersOption.BotsOnly,
           }
         )
@@ -121,11 +218,11 @@ export default class PruneCommand extends SlashCommandHandler {
         .setDescription("Filter by messages with or without attachments.")
         .setChoices(
           {
-            name: "Only messages with attachments",
+            name: "Only delete messages WITH attachments",
             value: PruneAttachmentsOption.WithAttachments,
           },
           {
-            name: "Only messages without attachments",
+            name: "Only delete messages WITHOUT attachments",
             value: PruneAttachmentsOption.WithoutAttachments,
           }
         )
@@ -152,7 +249,7 @@ export default class PruneCommand extends SlashCommandHandler {
     const beforeMessageIDStr = interaction.options.getString(
       PruneOption.BeforeMessageID
     );
-    const user = interaction.options.getUser(PruneOption.User);
+    const user = interaction.options.getUser(PruneOption.UserOption);
     const maxDeleteCount = interaction.options.getInteger(
       PruneOption.MaxDeleteCount
     );
@@ -196,9 +293,9 @@ export default class PruneCommand extends SlashCommandHandler {
           : undefined,
     };
 
-    let msgs;
+    let msgsCol;
     try {
-      msgs = await interaction.channel.messages.fetch(getMessagesOptions);
+      msgsCol = await interaction.channel.messages.fetch(getMessagesOptions);
     } catch (err) {
       if (err instanceof DiscordAPIError) {
         await interactionReplyErrorMessage(
@@ -214,72 +311,41 @@ export default class PruneCommand extends SlashCommandHandler {
       throw err;
     }
 
-    const filteredMsgs = msgs.filter((msg) => {
-      if (skipPinned && msg.pinned) {
-        return false;
+    // Ensure messages are ordered
+    const msgs = Array.from(msgsCol.values());
+    msgs.sort((a, b) => {
+      if (BigInt(a.id) < BigInt(b.id)) {
+        return 1;
       }
 
-      if (user && msg.author.id !== user.id) {
-        return false;
+      if (BigInt(a.id) > BigInt(b.id)) {
+        return -1;
       }
 
-      // Skip no attachments
-      if (
-        attachments === PruneAttachmentsOption.WithAttachments &&
-        msg.attachments.size === 0
-      ) {
-        return false;
-      }
-
-      // Skip with attachments
-      if (
-        attachments === PruneAttachmentsOption.WithoutAttachments &&
-        msg.attachments.size > 0
-      ) {
-        return false;
-      }
-
-      // Bots only, but user is not a bot, skip
-      if (botsOrUsers === PruneBotsOrUsersOption.BotsOnly && !msg.author.bot) {
-        return false;
-      }
-
-      // Users only, but user is a bot, skip
-      if (botsOrUsers === PruneBotsOrUsersOption.UsersOnly && msg.author.bot) {
-        return false;
-      }
-
-      const msgIDBigInt = BigInt(msg.id);
-      // All message IDs must be smaller than before message ID
-      if (beforeMessageID && msgIDBigInt >= BigInt(beforeMessageID)) {
-        return false;
-      }
-
-      // All message IDs must be larger than after message ID
-      if (afterMessageID && msgIDBigInt <= BigInt(afterMessageID)) {
-        return false;
-      }
-
-      return true;
+      return 0;
     });
 
-    const trimmedMsgIDs = Array.from(filteredMsgs.values()).slice(
-      0,
-      maxDeleteCount || 100
+    const { filteredMessages, userDeletedSummary } = filterMessages(msgs, {
+      afterMessageID,
+      beforeMessageID,
+      user,
+      maxDeleteCount,
+      skipPinned,
+      attachments,
+      botsOrUsers,
+    });
+
+    logger.debug(
+      {
+        guildId: interaction.guildId,
+        channelId: interaction.channelId,
+        messages: filteredMessages,
+      },
+      "pruning messages"
     );
 
-    const userDeletedSummary = trimmedMsgIDs.reduce((acc, msg) => {
-      if (acc[msg.author.id]) {
-        acc[msg.author.id] += 1;
-      } else {
-        acc[msg.author.id] = 1;
-      }
-
-      return acc;
-    }, {} as Record<string, number>);
-
     try {
-      await interaction.channel.bulkDelete(trimmedMsgIDs.map((m) => m.id));
+      await interaction.channel.bulkDelete(filteredMessages.map((m) => m.id));
     } catch (err) {
       if (err instanceof DiscordAPIError) {
         await interactionReplyErrorMessage(
@@ -288,6 +354,8 @@ export default class PruneCommand extends SlashCommandHandler {
           `Failed to delete messages: ${err.message}`,
           true
         );
+
+        return;
       }
     }
 
@@ -325,7 +393,7 @@ export default class PruneCommand extends SlashCommandHandler {
     await interaction.reply({
       embeds: [
         new EmbedBuilder()
-          .setTitle(`Deleted ${trimmedMsgIDs.length} messages`)
+          .setTitle(`Deleted ${filteredMessages.length} messages`)
           .addFields(fields)
           .setColor(Color.Success)
           .toJSON(),
