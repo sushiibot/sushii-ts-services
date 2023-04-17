@@ -8,7 +8,7 @@ import { DocumentNode, Kind, OperationTypeNode, print } from "graphql";
 import ws from "ws";
 import { getSdk, Requester } from "../generated/generic";
 import Metrics from "./metrics";
-import { ConfigI } from "./config";
+import config from "./config";
 import logger from "../logger";
 
 const validDocDefOps = ["mutation", "query", "subscription"];
@@ -107,12 +107,12 @@ export function getSdkWebsocket(
 
 export type Sdk = ReturnType<typeof getSdkWebsocket>;
 
-export function getWsClient(config: ConfigI): Client {
+export function getWsClient(): Client {
   return createClient({
     webSocketImpl: ws,
-    url: config.graphqlApiWebsocketURL,
+    url: config.SUSHII_GRAPHQL_WS_URL,
     connectionParams: {
-      Authorization: `Bearer ${config.graphqlApiToken}`,
+      Authorization: `Bearer ${config.SUSHII_GRAPHQL_TOKEN}`,
     },
     lazy: false,
     retryAttempts: Infinity,

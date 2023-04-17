@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { TimestampStyles, TimestampStylesString } from "@discordjs/builders";
+import { TimestampStyles, TimestampStylesString } from "discord.js";
 
 export default function toTimestamp(
   date: dayjs.Dayjs,

@@ -1,18 +1,17 @@
-import { EmbedBuilder } from "@discordjs/builders";
+import { EmbedBuilder, GatewayDispatchEvents } from "discord.js";
 import {
   APIMessage,
-  GatewayDispatchEvents,
   GatewayMessageDeleteBulkDispatchData,
   GatewayMessageDeleteDispatchData,
   GatewayMessageUpdateDispatchData,
 } from "discord-api-types/v10";
 import { None, Option, Some } from "ts-results";
-import SushiiEmoji from "../constants/SushiiEmoji";
-import { Message, MsgLogBlockType } from "../generated/graphql";
-import Context from "../model/context";
-import buildChunks from "../utils/buildChunks";
-import Color from "../utils/colors";
-import EventHandler from "./EventHandler";
+import SushiiEmoji from "../../constants/SushiiEmoji";
+import { MsgLogBlockType, Message } from "../../generated/graphql";
+import Context from "../../model/context";
+import buildChunks from "../../utils/buildChunks";
+import Color from "../../utils/colors";
+import logger from "../../logger";
 
 type EventData =
   | GatewayMessageDeleteDispatchData
@@ -75,7 +74,7 @@ function buildDeleteEmbed(
 
   if (msg.sticker_items && msg.sticker_items.length > 0) {
     const sticker = msg.sticker_items[0];
-    const stickerURL = ctx.CDN.cdn.sticker(sticker.id);
+    const stickerURL = ctx.CDN.sticker(sticker.id);
 
     description += "**Stickers**";
     description += "\n";
@@ -93,7 +92,9 @@ function buildDeleteEmbed(
     description += attachments;
   }
 
-  const authorIcon = ctx.CDN.userFaceURL(msg.author);
+  const authorIcon = msg.author.avatar
+    ? ctx.CDN.avatar(msg.author.id, msg.author.avatar)
+    : ctx.CDN.defaultAvatar(parseInt(msg.author.discriminator, 10));
 
   return new EmbedBuilder()
     .setAuthor({
@@ -134,7 +135,9 @@ function buildEditEmbed(
   description += "\n";
   description += quoteMarkdownString(updateEvent.content);
 
-  const authorIcon = ctx.CDN.userFaceURL(msg.author);
+  const authorIcon = msg.author.avatar
+    ? ctx.CDN.avatar(msg.author.id, msg.author.avatar)
+    : ctx.CDN.defaultAvatar(parseInt(msg.author.discriminator, 10));
 
   const embed = new EmbedBuilder()
     .setAuthor({
@@ -166,7 +169,7 @@ function buildBulkDeleteEmbed(
 
     if (msg.sticker_items && msg.sticker_items.length > 0) {
       const sticker = msg.sticker_items[0];
-      const stickerURL = ctx.CDN.cdn.sticker(sticker.id);
+      const stickerURL = ctx.CDN.sticker(sticker.id);
 
       // Can have both message and sticker
       if (msg.content) {
@@ -238,82 +241,89 @@ function buildEmbeds(
   throw new Error(`Invalid event type ${eventType}`);
 }
 
-export default class MsgLogHandler extends EventHandler {
-  eventTypes = [
-    GatewayDispatchEvents.MessageDelete,
-    GatewayDispatchEvents.MessageDeleteBulk,
-    GatewayDispatchEvents.MessageUpdate,
-  ];
+export async function msgLogHandler(
+  ctx: Context,
+  eventType:
+    | GatewayDispatchEvents.MessageDelete
+    | GatewayDispatchEvents.MessageDeleteBulk
+    | GatewayDispatchEvents.MessageUpdate,
+  payload: EventData
+): Promise<void> {
+  // Ignore dms
+  if (!payload.guild_id) {
+    return;
+  }
 
-  async handler(
-    ctx: Context,
-    eventType: GatewayDispatchEvents,
-    event: EventData
-  ): Promise<void> {
-    // Ignore dms
-    if (!event.guild_id) {
-      return;
-    }
+  const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
+    guildId: payload.guild_id,
+  });
 
-    const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
-      guildId: event.guild_id,
+  // No guild config found, ignore
+  if (
+    !guildConfigById || // Config not found
+    !guildConfigById.logMsg || // No msg log set
+    !guildConfigById.logMsgEnabled // Msg log disabled
+  ) {
+    return;
+  }
+
+  // Get ignored msg logs
+  const { msgLogBlockByGuildIdAndChannelId: channelBlock } =
+    await ctx.sushiiAPI.sdk.getMsgLogBlock({
+      guildId: payload.guild_id,
+      channelId: payload.channel_id,
     });
 
-    // No guild config found, ignore
-    if (
-      !guildConfigById || // Config not found
-      !guildConfigById.logMsg || // No msg log set
-      !guildConfigById.logMsgEnabled // Msg log disabled
-    ) {
-      return;
-    }
+  if (channelBlock && isChannelIgnored(eventType, channelBlock.blockType)) {
+    return;
+  }
 
-    // Get ignored msg logs
-    const { msgLogBlockByGuildIdAndChannelId: channelBlock } =
-      await ctx.sushiiAPI.sdk.getMsgLogBlock({
-        guildId: event.guild_id,
-        channelId: event.channel_id,
-      });
+  const messageIDs = getMessageIDs(payload);
 
-    if (channelBlock && isChannelIgnored(eventType, channelBlock.blockType)) {
-      return;
-    }
+  const { allMessages } = await ctx.sushiiAPI.sdk.getMessages({
+    channelId: payload.channel_id,
+    guildId: payload.guild_id,
+    in: messageIDs,
+  });
 
-    const messageIDs = getMessageIDs(event);
+  const messages = allMessages?.nodes || [];
 
-    const { allMessages } = await ctx.sushiiAPI.sdk.getMessages({
-      channelId: event.channel_id,
-      guildId: event.guild_id,
-      in: messageIDs,
+  // No cached message found for deleted or edited message in DB, ignore
+  if (messages.length === 0) {
+    return;
+  }
+
+  const embeds = buildEmbeds(ctx, eventType, payload, messages);
+
+  if (embeds.none) {
+    // No embed to send, could be just proxy url getting updated
+    return;
+  }
+
+  if (embeds.val.length === 0) {
+    return;
+  }
+
+  const channel = ctx.client.channels.cache.get(guildConfigById.logMsg);
+  if (!channel || !channel.isTextBased()) {
+    logger.warn(
+      {
+        guildId: payload.guild_id,
+        channelId: guildConfigById.logMsg,
+      },
+      "Log msg channel not found or not text based"
+    );
+    return;
+  }
+
+  // Split embeds into chunks of 10
+  const chunkSize = 10;
+  for (let i = 0; i < embeds.val.length; i += chunkSize) {
+    const chunk = embeds.val.slice(i, i + chunkSize).map((e) => e.toJSON());
+
+    // eslint-disable-next-line no-await-in-loop
+    await channel.send({
+      embeds: chunk,
     });
-
-    const messages = allMessages?.nodes || [];
-
-    // No cached message found for deleted or edited message in DB, ignore
-    if (messages.length === 0) {
-      return;
-    }
-
-    const embeds = buildEmbeds(ctx, eventType, event, messages);
-
-    if (embeds.none) {
-      // No embed to send, could be just proxy url getting updated
-      return;
-    }
-
-    if (embeds.val.length === 0) {
-      return;
-    }
-
-    // Split embeds into chunks of 10
-    const chunkSize = 10;
-    for (let i = 0; i < embeds.val.length; i += chunkSize) {
-      const chunk = embeds.val.slice(i, i + chunkSize).map((e) => e.toJSON());
-
-      // eslint-disable-next-line no-await-in-loop
-      await ctx.REST.sendChannelMessage(guildConfigById.logMsg, {
-        embeds: chunk,
-      });
-    }
   }
 }

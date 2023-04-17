@@ -1,10 +1,5 @@
-import { EmbedBuilder } from "@discordjs/builders";
-
-import { isGuildInteraction } from "discord-api-types/utils/v10";
-import {
-  APIMessageComponentButtonInteraction,
-  MessageFlags,
-} from "discord-api-types/v10";
+import { EmbedBuilder, ButtonInteraction, DiscordAPIError } from "discord.js";
+import { MessageFlags } from "discord-api-types/v10";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import customIds from "../customIds";
@@ -14,6 +9,7 @@ import {
   getRoleMenuMessageButtonRoles,
   getRoleMenuRequiredRole,
 } from "./ids";
+import sleep from "../../utils/sleep";
 
 export default class RoleMenuButtonHandler extends ButtonHandler {
   customIDMatch = customIds.roleMenuButton.match;
@@ -21,9 +17,9 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
     ctx: Context,
-    interaction: APIMessageComponentButtonInteraction
+    interaction: ButtonInteraction
   ): Promise<void> {
-    if (!isGuildInteraction(interaction)) {
+    if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }
 
@@ -31,8 +27,8 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
     // Check if member has required role
 
     const requiredRole = getRoleMenuRequiredRole(interaction.message);
-    if (requiredRole && !interaction.member.roles.includes(requiredRole)) {
-      await ctx.REST.interactionReply(interaction, {
+    if (requiredRole && !interaction.member.roles.cache.has(requiredRole)) {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(Color.Error)
@@ -51,9 +47,7 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
     // -------------------------------------------------------------------------
     // Check if removing or adding role
 
-    const customIDMatch = customIds.roleMenuButton.match(
-      interaction.data.custom_id
-    );
+    const customIDMatch = customIds.roleMenuButton.match(interaction.customId);
     if (!customIDMatch) {
       throw new Error("No role to add or remove");
     }
@@ -62,7 +56,8 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
 
     // If user already has role -> remove it
     // If user doesn't have role -> add it
-    const isRemovingRole = interaction.member.roles.includes(roleToAddOrRemove);
+    const isRemovingRole =
+      interaction.member.roles.cache.has(roleToAddOrRemove);
 
     // -------------------------------------------------------------------------
     // Check max roles
@@ -74,7 +69,7 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
 
     // Check number of roles the member already has selected from this menu
     const memberAlreadySelectedRoles = new Set(
-      interaction.member.roles.filter((role) => menuRolesSet.has(role))
+      interaction.member.roles.cache.filter((role) => menuRolesSet.has(role.id))
     );
 
     // Only check for max roles if user is adding a role, not removing
@@ -83,7 +78,7 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
       maxRoles &&
       memberAlreadySelectedRoles.size >= maxRoles
     ) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(Color.Error)
@@ -102,40 +97,35 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
     // -------------------------------------------------------------------------
     // Add role or remove role
 
-    let res;
     let description;
-    if (isRemovingRole) {
-      res = await ctx.REST.removeMemberRole(
-        interaction.guild_id,
-        interaction.member.user.id,
-        roleToAddOrRemove
-      );
+    try {
+      if (isRemovingRole) {
+        await interaction.member.roles.remove(roleToAddOrRemove);
 
-      description = `Removed role <@&${roleToAddOrRemove}>`;
-    } else {
-      res = await ctx.REST.addMemberRole(
-        interaction.guild_id,
-        interaction.member.user.id,
-        roleToAddOrRemove
-      );
+        description = `Removed role <@&${roleToAddOrRemove}>`;
+      } else {
+        await interaction.member.roles.add(roleToAddOrRemove);
 
-      description = `Added role <@&${roleToAddOrRemove}>`;
+        description = `Added role <@&${roleToAddOrRemove}>`;
+      }
+    } catch (err) {
+      if (err instanceof DiscordAPIError) {
+        await interaction.reply({
+          embeds: [
+            new EmbedBuilder()
+              .setColor(Color.Error)
+              .setTitle("Failed to update your roles")
+              .setDescription(err.message)
+              .toJSON(),
+          ],
+          flags: MessageFlags.Ephemeral,
+        });
+      }
+
+      throw err;
     }
 
-    if (res.err) {
-      await ctx.REST.interactionReply(interaction, {
-        embeds: [
-          new EmbedBuilder()
-            .setColor(Color.Error)
-            .setTitle("Failed to update your roles")
-            .setDescription(res.val.message)
-            .toJSON(),
-        ],
-        flags: MessageFlags.Ephemeral,
-      });
-    }
-
-    await ctx.REST.interactionReply(interaction, {
+    const reply = await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setColor(Color.Success)
@@ -145,5 +135,9 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
       ],
       flags: MessageFlags.Ephemeral,
     });
+
+    // Delete reply after 5 seconds
+    await sleep(5000);
+    await reply.delete();
   }
 }

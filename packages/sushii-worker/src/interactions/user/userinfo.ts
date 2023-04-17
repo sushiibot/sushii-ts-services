@@ -1,13 +1,7 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import {
-  isDMInteraction,
-  isGuildInteraction,
-} from "discord-api-types/utils/v10";
-import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
+import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import Context from "../../model/context";
 import logger from "../../logger";
 import { SlashCommandHandler } from "../handlers";
-import CommandInteractionOptionResolver from "../resolver";
 import getUserinfoEmbed from "./userinfo.service";
 
 export default class UserinfoHandler extends SlashCommandHandler {
@@ -28,44 +22,27 @@ export default class UserinfoHandler extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
+    let target = interaction.options.getUser("user");
 
-    logger.debug("userinfo options: %o", options);
+    if (!target) {
+      target = interaction.user;
+    }
 
-    let target = options.getUser("user");
     let member;
-
-    logger.debug("userinfo option target user: %o", target);
-
-    if (isGuildInteraction(interaction)) {
-      if (!target) {
-        target = interaction.member.user;
-      }
-
-      member = (
-        await ctx.REST.getMember(interaction.guild_id, target.id)
-      ).unwrapOr(undefined);
-
-      logger.debug("userinfo option target member: %o", member);
-    } else if (isDMInteraction(interaction)) {
-      if (!target) {
-        target = interaction.user;
-      }
+    if (interaction.inCachedGuild()) {
+      member = await interaction.guild.members.fetch(target.id);
     }
 
     if (!target) {
       throw new Error("No target set, should be unreachable");
     }
 
-    const embed = await getUserinfoEmbed(ctx, interaction, target, member);
+    const embed = await getUserinfoEmbed(target, member);
     logger.debug("userinfo embed: %o", embed);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed],
     });
   }

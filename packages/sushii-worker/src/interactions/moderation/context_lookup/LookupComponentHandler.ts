@@ -1,9 +1,10 @@
-import { EmbedBuilder } from "@discordjs/builders";
-import { isGuildInteraction } from "discord-api-types/utils/v10";
+import { MessageFlags } from "discord-api-types/v10";
 import {
-  APIMessageComponentButtonInteraction,
-  MessageFlags,
-} from "discord-api-types/v10";
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonInteraction,
+  EmbedBuilder,
+} from "discord.js";
 import Context from "../../../model/context";
 import Color from "../../../utils/colors";
 import customIds from "../../customIds";
@@ -19,13 +20,13 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
     ctx: Context,
-    interaction: APIMessageComponentButtonInteraction
+    interaction: ButtonInteraction
   ): Promise<void> {
-    if (!isGuildInteraction(interaction)) {
+    if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }
 
-    const customIDMatch = this.customIDMatch(interaction.data.custom_id);
+    const customIDMatch = this.customIDMatch(interaction.customId);
     if (!customIDMatch) {
       throw new Error("Invalid custom ID");
     }
@@ -45,7 +46,7 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
       case ActionType.TimeoutRemove:
       case ActionType.TimeoutAdjust:
       case ActionType.Warn:
-        await ctx.REST.interactionReply(interaction, {
+        await interaction.reply({
           content: "Oops, this hasn't been implemented yet! Coming soon...",
           flags: MessageFlags.Ephemeral,
         });
@@ -54,25 +55,33 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
 
       case ActionType.History: {
         const cases = await ctx.sushiiAPI.sdk.getUserModLogHistory({
-          guildId: interaction.guild_id,
+          guildId: interaction.guildId,
           userId: targetId,
         });
 
         const { embeds, components } = interaction.message;
 
-        embeds.push(buildUserHistoryEmbed(cases, "context_menu").toJSON());
+        // Add history embed
+        const embedBuilders = embeds.map((e) => new EmbedBuilder(e.data));
+        embedBuilders.push(buildUserHistoryEmbed(cases, "context_menu"));
 
-        // Disable history button, second row, first button
-        const historyButton = components?.at(1)?.components.at(0);
-        if (components && historyButton) {
-          historyButton.disabled = true;
+        // Update button
+        const secondRow = new ActionRowBuilder<ButtonBuilder>({
+          components: components[1].components,
+        });
 
-          components[1].components[0] = historyButton;
-        }
+        // Create a new builder for the history button, second row first button
+        const newHistoryButton = new ButtonBuilder(
+          secondRow.components[0].data
+        );
 
-        await ctx.REST.interactionEdit(interaction, {
-          components,
+        // Disable button
+        newHistoryButton.setDisabled(true);
+        secondRow.components[0] = newHistoryButton;
+
+        await interaction.editReply({
           embeds,
+          components: [components[0], secondRow.toJSON()],
         });
 
         return;
@@ -84,47 +93,42 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
 
         const { embeds, components } = interaction.message;
 
+        const embedBuilders = embeds.map((e) => new EmbedBuilder(e.data));
+
         if (!bans.allGuildBans?.nodes || bans.allGuildBans.nodes.length === 0) {
-          embeds.push(
+          embedBuilders.push(
             new EmbedBuilder()
               .setTitle("🔎 User Lookup")
               .setDescription("User has no bans in any shared servers.")
               .setColor(Color.Success)
-              .toJSON()
           );
         } else {
           const bansStr = bans.allGuildBans.nodes.map((b) => b.guildId);
 
-          embeds.push(
+          embedBuilders.push(
             new EmbedBuilder()
               .setTitle("🔎 User Lookup")
               .setDescription(bansStr.join("\n"))
               .setColor(Color.Success)
-              .toJSON()
           );
         }
 
         // Disable lookup button, second row, second button
-        const lookupButton = components?.at(1)?.components.at(1);
-        if (components && lookupButton) {
-          lookupButton.disabled = true;
-
-          components[1].components[1] = lookupButton;
-        }
-
-        await ctx.REST.interactionEdit(interaction, {
-          components,
-          embeds,
+        const secondRow = new ActionRowBuilder<ButtonBuilder>({
+          components: components[1].components,
         });
 
-        return;
+        const lookupButton = new ButtonBuilder(secondRow.components[1].data);
+        lookupButton.setDisabled(true);
+        secondRow.components[1] = lookupButton;
+
+        await interaction.editReply({
+          embeds,
+          components: [components[0], secondRow.toJSON()],
+        });
       }
     }
 
     // TODO: Confirm button
-
-    ctx.REST.interactionEdit(interaction, {
-      components: [],
-    });
   }
 }

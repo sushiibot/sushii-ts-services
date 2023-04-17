@@ -1,12 +1,10 @@
-import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder, EmbedBuilder } from "discord.js";
 import { isDayjs } from "dayjs";
-import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
+import { ChatInputCommandInteraction } from "discord.js";
 import i18next from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
-import CommandInteractionOptionResolver from "../resolver";
 import repForUser from "./rep.service";
 
 export default class RepCommand extends SlashCommandHandler {
@@ -26,24 +24,10 @@ export default class RepCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
-
-    const target = options.getUser("user");
-    if (!target) {
-      throw new Error("no rep user");
-    }
-
-    const res = await repForUser(
-      ctx,
-      interaction,
-      getInvokerUser(interaction),
-      target
-    );
+    const target = interaction.options.getUser("user", true);
+    const res = await repForUser(ctx, interaction.user, target);
 
     let embed = new EmbedBuilder();
 
@@ -65,7 +49,7 @@ export default class RepCommand extends SlashCommandHandler {
       );
     }
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed.toJSON()],
     });
   }

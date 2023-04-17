@@ -1,43 +1,43 @@
 import dayjs from "dayjs";
 import { Duration } from "dayjs/plugin/duration";
 import {
-  APIAttachment,
-  APIChatInputApplicationCommandGuildInteraction,
-  APIInteractionDataResolvedGuildMember,
-  APIUser,
-} from "discord-api-types/v10";
+  Attachment,
+  ChatInputCommandInteraction,
+  Collection,
+  GuildMember,
+  User,
+} from "discord.js";
 import { Err, Ok, Result } from "ts-results";
 import logger from "../../logger";
 import Context from "../../model/context";
-import getInvokerUser from "../../utils/interactions";
+import isGuildMember from "../../utils/isGuildMember";
 import parseDuration from "../../utils/parseDuration";
-import CommandInteractionOptionResolver from "../resolver";
 import { ActionType } from "./ActionType";
 import { DMReasonChoiceValue, ModerationOption } from "./options";
 
 const ID_REGEX = /\d{17,20}/g;
 
 export interface ModActionTarget {
-  user: APIUser;
-  member: Omit<APIInteractionDataResolvedGuildMember, "permissions"> | null;
+  user: User;
+  member: GuildMember | null;
 }
 
 /**
  * Common moderation command data
  */
 export default class ModActionData {
-  public options: CommandInteractionOptionResolver;
+  public options: ChatInputCommandInteraction["options"];
 
   public targets = new Map<string, ModActionTarget>();
 
-  public invoker: APIUser;
+  public invoker: User;
 
-  public reason?: string;
+  public reason: string | null;
 
-  public attachment?: APIAttachment;
+  public attachment: Attachment | null;
 
   // Only exists for ban
-  public deleteMessageDays?: number;
+  public deleteMessageDays: number | null;
 
   /**
    * Duration of timeout, only exists for timeout command
@@ -46,13 +46,10 @@ export default class ModActionData {
 
   private DMReason?: boolean;
 
-  constructor(interaction: APIChatInputApplicationCommandGuildInteraction) {
-    this.options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
+  constructor(interaction: ChatInputCommandInteraction) {
+    this.options = interaction.options;
 
-    this.invoker = getInvokerUser(interaction);
+    this.invoker = interaction.user;
 
     // Reason or note
     this.reason =
@@ -118,9 +115,13 @@ export default class ModActionData {
 
   async fetchTargets(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
+    interaction: ChatInputCommandInteraction,
     skipMembers?: boolean
   ): Promise<Result<void, string>> {
+    if (!interaction.inCachedGuild()) {
+      return Err("This command can only be used in cached guild.");
+    }
+
     // Get IDs from string
     const targetsString = this.options.getString(ModerationOption.Users);
     if (!targetsString) {
@@ -143,39 +144,52 @@ export default class ModActionData {
     // else fetch member/user from API
 
     // Resolved users only contains mentions, not raw IDs
-    const resolvedUsers = this.options.getResolvedUsers();
+    const resolvedUsers = this.options.resolved?.users || new Collection();
 
     // Members can be missing if the target is not in the guild
-    const resolvedMembers = this.options.getResolveMembers();
+    const resolvedMembers = this.options.resolved?.members || new Collection();
 
     const targetMemberPromises = [];
     const targetUserPromises = [];
 
     for (const id of targetIds) {
+      const resolvedUser = resolvedUsers.get(id);
+      const resolvedMember = resolvedMembers.get(id);
+
       // Raw ID provided, fetch member from API if not in resolved
       // Don't fetch members if skipMembers is true -- skipMembers if doing things
       // like unban where the member is not in the guild.
-      if (!skipMembers && !resolvedUsers[id] && !resolvedMembers[id]) {
-        targetMemberPromises.push(ctx.REST.getMember(interaction.guild_id, id));
+      if (!skipMembers && !resolvedUser && !resolvedMember) {
+        targetMemberPromises.push(interaction.guild.members.fetch(id));
+      }
+
+      // Fetch member if not cached
+      if (
+        !skipMembers &&
+        !resolvedUser &&
+        resolvedMember &&
+        !isGuildMember(resolvedMember)
+      ) {
+        targetMemberPromises.push(interaction.guild.members.fetch(id));
       }
 
       // Skipping members, fetch user
-      if (skipMembers && !resolvedUsers[id] && !resolvedMembers[id]) {
-        targetUserPromises.push(ctx.REST.getUser(id));
+      if (skipMembers && !resolvedUser && !resolvedMember) {
+        targetUserPromises.push(interaction.client.users.fetch(id));
       }
 
-      // Mentioned and is a member
-      if (resolvedUsers[id] && resolvedMembers[id]) {
+      // Mentioned and is a member object
+      if (resolvedUser && resolvedMember && isGuildMember(resolvedMember)) {
         this.targets.set(id, {
-          user: resolvedUsers[id],
-          member: resolvedMembers[id],
+          user: resolvedUser,
+          member: resolvedMember,
         });
       }
 
       // Mentioned but not in guild
-      if (resolvedUsers[id] && !resolvedMembers[id]) {
+      if (resolvedUser && !resolvedMember) {
         this.targets.set(id, {
-          user: resolvedUsers[id],
+          user: resolvedUser,
           member: null,
         });
       }
@@ -188,26 +202,23 @@ export default class ModActionData {
       const result = targetMembersResult[i];
 
       if (result.status === "fulfilled") {
-        if (result.value.ok) {
-          const member = result.value.val;
+        const member = result.value;
 
-          // User will always exist if fetched from API
-          this.targets.set(member.user?.id!, {
-            user: member.user!,
-            member,
-          });
-        } else {
-          // Member not found, not in guild so fetch user
-          // allSettled promises are in the same order as targetIds
-          targetUserPromises.push(ctx.REST.getUser(targetIds[i]));
-
-          logger.debug(
-            "fetch member not found (%s), fetching user instead",
-            result.value.val.message
-          );
-        }
+        // User will always exist if fetched from API
+        this.targets.set(member.id, {
+          user: member.user,
+          member,
+        });
       } else {
-        logger.error(result.reason, "fetch member promise rejected");
+        // Member not found, not in guild so fetch user
+        // allSettled promises are in the same order as targetIds
+        targetUserPromises.push(interaction.client.users.fetch(targetIds[i]));
+
+        logger.debug(
+          "fetch member not found (%s - %s), fetching user instead",
+          result.reason,
+          result.status
+        );
       }
     }
 
@@ -217,17 +228,13 @@ export default class ModActionData {
       const result = targetUsersResult[i];
 
       if (result.status === "fulfilled") {
-        if (result.value.ok) {
-          const user = result.value.val;
+        const user = result.value;
 
-          // User will always exist if fetched from API
-          this.targets.set(user.id!, {
-            user,
-            member: null,
-          });
-        } else {
-          logger.error(result.value.val, "failed to find user");
-        }
+        // User will always exist if fetched from API (unless invalid id of course)
+        this.targets.set(user.id!, {
+          user,
+          member: null,
+        });
       } else {
         logger.error(result.reason, "fetch user promise rejected");
       }

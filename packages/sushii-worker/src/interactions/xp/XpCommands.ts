@@ -1,8 +1,9 @@
-import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
 import {
-  APIChatInputApplicationCommandGuildInteraction,
-  PermissionFlagsBits,
-} from "discord-api-types/v10";
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
+} from "discord.js";
+import { PermissionFlagsBits } from "discord-api-types/v10";
 import { BlockType } from "../../generated/graphql";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -11,7 +12,6 @@ import {
   isUniqueViolation,
 } from "../../utils/graphqlError";
 import { SlashCommandHandler } from "../handlers";
-import CommandInteractionOptionResolver from "../resolver";
 import { interactionReplyErrorPlainMessage } from "../responses/error";
 
 enum XpGroupName {
@@ -107,23 +107,22 @@ export default class XpCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Guild not cached");
+    }
 
-    const subgroup = options.getSubcommandGroup();
-    const subcommand = options.getSubcommand();
+    const subgroup = interaction.options.getSubcommandGroup();
+    const subcommand = interaction.options.getSubcommand();
 
     switch (subgroup) {
       case XpGroupName.Block:
         switch (subcommand) {
           case XpCommandName.BlockChannel:
-            return this.blockChannelHandler(ctx, interaction, options);
+            return this.blockChannelHandler(ctx, interaction);
           case XpCommandName.BlockRole:
-            return this.blockRoleHandler(ctx, interaction, options);
+            return this.blockRoleHandler(ctx, interaction);
           case XpCommandName.BlockList:
             return this.listBlocksHandler(ctx, interaction);
           default:
@@ -134,9 +133,9 @@ export default class XpCommand extends SlashCommandHandler {
       case XpGroupName.Unblock:
         switch (subcommand) {
           case XpCommandName.UnblockChannel:
-            return this.unblockChannelHandler(ctx, interaction, options);
+            return this.unblockChannelHandler(ctx, interaction);
           case XpCommandName.UnblockRole:
-            return this.unblockRoleHandler(ctx, interaction, options);
+            return this.unblockRoleHandler(ctx, interaction);
           default:
             throw new Error(
               `Invalid subcommand for group ${subgroup}: ${subcommand}`
@@ -149,17 +148,16 @@ export default class XpCommand extends SlashCommandHandler {
 
   private async blockChannelHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const channel = options.getChannel(XpOption.Channel);
+    const channel = interaction.options.getChannel(XpOption.Channel);
     if (!channel) {
       throw new Error("Missing channel");
     }
 
     try {
       await ctx.sushiiAPI.sdk.addXpBlock({
-        guildId: interaction.guild_id,
+        guildId: interaction.guildId,
         blockId: channel.id,
         blockType: BlockType.Channel,
       });
@@ -178,7 +176,7 @@ export default class XpCommand extends SlashCommandHandler {
       return;
     }
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle("Added XP block for channel")
@@ -196,17 +194,16 @@ export default class XpCommand extends SlashCommandHandler {
 
   private async blockRoleHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const role = options.getRole(XpOption.Role);
+    const role = interaction.options.getRole(XpOption.Role);
     if (!role) {
       throw new Error("Missing role");
     }
 
     try {
       await ctx.sushiiAPI.sdk.addXpBlock({
-        guildId: interaction.guild_id,
+        guildId: interaction.guildId,
         blockId: role.id,
         blockType: BlockType.Role,
       });
@@ -225,7 +222,7 @@ export default class XpCommand extends SlashCommandHandler {
       return;
     }
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle("Added XP block for role")
@@ -243,14 +240,14 @@ export default class XpCommand extends SlashCommandHandler {
 
   private async listBlocksHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
     const { allXpBlocks } = await ctx.sushiiAPI.sdk.getXpBlocks({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
     });
 
     if (!allXpBlocks || allXpBlocks.nodes.length === 0) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle("All XP blocks")
@@ -271,7 +268,7 @@ export default class XpCommand extends SlashCommandHandler {
       .filter((node) => node.blockType === BlockType.Role)
       .map((node) => `<@&${node.blockId}>`);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle("All XP blocks")
@@ -295,17 +292,16 @@ export default class XpCommand extends SlashCommandHandler {
 
   private async unblockChannelHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const channel = options.getChannel(XpOption.Channel);
+    const channel = interaction.options.getChannel(XpOption.Channel);
     if (!channel) {
       throw new Error("Missing channel");
     }
 
     try {
       await ctx.sushiiAPI.sdk.deleteXpBlock({
-        guildId: interaction.guild_id,
+        guildId: interaction.guildId,
         blockId: channel.id,
       });
     } catch (err) {
@@ -323,7 +319,7 @@ export default class XpCommand extends SlashCommandHandler {
       return;
     }
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle("Unblocked XP for channel")
@@ -341,17 +337,16 @@ export default class XpCommand extends SlashCommandHandler {
 
   private async unblockRoleHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const role = options.getRole(XpOption.Role);
+    const role = interaction.options.getRole(XpOption.Role);
     if (!role) {
       throw new Error("Missing role");
     }
 
     try {
       await ctx.sushiiAPI.sdk.deleteXpBlock({
-        guildId: interaction.guild_id,
+        guildId: interaction.guildId,
         blockId: role.id,
       });
     } catch (err) {
@@ -369,7 +364,7 @@ export default class XpCommand extends SlashCommandHandler {
       return;
     }
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle("Unblocked XP for role")

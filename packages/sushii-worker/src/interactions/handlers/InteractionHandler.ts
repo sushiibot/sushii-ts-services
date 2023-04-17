@@ -1,4 +1,4 @@
-import { APIInteraction, Permissions } from "discord-api-types/v10";
+import { BaseInteraction, PermissionsBitField } from "discord.js";
 import Context from "../../model/context";
 
 /**
@@ -17,17 +17,7 @@ export default abstract class InteractionHandler {
   /**
    * Required permissions for the **bot** to run the command, ie. ban members
    */
-  readonly requiredBotPermissions?: Permissions;
-
-  /**
-   * Required permissions for the **user** to run the command
-   */
-  readonly requiredUserPermissions?: Permissions;
-
-  /**
-   * If the interaction should only be run in a server
-   */
-  readonly serverOnly: boolean = false;
+  readonly requiredBotPermissions?: PermissionsBitField;
 
   /**
    * Check function that will run before a command to see if it should be run.
@@ -38,7 +28,7 @@ export default abstract class InteractionHandler {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _ctx: Context,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _interaction: APIInteraction
+    _interaction: BaseInteraction
   ): Promise<CheckResponse> {
     return { pass: true };
   }
@@ -48,7 +38,7 @@ export default abstract class InteractionHandler {
    */
   abstract handler(
     ctx: Context,
-    interaction: APIInteraction,
+    interaction: BaseInteraction,
     data?: any // Any additional data to pass
   ): Promise<void>;
 }

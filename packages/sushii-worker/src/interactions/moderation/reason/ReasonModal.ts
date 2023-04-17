@@ -1,6 +1,4 @@
-import { APIModalSubmitInteraction, MessageFlags } from "discord-api-types/v10";
-import { isGuildInteraction } from "discord-api-types/utils/v10";
-import { EmbedBuilder } from "@discordjs/builders";
+import { MessageFlags, ModalSubmitInteraction, EmbedBuilder } from "discord.js";
 import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ModalHandler } from "../../handlers";
@@ -8,6 +6,7 @@ import Color from "../../../utils/colors";
 import { interactionReplyErrorPlainMessage } from "../../responses/error";
 import buildModLogEmbed from "../../../builders/buildModLogEmbed";
 import { ActionType } from "../ActionType";
+import sleep from "../../../utils/sleep";
 
 // When modal submitted, update mod log message and save the reason
 export default class ModLogReasonModalHandler extends ModalHandler {
@@ -16,15 +15,13 @@ export default class ModLogReasonModalHandler extends ModalHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleModalSubmit(
     ctx: Context,
-    interaction: APIModalSubmitInteraction
+    interaction: ModalSubmitInteraction
   ): Promise<void> {
-    if (!isGuildInteraction(interaction)) {
+    if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }
 
-    const customIDMatch = customIds.modLogReason.match(
-      interaction.data.custom_id
-    );
+    const customIDMatch = customIds.modLogReason.match(interaction.customId);
     if (!customIDMatch) {
       throw new Error("No mod log reason match");
     }
@@ -32,13 +29,13 @@ export default class ModLogReasonModalHandler extends ModalHandler {
     const { caseId } = customIDMatch.params;
 
     // Only 1 row and 1 component in this modal
-    const reason = interaction.data.components?.at(0)?.components?.at(0)?.value;
+    const reason = interaction.fields.getTextInputValue("reason");
     if (!reason) {
       throw new Error("No reason was set in the modal somehow");
     }
 
     const modCase = await ctx.sushiiAPI.sdk.getModLog({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       caseId,
     });
 
@@ -54,7 +51,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
 
     // Save db reason and executor
     const updatedModCase = await ctx.sushiiAPI.sdk.updateModLog({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       caseId,
       modLogPatch: {
         reason,
@@ -72,7 +69,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       return;
     }
 
-    if (!interaction.channel_id) {
+    if (!interaction.channelId) {
       throw new Error("No channel id in reason modal interaction");
     }
 
@@ -80,11 +77,12 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       throw new Error("No message id in mod log case");
     }
 
-    const targetUser = await ctx.REST.getUser(
-      modCase.modLogByGuildIdAndCaseId.userId
-    );
-
-    if (targetUser.err) {
+    let targetUser;
+    try {
+      targetUser = await interaction.client.users.fetch(
+        modCase.modLogByGuildIdAndCaseId.userId
+      );
+    } catch (err) {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
@@ -98,13 +96,12 @@ export default class ModLogReasonModalHandler extends ModalHandler {
     const newEmbed = await buildModLogEmbed(
       ctx,
       ActionType.fromString(modCase.modLogByGuildIdAndCaseId.action),
-      targetUser.val,
+      targetUser,
       updatedModCase.updateModLogByGuildIdAndCaseId.modLog
     );
 
     // Edit message to show reason and remove button
-    await ctx.REST.editChannelMessage(
-      interaction.channel_id,
+    await interaction.channel?.messages.edit(
       modCase.modLogByGuildIdAndCaseId.msgId,
       {
         embeds: [newEmbed.toJSON()],
@@ -114,11 +111,18 @@ export default class ModLogReasonModalHandler extends ModalHandler {
 
     const embed = new EmbedBuilder()
       .setTitle(`Updated reason for case #${caseId}`)
+      .setFooter({
+        text: "This message will be deleted in 5 seconds",
+      })
       .setColor(Color.Success);
 
-    await ctx.REST.interactionReply(interaction, {
+    const reply = await interaction.reply({
       embeds: [embed.toJSON()],
       flags: MessageFlags.Ephemeral,
     });
+
+    // Delete reply after 5 seconds
+    await sleep(5000);
+    await reply.delete();
   }
 }

@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from "dayjs";
 import { Duration } from "dayjs/plugin/duration";
-import { GatewayGuildAuditLogEntryCreateDispatchData } from "discord-api-types/v10";
+import { GuildAuditLogsEntry } from "discord.js";
 import { ActionType } from "../interactions/moderation/ActionType";
 import { findTimeoutChange } from "./ModLogEventData";
 
@@ -24,7 +24,7 @@ export type TimeoutChange =
     };
 
 export function getTimeoutChangeData(
-  event: GatewayGuildAuditLogEntryCreateDispatchData
+  event: GuildAuditLogsEntry
 ): TimeoutChange | undefined {
   const timeoutChange = findTimeoutChange(event.changes);
   if (!timeoutChange) {

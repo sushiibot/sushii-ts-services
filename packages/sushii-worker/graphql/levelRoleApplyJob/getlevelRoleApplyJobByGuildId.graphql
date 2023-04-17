@@ -1,5 +1,0 @@
-query getLevelRoleApplyJobByGuildId($guildId: BigInt!) {
-  levelRoleApplyJobByGuildId(guildId: $guildId) {
-    ...LevelRoleApplyJobData
-  }
-}

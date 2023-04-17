@@ -1,12 +1,11 @@
 import {
-  APIApplicationCommandAutocompleteInteraction,
   ApplicationCommandOptionType,
-  InteractionResponseType,
-} from "discord-api-types/v10";
+  AutocompleteFocusedOption,
+  AutocompleteInteraction,
+} from "discord.js";
 import Context from "../../model/context";
-import getInvokerUser from "../../utils/interactions";
+import db from "../../model/db";
 import { AutocompleteHandler } from "../handlers";
-import { AutocompleteOption } from "../handlers/AutocompleteHandler";
 
 export default class NotificationListAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = "notification.delete";
@@ -14,33 +13,29 @@ export default class NotificationListAutocomplete extends AutocompleteHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIApplicationCommandAutocompleteInteraction,
-    option: AutocompleteOption
+    interaction: AutocompleteInteraction,
+    option: AutocompleteFocusedOption
   ): Promise<void> {
     if (option.type !== ApplicationCommandOptionType.String) {
       throw new Error("Option type must be string.");
     }
 
-    const invoker = getInvokerUser(interaction);
+    // Escape any % characters
+    const val = option.value.replace(/%/g, "%%");
 
-    const matching = await ctx.sushiiAPI.sdk.searchNotificationsStartingWith({
-      userId: invoker.id,
-      query: option.value,
-    });
+    const matching = await db
+      .selectFrom("app_public.notifications")
+      .select("keyword")
+      .where("guild_id", "=", interaction.guildId)
+      .where("user_id", "=", interaction.user.id)
+      .where("keyword", "ilike", `${val}%`)
+      .execute();
 
-    const choices = matching.notificationsStartingWith?.nodes
-      .filter((k): k is string => !!k)
-      .slice(0, 25)
-      .map((s) => ({
-        name: s,
-        value: s,
-      }));
+    const choices = matching.slice(0, 25).map((row) => ({
+      name: row.keyword,
+      value: row.keyword,
+    }));
 
-    await ctx.REST.interactionCallback(interaction, {
-      type: InteractionResponseType.ApplicationCommandAutocompleteResult,
-      data: {
-        choices,
-      },
-    });
+    await interaction.respond(choices || []);
   }
 }

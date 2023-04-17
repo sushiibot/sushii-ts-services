@@ -57,8 +57,8 @@ export default function server(
   const port = process.env.PORT || 3000;
   s.listen(port);
 
-  logger.info("metrics listening on http://localhost:3000/metrics");
-  logger.info("healthcheck listening on http://localhost:3000/healthcheck");
+  logger.info(`metrics listening on http://localhost:${port}/metrics`);
+  logger.info(`healthcheck listening on http://localhost:${port}/healthcheck`);
 
   return s;
 }

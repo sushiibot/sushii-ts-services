@@ -1,9 +1,13 @@
-import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
-import { RawFile } from "@discordjs/rest";
+import {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  Attachment,
+  AttachmentBuilder,
+  ChatInputCommandInteraction,
+  GuildMember,
+} from "discord.js";
 import dayjs from "dayjs";
 import {
-  APIAttachment,
-  APIChatInputApplicationCommandGuildInteraction,
   APIEmbedField,
   MessageFlags,
   PermissionFlagsBits,
@@ -14,10 +18,7 @@ import { Err, Ok, Result } from "ts-results";
 import { Tag, TagFilter } from "../../generated/graphql";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import getInvokerUser from "../../utils/interactions";
-import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
-import CommandInteractionOptionResolver from "../resolver";
 import { interactionReplyErrorMessage } from "../responses/error";
 
 const NAME_STARTS_WITH = "name_starts_with";
@@ -25,15 +26,15 @@ const NAME_CONTAINS = "name_contains";
 
 interface TagUpdateData {
   fields: APIEmbedField[];
-  files: RawFile[];
+  files: AttachmentBuilder[];
 }
 
 async function getFieldsAndFiles(
-  newContent: string | undefined,
-  newAttachment: APIAttachment | undefined
+  newContent: string | null,
+  newAttachment: Attachment | null
 ): Promise<Result<TagUpdateData, string>> {
   const fields = [];
-  const files: RawFile[] = [];
+  const files: AttachmentBuilder[] = [];
 
   if (newContent) {
     fields.push({
@@ -49,14 +50,12 @@ async function getFieldsAndFiles(
     });
 
     try {
-      const fileData = await fetch(newAttachment.url).then((res) =>
-        res.buffer()
-      );
+      const file = await fetch(newAttachment.url);
+      const buf = await file.buffer();
 
-      files.push({
-        fileData,
-        fileName: newAttachment.filename,
-      });
+      const attachment = new AttachmentBuilder(buf).setName(newAttachment.name);
+
+      files.push(attachment);
     } catch (err) {
       return Err(t("tag.edit.error.attachment_fetch", { ns: "commands" }));
     }
@@ -67,17 +66,17 @@ async function getFieldsAndFiles(
 
 async function deniedTagPermission(
   ctx: Context,
-  interaction: APIChatInputApplicationCommandGuildInteraction,
+  interaction: ChatInputCommandInteraction,
   tag: Omit<Tag, "nodeId">,
   userID: string,
-  memberPermissions: string
+  member: GuildMember
 ): Promise<boolean> {
   const denied =
     tag.ownerId !== userID &&
-    !hasPermission(memberPermissions, PermissionFlagsBits.ManageGuild);
+    !member.permissions.has(PermissionFlagsBits.ManageGuild);
 
   if (denied) {
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       content: t("tag.delete.not_owner", {
         ns: "commands",
         tagName: tag.tagName,
@@ -261,33 +260,32 @@ export default class TagCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
+    if (!interaction.inCachedGuild()) {
+      throw new Error("This command can only be used in a guild.");
+    }
 
-    const subcommand = options.getSubcommand();
+    const subcommand = interaction.options.getSubcommand();
     switch (subcommand) {
       case "add":
-        return TagCommand.addHandler(ctx, interaction, options);
+        return TagCommand.addHandler(ctx, interaction);
       case "get":
-        return TagCommand.getHandler(ctx, interaction, options);
+        return TagCommand.getHandler(ctx, interaction);
       case "random":
-        return TagCommand.randomHandler(ctx, interaction, options);
+        return TagCommand.randomHandler(ctx, interaction);
       case "info":
-        return TagCommand.infoHandler(ctx, interaction, options);
+        return TagCommand.infoHandler(ctx, interaction);
       case "list":
         return TagCommand.fulllistHandler(ctx, interaction);
       case "search":
-        return TagCommand.searchHandler(ctx, interaction, options);
+        return TagCommand.searchHandler(ctx, interaction);
       case "edit":
-        return TagCommand.editHandler(ctx, interaction, options);
+        return TagCommand.editHandler(ctx, interaction);
       case "rename":
-        return TagCommand.renameHandler(ctx, interaction, options);
+        return TagCommand.renameHandler(ctx, interaction);
       case "delete":
-        return TagCommand.deleteHandler(ctx, interaction, options);
+        return TagCommand.deleteHandler(ctx, interaction);
 
       default:
         throw new Error("Invalid subcommand.");
@@ -296,20 +294,19 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async addHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
     // Make new tags case insensitive - always lowercase
-    const tagName = options.getString("name")?.toLowerCase();
+    const tagName = interaction.options.getString("name")?.toLowerCase();
     if (!tagName) {
       throw new Error("Missing tag name");
     }
 
-    const tagContent = options.getString("content") || "";
-    const tagAttachment = options.getAttachment("attachment");
+    const tagContent = interaction.options.getString("content") || "";
+    const tagAttachment = interaction.options.getAttachment("attachment");
 
     if (!tagContent && !tagAttachment) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setDescription(
@@ -325,15 +322,13 @@ export default class TagCommand extends SlashCommandHandler {
       return;
     }
 
-    const invoker = getInvokerUser(interaction);
-
     const tagExistsRes = await ctx.sushiiAPI.sdk.getTag({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       tagName,
     });
 
     if (tagExistsRes.tagByGuildIdAndTagName) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.add.error.failed_title", { ns: "commands" }))
@@ -365,24 +360,18 @@ export default class TagCommand extends SlashCommandHandler {
       .setFields(fields)
       .setColor(Color.Success);
 
-    await ctx.REST.interactionReply(
-      interaction,
-      {
-        embeds: [embed.toJSON()],
-      },
-      files
-    );
+    await interaction.reply({
+      embeds: [embed.toJSON()],
+      files,
+    });
 
     let attachmentUrl;
     if (tagAttachment) {
-      const replyMsg = await ctx.REST.interactionGetOriginal(interaction);
-
-      if (replyMsg.ok) {
-        attachmentUrl = replyMsg.val.attachments.at(0)?.url;
-      } else {
-        // Return err
-
-        await ctx.REST.interactionEdit(interaction, {
+      try {
+        const replyMsg = await interaction.fetchReply();
+        attachmentUrl = replyMsg.attachments.at(0)?.url;
+      } catch (err) {
+        await interaction.editReply({
           embeds: [
             new EmbedBuilder()
               .setColor(Color.Error)
@@ -410,8 +399,8 @@ export default class TagCommand extends SlashCommandHandler {
         content: tagContent,
         attachment: attachmentUrl,
         created: dayjs().toISOString(),
-        guildId: interaction.guild_id,
-        ownerId: invoker.id,
+        guildId: interaction.guildId,
+        ownerId: interaction.user.id,
         useCount: "0",
       },
     });
@@ -419,21 +408,20 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async getHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const tagName = options.getString("name");
+    const tagName = interaction.options.getString("name");
     if (!tagName) {
       throw new Error("Missing tag name");
     }
 
     const tag = await ctx.sushiiAPI.sdk.getTag({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       tagName,
     });
 
     if (!tag.tagByGuildIdAndTagName) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setDescription(t("tag.get.not_found", { ns: "commands", tagName }))
@@ -458,11 +446,11 @@ export default class TagCommand extends SlashCommandHandler {
     //   .setColor(Color.Info)
     //   .setImage(tag.tagByGuildIdAndTagName.attachment || null);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       // embeds: [embed.toJSON()],
       content,
       // Allowedmentions not required, no pings in embed
-      allowed_mentions: {
+      allowedMentions: {
         parse: [],
       },
     });
@@ -470,7 +458,7 @@ export default class TagCommand extends SlashCommandHandler {
     const newUseCount = parseInt(tag.tagByGuildIdAndTagName.useCount, 10) + 1;
 
     await ctx.sushiiAPI.sdk.updateTag({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       tagName,
       tagPatch: {
         useCount: newUseCount.toString(),
@@ -480,16 +468,15 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async randomHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const startsWith = options.getString(NAME_STARTS_WITH);
-    const contains = options.getString(NAME_CONTAINS);
-    const owner = options.getUser("owner");
+    const startsWith = interaction.options.getString(NAME_STARTS_WITH);
+    const contains = interaction.options.getString(NAME_CONTAINS);
+    const owner = interaction.options.getUser("owner");
 
     // startsWith xor contains
     if (startsWith && contains) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.random.error.title", { ns: "commands" }))
@@ -505,14 +492,14 @@ export default class TagCommand extends SlashCommandHandler {
     }
 
     const tag = await ctx.sushiiAPI.sdk.getRandomTag({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       ownerId: owner?.id,
       startsWith: !!startsWith,
       query: startsWith || contains,
     });
 
     if (!tag.randomTag) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.random.error.title", { ns: "commands" }))
@@ -534,10 +521,10 @@ export default class TagCommand extends SlashCommandHandler {
       content += attachment;
     }
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       content,
       // No pings in tags
-      allowed_mentions: {
+      allowedMentions: {
         parse: [],
       },
     });
@@ -545,21 +532,20 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async infoHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const tagName = options.getString("name");
+    const tagName = interaction.options.getString("name");
     if (!tagName) {
       throw new Error("Missing tag name");
     }
 
     const tag = await ctx.sushiiAPI.sdk.getTag({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       tagName,
     });
 
     if (!tag.tagByGuildIdAndTagName) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setDescription(
@@ -597,17 +583,17 @@ export default class TagCommand extends SlashCommandHandler {
       .setImage(tag.tagByGuildIdAndTagName.attachment || null)
       .setTimestamp(dayjs(tag.tagByGuildIdAndTagName.created).toDate());
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed.toJSON()],
     });
   }
 
   static async fulllistHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
     const tags = await ctx.sushiiAPI.sdk.listGuildTags({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
     });
 
     if (!tags.allTags) {
@@ -619,43 +605,29 @@ export default class TagCommand extends SlashCommandHandler {
 
     const tagNames = edges.map((edge) => edge.node.tagName);
 
-    await ctx.REST.interactionReply(
-      interaction,
-      {
-        content: t("tag.fulllist.success.message_content", {
-          ns: "commands",
-          count: totalCount,
-        }),
-        attachments: [
-          {
-            id: "0",
-            description: t("tag.fulllist.success.file_description", {
-              ns: "commands",
-            }),
-            filename: t("tag.fulllist.success.file_name", { ns: "commands" }),
-          },
-        ],
-      },
-      [
-        {
-          fileName: t("tag.fulllist.success.file_name", { ns: "commands" }),
-          fileData: tagNames.join("\n"),
-        },
-      ]
-    );
+    const attachment = new AttachmentBuilder(
+      Buffer.from(tagNames.join("\n"))
+    ).setName("tags.txt");
+
+    await interaction.reply({
+      content: t("tag.fulllist.success.message_content", {
+        ns: "commands",
+        count: totalCount,
+      }),
+      files: [attachment],
+    });
   }
 
   static async searchHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const startsWith = options.getString(NAME_STARTS_WITH);
-    const contains = options.getString(NAME_CONTAINS);
-    const owner = options.getUser("owner");
+    const startsWith = interaction.options.getString(NAME_STARTS_WITH);
+    const contains = interaction.options.getString(NAME_CONTAINS);
+    const owner = interaction.options.getUser("owner");
 
     if (!startsWith && !contains && !owner) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.search.error.title", { ns: "commands" }))
@@ -672,7 +644,7 @@ export default class TagCommand extends SlashCommandHandler {
 
     // startsWith xor contains
     if (startsWith && contains) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.search.error.title", { ns: "commands" }))
@@ -699,7 +671,7 @@ export default class TagCommand extends SlashCommandHandler {
     }
 
     const tags = await ctx.sushiiAPI.sdk.searchTags({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       ownerId: owner?.id,
       filter,
     });
@@ -713,50 +685,36 @@ export default class TagCommand extends SlashCommandHandler {
 
     const tagNames = edges.map((edge) => edge.node.tagName);
 
-    await ctx.REST.interactionReply(
-      interaction,
-      {
-        content: t("tag.search.success.message_content", {
-          ns: "commands",
-          count: totalCount,
-        }),
-        attachments: [
-          {
-            id: "0",
-            description: t("tag.search.success.file_description", {
-              ns: "commands",
-            }),
-            filename: t("tag.search.success.file_name", { ns: "commands" }),
-          },
-        ],
-      },
-      [
-        {
-          fileName: t("tag.search.success.file_name", { ns: "commands" }),
-          fileData: tagNames.join("\n"),
-        },
-      ]
+    const attachment = new AttachmentBuilder(tagNames.join("\n")).setName(
+      "tags.txt"
     );
+
+    await interaction.reply({
+      content: t("tag.search.success.message_content", {
+        ns: "commands",
+        count: totalCount,
+      }),
+      files: [attachment],
+    });
   }
 
   static async editHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const tagName = options.getString("name");
+    const tagName = interaction.options.getString("name");
     if (!tagName) {
       throw new Error("Missing tag name.");
     }
 
     const tag = await ctx.sushiiAPI.sdk.getTag({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       tagName,
     });
 
     // Check if tag exists
     if (!tag.tagByGuildIdAndTagName) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         content: t("tag.edit.error.not_found", {
           ns: "commands",
           tagName,
@@ -766,26 +724,24 @@ export default class TagCommand extends SlashCommandHandler {
       return;
     }
 
-    const invoker = getInvokerUser(interaction);
-
     // Check if owner or manage guild perms
     if (
       await deniedTagPermission(
         ctx,
         interaction,
         tag.tagByGuildIdAndTagName,
-        invoker.id,
-        interaction.member.permissions
+        interaction.user.id,
+        interaction.member
       )
     ) {
       return;
     }
 
-    const newContent = options.getString("content");
-    const newAttachment = options.getAttachment("attachment");
+    const newContent = interaction.options.getString("content");
+    const newAttachment = interaction.options.getAttachment("attachment");
 
     if (!newContent && !newAttachment) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.edit.error.title", { ns: "commands" }))
@@ -820,24 +776,18 @@ export default class TagCommand extends SlashCommandHandler {
           : null
       );
 
-    await ctx.REST.interactionReply(
-      interaction,
-      {
-        embeds: [embed.toJSON()],
-      },
-      files
-    );
+    await interaction.reply({
+      embeds: [embed.toJSON()],
+      files,
+    });
 
     let attachmentUrl;
     if (newAttachment) {
-      const replyMsg = await ctx.REST.interactionGetOriginal(interaction);
-
-      if (replyMsg.ok) {
-        attachmentUrl = replyMsg.val.attachments.at(0)?.url;
-      } else {
-        // Return err
-
-        await ctx.REST.interactionEdit(interaction, {
+      try {
+        const replyMsg = await interaction.fetchReply();
+        attachmentUrl = replyMsg.attachments.at(0)?.url;
+      } catch (err) {
+        await interaction.editReply({
           embeds: [
             new EmbedBuilder()
               .setColor(Color.Error)
@@ -866,29 +816,28 @@ export default class TagCommand extends SlashCommandHandler {
         content: newContent,
         attachment: attachmentUrl,
       },
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       tagName,
     });
   }
 
   static async renameHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const tagName = options.getString("name");
+    const tagName = interaction.options.getString("name");
     if (!tagName) {
       throw new Error("Missing tag name.");
     }
 
     const tag = await ctx.sushiiAPI.sdk.getTag({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       tagName,
     });
 
     // Check if tag exists
     if (!tag.tagByGuildIdAndTagName) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         content: t("tag.edit.error.not_found", {
           ns: "commands",
           tagName,
@@ -898,34 +847,32 @@ export default class TagCommand extends SlashCommandHandler {
       return;
     }
 
-    const invoker = getInvokerUser(interaction);
-
     // Check if owner or manage guild perms
     if (
       await deniedTagPermission(
         ctx,
         interaction,
         tag.tagByGuildIdAndTagName,
-        invoker.id,
-        interaction.member.permissions
+        interaction.user.id,
+        interaction.member
       )
     ) {
       return;
     }
 
-    const newName = options.getString("new_name");
+    const newName = interaction.options.getString("new_name");
     if (!newName) {
       throw new Error("Missing new tag name.");
     }
 
     // Check if new name tag already exists
     const tagExists = await ctx.sushiiAPI.sdk.getTag({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       tagName: newName,
     });
 
     if (tagExists.tagByGuildIdAndTagName) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.rename.error.failed_title", { ns: "commands" }))
@@ -949,7 +896,7 @@ export default class TagCommand extends SlashCommandHandler {
       tagPatch: {
         tagName: newName,
       },
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       tagName,
     });
 
@@ -963,29 +910,28 @@ export default class TagCommand extends SlashCommandHandler {
       ])
       .setColor(Color.Success);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed.toJSON()],
     });
   }
 
   static async deleteHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const tagName = options.getString("name");
+    const tagName = interaction.options.getString("name");
     if (!tagName) {
       throw new Error("Missing tag name.");
     }
 
     const tag = await ctx.sushiiAPI.sdk.getTag({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       tagName,
     });
 
     // Check if tag exists
     if (!tag.tagByGuildIdAndTagName) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         content: t("tag.delete.error.not_found", {
           ns: "commands",
           tagName,
@@ -995,23 +941,21 @@ export default class TagCommand extends SlashCommandHandler {
       return;
     }
 
-    const invoker = getInvokerUser(interaction);
-
     // Check if owner or manage guild perms
     if (
       await deniedTagPermission(
         ctx,
         interaction,
         tag.tagByGuildIdAndTagName,
-        invoker.id,
-        interaction.member.permissions
+        interaction.user.id,
+        interaction.member
       )
     ) {
       return;
     }
 
     await ctx.sushiiAPI.sdk.deleteTag({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       tagName,
     });
 
@@ -1034,7 +978,7 @@ export default class TagCommand extends SlashCommandHandler {
       .setTimestamp(dayjs(tag.tagByGuildIdAndTagName.created).toDate())
       .setColor(Color.Success);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed.toJSON()],
     });
   }

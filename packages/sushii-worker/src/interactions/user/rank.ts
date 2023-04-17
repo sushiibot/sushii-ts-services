@@ -1,14 +1,9 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { isGuildInteraction } from "discord-api-types/utils/v10";
-import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
+import { SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction } from "discord.js";
+import logger from "../../logger";
 import Context from "../../model/context";
-import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
-import CommandInteractionOptionResolver from "../resolver";
-import {
-  interactionReplyErrorMessage,
-  interactionReplyErrorPlainMessage,
-} from "../responses/error";
+import { getErrorMessage } from "../responses/error";
 import { getUserRank } from "./rank.service";
 
 export default class RankCommand extends SlashCommandHandler {
@@ -25,58 +20,33 @@ export default class RankCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    if (!isGuildInteraction(interaction)) {
+    if (!interaction.inCachedGuild()) {
       throw new Error("Guild missing");
     }
 
-    const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
-    if (ackRes.err) {
-      await interactionReplyErrorMessage(ctx, interaction, ackRes.val.message);
+    await interaction.deferReply();
 
-      return;
-    }
+    const target = interaction.options.getUser("user") || interaction.user;
 
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
-
-    const target = options.getUser("user") || getInvokerUser(interaction);
-
-    const res = await getUserRank(
-      ctx,
-      interaction,
-      target,
-      interaction.guild_id
-    );
+    const res = await getUserRank(ctx, target, interaction.guildId);
 
     if (res.err) {
-      await interactionReplyErrorPlainMessage(ctx, interaction, res.val);
+      logger.error({ err: res.val }, "Failed to get user rank");
+      await interaction.editReply(
+        getErrorMessage("Failed to get user rank", res.val)
+      );
+
       return;
     }
 
-    await ctx.REST.interactionEditOriginal(
-      interaction,
-      {
-        attachments: [
-          {
-            id: "0",
-            filename: "rank.png",
-            description: `${target.username}#${target.discriminator.padStart(
-              4,
-              "0"
-            )}'s rank`,
-          },
-        ],
-      },
-      [
-        {
-          fileName: "rank.png",
-          fileData: Buffer.from(res.safeUnwrap().rankBuffer),
-        },
-      ]
-    );
+    const attachment = new AttachmentBuilder(
+      Buffer.from(res.safeUnwrap().rankBuffer)
+    ).setName("rank.png");
+
+    await interaction.editReply({
+      files: [attachment],
+    });
   }
 }

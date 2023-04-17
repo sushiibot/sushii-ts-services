@@ -1,15 +1,11 @@
 import { GraphQLClient } from "graphql-request";
-import { APIApplicationCommand, APIUser } from "discord-api-types/v10";
+import { APIApplicationCommand } from "discord-api-types/v10";
 import fetch, { RequestInfo, RequestInit, Response } from "node-fetch";
 import http from "http";
-import CDNClient from "./cdn";
-import { ConfigI } from "./config";
+import { Client, CDN } from "discord.js";
+import config from "./config";
 import SushiiImageServerClient from "./image_server";
-import RESTClient from "./rest";
-// import { SdkFunctionWrapper } from "../generated/graphql";
 import SushiiSDK from "./api";
-import Metrics from "./metrics";
-import AmqpGateway from "./AmqpGateway";
 import { getSdkWebsocket } from "./graphqlClient";
 import MemoryStore from "./MemoryStore";
 
@@ -51,27 +47,18 @@ export default class Context {
 
   public readonly sushiiImageServer: SushiiImageServerClient;
 
-  public readonly REST: RESTClient;
+  public readonly client: Client;
 
-  public readonly CDN: CDNClient;
-
-  public readonly gateway: AmqpGateway;
+  public readonly CDN = new CDN();
 
   public memoryStore: MemoryStore;
 
-  private currentUser?: APIUser;
-
   private commands: APIApplicationCommand[];
 
-  constructor(
-    config: ConfigI,
-    metrics: Metrics,
-    gateway: AmqpGateway,
-    wsSdkClient: ReturnType<typeof getSdkWebsocket>
-  ) {
-    this.graphQLClient = new GraphQLClient(config.graphqlApiURL, {
+  constructor(client: Client, wsSdkClient: ReturnType<typeof getSdkWebsocket>) {
+    this.graphQLClient = new GraphQLClient(config.SUSHII_GRAPHQL_URL, {
       headers: {
-        Authorization: `Bearer ${config.graphqlApiToken}`,
+        Authorization: `Bearer ${config.SUSHII_GRAPHQL_TOKEN}`,
       },
       keepalive: true,
       fetch: getFetch(),
@@ -79,23 +66,11 @@ export default class Context {
 
     this.sushiiAPI = new SushiiSDK(wsSdkClient);
 
-    this.sushiiImageServer = new SushiiImageServerClient(config);
-    this.REST = new RESTClient(config);
-    this.CDN = new CDNClient();
+    this.sushiiImageServer = new SushiiImageServerClient();
+    this.client = client;
     this.memoryStore = new MemoryStore();
-    this.gateway = gateway;
 
     this.commands = [];
-  }
-
-  async getCurrentUser(): Promise<APIUser> {
-    // Fetch once on the first time if not already fetched
-    if (!this.currentUser) {
-      const currentUserRes = await this.REST.getCurrentUser();
-      this.currentUser = currentUserRes.unwrap();
-    }
-
-    return this.currentUser;
   }
 
   setCommands(commands: APIApplicationCommand[]): void {

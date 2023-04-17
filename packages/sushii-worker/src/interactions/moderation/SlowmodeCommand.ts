@@ -1,11 +1,14 @@
-import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
 import {
-  APIChatInputApplicationCommandGuildInteraction,
+  EmbedBuilder,
+  SlashCommandBuilder,
   MessageFlags,
   PermissionFlagsBits,
-} from "discord-api-types/v10";
+  ChatInputCommandInteraction,
+  ChannelType,
+  DiscordAPIError,
+} from "discord.js";
 import dayjs from "dayjs";
-import CommandInteractionOptionResolver from "../resolver";
+import plugin from "dayjs/plugin/duration";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import {
@@ -19,13 +22,11 @@ const RE_ONLY_NUMBERS = /^\d+$/;
 
 enum SlowmodeOption {
   Duration = "duration",
-  Channel = "channel",
+  ChannelOption = "channel",
 }
 
 export default class SlowmodeCommand extends SlashCommandHandler {
   serverOnly = true;
-
-  requiredBotPermissions = PermissionFlagsBits.ManageChannels.toString();
 
   command = new SlashCommandBuilder()
     .setName("slowmode")
@@ -42,7 +43,7 @@ export default class SlowmodeCommand extends SlashCommandHandler {
     )
     .addChannelOption((o) =>
       o
-        .setName(SlowmodeOption.Channel)
+        .setName(SlowmodeOption.ChannelOption)
         .setDescription(
           "Channel to set slowmode for. Defaults to the current channel."
         )
@@ -53,23 +54,32 @@ export default class SlowmodeCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Guild not cached");
+    }
 
-    const durationStr = options.getString(SlowmodeOption.Duration);
+    const durationStr = interaction.options.getString(SlowmodeOption.Duration);
     if (!durationStr) {
       throw new Error("Missing duration");
     }
 
-    const channel = options.getChannel(SlowmodeOption.Channel);
+    const channelOption = interaction.options.getChannel(
+      SlowmodeOption.ChannelOption,
+      false,
+      [ChannelType.GuildText]
+    );
+
+    const targetChanel = channelOption || interaction.channel;
+
+    if (!targetChanel) {
+      throw new Error("Missing channel");
+    }
 
     const isUnitless = RE_ONLY_NUMBERS.test(durationStr.trim());
 
-    let duration = null;
+    let duration: plugin.Duration | null = null;
     if (isUnitless) {
       duration = dayjs.duration({
         seconds: parseInt(durationStr, 10),
@@ -100,23 +110,23 @@ export default class SlowmodeCommand extends SlashCommandHandler {
       return;
     }
 
-    const res = await ctx.REST.modifyChannel(
-      channel?.id || interaction.channel_id,
-      {
-        // Will only be null if disableSlowmode is true
-        rate_limit_per_user: duration?.asSeconds() || 0,
+    try {
+      await targetChanel.edit({
+        rateLimitPerUser: duration!.asSeconds(),
+      });
+    } catch (err) {
+      if (err instanceof DiscordAPIError) {
+        await interactionReplyErrorMessage(
+          ctx,
+          interaction,
+          `Failed to update slowmode: ${err.message}`,
+          true
+        );
+
+        return;
       }
-    );
 
-    if (res.err) {
-      await interactionReplyErrorMessage(
-        ctx,
-        interaction,
-        `Failed to update slowmode: ${res.val.message}`,
-        true
-      );
-
-      return;
+      throw err;
     }
 
     let formattedDuration = "";
@@ -137,22 +147,21 @@ export default class SlowmodeCommand extends SlashCommandHandler {
       formattedDuration += `${seconds} second${seconds > 1 ? "s" : ""} `;
     }
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle("Updated slowmode")
           .addFields(
             {
               name: "Channel",
-              value: `<#${res.val.id}>`,
+              value: `<#${targetChanel.id}>`,
             },
             {
               name: "Duration",
               value: formattedDuration || "Disabled",
             }
           )
-          .setColor(Color.Success)
-          .toJSON(),
+          .setColor(Color.Success),
       ],
       flags: MessageFlags.Ephemeral,
     });

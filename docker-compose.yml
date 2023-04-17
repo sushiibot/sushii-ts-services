@@ -13,17 +13,16 @@ services:
         restart: unless-stopped
         environment:
             - NODE_ENV=production
+            - DISCORD_TOKEN=$DISCORD_TOKEN
+            - DATABASE_URL=$DATABASE_URL
             - SUSHII_GRAPHQL_TOKEN=$SUSHII_GRAPHQL_TOKEN
             - SENTRY_DSN=$SENTRY_DSN
-            - DISCORD_TOKEN=$DISCORD_TOKEN
             # sushiiDev application ID, different from bot user id
             - APPLICATION_ID=193163942502072320
             # No per guild commands
             # - GUILD_ID=167058919611564043,418504865543749642
             - SUSHII_GRAPHQL_URL=http://sushii_data:8080/graphql
             - SUSHII_GRAPHQL_WS_URL=ws://sushii_data:8080/graphql
-            - AMQP_URL=amqp://rabbitmq:5672
-            - AMQP_QUEUE_NAME=gateway.recv
             - TWILIGHT_PROXY_URL=http://twilight-http-proxy:80/api
             - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
         networks:
@@ -45,23 +44,6 @@ services:
             - sushii_net
         labels:
             - "traefik.enable=false"
-    oathkeeper:
-        image: oryd/oathkeeper:v0.38
-        restart: unless-stopped
-        command: serve --config=/etc/config/oathkeeper/config.yaml
-        ports:
-            - "4455:4455"
-            - "4456:4456"
-        environment:
-            - TRACING_PROVIDER=jaeger
-            - TRACING_PROVIDER_JAEGER_SAMPLING_SERVER_URL=http://jaeger:5778/sampling
-            - TRACING_PROVIDER_JAEGER_LOCAL_AGENT_ADDRESS=jaeger:6831
-            - TRACING_PROVIDER_JAEGER_SAMPLING_TYPE=const
-            - TRACING_PROVIDER_JAEGER_SAMPLING_VALUE=1
-        volumes:
-            - ./ory/oathkeeper:/etc/config/oathkeeper
-        networks:
-            - sushii_net
     jaeger:
         image: jaegertracing/all-in-one
         restart: unless-stopped
@@ -85,84 +67,6 @@ services:
         environment:
             - DISCORD_TOKEN=$DISCORD_TOKEN
             - RUST_LOG=trace
-        networks:
-            - sushii_net
-        labels:
-            - "traefik.enable=false"
-    twilight-dispatch:
-        image: chamburr/twilight-dispatch:0.4.3
-        restart: unless-stopped
-        expose:
-            - "8005" # prometheus
-        environment:
-            - RUST_LOG=info
-            - BOT_TOKEN=$DISCORD_TOKEN
-            - SHARDS_START=0
-            - SHARDS_END=2
-            - SHARDS_TOTAL=3
-            - SHARDS_CONCURRENCY=1
-            - SHARDS_WAIT=6
-            - CLUSTERS=1
-            - DEFAULT_QUEUE=true
-            - RESUME=true
-            - INTENTS=37391
-            - LARGE_THRESHOLD=250
-            - STATUS=online
-            - ACTIVITY_TYPE=0
-            - ACTIVITY_NAME=sushii.xyz
-            # Discord channel logs
-            - LOG_CHANNEL=749822555019280434
-            - LOG_GUILD_CHANNEL=749822555019280434
-            - STATE_ENABLED=true
-            - STATE_MEMBER=true
-            - STATE_MEMBER_TTL=60000
-            - STATE_MESSAGE=true
-            - STATE_MESSAGE_TTL=60000
-            - STATE_PRESENCE=false
-            - STATE_EMOJI=true
-            - STATE_VOICE=false
-            - STATE_OLD=false
-            - RABBIT_HOST=rabbitmq
-            - RABBIT_PORT=5672
-            - RABBIT_USERNAME=guest
-            - RABBIT_PASSWORD=guest
-            - REDIS_HOST=keydb
-            - REDIS_PORT=6379
-            - PROMETHEUS_HOST=127.0.0.1
-            - PROMETHEUS_PORT=8005
-        networks:
-            - sushii_net
-        labels:
-            - "traefik.enable=false"
-    rabbitmq:
-        image: rabbitmq:3-management
-        container_name: rabbitmq
-        restart: unless-stopped
-        logging:
-            options:
-                max-size: "10m"
-                max-file: "3"
-        expose:
-            - "5672"
-            - "15672"
-        env_file:
-            # user/pass
-            - .rabbitmq.env
-        networks:
-            - sushii_net
-        labels:
-            - "traefik.docker.network=sushii-2_web"
-            - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
-            - "traefik.http.routers.rabbitmq.rule=Host(`rabbit.sushii.xyz`)"
-            - "traefik.http.routers.rabbitmq.entrypoints=secure"
-            - "traefik.http.routers.rabbitmq.tls.certresolver=acme"
-            - "traefik.http.routers.rabbitmq.middlewares=auth@file"
-    keydb:
-        image: eqalpha/keydb:x86_64_v6.3.1
-        container_name: sushii-keydb
-        restart: unless-stopped
-        expose:
-            - "6379"
         networks:
             - sushii_net
         labels:

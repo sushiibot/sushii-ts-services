@@ -1,10 +1,4 @@
-import { EmbedBuilder } from "@discordjs/builders";
-
-import { isGuildInteraction } from "discord-api-types/utils/v10";
-import {
-  APIMessageComponentButtonInteraction,
-  MessageFlags,
-} from "discord-api-types/v10";
+import { EmbedBuilder, ButtonInteraction, MessageFlags } from "discord.js";
 import Context from "../../../model/context";
 import Color from "../../../utils/colors";
 import customIds from "../../customIds";
@@ -18,14 +12,14 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
     ctx: Context,
-    interaction: APIMessageComponentButtonInteraction
+    interaction: ButtonInteraction
   ): Promise<void> {
-    if (!isGuildInteraction(interaction)) {
-      throw new Error("Not a guild interaction");
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Guild not cached");
     }
 
     const customIDMatch = customIds.reasonConfirmButton.match(
-      interaction.data.custom_id
+      interaction.customId
     );
     if (!customIDMatch) {
       throw new Error("No pending reason match");
@@ -38,7 +32,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
         .setTitle("Error")
         .setDescription("You can only confirm your own reason command :(");
 
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [embed.toJSON()],
         flags: MessageFlags.Ephemeral,
       });
@@ -55,7 +49,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
         .setColor(Color.Success);
 
       // Edit the message the comment is attached to
-      await ctx.REST.interactionEdit(interaction, {
+      await interaction.editReply({
         embeds: [embed.toJSON()],
         components: [],
       });
@@ -75,7 +69,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
         .setColor(Color.Error);
 
       // Edit the message the comment is attached to
-      await ctx.REST.interactionEdit(interaction, {
+      await interaction.editReply({
         embeds: [embed.toJSON()],
         components: [],
       });
@@ -89,7 +83,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
     const { caseStartId, caseEndId, reason } = pendingConfirmation;
 
     const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
     });
 
     if (!guildConfigById?.logMod) {
@@ -98,7 +92,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
         .setDescription("Mod log channel not set")
         .setColor(Color.Error);
 
-      await ctx.REST.interactionEdit(interaction, {
+      await interaction.reply({
         embeds: [embed.toJSON()],
         components: [],
       });
@@ -109,7 +103,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
     const responseEmbed = await updateModLogReasons(
       ctx,
       interaction,
-      interaction.guild_id,
+      interaction.guildId,
       guildConfigById.logMod,
       interaction.member.user.id,
       [caseStartId, caseEndId],
@@ -123,7 +117,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
     }
 
     // Edit the message the button is attached to with the update result
-    await ctx.REST.interactionEdit(interaction, {
+    await interaction.editReply({
       embeds: [responseEmbed.toJSON()],
       components: [],
     });

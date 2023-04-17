@@ -1,15 +1,15 @@
-import { EmbedBuilder } from "@discordjs/builders";
-
-import { isGuildInteraction } from "discord-api-types/utils/v10";
 import {
-  APIMessageComponentSelectMenuInteraction,
-  MessageFlags,
-} from "discord-api-types/v10";
+  EmbedBuilder,
+  AnySelectMenuInteraction,
+  DiscordAPIError,
+} from "discord.js";
+import { MessageFlags } from "discord-api-types/v10";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import customIds from "../customIds";
 import { SelectMenuHandler } from "../handlers";
 import { getRoleMenuMessageSelectRoles, getRoleMenuRequiredRole } from "./ids";
+import logger from "../../logger";
 
 export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
   customIDMatch = customIds.roleMenuSelect.match;
@@ -17,15 +17,15 @@ export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
     ctx: Context,
-    interaction: APIMessageComponentSelectMenuInteraction
+    interaction: AnySelectMenuInteraction
   ): Promise<void> {
-    if (!isGuildInteraction(interaction)) {
+    if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }
 
     const requiredRole = getRoleMenuRequiredRole(interaction.message);
-    if (requiredRole && !interaction.member.roles.includes(requiredRole)) {
-      await ctx.REST.interactionReply(interaction, {
+    if (requiredRole && !interaction.member.roles.cache.has(requiredRole)) {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(Color.Error)
@@ -44,17 +44,17 @@ export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
     const menuRoles = getRoleMenuMessageSelectRoles(interaction.message);
 
     // Select menu roles -- this can be 0 when clearing all roles
-    const selectedRolesSet = new Set(interaction.data.values);
+    const selectedRolesSet = new Set(interaction.values);
 
     // Updated total member roles
-    const memberNewRoles = new Set(interaction.member.roles);
+    const memberNewRoles = new Set(interaction.member.roles.cache.keys());
 
     // Keep track of which ones are added and removed to show user
     const addedRoles = [];
     const removedRoles = [];
 
     // Add new selected roles
-    for (const addRoleId of interaction.data.values) {
+    for (const addRoleId of interaction.values) {
       // Only add if member doesn't already have it, add to addedRoles before
       // adding to memberNewRoles otherwise this is always false
       if (!memberNewRoles.has(addRoleId)) {
@@ -93,26 +93,29 @@ export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
       description = "No roles were added or removed";
     }
 
-    const res = await ctx.REST.setMemberRoles(
-      interaction.guild_id,
-      interaction.member.user.id,
-      Array.from(memberNewRoles)
-    );
+    try {
+      await interaction.member.roles.set(Array.from(memberNewRoles));
+    } catch (err) {
+      logger.warn({ err }, "Failed to update roles via select menu rolemenu ");
 
-    if (res.err) {
-      await ctx.REST.interactionReply(interaction, {
+      let desc;
+      if (err instanceof DiscordAPIError) {
+        desc = err.message;
+      }
+
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(Color.Error)
             .setTitle("Failed to update your roles")
-            .setDescription(res.val.message)
+            .setDescription(desc || "An unknown error occurred")
             .toJSON(),
         ],
         flags: MessageFlags.Ephemeral,
       });
     }
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setColor(Color.Success)

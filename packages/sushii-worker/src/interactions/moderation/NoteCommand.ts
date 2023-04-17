@@ -1,8 +1,5 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import {
-  APIChatInputApplicationCommandGuildInteraction,
-  PermissionFlagsBits,
-} from "discord-api-types/v10";
+import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
+import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import {
@@ -17,8 +14,6 @@ import { noteOption, usersOption } from "./options";
 export default class NoteCommand extends SlashCommandHandler {
   serverOnly = true;
 
-  requiredBotPermissions = PermissionFlagsBits.BanMembers.toString();
-
   command = new SlashCommandBuilder()
     .setName("note")
     .setDescription("Add a note to members.")
@@ -32,8 +27,12 @@ export default class NoteCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Not in cached guild");
+    }
+
     const data = new ModActionData(interaction);
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
@@ -42,21 +41,17 @@ export default class NoteCommand extends SlashCommandHandler {
       return;
     }
 
-    const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
-    ackRes.unwrap();
+    await interaction.deferReply();
 
     const res = await executeAction(ctx, interaction, data, ActionType.Note);
     if (res.err) {
-      await ctx.REST.interactionEditOriginal(
-        interaction,
-        getErrorMessage("Error", res.val.message)
-      );
+      await interaction.editReply(getErrorMessage("Error", res.val.message));
 
       return;
     }
 
-    await ctx.REST.interactionEditOriginal(interaction, {
-      embeds: [res.val.toJSON()],
+    await interaction.editReply({
+      embeds: [res.val],
     });
   }
 }

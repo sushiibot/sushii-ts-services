@@ -1,12 +1,12 @@
-import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
-import { isGuildInteraction } from "discord-api-types/utils/v10";
-import { APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
+import {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
+} from "discord.js";
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import getInvokerUser from "../../utils/interactions";
 import { SlashCommandHandler } from "../handlers";
-import CommandInteractionOptionResolver from "../resolver";
 
 export default class AvatarCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -24,18 +24,14 @@ export default class AvatarCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
-
-    const target = options.getUser("user") || getInvokerUser(interaction);
+    const target =
+      interaction.options.getUser("user", false) || interaction.user;
     const embeds = [];
 
     // User av
-    const userFaceURL = ctx.CDN.userFaceURL(target, {
+    const userFaceURL = target.displayAvatarURL({
       size: 4096,
     });
     const userEmbed = new EmbedBuilder()
@@ -52,25 +48,21 @@ export default class AvatarCommand extends SlashCommandHandler {
     embeds.push(userEmbed);
 
     // Guild av
-    if (isGuildInteraction(interaction)) {
-      const member = await ctx.REST.getMember(interaction.guild_id, target.id);
+    if (interaction.inCachedGuild()) {
+      try {
+        const member = await interaction.guild.members.fetch(target.id);
 
-      if (member.ok) {
-        const memberFaceURL = ctx.CDN.memberFaceURL(
-          interaction.guild_id,
-          member.safeUnwrap(),
-          target.id,
-          {
-            size: 4096,
-          }
-        );
+        // Not displayAvatarURL since we don't want it to fallback to user pfp
+        const memberFaceURL = member.avatarURL({
+          size: 4096,
+        });
 
         if (memberFaceURL) {
           const memberEmbed = new EmbedBuilder()
             .setTitle(
               t("avatar.member_avatar_title", {
                 ns: "commands",
-                username: member.safeUnwrap().nick || target.username,
+                username: member.nickname || target.username,
               })
             )
             .setURL(memberFaceURL)
@@ -80,10 +72,12 @@ export default class AvatarCommand extends SlashCommandHandler {
 
           embeds.push(memberEmbed);
         }
+      } finally {
+        // Ignore error
       }
     }
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds,
     });
   }

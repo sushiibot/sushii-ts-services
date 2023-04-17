@@ -19,7 +19,7 @@ module.exports = {
     "@typescript-eslint",
   ],
   rules: {
-    "quotes": ["error", "double"],
+    "quotes": ["error", "double", { "avoidEscape": true }],
     "consistent-return": "off",
     "default-case": "off",
     "@typescript-eslint/explicit-function-return-type": "error",

@@ -1,11 +1,7 @@
-import {
-  APIApplicationCommandAutocompleteInteraction,
-  ApplicationCommandOptionType,
-  InteractionResponseType,
-} from "discord-api-types/v10";
+import { ApplicationCommandOptionType } from "discord-api-types/v10";
+import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import Context from "../../model/context";
 import { AutocompleteHandler } from "../handlers";
-import { AutocompleteOption } from "../handlers/AutocompleteHandler";
 
 export default class TagGetAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [
@@ -19,15 +15,15 @@ export default class TagGetAutocomplete extends AutocompleteHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIApplicationCommandAutocompleteInteraction,
-    option: AutocompleteOption
+    interaction: AutocompleteInteraction,
+    option: AutocompleteFocusedOption
   ): Promise<void> {
     if (option.type !== ApplicationCommandOptionType.String) {
       throw new Error("Option type must be string.");
     }
 
     const matching = await ctx.sushiiAPI.sdk.searchTags({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       filter: {
         tagName: {
           startsWithInsensitive: option.value,
@@ -41,11 +37,6 @@ export default class TagGetAutocomplete extends AutocompleteHandler {
       value: s.node.tagName,
     }));
 
-    await ctx.REST.interactionCallback(interaction, {
-      type: InteractionResponseType.ApplicationCommandAutocompleteResult,
-      data: {
-        choices,
-      },
-    });
+    await interaction.respond(choices || []);
   }
 }

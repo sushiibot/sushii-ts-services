@@ -1,12 +1,12 @@
-import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
 import {
-  APIChatInputApplicationCommandGuildInteraction,
-  PermissionFlagsBits,
-} from "discord-api-types/v10";
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
+} from "discord.js";
+import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
-import CommandInteractionOptionResolver from "../resolver";
 
 export default class ModLogCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -35,19 +35,18 @@ export default class ModLogCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Guild not cached.");
+    }
 
-    const subcommand = options.getSubcommand();
+    const subcommand = interaction.options.getSubcommand();
     switch (subcommand) {
       case "get":
         return this.getHandler(ctx, interaction);
       case "set":
-        return this.setHandler(ctx, interaction, options);
+        return this.setHandler(ctx, interaction);
       default:
         throw new Error("Invalid subcommand.");
     }
@@ -55,10 +54,10 @@ export default class ModLogCommand extends SlashCommandHandler {
 
   async getHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
     const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
     });
 
     const channelId = guildConfigById?.logMod;
@@ -68,7 +67,7 @@ export default class ModLogCommand extends SlashCommandHandler {
       ? `The mod log is currently set to <#${channelId}>`
       : `There is no mod log set. Use ${modLogSetCmd} to set one.`;
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle("Mod log")
@@ -81,23 +80,19 @@ export default class ModLogCommand extends SlashCommandHandler {
 
   async setHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const channel = options.getChannel("channel");
-    if (!channel) {
-      throw new Error("missing channel");
-    }
+    const channel = interaction.options.getChannel("channel", true);
 
     await ctx.sushiiAPI.sdk.updateGuildConfig({
-      id: interaction.guild_id,
+      id: interaction.guildId,
       patch: {
         logMod: channel.id,
         logModEnabled: true,
       },
     });
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle("Mod log updated")

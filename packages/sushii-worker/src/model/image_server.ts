@@ -1,15 +1,15 @@
 import { Agent } from "http";
 import fetch, { Response, RequestInit } from "node-fetch";
-import { ConfigI } from "./config";
+import config from "./config";
 
 export default class SushiiImageServerClient {
   public readonly endpoint: string;
 
   private readonly agent: Agent;
 
-  constructor(config: ConfigI) {
+  constructor() {
     // Remove trailing slash
-    this.endpoint = config.sushiiImageServerURL.replace(/\/$/, "");
+    this.endpoint = config.SUSHII_IMAGE_SERVER_URL.replace(/\/$/, "");
     this.agent = new Agent({
       keepAlive: true,
     });

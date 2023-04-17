@@ -1,17 +1,16 @@
-import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
-import dayjs from "dayjs";
 import {
-  APIChatInputApplicationCommandGuildInteraction,
+  SlashCommandBuilder,
+  EmbedBuilder,
   MessageFlags,
-} from "discord-api-types/v10";
+  ChatInputCommandInteraction,
+} from "discord.js";
+import dayjs from "dayjs";
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { isNoValuesDeletedError } from "../../utils/graphqlError";
-import getInvokerUser from "../../utils/interactions";
 import parseDuration from "../../utils/parseDuration";
 import { SlashCommandHandler } from "../handlers";
-import CommandInteractionOptionResolver from "../resolver";
 import { interactionReplyErrorPlainMessage } from "../responses/error";
 
 export default class ReminderCommand extends SlashCommandHandler {
@@ -57,21 +56,16 @@ export default class ReminderCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
-
-    const subcommand = options.getSubcommand();
+    const subcommand = interaction.options.getSubcommand();
     switch (subcommand) {
       case "add":
-        return ReminderCommand.addHandler(ctx, interaction, options);
+        return ReminderCommand.addHandler(ctx, interaction);
       case "list":
         return ReminderCommand.listHandler(ctx, interaction);
       case "delete":
-        return ReminderCommand.deleteHandler(ctx, interaction, options);
+        return ReminderCommand.deleteHandler(ctx, interaction);
 
       default:
         throw new Error("Invalid subcommand.");
@@ -80,24 +74,15 @@ export default class ReminderCommand extends SlashCommandHandler {
 
   static async addHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const durationStr = options.getString("duration");
-    if (!durationStr) {
-      throw new Error("Missing duration.");
-    }
+    const durationStr = interaction.options.getString("duration", true);
 
-    const description = options.getString("description");
-    if (!description) {
-      throw new Error("Missing description");
-    }
-
-    const invoker = getInvokerUser(interaction);
+    const description = interaction.options.getString("description", true);
 
     const duration = parseDuration(durationStr);
     if (!duration) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(
@@ -121,7 +106,7 @@ export default class ReminderCommand extends SlashCommandHandler {
 
     await ctx.sushiiAPI.sdk.createReminder({
       reminder: {
-        userId: invoker.id,
+        userId: interaction.user.id,
         description,
         setAt: dayjs().utc().toISOString(),
         expireAt: expireAt.toISOString(),
@@ -139,7 +124,7 @@ export default class ReminderCommand extends SlashCommandHandler {
       )
       .setColor(Color.Success);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed.toJSON()],
       flags: MessageFlags.Ephemeral,
     });
@@ -147,12 +132,10 @@ export default class ReminderCommand extends SlashCommandHandler {
 
   static async listHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const invoker = getInvokerUser(interaction);
-
     const reminders = await ctx.sushiiAPI.sdk.getUserReminders({
-      userId: invoker.id,
+      userId: interaction.user.id,
     });
 
     const remindersStr = reminders.allReminders?.nodes.map((r) => {
@@ -161,7 +144,7 @@ export default class ReminderCommand extends SlashCommandHandler {
     });
 
     if (!remindersStr || remindersStr.length === 0) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(
@@ -184,7 +167,7 @@ export default class ReminderCommand extends SlashCommandHandler {
       .setDescription(remindersStr.join("\n"))
       .setColor(Color.Info);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed.toJSON()],
       flags: MessageFlags.Ephemeral,
     });
@@ -192,13 +175,9 @@ export default class ReminderCommand extends SlashCommandHandler {
 
   static async deleteHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const reminder = options.getString("reminder");
-    if (!reminder) {
-      throw new Error("Missing reminder.");
-    }
+    const reminder = interaction.options.getString("reminder", true);
 
     if (!dayjs.utc(reminder).isValid()) {
       await interactionReplyErrorPlainMessage(
@@ -211,13 +190,11 @@ export default class ReminderCommand extends SlashCommandHandler {
       return;
     }
 
-    const invoker = getInvokerUser(interaction);
-
     let deletedReminder;
 
     try {
       const r = await ctx.sushiiAPI.sdk.deleteReminder({
-        userId: invoker.id,
+        userId: interaction.user.id,
         setAt: reminder,
       });
 
@@ -228,7 +205,7 @@ export default class ReminderCommand extends SlashCommandHandler {
       }
 
       // Returns correct error
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle(
@@ -256,7 +233,7 @@ export default class ReminderCommand extends SlashCommandHandler {
       )
       .setColor(Color.Success);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed.toJSON()],
       flags: MessageFlags.Ephemeral,
     });

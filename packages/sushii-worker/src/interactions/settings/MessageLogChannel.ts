@@ -1,13 +1,13 @@
-import { SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
 import {
-  APIChatInputApplicationCommandGuildInteraction,
-  PermissionFlagsBits,
-} from "discord-api-types/v10";
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
+} from "discord.js";
+import { PermissionFlagsBits } from "discord-api-types/v10";
 import { MsgLogBlockType } from "../../generated/graphql";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
-import CommandInteractionOptionResolver from "../resolver";
 
 enum MsgLogSubGroup {
   Ignore = "ignore",
@@ -107,22 +107,21 @@ export default class MessageLogCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Guild not cached");
+    }
 
-    const subgroup = options.getSubcommandGroup();
-    const subcommand = options.getSubcommand();
+    const subgroup = interaction.options.getSubcommandGroup();
+    const subcommand = interaction.options.getSubcommand();
 
     switch (subgroup) {
       // Base commands
       case null: {
         switch (subcommand) {
           case MsgLogCommandName.Set:
-            return this.setHandler(ctx, interaction, options);
+            return this.setHandler(ctx, interaction);
           default:
             throw new Error(
               `Invalid subcommand for group ${subgroup}: ${subcommand}`
@@ -132,7 +131,7 @@ export default class MessageLogCommand extends SlashCommandHandler {
       case MsgLogSubGroup.Ignore: {
         switch (subcommand) {
           case MsgLogCommandName.Channel:
-            return this.ignoreChannelHandler(ctx, interaction, options);
+            return this.ignoreChannelHandler(ctx, interaction);
           case MsgLogCommandName.List:
             return this.ignoreListHandler(ctx, interaction);
           default:
@@ -144,7 +143,7 @@ export default class MessageLogCommand extends SlashCommandHandler {
       case MsgLogSubGroup.UnIgnore: {
         switch (subcommand) {
           case MsgLogCommandName.Channel:
-            return this.unignoreChannelHandler(ctx, interaction, options);
+            return this.unignoreChannelHandler(ctx, interaction);
           default:
             throw new Error(
               `Invalid subcommand for group ${subgroup}: ${subcommand}`
@@ -159,23 +158,22 @@ export default class MessageLogCommand extends SlashCommandHandler {
 
   async setHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const channel = options.getChannel(MsgLogOptionName.Channel);
-    if (!channel) {
-      throw new Error("missing channel");
-    }
+    const channel = interaction.options.getChannel(
+      MsgLogOptionName.Channel,
+      true
+    );
 
     await ctx.sushiiAPI.sdk.updateGuildConfig({
-      id: interaction.guild_id,
+      id: interaction.guildId,
       patch: {
         logMsg: channel.id,
         logMsgEnabled: true,
       },
     });
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle("Message log updated")
@@ -188,24 +186,24 @@ export default class MessageLogCommand extends SlashCommandHandler {
 
   async ignoreChannelHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const channel = options.getChannel(MsgLogOptionName.Channel);
-    if (!channel) {
-      throw new Error("missing channel");
-    }
+    const channel = interaction.options.getChannel(
+      MsgLogOptionName.Channel,
+      true
+    );
 
     const blockType =
-      options.getString(MsgLogOptionName.BlockType) || MsgLogBlockType.All;
+      interaction.options.getString(MsgLogOptionName.BlockType) ||
+      MsgLogBlockType.All;
 
     await ctx.sushiiAPI.sdk.upsertMsgLogBlock({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       channelId: channel.id,
       blockType: blockType as MsgLogBlockType,
     });
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle("Added new message log ignore")
@@ -222,10 +220,10 @@ export default class MessageLogCommand extends SlashCommandHandler {
 
   async ignoreListHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
     const ignoredChannels = await ctx.sushiiAPI.sdk.getMsgLogBlocks({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
     });
 
     const ignoredChannelsStr =
@@ -233,7 +231,7 @@ export default class MessageLogCommand extends SlashCommandHandler {
         .map((c) => `<#${c.channelId}> - ${blockTypeToString(c.blockType)}`)
         .join("\n") || "No channels are ignored";
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle("Ignored Channels - Message Log")
@@ -249,20 +247,19 @@ export default class MessageLogCommand extends SlashCommandHandler {
 
   async unignoreChannelHandler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: CommandInteractionOptionResolver
+    interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const channel = options.getChannel(MsgLogOptionName.Channel);
-    if (!channel) {
-      throw new Error("missing channel");
-    }
+    const channel = interaction.options.getChannel(
+      MsgLogOptionName.Channel,
+      true
+    );
 
     await ctx.sushiiAPI.sdk.deleteMsgLogBlock({
       channelId: channel.id,
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
     });
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle("Channel message logs re-enabled")

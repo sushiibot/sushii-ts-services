@@ -1,4 +1,4 @@
-import { EmbedBuilder } from "@discordjs/builders";
+import { EmbedBuilder } from "discord.js";
 import dayjs from "dayjs";
 import { t } from "i18next";
 import { GetUserModLogHistoryQuery } from "../../../generated/graphql";

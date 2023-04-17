@@ -1,15 +1,13 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
 import {
-  APIChatInputApplicationCommandGuildInteraction,
+  SlashCommandBuilder,
   PermissionFlagsBits,
-} from "discord-api-types/v10";
+  ChatInputCommandInteraction,
+} from "discord.js";
 import Context from "../../model/context";
-import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
 import {
   getErrorMessage,
   interactionReplyErrorMessage,
-  interactionReplyErrorPermission,
 } from "../responses/error";
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
@@ -18,8 +16,6 @@ import { reasonOption, usersOption } from "./options";
 
 export default class WarnCommand extends SlashCommandHandler {
   serverOnly = true;
-
-  requiredBotPermissions = PermissionFlagsBits.BanMembers.toString();
 
   command = new SlashCommandBuilder()
     .setName("warn")
@@ -34,16 +30,10 @@ export default class WarnCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const hasBanPerms = hasPermission(
-      interaction.member.permissions,
-      PermissionFlagsBits.BanMembers
-    );
-    if (!hasBanPerms) {
-      await interactionReplyErrorPermission(ctx, interaction, "Ban Members");
-
-      return;
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Not in cached guild");
     }
 
     const data = new ModActionData(interaction);
@@ -54,21 +44,17 @@ export default class WarnCommand extends SlashCommandHandler {
       return;
     }
 
-    const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
-    ackRes.unwrap();
+    await interaction.deferReply();
 
     const res = await executeAction(ctx, interaction, data, ActionType.Warn);
     if (res.err) {
-      await ctx.REST.interactionEditOriginal(
-        interaction,
-        getErrorMessage("Error", res.val.message)
-      );
+      await interaction.editReply(getErrorMessage("Error", res.val.message));
 
       return;
     }
 
-    await ctx.REST.interactionEditOriginal(interaction, {
-      embeds: [res.val.toJSON()],
+    await interaction.editReply({
+      embeds: [res.val],
     });
   }
 }

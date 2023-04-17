@@ -1,13 +1,13 @@
-import { EmbedBuilder } from "@discordjs/builders";
-import dayjs from "dayjs";
 import {
-  APIChatInputApplicationCommandGuildInteraction,
-  APIMessage,
-  APIUser,
+  EmbedBuilder,
   RESTJSONErrorCodes,
-} from "discord-api-types/v10";
+  ChatInputCommandInteraction,
+  Message,
+  User,
+  DiscordAPIError,
+} from "discord.js";
+import dayjs from "dayjs";
 import { Err, Ok, Result } from "ts-results";
-import { GetRedisGuildQuery } from "../../generated/graphql";
 import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -100,172 +100,141 @@ function buildResponseEmbed(
 
 async function execActionUser(
   ctx: Context,
-  interaction: APIChatInputApplicationCommandGuildInteraction,
+  interaction: ChatInputCommandInteraction,
   data: ModActionData,
   target: ModActionTarget,
   actionType: ActionType
 ): Promise<Result<ModActionTarget, ActionError>> {
+  if (!interaction.inCachedGuild()) {
+    throw new Error("Interaction is not in guild");
+  }
+
   // Audit log header max 512 characters
   const auditLogReason = data.reason?.slice(0, 512);
 
-  switch (actionType) {
-    case ActionType.Kick: {
-      // Member already fetched earlier
-      if (!target.member) {
-        return Err({
-          target,
-          message: "User is not in the server",
-        });
-      }
-
-      const res = await ctx.REST.kickMember(
-        interaction.guild_id,
-        target.user.id,
-        auditLogReason
-      );
-
-      if (res.err) {
-        return Err({
-          target,
-          message: res.val.message,
-        });
-      }
-
-      break;
-    }
-    case ActionType.Ban: {
-      const res = await ctx.REST.banUser(
-        interaction.guild_id,
-        target.user.id,
-        auditLogReason,
-        data.deleteMessageDays
-      );
-
-      if (res.err) {
-        return Err({
-          target,
-          message: res.val.message,
-        });
-      }
-
-      break;
-    }
-    case ActionType.BanRemove: {
-      const res = await ctx.REST.unbanUser(
-        interaction.guild_id,
-        target.user.id,
-        auditLogReason
-      );
-
-      if (res.err) {
-        return Err({
-          target,
-          message: res.val.message,
-        });
-      }
-
-      break;
-    }
-    case ActionType.Timeout:
-    case ActionType.TimeoutAdjust: {
-      if (!target.member) {
-        return Err({
-          target,
-          message: "User is not in the server",
-        });
-      }
-
-      // Timeout and adjust are both same, just update timeout end time
-
-      const res = await ctx.REST.timeoutMember(
-        interaction.guild_id,
-        target.user.id,
-        data.communicationDisabledUntil().unwrap(),
-        auditLogReason
-      );
-
-      if (res.err) {
-        if (res.val.code === RESTJSONErrorCodes.MissingPermissions) {
+  try {
+    switch (actionType) {
+      case ActionType.Kick: {
+        // Member already fetched earlier
+        if (!target.member) {
           return Err({
             target,
-            message:
-              "I don't have permission to timeout this user, make sure I have the \
-`Timeout Members` permission or that my role is above the user you are trying to time out.",
+            message: "User is not in the server",
           });
         }
 
-        return Err({
-          target,
-          message: res.val.message,
-        });
-      }
+        await interaction.guild.members.kick(target.user.id, auditLogReason);
 
-      break;
+        break;
+      }
+      case ActionType.Ban: {
+        await interaction.guild.members.ban(target.user.id, {
+          reason: auditLogReason,
+          deleteMessageSeconds: (data.deleteMessageDays || 0) * 86400,
+        });
+
+        break;
+      }
+      case ActionType.BanRemove: {
+        await interaction.guild.members.unban(target.user.id, auditLogReason);
+
+        break;
+      }
+      case ActionType.Timeout:
+      case ActionType.TimeoutAdjust: {
+        if (!target.member) {
+          return Err({
+            target,
+            message: "User is not in the server",
+          });
+        }
+
+        // Timeout and adjust are both same, just update timeout end time
+        await interaction.guild.members.edit(target.user.id, {
+          communicationDisabledUntil: data
+            .communicationDisabledUntil()
+            .unwrap()
+            .toISOString(),
+          reason: auditLogReason,
+        });
+
+        break;
+      }
+      case ActionType.TimeoutRemove: {
+        if (!target.member) {
+          return Err({
+            target,
+            message: "User is not in the server",
+          });
+        }
+
+        await interaction.guild.members.edit(target.user.id, {
+          communicationDisabledUntil: null,
+          reason: auditLogReason,
+        });
+
+        break;
+      }
+      case ActionType.Warn:
+        if (!target.member) {
+          return Err({
+            target,
+            message: "User is not in the server",
+          });
+        }
+
+        // Nothing, only DM
+        break;
+      case ActionType.Note:
+        // Allow for non-members, send no DM
+
+        break;
+      case ActionType.Lookup:
+      case ActionType.History:
+        throw new Error(`unsupported action type ${actionType}`);
     }
-    case ActionType.TimeoutRemove: {
-      if (!target.member) {
+  } catch (err) {
+    if (err instanceof DiscordAPIError) {
+      if (err.code === RESTJSONErrorCodes.MissingPermissions) {
         return Err({
           target,
-          message: "User is not in the server",
+          message:
+            "I don't have permission to do this action, make sure I have the \
+`Ban Members` and`Timeout Members` permission or that my role is above the target user.",
         });
       }
 
-      const res = await ctx.REST.timeoutMember(
-        interaction.guild_id,
-        target.user.id,
-        null,
-        auditLogReason
-      );
-
-      if (res.err) {
-        return Err({
-          target,
-          message: res.val.message,
-        });
-      }
-
-      break;
+      return Err({
+        target,
+        message: err.message,
+      });
     }
-    case ActionType.Warn:
-      if (!target.member) {
-        return Err({
-          target,
-          message: "User is not in the server",
-        });
-      }
 
-      // Nothing, only DM
-      break;
-    case ActionType.Note:
-      // Allow for non-members, send no DM
-
-      break;
-    case ActionType.Lookup:
-    case ActionType.History:
-      throw new Error(`unsupported action type ${actionType}`);
+    throw err;
   }
 
   return Ok(target);
 }
 
 interface ExecuteActionUserResult {
-  user: APIUser;
+  user: User;
   dmSent: boolean;
   triedDMNonMember: boolean;
 }
 
 async function executeActionUser(
   ctx: Context,
-  interaction: APIChatInputApplicationCommandGuildInteraction,
+  interaction: ChatInputCommandInteraction<"cached">,
   data: ModActionData,
   target: ModActionTarget,
-  actionType: ActionType,
-  redisGuild: NonNullable<GetRedisGuildQuery["redisGuildByGuildId"]>
+  actionType: ActionType
 ): Promise<Result<ExecuteActionUserResult, ActionError>> {
+  if (!interaction.inGuild()) {
+    throw new Error("Not in guild");
+  }
+
   const hasPermsTargetingMember = await hasPermissionTargetingMember(
-    ctx,
     interaction,
-    redisGuild,
     target.user,
     target.member || undefined
   );
@@ -278,7 +247,7 @@ async function executeActionUser(
   }
 
   const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
-    guildId: interaction.guild_id,
+    guildId: interaction.guildId,
   });
 
   if (!nextCaseId) {
@@ -290,7 +259,7 @@ async function executeActionUser(
 
   await ctx.sushiiAPI.sdk.createModLog({
     modLog: {
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       caseId: nextCaseId,
       action: actionType,
       pending: true,
@@ -310,12 +279,12 @@ async function executeActionUser(
 
   const triedDMNonMember = data.shouldDM(actionType) && target.member === null;
 
-  let dmRes: Result<APIMessage, string> | null = null;
+  let dmRes: Result<Message, string> | null = null;
   // DM before for ban and send dm
   if (actionType === ActionType.Ban && shouldDM) {
     dmRes = await sendModActionDM(
       ctx,
-      interaction.guild_id,
+      interaction,
       data,
       target.user,
       actionType
@@ -330,7 +299,7 @@ async function executeActionUser(
   if (actionType !== ActionType.Ban && shouldDM) {
     dmRes = await sendModActionDM(
       ctx,
-      interaction.guild_id,
+      interaction,
       data,
       target.user,
       actionType
@@ -342,16 +311,14 @@ async function executeActionUser(
     // Delete DM reason if it was sent
     let deleteDMPromise;
     if (dmRes && dmRes.ok) {
-      deleteDMPromise = ctx.REST.deleteChannelMessage(
-        dmRes.val.channel_id,
-        dmRes.val.id
-      );
+      // No need to catch err here, not awaited
+      deleteDMPromise = dmRes.unwrap().delete();
     }
 
     const [resDeleteModLog, resDeleteDM] = await Promise.allSettled([
       ctx.sushiiAPI.sdk.deleteModLog({
         caseId: nextCaseId,
-        guildId: interaction.guild_id,
+        guildId: interaction.guildId,
       }),
       deleteDMPromise,
     ]);
@@ -376,16 +343,12 @@ async function executeActionUser(
 
 export default async function executeAction(
   ctx: Context,
-  interaction: APIChatInputApplicationCommandGuildInteraction,
+  interaction: ChatInputCommandInteraction<"cached">,
   data: ModActionData,
   actionType: ActionType
 ): Promise<Result<EmbedBuilder, Error>> {
-  const redisGuild = await ctx.sushiiAPI.sdk.getRedisGuild({
-    guild_id: interaction.guild_id,
-  });
-
-  if (!redisGuild.redisGuildByGuildId) {
-    return Err(new Error("Failed to get redis guild"));
+  if (!interaction.guildId) {
+    return Err(new Error("Guild ID is missing"));
   }
 
   let msg = "";
@@ -401,8 +364,7 @@ export default async function executeAction(
       interaction,
       data,
       target,
-      actionType,
-      redisGuild.redisGuildByGuildId
+      actionType
     );
 
     if (res.err) {

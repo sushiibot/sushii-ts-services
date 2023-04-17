@@ -1,0 +1,228 @@
+import {
+  Client,
+  ClientEvents,
+  Events,
+  GatewayDispatchEvents,
+  GatewayDispatchPayload,
+} from "discord.js";
+import * as Sentry from "@sentry/node";
+import logger from "./logger";
+import InteractionClient from "./client";
+import { EventHandlerFn } from "./events/EventHandler";
+import Context from "./model/context";
+import legacyModLogNotifierHandler from "./events/GuildBanAdd/LegacyModLogNotifier";
+import modLogHandler from "./events/ModLogHandler";
+import { msgLogHandler } from "./events/msglog/MsgLogHandler";
+import msgLogCacheHandler from "./events/msglog/MessageCacheHandler";
+import levelHandler from "./events/LevelHandler";
+import webhookLog from "./webhookLogger";
+import Color from "./utils/colors";
+import { StatName, updateStat } from "./tasks/StatsTask";
+
+async function handleEvent<K extends keyof ClientEvents>(
+  ctx: Context,
+  eventType: K,
+  handlers: EventHandlerFn<K>[],
+  ...args: ClientEvents[K]
+): Promise<void> {
+  const results = await Promise.allSettled(
+    handlers.map((h) => h(ctx, ...args))
+  );
+
+  for (const result of results) {
+    if (result.status === "rejected") {
+      Sentry.captureException(result.reason, {
+        tags: {
+          type: "event",
+          event: eventType,
+        },
+      });
+
+      logger.error(
+        { err: result.reason },
+        "error handling event %s",
+        eventType
+      );
+    }
+  }
+}
+
+async function runParallel(
+  eventType: string,
+  promises: Promise<void>[]
+): Promise<void> {
+  const results = await Promise.allSettled(promises);
+
+  for (const result of results) {
+    if (result.status === "rejected") {
+      Sentry.captureException(result.reason, {
+        tags: {
+          type: "event",
+          event: eventType,
+        },
+      });
+
+      logger.error(
+        { err: result.reason },
+        "error handling event %s",
+        eventType
+      );
+    }
+  }
+}
+
+export default function registerEventHandlers(
+  ctx: Context,
+  client: Client,
+  interactionHandler: InteractionClient
+): void {
+  client.once(Events.ClientReady, async (c) => {
+    logger.info(`Ready! Logged in as ${c.user.tag}`);
+
+    await webhookLog("Ready", `Logged in as ${c.user.tag}`, Color.Success);
+  });
+
+  client.on(Events.ShardDisconnect, async (closeEvent, shardId) => {
+    logger.info(
+      {
+        shardId,
+        event: closeEvent,
+      },
+      "Shard disconnected"
+    );
+
+    await webhookLog(`[Shard ${shardId}] Disconnected`, "", Color.Warning);
+  });
+
+  client.on(Events.ShardError, async (error, shardId) => {
+    logger.error(
+      {
+        shardId,
+        error,
+      },
+      "Shard error"
+    );
+
+    await webhookLog(`[Shard ${shardId}] Error`, error.message, Color.Error);
+  });
+
+  client.on(Events.ShardReconnecting, async (shardId) => {
+    logger.info(
+      {
+        shardId,
+      },
+      "Shard reconnecting"
+    );
+
+    await webhookLog(`[Shard ${shardId}] Reconnecting`, "", Color.Warning);
+  });
+
+  client.on(Events.ShardResume, async (shardId, replayedEvents) => {
+    logger.info(
+      {
+        shardId,
+        replayedEvents,
+      },
+      "Shard resumed"
+    );
+
+    await webhookLog(
+      `[Shard ${shardId}] Resume`,
+      `replayed ${replayedEvents} events`,
+      Color.Success
+    );
+  });
+
+  client.on(Events.GuildCreate, async (guild) => {
+    logger.info(
+      {
+        guildId: guild.id,
+      },
+      "Joined guild %s",
+      guild.name
+    );
+
+    await webhookLog(
+      "Joined guild",
+      `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
+      Color.Info
+    );
+  });
+
+  client.on(Events.GuildDelete, async (guild) => {
+    logger.info(
+      {
+        guildId: guild.id,
+      },
+      "Removed guild %s",
+      guild.name
+    );
+
+    await webhookLog(
+      "Left guild",
+      `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
+      Color.Error
+    );
+  });
+
+  client.on(Events.InteractionCreate, async (interaction) => {
+    try {
+      interactionHandler.handleAPIInteraction(interaction);
+
+      await updateStat(StatName.CommandCount, 1, "add");
+    } catch (err) {
+      logger.error(
+        {
+          err,
+          interaction,
+        },
+        "Error handling interaction"
+      );
+    }
+  });
+
+  client.on(Events.GuildAuditLogEntryCreate, async (entry, guild) => {
+    handleEvent(
+      ctx,
+      Events.GuildAuditLogEntryCreate,
+      [modLogHandler],
+      entry,
+      guild
+    );
+  });
+
+  client.on(Events.GuildBanAdd, async (guildBan) => {
+    handleEvent(
+      ctx,
+      Events.GuildBanAdd,
+      [legacyModLogNotifierHandler],
+      guildBan
+    );
+  });
+
+  client.on(Events.MessageCreate, async (msg) => {
+    handleEvent(ctx, Events.MessageCreate, [levelHandler], msg);
+  });
+
+  client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
+    if (event.t === GatewayDispatchEvents.MessageDelete) {
+      await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
+    }
+
+    if (event.t === GatewayDispatchEvents.MessageDeleteBulk) {
+      await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
+    }
+
+    if (event.t === GatewayDispatchEvents.MessageUpdate) {
+      // Log first to keep old message, then cache after for new update.
+      // Fine to await since each event is a specific type, no other types that
+      // this blocks.
+      await msgLogHandler(ctx, event.t, event.d);
+      await msgLogCacheHandler(ctx, event.t, event.d);
+    }
+
+    if (event.t === GatewayDispatchEvents.MessageCreate) {
+      await runParallel(event.t, [msgLogCacheHandler(ctx, event.t, event.d)]);
+    }
+  });
+}

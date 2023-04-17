@@ -1,15 +1,13 @@
 import dayjs from "dayjs";
 import {
-  APIApplicationCommandAutocompleteInteraction,
+  AutocompleteFocusedOption,
+  AutocompleteInteraction,
   APIApplicationCommandOptionChoice,
   ApplicationCommandOptionType,
-  InteractionResponseType,
-} from "discord-api-types/v10";
+} from "discord.js";
 import Context from "../../model/context";
 import { getDurationFromNow } from "../../utils/getDuration";
-import getInvokerUser from "../../utils/interactions";
 import { AutocompleteHandler } from "../handlers";
-import { AutocompleteOption } from "../handlers/AutocompleteHandler";
 
 export default class ReminderDeleteAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = "reminder.delete";
@@ -17,17 +15,15 @@ export default class ReminderDeleteAutocomplete extends AutocompleteHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIApplicationCommandAutocompleteInteraction,
-    option: AutocompleteOption
+    interaction: AutocompleteInteraction,
+    option: AutocompleteFocusedOption
   ): Promise<void> {
     if (option.type !== ApplicationCommandOptionType.String) {
       throw new Error("Option type must be string.");
     }
 
-    const invoker = getInvokerUser(interaction);
-
     const matching = await ctx.sushiiAPI.sdk.getUserReminders({
-      userId: invoker.id,
+      userId: interaction.user.id,
     });
 
     const choices: APIApplicationCommandOptionChoice[] | undefined =
@@ -42,11 +38,6 @@ export default class ReminderDeleteAutocomplete extends AutocompleteHandler {
           value: s.setAt,
         }));
 
-    await ctx.REST.interactionCallback(interaction, {
-      type: InteractionResponseType.ApplicationCommandAutocompleteResult,
-      data: {
-        choices,
-      },
-    });
+    await interaction.respond(choices || []);
   }
 }

@@ -1,5 +1,4 @@
-import { EmbedBuilder, TimestampStyles } from "@discordjs/builders";
-import { APIEmbedField, APIUser } from "discord-api-types/v10";
+import { APIEmbedField, EmbedBuilder, TimestampStyles, User } from "discord.js";
 import path from "path";
 import { ModLog } from "../generated/generic";
 import { ActionType } from "../interactions/moderation/ActionType";
@@ -11,23 +10,26 @@ import { TimeoutChange } from "../types/TimeoutChange";
 export default async function buildModLogEmbed(
   ctx: Context,
   actionType: ActionType,
-  targetUser: APIUser,
+  targetUser: User,
   modCase: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">,
   timeoutChange?: TimeoutChange
 ): Promise<EmbedBuilder> {
   let executorUser;
   if (modCase.executorId) {
-    const res = await ctx.REST.getUser(modCase.executorId);
-    if (res.ok) {
-      executorUser = res.val;
-    } else {
-      logger.warn(res.val, "Failed to fetch mod log executor user");
+    try {
+      executorUser = await ctx.client.users.fetch(modCase.executorId);
+    } catch (err) {
+      logger.warn(err, "Failed to fetch mod log executor user");
     }
   }
 
   if (!executorUser) {
     // sushii as default, or if executor failed to fetch
-    executorUser = await ctx.getCurrentUser();
+    executorUser = ctx.client.user;
+  }
+
+  if (!executorUser) {
+    throw new Error("Missing executor user for mod log embed");
   }
 
   const fields: APIEmbedField[] = [];
@@ -117,7 +119,7 @@ export default async function buildModLogEmbed(
   return new EmbedBuilder()
     .setAuthor({
       name: `${executorUser.username}#${executorUser.discriminator}`,
-      iconURL: ctx.CDN.userFaceURL(executorUser),
+      iconURL: targetUser.displayAvatarURL(),
     })
     .setFields(fields)
     .setColor(color)

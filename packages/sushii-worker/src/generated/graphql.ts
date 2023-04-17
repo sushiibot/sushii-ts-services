@@ -15,24 +15,11 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A floating point number that requires more precision than IEEE 754 binary 64 */
   BigFloat: any;
-  /**
-   * A signed eight-byte integer. The upper big integer values are greater than the
-   * max value for a JavaScript number. Therefore all big integers will be output as
-   * strings and not numbers.
-   */
   BigInt: string;
-  /** A location in a connection that can be used for resuming pagination. */
   Cursor: any;
-  /**
-   * A point in time as described by the [ISO
-   * 8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
-   */
   Datetime: string;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { [key: string]: any };
-  /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: any;
 };
 
@@ -23601,13 +23588,6 @@ export type GetUserBansQueryVariables = Exact<{
 
 export type GetUserBansQuery = { __typename?: 'Query', allGuildBans?: { __typename?: 'GuildBansConnection', totalCount: number, nodes: Array<{ __typename?: 'GuildBan', guildId: string, nodeId: string, userId: string }> } | null };
 
-export type GetRedisGuildQueryVariables = Exact<{
-  guild_id: Scalars['BigInt'];
-}>;
-
-
-export type GetRedisGuildQuery = { __typename?: 'Query', redisGuildByGuildId?: { __typename?: 'RedisGuild', afkChannelId?: string | null, afkTimeout: number, applicationId?: string | null, banner?: string | null, channels?: Array<string | null> | null, defaultMessageNotifications?: number | null, description?: string | null, discoverySplash?: string | null, explicitContentFilter?: number | null, features?: Array<string | null> | null, icon?: string | null, id: string, joinedAt?: string | null, large?: boolean | null, maxMembers?: number | null, maxVideoChannelUsers?: number | null, memberCount?: number | null, members?: Array<string | null> | null, mfaLevel?: number | null, name: string, nsfwLevel: number, ownerId: string, preferredLocale?: string | null, premiumSubscriptionCount?: number | null, premiumTier: number, presences?: Array<string | null> | null, rulesChannelId?: string | null, splash?: string | null, systemChannelFlags?: number | null, systemChannelId?: string | null, unavailable?: boolean | null, vanityUrlCode?: string | null, verificationLevel?: number | null, voiceStates?: Array<string | null> | null, roles: Array<{ __typename?: 'RedisGuildRole', id: string, color: number, hoist: boolean, icon?: string | null, managed: boolean, mentionable: boolean, position: number, name: string, permissions: string, unicode_emoji?: string | null }> } | null };
-
 export type GuildConfigByIdQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
 }>;
@@ -24326,58 +24306,6 @@ export const GetUserBansDocument = gql`
   }
 }
     ${BanDataFragmentDoc}`;
-export const GetRedisGuildDocument = gql`
-    query getRedisGuild($guild_id: BigInt!) {
-  redisGuildByGuildId(guild_id: $guild_id) {
-    afkChannelId
-    afkTimeout
-    applicationId
-    banner
-    channels
-    defaultMessageNotifications
-    description
-    discoverySplash
-    explicitContentFilter
-    features
-    icon
-    id
-    joinedAt
-    large
-    maxMembers
-    maxVideoChannelUsers
-    memberCount
-    members
-    mfaLevel
-    name
-    nsfwLevel
-    ownerId
-    preferredLocale
-    premiumSubscriptionCount
-    premiumTier
-    presences
-    roles {
-      id
-      color
-      hoist
-      icon
-      managed
-      mentionable
-      position
-      name
-      permissions
-      unicode_emoji
-    }
-    rulesChannelId
-    splash
-    systemChannelFlags
-    systemChannelId
-    unavailable
-    vanityUrlCode
-    verificationLevel
-    voiceStates
-  }
-}
-    `;
 export const GuildConfigByIdDocument = gql`
     query guildConfigByID($guildId: BigInt!) {
   guildConfigById(id: $guildId) {
@@ -25034,9 +24962,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   return {
     getUserBans(variables: GetUserBansQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetUserBansQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetUserBansQuery>(GetUserBansDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getUserBans', 'query');
-    },
-    getRedisGuild(variables: GetRedisGuildQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetRedisGuildQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetRedisGuildQuery>(GetRedisGuildDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getRedisGuild', 'query');
     },
     guildConfigByID(variables: GuildConfigByIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GuildConfigByIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GuildConfigByIdQuery>(GuildConfigByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'guildConfigByID', 'query');

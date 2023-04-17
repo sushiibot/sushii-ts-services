@@ -1,15 +1,15 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
 import {
-  APIChatInputApplicationCommandGuildInteraction,
+  SlashCommandBuilder,
   PermissionFlagsBits,
-} from "discord-api-types/v10";
+  ChatInputCommandInteraction,
+  PermissionsBitField,
+} from "discord.js";
+
 import Context from "../../model/context";
-import { hasPermission } from "../../utils/permissions";
 import { SlashCommandHandler } from "../handlers";
 import {
   getErrorMessage,
   interactionReplyErrorMessage,
-  interactionReplyErrorPermission,
 } from "../responses/error";
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
@@ -19,7 +19,7 @@ import { reasonOption, usersOption } from "./options";
 export default class UnbanCommand extends SlashCommandHandler {
   serverOnly = true;
 
-  requiredBotPermissions = PermissionFlagsBits.BanMembers.toString();
+  requiredBotPermissions = new PermissionsBitField().add("BanMembers");
 
   command = new SlashCommandBuilder()
     .setName("unban")
@@ -34,16 +34,10 @@ export default class UnbanCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const hasBanPerms = hasPermission(
-      interaction.member.permissions,
-      PermissionFlagsBits.BanMembers
-    );
-    if (!hasBanPerms) {
-      await interactionReplyErrorPermission(ctx, interaction, "Ban Members");
-
-      return;
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Not in cached guild");
     }
 
     const data = new ModActionData(interaction);
@@ -58,15 +52,13 @@ export default class UnbanCommand extends SlashCommandHandler {
       return;
     }
 
-    const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
-    ackRes.unwrap();
+    await interaction.deferReply();
 
     let res;
     try {
       res = await executeAction(ctx, interaction, data, ActionType.BanRemove);
     } catch (err) {
-      await ctx.REST.interactionEditOriginal(
-        interaction,
+      await interaction.editReply(
         getErrorMessage("Error", "hmm something failed")
       );
 
@@ -74,16 +66,13 @@ export default class UnbanCommand extends SlashCommandHandler {
     }
 
     if (res.err) {
-      await ctx.REST.interactionEditOriginal(
-        interaction,
-        getErrorMessage("Error", res.val.message)
-      );
+      await interaction.editReply(getErrorMessage("Error", res.val.message));
 
       return;
     }
 
-    await ctx.REST.interactionEditOriginal(interaction, {
-      embeds: [res.val.toJSON()],
+    await interaction.editReply({
+      embeds: [res.val],
     });
   }
 }

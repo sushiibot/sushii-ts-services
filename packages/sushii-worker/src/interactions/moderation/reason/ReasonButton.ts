@@ -1,10 +1,9 @@
-import { ActionRowBuilder, TextInputBuilder } from "@discordjs/builders";
-
-import { isGuildInteraction } from "discord-api-types/utils/v10";
 import {
-  APIMessageComponentButtonInteraction,
-  TextInputStyle,
-} from "discord-api-types/v10";
+  ActionRowBuilder,
+  TextInputBuilder,
+  ButtonInteraction,
+} from "discord.js";
+import { TextInputStyle } from "discord-api-types/v10";
 import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";
@@ -16,15 +15,13 @@ export default class ModLogReasonButtonHandler extends ButtonHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
     ctx: Context,
-    interaction: APIMessageComponentButtonInteraction
+    interaction: ButtonInteraction
   ): Promise<void> {
-    if (!isGuildInteraction(interaction)) {
+    if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }
 
-    const customIDMatch = customIds.modLogReason.match(
-      interaction.data.custom_id
-    );
+    const customIDMatch = customIds.modLogReason.match(interaction.customId);
     if (!customIDMatch) {
       throw new Error("No mod log reason match");
     }
@@ -41,9 +38,9 @@ export default class ModLogReasonButtonHandler extends ButtonHandler {
       textInput
     );
 
-    await ctx.REST.interactionReplyModal(interaction, {
+    interaction.showModal({
       title: `Case #${caseId}`,
-      custom_id: interaction.data.custom_id,
+      custom_id: interaction.customId,
       components: [row.toJSON()],
     });
   }

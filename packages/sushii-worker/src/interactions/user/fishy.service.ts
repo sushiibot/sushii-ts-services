@@ -1,8 +1,5 @@
 import dayjs from "dayjs";
-import {
-  APIChatInputApplicationCommandInteraction,
-  APIUser,
-} from "discord-api-types/v10";
+import { User } from "discord.js";
 import Context from "../../model/context";
 import logger from "../../logger";
 
@@ -232,9 +229,8 @@ export interface FishyResponse {
 
 export async function fishyForUser(
   ctx: Context,
-  _interaction: APIChatInputApplicationCommandInteraction,
-  invoker: APIUser,
-  target: APIUser
+  invoker: User,
+  target: User
 ): Promise<FishyResponse | dayjs.Dayjs> {
   const dbTargetUser = await ctx.sushiiAPI.getOrCreateUser(target.id);
 

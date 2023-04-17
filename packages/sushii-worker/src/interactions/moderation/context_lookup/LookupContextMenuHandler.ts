@@ -2,18 +2,15 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ContextMenuCommandBuilder,
-} from "@discordjs/builders";
-import { isGuildInteraction } from "discord-api-types/utils/v10";
+  ContextMenuCommandInteraction,
+} from "discord.js";
 import {
-  APIContextMenuInteraction,
   ApplicationCommandType,
   ButtonStyle,
   MessageFlags,
   PermissionFlagsBits,
 } from "discord-api-types/v10";
 import Context from "../../../model/context";
-import memberIsTimedOut from "../../../utils/member";
-import { hasPermission } from "../../../utils/permissions";
 import customIds from "../../customIds";
 import ContextMenuHandler from "../../handlers/ContextMenuHandler";
 import getUserinfoEmbed from "../../user/userinfo.service";
@@ -30,36 +27,26 @@ export default class UserInfoHandler extends ContextMenuHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIContextMenuInteraction
+    interaction: ContextMenuCommandInteraction
   ): Promise<void> {
-    if (!isGuildInteraction(interaction)) {
+    if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }
 
-    if ("messages" in interaction.data.resolved) {
-      throw new Error(
-        "Message should not be resolved: not a user application command"
-      );
+    if (!interaction.isUserContextMenuCommand()) {
+      throw new Error("Not a user context menu command");
     }
 
-    const targetID = interaction.data.target_id;
-    const targetUser = interaction.data.resolved.users[targetID];
-    const targetMember = interaction.data.resolved.members?.[targetID];
+    const { targetUser, targetMember } = interaction;
 
-    const isModerator = hasPermission(
-      interaction.member.permissions,
+    const isModerator = interaction.memberPermissions.has(
       PermissionFlagsBits.BanMembers
     );
 
-    const embed = await getUserinfoEmbed(
-      ctx,
-      interaction,
-      targetUser,
-      targetMember
-    );
+    const embed = await getUserinfoEmbed(targetUser, targetMember);
 
     if (!isModerator) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [embed],
         flags: MessageFlags.Ephemeral,
       });
@@ -67,13 +54,13 @@ export default class UserInfoHandler extends ContextMenuHandler {
       return;
     }
 
-    const isMuted = memberIsTimedOut(targetMember);
+    const isMuted = targetMember.isCommunicationDisabled();
 
     const banButton = new ButtonBuilder()
       .setCustomId(
         customIds.lookupButton.compile({
           actionType: ActionType.Ban,
-          targetId: targetID,
+          targetId: targetUser.id,
         })
       )
       .setLabel("Ban")
@@ -86,7 +73,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
       .setCustomId(
         customIds.lookupButton.compile({
           actionType: ActionType.Kick,
-          targetId: targetID,
+          targetId: targetUser.id,
         })
       )
       .setLabel("Kick")
@@ -101,7 +88,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
           .setCustomId(
             customIds.lookupButton.compile({
               actionType: ActionType.TimeoutRemove,
-              targetId: targetID,
+              targetId: targetUser.id,
             })
           )
           .setLabel("Unmute")
@@ -113,7 +100,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
           .setCustomId(
             customIds.lookupButton.compile({
               actionType: ActionType.Timeout,
-              targetId: targetID,
+              targetId: targetUser.id,
             })
           )
           .setLabel("Mute")
@@ -126,7 +113,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
       .setCustomId(
         customIds.lookupButton.compile({
           actionType: ActionType.Warn,
-          targetId: targetID,
+          targetId: targetUser.id,
         })
       )
       .setLabel("Warn")
@@ -146,7 +133,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
       .setCustomId(
         customIds.lookupButton.compile({
           actionType: ActionType.History,
-          targetId: targetID,
+          targetId: targetUser.id,
         })
       )
       .setLabel("History")
@@ -156,7 +143,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
       .setCustomId(
         customIds.lookupButton.compile({
           actionType: ActionType.Lookup,
-          targetId: targetID,
+          targetId: targetUser.id,
         })
       )
       .setLabel("Lookup")
@@ -167,7 +154,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
       lookupButton,
     ]);
 
-    await ctx.REST.interactionReply(interaction, {
+    await interaction.reply({
       embeds: [embed],
       flags: MessageFlags.Ephemeral,
       components: [topRow.toJSON(), secondRow.toJSON()],

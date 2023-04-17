@@ -1,28 +1,18 @@
-import { EmbedBuilder } from "@discordjs/builders";
-import dayjs from "dayjs";
-import {
-  APIApplicationCommandInteraction,
-  APIEmbed,
-  APIGuildMember,
-  APIInteractionDataResolvedGuildMember,
-  APIUser,
-} from "discord-api-types/v10";
-import Context from "../../model/context";
+import { EmbedBuilder, GuildMember, User } from "discord.js";
+import { APIEmbed } from "discord-api-types/v10";
 import Color from "../../utils/colors";
 import { getCreatedTimestampSeconds } from "../../utils/snowflake";
 
 export default async function getUserinfoEmbed(
-  ctx: Context,
-  _interaction: APIApplicationCommandInteraction,
-  user: APIUser,
-  member: APIGuildMember | APIInteractionDataResolvedGuildMember | undefined
+  user: User,
+  member: GuildMember | undefined
 ): Promise<APIEmbed> {
   let authorName = user.username;
-  if (member?.nick) {
-    authorName = `${user.username} ~ ${member.nick}`;
+  if (member?.nickname) {
+    authorName = `${user.username} ~ ${member.nickname}`;
   }
 
-  const faceURL = ctx.CDN.userFaceURL(user);
+  const faceURL = member?.displayAvatarURL() || user.displayAvatarURL();
 
   let embed = new EmbedBuilder()
     .setAuthor({
@@ -31,8 +21,7 @@ export default async function getUserinfoEmbed(
       url: faceURL,
     })
     .setThumbnail(faceURL)
-    // Fine if they don't have banner
-    .setImage(ctx.CDN.userBannerURL(user))
+    .setImage(user.bannerURL() || null)
     .setFooter({
       text: `ID: ${user.id}`,
     })
@@ -49,14 +38,14 @@ export default async function getUserinfoEmbed(
   ]);
 
   if (member) {
-    const joinedTimestamp = dayjs(member.joined_at);
+    embed = embed.setColor(member.displayColor);
 
     // 1024 char limit, 40 roles * 25 length each mention = 1000
-    const trimmedRoles = member.roles.slice(0, 40);
-    let rolesStr = trimmedRoles.map((id) => `<@&${id}>`).join(" ");
+    const trimmedRoles = [...member.roles.cache.values()].slice(0, 40);
+    let rolesStr = trimmedRoles.map((role) => role.toString()).join(" ");
 
-    if (member.roles.length > 40) {
-      rolesStr += ` and ${member.roles.length - 40} more roles...`;
+    if (member.roles.cache.size > 40) {
+      rolesStr += ` and ${member.roles.cache.size - 40} more roles...`;
     }
 
     embed = embed.addFields([
@@ -66,17 +55,15 @@ export default async function getUserinfoEmbed(
       },
       {
         name: "Joined Server",
-        value: `<t:${joinedTimestamp.unix()}:F> (<t:${joinedTimestamp.unix()}:R>)`,
+        value: `<t:${member.joinedTimestamp}:F> (<t:${member.joinedTimestamp}:R>)`,
       },
     ]);
 
-    if (member.premium_since) {
-      const premiumSinceTimestamp = dayjs(member.premium_since);
-
+    if (member.premiumSinceTimestamp) {
       embed = embed.addFields([
         {
           name: "Boosting Since",
-          value: `<t:${premiumSinceTimestamp.unix()}:F> (<t:${premiumSinceTimestamp.unix()}:R>)`,
+          value: `<t:${member.premiumSinceTimestamp}:F> (<t:${member.premiumSinceTimestamp}:R>)`,
         },
       ]);
     }

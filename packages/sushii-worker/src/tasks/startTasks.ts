@@ -3,9 +3,10 @@ import * as Sentry from "@sentry/node";
 import logger from "../logger";
 import Context from "../model/context";
 import deleteOldMessages from "./DeleteOldMessagesTask";
+import updateStats from "./StatsTask";
 
 export default async function startTasks(ctx: Context): Promise<void> {
-  const jobs = [deleteOldMessages];
+  const jobs = [deleteOldMessages, updateStats];
 
   logger.info("Starting background tasks");
 

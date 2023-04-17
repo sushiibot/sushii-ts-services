@@ -1,11 +1,7 @@
-import {
-  APIApplicationCommandAutocompleteGuildInteraction,
-  ApplicationCommandOptionType,
-  InteractionResponseType,
-} from "discord-api-types/v10";
+import { ApplicationCommandOptionType } from "discord-api-types/v10";
+import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import Context from "../../model/context";
 import { AutocompleteHandler } from "../handlers";
-import { AutocompleteOption } from "../handlers/AutocompleteHandler";
 
 export default class RoleMenuAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [
@@ -22,15 +18,19 @@ export default class RoleMenuAutocomplete extends AutocompleteHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIApplicationCommandAutocompleteGuildInteraction,
-    option: AutocompleteOption
+    interaction: AutocompleteInteraction,
+    option: AutocompleteFocusedOption
   ): Promise<void> {
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Guild missing");
+    }
+
     if (option.type !== ApplicationCommandOptionType.String) {
       throw new Error("Option type must be string.");
     }
 
     const matching = await ctx.sushiiAPI.sdk.searchRoleMenuStartingWith({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       menuNameStartsWith: option.value,
     });
 
@@ -39,11 +39,6 @@ export default class RoleMenuAutocomplete extends AutocompleteHandler {
       value: s.menuName,
     }));
 
-    await ctx.REST.interactionCallback(interaction, {
-      type: InteractionResponseType.ApplicationCommandAutocompleteResult,
-      data: {
-        choices,
-      },
-    });
+    await interaction.respond(choices || []);
   }
 }

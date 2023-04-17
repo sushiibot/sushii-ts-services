@@ -1,5 +1,7 @@
-import { APIAuditLogChange } from "discord-api-types/v10";
-import { APIAuditLogChangeKeyCommunicationDisabledUntil } from "discord.js";
+import {
+  APIAuditLogChangeKeyCommunicationDisabledUntil,
+  AuditLogChange,
+} from "discord.js";
 
 /**
  * This is a type guard to check if the APIAuditLogChange is of a specific type.
@@ -9,16 +11,13 @@ import { APIAuditLogChangeKeyCommunicationDisabledUntil } from "discord.js";
  * @param val
  * @returns
  */
-export function isAPIAuditLogChange<V extends APIAuditLogChange["key"]>(
-  val: V
-) {
-  return (
-    obj: APIAuditLogChange
-  ): obj is Extract<APIAuditLogChange, { key: V }> => obj.key === val;
+export function isAPIAuditLogChange<V extends AuditLogChange["key"]>(val: V) {
+  return (obj: AuditLogChange): obj is Extract<AuditLogChange, { key: V }> =>
+    obj.key === val;
 }
 
 export function findTimeoutChange(
-  changes?: APIAuditLogChange[]
+  changes?: AuditLogChange[]
 ): APIAuditLogChangeKeyCommunicationDisabledUntil | undefined {
   return changes?.find(isAPIAuditLogChange("communication_disabled_until"));
 }

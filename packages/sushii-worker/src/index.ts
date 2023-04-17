@@ -1,27 +1,22 @@
 import "./dayjs";
-import dotenv from "dotenv";
-import { AMQPClient } from "@cloudamqp/amqp-client";
 import * as Sentry from "@sentry/node";
+import { Client, GatewayIntentBits, Options } from "discord.js";
 import log from "./logger";
 import InteractionClient from "./client";
-import { Config } from "./model/config";
-import AmqpGateway from "./model/AmqpGateway";
 import initI18next from "./i18next";
 import addCommands from "./interactions/commands";
 import server from "./server";
 import Metrics from "./model/metrics";
-import addEventHandlers from "./events/handlers";
 import sdk from "./tracing";
 import Context from "./model/context";
 import startTasks from "./tasks/startTasks";
 import { getSdkWebsocket, getWsClient } from "./model/graphqlClient";
+import config from "./model/config";
+import registerEventHandlers from "./handlers";
 
 async function main(): Promise<void> {
-  dotenv.config();
-  const config = new Config();
-
   Sentry.init({
-    dsn: config.sentryDsn,
+    dsn: config.SENTRY_DSN,
     environment:
       process.env.NODE_ENV === "production" ? "production" : "development",
 
@@ -33,23 +28,43 @@ async function main(): Promise<void> {
 
   await initI18next();
 
-  const amqpClient = new AMQPClient(config.amqpUrl);
-  const rabbitGatewayClient = new AmqpGateway(amqpClient, config);
   const metrics = new Metrics();
 
-  const wsClient = getWsClient(config);
+  const wsClient = getWsClient();
   const wsSdk = getSdkWebsocket(wsClient, metrics);
 
-  const ctx = new Context(config, metrics, rabbitGatewayClient, wsSdk);
-  const client = new InteractionClient(ctx, config, metrics);
+  // Create a new client instance
+  const djsClient = new Client({
+    intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.GuildModeration,
+      GatewayIntentBits.MessageContent,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.DirectMessages,
+    ],
+    rest: {
+      version: "10",
+      // Ensure we are using the proxy api url
+      api: config.TWILIGHT_PROXY_URL,
+    },
+    makeCache: Options.cacheWithLimits({
+      // Do not cache messages
+      MessageManager: 0,
+    }),
+  });
+
+  // Set token for rest client early for command registration
+  djsClient.rest.setToken(config.DISCORD_TOKEN);
+
+  const ctx = new Context(djsClient, wsSdk);
+  const client = new InteractionClient(ctx, metrics);
   addCommands(client);
-  addEventHandlers(client);
 
   // Register commands to Discord API
   await client.register();
 
-  // Connect to event gateway
-  await rabbitGatewayClient.connect((msg) => client.handleAMQPMessage(msg));
+  registerEventHandlers(ctx, djsClient, client);
 
   // Start background jobs
   await startTasks(ctx);
@@ -63,15 +78,14 @@ async function main(): Promise<void> {
 
       return {
         hey: "meow",
-        ampq: rabbitGatewayClient.consumer?.channel.id,
       };
     },
     onShutdown: async () => {
+      log.info("closing Discord client");
+      djsClient.destroy();
+
       log.info("closing websocket connection to sushii API");
       await wsClient.dispose();
-
-      log.info("closing rabbitmq");
-      rabbitGatewayClient.stop();
 
       log.info("closing sentry");
       await Sentry.close(2000);
@@ -82,6 +96,9 @@ async function main(): Promise<void> {
       log.flush();
     },
   });
+
+  // Start client
+  await djsClient.login(config.DISCORD_TOKEN);
 }
 
 main().catch((e) => {

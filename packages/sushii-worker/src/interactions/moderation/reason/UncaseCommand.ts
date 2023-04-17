@@ -1,12 +1,12 @@
-import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
 import {
-  APIChatInputApplicationCommandGuildInteraction,
-  PermissionFlagsBits,
-} from "discord-api-types/v10";
+  EmbedBuilder,
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+} from "discord.js";
+import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../../model/context";
 import Color from "../../../utils/colors";
 import { SlashCommandHandler } from "../../handlers";
-import CommandInteractionOptionResolver from "../../resolver";
 import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
 import { invalidCaseRangeEmbed } from "./Messages";
 
@@ -38,20 +38,20 @@ export default class UncaseCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: APIChatInputApplicationCommandGuildInteraction
+    interaction: ChatInputCommandInteraction
   ): Promise<void> {
-    const options = new CommandInteractionOptionResolver(
-      interaction.data.options,
-      interaction.data.resolved
-    );
-
-    const caseRangeStr = options.getString("case");
-    if (!caseRangeStr) {
-      throw new Error("no case number provided");
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Guild not cached");
     }
 
+    if (!interaction.channel) {
+      throw new Error("No channel");
+    }
+
+    const caseRangeStr = interaction.options.getString("case", true);
+
     const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
     });
 
     // No guild config found, ignore
@@ -66,7 +66,7 @@ export default class UncaseCommand extends SlashCommandHandler {
     const caseSpec = parseCaseId(caseRangeStr);
 
     if (!caseSpec) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [invalidCaseRangeEmbed],
       });
 
@@ -76,7 +76,7 @@ export default class UncaseCommand extends SlashCommandHandler {
     const affectedCaseCount = caseSpecCount(caseSpec);
     if (!affectedCaseCount) {
       // Only occurs if the endCaseId is not provided
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle("Invalid case range")
@@ -90,7 +90,7 @@ export default class UncaseCommand extends SlashCommandHandler {
     }
 
     if (affectedCaseCount > 25) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle("Too many cases")
@@ -103,10 +103,10 @@ export default class UncaseCommand extends SlashCommandHandler {
       });
     }
 
-    const caseRange = await getCaseRange(ctx, interaction.guild_id, caseSpec);
+    const caseRange = await getCaseRange(ctx, interaction.guildId, caseSpec);
 
     if (!caseRange) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [invalidCaseRangeEmbed],
       });
 
@@ -116,13 +116,13 @@ export default class UncaseCommand extends SlashCommandHandler {
     const [startCaseId, endCaseId] = caseRange;
 
     const { bulkDeleteModLog } = await ctx.sushiiAPI.sdk.bulkDeleteModLog({
-      guildId: interaction.guild_id,
+      guildId: interaction.guildId,
       startCaseId: startCaseId.toString(),
       endCaseId: endCaseId.toString(),
     });
 
     if (!bulkDeleteModLog?.modLogs) {
-      await ctx.REST.interactionReply(interaction, {
+      await interaction.reply({
         embeds: [
           new EmbedBuilder()
             .setTitle("Failed to delete cases")
@@ -131,28 +131,23 @@ export default class UncaseCommand extends SlashCommandHandler {
             .toJSON(),
         ],
       });
-
       return;
     }
 
     // Defer reply for deleting messages
-    const ackRes = await ctx.REST.interactionReplyDeferred(interaction);
-    ackRes.unwrap();
+    await interaction.deferReply();
 
-    for (const modLog of bulkDeleteModLog.modLogs) {
-      if (!modLog.msgId) {
-        continue;
-      }
+    const deleteIds = bulkDeleteModLog.modLogs
+      .filter((l) => l.msgId)
+      .map((l) => l.msgId!);
 
-      // eslint-disable-next-line no-await-in-loop
-      await ctx.REST.deleteChannelMessage(guildConfigById.logMod, modLog.msgId);
-    }
+    await interaction.channel.bulkDelete(deleteIds);
 
     const desc = bulkDeleteModLog.modLogs
       .map((m) => `#${m.caseId} - ${m.action} <@${m.userId}>`)
       .join("\n");
 
-    await ctx.REST.interactionEditOriginal(interaction, {
+    await interaction.editReply({
       embeds: [
         new EmbedBuilder()
           .setTitle(`Deleted ${affectedCaseCount} cases`)

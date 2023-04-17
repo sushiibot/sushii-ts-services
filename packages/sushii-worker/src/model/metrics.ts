@@ -1,8 +1,5 @@
-import {
-  APIInteraction,
-  GatewayDispatchPayload,
-  InteractionType,
-} from "discord-api-types/v10";
+import { InteractionType } from "discord-api-types/v10";
+import { Events, Interaction } from "discord.js";
 import client, {
   collectDefaultMetrics,
   Histogram,
@@ -82,16 +79,18 @@ export default class Metrics {
     return this.registry;
   }
 
-  public handleInteraction(interaction: APIInteraction): void {
+  public handleInteraction(interaction: Interaction): void {
     const { type } = interaction;
 
     switch (type) {
       case InteractionType.ApplicationCommand: {
-        this.slashCommandsCounter.inc({ command_name: interaction.data.name });
+        this.slashCommandsCounter.inc({
+          command_name: interaction.commandName,
+        });
         break;
       }
       case InteractionType.ApplicationCommandAutocomplete: {
-        this.autocompleteCounter.inc({ command_name: interaction.data.name });
+        this.autocompleteCounter.inc({ command_name: interaction.commandName });
         break;
       }
       case InteractionType.MessageComponent: {
@@ -109,8 +108,8 @@ export default class Metrics {
     }
   }
 
-  public handleGatewayDispatchEvent(event: GatewayDispatchPayload): void {
-    this.gatewayEventsCounter.inc({ event_name: event.t.toString() });
+  public handleGatewayDispatchEvent(event: Events): void {
+    this.gatewayEventsCounter.inc({ event_name: event });
   }
 
   public sushiiAPIStartTimer(): ReturnType<

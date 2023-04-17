@@ -1,19 +1,24 @@
-import { EmbedBuilder } from "@discordjs/builders";
-import {
-  APIInteraction,
-  MessageFlags,
-  APIInteractionResponseCallbackData,
-} from "discord-api-types/v10";
+import { EmbedBuilder ,
+  ButtonInteraction,
+  ChatInputCommandInteraction,
+  InteractionReplyOptions,
+  ModalSubmitInteraction,
+} from "discord.js";
+import { MessageFlags } from "discord-api-types/v10";
 import { t } from "i18next";
 import Context from "../../model/context";
-import { APIPromiseResult } from "../../model/rest";
 import Color from "../../utils/colors";
+
+type ReplyableInteraction =
+  | ChatInputCommandInteraction
+  | ButtonInteraction
+  | ModalSubmitInteraction;
 
 export function getErrorMessage(
   title: string,
   description: string,
   ephemeral: boolean = false
-): APIInteractionResponseCallbackData {
+): InteractionReplyOptions {
   return {
     embeds: [
       new EmbedBuilder()
@@ -26,25 +31,22 @@ export function getErrorMessage(
   };
 }
 
-export function interactionReplyError(
+export async function interactionReplyError(
   ctx: Context,
-  interaction: APIInteraction,
+  interaction: ReplyableInteraction,
   title: string,
   description: string,
   ephemeral: boolean = false
-): APIPromiseResult<void> {
-  return ctx.REST.interactionReply(
-    interaction,
-    getErrorMessage(title, description, ephemeral)
-  );
+): Promise<void> {
+  interaction.reply(getErrorMessage(title, description, ephemeral));
 }
 
-export function interactionReplyErrorPermission(
+export async function interactionReplyErrorPermission(
   ctx: Context,
-  interaction: APIInteraction,
+  interaction: ReplyableInteraction,
   permission: string
-): APIPromiseResult<void> {
-  return interactionReplyError(
+): Promise<void> {
+  interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
@@ -52,12 +54,12 @@ export function interactionReplyErrorPermission(
   );
 }
 
-export function interactionReplyErrorUnauthorized(
+export async function interactionReplyErrorUnauthorized(
   ctx: Context,
-  interaction: APIInteraction,
+  interaction: ReplyableInteraction,
   message: string
-): APIPromiseResult<void> {
-  return interactionReplyError(
+): Promise<void> {
+  interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
@@ -65,13 +67,13 @@ export function interactionReplyErrorUnauthorized(
   );
 }
 
-export function interactionReplyErrorMessage(
+export async function interactionReplyErrorMessage(
   ctx: Context,
-  interaction: APIInteraction,
+  interaction: ReplyableInteraction,
   message: string,
   ephemeral: boolean = false
-): APIPromiseResult<void> {
-  return interactionReplyError(
+): Promise<void> {
+  interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
@@ -80,13 +82,13 @@ export function interactionReplyErrorMessage(
   );
 }
 
-export function interactionReplyErrorPlainMessage(
+export async function interactionReplyErrorPlainMessage(
   ctx: Context,
-  interaction: APIInteraction,
+  interaction: ReplyableInteraction,
   message: string,
   ephemeral: boolean = false
-): APIPromiseResult<void> {
-  return interactionReplyError(
+): Promise<void> {
+  interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
@@ -95,11 +97,11 @@ export function interactionReplyErrorPlainMessage(
   );
 }
 
-export function interactionReplyErrorInternal(
+export async function interactionReplyErrorInternal(
   ctx: Context,
-  interaction: APIInteraction
-): APIPromiseResult<void> {
-  return interactionReplyError(
+  interaction: ReplyableInteraction
+): Promise<void> {
+  interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),

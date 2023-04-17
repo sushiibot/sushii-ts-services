@@ -1,6 +1,6 @@
 import { GatewayDispatchEvents } from "discord.js";
 import { MsgLogBlockType } from "../generated/graphql";
-import { isChannelIgnored } from "./MsgLogHandler";
+import { isChannelIgnored } from "./msglog/MsgLogHandler";
 
 describe("MsgLogHandler", () => {
   describe.each([

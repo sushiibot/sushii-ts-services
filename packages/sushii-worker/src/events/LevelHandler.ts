@@ -1,118 +1,144 @@
-import {
-  GatewayDispatchEvents,
-  GatewayMessageCreateDispatchData,
-} from "discord-api-types/v10";
+import { Events, Message } from "discord.js";
+import { sql } from "kysely";
+import { z } from "zod";
 import logger from "../logger";
 import Context from "../model/context";
-import EventHandler from "./EventHandler";
+import db from "../model/db";
+import { EventHandlerFn } from "./EventHandler";
 
-export default class LevelHandler implements EventHandler {
-  eventTypes = [GatewayDispatchEvents.MessageCreate];
+// Must match sql response, snake case
+const UpdateUserXpResultSchema = z.object({
+  old_level: z.string().optional().nullable(),
+  new_level: z.string().optional().nullable(),
+  add_role_ids: z.array(z.string()).optional().nullable(),
+  remove_role_ids: z.array(z.string()).optional().nullable(),
+});
 
-  async handler(
-    ctx: Context,
-    _: GatewayDispatchEvents,
-    event: GatewayMessageCreateDispatchData
-  ): Promise<void> {
-    // Ignore dms
-    if (!event.guild_id) {
-      return;
-    }
+type UpdateUserXpResult = z.infer<typeof UpdateUserXpResultSchema>;
 
-    // Ignore bots
-    if (event.author.bot) {
-      return;
-    }
-
-    if (!event.member) {
-      // This shouldn't happen as member should exist in message create events.
-      logger.warn(event, "No member found for message");
-      return;
-    }
-
-    const { updateUserXp } = await ctx.sushiiAPI.sdk.updateUserXp({
-      guildId: event.guild_id,
-      userId: event.author.id,
-      channelId: event.channel_id,
-      roleIds: event.member?.roles || [],
-    });
-
-    const updateRes = updateUserXp?.userXpUpdateResult;
-    if (!updateRes || !updateRes.newLevel || !updateRes.oldLevel) {
-      // No xp updates, e.g. already sent message within past 1 minute
-      return;
-    }
-
-    if (!updateRes.addRoleIds && !updateRes.removeRoleIds) {
-      return;
-    }
-
-    // If no roles to add or remove
-    if (
-      updateRes.addRoleIds &&
-      updateRes.addRoleIds.length === 0 &&
-      updateRes.removeRoleIds &&
-      updateRes.removeRoleIds.length === 0
-    ) {
-      return;
-    }
-
-    // New roles to assign to the member, including their current ones
-    const newRoles = new Set(event.member.roles || []);
-
-    if (updateRes.addRoleIds) {
-      const addRoles = updateRes.addRoleIds.filter((r): r is string => !!r);
-
-      for (const roleId of addRoles) {
-        newRoles.add(roleId);
-      }
-    }
-
-    if (updateRes.removeRoleIds) {
-      const removeRoles = updateRes.removeRoleIds.filter(
-        (r): r is string => !!r
-      );
-
-      for (const roleId of removeRoles) {
-        newRoles.delete(roleId);
-      }
-    }
-
-    // Do not do any api requests if there are no role changes, e.g. user already
-    // has all eligible level roles.
-    //
-    // This is going to be the most common case. As the sushii API will always
-    // return all level roles the user should have, instead of only when the
-    // user levels up.
-    //
-    // Need to ensure the size matches, as if there are added roles, the second
-    // part of the every() check will still be true.
-    const noRoleChanges =
-      newRoles.size === event.member.roles.length &&
-      event.member.roles.every((r) => newRoles.has(r));
-    if (noRoleChanges) {
-      return;
-    }
-
-    await ctx.REST.setMemberRoles(
-      event.guild_id,
-      event.author.id,
-      [...newRoles],
-      `Level role ${updateRes.newLevel}`
-    );
-
-    logger.debug(
-      {
-        guildId: event.guild_id,
-        channelId: event.channel_id,
-        userId: event.author.id,
-        oldLevel: updateRes.oldLevel,
-        newLevel: updateRes.newLevel,
-        addRoleIds: updateRes.addRoleIds,
-        removeRoleIds: updateRes.removeRoleIds,
-        newMemberRoles: [...newRoles],
-      },
-      "Level role update"
-    );
+const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
+  ctx: Context,
+  msg: Message
+): Promise<void> => {
+  // Ignore dms
+  if (!msg.inGuild()) {
+    return;
   }
-}
+
+  // Ignore bots
+  if (msg.author.bot) {
+    return;
+  }
+
+  if (!msg.member) {
+    // This shouldn't happen as member should exist in message create events.
+    logger.warn(msg, "No member found for message");
+    return;
+  }
+
+  // guild_id   bigint,
+  // channel_id bigint,
+  // user_id    bigint,
+  // role_ids   bigint[]
+  const res = await db
+    .selectFrom(
+      sql<UpdateUserXpResult>`app_public.update_user_xp(
+        ${msg.guildId},
+        ${msg.channelId},
+        ${msg.author.id},
+        ${msg.member.roles.cache.map((r) => r.id)}
+      )`.as("q")
+    )
+    .selectAll()
+    .executeTakeFirst();
+
+  // Parse to enforce schema matches, this throws if returned object doesn't match.
+  // Discard result as we only care about checking error.
+  UpdateUserXpResultSchema.parse(res);
+
+  if (!res) {
+    // Empty response
+    logger.warn(
+      {
+        guildId: msg.guildId,
+        channelId: msg.channelId,
+        userId: msg.author.id,
+      },
+      "Empty response from update_user_xp"
+    );
+    return;
+  }
+
+  // Default empty add/remove roles
+  const {
+    old_level: oldLevel,
+    new_level: newLevel,
+    add_role_ids, // eslint-disable-line @typescript-eslint/naming-convention
+    remove_role_ids, // eslint-disable-line @typescript-eslint/naming-convention
+  } = res;
+
+  if (!newLevel || !oldLevel) {
+    // No xp updates, e.g. already sent message within past 1 minute
+    return;
+  }
+
+  let addRoleIds: string[] = [];
+  let removeRoleIds: string[] = [];
+  if (add_role_ids) {
+    addRoleIds = add_role_ids;
+  }
+
+  if (remove_role_ids) {
+    removeRoleIds = remove_role_ids;
+  }
+
+  // Both empty, no role updates
+  if (addRoleIds.length === 0 && removeRoleIds.length === 0) {
+    return;
+  }
+
+  // New roles to assign to the member, including their current ones
+  const newRoles = new Set(msg.member.roles.cache.keys() || []);
+
+  for (const roleId of addRoleIds) {
+    newRoles.add(roleId);
+  }
+
+  for (const roleId of removeRoleIds) {
+    newRoles.delete(roleId);
+  }
+
+  // Do not do any api requests if there are no role changes, e.g. user already
+  // has all eligible level roles.
+  //
+  // This is going to be the most common case. As the sushii API will always
+  // return all level roles the user should have, instead of only when the
+  // user levels up.
+  //
+  // Need to ensure the size matches, as if there are added roles, the second
+  // part of the every() check will still be true.
+  const noRoleChanges =
+    newRoles.size === msg.member.roles.cache.size &&
+    msg.member.roles.cache.every((r) => newRoles.has(r.id));
+  if (noRoleChanges) {
+    return;
+  }
+
+  await msg.member.roles.set([...newRoles], `Level role ${newLevel}`);
+
+  logger.debug(
+    {
+      guildId: msg.guildId,
+      channelId: msg.channelId,
+      userId: msg.author.id,
+      oldLevel,
+      newLevel,
+      addRoleIds,
+      removeRoleIds,
+      newMemberRoles: [...newRoles],
+    },
+    "Level role update"
+  );
+};
+
+export default levelHandler;
