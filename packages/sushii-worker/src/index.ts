@@ -35,6 +35,10 @@ async function main(): Promise<void> {
 
   // Create a new client instance
   const djsClient = new Client({
+    // Internal sharding, single process.
+    // ShardingManager uses child processes, metrics server needs to be updated
+    // to not run into port conflicts. Should be fine for a while.
+    shards: "auto",
     intents: [
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMessages,
