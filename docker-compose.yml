@@ -14,17 +14,16 @@ services:
         environment:
             - NODE_ENV=production
             - DISCORD_TOKEN=$DISCORD_TOKEN
+            - APPLICATION_ID=193163942502072320
             - DATABASE_URL=$DATABASE_URL
+            - SUSHII_GRAPHQL_WS_URL=ws://sushii_data:8080/graphql
             - SUSHII_GRAPHQL_TOKEN=$SUSHII_GRAPHQL_TOKEN
             - SENTRY_DSN=$SENTRY_DSN
-            # sushiiDev application ID, different from bot user id
-            - APPLICATION_ID=193163942502072320
-            # No per guild commands
-            # - GUILD_ID=167058919611564043,418504865543749642
-            - SUSHII_GRAPHQL_URL=http://sushii_data:8080/graphql
-            - SUSHII_GRAPHQL_WS_URL=ws://sushii_data:8080/graphql
             - TWILIGHT_PROXY_URL=http://twilight-http-proxy:80/api
             - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
+            # Notifications
+            - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
+            - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
         networks:
             - sushii_net
         labels:
