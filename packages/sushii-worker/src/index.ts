@@ -42,7 +42,8 @@ async function main(): Promise<void> {
     intents: [
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMessages,
-      GatewayIntentBits.GuildModeration,
+      GatewayIntentBits.GuildMessageReactions,
+      GatewayIntentBits.GuildModeration, // old GuildBans
       GatewayIntentBits.MessageContent,
       GatewayIntentBits.GuildMembers,
       GatewayIntentBits.DirectMessages,
@@ -68,6 +69,7 @@ async function main(): Promise<void> {
   // Register commands to Discord API
   await client.register();
 
+  // Register node.js event handlers on the Discord.js client
   registerEventHandlers(ctx, djsClient, client);
 
   // Start background jobs
@@ -100,6 +102,8 @@ async function main(): Promise<void> {
       log.flush();
     },
   });
+
+  log.info("starting Discord client");
 
   // Start client
   await djsClient.login(config.DISCORD_TOKEN);

@@ -82,6 +82,26 @@ export default function registerEventHandlers(
     await webhookLog("Ready", `Logged in as ${c.user.tag}`, Color.Success);
   });
 
+  client.on(Events.Debug, async (msg) => {
+    logger.debug(msg);
+  });
+
+  client.on(Events.ShardReady, async (shardId, unavailableGuilds) => {
+    logger.info(
+      {
+        shardId,
+        unavailableGuilds,
+      },
+      "Shard ready"
+    );
+
+    await webhookLog(
+      `[Shard ${shardId}] Ready`,
+      `${unavailableGuilds} unavailable guilds`,
+      Color.Success
+    );
+  });
+
   client.on(Events.ShardDisconnect, async (closeEvent, shardId) => {
     logger.info(
       {
@@ -167,7 +187,7 @@ export default function registerEventHandlers(
 
   client.on(Events.InteractionCreate, async (interaction) => {
     try {
-      interactionHandler.handleAPIInteraction(interaction);
+      await interactionHandler.handleAPIInteraction(interaction);
 
       await updateStat(StatName.CommandCount, 1, "add");
     } catch (err) {
