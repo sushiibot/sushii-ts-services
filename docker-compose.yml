@@ -12,6 +12,7 @@ services:
             - sushii_data
         restart: unless-stopped
         environment:
+            - LOG_LEVEL=debug
             - NODE_ENV=production
             - DISCORD_TOKEN=$DISCORD_TOKEN
             - APPLICATION_ID=193163942502072320
