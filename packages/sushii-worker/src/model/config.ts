@@ -1,6 +1,6 @@
 import { z } from "zod";
 import * as dotenv from "dotenv";
-import logger from "../logger";
+import pino from "pino";
 
 dotenv.config();
 
@@ -14,6 +14,8 @@ const schema = z.object({
   SUSHII_GRAPHQL_TOKEN: z.string(),
   SUSHII_IMAGE_SERVER_URL: z.string(),
 
+  METRICS_PORT: z.string().optional().default("8080"),
+
   // Example: 'https://discord.com/api'
   TWILIGHT_PROXY_URL: z.string(),
 
@@ -24,6 +26,9 @@ const schema = z.object({
 const parsed = schema.safeParse(process.env);
 
 if (!parsed.success) {
+  // Temporary logger since we need the config to setup the real one
+  const logger = pino();
+
   logger.error(
     {
       error: parsed.error.format(),

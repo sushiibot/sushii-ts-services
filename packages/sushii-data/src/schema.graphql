@@ -4989,6 +4989,7 @@ type GuildConfig implements Node {
   logModEnabled: Boolean!
   logMsg: BigInt
   logMsgEnabled: Boolean!
+  lookupDetailsOptIn: Boolean!
   maxMention: Int
   msgChannel: BigInt
   muteDmEnabled: Boolean!
@@ -5135,6 +5136,9 @@ input GuildConfigCondition {
   """Checks for equality with the object’s `logMsgEnabled` field."""
   logMsgEnabled: Boolean
 
+  """Checks for equality with the object’s `lookupDetailsOptIn` field."""
+  lookupDetailsOptIn: Boolean
+
   """Checks for equality with the object’s `maxMention` field."""
   maxMention: Int
 
@@ -5217,6 +5221,9 @@ type GuildConfigDistinctCountAggregates {
 
   """Distinct count of logMsgEnabled across the matching connection"""
   logMsgEnabled: BigInt
+
+  """Distinct count of lookupDetailsOptIn across the matching connection"""
+  lookupDetailsOptIn: BigInt
 
   """Distinct count of maxMention across the matching connection"""
   maxMention: BigInt
@@ -5307,6 +5314,9 @@ input GuildConfigFilter {
   """Filter by the object’s `logMsgEnabled` field."""
   logMsgEnabled: BooleanFilter
 
+  """Filter by the object’s `lookupDetailsOptIn` field."""
+  lookupDetailsOptIn: BooleanFilter
+
   """Filter by the object’s `maxMention` field."""
   maxMention: IntFilter
 
@@ -5367,6 +5377,7 @@ input GuildConfigInput {
   logModEnabled: Boolean
   logMsg: BigInt
   logMsgEnabled: Boolean
+  lookupDetailsOptIn: Boolean
   maxMention: Int
   msgChannel: BigInt
   muteDmEnabled: Boolean
@@ -5458,6 +5469,7 @@ input GuildConfigPatch {
   logModEnabled: Boolean
   logMsg: BigInt
   logMsgEnabled: Boolean
+  lookupDetailsOptIn: Boolean
   maxMention: Int
   msgChannel: BigInt
   muteDmEnabled: Boolean
@@ -5691,6 +5703,7 @@ enum GuildConfigsGroupBy {
   LOG_MOD_ENABLED
   LOG_MSG
   LOG_MSG_ENABLED
+  LOOKUP_DETAILS_OPT_IN
   MAX_MENTION
   MSG_CHANNEL
   MUTE_DM_ENABLED
@@ -5860,6 +5873,8 @@ enum GuildConfigsOrderBy {
   LOG_MSG_DESC
   LOG_MSG_ENABLED_ASC
   LOG_MSG_ENABLED_DESC
+  LOOKUP_DETAILS_OPT_IN_ASC
+  LOOKUP_DETAILS_OPT_IN_DESC
   MAX_MENTION_ASC
   MAX_MENTION_DESC
   MSG_CHANNEL_ASC

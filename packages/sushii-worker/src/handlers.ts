@@ -245,4 +245,6 @@ export default function registerEventHandlers(
       await runParallel(event.t, [msgLogCacheHandler(ctx, event.t, event.d)]);
     }
   });
+
+  logger.info("Registered Discord.js event handlers");
 }

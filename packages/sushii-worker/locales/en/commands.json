@@ -14,7 +14,7 @@
   },
   "ping": {
     "title": "Pong!",
-    "description": "Discord REST API (message send): `{{restMs}}ms`\nsushii API: `{{sushiiApiMs}}ms`"
+    "description": "Discord REST API (message send): `{{restMs}}ms`\nsushii DB: `{{sushiiDbMs}}μs`"
   },
   "kick": {
     "success": "User kicked",

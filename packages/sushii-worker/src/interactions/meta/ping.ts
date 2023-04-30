@@ -4,7 +4,9 @@ import {
   ChatInputCommandInteraction,
 } from "discord.js";
 import { t } from "i18next";
+import { sql } from "kysely";
 import Context from "../../model/context";
+import db from "../../model/db";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
 
@@ -29,12 +31,12 @@ export default class PingCommand extends SlashCommandHandler {
     );
     const discordRestEnd = process.hrtime.bigint();
 
-    const sushiiRestStart = process.hrtime.bigint();
-    // Doesn't really matter if this is a valid ID or not, just to check latency
-    await ctx.sushiiAPI.sdk.userByID({
-      id: interaction.user.id,
-    });
-    const sushiiRestEnd = process.hrtime.bigint();
+    const sushiiDbStart = process.hrtime.bigint();
+
+    // Just just to check latency
+    await sql`select 1 + 1`.execute(db);
+
+    const sushiiDbEnd = process.hrtime.bigint();
 
     const embed = new EmbedBuilder()
       .setTitle(t("ping.title"))
@@ -45,10 +47,7 @@ export default class PingCommand extends SlashCommandHandler {
             (discordRestEnd - discordRestStart) /
             BigInt(1e6)
           ).toString(),
-          sushiiApiMs: (
-            (sushiiRestEnd - sushiiRestStart) /
-            BigInt(1e6)
-          ).toString(),
+          sushiiDbMs: ((sushiiDbEnd - sushiiDbStart) / BigInt(1000)).toString(),
         })
       )
       .setColor(Color.Success);

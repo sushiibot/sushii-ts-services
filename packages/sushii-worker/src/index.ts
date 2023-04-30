@@ -41,12 +41,12 @@ async function main(): Promise<void> {
     shards: "auto",
     intents: [
       GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.GuildModeration, // old GuildBans
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildMessageReactions,
-      GatewayIntentBits.GuildModeration, // old GuildBans
-      GatewayIntentBits.MessageContent,
-      GatewayIntentBits.GuildMembers,
       GatewayIntentBits.DirectMessages,
+      GatewayIntentBits.MessageContent,
     ],
     rest: {
       version: "10",

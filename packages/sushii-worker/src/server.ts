@@ -3,6 +3,7 @@ import express from "express";
 import { createTerminus } from "@godaddy/terminus";
 import client from "prom-client";
 import logger from "./logger";
+import config from "./model/config";
 
 interface ServerOptions {
   onHealthcheck: () => Promise<any>;
@@ -54,11 +55,14 @@ export default function server(
     logger: (msg, err) => logger.error(err, msg),
   });
 
-  const port = process.env.PORT || 3000;
-  s.listen(port);
+  s.listen(config.METRICS_PORT);
 
-  logger.info(`metrics listening on http://localhost:${port}/metrics`);
-  logger.info(`healthcheck listening on http://localhost:${port}/healthcheck`);
+  logger.info(
+    `metrics listening on http://localhost:${config.METRICS_PORT}/metrics`
+  );
+  logger.info(
+    `healthcheck listening on http://localhost:${config.METRICS_PORT}/healthcheck`
+  );
 
   return s;
 }

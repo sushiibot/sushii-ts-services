@@ -269,6 +269,14 @@ export default class Client {
         }
       }
 
+      log.info(
+        {
+          command: getFullCommandName(interaction),
+          guildId: interaction.guildId,
+          userId: interaction.user.id,
+        },
+        "running command"
+      );
       await command.handler(this.context, interaction);
     } catch (e) {
       const invoker = interaction.user;
