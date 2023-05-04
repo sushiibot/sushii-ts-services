@@ -277,7 +277,10 @@ export default class Client {
         },
         "running command"
       );
-      await command.handler(this.context, interaction);
+
+      return;
+
+      // await command.handler(this.context, interaction);
     } catch (e) {
       const invoker = interaction.user;
       log.error(e, "error running command %s", interaction.commandName);

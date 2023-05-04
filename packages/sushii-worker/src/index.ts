@@ -56,6 +56,8 @@ async function main(): Promise<void> {
     makeCache: Options.cacheWithLimits({
       // Do not cache messages
       MessageManager: 0,
+      // Do not cache users
+      UserManager: 0,
     }),
   });
 

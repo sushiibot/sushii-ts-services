@@ -25,6 +25,40 @@ services:
             # Notifications
             - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
             - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
+            # Increase max memory usage - should use approx 1100 MB on start
+            - NODE_OPTIONS=--max-old-space-size=4096
+        networks:
+            - sushii_net
+        labels:
+            - "traefik.enable=false"
+    # Secondary new service for testing before deleting sushii_interactions
+    sushii_worker:
+        build:
+            dockerfile: ./dockerfiles/sushii-worker/Dockerfile
+            context: .
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "3"
+        depends_on:
+            - sushii_data
+        restart: unless-stopped
+        environment:
+            - LOG_LEVEL=debug
+            - NODE_ENV=production
+            - DISCORD_TOKEN=$DISCORD_TOKEN
+            - APPLICATION_ID=193163942502072320
+            - DATABASE_URL=$DATABASE_URL
+            - SUSHII_GRAPHQL_WS_URL=ws://sushii_data:8080/graphql
+            - SUSHII_GRAPHQL_TOKEN=$SUSHII_GRAPHQL_TOKEN
+            - SENTRY_DSN=$SENTRY_DSN
+            - TWILIGHT_PROXY_URL=http://twilight-http-proxy:80/api
+            - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
+            # Notifications
+            - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
+            - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
+            # Increase max memory usage - should use approx 1100 MB on start
+            - NODE_OPTIONS=--max-old-space-size=4096
         networks:
             - sushii_net
         labels:

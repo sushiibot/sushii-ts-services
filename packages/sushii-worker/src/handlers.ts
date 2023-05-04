@@ -6,6 +6,8 @@ import {
   GatewayDispatchPayload,
 } from "discord.js";
 import * as Sentry from "@sentry/node";
+import fs from "fs";
+import v8 from "v8";
 import logger from "./logger";
 import InteractionClient from "./client";
 import { EventHandlerFn } from "./events/EventHandler";
@@ -202,7 +204,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildAuditLogEntryCreate, async (entry, guild) => {
-    handleEvent(
+    await handleEvent(
       ctx,
       Events.GuildAuditLogEntryCreate,
       [modLogHandler],
@@ -212,7 +214,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildBanAdd, async (guildBan) => {
-    handleEvent(
+    await handleEvent(
       ctx,
       Events.GuildBanAdd,
       [legacyModLogNotifierHandler],
@@ -221,7 +223,20 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.MessageCreate, async (msg) => {
-    handleEvent(ctx, Events.MessageCreate, [levelHandler], msg);
+    if (msg.author.id === "150443906511667200" && msg.content === "heapdump") {
+      logger.info("Generating heapdump");
+
+      const snapshotStream = v8.getHeapSnapshot();
+      // It's important that the filename end with `.heapsnapshot`,
+      // otherwise Chrome DevTools won't open it.
+      const fileName = `${Date.now()}.heapsnapshot`;
+      const fileStream = fs.createWriteStream(fileName);
+      snapshotStream.pipe(fileStream);
+
+      logger.info("heapdump done");
+    }
+
+    await handleEvent(ctx, Events.MessageCreate, [levelHandler], msg);
   });
 
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
