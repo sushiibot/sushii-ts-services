@@ -16,17 +16,6 @@ const db = new Kysely<DB>({
     }),
     cursor: Cursor,
   }),
-  log(event): void {
-    if (event.level === "query") {
-      dbLogger.debug(
-        {
-          durationMs: event.queryDurationMillis,
-          parameters: event.query.parameters,
-        },
-        event.query.sql
-      );
-    }
-  },
 });
 
 dbLogger.info("pg connected");
