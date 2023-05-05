@@ -265,7 +265,6 @@ export default function registerEventHandlers(
       await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
     }
 
-    /*
     if (event.t === GatewayDispatchEvents.MessageUpdate) {
       // Log first to keep old message, then cache after for new update.
       // Fine to await since each event is a specific type, no other types that
@@ -277,7 +276,6 @@ export default function registerEventHandlers(
     if (event.t === GatewayDispatchEvents.MessageCreate) {
       await runParallel(event.t, [msgLogCacheHandler(ctx, event.t, event.d)]);
     }
-    */
 
     const endTime = process.hrtime.bigint();
     const durationMs = Number(endTime - startTime) / 1000000;
