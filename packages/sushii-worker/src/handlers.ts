@@ -223,12 +223,6 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.MessageCreate, async (msg) => {
-    logger.debug(
-      {
-        id: msg.id,
-      },
-      "received msg"
-    );
     const startTime = process.hrtime.bigint();
 
     if (msg.author.id === "150443906511667200" && msg.content === "heapdump") {
@@ -247,13 +241,17 @@ export default function registerEventHandlers(
     // await handleEvent(ctx, Events.MessageCreate, [levelHandler], msg);
 
     const endTime = process.hrtime.bigint();
-    logger.debug(
-      {
-        id: msg.id,
-        duration: `${Number(endTime - startTime) / 1000000} ms`,
-      },
-      "handled msg"
-    );
+    const durationMs = Number(endTime - startTime) / 1000000;
+
+    if (durationMs > 1000) {
+      logger.debug(
+        {
+          id: msg.id,
+          duration: `${Number(endTime - startTime) / 1000000} ms`,
+        },
+        "slow msg handler"
+      );
+    }
   });
 
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
