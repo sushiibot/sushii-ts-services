@@ -2,8 +2,8 @@ import {
   Client,
   ClientEvents,
   Events,
-  GatewayDispatchEvents,
-  GatewayDispatchPayload,
+  // GatewayDispatchEvents,
+  // GatewayDispatchPayload,
 } from "discord.js";
 import * as Sentry from "@sentry/node";
 import fs from "fs";
@@ -12,11 +12,11 @@ import logger from "./logger";
 import InteractionClient from "./client";
 import { EventHandlerFn } from "./events/EventHandler";
 import Context from "./model/context";
-import legacyModLogNotifierHandler from "./events/GuildBanAdd/LegacyModLogNotifier";
-import modLogHandler from "./events/ModLogHandler";
-import { msgLogHandler } from "./events/msglog/MsgLogHandler";
-import msgLogCacheHandler from "./events/msglog/MessageCacheHandler";
-import levelHandler from "./events/LevelHandler";
+// import legacyModLogNotifierHandler from "./events/GuildBanAdd/LegacyModLogNotifier";
+// import modLogHandler from "./events/ModLogHandler";
+// import { msgLogHandler } from "./events/msglog/MsgLogHandler";
+// import msgLogCacheHandler from "./events/msglog/MessageCacheHandler";
+// import levelHandler from "./events/LevelHandler";
 import webhookLog from "./webhookLogger";
 import Color from "./utils/colors";
 import { StatName, updateStat } from "./tasks/StatsTask";
@@ -99,7 +99,7 @@ export default function registerEventHandlers(
 
     await webhookLog(
       `[Shard ${shardId}] Ready`,
-      `${unavailableGuilds} unavailable guilds`,
+      `unavailable guilds: \`${unavailableGuilds || "none"}\``,
       Color.Success
     );
   });
@@ -203,6 +203,7 @@ export default function registerEventHandlers(
     }
   });
 
+  /*
   client.on(Events.GuildAuditLogEntryCreate, async (entry, guild) => {
     await handleEvent(
       ctx,
@@ -221,8 +222,17 @@ export default function registerEventHandlers(
       guildBan
     );
   });
+  */
 
   client.on(Events.MessageCreate, async (msg) => {
+    logger.debug(
+      {
+        id: msg.id,
+      },
+      "received msg"
+    );
+    const startTime = process.hrtime.bigint();
+
     if (msg.author.id === "150443906511667200" && msg.content === "heapdump") {
       logger.info("Generating heapdump");
 
@@ -236,10 +246,22 @@ export default function registerEventHandlers(
       logger.info("heapdump done");
     }
 
-    await handleEvent(ctx, Events.MessageCreate, [levelHandler], msg);
+    // await handleEvent(ctx, Events.MessageCreate, [levelHandler], msg);
+
+    const endTime = process.hrtime.bigint();
+    logger.debug(
+      {
+        id: msg.id,
+        duration: `${Number(endTime - startTime) / 1000000} ms`,
+      },
+      "handled msg"
+    );
   });
 
+  /*
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
+    const startTime = process.hrtime.bigint();
+
     if (event.t === GatewayDispatchEvents.MessageDelete) {
       await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
     }
@@ -259,7 +281,23 @@ export default function registerEventHandlers(
     if (event.t === GatewayDispatchEvents.MessageCreate) {
       await runParallel(event.t, [msgLogCacheHandler(ctx, event.t, event.d)]);
     }
+
+    const endTime = process.hrtime.bigint();
+    const durationMs = Number(endTime - startTime) / 1000000;
+
+    if (durationMs > 1000) {
+      logger.warn(
+        {
+          type: event.t,
+          seq: event.s,
+          duration: `${durationMs} ms`,
+        },
+        "slow raw event"
+      );
+    }
   });
+
+  */
 
   logger.info("Registered Discord.js event handlers");
 }
