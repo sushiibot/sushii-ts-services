@@ -2,8 +2,8 @@ import {
   Client,
   ClientEvents,
   Events,
-  // GatewayDispatchEvents,
-  // GatewayDispatchPayload,
+  GatewayDispatchEvents,
+  GatewayDispatchPayload,
 } from "discord.js";
 import * as Sentry from "@sentry/node";
 import fs from "fs";
@@ -12,11 +12,11 @@ import logger from "./logger";
 import InteractionClient from "./client";
 import { EventHandlerFn } from "./events/EventHandler";
 import Context from "./model/context";
-// import legacyModLogNotifierHandler from "./events/GuildBanAdd/LegacyModLogNotifier";
-// import modLogHandler from "./events/ModLogHandler";
-// import { msgLogHandler } from "./events/msglog/MsgLogHandler";
-// import msgLogCacheHandler from "./events/msglog/MessageCacheHandler";
-// import levelHandler from "./events/LevelHandler";
+import legacyModLogNotifierHandler from "./events/GuildBanAdd/LegacyModLogNotifier";
+import modLogHandler from "./events/ModLogHandler";
+import { msgLogHandler } from "./events/msglog/MsgLogHandler";
+import msgLogCacheHandler from "./events/msglog/MessageCacheHandler";
+import levelHandler from "./events/LevelHandler";
 import webhookLog from "./webhookLogger";
 import Color from "./utils/colors";
 import { StatName, updateStat } from "./tasks/StatsTask";
@@ -203,7 +203,6 @@ export default function registerEventHandlers(
     }
   });
 
-  /*
   client.on(Events.GuildAuditLogEntryCreate, async (entry, guild) => {
     await handleEvent(
       ctx,
@@ -222,7 +221,6 @@ export default function registerEventHandlers(
       guildBan
     );
   });
-  */
 
   client.on(Events.MessageCreate, async (msg) => {
     logger.debug(
@@ -258,7 +256,6 @@ export default function registerEventHandlers(
     );
   });
 
-  /*
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
     const startTime = process.hrtime.bigint();
 
@@ -296,8 +293,6 @@ export default function registerEventHandlers(
       );
     }
   });
-
-  */
 
   logger.info("Registered Discord.js event handlers");
 }
