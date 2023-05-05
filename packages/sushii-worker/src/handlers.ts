@@ -238,7 +238,7 @@ export default function registerEventHandlers(
       logger.info("heapdump done");
     }
 
-    // await handleEvent(ctx, Events.MessageCreate, [levelHandler], msg);
+    await handleEvent(ctx, Events.MessageCreate, [levelHandler], msg);
 
     const endTime = process.hrtime.bigint();
     const durationMs = Number(endTime - startTime) / 1000000;
@@ -254,6 +254,7 @@ export default function registerEventHandlers(
     }
   });
 
+  /*
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
     const startTime = process.hrtime.bigint();
 
@@ -291,6 +292,7 @@ export default function registerEventHandlers(
       );
     }
   });
+  */
 
   logger.info("Registered Discord.js event handlers");
 }
