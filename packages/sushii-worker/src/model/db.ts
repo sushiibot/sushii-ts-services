@@ -6,6 +6,8 @@ import logger from "../logger";
 import config from "./config";
 import { DB } from "./dbTypes";
 
+const dbLogger = logger.child({ module: "db" });
+
 const db = new Kysely<DB>({
   // PostgresDialect requires the Cursor dependency
   dialect: new PostgresDialect({
@@ -14,8 +16,19 @@ const db = new Kysely<DB>({
     }),
     cursor: Cursor,
   }),
+  log(event): void {
+    if (event.level === "query") {
+      dbLogger.debug(
+        {
+          durationMs: event.queryDurationMillis,
+          parameters: event.query.parameters,
+        },
+        event.query.sql
+      );
+    }
+  },
 });
 
-logger.info("pg connected");
+dbLogger.info("pg connected");
 
 export default db;
