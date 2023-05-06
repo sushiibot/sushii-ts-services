@@ -3,9 +3,9 @@ import {
   GatewayMessageCreateDispatchData,
   GatewayMessageUpdateDispatchData,
 } from "discord.js";
-import { MsgLogBlockType } from "../../generated/graphql";
-import logger from "../../logger";
+import { sql } from "kysely";
 import Context from "../../model/context";
+import db from "../../model/db";
 
 type EventData =
   | GatewayMessageCreateDispatchData
@@ -28,108 +28,57 @@ export default async function msgLogCacheHandler(
     return;
   }
 
-  logger.debug(
-    {
-      msgId: event.id,
-      guildId: event.guild_id,
-    },
-    "getting guild config"
-  );
-  const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
-    guildId: event.guild_id,
-  });
-
-  logger.debug(
-    {
-      msgId: event.id,
-      guildId: event.guild_id,
-    },
-    "got guild config"
-  );
+  const config = await db
+    .selectFrom("app_public.guild_configs")
+    .selectAll()
+    .where("app_public.guild_configs.id", "=", event.guild_id)
+    .executeTakeFirst();
 
   // No guild config found, ignore
   if (
-    !guildConfigById || // Config not found
-    !guildConfigById.logMsg || // No msg log set
-    !guildConfigById.logMsgEnabled // Msg log disabled
+    !config || // Config not found
+    !config.log_msg || // No msg log set
+    !config.log_msg_enabled // Msg log disabled
   ) {
-    logger.debug(
-      {
-        msgId: event.id,
-        guildId: event.guild_id,
-      },
-      "msg log not enabled"
-    );
     return;
   }
 
-  logger.debug(
-    {
-      msgId: event.id,
-      guildId: event.guild_id,
-    },
-    "getting msg log blocks"
-  );
-
   // Get ignored msg logs
-  const { msgLogBlockByGuildIdAndChannelId: channelBlock } =
-    await ctx.sushiiAPI.sdk.getMsgLogBlock({
-      guildId: event.guild_id,
-      channelId: event.channel_id,
-    });
+  const channelBlock = await db
+    .selectFrom("app_public.msg_log_blocks")
+    .selectAll()
+    .where("app_public.msg_log_blocks.guild_id", "=", event.guild_id)
+    .where("app_public.msg_log_blocks.channel_id", "=", event.channel_id)
+    .executeTakeFirst();
 
   // Only prevent saving if *all* types are blocked. e.g.
   // If edits are not logged, we still want to keep track of edit events for deletes
-  if (channelBlock && channelBlock.blockType === MsgLogBlockType.All) {
-    logger.debug(
-      {
-        msgId: event.id,
-        guildId: event.guild_id,
-      },
-      "msg log is blocked in this channel"
-    );
-
+  if (channelBlock && channelBlock.block_type === "all") {
     return;
   }
 
   const authorId = event.author?.id || event.member?.user?.id;
   if (!authorId) {
-    logger.debug(
-      {
-        msgId: event.id,
-        guildId: event.guild_id,
-      },
-      "msg log author not found"
-    );
     return;
   }
 
-  logger.debug(
-    {
-      msgId: event.id,
-      guildId: event.guild_id,
-    },
-    "saving message to db"
-  );
-
   // Save message to db
-  await ctx.sushiiAPI.sdk.upsertMessage({
-    message: {
-      messageId: event.id,
-      channelId: event.channel_id,
-      guildId: event.guild_id,
-      authorId,
+  await db
+    .insertInto("app_public.messages")
+    .values({
+      message_id: BigInt(event.id),
+      channel_id: BigInt(event.channel_id),
+      guild_id: BigInt(event.guild_id),
+      author_id: BigInt(authorId),
       content: event.content || "",
       created: event.timestamp!,
-      msg: event,
-    },
-  });
-
-  logger.debug(
-    {
-      msgId: event.id,
-      guildId: event.guild_id,
-    },
-    "saved msg"
-  );
+      msg: sql`${JSON.stringify(event)}`,
+    })
+    .onConflict((oc) =>
+      oc.column("message_id").doUpdateSet({
+        content: event.content || "",
+        msg: sql`${JSON.stringify(event)}`,
+      })
+    )
+    .execute();
 }
