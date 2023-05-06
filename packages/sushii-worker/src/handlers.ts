@@ -203,7 +203,6 @@ export default function registerEventHandlers(
     }
   });
 
-  /*
   client.on(Events.GuildAuditLogEntryCreate, async (entry, guild) => {
     await handleEvent(
       ctx,
@@ -222,7 +221,6 @@ export default function registerEventHandlers(
       guildBan
     );
   });
-  */
 
   client.on(Events.MessageCreate, async (msg) => {
     const startTime = process.hrtime.bigint();
