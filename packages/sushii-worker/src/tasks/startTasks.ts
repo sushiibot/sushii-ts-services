@@ -4,10 +4,9 @@ import logger from "../logger";
 import Context from "../model/context";
 import deleteOldMessages from "./DeleteOldMessagesTask";
 import updateStats from "./StatsTask";
-import cacheLog from "./CacheLogTask";
 
 export default async function startTasks(ctx: Context): Promise<void> {
-  const jobs = [deleteOldMessages, updateStats, cacheLog];
+  const jobs = [deleteOldMessages, updateStats];
 
   logger.info("Starting background tasks");
 
