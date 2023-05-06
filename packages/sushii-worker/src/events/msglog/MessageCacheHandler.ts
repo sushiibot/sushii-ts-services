@@ -62,6 +62,12 @@ export default async function msgLogCacheHandler(
     return;
   }
 
+  const eventStr = JSON.stringify({
+    ...event,
+    // Remove the member field with circular structure
+    member: undefined,
+  });
+
   // Save message to db
   await db
     .insertInto("app_public.messages")
@@ -72,12 +78,12 @@ export default async function msgLogCacheHandler(
       author_id: BigInt(authorId),
       content: event.content || "",
       created: event.timestamp!,
-      msg: sql`${JSON.stringify(event)}`,
+      msg: sql`${eventStr}`,
     })
     .onConflict((oc) =>
       oc.column("message_id").doUpdateSet({
         content: event.content || "",
-        msg: sql`${JSON.stringify(event)}`,
+        msg: sql`${eventStr}`,
       })
     )
     .execute();
