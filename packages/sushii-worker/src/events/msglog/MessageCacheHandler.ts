@@ -4,6 +4,7 @@ import {
   GatewayMessageUpdateDispatchData,
 } from "discord.js";
 import { MsgLogBlockType } from "../../generated/graphql";
+import logger from "../../logger";
 import Context from "../../model/context";
 
 type EventData =
@@ -27,9 +28,24 @@ export default async function msgLogCacheHandler(
     return;
   }
 
+  logger.debug(
+    {
+      msgId: event.id,
+      guildId: event.guild_id,
+    },
+    "getting guild config"
+  );
   const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
     guildId: event.guild_id,
   });
+
+  logger.debug(
+    {
+      msgId: event.id,
+      guildId: event.guild_id,
+    },
+    "got guild config"
+  );
 
   // No guild config found, ignore
   if (
@@ -37,8 +53,23 @@ export default async function msgLogCacheHandler(
     !guildConfigById.logMsg || // No msg log set
     !guildConfigById.logMsgEnabled // Msg log disabled
   ) {
+    logger.debug(
+      {
+        msgId: event.id,
+        guildId: event.guild_id,
+      },
+      "msg log not enabled"
+    );
     return;
   }
+
+  logger.debug(
+    {
+      msgId: event.id,
+      guildId: event.guild_id,
+    },
+    "getting msg log blocks"
+  );
 
   // Get ignored msg logs
   const { msgLogBlockByGuildIdAndChannelId: channelBlock } =
@@ -50,13 +81,36 @@ export default async function msgLogCacheHandler(
   // Only prevent saving if *all* types are blocked. e.g.
   // If edits are not logged, we still want to keep track of edit events for deletes
   if (channelBlock && channelBlock.blockType === MsgLogBlockType.All) {
+    logger.debug(
+      {
+        msgId: event.id,
+        guildId: event.guild_id,
+      },
+      "msg log is blocked in this channel"
+    );
+
     return;
   }
 
   const authorId = event.author?.id || event.member?.user?.id;
   if (!authorId) {
+    logger.debug(
+      {
+        msgId: event.id,
+        guildId: event.guild_id,
+      },
+      "msg log author not found"
+    );
     return;
   }
+
+  logger.debug(
+    {
+      msgId: event.id,
+      guildId: event.guild_id,
+    },
+    "saving message to db"
+  );
 
   // Save message to db
   await ctx.sushiiAPI.sdk.upsertMessage({
@@ -70,4 +124,12 @@ export default async function msgLogCacheHandler(
       msg: event,
     },
   });
+
+  logger.debug(
+    {
+      msgId: event.id,
+      guildId: event.guild_id,
+    },
+    "saved msg"
+  );
 }
