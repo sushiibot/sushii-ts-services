@@ -148,11 +148,26 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
 
   const actionTypeData = getActionTypeFromEvent(event);
   if (!actionTypeData) {
+    logger.debug(
+      {
+        changes: event.changes,
+      },
+      "no action type data found"
+    );
     return;
   }
 
   const { actionType, executorId, reason, timeoutChange } = actionTypeData;
-  logger.debug("received mod log type %s", actionType);
+  logger.debug(
+    {
+      guildId: guild.id,
+      actionType,
+      executorId,
+      reason,
+      timeoutChange,
+    },
+    "received mod log"
+  );
 
   // No target ID found in event, ignore
   if (!event.targetId || event.targetType !== "User") {

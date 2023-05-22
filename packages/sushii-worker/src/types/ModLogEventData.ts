@@ -1,7 +1,4 @@
-import {
-  APIAuditLogChangeKeyCommunicationDisabledUntil,
-  AuditLogChange,
-} from "discord.js";
+import { AuditLogChange } from "discord.js";
 
 /**
  * This is a type guard to check if the APIAuditLogChange is of a specific type.
@@ -18,6 +15,6 @@ export function isAPIAuditLogChange<V extends AuditLogChange["key"]>(val: V) {
 
 export function findTimeoutChange(
   changes?: AuditLogChange[]
-): APIAuditLogChangeKeyCommunicationDisabledUntil | undefined {
+): AuditLogChange | undefined {
   return changes?.find(isAPIAuditLogChange("communication_disabled_until"));
 }

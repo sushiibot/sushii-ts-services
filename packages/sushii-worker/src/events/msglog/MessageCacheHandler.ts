@@ -69,7 +69,7 @@ export default async function msgLogCacheHandler(
     sticker_items: event.sticker_items,
     attachments: event.attachments,
     // Circular structure somewhere that I cant repro locally
-    member: undefined,
+    // member: undefined,
   };
 
   const eventStr = JSON.stringify(obj);

@@ -2,6 +2,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { Duration } from "dayjs/plugin/duration";
 import { GuildAuditLogsEntry } from "discord.js";
 import { ActionType } from "../interactions/moderation/ActionType";
+import logger from "../logger";
 import { findTimeoutChange } from "./ModLogEventData";
 
 export type TimeoutChange =
@@ -31,14 +32,29 @@ export function getTimeoutChangeData(
     return;
   }
 
+  if (
+    (timeoutChange.new !== undefined &&
+      typeof timeoutChange.new !== "string") ||
+    (timeoutChange.old !== undefined && typeof timeoutChange.old !== "string")
+  ) {
+    logger.error(
+      {
+        timeoutChange,
+      },
+      "Mismatch audit log change type"
+    );
+
+    return;
+  }
+
   const now = dayjs.utc();
 
   // Check if old_value is in the past. Timeout timestamps persist in the
   // member object even after the timeout has expired. If the old_value is
   // in the past, it's a new timeout.
   // Reset old_value to reflect accurate change
-  if (dayjs(timeoutChange.old_value).isBefore(now)) {
-    timeoutChange.old_value = undefined;
+  if (dayjs(timeoutChange.old).isBefore(now)) {
+    timeoutChange.old = undefined;
   }
 
   // New Timeout - null -> timeout
@@ -48,8 +64,8 @@ export function getTimeoutChangeData(
   //     "new_value": "2023-01-21T21:33:52.129000+00:00"
   //   }
   // ]
-  if (!timeoutChange.old_value && timeoutChange.new_value) {
-    const newDate = dayjs(timeoutChange.new_value);
+  if (!timeoutChange.old && timeoutChange.new) {
+    const newDate = dayjs(timeoutChange.new);
 
     return {
       actionType: ActionType.Timeout,
@@ -66,29 +82,29 @@ export function getTimeoutChangeData(
   //     "old_value": "2023-01-21T21:33:52.129000+00:00"
   //   }
   // ]
-  if (timeoutChange.old_value && !timeoutChange.new_value) {
+  if (timeoutChange.old && !timeoutChange.new) {
     return {
       actionType: ActionType.TimeoutRemove,
-      old: dayjs.utc(timeoutChange.old_value),
+      old: dayjs.utc(timeoutChange.old),
       new: undefined,
     };
   }
 
   // Timeout changed - old and new should exist and be different
   if (
-    timeoutChange.old_value &&
-    timeoutChange.new_value &&
-    timeoutChange.old_value !== timeoutChange.new_value
+    timeoutChange.old &&
+    timeoutChange.new &&
+    timeoutChange.old !== timeoutChange.new
   ) {
     // Old is not in the past, it's an adjustment. old_value is checked
     // earlier in the function to ensure this is a new timeout adjustment.
-    const old = dayjs.utc(timeoutChange.old_value);
-    const newDate = dayjs(timeoutChange.new_value);
+    const old = dayjs.utc(timeoutChange.old);
+    const newDate = dayjs(timeoutChange.new);
     const duration = dayjs.duration(newDate.diff(old));
 
     return {
       actionType: ActionType.TimeoutAdjust,
-      new: dayjs.utc(timeoutChange.new_value),
+      new: dayjs.utc(timeoutChange.new),
       old,
       duration,
     };
