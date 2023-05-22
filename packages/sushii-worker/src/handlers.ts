@@ -135,8 +135,6 @@ export default function registerEventHandlers(
       },
       "Shard reconnecting"
     );
-
-    await webhookLog(`[Shard ${shardId}] Reconnecting`, "", Color.Warning);
   });
 
   client.on(Events.ShardResume, async (shardId, replayedEvents) => {
@@ -146,12 +144,6 @@ export default function registerEventHandlers(
         replayedEvents,
       },
       "Shard resumed"
-    );
-
-    await webhookLog(
-      `[Shard ${shardId}] Resume`,
-      `replayed ${replayedEvents} events`,
-      Color.Success
     );
   });
 
