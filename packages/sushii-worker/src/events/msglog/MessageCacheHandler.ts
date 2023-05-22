@@ -62,11 +62,17 @@ export default async function msgLogCacheHandler(
     return;
   }
 
-  const eventStr = JSON.stringify({
-    ...event,
-    // Remove the member field with circular structure
+  const obj = {
+    // Only add the properties we need
+    author: event.author,
+    content: event.content,
+    sticker_items: event.sticker_items,
+    attachments: event.attachments,
+    // Circular structure somewhere that I cant repro locally
     member: undefined,
-  });
+  };
+
+  const eventStr = JSON.stringify(obj);
 
   // Save message to db
   await db
