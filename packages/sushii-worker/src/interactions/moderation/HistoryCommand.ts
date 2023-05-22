@@ -56,9 +56,15 @@ export default class HistoryCommand extends SlashCommandHandler {
       },
     ];
 
-    const member = await interaction.guild.members.fetch(user.id);
+    let member;
+    try {
+      // Can fail if user not in guild
+      member = await interaction.guild.members.fetch(user.id);
+    } catch (err) {
+      // Ignore
+    }
 
-    if (member.joinedTimestamp) {
+    if (member?.joinedTimestamp) {
       fields.push({
         name: "Joined Server",
         value: `<t:${member.joinedTimestamp}:F> (<t:${member.joinedTimestamp}:R>)`,

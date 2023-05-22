@@ -1,7 +1,9 @@
 import { MessageFlags } from "discord-api-types/v10";
 import {
+  ActionRow,
   ActionRowBuilder,
   ButtonBuilder,
+  ButtonComponent,
   ButtonInteraction,
   EmbedBuilder,
 } from "discord.js";
@@ -66,21 +68,19 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
         embedBuilders.push(buildUserHistoryEmbed(cases, "context_menu"));
 
         // Update button
-        const secondRow = new ActionRowBuilder<ButtonBuilder>({
-          components: components[1].components,
-        });
+        const secondRow = ActionRowBuilder.from<ButtonBuilder>(
+          components[1] as ActionRow<ButtonComponent>
+        );
 
         // Create a new builder for the history button, second row first button
-        const newHistoryButton = new ButtonBuilder(
-          secondRow.components[0].data
-        );
+        const newHistoryButton = ButtonBuilder.from(secondRow.components[0]);
 
         // Disable button
         newHistoryButton.setDisabled(true);
         secondRow.components[0] = newHistoryButton;
 
-        await interaction.editReply({
-          embeds,
+        await interaction.update({
+          embeds: embedBuilders,
           components: [components[0], secondRow.toJSON()],
         });
 
@@ -114,16 +114,17 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
         }
 
         // Disable lookup button, second row, second button
-        const secondRow = new ActionRowBuilder<ButtonBuilder>({
-          components: components[1].components,
-        });
+        const secondRow = ActionRowBuilder.from<ButtonBuilder>(
+          components[1] as ActionRow<ButtonComponent>
+        );
 
-        const lookupButton = new ButtonBuilder(secondRow.components[1].data);
-        lookupButton.setDisabled(true);
+        const lookupButton = ButtonBuilder.from(
+          secondRow.components[1]
+        ).setDisabled(true);
         secondRow.components[1] = lookupButton;
 
-        await interaction.editReply({
-          embeds,
+        await interaction.update({
+          embeds: embedBuilders,
           components: [components[0], secondRow.toJSON()],
         });
       }
