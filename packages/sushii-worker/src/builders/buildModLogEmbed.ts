@@ -119,7 +119,7 @@ export default async function buildModLogEmbed(
   return new EmbedBuilder()
     .setAuthor({
       name: `${executorUser.username}#${executorUser.discriminator}`,
-      iconURL: targetUser.displayAvatarURL(),
+      iconURL: executorUser.displayAvatarURL(),
     })
     .setFields(fields)
     .setColor(color)
