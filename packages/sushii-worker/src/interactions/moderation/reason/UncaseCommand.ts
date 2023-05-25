@@ -141,7 +141,19 @@ export default class UncaseCommand extends SlashCommandHandler {
       .filter((l) => l.msgId)
       .map((l) => l.msgId!);
 
-    await interaction.channel.bulkDelete(deleteIds);
+    const modLogChannel = await interaction.guild.channels.fetch(
+      guildConfigById.logMod
+    );
+
+    if (!modLogChannel || !modLogChannel.isTextBased()) {
+      throw new Error("Mod log channel not found or is not text channel");
+    }
+
+    try {
+      await modLogChannel.bulkDelete(deleteIds);
+    } catch (err) {
+      // Whatever
+    }
 
     const desc = bulkDeleteModLog.modLogs
       .map((m) => `#${m.caseId} - ${m.action} <@${m.userId}>`)

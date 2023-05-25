@@ -183,6 +183,8 @@ async function execActionUser(
           });
         }
 
+        // TODO: Log to mod log channel
+
         // Nothing, only DM
         break;
       case ActionType.Note:

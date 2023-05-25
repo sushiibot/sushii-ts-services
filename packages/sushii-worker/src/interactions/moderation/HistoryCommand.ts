@@ -5,7 +5,6 @@ import {
   PermissionsBitField,
 } from "discord.js";
 import Context from "../../model/context";
-import { getCreatedTimestampSeconds } from "../../utils/snowflake";
 import { SlashCommandHandler } from "../handlers";
 import buildUserHistoryEmbed from "./formatters/history";
 
@@ -48,7 +47,7 @@ export default class HistoryCommand extends SlashCommandHandler {
 
     const userFaceURL = user.displayAvatarURL();
 
-    const createdTimestamp = getCreatedTimestampSeconds(user.id);
+    const createdTimestamp = user.createdTimestamp / 1000;
     const fields = [
       {
         name: "Account Created",
@@ -65,9 +64,11 @@ export default class HistoryCommand extends SlashCommandHandler {
     }
 
     if (member?.joinedTimestamp) {
+      const ts = member.joinedTimestamp / 1000;
+
       fields.push({
         name: "Joined Server",
-        value: `<t:${member.joinedTimestamp}:F> (<t:${member.joinedTimestamp}:R>)`,
+        value: `<t:${ts}:F> (<t:${ts}:R>)`,
       });
     }
 
