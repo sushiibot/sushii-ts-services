@@ -5,6 +5,7 @@ import {
   PermissionsBitField,
 } from "discord.js";
 import Context from "../../model/context";
+import timestampToUnixTime from "../../utils/timestampToUnixTime";
 import { SlashCommandHandler } from "../handlers";
 import buildUserHistoryEmbed from "./formatters/history";
 
@@ -47,7 +48,7 @@ export default class HistoryCommand extends SlashCommandHandler {
 
     const userFaceURL = user.displayAvatarURL();
 
-    const createdTimestamp = user.createdTimestamp / 1000;
+    const createdTimestamp = timestampToUnixTime(user.createdTimestamp);
     const fields = [
       {
         name: "Account Created",
@@ -64,7 +65,7 @@ export default class HistoryCommand extends SlashCommandHandler {
     }
 
     if (member?.joinedTimestamp) {
-      const ts = member.joinedTimestamp / 1000;
+      const ts = timestampToUnixTime(member.joinedTimestamp);
 
       fields.push({
         name: "Joined Server",
