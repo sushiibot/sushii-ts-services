@@ -117,4 +117,5 @@ main().catch((e) => {
   });
 
   log.error(e, "fatal error rip");
+  process.exit(1);
 });
