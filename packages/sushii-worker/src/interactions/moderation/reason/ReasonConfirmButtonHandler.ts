@@ -49,7 +49,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
         .setColor(Color.Success);
 
       // Edit the message the comment is attached to
-      await interaction.editReply({
+      await interaction.update({
         embeds: [embed.toJSON()],
         components: [],
       });
@@ -69,7 +69,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
         .setColor(Color.Error);
 
       // Edit the message the comment is attached to
-      await interaction.editReply({
+      await interaction.update({
         embeds: [embed.toJSON()],
         components: [],
       });
@@ -117,7 +117,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
     }
 
     // Edit the message the button is attached to with the update result
-    await interaction.editReply({
+    await interaction.update({
       embeds: [responseEmbed.toJSON()],
       components: [],
     });
