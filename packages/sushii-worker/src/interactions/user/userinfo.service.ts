@@ -2,6 +2,7 @@ import { EmbedBuilder, GuildMember, User } from "discord.js";
 import { APIEmbed } from "discord-api-types/v10";
 import Color from "../../utils/colors";
 import { getCreatedTimestampSeconds } from "../../utils/snowflake";
+import timestampToUnixTime from "../../utils/timestampToUnixTime";
 
 export default async function getUserinfoEmbed(
   user: User,
@@ -53,17 +54,26 @@ export default async function getUserinfoEmbed(
         name: "Roles",
         value: rolesStr || "Member has no roles",
       },
-      {
-        name: "Joined Server",
-        value: `<t:${member.joinedTimestamp}:F> (<t:${member.joinedTimestamp}:R>)`,
-      },
     ]);
 
+    if (member.joinedTimestamp) {
+      const joinTs = timestampToUnixTime(member.joinedTimestamp);
+
+      embed = embed.addFields([
+        {
+          name: "Joined Server",
+          value: `<t:${joinTs}:F> (<t:${joinTs}:R>)`,
+        },
+      ]);
+    }
+
     if (member.premiumSinceTimestamp) {
+      const premiumTs = timestampToUnixTime(member.premiumSinceTimestamp);
+
       embed = embed.addFields([
         {
           name: "Boosting Since",
-          value: `<t:${member.premiumSinceTimestamp}:F> (<t:${member.premiumSinceTimestamp}:R>)`,
+          value: `<t:${premiumTs}:F> (<t:${premiumTs}:R>)`,
         },
       ]);
     }

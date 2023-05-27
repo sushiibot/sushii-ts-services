@@ -7,6 +7,7 @@ import {
 import Context from "../../model/context";
 import db from "../../model/db";
 import { getCreatedTimestampSeconds } from "../../utils/snowflake";
+import timestampToUnixTime from "../../utils/timestampToUnixTime";
 import { SlashCommandHandler } from "../handlers";
 import buildUserLookupEmbed from "./formatters/lookup";
 
@@ -105,9 +106,11 @@ export default class LookupCommand extends SlashCommandHandler {
     const member = await interaction.guild.members.fetch(user.id);
 
     if (member.joinedTimestamp) {
+      const ts = timestampToUnixTime(member.joinedTimestamp);
+
       fields.push({
         name: "Joined Server",
-        value: `<t:${member.joinedTimestamp}:F> (<t:${member.joinedTimestamp}:R>)`,
+        value: `<t:${ts}:F> (<t:${ts}:R>)`,
       });
     }
 
