@@ -78,7 +78,9 @@ function getReasonConfirmComponents(
 
 export async function updateModLogReasons(
   ctx: Context,
-  interaction: ChatInputCommandInteraction<"cached"> | ButtonInteraction,
+  interaction:
+    | ChatInputCommandInteraction<"cached">
+    | ButtonInteraction<"cached">,
   guildId: string,
   modLogChannelId: string,
   executorId: string,
@@ -139,6 +141,11 @@ export async function updateModLogReasons(
     ])
     .setColor(Color.Success);
 
+  const modLogchannel = await interaction.guild.channels.fetch(modLogChannelId);
+  if (!modLogchannel || !modLogchannel.isTextBased()) {
+    throw new Error("Mod log channel not found or is not text channel");
+  }
+
   for (const modCase of bulkUpdateModLogReason.modLogs) {
     // -------------------------------------------------------------------------
     // Fetch the target user
@@ -171,7 +178,7 @@ export async function updateModLogReasons(
     let modLogMsg;
     try {
       // eslint-disable-next-line no-await-in-loop
-      modLogMsg = await interaction.channel.messages.fetch(modCase.msgId);
+      modLogMsg = await modLogchannel.messages.fetch(modCase.msgId);
     } catch (err) {
       const arr = errs.get(ReasonError.MsgLogFetch) || [];
       errs.set(ReasonError.MsgLogFetch, [...arr, modCase.caseId]);
