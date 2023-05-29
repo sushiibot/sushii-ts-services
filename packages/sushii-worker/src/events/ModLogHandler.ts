@@ -16,12 +16,12 @@ import dayjs from "dayjs";
 import logger from "../logger";
 import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
-import { ModLog } from "../generated/graphql";
 import { ActionType } from "../interactions/moderation/ActionType";
 import customIds from "../interactions/customIds";
 import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
 import buildModLogEmbed from "../builders/buildModLogEmbed";
 import { buildDMEmbed } from "../interactions/moderation/sendDm";
+import db from "../model/db";
 
 interface ActionTypeEventData {
   actionType: ActionType;
@@ -84,9 +84,14 @@ function getActionTypeFromEvent(
   }
 }
 
-function buildModLogComponents(
+interface ModLogComponents {
+  reason: string | null;
+  case_id: string;
+}
+
+export function buildModLogComponents(
   actionType: ActionType,
-  modCase: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">
+  modCase: ModLogComponents
 ): APIActionRowComponent<APIMessageActionRowComponent>[] {
   // Currently only add button for ban and timeout
   if (actionType !== ActionType.Ban && actionType !== ActionType.Timeout) {
@@ -110,7 +115,7 @@ function buildModLogComponents(
     .setLabel("Set reason")
     .setCustomId(
       customIds.modLogReason.compile({
-        caseId: modCase.caseId,
+        caseId: modCase.case_id,
       })
     );
 
@@ -177,17 +182,20 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
 
   const targetUser = await guild.client.users.fetch(event.targetId);
 
-  const pendingCases = await ctx.sushiiAPI.sdk.getPendingModLog({
-    guildId: guild.id,
-    userId: event.targetId,
-    action: actionType,
-  });
+  let matchingCase = await db
+    .selectFrom("app_public.mod_logs")
+    .selectAll()
+    .where("guild_id", "=", guild.id)
+    .where("user_id", "=", event.targetId)
+    .where("action", "=", actionType)
+    .where("pending", "=", true)
+    .orderBy("action_time", "desc")
+    .executeTakeFirst();
 
-  let matchingCase = pendingCases.allModLogs?.nodes.at(0);
   if (matchingCase) {
     // Now - 1 minute
     const minimumTime = dayjs.utc().subtract(1, "minute");
-    const actionTime = dayjs.utc(matchingCase.actionTime);
+    const actionTime = dayjs.utc(matchingCase.action_time);
 
     // If action time is older than 1 minute
     if (actionTime.isBefore(minimumTime)) {
@@ -199,14 +207,15 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   // If there is a matching case AND if it was created in the last minute
   if (matchingCase) {
     // Mark case as not pending
-    await ctx.sushiiAPI.sdk.updateModLog({
-      guildId: guild.id,
-      caseId: matchingCase.caseId,
-      modLogPatch: {
-        // There is already executor ID if this was found
+    await db
+      .updateTable("app_public.mod_logs")
+      .where("guild_id", "=", guild.id)
+      .where("case_id", "=", matchingCase.case_id)
+      // There is already executor ID if this was found
+      .set({
         pending: false,
-      },
-    });
+      })
+      .execute();
   }
 
   // If this is a native manual timeout, we want to DM the user the reason.
@@ -232,30 +241,27 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
       throw new Error("Failed to get next case ID");
     }
 
-    const newModLog = await ctx.sushiiAPI.sdk.createModLog({
-      modLog: {
-        guildId: guild.id,
-        caseId: nextCaseId,
-        userId: event.targetId,
+    const newModLog = await db
+      .insertInto("app_public.mod_logs")
+      .values({
+        guild_id: guild.id,
+        case_id: nextCaseId,
         action: actionType,
-        reason,
-        actionTime: dayjs().utc().toISOString(),
         pending: false,
-        executorId,
-        userTag: `${targetUser.username}#${targetUser.discriminator}`,
-      },
-    });
+        user_id: event.targetId,
+        user_tag: `${targetUser.username}#${targetUser.discriminator}`,
+        executor_id: executorId,
+        action_time: dayjs().utc().toISOString(),
+        reason,
+        // This is set in the mod logger
+        msg_id: undefined,
+      })
+      .returningAll()
+      .executeTakeFirstOrThrow();
 
-    if (!newModLog.createModLog?.modLog) {
-      throw new Error("Failed to create mod log");
-    }
+    logger.debug({ newModLog }, "Created new mod log case");
 
-    logger.debug(
-      { newModLog: newModLog.createModLog.modLog },
-      "Created new mod log case"
-    );
-
-    matchingCase = newModLog.createModLog.modLog;
+    matchingCase = newModLog;
   }
 
   const embed = await buildModLogEmbed(
@@ -279,13 +285,15 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   });
 
   // Update message ID in db
-  await ctx.sushiiAPI.sdk.updateModLog({
-    caseId: matchingCase.caseId,
-    guildId: matchingCase.guildId,
-    modLogPatch: {
-      msgId: sentMsg.id,
-    },
-  });
+  await db
+    .updateTable("app_public.mod_logs")
+    .where("guild_id", "=", guild.id)
+    .where("case_id", "=", matchingCase.case_id)
+    // There is already executor ID if this was found
+    .set({
+      msg_id: sentMsg.id,
+    })
+    .execute();
 
   if (
     shouldDMReason &&

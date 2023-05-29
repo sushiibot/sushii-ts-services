@@ -8,6 +8,9 @@ import {
 } from "discord.js";
 import dayjs from "dayjs";
 import { Err, Ok, Result } from "ts-results";
+import { sql } from "kysely";
+import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
+import { DB } from "kysely-codegen";
 import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -16,6 +19,9 @@ import { ActionType } from "./ActionType";
 import hasPermissionTargetingMember from "../../utils/hasPermission";
 import ModActionData, { ModActionTarget } from "./ModActionData";
 import sendModActionDM from "./sendDm";
+import buildModLogEmbed from "../../builders/buildModLogEmbed";
+import db from "../../model/db";
+import { buildModLogComponents } from "../../events/ModLogHandler";
 
 interface ActionError {
   target: ModActionTarget;
@@ -103,7 +109,8 @@ async function execActionUser(
   interaction: ChatInputCommandInteraction,
   data: ModActionData,
   target: ModActionTarget,
-  actionType: ActionType
+  actionType: ActionType,
+  modCase: AllSelection<DB, "app_public.mod_logs">
 ): Promise<Result<ModActionTarget, ActionError>> {
   if (!interaction.inCachedGuild()) {
     throw new Error("Interaction is not in guild");
@@ -111,6 +118,8 @@ async function execActionUser(
 
   // Audit log header max 512 characters
   const auditLogReason = data.reason?.slice(0, 512);
+
+  const guildConfig = await db.getGuildConfig(interaction.guildId);
 
   try {
     switch (actionType) {
@@ -183,14 +192,35 @@ async function execActionUser(
           });
         }
 
-        // TODO: Log to mod log channel
-
-        // Nothing, only DM
-        break;
-      case ActionType.Note:
+      // Continue to the note step below
+      // eslint-disable-next-line no-fallthrough
+      case ActionType.Note: {
         // Allow for non-members, send no DM
 
+        // Send to mod log
+        const embed = await buildModLogEmbed(
+          ctx,
+          actionType,
+          target.user,
+          modCase
+        );
+        const components = buildModLogComponents(actionType, modCase);
+
+        if (guildConfig.log_mod_enabled && guildConfig.log_mod) {
+          const modLogChannel = await interaction.guild.channels.fetch(
+            guildConfig.log_mod
+          );
+
+          if (modLogChannel && modLogChannel.isTextBased()) {
+            await modLogChannel.send({
+              embeds: [embed],
+              components,
+            });
+          }
+        }
+
         break;
+      }
       case ActionType.Lookup:
       case ActionType.History:
         throw new Error(`unsupported action type ${actionType}`);
@@ -248,33 +278,46 @@ async function executeActionUser(
     });
   }
 
-  const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
-    guildId: interaction.guildId,
-  });
+  const lastCaseId = await db
+    .selectFrom("app_public.mod_logs")
+    .select(
+      db.fn.coalesce(db.fn.max("case_id"), sql<string>`0`).as("last_case_id")
+    )
+    .where("guild_id", "=", interaction.guildId)
+    .executeTakeFirstOrThrow();
 
-  if (!nextCaseId) {
-    return Err({
-      target,
-      message: "Failed to get next case id",
-    });
-  }
+  const nextCaseId = parseInt(lastCaseId.last_case_id, 10) + 1;
 
-  await ctx.sushiiAPI.sdk.createModLog({
-    modLog: {
-      guildId: interaction.guildId,
-      caseId: nextCaseId,
+  logger.debug(
+    {
+      lastCaseId,
+      nextCaseId,
+    },
+    "Creating new mod log"
+  );
+
+  // Should not be pending for note or warn actions
+  const isPending =
+    actionType !== ActionType.Note && actionType !== ActionType.Warn;
+
+  const modLog = await db
+    .insertInto("app_public.mod_logs")
+    .values({
+      guild_id: interaction.guildId,
+      case_id: nextCaseId,
       action: actionType,
-      pending: true,
-      userId: target.user.id,
-      userTag: `${target.user.username}#${target.user.discriminator}`,
-      executorId: data.invoker.id,
-      actionTime: dayjs().utc().toISOString(),
+      pending: isPending,
+      user_id: target.user.id,
+      user_tag: `${target.user.username}#${target.user.discriminator}`,
+      executor_id: data.invoker.id,
+      action_time: dayjs().utc().toISOString(),
       reason: data.reason,
       attachments: data.attachment?.url ? [data.attachment.url] : [],
       // This is set in the mod logger
-      msgId: undefined,
-    },
-  });
+      msg_id: undefined,
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow();
 
   // Only DM if (dm_reason true or has dm_message) AND if target is in the server.
   const shouldDM = data.shouldDM(actionType) && target.member !== null;
@@ -295,7 +338,14 @@ async function executeActionUser(
 
   // Only throw if we do NOT want a mod log case, e.g. fail to kick/ban/mute
   // REST methods will throw if it is not a successful request
-  const res = await execActionUser(ctx, interaction, data, target, actionType);
+  const res = await execActionUser(
+    ctx,
+    interaction,
+    data,
+    target,
+    actionType,
+    modLog
+  );
 
   // DM after for non-ban and send dm
   if (actionType !== ActionType.Ban && shouldDM) {
@@ -318,10 +368,11 @@ async function executeActionUser(
     }
 
     const [resDeleteModLog, resDeleteDM] = await Promise.allSettled([
-      ctx.sushiiAPI.sdk.deleteModLog({
-        caseId: nextCaseId,
-        guildId: interaction.guildId,
-      }),
+      db
+        .deleteFrom("app_public.mod_logs")
+        .where("case_id", "=", nextCaseId.toString())
+        .where("guild_id", "=", interaction.guildId)
+        .execute(),
       deleteDMPromise,
     ]);
 

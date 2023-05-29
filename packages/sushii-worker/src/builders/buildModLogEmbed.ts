@@ -1,23 +1,29 @@
 import { APIEmbedField, EmbedBuilder, TimestampStyles, User } from "discord.js";
 import path from "path";
-import { ModLog } from "../generated/generic";
 import { ActionType } from "../interactions/moderation/ActionType";
 import Context from "../model/context";
 import logger from "../logger";
 import toTimestamp from "../utils/toTimestamp";
 import { TimeoutChange } from "../types/TimeoutChange";
 
+interface ModCase {
+  case_id: string;
+  executor_id: string | null;
+  reason: string | null;
+  attachments: string[];
+}
+
 export default async function buildModLogEmbed(
   ctx: Context,
   actionType: ActionType,
   targetUser: User,
-  modCase: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">,
+  modCase: ModCase,
   timeoutChange?: TimeoutChange
 ): Promise<EmbedBuilder> {
   let executorUser;
-  if (modCase.executorId) {
+  if (modCase.executor_id) {
     try {
-      executorUser = await ctx.client.users.fetch(modCase.executorId);
+      executorUser = await ctx.client.users.fetch(modCase.executor_id);
     } catch (err) {
       logger.warn(err, "Failed to fetch mod log executor user");
     }
@@ -124,7 +130,7 @@ export default async function buildModLogEmbed(
     .setFields(fields)
     .setColor(color)
     .setFooter({
-      text: `Case #${modCase.caseId}`,
+      text: `Case #${modCase.case_id}`,
     })
     .setImage(modCase.attachments.at(0) || null)
     .setTimestamp(new Date());
