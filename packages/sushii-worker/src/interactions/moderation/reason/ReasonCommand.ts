@@ -436,16 +436,19 @@ export default class ReasonCommand extends SlashCommandHandler {
     );
 
     if (!responseEmbed) {
-      await interactionReplyErrorPlainMessage(
-        ctx,
-        interaction,
-        "Hmm... there weren't any cases to be updated."
-      );
+      const embed = new EmbedBuilder()
+        .setTitle("No cases updated")
+        .setDescription("Hmm.. there weren't any cases to update.")
+        .setColor(Color.Error);
+
+      await interaction.editReply({
+        embeds: [embed.toJSON()],
+      });
 
       return;
     }
 
-    interaction.reply({
+    await interaction.editReply({
       embeds: [responseEmbed.toJSON()],
     });
   }
