@@ -7,6 +7,7 @@ import { interactionReplyErrorPlainMessage } from "../../responses/error";
 import buildModLogEmbed from "../../../builders/buildModLogEmbed";
 import { ActionType } from "../ActionType";
 import sleep from "../../../utils/sleep";
+import db from "../../../model/db";
 
 // When modal submitted, update mod log message and save the reason
 export default class ModLogReasonModalHandler extends ModalHandler {
@@ -34,12 +35,14 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       throw new Error("No reason was set in the modal somehow");
     }
 
-    const modCase = await ctx.sushiiAPI.sdk.getModLog({
-      guildId: interaction.guildId,
-      caseId,
-    });
+    const modCase = await db
+      .selectFrom("app_public.mod_logs")
+      .selectAll()
+      .where("guild_id", "=", interaction.guildId)
+      .where("case_id", "=", caseId)
+      .executeTakeFirst();
 
-    if (!modCase.modLogByGuildIdAndCaseId) {
+    if (!modCase) {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
@@ -50,16 +53,18 @@ export default class ModLogReasonModalHandler extends ModalHandler {
     }
 
     // Save db reason and executor
-    const updatedModCase = await ctx.sushiiAPI.sdk.updateModLog({
-      guildId: interaction.guildId,
-      caseId,
-      modLogPatch: {
+    const updatedModCase = await db
+      .updateTable("app_public.mod_logs")
+      .where("guild_id", "=", interaction.guildId)
+      .where("case_id", "=", caseId)
+      .set({
         reason,
-        executorId: interaction.member.user.id,
-      },
-    });
+        executor_id: interaction.member.user.id,
+      })
+      .returningAll()
+      .executeTakeFirst();
 
-    if (!updatedModCase.updateModLogByGuildIdAndCaseId?.modLog) {
+    if (!updatedModCase) {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
@@ -73,15 +78,13 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       throw new Error("No channel id in reason modal interaction");
     }
 
-    if (!modCase.modLogByGuildIdAndCaseId.msgId) {
+    if (!modCase.msg_id) {
       throw new Error("No message id in mod log case");
     }
 
     let targetUser;
     try {
-      targetUser = await interaction.client.users.fetch(
-        modCase.modLogByGuildIdAndCaseId.userId
-      );
+      targetUser = await interaction.client.users.fetch(modCase.user_id);
     } catch (err) {
       await interactionReplyErrorPlainMessage(
         ctx,
@@ -95,19 +98,16 @@ export default class ModLogReasonModalHandler extends ModalHandler {
     // Rebuild embed with new mod case with included reason and executor
     const newEmbed = await buildModLogEmbed(
       ctx,
-      ActionType.fromString(modCase.modLogByGuildIdAndCaseId.action),
+      ActionType.fromString(modCase.action),
       targetUser,
-      updatedModCase.updateModLogByGuildIdAndCaseId.modLog
+      updatedModCase
     );
 
     // Edit message to show reason and remove button
-    await interaction.channel?.messages.edit(
-      modCase.modLogByGuildIdAndCaseId.msgId,
-      {
-        embeds: [newEmbed.toJSON()],
-        components: [],
-      }
-    );
+    await interaction.channel?.messages.edit(modCase.msg_id, {
+      embeds: [newEmbed.toJSON()],
+      components: [],
+    });
 
     const embed = new EmbedBuilder()
       .setTitle(`Updated reason for case #${caseId}`)

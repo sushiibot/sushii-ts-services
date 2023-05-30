@@ -104,6 +104,31 @@ function buildResponseEmbed(
     .setColor(Color.Success);
 }
 
+async function sendModLog(
+  ctx: Context,
+  interaction: ChatInputCommandInteraction<"cached">,
+  guildConfig: AllSelection<DB, "app_public.guild_configs">,
+  actionType: ActionType,
+  target: ModActionTarget,
+  modCase: AllSelection<DB, "app_public.mod_logs">
+): Promise<void> {
+  const embed = await buildModLogEmbed(ctx, actionType, target.user, modCase);
+  const components = buildModLogComponents(actionType, modCase);
+
+  if (guildConfig.log_mod_enabled && guildConfig.log_mod) {
+    const modLogChannel = await interaction.guild.channels.fetch(
+      guildConfig.log_mod
+    );
+
+    if (modLogChannel && modLogChannel.isTextBased()) {
+      await modLogChannel.send({
+        embeds: [embed],
+        components,
+      });
+    }
+  }
+}
+
 async function execActionUser(
   ctx: Context,
   interaction: ChatInputCommandInteraction,
@@ -184,7 +209,8 @@ async function execActionUser(
 
         break;
       }
-      case ActionType.Warn:
+      case ActionType.Warn: {
+        // Only warn if member is in the server
         if (!target.member) {
           return Err({
             target,
@@ -192,32 +218,29 @@ async function execActionUser(
           });
         }
 
-      // Continue to the note step below
-      // eslint-disable-next-line no-fallthrough
+        await sendModLog(
+          ctx,
+          interaction,
+          guildConfig,
+          actionType,
+          target,
+          modCase
+        );
+
+        break;
+      }
       case ActionType.Note: {
         // Allow for non-members, send no DM
 
-        // Send to mod log
-        const embed = await buildModLogEmbed(
+        // Send to mod log only
+        await sendModLog(
           ctx,
+          interaction,
+          guildConfig,
           actionType,
-          target.user,
+          target,
           modCase
         );
-        const components = buildModLogComponents(actionType, modCase);
-
-        if (guildConfig.log_mod_enabled && guildConfig.log_mod) {
-          const modLogChannel = await interaction.guild.channels.fetch(
-            guildConfig.log_mod
-          );
-
-          if (modLogChannel && modLogChannel.isTextBased()) {
-            await modLogChannel.send({
-              embeds: [embed],
-              components,
-            });
-          }
-        }
 
         break;
       }

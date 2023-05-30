@@ -150,10 +150,12 @@ export namespace ActionType {
         return Color.Error;
       case ActionType.BanRemove:
         return Color.Success;
+      case ActionType.Warn:
       case ActionType.Timeout:
         return Color.Warning;
       case ActionType.TimeoutAdjust:
       case ActionType.TimeoutRemove:
+      case ActionType.Note:
         return Color.Info;
       default:
         return null;
