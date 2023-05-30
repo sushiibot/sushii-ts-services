@@ -28,7 +28,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption
   ): Promise<void> {
-    if (!interaction.inRawGuild()) {
+    if (!interaction.inCachedGuild()) {
       throw new Error("Must be in guild.");
     }
 
