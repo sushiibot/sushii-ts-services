@@ -6,12 +6,14 @@ import {
   GatewayMessageUpdateDispatchData,
 } from "discord-api-types/v10";
 import { None, Option, Some } from "ts-results";
+import { Selectable } from "kysely";
+import { AppPublicMessages, AppPublicMsgLogBlocks } from "kysely-codegen";
 import SushiiEmoji from "../../constants/SushiiEmoji";
-import { MsgLogBlockType, Message } from "../../generated/graphql";
 import Context from "../../model/context";
 import buildChunks from "../../utils/buildChunks";
 import Color from "../../utils/colors";
 import logger from "../../logger";
+import db from "../../model/db";
 
 type EventData =
   | GatewayMessageDeleteDispatchData
@@ -24,23 +26,19 @@ function quoteMarkdownString(str: string): string {
 
 export function isChannelIgnored(
   eventType: GatewayDispatchEvents,
-  blockType: MsgLogBlockType
+  blockType: Selectable<AppPublicMsgLogBlocks>["block_type"]
 ): boolean {
   if (
     eventType === GatewayDispatchEvents.MessageDelete ||
     eventType === GatewayDispatchEvents.MessageDeleteBulk
   ) {
     // True / blocked if block type is delete or all
-    return (
-      blockType === MsgLogBlockType.Deletes || blockType === MsgLogBlockType.All
-    );
+    return blockType === "deletes" || blockType === "all";
   }
 
   if (eventType === GatewayDispatchEvents.MessageUpdate) {
     // True / blocked if block type is edit or all
-    return (
-      blockType === MsgLogBlockType.Edits || blockType === MsgLogBlockType.All
-    );
+    return blockType === "edits" || blockType === "all";
   }
 
   return false;
@@ -61,11 +59,12 @@ function getMessageIDs(event: EventData): string[] {
 function buildDeleteEmbed(
   ctx: Context,
   event: EventData,
-  message: Message
+  message: Selectable<AppPublicMessages>
 ): EmbedBuilder {
   let description = `${SushiiEmoji.MessageDelete} **Message deleted in <#${event.channel_id}>**\n`;
 
-  const msg = message.msg as APIMessage;
+  // lol
+  const msg = message.msg as any as APIMessage;
 
   if (message.content) {
     description += msg.content;
@@ -109,7 +108,7 @@ function buildDeleteEmbed(
 function buildEditEmbed(
   ctx: Context,
   event: EventData,
-  message: Message
+  message: Selectable<AppPublicMessages>
 ): Option<EmbedBuilder> {
   const updateEvent = event as GatewayMessageUpdateDispatchData;
 
@@ -124,7 +123,7 @@ function buildEditEmbed(
   }
 
   // Is this Partial<API.Message>?
-  const msg = message.msg as APIMessage;
+  const msg = message.msg as any as APIMessage;
 
   let description = `${SushiiEmoji.MessageEdit} **Message edited in <#${event.channel_id}>**\n`;
   description += "**Before:**";
@@ -154,7 +153,7 @@ function buildEditEmbed(
 function buildBulkDeleteEmbed(
   ctx: Context,
   event: GatewayMessageDeleteBulkDispatchData,
-  messages: Message[]
+  messages: Selectable<AppPublicMessages>[]
 ): EmbedBuilder[] {
   const deleteCount = messages.length.toLocaleString();
   // No new-line at the end of this since it's joined in buildChunks
@@ -162,10 +161,10 @@ function buildBulkDeleteEmbed(
 
   const messagesStrs = messages.map((m) => {
     if (m.content) {
-      return `<@${m.authorId}>: ${m.content}`;
+      return `<@${m.author_id}>: ${m.content}`;
     }
 
-    const msg = m.msg as APIMessage;
+    const msg = m.msg as any as APIMessage;
 
     if (msg.sticker_items && msg.sticker_items.length > 0) {
       const sticker = msg.sticker_items[0];
@@ -173,10 +172,10 @@ function buildBulkDeleteEmbed(
 
       // Can have both message and sticker
       if (msg.content) {
-        return `<@${m.authorId}>: ${msg.content}\n> **Sticker:** [${sticker.name}](${stickerURL})`;
+        return `<@${m.author_id}>: ${msg.content}\n> **Sticker:** [${sticker.name}](${stickerURL})`;
       }
 
-      return `<@${m.authorId}>: [${sticker.name}](${stickerURL})`;
+      return `<@${m.author_id}>: [${sticker.name}](${stickerURL})`;
     }
 
     if (msg.attachments && msg.attachments.length > 0) {
@@ -185,14 +184,14 @@ function buildBulkDeleteEmbed(
         .join("\n");
 
       if (msg.content) {
-        return `<@${m.authorId}>: ${msg.content}\n> **Attachments:**\n${attachments}`;
+        return `<@${m.author_id}>: ${msg.content}\n> **Attachments:**\n${attachments}`;
       }
 
       // Multiple attachments
-      return `<@${m.authorId}>: **Attachments:**\n${attachments}`;
+      return `<@${m.author_id}>: **Attachments:**\n${attachments}`;
     }
 
-    return `<@${m.authorId}>: ${m.content}`;
+    return `<@${m.author_id}>: ${m.content}`;
   });
 
   // Split into chunks of 4096 characters
@@ -215,7 +214,7 @@ function buildEmbeds(
   ctx: Context,
   eventType: GatewayDispatchEvents,
   event: EventData,
-  messages: Message[]
+  messages: Selectable<AppPublicMessages>[]
 ): Option<EmbedBuilder[]> {
   if (eventType === GatewayDispatchEvents.MessageDelete && event) {
     const embed = buildDeleteEmbed(ctx, event, messages[0]);
@@ -254,39 +253,37 @@ export async function msgLogHandler(
     return;
   }
 
-  const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
-    guildId: payload.guild_id,
-  });
+  const guildConfig = await db.getGuildConfig(payload.guild_id);
 
   // No guild config found, ignore
   if (
-    !guildConfigById || // Config not found
-    !guildConfigById.logMsg || // No msg log set
-    !guildConfigById.logMsgEnabled // Msg log disabled
+    !guildConfig.log_msg || // No msg log set
+    !guildConfig.log_msg_enabled // Msg log disabled
   ) {
     return;
   }
 
   // Get ignored msg logs
-  const { msgLogBlockByGuildIdAndChannelId: channelBlock } =
-    await ctx.sushiiAPI.sdk.getMsgLogBlock({
-      guildId: payload.guild_id,
-      channelId: payload.channel_id,
-    });
+  const channelBlock = await db
+    .selectFrom("app_public.msg_log_blocks")
+    .selectAll()
+    .where("guild_id", "=", payload.guild_id)
+    .where("channel_id", "=", payload.channel_id)
+    .executeTakeFirst();
 
-  if (channelBlock && isChannelIgnored(eventType, channelBlock.blockType)) {
+  if (channelBlock && isChannelIgnored(eventType, channelBlock.block_type)) {
     return;
   }
 
   const messageIDs = getMessageIDs(payload);
 
-  const { allMessages } = await ctx.sushiiAPI.sdk.getMessages({
-    channelId: payload.channel_id,
-    guildId: payload.guild_id,
-    in: messageIDs,
-  });
-
-  const messages = allMessages?.nodes || [];
+  const messages = await db
+    .selectFrom("app_public.messages")
+    .selectAll()
+    // Don't need to filter by guild_id or channel_id since the message ids will
+    // only come from the same guild and channel, and would make index not work
+    .where("message_id", "in", messageIDs)
+    .execute();
 
   // No cached message found for deleted or edited message in DB, ignore
   if (messages.length === 0) {
@@ -304,12 +301,12 @@ export async function msgLogHandler(
     return;
   }
 
-  const channel = ctx.client.channels.cache.get(guildConfigById.logMsg);
+  const channel = ctx.client.channels.cache.get(guildConfig.log_msg);
   if (!channel || !channel.isTextBased()) {
     logger.warn(
       {
         guildId: payload.guild_id,
-        channelId: guildConfigById.logMsg,
+        channelId: guildConfig.log_msg,
       },
       "Log msg channel not found or not text based"
     );
