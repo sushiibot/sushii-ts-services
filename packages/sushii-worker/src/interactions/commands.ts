@@ -38,6 +38,7 @@ import ReasonAutocomplete from "./moderation/reason/ReasonAutocomplete";
 import UnTimeoutCommand from "./moderation/UnTimeoutCommand";
 import UncaseCommand from "./moderation/reason/UncaseCommand";
 import ReasonConfirmButtonHandler from "./moderation/reason/ReasonConfirmButtonHandler";
+import SettingsCommand from "./settings/SettingsCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -81,6 +82,7 @@ export default function addCommands(
     new XpCommand(),
 
     // Settings
+    new SettingsCommand(),
     new WelcomeCommand(),
     new MessageLogCommand(),
     new ModLogCommand()

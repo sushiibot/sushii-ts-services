@@ -1,54 +1,57 @@
 import { GatewayDispatchEvents } from "discord.js";
-import { MsgLogBlockType } from "../generated/graphql";
 import { isChannelIgnored } from "./msglog/MsgLogHandler";
 
 describe("MsgLogHandler", () => {
-  describe.each([
+  describe.each<{
+    blockType: "all" | "deletes" | "edits";
+    eventType: GatewayDispatchEvents;
+    wantBlocked: boolean;
+  }>([
     // All
     {
-      blockType: MsgLogBlockType.All,
+      blockType: "all",
       eventType: GatewayDispatchEvents.MessageDelete,
       wantBlocked: true,
     },
     {
-      blockType: MsgLogBlockType.All,
+      blockType: "all",
       eventType: GatewayDispatchEvents.MessageUpdate,
       wantBlocked: true,
     },
     {
-      blockType: MsgLogBlockType.All,
+      blockType: "all",
       eventType: GatewayDispatchEvents.MessageDeleteBulk,
       wantBlocked: true,
     },
     // Deletes
     {
-      blockType: MsgLogBlockType.Deletes,
+      blockType: "deletes",
       eventType: GatewayDispatchEvents.MessageDelete,
       wantBlocked: true,
     },
     {
-      blockType: MsgLogBlockType.Deletes,
+      blockType: "deletes",
       eventType: GatewayDispatchEvents.MessageDeleteBulk,
       wantBlocked: true,
     },
     {
-      blockType: MsgLogBlockType.Deletes,
+      blockType: "deletes",
       eventType: GatewayDispatchEvents.MessageUpdate,
       wantBlocked: false,
     },
     // Edits
     {
-      blockType: MsgLogBlockType.Edits,
+      blockType: "edits",
       eventType: GatewayDispatchEvents.MessageDelete,
       wantBlocked: false,
     },
     {
-      blockType: MsgLogBlockType.Edits,
+      blockType: "edits",
       eventType: GatewayDispatchEvents.MessageDeleteBulk,
       wantBlocked: false,
     },
     {
-      blockType: MsgLogBlockType.Edits,
+      blockType: "edits",
       eventType: GatewayDispatchEvents.MessageUpdate,
       wantBlocked: true,
     },

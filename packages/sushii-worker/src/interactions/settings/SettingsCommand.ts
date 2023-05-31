@@ -2,13 +2,154 @@ import {
   SlashCommandBuilder,
   EmbedBuilder,
   ChatInputCommandInteraction,
+  PermissionFlagsBits,
 } from "discord.js";
-import { MessageFlags } from "discord-api-types/v10";
-import { t } from "i18next";
+import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import Context from "../../model/context";
-import Color from "../../utils/colors";
-import { isNoValuesDeletedError } from "../../utils/graphqlError";
 import { SlashCommandHandler } from "../handlers";
+import db from "../../model/db";
+import SushiiEmoji from "../../constants/SushiiEmoji";
+import { DB } from "../../model/dbTypes";
+import Color from "../../utils/colors";
+
+function toToggleButton(enabled?: boolean): string {
+  return enabled ? SushiiEmoji.ToggleOn : SushiiEmoji.ToggleOff;
+}
+
+function formatTextOption(
+  name: string,
+  text: string | null,
+  missingText: string,
+  enabled?: boolean
+): string {
+  let s = "";
+  s += toToggleButton(enabled);
+  s += ` **${name}**\n`;
+  s += `> ${text || missingText}`;
+  s += "\n";
+
+  return s;
+}
+
+function formatChannelOption(
+  name: string,
+  channel: string | null,
+  missingText: string,
+  enabled?: boolean
+): string {
+  let s = "";
+  s += toToggleButton(enabled);
+  s += ` **${name}**\n`;
+  s += "> ";
+
+  if (channel) {
+    s += `<#${channel}>`;
+  } else {
+    s += missingText;
+  }
+
+  s += "\n";
+
+  return s;
+}
+
+function getGuildConfigEmbed(
+  config: AllSelection<DB, "app_public.guild_configs">
+): EmbedBuilder {
+  let embed = new EmbedBuilder()
+    .setTitle("Server Settings")
+    .setColor(Color.Info);
+
+  let general = "";
+
+  general += `**Prefix**: \`${config.prefix || "-"}\``;
+  general += "\n";
+  general +=
+    "> Note: Commands are being migrated to slash commands, this is only for legacy commands that have not been migrated yet.";
+
+  embed = embed.addFields([
+    {
+      name: "General",
+      value: general,
+      inline: false,
+    },
+  ]);
+
+  // ---------------------------------------------------------------------------
+  // Join / Leave messages
+
+  let joinLeave = "";
+
+  joinLeave += formatTextOption(
+    "Join Message",
+    config.join_msg,
+    "No join message set.",
+    config.join_msg_enabled
+  );
+  joinLeave += "\n";
+
+  joinLeave += formatTextOption(
+    "Leave Message",
+    config.leave_msg,
+    "No leave message set.",
+    config.leave_msg_enabled
+  );
+  joinLeave += "\n";
+
+  if (config.msg_channel) {
+    joinLeave += `Join/Leave messages will be sent to <#${config.msg_channel}>`;
+  } else {
+    joinLeave +=
+      "⚠️ Join/Leave message channel needs to be set with `/settings set msgchannel`";
+  }
+
+  embed = embed.addFields([
+    {
+      name: "Join/Leave Messages",
+      value: joinLeave,
+      inline: false,
+    },
+  ]);
+
+  // ---------------------------------------------------------------------------
+  // Logging
+
+  let logging = "";
+
+  logging += formatChannelOption(
+    "Mod logs",
+    config.log_mod,
+    "No mod log channel set.",
+    config.log_mod_enabled
+  );
+  logging += "\n";
+
+  logging += formatChannelOption(
+    "Member join/leave logs",
+    config.log_member,
+    "No member log channel set.",
+    config.log_member_enabled
+  );
+  logging += "\n";
+
+  logging += formatChannelOption(
+    "Message logs",
+    config.log_msg,
+    "No message log channel set.",
+    config.log_msg_enabled
+  );
+  logging += "\n";
+
+  embed = embed.addFields([
+    {
+      name: "Logging",
+      value: logging,
+      inline: false,
+    },
+  ]);
+
+  return embed;
+}
 
 export default class SettingsCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -16,25 +157,10 @@ export default class SettingsCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("settings")
     .setDescription("Configure sushii server settings.")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+    .setDMPermission(false)
     .addSubcommand((c) =>
-      c.setName("list").setDescription("Show the current settings.")
-    )
-    .addSubcommand((c) =>
-      c
-        .setName("list")
-        .setDescription("List all of your current notifications.")
-    )
-    .addSubcommand((c) =>
-      c
-        .setName("delete")
-        .setDescription("Delete a notification.")
-        .addStringOption((o) =>
-          o
-            .setName("keyword")
-            .setDescription("The keyword to delete.")
-            .setRequired(true)
-            .setAutocomplete(true)
-        )
+      c.setName("view").setDescription("View the current server settings.")
     )
     .toJSON();
 
@@ -49,120 +175,27 @@ export default class SettingsCommand extends SlashCommandHandler {
 
     const subcommand = interaction.options.getSubcommand();
     switch (subcommand) {
-      case "add":
-        return SettingsCommand.addHandler(ctx, interaction);
-      case "list":
-        return SettingsCommand.listHandler(ctx, interaction);
-      case "delete":
-        return SettingsCommand.deleteHandler(ctx, interaction);
-
+      case "view":
+        return SettingsCommand.viewHandler(ctx, interaction);
       default:
         throw new Error("Invalid subcommand.");
     }
   }
 
-  static async addHandler(
+  static async viewHandler(
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const keyword = interaction.options.getString("keyword", true);
+    const config = await db.getGuildConfig(interaction.guildId);
 
-    await ctx.sushiiAPI.sdk.createNotification({
-      notification: {
-        guildId: interaction.guildId,
-        userId: interaction.user.id,
-        keyword,
-      },
-    });
-
-    const embed = new EmbedBuilder()
-      .setTitle("Added notification.")
-      .setFields([{ name: "Keyword", value: keyword }])
-      .setColor(Color.Success);
-
-    await interaction.reply({
-      embeds: [embed.toJSON()],
-      flags: MessageFlags.Ephemeral,
-    });
-  }
-
-  static async listHandler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
-  ): Promise<void> {
-    const notifications = await ctx.sushiiAPI.sdk.getUserNotifications({
-      guildId: interaction.guildId,
-      userId: interaction.user.id,
-    });
-
-    const keywords = notifications.allNotifications?.nodes.map(
-      (n) => n.keyword
-    );
-
-    if (!keywords || keywords.length === 0) {
-      await interaction.reply({
-        content: t("notification.list.empty", {
-          ns: "commands",
-        }),
-        flags: MessageFlags.Ephemeral,
-      });
-
-      return;
+    if (!config) {
+      throw new Error("No config found.");
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle(t("notification.list.title", { ns: "commands" }))
-      .setDescription(keywords.join("\n"))
-      .setColor(Color.Info);
+    const embed = getGuildConfigEmbed(config);
 
     await interaction.reply({
       embeds: [embed.toJSON()],
-      flags: MessageFlags.Ephemeral,
-    });
-  }
-
-  static async deleteHandler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
-  ): Promise<void> {
-    const keyword = interaction.options.getString("keyword", true);
-
-    try {
-      await ctx.sushiiAPI.sdk.deleteNotification({
-        guildId: interaction.guildId,
-        userId: interaction.user.id,
-        keyword,
-      });
-    } catch (err) {
-      if (!isNoValuesDeletedError(err)) {
-        throw err;
-      }
-
-      // Returns correct error
-      await interaction.reply({
-        content: t("notification.delete.not_found", {
-          ns: "commands",
-          keyword,
-        }),
-        flags: MessageFlags.Ephemeral,
-      });
-
-      return;
-    }
-
-    const embed = new EmbedBuilder()
-      .setTitle(t("notification.delete.title", { ns: "commands" }))
-      .setFields([
-        {
-          name: t("notification.delete.field_title", { ns: "commands" }),
-          value: keyword,
-        },
-      ])
-      .setColor(Color.Success);
-
-    await interaction.reply({
-      embeds: [embed.toJSON()],
-      flags: MessageFlags.Ephemeral,
     });
   }
 }

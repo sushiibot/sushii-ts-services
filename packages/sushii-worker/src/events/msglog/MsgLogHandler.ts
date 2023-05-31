@@ -7,7 +7,7 @@ import {
 } from "discord-api-types/v10";
 import { None, Option, Some } from "ts-results";
 import { Selectable } from "kysely";
-import { AppPublicMessages, AppPublicMsgLogBlocks } from "kysely-codegen";
+import { AppPublicMessages, AppPublicMsgLogBlocks } from "../../model/dbTypes";
 import SushiiEmoji from "../../constants/SushiiEmoji";
 import Context from "../../model/context";
 import buildChunks from "../../utils/buildChunks";

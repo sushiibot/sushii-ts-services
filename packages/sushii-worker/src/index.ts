@@ -85,7 +85,10 @@ async function main(): Promise<void> {
       log.info("healthcheck");
 
       return {
-        hey: "meow",
+        discordReady: djsClient.isReady(),
+        discord: djsClient.ws.shards.map((s) => ({
+          status: s.status,
+        })),
       };
     },
     onShutdown: async () => {

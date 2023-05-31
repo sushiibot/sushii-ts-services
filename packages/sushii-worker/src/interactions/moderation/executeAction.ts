@@ -10,7 +10,6 @@ import dayjs from "dayjs";
 import { Err, Ok, Result } from "ts-results";
 import { sql } from "kysely";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
-import { DB } from "kysely-codegen";
 import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -22,6 +21,7 @@ import sendModActionDM from "./sendDm";
 import buildModLogEmbed from "../../builders/buildModLogEmbed";
 import db from "../../model/db";
 import { buildModLogComponents } from "../../events/ModLogHandler";
+import { DB } from "../../model/dbTypes";
 
 interface ActionError {
   target: ModActionTarget;
