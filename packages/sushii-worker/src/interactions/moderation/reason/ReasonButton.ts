@@ -38,7 +38,7 @@ export default class ModLogReasonButtonHandler extends ButtonHandler {
       textInput
     );
 
-    interaction.showModal({
+    await interaction.showModal({
       title: `Case #${caseId}`,
       custom_id: interaction.customId,
       components: [row.toJSON()],
