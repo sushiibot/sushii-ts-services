@@ -196,91 +196,123 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildAuditLogEntryCreate, async (entry, guild) => {
-    await handleEvent(
-      ctx,
-      Events.GuildAuditLogEntryCreate,
-      [modLogHandler],
-      entry,
-      guild
-    );
+    try {
+      await handleEvent(
+        ctx,
+        Events.GuildAuditLogEntryCreate,
+        [modLogHandler],
+        entry,
+        guild
+      );
+    } catch (err) {
+      logger.error(
+        {
+          err,
+          entryId: entry.id,
+          guildId: guild.id,
+        },
+        "error handling guild audit log entry create, this should be caught"
+      );
+    }
   });
 
   client.on(Events.GuildBanAdd, async (guildBan) => {
-    await handleEvent(
-      ctx,
-      Events.GuildBanAdd,
-      [legacyModLogNotifierHandler],
-      guildBan
-    );
+    try {
+      await handleEvent(
+        ctx,
+        Events.GuildBanAdd,
+        [legacyModLogNotifierHandler],
+        guildBan
+      );
+    } catch (err) {
+      logger.error(
+        {
+          err,
+          guildId: guildBan.guild.id,
+        },
+        "error handling guild ban add, this should be caught"
+      );
+    }
   });
 
   client.on(Events.MessageCreate, async (msg) => {
-    const startTime = process.hrtime.bigint();
+    try {
+      const startTime = process.hrtime.bigint();
 
-    if (msg.author.id === "150443906511667200" && msg.content === "heapdump") {
-      logger.info("Generating heapdump");
+      if (
+        msg.author.id === "150443906511667200" &&
+        msg.content === "heapdump"
+      ) {
+        logger.info("Generating heapdump");
 
-      const snapshotStream = v8.getHeapSnapshot();
-      // It's important that the filename end with `.heapsnapshot`,
-      // otherwise Chrome DevTools won't open it.
-      const fileName = `${Date.now()}.heapsnapshot`;
-      const fileStream = fs.createWriteStream(fileName);
-      snapshotStream.pipe(fileStream);
+        const snapshotStream = v8.getHeapSnapshot();
+        // It's important that the filename end with `.heapsnapshot`,
+        // otherwise Chrome DevTools won't open it.
+        const fileName = `${Date.now()}.heapsnapshot`;
+        const fileStream = fs.createWriteStream(fileName);
+        snapshotStream.pipe(fileStream);
 
-      logger.info("heapdump done");
-    }
+        logger.info("heapdump done");
+      }
 
-    await handleEvent(ctx, Events.MessageCreate, [levelHandler], msg);
+      await handleEvent(ctx, Events.MessageCreate, [levelHandler], msg);
 
-    const endTime = process.hrtime.bigint();
-    const durationMs = Number(endTime - startTime) / 1000000;
+      const endTime = process.hrtime.bigint();
+      const durationMs = Number(endTime - startTime) / 1000000;
 
-    if (durationMs > 1000) {
-      logger.debug(
-        {
-          id: msg.id,
-          duration: `${Number(endTime - startTime) / 1000000} ms`,
-        },
-        "slow msg handler"
-      );
+      if (durationMs > 1000) {
+        logger.debug(
+          {
+            id: msg.id,
+            duration: `${Number(endTime - startTime) / 1000000} ms`,
+          },
+          "slow msg handler"
+        );
+      }
+    } catch (err) {
+      logger.error(err, "error handling message create, this should be caught");
     }
   });
 
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
-    const startTime = process.hrtime.bigint();
+    try {
+      const startTime = process.hrtime.bigint();
 
-    if (event.t === GatewayDispatchEvents.MessageDelete) {
-      await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
-    }
+      if (event.t === GatewayDispatchEvents.MessageDelete) {
+        await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
+      }
 
-    if (event.t === GatewayDispatchEvents.MessageDeleteBulk) {
-      await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
-    }
+      if (event.t === GatewayDispatchEvents.MessageDeleteBulk) {
+        await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
+      }
 
-    if (event.t === GatewayDispatchEvents.MessageUpdate) {
-      // Log first to keep old message, then cache after for new update.
-      // Fine to await since each event is a specific type, no other types that
-      // this blocks.
-      await msgLogHandler(ctx, event.t, event.d);
-      await msgLogCacheHandler(ctx, event.t, event.d);
-    }
+      if (event.t === GatewayDispatchEvents.MessageUpdate) {
+        // Log first to keep old message, then cache after for new update.
+        // Fine to await since each event is a specific type, no other types that
+        // this blocks.
+        await msgLogHandler(ctx, event.t, event.d);
+        await msgLogCacheHandler(ctx, event.t, event.d);
+      }
 
-    if (event.t === GatewayDispatchEvents.MessageCreate) {
-      await runParallel(event.t, [msgLogCacheHandler(ctx, event.t, event.d)]);
-    }
+      if (event.t === GatewayDispatchEvents.MessageCreate) {
+        await runParallel(event.t, [msgLogCacheHandler(ctx, event.t, event.d)]);
+      }
 
-    const endTime = process.hrtime.bigint();
-    const durationMs = Number(endTime - startTime) / 1000000;
+      const endTime = process.hrtime.bigint();
+      const durationMs = Number(endTime - startTime) / 1000000;
 
-    if (durationMs > 1000) {
-      logger.warn(
-        {
-          type: event.t,
-          seq: event.s,
-          duration: `${durationMs} ms`,
-        },
-        "slow raw event"
-      );
+      if (durationMs > 1000) {
+        logger.warn(
+          {
+            type: event.t,
+            seq: event.s,
+            duration: `${durationMs} ms`,
+          },
+          "slow raw event"
+        );
+      }
+    } catch (err) {
+      logger.error(err, "error handling raw event, this should be caught");
     }
   });
 
