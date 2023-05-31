@@ -1,3 +1,0 @@
-query getNextCaseID($guildId: BigInt!) {
-  nextCaseId(guildId: $guildId)
-}

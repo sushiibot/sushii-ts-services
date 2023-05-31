@@ -21959,6 +21959,22 @@
             "deprecationReason": null
           },
           {
+            "name": "lookupDetailsOptIn",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "maxMention",
             "description": null,
             "args": [],
@@ -22591,6 +22607,18 @@
             "deprecationReason": null
           },
           {
+            "name": "lookupDetailsOptIn",
+            "description": "Checks for equality with the object’s `lookupDetailsOptIn` field.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "maxMention",
             "description": "Checks for equality with the object’s `maxMention` field.",
             "type": {
@@ -22915,6 +22943,18 @@
           {
             "name": "logMsgEnabled",
             "description": "Distinct count of logMsgEnabled across the matching connection",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "BigInt",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lookupDetailsOptIn",
+            "description": "Distinct count of lookupDetailsOptIn across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -23271,6 +23311,18 @@
           {
             "name": "logMsgEnabled",
             "description": "Filter by the object’s `logMsgEnabled` field.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "BooleanFilter",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lookupDetailsOptIn",
+            "description": "Filter by the object’s `lookupDetailsOptIn` field.",
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "BooleanFilter",
@@ -23645,6 +23697,18 @@
           },
           {
             "name": "logMsgEnabled",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lookupDetailsOptIn",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -24222,6 +24286,18 @@
           },
           {
             "name": "logMsgEnabled",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "lookupDetailsOptIn",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -25299,6 +25375,12 @@
           },
           {
             "name": "LOG_MSG_ENABLED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "LOOKUP_DETAILS_OPT_IN",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -26792,6 +26874,18 @@
           },
           {
             "name": "LOG_MSG_ENABLED_DESC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "LOOKUP_DETAILS_OPT_IN_ASC",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "LOOKUP_DETAILS_OPT_IN_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

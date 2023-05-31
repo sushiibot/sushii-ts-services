@@ -4325,6 +4325,7 @@ export type GuildConfig = Node & {
   logModEnabled: Scalars['Boolean'];
   logMsg?: Maybe<Scalars['BigInt']>;
   logMsgEnabled: Scalars['Boolean'];
+  lookupDetailsOptIn: Scalars['Boolean'];
   maxMention?: Maybe<Scalars['Int']>;
   msgChannel?: Maybe<Scalars['BigInt']>;
   muteDmEnabled: Scalars['Boolean'];
@@ -4421,6 +4422,8 @@ export type GuildConfigCondition = {
   logMsg?: InputMaybe<Scalars['BigInt']>;
   /** Checks for equality with the object’s `logMsgEnabled` field. */
   logMsgEnabled?: InputMaybe<Scalars['Boolean']>;
+  /** Checks for equality with the object’s `lookupDetailsOptIn` field. */
+  lookupDetailsOptIn?: InputMaybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `maxMention` field. */
   maxMention?: InputMaybe<Scalars['Int']>;
   /** Checks for equality with the object’s `msgChannel` field. */
@@ -4479,6 +4482,8 @@ export type GuildConfigDistinctCountAggregates = {
   logMsg?: Maybe<Scalars['BigInt']>;
   /** Distinct count of logMsgEnabled across the matching connection */
   logMsgEnabled?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of lookupDetailsOptIn across the matching connection */
+  lookupDetailsOptIn?: Maybe<Scalars['BigInt']>;
   /** Distinct count of maxMention across the matching connection */
   maxMention?: Maybe<Scalars['BigInt']>;
   /** Distinct count of msgChannel across the matching connection */
@@ -4539,6 +4544,8 @@ export type GuildConfigFilter = {
   logMsg?: InputMaybe<BigIntFilter>;
   /** Filter by the object’s `logMsgEnabled` field. */
   logMsgEnabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `lookupDetailsOptIn` field. */
+  lookupDetailsOptIn?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `maxMention` field. */
   maxMention?: InputMaybe<IntFilter>;
   /** Filter by the object’s `msgChannel` field. */
@@ -4586,6 +4593,7 @@ export type GuildConfigInput = {
   logModEnabled?: InputMaybe<Scalars['Boolean']>;
   logMsg?: InputMaybe<Scalars['BigInt']>;
   logMsgEnabled?: InputMaybe<Scalars['Boolean']>;
+  lookupDetailsOptIn?: InputMaybe<Scalars['Boolean']>;
   maxMention?: InputMaybe<Scalars['Int']>;
   msgChannel?: InputMaybe<Scalars['BigInt']>;
   muteDmEnabled?: InputMaybe<Scalars['Boolean']>;
@@ -4661,6 +4669,7 @@ export type GuildConfigPatch = {
   logModEnabled?: InputMaybe<Scalars['Boolean']>;
   logMsg?: InputMaybe<Scalars['BigInt']>;
   logMsgEnabled?: InputMaybe<Scalars['Boolean']>;
+  lookupDetailsOptIn?: InputMaybe<Scalars['Boolean']>;
   maxMention?: InputMaybe<Scalars['Int']>;
   msgChannel?: InputMaybe<Scalars['BigInt']>;
   muteDmEnabled?: InputMaybe<Scalars['Boolean']>;
@@ -4834,6 +4843,7 @@ export enum GuildConfigsGroupBy {
   LogModEnabled = 'LOG_MOD_ENABLED',
   LogMsg = 'LOG_MSG',
   LogMsgEnabled = 'LOG_MSG_ENABLED',
+  LookupDetailsOptIn = 'LOOKUP_DETAILS_OPT_IN',
   MaxMention = 'MAX_MENTION',
   MsgChannel = 'MSG_CHANNEL',
   MuteDmEnabled = 'MUTE_DM_ENABLED',
@@ -5003,6 +5013,8 @@ export enum GuildConfigsOrderBy {
   LogMsgDesc = 'LOG_MSG_DESC',
   LogMsgEnabledAsc = 'LOG_MSG_ENABLED_ASC',
   LogMsgEnabledDesc = 'LOG_MSG_ENABLED_DESC',
+  LookupDetailsOptInAsc = 'LOOKUP_DETAILS_OPT_IN_ASC',
+  LookupDetailsOptInDesc = 'LOOKUP_DETAILS_OPT_IN_DESC',
   MaxMentionAsc = 'MAX_MENTION_ASC',
   MaxMentionDesc = 'MAX_MENTION_DESC',
   MsgChannelAsc = 'MSG_CHANNEL_ASC',
@@ -20025,6 +20037,7 @@ export type GuildConfigResolvers<ContextType = any, ParentType extends Resolvers
   logModEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   logMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   logMsgEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  lookupDetailsOptIn?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   maxMention?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   msgChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   muteDmEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -20084,6 +20097,7 @@ export type GuildConfigDistinctCountAggregatesResolvers<ContextType = any, Paren
   logModEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   logMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   logMsgEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  lookupDetailsOptIn?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   maxMention?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   msgChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   muteDmEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
@@ -23605,43 +23619,6 @@ export type UpdateGuildConfigMutationVariables = Exact<{
 
 export type UpdateGuildConfigMutation = { __typename?: 'Mutation', updateGuildConfigById?: { __typename?: 'UpdateGuildConfigPayload', guildConfig?: { __typename?: 'GuildConfig', disabledChannels?: Array<string | null> | null, inviteGuard: boolean, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: string | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: string | null, logMsg?: string | null, logMsgEnabled: boolean, maxMention?: number | null, msgChannel?: string | null, muteDmEnabled: boolean, muteDmText?: string | null, muteDuration?: string | null, muteRole?: string | null, prefix?: string | null, roleChannel?: string | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null } | null } | null };
 
-export type CreateLevelRoleApplyJobMutationVariables = Exact<{
-  guildId: Scalars['BigInt'];
-  interactionId: Scalars['BigInt'];
-  notifyUserId: Scalars['BigInt'];
-  channelId: Scalars['BigInt'];
-  messageId: Scalars['BigInt'];
-  requestsTotal: Scalars['BigInt'];
-  membersTotal: Scalars['BigInt'];
-}>;
-
-
-export type CreateLevelRoleApplyJobMutation = { __typename?: 'Mutation', createLevelRoleApplyJob?: { __typename?: 'CreateLevelRoleApplyJobPayload', levelRoleApplyJob?: { __typename?: 'LevelRoleApplyJob', guildId: string, interactionId: string, notifyUserId: string, channelId: string, messageId: string, requestsProcessed: string, requestsTotal?: string | null, membersTotal: string, membersSkipped: string, membersApplied: string, membersNotFound: string, membersTotalProcessed: string, createdAt: string, updatedAt: string } | null } | null };
-
-export type DeleteLevelRoleApplyJobMutationVariables = Exact<{
-  guildId: Scalars['BigInt'];
-}>;
-
-
-export type DeleteLevelRoleApplyJobMutation = { __typename?: 'Mutation', deleteLevelRoleApplyJobByGuildId?: { __typename?: 'DeleteLevelRoleApplyJobPayload', levelRoleApplyJob?: { __typename?: 'LevelRoleApplyJob', guildId: string, interactionId: string, notifyUserId: string, channelId: string, messageId: string, requestsProcessed: string, requestsTotal?: string | null, membersTotal: string, membersSkipped: string, membersApplied: string, membersNotFound: string, membersTotalProcessed: string, createdAt: string, updatedAt: string } | null } | null };
-
-export type GetLevelRoleApplyJobByGuildIdQueryVariables = Exact<{
-  guildId: Scalars['BigInt'];
-}>;
-
-
-export type GetLevelRoleApplyJobByGuildIdQuery = { __typename?: 'Query', levelRoleApplyJobByGuildId?: { __typename?: 'LevelRoleApplyJob', guildId: string, interactionId: string, notifyUserId: string, channelId: string, messageId: string, requestsProcessed: string, requestsTotal?: string | null, membersTotal: string, membersSkipped: string, membersApplied: string, membersNotFound: string, membersTotalProcessed: string, createdAt: string, updatedAt: string } | null };
-
-export type LevelRoleApplyJobDataFragment = { __typename?: 'LevelRoleApplyJob', guildId: string, interactionId: string, notifyUserId: string, channelId: string, messageId: string, requestsProcessed: string, requestsTotal?: string | null, membersTotal: string, membersSkipped: string, membersApplied: string, membersNotFound: string, membersTotalProcessed: string, createdAt: string, updatedAt: string };
-
-export type UpdateLevelRoleApplyJobMutationVariables = Exact<{
-  guildId: Scalars['BigInt'];
-  levelRoleApplyJobPatch: LevelRoleApplyJobPatch;
-}>;
-
-
-export type UpdateLevelRoleApplyJobMutation = { __typename?: 'Mutation', updateLevelRoleApplyJobByGuildId?: { __typename?: 'UpdateLevelRoleApplyJobPayload', levelRoleApplyJob?: { __typename?: 'LevelRoleApplyJob', guildId: string, interactionId: string, notifyUserId: string, channelId: string, messageId: string, requestsProcessed: string, requestsTotal?: string | null, membersTotal: string, membersSkipped: string, membersApplied: string, membersNotFound: string, membersTotalProcessed: string, createdAt: string, updatedAt: string } | null } | null };
-
 export type DeleteLevelRoleMutationVariables = Exact<{
   guildId: Scalars['BigInt'];
   roleId: Scalars['BigInt'];
@@ -23744,13 +23721,6 @@ export type GetModLogsInRangeQueryVariables = Exact<{
 
 
 export type GetModLogsInRangeQuery = { __typename?: 'Query', allModLogs?: { __typename?: 'ModLogsConnection', nodes: Array<{ __typename?: 'ModLog', action: string, actionTime: string, attachments: Array<string | null>, caseId: string, executorId?: string | null, guildId: string, msgId?: string | null, pending: boolean, reason?: string | null, userId: string, userTag: string }> } | null };
-
-export type GetNextCaseIdQueryVariables = Exact<{
-  guildId: Scalars['BigInt'];
-}>;
-
-
-export type GetNextCaseIdQuery = { __typename?: 'Query', nextCaseId?: string | null };
 
 export type GetPendingModLogQueryVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -24165,24 +24135,6 @@ export const GuildConfigDataFragmentDoc = gql`
   warnDmText
 }
     `;
-export const LevelRoleApplyJobDataFragmentDoc = gql`
-    fragment LevelRoleApplyJobData on LevelRoleApplyJob {
-  guildId
-  interactionId
-  notifyUserId
-  channelId
-  messageId
-  requestsProcessed
-  requestsTotal
-  membersTotal
-  membersSkipped
-  membersApplied
-  membersNotFound
-  membersTotalProcessed
-  createdAt
-  updatedAt
-}
-    `;
 export const LevelRoleDataFragmentDoc = gql`
     fragment LevelRoleData on LevelRole {
   guildId
@@ -24322,44 +24274,6 @@ export const UpdateGuildConfigDocument = gql`
   }
 }
     ${GuildConfigDataFragmentDoc}`;
-export const CreateLevelRoleApplyJobDocument = gql`
-    mutation createLevelRoleApplyJob($guildId: BigInt!, $interactionId: BigInt!, $notifyUserId: BigInt!, $channelId: BigInt!, $messageId: BigInt!, $requestsTotal: BigInt!, $membersTotal: BigInt!) {
-  createLevelRoleApplyJob(
-    input: {levelRoleApplyJob: {guildId: $guildId, interactionId: $interactionId, notifyUserId: $notifyUserId, channelId: $channelId, messageId: $messageId, requestsTotal: $requestsTotal, membersTotal: $membersTotal}}
-  ) {
-    levelRoleApplyJob {
-      ...LevelRoleApplyJobData
-    }
-  }
-}
-    ${LevelRoleApplyJobDataFragmentDoc}`;
-export const DeleteLevelRoleApplyJobDocument = gql`
-    mutation deleteLevelRoleApplyJob($guildId: BigInt!) {
-  deleteLevelRoleApplyJobByGuildId(input: {guildId: $guildId}) {
-    levelRoleApplyJob {
-      ...LevelRoleApplyJobData
-    }
-  }
-}
-    ${LevelRoleApplyJobDataFragmentDoc}`;
-export const GetLevelRoleApplyJobByGuildIdDocument = gql`
-    query getLevelRoleApplyJobByGuildId($guildId: BigInt!) {
-  levelRoleApplyJobByGuildId(guildId: $guildId) {
-    ...LevelRoleApplyJobData
-  }
-}
-    ${LevelRoleApplyJobDataFragmentDoc}`;
-export const UpdateLevelRoleApplyJobDocument = gql`
-    mutation updateLevelRoleApplyJob($guildId: BigInt!, $levelRoleApplyJobPatch: LevelRoleApplyJobPatch!) {
-  updateLevelRoleApplyJobByGuildId(
-    input: {levelRoleApplyJobPatch: $levelRoleApplyJobPatch, guildId: $guildId}
-  ) {
-    levelRoleApplyJob {
-      ...LevelRoleApplyJobData
-    }
-  }
-}
-    ${LevelRoleApplyJobDataFragmentDoc}`;
 export const DeleteLevelRoleDocument = gql`
     mutation deleteLevelRole($guildId: BigInt!, $roleId: BigInt!) {
   deleteLevelRoleByGuildIdAndRoleId(input: {guildId: $guildId, roleId: $roleId}) {
@@ -24479,11 +24393,6 @@ export const GetModLogsInRangeDocument = gql`
   }
 }
     ${ModLogDataFragmentDoc}`;
-export const GetNextCaseIdDocument = gql`
-    query getNextCaseID($guildId: BigInt!) {
-  nextCaseId(guildId: $guildId)
-}
-    `;
 export const GetPendingModLogDocument = gql`
     query getPendingModLog($guildId: BigInt!, $userId: BigInt!, $action: String!) {
   allModLogs(
@@ -24969,18 +24878,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     updateGuildConfig(variables: UpdateGuildConfigMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateGuildConfigMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateGuildConfigMutation>(UpdateGuildConfigDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateGuildConfig', 'mutation');
     },
-    createLevelRoleApplyJob(variables: CreateLevelRoleApplyJobMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateLevelRoleApplyJobMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreateLevelRoleApplyJobMutation>(CreateLevelRoleApplyJobDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createLevelRoleApplyJob', 'mutation');
-    },
-    deleteLevelRoleApplyJob(variables: DeleteLevelRoleApplyJobMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteLevelRoleApplyJobMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<DeleteLevelRoleApplyJobMutation>(DeleteLevelRoleApplyJobDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteLevelRoleApplyJob', 'mutation');
-    },
-    getLevelRoleApplyJobByGuildId(variables: GetLevelRoleApplyJobByGuildIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetLevelRoleApplyJobByGuildIdQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetLevelRoleApplyJobByGuildIdQuery>(GetLevelRoleApplyJobByGuildIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getLevelRoleApplyJobByGuildId', 'query');
-    },
-    updateLevelRoleApplyJob(variables: UpdateLevelRoleApplyJobMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateLevelRoleApplyJobMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UpdateLevelRoleApplyJobMutation>(UpdateLevelRoleApplyJobDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateLevelRoleApplyJob', 'mutation');
-    },
     deleteLevelRole(variables: DeleteLevelRoleMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteLevelRoleMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeleteLevelRoleMutation>(DeleteLevelRoleDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteLevelRole', 'mutation');
     },
@@ -25016,9 +24913,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getModLogsInRange(variables: GetModLogsInRangeQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetModLogsInRangeQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetModLogsInRangeQuery>(GetModLogsInRangeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getModLogsInRange', 'query');
-    },
-    getNextCaseID(variables: GetNextCaseIdQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetNextCaseIdQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<GetNextCaseIdQuery>(GetNextCaseIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getNextCaseID', 'query');
     },
     getPendingModLog(variables: GetPendingModLogQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPendingModLogQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetPendingModLogQuery>(GetPendingModLogDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getPendingModLog', 'query');
