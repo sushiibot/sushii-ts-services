@@ -129,36 +129,8 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   event: GuildAuditLogsEntry,
   guild: Guild
 ): Promise<void> => {
-  const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
-    guildId: guild.id,
-  });
-
-  logger.debug(
-    {
-      guildId: guild.id,
-      modlogChannelId: guildConfigById?.logMod,
-      modlogEnabled: guildConfigById?.logModEnabled,
-    },
-    "mod log event"
-  );
-
-  // No guild config found, ignore
-  if (
-    !guildConfigById || // Config not found
-    !guildConfigById.logMod || // No mod log set
-    !guildConfigById.logModEnabled // Mod log disabled
-  ) {
-    return;
-  }
-
   const actionTypeData = getActionTypeFromEvent(event);
   if (!actionTypeData) {
-    logger.debug(
-      {
-        changes: event.changes,
-      },
-      "no action type data found"
-    );
     return;
   }
 
@@ -173,6 +145,17 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
     },
     "received mod log"
   );
+
+  // Check event before fetching guild config
+  const conf = await db.getGuildConfig(guild.id);
+
+  // No guild config found, ignore
+  if (
+    !conf.log_mod || // No mod log set
+    !conf.log_mod_enabled // Mod log disabled
+  ) {
+    return;
+  }
 
   // No target ID found in event, ignore
   if (!event.targetId || event.targetType !== "User") {
@@ -273,7 +256,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   );
   const components = buildModLogComponents(actionType, matchingCase);
 
-  const channel = await guild.channels.fetch(guildConfigById.logMod);
+  const channel = await guild.channels.fetch(conf.log_mod);
 
   if (!channel?.isTextBased()) {
     throw new Error("Mod log channel is not text based");
