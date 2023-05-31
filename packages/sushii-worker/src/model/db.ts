@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 // or `import * as Cursor from 'pg-cursor'` depending on your tsconfig
 import Cursor from "pg-cursor";
-import { Kysely, PostgresDialect } from "kysely";
+import { Kysely, PostgresDialect, sql } from "kysely";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import logger from "../logger";
 import config from "./config";
@@ -56,6 +56,19 @@ class SushiiDB extends Kysely<DB> {
       ...defaultGuildconfig,
       id: guildId,
     };
+  }
+
+  async getNextCaseId(guildId: string): Promise<number> {
+    const lastCaseId = await this.selectFrom("app_public.mod_logs")
+      .select(
+        this.fn
+          .coalesce(this.fn.max("case_id"), sql<string>`0`)
+          .as("last_case_id")
+      )
+      .where("guild_id", "=", guildId)
+      .executeTakeFirstOrThrow();
+
+    return parseInt(lastCaseId.last_case_id, 10) + 1;
   }
 }
 

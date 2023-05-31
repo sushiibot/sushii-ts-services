@@ -216,13 +216,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   if (!matchingCase) {
     logger.debug("No pending case found, creating new case");
 
-    const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
-      guildId: guild.id,
-    });
-
-    if (!nextCaseId) {
-      throw new Error("Failed to get next case ID");
-    }
+    const nextCaseId = await db.getNextCaseId(guild.id);
 
     const newModLog = await db
       .insertInto("app_public.mod_logs")

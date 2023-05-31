@@ -8,6 +8,7 @@ import logger from "../../../logger";
 import Context from "../../../model/context";
 import { AutocompleteHandler } from "../../handlers";
 import { parseCaseId } from "./caseId";
+import db from "../../../model/db";
 
 const MAX_CHOICE_NAME_LEN = 100;
 
@@ -81,25 +82,10 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
           guildId: interaction.guildId,
         });
 
-        const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
-          guildId: interaction.guildId,
-        });
-
-        if (!nextCaseId) {
-          logger.warn(
-            {
-              guildId: interaction.guildId,
-              value: option.value,
-            },
-            "No next case ID found for reason latest autocomplete"
-          );
-
-          return;
-        }
+        const nextCaseId = await db.getNextCaseId(interaction.guildId);
+        const latestCaseId = nextCaseId - 1;
 
         const cases = allModLogs?.nodes.slice(0, 25) || [];
-
-        const latestCaseId = parseInt(nextCaseId, 10) - 1;
 
         //                          latestCaseId - selectedCaseId + 1
         // latest~1 = latest case - 100          - 100            + 1 = 1

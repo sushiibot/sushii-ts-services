@@ -8,7 +8,6 @@ import {
 } from "discord.js";
 import dayjs from "dayjs";
 import { Err, Ok, Result } from "ts-results";
-import { sql } from "kysely";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import logger from "../../logger";
 import Context from "../../model/context";
@@ -301,19 +300,10 @@ async function executeActionUser(
     });
   }
 
-  const lastCaseId = await db
-    .selectFrom("app_public.mod_logs")
-    .select(
-      db.fn.coalesce(db.fn.max("case_id"), sql<string>`0`).as("last_case_id")
-    )
-    .where("guild_id", "=", interaction.guildId)
-    .executeTakeFirstOrThrow();
-
-  const nextCaseId = parseInt(lastCaseId.last_case_id, 10) + 1;
+  const nextCaseId = await db.getNextCaseId(interaction.guildId);
 
   logger.debug(
     {
-      lastCaseId,
       nextCaseId,
     },
     "Creating new mod log"

@@ -1,4 +1,5 @@
 import Context from "../../../model/context";
+import db from "../../../model/db";
 
 type CaseRange = {
   type: "range";
@@ -155,15 +156,9 @@ export async function getCaseRange(
       return [caseSpec.startId, caseSpec.endId];
     }
     case "latest": {
-      const { nextCaseId } = await ctx.sushiiAPI.sdk.getNextCaseID({
-        guildId,
-      });
+      const nextCaseId = await db.getNextCaseId(guildId);
 
-      if (!nextCaseId) {
-        throw new Error("nextCaseId not found");
-      }
-
-      const latestCaseId = parseInt(nextCaseId, 10) - 1;
+      const latestCaseId = nextCaseId - 1;
       const caseStartId = latestCaseId - caseSpec.count + 1;
 
       return [caseStartId, latestCaseId];
