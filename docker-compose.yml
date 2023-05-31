@@ -38,8 +38,8 @@ services:
             context: .
         logging:
             driver: json-file
-            tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
             options:
+                tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
                 max-size: "10m"
                 max-file: "3"
         depends_on:
