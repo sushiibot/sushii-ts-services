@@ -1,4 +1,5 @@
-import { EmbedBuilder ,
+import {
+  EmbedBuilder,
   ButtonInteraction,
   ChatInputCommandInteraction,
   InteractionReplyOptions,
@@ -38,7 +39,7 @@ export async function interactionReplyError(
   description: string,
   ephemeral: boolean = false
 ): Promise<void> {
-  interaction.reply(getErrorMessage(title, description, ephemeral));
+  await interaction.reply(getErrorMessage(title, description, ephemeral));
 }
 
 export async function interactionReplyErrorPermission(
@@ -46,7 +47,7 @@ export async function interactionReplyErrorPermission(
   interaction: ReplyableInteraction,
   permission: string
 ): Promise<void> {
-  interactionReplyError(
+  return interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
@@ -59,7 +60,7 @@ export async function interactionReplyErrorUnauthorized(
   interaction: ReplyableInteraction,
   message: string
 ): Promise<void> {
-  interactionReplyError(
+  return interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
@@ -73,7 +74,7 @@ export async function interactionReplyErrorMessage(
   message: string,
   ephemeral: boolean = false
 ): Promise<void> {
-  interactionReplyError(
+  return interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
@@ -88,7 +89,7 @@ export async function interactionReplyErrorPlainMessage(
   message: string,
   ephemeral: boolean = false
 ): Promise<void> {
-  interactionReplyError(
+  return interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
@@ -101,7 +102,7 @@ export async function interactionReplyErrorInternal(
   ctx: Context,
   interaction: ReplyableInteraction
 ): Promise<void> {
-  interactionReplyError(
+  return interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
