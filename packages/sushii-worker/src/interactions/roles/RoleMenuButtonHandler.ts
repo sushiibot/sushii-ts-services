@@ -1,5 +1,11 @@
-import { EmbedBuilder, ButtonInteraction, DiscordAPIError } from "discord.js";
+import {
+  EmbedBuilder,
+  ButtonInteraction,
+  DiscordAPIError,
+  RESTJSONErrorCodes,
+} from "discord.js";
 import { MessageFlags } from "discord-api-types/v10";
+import * as Sentry from "@sentry/node";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import customIds from "../customIds";
@@ -104,7 +110,43 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
 
         description = `Removed role <@&${roleToAddOrRemove}>`;
       } else {
-        await interaction.member.roles.add(roleToAddOrRemove);
+        try {
+          await interaction.member.roles.add(roleToAddOrRemove);
+        } catch (err) {
+          if (err instanceof DiscordAPIError) {
+            // Default to the message if it's some other errors
+            let desc = err.message;
+
+            if (err.code === RESTJSONErrorCodes.UnknownRole) {
+              desc =
+                "Uh oh, this role no longer exists - please notify the server moderators.";
+            } else if (err.code === RESTJSONErrorCodes.MissingPermissions) {
+              desc =
+                "Uh oh, I don't have permission to add this role to you - please notify the server moderators.";
+            } else {
+              // Capture any other errors for now
+              Sentry.captureException(err, {
+                tags: {
+                  type: "role_menu_button",
+                  guildId: interaction.guildId,
+                },
+              });
+            }
+
+            await interaction.reply({
+              embeds: [
+                new EmbedBuilder()
+                  .setColor(Color.Error)
+                  .setTitle("Failed to update your roles")
+                  .setDescription(desc),
+              ],
+              flags: MessageFlags.Ephemeral,
+            });
+          }
+
+          // Uh oh
+          throw err;
+        }
 
         description = `Added role <@&${roleToAddOrRemove}>`;
       }
