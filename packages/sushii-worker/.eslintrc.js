@@ -24,6 +24,7 @@ module.exports = {
     "default-case": "off",
     "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/switch-exhaustiveness-check": "error",
+    "@typescript-eslint/no-floating-promises": "error",
     "no-bitwise": "off",
     "class-methods-use-this": "off",
     "no-restricted-syntax": "off",
