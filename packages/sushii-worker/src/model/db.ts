@@ -3,6 +3,7 @@ import { Pool } from "pg";
 import Cursor from "pg-cursor";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
+import { UpdateExpression } from "kysely/dist/cjs/parser/update-set-parser";
 import logger from "../logger";
 import config from "./config";
 import { DB } from "./dbTypes";
@@ -56,6 +57,19 @@ class SushiiDB extends Kysely<DB> {
       ...defaultGuildconfig,
       id: guildId,
     };
+  }
+
+  async updateGuildConfig(
+    guildId: string,
+    patch: UpdateExpression<DB, "app_public.guild_configs">
+  ): Promise<void> {
+    await this.insertInto("app_public.guild_configs")
+      .values({
+        id: guildId,
+        ...patch,
+      })
+      .onConflict((oc) => oc.column("id").doUpdateSet(patch))
+      .execute();
   }
 
   async getNextCaseId(guildId: string): Promise<number> {

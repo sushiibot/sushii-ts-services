@@ -12,7 +12,6 @@ import NotificationListAutocomplete from "./notifications/Autocomplete";
 import TagCommand from "./tags/TagCommand";
 import TagGetAutocomplete from "./tags/TagAutocomplete";
 import ContextLookUpButtonHandler from "./moderation/context_lookup/LookupComponentHandler";
-import WelcomeCommand from "./settings/WelcomeCommand";
 import TimeoutCommand from "./moderation/TimeoutCommand";
 import ReminderDeleteAutocomplete from "./reminders/ReminderAutocomplete";
 import ReminderCommand from "./reminders/ReminderCommand";
@@ -83,7 +82,6 @@ export default function addCommands(
 
     // Settings
     new SettingsCommand(),
-    new WelcomeCommand(),
     new MessageLogCommand(),
     new ModLogCommand()
   );

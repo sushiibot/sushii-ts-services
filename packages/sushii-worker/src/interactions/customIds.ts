@@ -14,7 +14,15 @@ enum Paths {
   ModerationAction = "/moderation/action/:actionType/:targetId",
   ModLogReason = "/modlog/reason/:caseId",
   ReasonConfirmButton = "reason_confirm/:userId/:buttonId/:action",
+  SettingsToggleButton = "settings/toggle/:field/:newState",
 }
+
+export type SettingsToggleOptions =
+  | "join_msg_enabled"
+  | "leave_msg_enabled"
+  | "log_mod_enabled"
+  | "log_member_enabled"
+  | "log_msg_enabled";
 
 type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
   ? {
@@ -42,6 +50,11 @@ type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
       userId: string;
       buttonId: string;
       action: "override" | "empty" | "cancel";
+    }
+  : T extends Paths.SettingsToggleButton
+  ? {
+      field: SettingsToggleOptions;
+      newState: string;
     }
   : never;
 
@@ -90,6 +103,7 @@ const customIds = {
   lookupButton: createCustomID(Paths.ModerationAction),
   modLogReason: createCustomID(Paths.ModLogReason),
   reasonConfirmButton: createCustomID(Paths.ReasonConfirmButton),
+  settingsToggleButton: createCustomID(Paths.SettingsToggleButton),
 };
 
 export default customIds;
