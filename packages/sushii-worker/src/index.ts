@@ -69,7 +69,7 @@ async function main(): Promise<void> {
   addCommands(client);
 
   // Register commands to Discord API
-  // await client.register();
+  await client.register();
 
   // Register node.js event handlers on the Discord.js client
   registerEventHandlers(ctx, djsClient, client);

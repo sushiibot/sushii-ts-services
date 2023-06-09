@@ -226,8 +226,7 @@ function buildEmbeds(
     const embeds = buildBulkDeleteEmbed(
       ctx,
       event as GatewayMessageDeleteBulkDispatchData,
-      // Reverse so the oldest message is first, newest is at the bottom most embed
-      messages.reverse()
+      messages
     );
 
     return Some(embeds);
@@ -283,6 +282,8 @@ export async function msgLogHandler(
     // Don't need to filter by guild_id or channel_id since the message ids will
     // only come from the same guild and channel, and would make index not work
     .where("message_id", "in", messageIDs)
+    // Oldest message is first, newest is at the bottom most embed
+    .orderBy("created", "asc")
     .execute();
 
   // No cached message found for deleted or edited message in DB, ignore

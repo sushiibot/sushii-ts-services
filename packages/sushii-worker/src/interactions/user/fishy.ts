@@ -1,6 +1,9 @@
-import { SlashCommandBuilder, EmbedBuilder } from "discord.js";
+import {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
+} from "discord.js";
 import { isDayjs } from "dayjs";
-import { ChatInputCommandInteraction } from "discord.js";
 import i18next from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";

@@ -217,14 +217,18 @@ export default class Client {
   public async register(): Promise<void> {
     log.info("registering %s global commands...", this.commands.size);
 
-    const res = await this.context.client.rest.put(
-      Routes.applicationCommands(config.APPLICATION_ID),
-      { body: this.getCommandsArray() }
-    );
+    try {
+      const res = await this.context.client.rest.put(
+        Routes.applicationCommands(config.APPLICATION_ID),
+        { body: this.getCommandsArray() }
+      );
 
-    this.context.setCommands(res as RESTPutAPIApplicationCommandsResult);
+      this.context.setCommands(res as RESTPutAPIApplicationCommandsResult);
 
-    log.info("commands registered!");
+      log.info("commands registered!");
+    } catch (err) {
+      log.error(err, "error registering commands");
+    }
   }
 
   /**
@@ -496,10 +500,8 @@ export default class Client {
     );
 
     if (!buttonHandler) {
-      log.error(
-        "received unknown button interaction: %s",
-        interaction.customId
-      );
+      // This can happen if there's just an interaction collector
+      log.warn("received unknown button interaction: %s", interaction.customId);
 
       return;
     }
