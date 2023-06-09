@@ -4,6 +4,7 @@ import SushiiImageServerClient from "./image_server";
 import SushiiSDK from "./api";
 import { getSdkWebsocket } from "./graphqlClient";
 import MemoryStore from "./MemoryStore";
+import logger from "../logger";
 
 export default class Context {
   public readonly sushiiAPI: SushiiSDK;
@@ -52,10 +53,11 @@ export default class Context {
     const command = this.commands.find((c) => c.name === primaryName);
 
     if (!command) {
+      logger.error({ commandName }, "Command not found for mention");
       return this.getPlainCommandString(commandName);
     }
 
     // No validation on subcommand name
-    return `</${commandName}:${command.id}`;
+    return `</${commandName}:${command.id}>`;
   }
 }
