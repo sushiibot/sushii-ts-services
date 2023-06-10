@@ -15,10 +15,41 @@ import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import db from "../../model/db";
 import SushiiEmoji from "../../constants/SushiiEmoji";
-import { DB } from "../../model/dbTypes";
+import { DB, AppPublicMsgLogBlockType } from "../../model/dbTypes";
 import Color from "../../utils/colors";
 import customIds, { SettingsToggleOptions } from "../customIds";
 import logger from "../../logger";
+
+export enum MsgLogCommandName {
+  SetChannel = "set_channel",
+  Channel = "channel",
+
+  IgnoreList = "ignorelist",
+  Ignore = "ignore",
+  Unignore = "unignore",
+}
+
+export enum MsgLogOptionName {
+  Channel = "channel",
+  BlockType = "ignore_type",
+}
+
+const blockTypes: Record<string, AppPublicMsgLogBlockType> = {
+  all: "all",
+  edits: "edits",
+  deletes: "deletes",
+};
+
+function blockTypeToString(type: AppPublicMsgLogBlockType): string {
+  switch (type) {
+    case "all":
+      return "edits and deletes";
+    case "deletes":
+      return "deletes only";
+    case "edits":
+      return "edits only";
+  }
+}
 
 function toToggleButton(enabled?: boolean): string {
   return enabled ? SushiiEmoji.ToggleOn : SushiiEmoji.ToggleOff;
@@ -130,7 +161,7 @@ function getGuildConfigEmbed(
   logging += formatChannelOption(
     "Mod logs",
     config.log_mod,
-    "No mod log channel set.",
+    `No mod log channel set, use ${ctx.getCommandMention("settings modlog")}`,
     config.log_mod_enabled
   );
   logging += "\n";
@@ -138,7 +169,9 @@ function getGuildConfigEmbed(
   logging += formatChannelOption(
     "Member join/leave logs",
     config.log_member,
-    "No member log channel set.",
+    `No member log channel set, use ${ctx.getCommandMention(
+      "settings memberlog"
+    )}`,
     config.log_member_enabled
   );
   logging += "\n";
@@ -146,7 +179,9 @@ function getGuildConfigEmbed(
   logging += formatChannelOption(
     "Message logs",
     config.log_msg,
-    "No message log channel set.",
+    `No message log channel set, use ${ctx.getCommandMention(
+      "settings msglog set_channel"
+    )}`,
     config.log_msg_enabled
   );
   logging += "\n";
@@ -294,19 +329,77 @@ export default class SettingsCommand extends SlashCommandHandler {
             .setRequired(true)
         )
     )
-    .addSubcommand((c) =>
-      c
-        .setName("messagelog")
-        .setDescription("Set channel for message logs.")
-        .addChannelOption((o) =>
-          o
-            .setName("channel")
-            .setDescription("Where to send message logs to.")
-            .addChannelTypes(
-              ChannelType.GuildText,
-              ChannelType.GuildAnnouncement
+    // /settings messagelog
+    .addSubcommandGroup((g) =>
+      g
+        .setName("msglog")
+        .setDescription("Modify message log settings.")
+        // settings messagelog setchannel
+        .addSubcommand((c) =>
+          c
+            .setName(MsgLogCommandName.SetChannel)
+            .setDescription("Set the channel for message logs.")
+            .addChannelOption((o) =>
+              o
+                .setName(MsgLogOptionName.Channel)
+                .setDescription("Channel to send message logs to.")
+                .addChannelTypes(
+                  ChannelType.GuildText,
+                  ChannelType.GuildAnnouncement
+                )
+                .setRequired(true)
             )
-            .setRequired(true)
+        )
+        // settings messagelog ignore
+        .addSubcommand((c) =>
+          c
+            .setName(MsgLogCommandName.Ignore)
+            .setDescription("Ignore a channel for deleted and edited message.")
+            .addChannelOption((o) =>
+              o
+                .setName(MsgLogOptionName.Channel)
+                .setDescription("Channel to ignore.")
+                .setRequired(true)
+            )
+            .addStringOption((o) =>
+              o
+                .setName(MsgLogOptionName.BlockType)
+                .setDescription(
+                  "What type of logs to ignore? By default all logs will be ignored."
+                )
+                .addChoices(
+                  {
+                    name: "Edits",
+                    value: blockTypes.edits,
+                  },
+                  {
+                    name: "Deletes",
+                    value: blockTypes.deletes,
+                  },
+                  {
+                    name: "All",
+                    value: blockTypes.all,
+                  }
+                )
+            )
+        )
+        // settings messagelog ignorelist
+        .addSubcommand((c) =>
+          c
+            .setName(MsgLogCommandName.IgnoreList)
+            .setDescription("List channels that are ignored.")
+        )
+        // settings messagelog unignore
+        .addSubcommand((c) =>
+          c
+            .setName(MsgLogCommandName.Unignore)
+            .setDescription("Re-enable message logs for an ignored channel.")
+            .addChannelOption((o) =>
+              o
+                .setName(MsgLogOptionName.Channel)
+                .setDescription("Channel to un-ignore.")
+                .setRequired(true)
+            )
         )
     )
     .toJSON();
@@ -320,20 +413,43 @@ export default class SettingsCommand extends SlashCommandHandler {
       throw new Error("Guild not cached.");
     }
 
+    const subgroup = interaction.options.getSubcommandGroup();
     const subcommand = interaction.options.getSubcommand();
-    switch (subcommand) {
-      case "view":
-        return SettingsCommand.viewHandler(ctx, interaction);
-      case "joinmsg":
-        return SettingsCommand.joinMsgHandler(ctx, interaction);
-      case "leavemsg":
-        return SettingsCommand.leaveMsgHandler(ctx, interaction);
-      case "joinleavechannel":
-        return SettingsCommand.joinLeaveChannelHandler(ctx, interaction);
-      case "modlog":
-      case "memberlog":
-      case "messagelog":
-        return SettingsCommand.logChannelHandler(ctx, interaction);
+
+    switch (subgroup) {
+      case "msglog": {
+        switch (subcommand) {
+          case MsgLogCommandName.SetChannel:
+            return this.msgLogSetHandler(ctx, interaction);
+          case MsgLogCommandName.Ignore:
+            return this.msgLogIgnoreHandler(ctx, interaction);
+          case MsgLogCommandName.IgnoreList:
+            return this.msgLogIgnoreListHandler(ctx, interaction);
+          case MsgLogCommandName.Unignore:
+            return this.msgLogUnignoreHandler(ctx, interaction);
+          default:
+            throw new Error("Invalid subcommand.");
+        }
+      }
+      // Base commands
+      case null: {
+        switch (subcommand) {
+          case "view":
+            return SettingsCommand.viewHandler(ctx, interaction);
+          case "joinmsg":
+            return SettingsCommand.joinMsgHandler(ctx, interaction);
+          case "leavemsg":
+            return SettingsCommand.leaveMsgHandler(ctx, interaction);
+          case "joinleavechannel":
+            return SettingsCommand.joinLeaveChannelHandler(ctx, interaction);
+          case "modlog":
+          case "memberlog":
+          case "messagelog":
+            return SettingsCommand.logChannelHandler(ctx, interaction);
+          default:
+            throw new Error("Invalid subcommand.");
+        }
+      }
       default:
         throw new Error("Invalid subcommand.");
     }
@@ -541,6 +657,136 @@ export default class SettingsCommand extends SlashCommandHandler {
         new EmbedBuilder()
           .setTitle(message)
           .setDescription(`Log messages will be sent to <#${channel.id}>`)
+          .setColor(Color.Success)
+          .toJSON(),
+      ],
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Message logs
+
+  async msgLogSetHandler(
+    ctx: Context,
+    interaction: ChatInputCommandInteraction<"cached">
+  ): Promise<void> {
+    const channel = interaction.options.getChannel(
+      MsgLogOptionName.Channel,
+      true
+    );
+
+    await db.updateGuildConfig(interaction.guildId, {
+      log_msg: channel.id,
+    });
+
+    await interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("Message log updated")
+          .setDescription(`<#${channel.id}>`)
+          .setColor(Color.Success)
+          .toJSON(),
+      ],
+    });
+  }
+
+  async msgLogIgnoreHandler(
+    ctx: Context,
+    interaction: ChatInputCommandInteraction<"cached">
+  ): Promise<void> {
+    const channel = interaction.options.getChannel(
+      MsgLogOptionName.Channel,
+      true
+    );
+
+    const blockType =
+      interaction.options.getString(MsgLogOptionName.BlockType) ||
+      blockTypes.all;
+
+    if (
+      blockTypes.all !== blockType &&
+      blockTypes.deletes !== blockType &&
+      blockTypes.edits !== blockType
+    ) {
+      throw new Error("Invalid block type.");
+    }
+
+    await db
+      .insertInto("app_public.msg_log_blocks")
+      .values({
+        guild_id: interaction.guildId,
+        channel_id: channel.id,
+        block_type: blockType,
+      })
+      .onConflict((oc) =>
+        oc.columns(["guild_id", "channel_id"]).doUpdateSet({
+          block_type: blockType,
+        })
+      )
+      .execute();
+
+    await interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("Added new message log ignore")
+          .setDescription(
+            `ignoring ${blockTypeToString(blockType)} in <#${channel.id}>`
+          )
+          .setColor(Color.Success)
+          .toJSON(),
+      ],
+    });
+  }
+
+  async msgLogIgnoreListHandler(
+    ctx: Context,
+    interaction: ChatInputCommandInteraction<"cached">
+  ): Promise<void> {
+    const ignoredChannels = await db
+      .selectFrom("app_public.msg_log_blocks")
+      .selectAll()
+      .where("guild_id", "=", interaction.guildId)
+      .execute();
+
+    const ignoredChannelsStr =
+      ignoredChannels
+        .map((c) => `<#${c.channel_id}> - ${blockTypeToString(c.block_type)}`)
+        .join("\n") || "No channels are ignored";
+
+    await interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("Ignored Channels - Message Log")
+          .setDescription(ignoredChannelsStr)
+          .setFooter({
+            text: "These channels won't show up in message logs for deleted and edited messages.",
+          })
+          .setColor(Color.Success)
+          .toJSON(),
+      ],
+    });
+  }
+
+  async msgLogUnignoreHandler(
+    ctx: Context,
+    interaction: ChatInputCommandInteraction<"cached">
+  ): Promise<void> {
+    const channel = interaction.options.getChannel(
+      MsgLogOptionName.Channel,
+      true
+    );
+
+    await db
+      .deleteFrom("app_public.msg_log_blocks")
+      .where("guild_id", "=", interaction.guildId)
+      .where("channel_id", "=", channel.id)
+      .execute();
+
+    await interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("Channel message logs re-enabled")
+          .setDescription(`<#${channel.id}>`)
           .setColor(Color.Success)
           .toJSON(),
       ],
