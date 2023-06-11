@@ -39,6 +39,8 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
       throw new Error("Not in cached guild");
     }
 
+    await interaction.deferReply();
+
     const data = new ModActionData(interaction);
 
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
@@ -47,8 +49,6 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
 
       return;
     }
-
-    await interaction.deferReply();
 
     const res = await executeAction(
       ctx,

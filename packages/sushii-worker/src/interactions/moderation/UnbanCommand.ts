@@ -40,6 +40,8 @@ export default class UnbanCommand extends SlashCommandHandler {
       throw new Error("Not in cached guild");
     }
 
+    await interaction.deferReply();
+
     const data = new ModActionData(interaction);
     const fetchTargetsRes = await data.fetchTargets(
       ctx,
@@ -51,8 +53,6 @@ export default class UnbanCommand extends SlashCommandHandler {
 
       return;
     }
-
-    await interaction.deferReply();
 
     let res;
     try {

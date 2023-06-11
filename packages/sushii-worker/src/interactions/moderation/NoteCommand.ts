@@ -33,6 +33,8 @@ export default class NoteCommand extends SlashCommandHandler {
       throw new Error("Not in cached guild");
     }
 
+    await interaction.deferReply();
+
     const data = new ModActionData(interaction);
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
@@ -40,8 +42,6 @@ export default class NoteCommand extends SlashCommandHandler {
 
       return;
     }
-
-    await interaction.deferReply();
 
     const res = await executeAction(ctx, interaction, data, ActionType.Note);
     if (res.err) {

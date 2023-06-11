@@ -46,6 +46,9 @@ export default class BanCommand extends SlashCommandHandler {
       throw new Error("Not in cached guild");
     }
 
+    // Defer before doing anything, fetching targets can take a while
+    await interaction.deferReply();
+
     const data = new ModActionData(interaction);
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
@@ -53,8 +56,6 @@ export default class BanCommand extends SlashCommandHandler {
 
       return;
     }
-
-    await interaction.deferReply();
 
     const res = await executeAction(ctx, interaction, data, ActionType.Ban);
     if (res.err) {

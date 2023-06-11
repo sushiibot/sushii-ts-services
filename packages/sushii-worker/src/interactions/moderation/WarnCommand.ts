@@ -36,6 +36,8 @@ export default class WarnCommand extends SlashCommandHandler {
       throw new Error("Not in cached guild");
     }
 
+    await interaction.deferReply();
+
     const data = new ModActionData(interaction);
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
@@ -43,8 +45,6 @@ export default class WarnCommand extends SlashCommandHandler {
 
       return;
     }
-
-    await interaction.deferReply();
 
     const res = await executeAction(ctx, interaction, data, ActionType.Warn);
     if (res.err) {
