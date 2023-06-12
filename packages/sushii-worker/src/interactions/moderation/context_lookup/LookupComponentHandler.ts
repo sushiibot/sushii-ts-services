@@ -6,6 +6,7 @@ import {
   ButtonComponent,
   ButtonInteraction,
   EmbedBuilder,
+  PermissionFlagsBits,
 } from "discord.js";
 import Context from "../../../model/context";
 import customIds from "../../customIds";
@@ -100,6 +101,11 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
           // Ignore
         }
 
+        const sushiiMember = interaction.guild.members.me;
+        const hasPermission = sushiiMember?.permissions.has(
+          PermissionFlagsBits.BanMembers
+        );
+
         const bans = await getUserLookupData(ctx, targetUser);
 
         const embed = await buildUserLookupEmbed(
@@ -107,7 +113,10 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
           targetMember,
           bans,
           true,
-          false
+          {
+            botHasBanPermission: hasPermission ?? true,
+            showBasicInfo: false,
+          }
         );
 
         embedBuilders.push(embed);

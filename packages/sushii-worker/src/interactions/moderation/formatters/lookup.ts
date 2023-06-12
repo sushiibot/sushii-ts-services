@@ -1,13 +1,16 @@
 import { EmbedBuilder, GuildFeature, GuildMember, User } from "discord.js";
+import dayjs from "dayjs";
 import { getCreatedTimestampSeconds } from "../../../utils/snowflake";
 import timestampToUnixTime from "../../../utils/timestampToUnixTime";
 import SushiiEmoji from "../../../constants/SushiiEmoji";
 import Color from "../../../utils/colors";
+import logger from "../../../logger";
 
 export interface UserLookupBan {
   guild_id: string;
   guild_name: string | null;
   guild_features: `${GuildFeature}`[] | null;
+  guild_members: number | null;
   reason: string | null;
   action_time: Date | null;
   lookup_details_opt_in: boolean | null;
@@ -38,7 +41,7 @@ function getFeatureEmojis(
     return "";
   }
 
-  const emojisStr = emojis.join("");
+  const emojisStr = emojis.join(" ");
 
   // Add a space at the end
   return `${emojisStr} `;
@@ -49,7 +52,13 @@ export default async function buildUserLookupEmbed(
   targetMember: GuildMember | undefined,
   bans: UserLookupBan[],
   guildOptedIn: boolean,
-  showBasicInfo: boolean = true
+  {
+    showBasicInfo,
+    botHasBanPermission,
+  }: {
+    showBasicInfo: boolean;
+    botHasBanPermission: boolean;
+  }
 ): Promise<EmbedBuilder> {
   let embed = new EmbedBuilder()
     .setTitle("🔎 User Lookup")
@@ -64,17 +73,43 @@ export default async function buildUserLookupEmbed(
   } else {
     let desc = "";
 
+    // Sort bans by guild_members
+    bans.sort((a, b) => {
+      if (a.guild_members === null && b.guild_members === null) {
+        return 0;
+      }
+
+      if (a.guild_members === null) {
+        return 1;
+      }
+
+      if (b.guild_members === null) {
+        return -1;
+      }
+
+      return b.guild_members - a.guild_members;
+    });
+
     for (const ban of bans) {
       // Add emojis
       desc += getFeatureEmojis(ban.guild_features);
 
       // If the current guild is opted out, show no reasons and anonymous for all.
       // Otherwise show the guild name and reason if the other server opted in.
-      if (!guildOptedIn || !ban.lookup_details_opt_in) {
+      // OR If sushii doesn't have ban permissions, show anonymous for all.
+      if (!guildOptedIn || !ban.lookup_details_opt_in || !botHasBanPermission) {
         desc += "`anonymous`";
 
         if (ban.action_time) {
-          desc += ` - <t:${ban.action_time.toUTCString()}:R>`;
+          logger.debug(
+            {
+              date: ban.action_time,
+              offset: ban.action_time.getTimezoneOffset(),
+            },
+            "ban.action_time"
+          );
+
+          desc += ` - <t:${dayjs.utc(ban.action_time.getTime()).unix()}:R>`;
         }
 
         desc += "\n";
@@ -85,7 +120,15 @@ export default async function buildUserLookupEmbed(
         desc += `**${ban.guild_name}** - \`${ban.guild_id}\``;
 
         if (ban.action_time) {
-          desc += ` - <t:${ban.action_time.toUTCString()}:R>`;
+          logger.debug(
+            {
+              date: ban.action_time,
+              offset: ban.action_time.getTimezoneOffset(),
+            },
+            "ban.action_time"
+          );
+
+          desc += ` - <t:${dayjs.utc(ban.action_time.getTime()).unix()}:R>`;
         }
 
         if (ban.reason) {
@@ -117,6 +160,15 @@ export default async function buildUserLookupEmbed(
         value: `<t:${ts}:F> (<t:${ts}:R>)`,
       });
     }
+  }
+
+  // If server opted in but sushii can't view bans, show a warning
+  if (guildOptedIn && !botHasBanPermission) {
+    fields.push({
+      name: "⚠ Bot Missing Permissions",
+      value:
+        "I am missing the `Ban Members` permission. I need this to view the server bans, please give me this permission to view server reasons!",
+    });
   }
 
   const footerText = guildOptedIn

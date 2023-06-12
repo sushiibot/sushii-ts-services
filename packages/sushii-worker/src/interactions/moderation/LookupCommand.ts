@@ -53,6 +53,7 @@ export async function getUserLookupData(
           ...ban,
           guild_name: guild.name,
           guild_features: guild.features,
+          guild_members: guild.memberCount,
         };
       } catch (err) {
         return {
@@ -106,6 +107,11 @@ export default class LookupCommand extends SlashCommandHandler {
 
     const currentGuildConfig = await db.getGuildConfig(interaction.guildId);
 
+    const sushiiMember = interaction.guild.members.me;
+    const hasPermission = sushiiMember?.permissions.has(
+      PermissionFlagsBits.BanMembers
+    );
+
     let member;
     try {
       member = await interaction.guild.members.fetch(user.id);
@@ -119,7 +125,11 @@ export default class LookupCommand extends SlashCommandHandler {
       user,
       member,
       bans,
-      currentGuildConfig.lookup_details_opt_in
+      currentGuildConfig.lookup_details_opt_in,
+      {
+        botHasBanPermission: hasPermission ?? true,
+        showBasicInfo: true,
+      }
     );
 
     await interaction.reply({
