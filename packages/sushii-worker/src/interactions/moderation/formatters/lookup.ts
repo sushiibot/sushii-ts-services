@@ -2,6 +2,7 @@ import { EmbedBuilder, GuildFeature, GuildMember, User } from "discord.js";
 import { getCreatedTimestampSeconds } from "../../../utils/snowflake";
 import timestampToUnixTime from "../../../utils/timestampToUnixTime";
 import SushiiEmoji from "../../../constants/SushiiEmoji";
+import Color from "../../../utils/colors";
 
 export interface UserLookupBan {
   guild_id: string;
@@ -47,14 +48,16 @@ export default async function buildUserLookupEmbed(
   targetUser: User,
   targetMember: GuildMember | undefined,
   bans: UserLookupBan[],
-  guildOptedIn: boolean
+  guildOptedIn: boolean,
+  showBasicInfo: boolean = true
 ): Promise<EmbedBuilder> {
   let embed = new EmbedBuilder()
+    .setTitle("🔎 User Lookup")
     .setAuthor({
       name: `${targetUser.tag} - ${targetUser.id}`,
       iconURL: targetUser.displayAvatarURL(),
     })
-    .setTitle("User Lookup");
+    .setColor(Color.Info);
 
   if (bans.length === 0) {
     embed = embed.setDescription("No bans found for this user.");
@@ -97,21 +100,23 @@ export default async function buildUserLookupEmbed(
     embed = embed.setDescription(desc);
   }
 
-  const createdTimestamp = getCreatedTimestampSeconds(targetUser.id);
-  const fields = [
-    {
+  const fields = [];
+
+  if (showBasicInfo) {
+    const createdTimestamp = getCreatedTimestampSeconds(targetUser.id);
+    fields.push({
       name: "Account Created",
       value: `<t:${createdTimestamp}:F> (<t:${createdTimestamp}:R>)`,
-    },
-  ];
-
-  if (targetMember?.joinedTimestamp) {
-    const ts = timestampToUnixTime(targetMember.joinedTimestamp);
-
-    fields.push({
-      name: "Joined Server",
-      value: `<t:${ts}:F> (<t:${ts}:R>)`,
     });
+
+    if (targetMember?.joinedTimestamp) {
+      const ts = timestampToUnixTime(targetMember.joinedTimestamp);
+
+      fields.push({
+        name: "Joined Server",
+        value: `<t:${ts}:F> (<t:${ts}:R>)`,
+      });
+    }
   }
 
   const footerText = guildOptedIn

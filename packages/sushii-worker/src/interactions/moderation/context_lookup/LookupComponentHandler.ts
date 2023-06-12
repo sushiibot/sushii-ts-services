@@ -8,11 +8,12 @@ import {
   EmbedBuilder,
 } from "discord.js";
 import Context from "../../../model/context";
-import Color from "../../../utils/colors";
 import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";
 import { ActionType } from "../ActionType";
 import buildUserHistoryEmbed from "../formatters/history";
+import buildUserLookupEmbed from "../formatters/lookup";
+import { getUserLookupData } from "../LookupCommand";
 
 export const lookupButtonCustomIDPrefix = "lookup:button:";
 
@@ -87,31 +88,29 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
         return;
       }
       case ActionType.Lookup: {
-        const bans = await ctx.sushiiAPI.sdk.getUserBans({
-          userId: targetId,
-        });
-
         const { embeds, components } = interaction.message;
 
         const embedBuilders = embeds.map((e) => new EmbedBuilder(e.data));
 
-        if (!bans.allGuildBans?.nodes || bans.allGuildBans.nodes.length === 0) {
-          embedBuilders.push(
-            new EmbedBuilder()
-              .setTitle("🔎 User Lookup")
-              .setDescription("User has no bans in any shared servers.")
-              .setColor(Color.Success)
-          );
-        } else {
-          const bansStr = bans.allGuildBans.nodes.map((b) => b.guildId);
-
-          embedBuilders.push(
-            new EmbedBuilder()
-              .setTitle("🔎 User Lookup")
-              .setDescription(bansStr.join("\n"))
-              .setColor(Color.Success)
-          );
+        const targetUser = await interaction.client.users.fetch(targetId);
+        let targetMember;
+        try {
+          targetMember = await interaction.guild.members.fetch(targetId);
+        } catch (e) {
+          // Ignore
         }
+
+        const bans = await getUserLookupData(ctx, targetUser);
+
+        const embed = await buildUserLookupEmbed(
+          targetUser,
+          targetMember,
+          bans,
+          true,
+          false
+        );
+
+        embedBuilders.push(embed);
 
         // Disable lookup button, second row, second button
         const secondRow = ActionRowBuilder.from<ButtonBuilder>(

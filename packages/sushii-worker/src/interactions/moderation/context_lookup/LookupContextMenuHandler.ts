@@ -54,7 +54,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
       return;
     }
 
-    const isMuted = targetMember.isCommunicationDisabled();
+    const isMuted = targetMember?.isCommunicationDisabled() ?? false;
 
     const banButton = new ButtonBuilder()
       .setCustomId(
