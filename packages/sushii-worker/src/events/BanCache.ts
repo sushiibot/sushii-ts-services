@@ -12,12 +12,27 @@ async function getGuildBans(guild: Guild): Promise<string[]> {
   // -------------------------------------------------------------------------
   // Page through bans for this guild
   while (true) {
-    // eslint-disable-next-line no-await-in-loop
-    const page = await guild.bans.fetch({
-      limit: 1000,
-      after,
-      cache: false,
-    });
+    let page;
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      page = await guild.bans.fetch({
+        limit: 1000,
+        after,
+        cache: false,
+      });
+    } catch (err) {
+      logger.error(
+        {
+          guildId: guild.id,
+          guildName: guild.name,
+          err,
+        },
+        "Failed to fetch server bans page"
+      );
+
+      // If we failed to fetch a page, just return what we have so far
+      return guildAllBans;
+    }
 
     logger.debug(
       {
@@ -145,7 +160,21 @@ export const banCacheUnbanHandler: EventHandlerFn<
 export const banCacheGuildCreateHandler: EventHandlerFn<
   Events.GuildCreate
 > = async (ctx: Context, guild: Guild): Promise<void> => {
-  const guildBans = await getGuildBans(guild);
+  let guildBans;
+  try {
+    guildBans = await getGuildBans(guild);
+  } catch (err) {
+    logger.error(
+      {
+        guildId: guild.id,
+        guildName: guild.name,
+        err,
+      },
+      "Failed to fetch server bans"
+    );
+
+    return;
+  }
 
   // Clear bans first, in case it's a rejoin
   await db
