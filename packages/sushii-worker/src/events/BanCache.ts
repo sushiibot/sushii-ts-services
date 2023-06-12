@@ -57,18 +57,6 @@ async function getGuildBans(guild: Guild): Promise<string[]> {
     });
   }
 
-  // -------------------------------------------------------------------------
-  // Update database bans for this guild
-
-  logger.debug(
-    {
-      guildId: guild.id,
-      guildName: guild.name,
-      banCount: guildAllBans.length,
-    },
-    "Updating server bans in database"
-  );
-
   return guildAllBans;
 }
 
@@ -81,12 +69,29 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
     // eslint-disable-next-line no-await-in-loop
     const guildBans = await getGuildBans(guild);
 
+    // -------------------------------------------------------------------------
+    // Update database bans for this guild
+
+    logger.debug(
+      {
+        guildId: guild.id,
+        guildName: guild.name,
+        banCount: guildBans.length,
+      },
+      "Updating server bans in database"
+    );
+
     // First clear the bans for this guild, so we can remove bans that were removed
     // eslint-disable-next-line no-await-in-loop
     await db
       .deleteFrom("app_public.guild_bans")
       .where("guild_id", "=", guild.id)
       .execute();
+
+    if (guildBans.length === 0) {
+      // No bans, skip insertion
+      continue;
+    }
 
     // eslint-disable-next-line no-await-in-loop
     await db
@@ -147,6 +152,11 @@ export const banCacheGuildCreateHandler: EventHandlerFn<
     .deleteFrom("app_public.guild_bans")
     .where("guild_id", "=", guild.id)
     .execute();
+
+  if (guildBans.length === 0) {
+    // No bans, skip insertion
+    return;
+  }
 
   await db
     .insertInto("app_public.guild_bans")
