@@ -1,6 +1,5 @@
 fragment GuildConfigData on GuildConfig {
   disabledChannels
-  inviteGuard
   joinMsg
   joinMsgEnabled
   joinReact
@@ -12,12 +11,9 @@ fragment GuildConfigData on GuildConfig {
   logMod
   logMsg
   logMsgEnabled
-  maxMention
   msgChannel
   muteDmEnabled
   muteDmText
-  muteDuration
-  muteRole
   prefix
   roleChannel
   roleConfig

@@ -21791,22 +21791,6 @@
             "deprecationReason": null
           },
           {
-            "name": "inviteGuard",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "joinMsg",
             "description": null,
             "args": [],
@@ -21975,13 +21959,17 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
+            "name": "lookupPrompted",
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -22021,30 +22009,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
               "ofType": null
             },
             "isDeprecated": false,
@@ -22351,44 +22315,8 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": "Mean average of maxMention across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
             "description": "Mean average of msgChannel across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": "Mean average of muteDuration across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": "Mean average of muteRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -22456,18 +22384,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "BigInt",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "inviteGuard",
-            "description": "Checks for equality with the object’s `inviteGuard` field.",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null,
@@ -22619,11 +22535,11 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": "Checks for equality with the object’s `maxMention` field.",
+            "name": "lookupPrompted",
+            "description": "Checks for equality with the object’s `lookupPrompted` field.",
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null,
@@ -22660,30 +22576,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": "Checks for equality with the object’s `muteDuration` field.",
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": "Checks for equality with the object’s `muteRole` field.",
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
               "ofType": null
             },
             "defaultValue": null,
@@ -22799,18 +22691,6 @@
           {
             "name": "id",
             "description": "Distinct count of id across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "inviteGuard",
-            "description": "Distinct count of inviteGuard across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -22965,8 +22845,8 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": "Distinct count of maxMention across the matching connection",
+            "name": "lookupPrompted",
+            "description": "Distinct count of lookupPrompted across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -23003,30 +22883,6 @@
           {
             "name": "muteDmText",
             "description": "Distinct count of muteDmText across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": "Distinct count of muteDuration across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": "Distinct count of muteRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -23170,18 +23026,6 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "BigIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "inviteGuard",
-            "description": "Filter by the object’s `inviteGuard` field.",
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "BooleanFilter",
               "ofType": null
             },
             "defaultValue": null,
@@ -23333,11 +23177,11 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": "Filter by the object’s `maxMention` field.",
+            "name": "lookupPrompted",
+            "description": "Filter by the object’s `lookupPrompted` field.",
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "IntFilter",
+              "name": "BooleanFilter",
               "ofType": null
             },
             "defaultValue": null,
@@ -23374,30 +23218,6 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "StringFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": "Filter by the object’s `muteDuration` field.",
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "BigIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": "Filter by the object’s `muteRole` field.",
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "BigIntFilter",
               "ofType": null
             },
             "defaultValue": null,
@@ -23564,18 +23384,6 @@
             "deprecationReason": null
           },
           {
-            "name": "inviteGuard",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "joinMsg",
             "description": null,
             "type": {
@@ -23720,11 +23528,11 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
+            "name": "lookupPrompted",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null,
@@ -23761,30 +23569,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
               "ofType": null
             },
             "defaultValue": null,
@@ -23922,44 +23706,8 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": "Maximum of maxMention across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
             "description": "Maximum of msgChannel across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": "Maximum of muteDuration across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": "Maximum of muteRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -24041,44 +23789,8 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": "Minimum of maxMention across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
             "description": "Minimum of msgChannel across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": "Minimum of muteDuration across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": "Minimum of muteRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -24146,18 +23858,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "BigInt",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "inviteGuard",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null,
@@ -24309,11 +24009,11 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
+            "name": "lookupPrompted",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null,
@@ -24350,30 +24050,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigInt",
               "ofType": null
             },
             "defaultValue": null,
@@ -24511,44 +24187,8 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": "Population standard deviation of maxMention across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
             "description": "Population standard deviation of msgChannel across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": "Population standard deviation of muteDuration across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": "Population standard deviation of muteRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -24630,44 +24270,8 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": "Sample standard deviation of maxMention across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
             "description": "Sample standard deviation of msgChannel across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": "Sample standard deviation of muteDuration across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": "Sample standard deviation of muteRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -24765,56 +24369,8 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": "Sum of maxMention across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "BigInt",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
             "description": "Sum of msgChannel across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "BigFloat",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": "Sum of muteDuration across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "BigFloat",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": "Sum of muteRole across the matching connection",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -24904,44 +24460,8 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": "Population variance of maxMention across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
             "description": "Population variance of msgChannel across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": "Population variance of muteDuration across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": "Population variance of muteRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -25023,44 +24543,8 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": "Sample variance of maxMention across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
             "description": "Sample variance of msgChannel across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": "Sample variance of muteDuration across the matching connection",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigFloat",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
-            "description": "Sample variance of muteRole across the matching connection",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -25308,12 +24792,6 @@
             "deprecationReason": null
           },
           {
-            "name": "INVITE_GUARD",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "JOIN_MSG",
             "description": null,
             "isDeprecated": false,
@@ -25386,7 +24864,7 @@
             "deprecationReason": null
           },
           {
-            "name": "MAX_MENTION",
+            "name": "LOOKUP_PROMPTED",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -25405,18 +24883,6 @@
           },
           {
             "name": "MUTE_DM_TEXT",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "MUTE_DURATION",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "MUTE_ROLE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -25515,43 +24981,7 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -25634,43 +25064,7 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -25912,43 +25306,7 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -26031,43 +25389,7 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -26150,43 +25472,7 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -26269,43 +25555,7 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -26388,43 +25638,7 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -26507,43 +25721,7 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -26626,43 +25804,7 @@
             "deprecationReason": null
           },
           {
-            "name": "maxMention",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingIntFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "msgChannel",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteDuration",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "HavingBigintFilter",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "muteRole",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
@@ -26730,18 +25872,6 @@
           },
           {
             "name": "ID_DESC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "INVITE_GUARD_ASC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "INVITE_GUARD_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -26891,13 +26021,13 @@
             "deprecationReason": null
           },
           {
-            "name": "MAX_MENTION_ASC",
+            "name": "LOOKUP_PROMPTED_ASC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "MAX_MENTION_DESC",
+            "name": "LOOKUP_PROMPTED_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -26934,30 +26064,6 @@
           },
           {
             "name": "MUTE_DM_TEXT_DESC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "MUTE_DURATION_ASC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "MUTE_DURATION_DESC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "MUTE_ROLE_ASC",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "MUTE_ROLE_DESC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

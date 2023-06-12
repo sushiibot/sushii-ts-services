@@ -4312,7 +4312,6 @@ export type GuildConfig = Node & {
   data: Scalars['JSON'];
   disabledChannels?: Maybe<Array<Maybe<Scalars['BigInt']>>>;
   id: Scalars['BigInt'];
-  inviteGuard: Scalars['Boolean'];
   joinMsg?: Maybe<Scalars['String']>;
   joinMsgEnabled: Scalars['Boolean'];
   joinReact?: Maybe<Scalars['String']>;
@@ -4325,12 +4324,10 @@ export type GuildConfig = Node & {
   logMsg?: Maybe<Scalars['BigInt']>;
   logMsgEnabled: Scalars['Boolean'];
   lookupDetailsOptIn: Scalars['Boolean'];
-  maxMention?: Maybe<Scalars['Int']>;
+  lookupPrompted: Scalars['Boolean'];
   msgChannel?: Maybe<Scalars['BigInt']>;
   muteDmEnabled: Scalars['Boolean'];
   muteDmText?: Maybe<Scalars['String']>;
-  muteDuration?: Maybe<Scalars['BigInt']>;
-  muteRole?: Maybe<Scalars['BigInt']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
   prefix?: Maybe<Scalars['String']>;
@@ -4374,14 +4371,8 @@ export type GuildConfigAverageAggregates = {
   logMod?: Maybe<Scalars['BigFloat']>;
   /** Mean average of logMsg across the matching connection */
   logMsg?: Maybe<Scalars['BigFloat']>;
-  /** Mean average of maxMention across the matching connection */
-  maxMention?: Maybe<Scalars['BigFloat']>;
   /** Mean average of msgChannel across the matching connection */
   msgChannel?: Maybe<Scalars['BigFloat']>;
-  /** Mean average of muteDuration across the matching connection */
-  muteDuration?: Maybe<Scalars['BigFloat']>;
-  /** Mean average of muteRole across the matching connection */
-  muteRole?: Maybe<Scalars['BigFloat']>;
   /** Mean average of roleChannel across the matching connection */
   roleChannel?: Maybe<Scalars['BigFloat']>;
 };
@@ -4397,8 +4388,6 @@ export type GuildConfigCondition = {
   disabledChannels?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
   /** Checks for equality with the object’s `id` field. */
   id?: InputMaybe<Scalars['BigInt']>;
-  /** Checks for equality with the object’s `inviteGuard` field. */
-  inviteGuard?: InputMaybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `joinMsg` field. */
   joinMsg?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `joinMsgEnabled` field. */
@@ -4423,18 +4412,14 @@ export type GuildConfigCondition = {
   logMsgEnabled?: InputMaybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `lookupDetailsOptIn` field. */
   lookupDetailsOptIn?: InputMaybe<Scalars['Boolean']>;
-  /** Checks for equality with the object’s `maxMention` field. */
-  maxMention?: InputMaybe<Scalars['Int']>;
+  /** Checks for equality with the object’s `lookupPrompted` field. */
+  lookupPrompted?: InputMaybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `msgChannel` field. */
   msgChannel?: InputMaybe<Scalars['BigInt']>;
   /** Checks for equality with the object’s `muteDmEnabled` field. */
   muteDmEnabled?: InputMaybe<Scalars['Boolean']>;
   /** Checks for equality with the object’s `muteDmText` field. */
   muteDmText?: InputMaybe<Scalars['String']>;
-  /** Checks for equality with the object’s `muteDuration` field. */
-  muteDuration?: InputMaybe<Scalars['BigInt']>;
-  /** Checks for equality with the object’s `muteRole` field. */
-  muteRole?: InputMaybe<Scalars['BigInt']>;
   /** Checks for equality with the object’s `prefix` field. */
   prefix?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `roleChannel` field. */
@@ -4457,8 +4442,6 @@ export type GuildConfigDistinctCountAggregates = {
   disabledChannels?: Maybe<Scalars['BigInt']>;
   /** Distinct count of id across the matching connection */
   id?: Maybe<Scalars['BigInt']>;
-  /** Distinct count of inviteGuard across the matching connection */
-  inviteGuard?: Maybe<Scalars['BigInt']>;
   /** Distinct count of joinMsg across the matching connection */
   joinMsg?: Maybe<Scalars['BigInt']>;
   /** Distinct count of joinMsgEnabled across the matching connection */
@@ -4483,18 +4466,14 @@ export type GuildConfigDistinctCountAggregates = {
   logMsgEnabled?: Maybe<Scalars['BigInt']>;
   /** Distinct count of lookupDetailsOptIn across the matching connection */
   lookupDetailsOptIn?: Maybe<Scalars['BigInt']>;
-  /** Distinct count of maxMention across the matching connection */
-  maxMention?: Maybe<Scalars['BigInt']>;
+  /** Distinct count of lookupPrompted across the matching connection */
+  lookupPrompted?: Maybe<Scalars['BigInt']>;
   /** Distinct count of msgChannel across the matching connection */
   msgChannel?: Maybe<Scalars['BigInt']>;
   /** Distinct count of muteDmEnabled across the matching connection */
   muteDmEnabled?: Maybe<Scalars['BigInt']>;
   /** Distinct count of muteDmText across the matching connection */
   muteDmText?: Maybe<Scalars['BigInt']>;
-  /** Distinct count of muteDuration across the matching connection */
-  muteDuration?: Maybe<Scalars['BigInt']>;
-  /** Distinct count of muteRole across the matching connection */
-  muteRole?: Maybe<Scalars['BigInt']>;
   /** Distinct count of prefix across the matching connection */
   prefix?: Maybe<Scalars['BigInt']>;
   /** Distinct count of roleChannel across the matching connection */
@@ -4519,8 +4498,6 @@ export type GuildConfigFilter = {
   disabledChannels?: InputMaybe<BigIntListFilter>;
   /** Filter by the object’s `id` field. */
   id?: InputMaybe<BigIntFilter>;
-  /** Filter by the object’s `inviteGuard` field. */
-  inviteGuard?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `joinMsg` field. */
   joinMsg?: InputMaybe<StringFilter>;
   /** Filter by the object’s `joinMsgEnabled` field. */
@@ -4545,18 +4522,14 @@ export type GuildConfigFilter = {
   logMsgEnabled?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `lookupDetailsOptIn` field. */
   lookupDetailsOptIn?: InputMaybe<BooleanFilter>;
-  /** Filter by the object’s `maxMention` field. */
-  maxMention?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `lookupPrompted` field. */
+  lookupPrompted?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `msgChannel` field. */
   msgChannel?: InputMaybe<BigIntFilter>;
   /** Filter by the object’s `muteDmEnabled` field. */
   muteDmEnabled?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `muteDmText` field. */
   muteDmText?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `muteDuration` field. */
-  muteDuration?: InputMaybe<BigIntFilter>;
-  /** Filter by the object’s `muteRole` field. */
-  muteRole?: InputMaybe<BigIntFilter>;
   /** Negates the expression. */
   not?: InputMaybe<GuildConfigFilter>;
   /** Checks for any expressions in this list. */
@@ -4580,7 +4553,6 @@ export type GuildConfigInput = {
   data?: InputMaybe<Scalars['JSON']>;
   disabledChannels?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
   id: Scalars['BigInt'];
-  inviteGuard?: InputMaybe<Scalars['Boolean']>;
   joinMsg?: InputMaybe<Scalars['String']>;
   joinMsgEnabled?: InputMaybe<Scalars['Boolean']>;
   joinReact?: InputMaybe<Scalars['String']>;
@@ -4593,12 +4565,10 @@ export type GuildConfigInput = {
   logMsg?: InputMaybe<Scalars['BigInt']>;
   logMsgEnabled?: InputMaybe<Scalars['Boolean']>;
   lookupDetailsOptIn?: InputMaybe<Scalars['Boolean']>;
-  maxMention?: InputMaybe<Scalars['Int']>;
+  lookupPrompted?: InputMaybe<Scalars['Boolean']>;
   msgChannel?: InputMaybe<Scalars['BigInt']>;
   muteDmEnabled?: InputMaybe<Scalars['Boolean']>;
   muteDmText?: InputMaybe<Scalars['String']>;
-  muteDuration?: InputMaybe<Scalars['BigInt']>;
-  muteRole?: InputMaybe<Scalars['BigInt']>;
   prefix?: InputMaybe<Scalars['String']>;
   roleChannel?: InputMaybe<Scalars['BigInt']>;
   roleConfig?: InputMaybe<Scalars['JSON']>;
@@ -4617,14 +4587,8 @@ export type GuildConfigMaxAggregates = {
   logMod?: Maybe<Scalars['BigInt']>;
   /** Maximum of logMsg across the matching connection */
   logMsg?: Maybe<Scalars['BigInt']>;
-  /** Maximum of maxMention across the matching connection */
-  maxMention?: Maybe<Scalars['Int']>;
   /** Maximum of msgChannel across the matching connection */
   msgChannel?: Maybe<Scalars['BigInt']>;
-  /** Maximum of muteDuration across the matching connection */
-  muteDuration?: Maybe<Scalars['BigInt']>;
-  /** Maximum of muteRole across the matching connection */
-  muteRole?: Maybe<Scalars['BigInt']>;
   /** Maximum of roleChannel across the matching connection */
   roleChannel?: Maybe<Scalars['BigInt']>;
 };
@@ -4639,14 +4603,8 @@ export type GuildConfigMinAggregates = {
   logMod?: Maybe<Scalars['BigInt']>;
   /** Minimum of logMsg across the matching connection */
   logMsg?: Maybe<Scalars['BigInt']>;
-  /** Minimum of maxMention across the matching connection */
-  maxMention?: Maybe<Scalars['Int']>;
   /** Minimum of msgChannel across the matching connection */
   msgChannel?: Maybe<Scalars['BigInt']>;
-  /** Minimum of muteDuration across the matching connection */
-  muteDuration?: Maybe<Scalars['BigInt']>;
-  /** Minimum of muteRole across the matching connection */
-  muteRole?: Maybe<Scalars['BigInt']>;
   /** Minimum of roleChannel across the matching connection */
   roleChannel?: Maybe<Scalars['BigInt']>;
 };
@@ -4656,7 +4614,6 @@ export type GuildConfigPatch = {
   data?: InputMaybe<Scalars['JSON']>;
   disabledChannels?: InputMaybe<Array<InputMaybe<Scalars['BigInt']>>>;
   id?: InputMaybe<Scalars['BigInt']>;
-  inviteGuard?: InputMaybe<Scalars['Boolean']>;
   joinMsg?: InputMaybe<Scalars['String']>;
   joinMsgEnabled?: InputMaybe<Scalars['Boolean']>;
   joinReact?: InputMaybe<Scalars['String']>;
@@ -4669,12 +4626,10 @@ export type GuildConfigPatch = {
   logMsg?: InputMaybe<Scalars['BigInt']>;
   logMsgEnabled?: InputMaybe<Scalars['Boolean']>;
   lookupDetailsOptIn?: InputMaybe<Scalars['Boolean']>;
-  maxMention?: InputMaybe<Scalars['Int']>;
+  lookupPrompted?: InputMaybe<Scalars['Boolean']>;
   msgChannel?: InputMaybe<Scalars['BigInt']>;
   muteDmEnabled?: InputMaybe<Scalars['Boolean']>;
   muteDmText?: InputMaybe<Scalars['String']>;
-  muteDuration?: InputMaybe<Scalars['BigInt']>;
-  muteRole?: InputMaybe<Scalars['BigInt']>;
   prefix?: InputMaybe<Scalars['String']>;
   roleChannel?: InputMaybe<Scalars['BigInt']>;
   roleConfig?: InputMaybe<Scalars['JSON']>;
@@ -4693,14 +4648,8 @@ export type GuildConfigStddevPopulationAggregates = {
   logMod?: Maybe<Scalars['BigFloat']>;
   /** Population standard deviation of logMsg across the matching connection */
   logMsg?: Maybe<Scalars['BigFloat']>;
-  /** Population standard deviation of maxMention across the matching connection */
-  maxMention?: Maybe<Scalars['BigFloat']>;
   /** Population standard deviation of msgChannel across the matching connection */
   msgChannel?: Maybe<Scalars['BigFloat']>;
-  /** Population standard deviation of muteDuration across the matching connection */
-  muteDuration?: Maybe<Scalars['BigFloat']>;
-  /** Population standard deviation of muteRole across the matching connection */
-  muteRole?: Maybe<Scalars['BigFloat']>;
   /** Population standard deviation of roleChannel across the matching connection */
   roleChannel?: Maybe<Scalars['BigFloat']>;
 };
@@ -4715,14 +4664,8 @@ export type GuildConfigStddevSampleAggregates = {
   logMod?: Maybe<Scalars['BigFloat']>;
   /** Sample standard deviation of logMsg across the matching connection */
   logMsg?: Maybe<Scalars['BigFloat']>;
-  /** Sample standard deviation of maxMention across the matching connection */
-  maxMention?: Maybe<Scalars['BigFloat']>;
   /** Sample standard deviation of msgChannel across the matching connection */
   msgChannel?: Maybe<Scalars['BigFloat']>;
-  /** Sample standard deviation of muteDuration across the matching connection */
-  muteDuration?: Maybe<Scalars['BigFloat']>;
-  /** Sample standard deviation of muteRole across the matching connection */
-  muteRole?: Maybe<Scalars['BigFloat']>;
   /** Sample standard deviation of roleChannel across the matching connection */
   roleChannel?: Maybe<Scalars['BigFloat']>;
 };
@@ -4737,14 +4680,8 @@ export type GuildConfigSumAggregates = {
   logMod: Scalars['BigFloat'];
   /** Sum of logMsg across the matching connection */
   logMsg: Scalars['BigFloat'];
-  /** Sum of maxMention across the matching connection */
-  maxMention: Scalars['BigInt'];
   /** Sum of msgChannel across the matching connection */
   msgChannel: Scalars['BigFloat'];
-  /** Sum of muteDuration across the matching connection */
-  muteDuration: Scalars['BigFloat'];
-  /** Sum of muteRole across the matching connection */
-  muteRole: Scalars['BigFloat'];
   /** Sum of roleChannel across the matching connection */
   roleChannel: Scalars['BigFloat'];
 };
@@ -4759,14 +4696,8 @@ export type GuildConfigVariancePopulationAggregates = {
   logMod?: Maybe<Scalars['BigFloat']>;
   /** Population variance of logMsg across the matching connection */
   logMsg?: Maybe<Scalars['BigFloat']>;
-  /** Population variance of maxMention across the matching connection */
-  maxMention?: Maybe<Scalars['BigFloat']>;
   /** Population variance of msgChannel across the matching connection */
   msgChannel?: Maybe<Scalars['BigFloat']>;
-  /** Population variance of muteDuration across the matching connection */
-  muteDuration?: Maybe<Scalars['BigFloat']>;
-  /** Population variance of muteRole across the matching connection */
-  muteRole?: Maybe<Scalars['BigFloat']>;
   /** Population variance of roleChannel across the matching connection */
   roleChannel?: Maybe<Scalars['BigFloat']>;
 };
@@ -4781,14 +4712,8 @@ export type GuildConfigVarianceSampleAggregates = {
   logMod?: Maybe<Scalars['BigFloat']>;
   /** Sample variance of logMsg across the matching connection */
   logMsg?: Maybe<Scalars['BigFloat']>;
-  /** Sample variance of maxMention across the matching connection */
-  maxMention?: Maybe<Scalars['BigFloat']>;
   /** Sample variance of msgChannel across the matching connection */
   msgChannel?: Maybe<Scalars['BigFloat']>;
-  /** Sample variance of muteDuration across the matching connection */
-  muteDuration?: Maybe<Scalars['BigFloat']>;
-  /** Sample variance of muteRole across the matching connection */
-  muteRole?: Maybe<Scalars['BigFloat']>;
   /** Sample variance of roleChannel across the matching connection */
   roleChannel?: Maybe<Scalars['BigFloat']>;
 };
@@ -4830,7 +4755,6 @@ export type GuildConfigsEdge = {
 export enum GuildConfigsGroupBy {
   Data = 'DATA',
   DisabledChannels = 'DISABLED_CHANNELS',
-  InviteGuard = 'INVITE_GUARD',
   JoinMsg = 'JOIN_MSG',
   JoinMsgEnabled = 'JOIN_MSG_ENABLED',
   JoinReact = 'JOIN_REACT',
@@ -4843,12 +4767,10 @@ export enum GuildConfigsGroupBy {
   LogMsg = 'LOG_MSG',
   LogMsgEnabled = 'LOG_MSG_ENABLED',
   LookupDetailsOptIn = 'LOOKUP_DETAILS_OPT_IN',
-  MaxMention = 'MAX_MENTION',
+  LookupPrompted = 'LOOKUP_PROMPTED',
   MsgChannel = 'MSG_CHANNEL',
   MuteDmEnabled = 'MUTE_DM_ENABLED',
   MuteDmText = 'MUTE_DM_TEXT',
-  MuteDuration = 'MUTE_DURATION',
-  MuteRole = 'MUTE_ROLE',
   Prefix = 'PREFIX',
   RoleChannel = 'ROLE_CHANNEL',
   RoleConfig = 'ROLE_CONFIG',
@@ -4862,10 +4784,7 @@ export type GuildConfigsHavingAverageInput = {
   logMember?: InputMaybe<HavingBigintFilter>;
   logMod?: InputMaybe<HavingBigintFilter>;
   logMsg?: InputMaybe<HavingBigintFilter>;
-  maxMention?: InputMaybe<HavingIntFilter>;
   msgChannel?: InputMaybe<HavingBigintFilter>;
-  muteDuration?: InputMaybe<HavingBigintFilter>;
-  muteRole?: InputMaybe<HavingBigintFilter>;
   roleChannel?: InputMaybe<HavingBigintFilter>;
 };
 
@@ -4874,10 +4793,7 @@ export type GuildConfigsHavingDistinctCountInput = {
   logMember?: InputMaybe<HavingBigintFilter>;
   logMod?: InputMaybe<HavingBigintFilter>;
   logMsg?: InputMaybe<HavingBigintFilter>;
-  maxMention?: InputMaybe<HavingIntFilter>;
   msgChannel?: InputMaybe<HavingBigintFilter>;
-  muteDuration?: InputMaybe<HavingBigintFilter>;
-  muteRole?: InputMaybe<HavingBigintFilter>;
   roleChannel?: InputMaybe<HavingBigintFilter>;
 };
 
@@ -4901,10 +4817,7 @@ export type GuildConfigsHavingMaxInput = {
   logMember?: InputMaybe<HavingBigintFilter>;
   logMod?: InputMaybe<HavingBigintFilter>;
   logMsg?: InputMaybe<HavingBigintFilter>;
-  maxMention?: InputMaybe<HavingIntFilter>;
   msgChannel?: InputMaybe<HavingBigintFilter>;
-  muteDuration?: InputMaybe<HavingBigintFilter>;
-  muteRole?: InputMaybe<HavingBigintFilter>;
   roleChannel?: InputMaybe<HavingBigintFilter>;
 };
 
@@ -4913,10 +4826,7 @@ export type GuildConfigsHavingMinInput = {
   logMember?: InputMaybe<HavingBigintFilter>;
   logMod?: InputMaybe<HavingBigintFilter>;
   logMsg?: InputMaybe<HavingBigintFilter>;
-  maxMention?: InputMaybe<HavingIntFilter>;
   msgChannel?: InputMaybe<HavingBigintFilter>;
-  muteDuration?: InputMaybe<HavingBigintFilter>;
-  muteRole?: InputMaybe<HavingBigintFilter>;
   roleChannel?: InputMaybe<HavingBigintFilter>;
 };
 
@@ -4925,10 +4835,7 @@ export type GuildConfigsHavingStddevPopulationInput = {
   logMember?: InputMaybe<HavingBigintFilter>;
   logMod?: InputMaybe<HavingBigintFilter>;
   logMsg?: InputMaybe<HavingBigintFilter>;
-  maxMention?: InputMaybe<HavingIntFilter>;
   msgChannel?: InputMaybe<HavingBigintFilter>;
-  muteDuration?: InputMaybe<HavingBigintFilter>;
-  muteRole?: InputMaybe<HavingBigintFilter>;
   roleChannel?: InputMaybe<HavingBigintFilter>;
 };
 
@@ -4937,10 +4844,7 @@ export type GuildConfigsHavingStddevSampleInput = {
   logMember?: InputMaybe<HavingBigintFilter>;
   logMod?: InputMaybe<HavingBigintFilter>;
   logMsg?: InputMaybe<HavingBigintFilter>;
-  maxMention?: InputMaybe<HavingIntFilter>;
   msgChannel?: InputMaybe<HavingBigintFilter>;
-  muteDuration?: InputMaybe<HavingBigintFilter>;
-  muteRole?: InputMaybe<HavingBigintFilter>;
   roleChannel?: InputMaybe<HavingBigintFilter>;
 };
 
@@ -4949,10 +4853,7 @@ export type GuildConfigsHavingSumInput = {
   logMember?: InputMaybe<HavingBigintFilter>;
   logMod?: InputMaybe<HavingBigintFilter>;
   logMsg?: InputMaybe<HavingBigintFilter>;
-  maxMention?: InputMaybe<HavingIntFilter>;
   msgChannel?: InputMaybe<HavingBigintFilter>;
-  muteDuration?: InputMaybe<HavingBigintFilter>;
-  muteRole?: InputMaybe<HavingBigintFilter>;
   roleChannel?: InputMaybe<HavingBigintFilter>;
 };
 
@@ -4961,10 +4862,7 @@ export type GuildConfigsHavingVariancePopulationInput = {
   logMember?: InputMaybe<HavingBigintFilter>;
   logMod?: InputMaybe<HavingBigintFilter>;
   logMsg?: InputMaybe<HavingBigintFilter>;
-  maxMention?: InputMaybe<HavingIntFilter>;
   msgChannel?: InputMaybe<HavingBigintFilter>;
-  muteDuration?: InputMaybe<HavingBigintFilter>;
-  muteRole?: InputMaybe<HavingBigintFilter>;
   roleChannel?: InputMaybe<HavingBigintFilter>;
 };
 
@@ -4973,10 +4871,7 @@ export type GuildConfigsHavingVarianceSampleInput = {
   logMember?: InputMaybe<HavingBigintFilter>;
   logMod?: InputMaybe<HavingBigintFilter>;
   logMsg?: InputMaybe<HavingBigintFilter>;
-  maxMention?: InputMaybe<HavingIntFilter>;
   msgChannel?: InputMaybe<HavingBigintFilter>;
-  muteDuration?: InputMaybe<HavingBigintFilter>;
-  muteRole?: InputMaybe<HavingBigintFilter>;
   roleChannel?: InputMaybe<HavingBigintFilter>;
 };
 
@@ -4988,8 +4883,6 @@ export enum GuildConfigsOrderBy {
   DisabledChannelsDesc = 'DISABLED_CHANNELS_DESC',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
-  InviteGuardAsc = 'INVITE_GUARD_ASC',
-  InviteGuardDesc = 'INVITE_GUARD_DESC',
   JoinMsgAsc = 'JOIN_MSG_ASC',
   JoinMsgDesc = 'JOIN_MSG_DESC',
   JoinMsgEnabledAsc = 'JOIN_MSG_ENABLED_ASC',
@@ -5014,18 +4907,14 @@ export enum GuildConfigsOrderBy {
   LogMsgEnabledDesc = 'LOG_MSG_ENABLED_DESC',
   LookupDetailsOptInAsc = 'LOOKUP_DETAILS_OPT_IN_ASC',
   LookupDetailsOptInDesc = 'LOOKUP_DETAILS_OPT_IN_DESC',
-  MaxMentionAsc = 'MAX_MENTION_ASC',
-  MaxMentionDesc = 'MAX_MENTION_DESC',
+  LookupPromptedAsc = 'LOOKUP_PROMPTED_ASC',
+  LookupPromptedDesc = 'LOOKUP_PROMPTED_DESC',
   MsgChannelAsc = 'MSG_CHANNEL_ASC',
   MsgChannelDesc = 'MSG_CHANNEL_DESC',
   MuteDmEnabledAsc = 'MUTE_DM_ENABLED_ASC',
   MuteDmEnabledDesc = 'MUTE_DM_ENABLED_DESC',
   MuteDmTextAsc = 'MUTE_DM_TEXT_ASC',
   MuteDmTextDesc = 'MUTE_DM_TEXT_DESC',
-  MuteDurationAsc = 'MUTE_DURATION_ASC',
-  MuteDurationDesc = 'MUTE_DURATION_DESC',
-  MuteRoleAsc = 'MUTE_ROLE_ASC',
-  MuteRoleDesc = 'MUTE_ROLE_DESC',
   Natural = 'NATURAL',
   PrefixAsc = 'PREFIX_ASC',
   PrefixDesc = 'PREFIX_DESC',
@@ -20024,7 +19913,6 @@ export type GuildConfigResolvers<ContextType = any, ParentType extends Resolvers
   data?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
   disabledChannels?: Resolver<Maybe<Array<Maybe<ResolversTypes['BigInt']>>>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
-  inviteGuard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   joinMsg?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   joinMsgEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   joinReact?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -20037,12 +19925,10 @@ export type GuildConfigResolvers<ContextType = any, ParentType extends Resolvers
   logMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   logMsgEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   lookupDetailsOptIn?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  maxMention?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  lookupPrompted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   msgChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   muteDmEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   muteDmText?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  muteDuration?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  muteRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   nodeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   prefix?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   roleChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
@@ -20072,10 +19958,7 @@ export type GuildConfigAverageAggregatesResolvers<ContextType = any, ParentType 
   logMember?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   logMod?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   logMsg?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  maxMention?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  muteDuration?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  muteRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   roleChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -20084,7 +19967,6 @@ export type GuildConfigDistinctCountAggregatesResolvers<ContextType = any, Paren
   data?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   disabledChannels?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   id?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  inviteGuard?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   joinMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   joinMsgEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   joinReact?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
@@ -20097,12 +19979,10 @@ export type GuildConfigDistinctCountAggregatesResolvers<ContextType = any, Paren
   logMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   logMsgEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   lookupDetailsOptIn?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  maxMention?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
+  lookupPrompted?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   msgChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   muteDmEnabled?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   muteDmText?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  muteDuration?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  muteRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   prefix?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   roleChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   roleConfig?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
@@ -20117,10 +19997,7 @@ export type GuildConfigMaxAggregatesResolvers<ContextType = any, ParentType exte
   logMember?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   logMod?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   logMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  maxMention?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   msgChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  muteDuration?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  muteRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   roleChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -20130,10 +20007,7 @@ export type GuildConfigMinAggregatesResolvers<ContextType = any, ParentType exte
   logMember?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   logMod?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   logMsg?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  maxMention?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   msgChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  muteDuration?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
-  muteRole?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   roleChannel?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -20143,10 +20017,7 @@ export type GuildConfigStddevPopulationAggregatesResolvers<ContextType = any, Pa
   logMember?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   logMod?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   logMsg?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  maxMention?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  muteDuration?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  muteRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   roleChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -20156,10 +20027,7 @@ export type GuildConfigStddevSampleAggregatesResolvers<ContextType = any, Parent
   logMember?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   logMod?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   logMsg?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  maxMention?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  muteDuration?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  muteRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   roleChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -20169,10 +20037,7 @@ export type GuildConfigSumAggregatesResolvers<ContextType = any, ParentType exte
   logMember?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   logMod?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   logMsg?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
-  maxMention?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
   msgChannel?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
-  muteDuration?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
-  muteRole?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   roleChannel?: Resolver<ResolversTypes['BigFloat'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -20182,10 +20047,7 @@ export type GuildConfigVariancePopulationAggregatesResolvers<ContextType = any, 
   logMember?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   logMod?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   logMsg?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  maxMention?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  muteDuration?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  muteRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   roleChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -20195,10 +20057,7 @@ export type GuildConfigVarianceSampleAggregatesResolvers<ContextType = any, Pare
   logMember?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   logMod?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   logMsg?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  maxMention?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   msgChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  muteDuration?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
-  muteRole?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   roleChannel?: Resolver<Maybe<ResolversTypes['BigFloat']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -23606,9 +23465,9 @@ export type GuildConfigByIdQueryVariables = Exact<{
 }>;
 
 
-export type GuildConfigByIdQuery = { __typename?: 'Query', guildConfigById?: { __typename?: 'GuildConfig', disabledChannels?: Array<string | null> | null, inviteGuard: boolean, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: string | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: string | null, logMsg?: string | null, logMsgEnabled: boolean, maxMention?: number | null, msgChannel?: string | null, muteDmEnabled: boolean, muteDmText?: string | null, muteDuration?: string | null, muteRole?: string | null, prefix?: string | null, roleChannel?: string | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null } | null };
+export type GuildConfigByIdQuery = { __typename?: 'Query', guildConfigById?: { __typename?: 'GuildConfig', disabledChannels?: Array<string | null> | null, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: string | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: string | null, logMsg?: string | null, logMsgEnabled: boolean, msgChannel?: string | null, muteDmEnabled: boolean, muteDmText?: string | null, prefix?: string | null, roleChannel?: string | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null } | null };
 
-export type GuildConfigDataFragment = { __typename?: 'GuildConfig', disabledChannels?: Array<string | null> | null, inviteGuard: boolean, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: string | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: string | null, logMsg?: string | null, logMsgEnabled: boolean, maxMention?: number | null, msgChannel?: string | null, muteDmEnabled: boolean, muteDmText?: string | null, muteDuration?: string | null, muteRole?: string | null, prefix?: string | null, roleChannel?: string | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null };
+export type GuildConfigDataFragment = { __typename?: 'GuildConfig', disabledChannels?: Array<string | null> | null, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: string | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: string | null, logMsg?: string | null, logMsgEnabled: boolean, msgChannel?: string | null, muteDmEnabled: boolean, muteDmText?: string | null, prefix?: string | null, roleChannel?: string | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null };
 
 export type UpdateGuildConfigMutationVariables = Exact<{
   id: Scalars['BigInt'];
@@ -23616,7 +23475,7 @@ export type UpdateGuildConfigMutationVariables = Exact<{
 }>;
 
 
-export type UpdateGuildConfigMutation = { __typename?: 'Mutation', updateGuildConfigById?: { __typename?: 'UpdateGuildConfigPayload', guildConfig?: { __typename?: 'GuildConfig', disabledChannels?: Array<string | null> | null, inviteGuard: boolean, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: string | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: string | null, logMsg?: string | null, logMsgEnabled: boolean, maxMention?: number | null, msgChannel?: string | null, muteDmEnabled: boolean, muteDmText?: string | null, muteDuration?: string | null, muteRole?: string | null, prefix?: string | null, roleChannel?: string | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null } | null } | null };
+export type UpdateGuildConfigMutation = { __typename?: 'Mutation', updateGuildConfigById?: { __typename?: 'UpdateGuildConfigPayload', guildConfig?: { __typename?: 'GuildConfig', disabledChannels?: Array<string | null> | null, joinMsg?: string | null, joinMsgEnabled: boolean, joinReact?: string | null, leaveMsg?: string | null, leaveMsgEnabled: boolean, logMember?: string | null, logMemberEnabled: boolean, logModEnabled: boolean, logMod?: string | null, logMsg?: string | null, logMsgEnabled: boolean, msgChannel?: string | null, muteDmEnabled: boolean, muteDmText?: string | null, prefix?: string | null, roleChannel?: string | null, roleConfig?: { [key: string]: any } | null, roleEnabled: boolean, warnDmEnabled: boolean, warnDmText?: string | null } | null } | null };
 
 export type DeleteLevelRoleMutationVariables = Exact<{
   guildId: Scalars['BigInt'];
@@ -24108,7 +23967,6 @@ export const BanDataFragmentDoc = gql`
 export const GuildConfigDataFragmentDoc = gql`
     fragment GuildConfigData on GuildConfig {
   disabledChannels
-  inviteGuard
   joinMsg
   joinMsgEnabled
   joinReact
@@ -24120,12 +23978,9 @@ export const GuildConfigDataFragmentDoc = gql`
   logMod
   logMsg
   logMsgEnabled
-  maxMention
   msgChannel
   muteDmEnabled
   muteDmText
-  muteDuration
-  muteRole
   prefix
   roleChannel
   roleConfig
