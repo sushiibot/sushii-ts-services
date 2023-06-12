@@ -379,6 +379,8 @@ export interface AppPublicGuildConfigs {
   max_mention: number | null;
   disabled_channels: Int8[] | null;
   data: Generated<Json>;
+  lookup_details_opt_in: Generated<boolean>;
+  lookup_prompted: Generated<boolean>;
 }
 
 export interface AppPublicLevelRoleApplyJobs {

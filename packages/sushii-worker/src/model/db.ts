@@ -37,6 +37,8 @@ const defaultGuildconfig: AllSelection<DB, "app_public.guild_configs"> = {
   warn_dm_enabled: true,
   max_mention: null,
   disabled_channels: null,
+  lookup_prompted: false,
+  lookup_details_opt_in: false,
   data: {},
 };
 
@@ -62,14 +64,15 @@ class SushiiDB extends Kysely<DB> {
   async updateGuildConfig(
     guildId: string,
     patch: UpdateExpression<DB, "app_public.guild_configs">
-  ): Promise<void> {
-    await this.insertInto("app_public.guild_configs")
+  ): Promise<AllSelection<DB, "app_public.guild_configs">> {
+    return this.insertInto("app_public.guild_configs")
       .values({
         id: guildId,
         ...patch,
       })
+      .returningAll()
       .onConflict((oc) => oc.column("id").doUpdateSet(patch))
-      .execute();
+      .executeTakeFirstOrThrow();
   }
 
   async getNextCaseId(guildId: string): Promise<number> {

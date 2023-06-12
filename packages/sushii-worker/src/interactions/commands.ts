@@ -28,16 +28,15 @@ import NoteCommand from "./moderation/NoteCommand";
 import XpCommand from "./xp/XpCommands";
 import LevelRoleCommand from "./xp/LevelRoleCommand";
 import RankCommand from "./user/rank";
-import MessageLogCommand from "./settings/MessageLogChannel";
 import ModLogReasonButtonHandler from "./moderation/reason/ReasonButton";
 import ModLogReasonModalHandler from "./moderation/reason/ReasonModal";
-import ModLogCommand from "./settings/ModLogChannel";
 import ReasonCommand from "./moderation/reason/ReasonCommand";
 import ReasonAutocomplete from "./moderation/reason/ReasonAutocomplete";
 import UnTimeoutCommand from "./moderation/UnTimeoutCommand";
 import UncaseCommand from "./moderation/reason/UncaseCommand";
 import ReasonConfirmButtonHandler from "./moderation/reason/ReasonConfirmButtonHandler";
 import SettingsCommand from "./settings/SettingsCommand";
+import LookupCommand from "./moderation/LookupCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -54,6 +53,7 @@ export default function addCommands(
     new PingCommand(),
 
     // Moderation
+    new LookupCommand(),
     new BanCommand(),
     new UnbanCommand(),
     new KickCommand(),
@@ -81,9 +81,7 @@ export default function addCommands(
     new XpCommand(),
 
     // Settings
-    new SettingsCommand(),
-    new MessageLogCommand(),
-    new ModLogCommand()
+    new SettingsCommand()
   );
 
   // ----------------------------------------

@@ -6,10 +6,8 @@ import {
 } from "discord.js";
 import Context from "../../model/context";
 import db from "../../model/db";
-import { getCreatedTimestampSeconds } from "../../utils/snowflake";
-import timestampToUnixTime from "../../utils/timestampToUnixTime";
 import { SlashCommandHandler } from "../handlers";
-import buildUserLookupEmbed from "./formatters/lookup";
+import buildUserLookupEmbed, { UserLookupBan } from "./formatters/lookup";
 
 export default class LookupCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -43,6 +41,8 @@ export default class LookupCommand extends SlashCommandHandler {
       throw new Error("no user provided");
     }
 
+    const currentGuildConfig = await db.getGuildConfig(interaction.guildId);
+
     const bans = await db
       .selectFrom("app_public.guild_bans")
       .leftJoin("app_public.mod_logs as logs", (join) =>
@@ -54,23 +54,24 @@ export default class LookupCommand extends SlashCommandHandler {
         join.onRef("config.id", "=", "app_public.guild_bans.guild_id")
       )
       .select([
-        "user_id",
-        "guild_id",
-        // TODO: lookup_details_opt_in after moved to own column.
+        "app_public.guild_bans.guild_id as guild_id",
+        "reason",
+        "action_time",
+        "lookup_details_opt_in",
       ])
       .where(({ cmpr, and, or }) =>
         and([
-          cmpr("user_id", "=", user.id),
-          or([cmpr("action", "is", "null"), cmpr("action", "=", "ban")]),
+          cmpr("app_public.guild_bans.user_id", "=", user.id),
+          or([cmpr("action", "is", null), cmpr("action", "=", "ban")]),
         ])
       )
       .execute();
 
     const bansWithGuild = await Promise.all(
-      bans.map(async (ban) => {
+      bans.map(async (ban): Promise<Partial<UserLookupBan>> => {
         if (!ban.guild_id) {
           return {
-            ...ban,
+            reason: ban.reason,
             guild_name: null,
           };
         }
@@ -80,6 +81,7 @@ export default class LookupCommand extends SlashCommandHandler {
           return {
             ...ban,
             guild_name: guild.name,
+            guild_features: guild.features,
           };
         } catch (err) {
           return {
@@ -91,38 +93,27 @@ export default class LookupCommand extends SlashCommandHandler {
       })
     );
 
-    const filteredBans = bansWithGuild.filter((ban) => ban.guild_name !== null);
+    const filteredBans = bansWithGuild.filter(
+      (ban): ban is UserLookupBan =>
+        ban.guild_name !== null && ban.guild_id !== null
+    );
 
-    const userFaceURL = user.displayAvatarURL();
-
-    const createdTimestamp = getCreatedTimestampSeconds(user.id);
-    const fields = [
-      {
-        name: "Account Created",
-        value: `<t:${createdTimestamp}:F> (<t:${createdTimestamp}:R>)`,
-      },
-    ];
-
-    const member = await interaction.guild.members.fetch(user.id);
-
-    if (member.joinedTimestamp) {
-      const ts = timestampToUnixTime(member.joinedTimestamp);
-
-      fields.push({
-        name: "Joined Server",
-        value: `<t:${ts}:F> (<t:${ts}:R>)`,
-      });
+    let member;
+    try {
+      member = await interaction.guild.members.fetch(user.id);
+    } catch (err) {
+      // Ignore, could be a user not in the server
     }
 
-    const userEmbed = buildUserLookupEmbed(filteredBans)
-      .setAuthor({
-        name: `${user.username}#${user.discriminator} - ${user.id}`,
-        iconURL: userFaceURL,
-      })
-      .addFields(fields);
+    const userEmbed = await buildUserLookupEmbed(
+      user,
+      member,
+      filteredBans,
+      currentGuildConfig.lookup_details_opt_in
+    );
 
     await interaction.reply({
-      embeds: [userEmbed.toJSON()],
+      embeds: [userEmbed],
     });
   }
 }

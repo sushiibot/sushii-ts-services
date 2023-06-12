@@ -194,6 +194,26 @@ function getGuildConfigEmbed(
     },
   ]);
 
+  // ---------------------------------------------------------------------------
+  // Lookup
+
+  let lookup = "";
+
+  lookup += toToggleButton(config.lookup_details_opt_in);
+
+  const stateText = config.lookup_details_opt_in ? "opted-in" : "opted-out";
+
+  lookup += ` Lookup details currently ${stateText}, use ${ctx.getCommandMention(
+    "settings lookup"
+  )} to see additional details and modify this setting.`;
+
+  embed = embed.addFields([
+    {
+      name: "Lookup",
+      value: lookup,
+    },
+  ]);
+
   return embed;
 }
 
@@ -402,6 +422,9 @@ export default class SettingsCommand extends SlashCommandHandler {
             )
         )
     )
+    .addSubcommand((c) =>
+      c.setName("lookup").setDescription("Modify lookup settings.")
+    )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
@@ -446,6 +469,8 @@ export default class SettingsCommand extends SlashCommandHandler {
           case "memberlog":
           case "messagelog":
             return SettingsCommand.logChannelHandler(ctx, interaction);
+          case "lookup":
+            return SettingsCommand.lookupHandler(ctx, interaction);
           default:
             throw new Error("Invalid subcommand.");
         }
@@ -660,6 +685,162 @@ export default class SettingsCommand extends SlashCommandHandler {
           .setColor(Color.Success)
           .toJSON(),
       ],
+    });
+  }
+
+  static getLookupHandlerEmbed(
+    config: AllSelection<DB, "app_public.guild_configs">
+  ): EmbedBuilder {
+    let description = toToggleButton(config.lookup_details_opt_in);
+
+    if (config.lookup_details_opt_in) {
+      description += " This server is currently opted in!";
+      description += "\n";
+      description += "**Info shared with with other opted-in servers:**\n";
+      description += "╰ Server name, server ID, reason, and timestamp.";
+
+      description += "\n\n";
+      description += "**Info viewable from other opted-in servers:**\n";
+      description += "╰ Server name, server ID, reason, and timestamp.";
+
+      description += "\n\n";
+      description += "Want to hide your server name and ban reasons?";
+      description += "\n";
+      description +=
+        "Opt-out of sharing with the button below. Note that this will prevent you from seeing other server names and ban reasons as well.";
+    } else {
+      description += " This server is currently opted out.";
+      description += "\n";
+      description += "**Info shared with other servers:**\n";
+      description += "╰ Ban timestamp";
+
+      description += "\n\n";
+      description += "**Info viewable from other servers:**\n";
+      description += "╰ Ban timestamp";
+
+      description += "\n\n";
+      description += "Want to see the names of other servers and ban reasons?";
+      description += "\n";
+      description +=
+        "Opt-in to sharing your server name and ban reasons with the button below.";
+    }
+
+    return new EmbedBuilder()
+      .setTitle("Lookup Settings")
+      .setDescription(description)
+      .setColor(Color.Info);
+  }
+
+  static getLookupHandlerComponents(
+    lookup_details_opt_in: boolean,
+    disabled: boolean = false
+  ): ActionRowBuilder<ButtonBuilder>[] {
+    let button;
+    if (disabled) {
+      const labelAction = lookup_details_opt_in ? "opt-out" : "opt-in";
+
+      button = new ButtonBuilder()
+        .setDisabled(true)
+        .setStyle(ButtonStyle.Secondary)
+        .setLabel(`Expired, run this command again to ${labelAction}`)
+        .setCustomId("meow");
+    } else {
+      button = new ButtonBuilder()
+        .setStyle(
+          lookup_details_opt_in ? ButtonStyle.Danger : ButtonStyle.Success
+        )
+        .setLabel(
+          lookup_details_opt_in ? "Opt-out of sharing" : "Opt-in to sharing"
+        )
+        .setCustomId(lookup_details_opt_in ? "opt-out" : "opt-in");
+    }
+
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
+
+    return [row];
+  }
+
+  static async lookupHandler(
+    ctx: Context,
+    interaction: ChatInputCommandInteraction<"cached">
+  ): Promise<void> {
+    let config = await db.getGuildConfig(interaction.guildId);
+    const embed = SettingsCommand.getLookupHandlerEmbed(config);
+    const components = SettingsCommand.getLookupHandlerComponents(
+      config.lookup_details_opt_in
+    );
+
+    const msg = await interaction.reply({
+      embeds: [embed],
+      components,
+    });
+
+    const collector = msg.createMessageComponentCollector({
+      componentType: ComponentType.Button,
+      time: 60000,
+      dispose: true,
+    });
+
+    collector.on("collect", async (i) => {
+      if (i.user.id !== interaction.user.id) {
+        const replied = await i.reply({
+          content: "These buttons aren't for you! 😡",
+          ephemeral: true,
+        });
+
+        setTimeout(() => {
+          // Discard error
+          replied.delete().catch(() => {});
+        }, 2500);
+
+        return;
+      }
+
+      const match = i.customId === "opt-in" || i.customId === "opt-out";
+      if (!match) {
+        throw new Error("Invalid custom ID.");
+      }
+
+      const newOptedInState = i.customId === "opt-in";
+
+      config = await db.updateGuildConfig(interaction.guildId, {
+        lookup_details_opt_in: newOptedInState,
+      });
+
+      const newEmbed = SettingsCommand.getLookupHandlerEmbed(config);
+      const newComponents = SettingsCommand.getLookupHandlerComponents(
+        config.lookup_details_opt_in
+      );
+
+      await msg.edit({
+        embeds: [newEmbed],
+        components: newComponents,
+      });
+
+      const buttonPressConfirmMessage = await i.reply({
+        content: newOptedInState ? "Opted in now!" : "Opted out now!",
+        flags: MessageFlags.Ephemeral,
+      });
+
+      // Delete this button response after 2.5 seconds
+      setTimeout(() => {
+        // Discard error
+        buttonPressConfirmMessage?.delete().catch(() => {});
+      }, 2500);
+    });
+
+    collector.on("end", async (collected) => {
+      logger.debug(`Collected ${collected.size} interactions.`);
+
+      const newComponents = SettingsCommand.getLookupHandlerComponents(
+        config.lookup_details_opt_in,
+        true
+      );
+
+      // Remove buttons so they can't be clicked again
+      await msg.edit({
+        components: newComponents,
+      });
     });
   }
 

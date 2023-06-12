@@ -20,6 +20,11 @@ import levelHandler from "./events/LevelHandler";
 import webhookLog from "./webhookLogger";
 import Color from "./utils/colors";
 import { StatName, updateStat } from "./tasks/StatsTask";
+import {
+  banCacheBanHandler,
+  banCacheUnbanHandler,
+  banReadyHandler,
+} from "./events/BanCache";
 
 async function handleEvent<K extends keyof ClientEvents>(
   ctx: Context,
@@ -82,6 +87,8 @@ export default function registerEventHandlers(
     logger.info(`Ready! Logged in as ${c.user.tag}`);
 
     await webhookLog("Ready", `Logged in as ${c.user.tag}`, Color.Success);
+
+    await handleEvent(ctx, Events.ClientReady, [banReadyHandler], client);
   });
 
   client.on(Events.Debug, async (msg) => {
@@ -221,7 +228,7 @@ export default function registerEventHandlers(
       await handleEvent(
         ctx,
         Events.GuildBanAdd,
-        [legacyModLogNotifierHandler],
+        [legacyModLogNotifierHandler, banCacheBanHandler],
         guildBan
       );
     } catch (err) {
@@ -231,6 +238,25 @@ export default function registerEventHandlers(
           guildId: guildBan.guild.id,
         },
         "error handling guild ban add, this should be caught"
+      );
+    }
+  });
+
+  client.on(Events.GuildBanRemove, async (guildBan) => {
+    try {
+      await handleEvent(
+        ctx,
+        Events.GuildBanRemove,
+        [banCacheUnbanHandler],
+        guildBan
+      );
+    } catch (err) {
+      logger.error(
+        {
+          err,
+          guildId: guildBan.guild.id,
+        },
+        "error handling guild ban remove, this should be caught"
       );
     }
   });
