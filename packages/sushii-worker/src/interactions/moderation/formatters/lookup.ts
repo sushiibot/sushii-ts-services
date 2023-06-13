@@ -68,6 +68,8 @@ export default async function buildUserLookupEmbed(
     })
     .setColor(Color.Info);
 
+  let smallServersCount = 0;
+
   if (bans.length === 0) {
     embed = embed.setDescription("No bans found for this user.");
   } else {
@@ -91,6 +93,12 @@ export default async function buildUserLookupEmbed(
     });
 
     for (const ban of bans) {
+      if (ban.guild_members && ban.guild_members < 250) {
+        smallServersCount += 1;
+        // Skip small servers
+        continue;
+      }
+
       // Add emojis
       desc += getFeatureEmojis(ban.guild_features);
 
@@ -144,6 +152,15 @@ export default async function buildUserLookupEmbed(
   }
 
   const fields = [];
+
+  if (smallServersCount > 0) {
+    fields.push({
+      name: `⚠ ${smallServersCount} small server${
+        smallServersCount === 1 ? "" : "s"
+      } not shown`,
+      value: "Servers with less than 250 members are not shown.",
+    });
+  }
 
   if (showBasicInfo) {
     const createdTimestamp = getCreatedTimestampSeconds(targetUser.id);
