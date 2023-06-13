@@ -321,7 +321,7 @@ export interface AppPublicCachedUsers {
 }
 
 export interface AppPublicEmojiStickerStats {
-  time: Timestamp;
+  time: Generated<Timestamp>;
   guild_id: Int8;
   asset_id: Int8;
   action_type: AppPublicEmojiStickerActionType;

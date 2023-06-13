@@ -1,6 +1,6 @@
 import "./dayjs";
 import * as Sentry from "@sentry/node";
-import { Client, GatewayIntentBits, Options } from "discord.js";
+import { Client, GatewayIntentBits, Options, Partials } from "discord.js";
 import log from "./logger";
 import InteractionClient from "./client";
 import initI18next from "./i18next";
@@ -48,6 +48,8 @@ async function main(): Promise<void> {
       GatewayIntentBits.DirectMessages,
       GatewayIntentBits.MessageContent,
     ],
+    // Required to not receive reaction events on uncached messages
+    partials: [Partials.Message, Partials.Reaction],
     rest: {
       version: "10",
       // Ensure we are using the proxy api url

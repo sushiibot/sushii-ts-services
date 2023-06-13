@@ -6,8 +6,6 @@ import {
   GatewayDispatchPayload,
 } from "discord.js";
 import * as Sentry from "@sentry/node";
-import fs from "fs";
-import v8 from "v8";
 import logger from "./logger";
 import InteractionClient from "./client";
 import { EventHandlerFn } from "./events/EventHandler";
@@ -25,6 +23,10 @@ import {
   banCacheUnbanHandler,
   banReadyHandler,
 } from "./events/BanCache";
+import {
+  emojiStatsMsgHandler,
+  emojiStatsReactHandler,
+} from "./events/EmojiStatsHandler";
 
 async function handleEvent<K extends keyof ClientEvents>(
   ctx: Context,
@@ -265,23 +267,12 @@ export default function registerEventHandlers(
     try {
       const startTime = process.hrtime.bigint();
 
-      if (
-        msg.author.id === "150443906511667200" &&
-        msg.content === "heapdump"
-      ) {
-        logger.info("Generating heapdump");
-
-        const snapshotStream = v8.getHeapSnapshot();
-        // It's important that the filename end with `.heapsnapshot`,
-        // otherwise Chrome DevTools won't open it.
-        const fileName = `${Date.now()}.heapsnapshot`;
-        const fileStream = fs.createWriteStream(fileName);
-        snapshotStream.pipe(fileStream);
-
-        logger.info("heapdump done");
-      }
-
-      await handleEvent(ctx, Events.MessageCreate, [levelHandler], msg);
+      await handleEvent(
+        ctx,
+        Events.MessageCreate,
+        [levelHandler, emojiStatsMsgHandler],
+        msg
+      );
 
       const endTime = process.hrtime.bigint();
       const durationMs = Number(endTime - startTime) / 1000000;
@@ -297,6 +288,23 @@ export default function registerEventHandlers(
       }
     } catch (err) {
       logger.error(err, "error handling message create, this should be caught");
+    }
+  });
+
+  client.on(Events.MessageReactionAdd, async (reaction, user) => {
+    try {
+      await handleEvent(
+        ctx,
+        Events.MessageReactionAdd,
+        [emojiStatsReactHandler],
+        reaction,
+        user
+      );
+    } catch (err) {
+      logger.error(
+        err,
+        "error handling message reaction add, this should be caught"
+      );
     }
   });
 
