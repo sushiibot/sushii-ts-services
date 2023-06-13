@@ -21,6 +21,11 @@ const schema = z.object({
 
   NOTIFY_WEBHOOK_URL: z.string().optional(),
   NOTIFY_WEBHOOK_USERNAME: z.string().optional(),
+
+  DISABLE_BAN_FETCH_ON_READY: z
+    .preprocess((x) => x === "true", z.boolean())
+    .optional()
+    .default(false),
 });
 
 const parsed = schema.safeParse(process.env);

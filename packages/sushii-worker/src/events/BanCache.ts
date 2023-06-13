@@ -3,6 +3,7 @@ import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
 import db from "../model/db";
 import logger from "../logger";
+import config from "../model/config";
 
 async function getGuildBans(guild: Guild): Promise<string[]> {
   const guildAllBans: string[] = [];
@@ -78,8 +79,12 @@ async function getGuildBans(guild: Guild): Promise<string[]> {
 export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
   ctx: Context
 ): Promise<void> => {
-  // Fetch all bans for all guilds the bot is in.
+  if (config.DISABLE_BAN_FETCH_ON_READY) {
+    logger.info("Skipping ban fetch on ready");
+    return;
+  }
 
+  // Fetch all bans for all guilds the bot is in.
   for (const [, guild] of ctx.client.guilds.cache) {
     // eslint-disable-next-line no-await-in-loop
     const guildBans = await getGuildBans(guild);
