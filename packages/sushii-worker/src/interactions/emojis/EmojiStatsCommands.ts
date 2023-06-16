@@ -14,6 +14,11 @@ enum GroupingOptions {
   Separate = "separate",
 }
 
+enum OrderOptions {
+  HighToLow = "high_to_low",
+  LowToHigh = "low_to_high",
+}
+
 // enum ServerOptions {
 //   Sum = "sum",
 //   Internal = "internal",
@@ -52,6 +57,23 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
           {
             name: "Separate: Show message and reaction counts separately",
             value: GroupingOptions.Separate,
+          }
+        )
+    )
+    .addStringOption((o) =>
+      o
+        .setName("order")
+        .setDescription(
+          "What order do you want to see the stats in? (default: most used first)"
+        )
+        .addChoices(
+          {
+            name: "High to low: Most used first",
+            value: OrderOptions.HighToLow,
+          },
+          {
+            name: "Low to high: Least used first",
+            value: OrderOptions.LowToHigh,
           }
         )
     )
@@ -127,6 +149,10 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
       return;
     }
 
+    const order = interaction.options.getString("order") as
+      | OrderOptions
+      | undefined;
+
     const grouping = interaction.options.getString("grouping") as
       | GroupingOptions
       | undefined;
@@ -157,6 +183,10 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
       const sortedSumValues = Array.from(sumValues.values()).sort(
         (a, b) => b.total_count - a.total_count
       );
+
+      if (order === OrderOptions.LowToHigh) {
+        sortedSumValues.reverse();
+      }
 
       const desc = sortedSumValues.map((v) => {
         const emoji = guildEmojis.get(v.asset_id);
@@ -196,17 +226,22 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
       .filter((v) => v.action_type === "reaction")
       .map(formatStat);
 
+    if (order === OrderOptions.LowToHigh) {
+      messageValues.reverse();
+      reactionValues.reverse();
+    }
+
     const embed = new EmbedBuilder()
       .setTitle("Emoji Stats - Separately for messages and reactions")
       .setColor(Color.Info)
       .addFields(
         {
           name: "Messages",
-          value: messageValues.join("\n"),
+          value: messageValues.join("\n") || "None",
         },
         {
           name: "Reactions",
-          value: reactionValues.join("\n"),
+          value: reactionValues.join("\n") || "None",
         }
       );
 
