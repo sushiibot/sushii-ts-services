@@ -31,7 +31,7 @@ type EmojiStatSum = {
   guild_id: string;
   asset_id: string;
   total_count: number;
-}
+};
 
 export default class EmojiStatsCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
@@ -41,7 +41,9 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
     .addStringOption((o) =>
       o
         .setName("grouping")
-        .setDescription("Do you want to see the sum of messages and reactions, or separately?")
+        .setDescription(
+          "Do you want to see the sum of messages and reactions, or separately?"
+        )
         .addChoices(
           {
             name: "Sum: Show sum for both messages and reactions",
@@ -50,7 +52,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
           {
             name: "Separate: Show message and reaction counts separately",
             value: GroupingOptions.Separate,
-          },
+          }
         )
     )
     // .addStringOption((o) =>
@@ -114,7 +116,9 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
       const embed = new EmbedBuilder()
         .setTitle("Emoji Stats")
         .setColor(Color.Error)
-        .setDescription("No emoji stats found. Try again later when there are emojis used more.");
+        .setDescription(
+          "No emoji stats found. Try again later when there are emojis used more."
+        );
 
       await interaction.reply({
         embeds: [embed],
@@ -123,31 +127,36 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
       return;
     }
 
-    const grouping = interaction.options.getString("grouping") as GroupingOptions | undefined;
+    const grouping = interaction.options.getString("grouping") as
+      | GroupingOptions
+      | undefined;
+
     if (grouping === GroupingOptions.Sum) {
-      const sumValues = values.map(v => ({
-        ...v,
-        total_count: parseInt(v.total_count, 10),
-      })).reduce((acc, curr) => {
-        let v = acc.get(curr.asset_id);
-        if (!v) {
-          v = {
-            asset_id: curr.asset_id,
-            guild_id: curr.guild_id,
-            total_count: 0,
-          };
-        }
+      const sumValues = values
+        .map((v) => ({
+          ...v,
+          total_count: parseInt(v.total_count, 10),
+        }))
+        .reduce((acc, curr) => {
+          let v = acc.get(curr.asset_id);
+          if (!v) {
+            v = {
+              asset_id: curr.asset_id,
+              guild_id: curr.guild_id,
+              total_count: 0,
+            };
+          }
 
-        v.total_count += curr.total_count;
-        acc.set(curr.asset_id, v);
+          v.total_count += curr.total_count;
+          acc.set(curr.asset_id, v);
 
-        return acc;
-      }, new Map<string,EmojiStatSum>());
+          return acc;
+        }, new Map<string, EmojiStatSum>());
 
       // Sort sumValues by total_count
-      const sortedSumValues = Array
-        .from(sumValues.values())
-        .sort((a, b) => b.total_count - a.total_count);
+      const sortedSumValues = Array.from(sumValues.values()).sort(
+        (a, b) => b.total_count - a.total_count
+      );
 
       const desc = sortedSumValues.map((v) => {
         const emoji = guildEmojis.get(v.asset_id);
@@ -172,33 +181,34 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
 
     const formatStat = (v: EmojiStat): string => {
       const emoji = guildEmojis.get(v.asset_id);
-        if (!emoji) {
-          return `ID \`${v.asset_id}\` (not found) (${v.action_type}): ${v.total_count}`;
-        }
+      if (!emoji) {
+        return `ID \`${v.asset_id}\` (not found) (${v.action_type}): ${v.total_count}`;
+      }
 
-        return `${emoji} - \`${v.total_count}\``;
-    }
+      return `${emoji} - \`${v.total_count}\``;
+    };
 
     const messageValues = values
-      .filter(v => v.action_type === "message")
+      .filter((v) => v.action_type === "message")
       .map(formatStat);
 
     const reactionValues = values
-      .filter(v => v.action_type === "reaction")
+      .filter((v) => v.action_type === "reaction")
       .map(formatStat);
 
     const embed = new EmbedBuilder()
       .setTitle("Emoji Stats - Separately for messages and reactions")
       .setColor(Color.Info)
-      .addFields({
-        name: "Messages",
-        value: messageValues.join("\n"),
-      },
-      {
-        name: "Reactions",
-        value: reactionValues.join("\n"),
-      }
-      )
+      .addFields(
+        {
+          name: "Messages",
+          value: messageValues.join("\n"),
+        },
+        {
+          name: "Reactions",
+          value: reactionValues.join("\n"),
+        }
+      );
 
     await interaction.reply({
       embeds: [embed],

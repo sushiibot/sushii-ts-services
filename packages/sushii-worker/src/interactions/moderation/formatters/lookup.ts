@@ -92,21 +92,25 @@ export default async function buildUserLookupEmbed(
       return b.guild_members - a.guild_members;
     });
 
-    for (const ban of bans) {
+    for (let i = 0; i < bans.length; i += 1) {
+      const ban = bans[i];
+
       if (ban.guild_members && ban.guild_members < 250) {
         smallServersCount += 1;
         // Skip small servers
         continue;
       }
 
+      let newEntry = "";
+
       // Add emojis
-      desc += getFeatureEmojis(ban.guild_features);
+      newEntry += getFeatureEmojis(ban.guild_features);
 
       // If the current guild is opted out, show no reasons and anonymous for all.
       // Otherwise show the guild name and reason if the other server opted in.
       // OR If sushii doesn't have ban permissions, show anonymous for all.
       if (!guildOptedIn || !ban.lookup_details_opt_in || !botHasBanPermission) {
-        desc += "`anonymous`";
+        newEntry += "`anonymous`";
 
         if (ban.action_time) {
           logger.debug(
@@ -117,15 +121,15 @@ export default async function buildUserLookupEmbed(
             "ban.action_time"
           );
 
-          desc += ` - <t:${dayjs.utc(ban.action_time.getTime()).unix()}:R>`;
+          newEntry += ` - <t:${dayjs.utc(ban.action_time.getTime()).unix()}:R>`;
         }
 
-        desc += "\n";
+        newEntry += "\n";
         continue;
       }
 
       if (ban.guild_name && ban.guild_id) {
-        desc += `**${ban.guild_name}** - \`${ban.guild_id}\``;
+        newEntry += `**${ban.guild_name}** - \`${ban.guild_id}\``;
 
         if (ban.action_time) {
           logger.debug(
@@ -136,16 +140,24 @@ export default async function buildUserLookupEmbed(
             "ban.action_time"
           );
 
-          desc += ` - <t:${dayjs.utc(ban.action_time.getTime()).unix()}:R>`;
+          newEntry += ` - <t:${dayjs.utc(ban.action_time.getTime()).unix()}:R>`;
         }
 
         if (ban.reason) {
-          desc += "\n";
-          desc += `╰ Reason: ${ban.reason}`;
+          newEntry += "\n";
+          newEntry += `╰ Reason: ${ban.reason}`;
         }
       }
 
-      desc += "\n";
+      newEntry += "\n";
+
+      if (desc.length + newEntry.length > 4000) {
+        // If the description is too long, stop adding entries
+        desc += `\n... and ${bans.length - i} more`;
+        break;
+      }
+
+      desc += newEntry;
     }
 
     embed = embed.setDescription(desc);
