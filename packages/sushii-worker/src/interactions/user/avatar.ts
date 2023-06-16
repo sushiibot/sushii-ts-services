@@ -72,7 +72,7 @@ export default class AvatarCommand extends SlashCommandHandler {
 
           embeds.push(memberEmbed);
         }
-      } finally {
+      } catch (err) {
         // Ignore error
       }
     }
