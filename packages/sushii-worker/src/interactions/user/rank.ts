@@ -1,5 +1,8 @@
-import { SlashCommandBuilder } from "discord.js";
-import { AttachmentBuilder, ChatInputCommandInteraction } from "discord.js";
+import {
+  SlashCommandBuilder,
+  AttachmentBuilder,
+  ChatInputCommandInteraction,
+} from "discord.js";
 import logger from "../../logger";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
@@ -12,6 +15,7 @@ export default class RankCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("rank")
     .setDescription("View your or another user's rank.")
+    .setDMPermission(false)
     .addUserOption((o) =>
       o.setName("user").setDescription("Whose rank to view.").setRequired(false)
     )

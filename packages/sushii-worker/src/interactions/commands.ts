@@ -37,6 +37,7 @@ import UncaseCommand from "./moderation/reason/UncaseCommand";
 import ReasonConfirmButtonHandler from "./moderation/reason/ReasonConfirmButtonHandler";
 import SettingsCommand from "./settings/SettingsCommand";
 import LookupCommand from "./moderation/LookupCommand";
+import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -66,6 +67,9 @@ export default function addCommands(
     new UncaseCommand(),
     new PruneCommand(),
     new SlowmodeCommand(),
+
+    // Guild
+    new EmojiStatsCommand(),
 
     new NotificationCommand(),
     new ReminderCommand(),
