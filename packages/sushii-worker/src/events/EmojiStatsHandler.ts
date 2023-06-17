@@ -10,7 +10,6 @@ import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
 import db from "../model/db";
 import { DB } from "../model/dbTypes";
-import logger from "../logger";
 
 const EMOJI_RE = /<(?<animated>a)?:(?<name>\w+):(?<id>\d{16,21})>/g;
 
@@ -70,8 +69,6 @@ export const emojiStatsReactHandler: EventHandlerFn<
   reaction: MessageReaction | PartialMessageReaction
   // user: User | PartialUser
 ): Promise<void> => {
-  logger.debug({ reaction }, "emojiStatsReactHandler");
-
   // DM message
   if (!reaction.message.inGuild()) {
     return;

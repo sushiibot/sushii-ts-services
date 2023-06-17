@@ -82,8 +82,9 @@ export default class Paginator {
     }
 
     const totalEntries = await this.getTotalEntriesFn();
+    this.totalPages = Math.ceil(totalEntries / this.pageSize);
 
-    return Math.ceil(totalEntries / this.pageSize);
+    return this.totalPages;
   }
 
   /**
@@ -130,6 +131,13 @@ export default class Paginator {
 
     const totalPages = await this.getTotalPages(false);
 
+    const back5Button = new ButtonBuilder()
+      .setEmoji("⏪")
+      .setCustomId(ButtonId.Back5)
+      .setStyle(ButtonStyle.Secondary)
+      // When expired or at the start
+      .setDisabled(expired || this.currentPageIndex === 0);
+
     const backButton = new ButtonBuilder()
       .setEmoji("⬅️")
       .setCustomId(ButtonId.Back)
@@ -152,20 +160,29 @@ export default class Paginator {
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(true);
 
+    // When expired or at the end, currentPageIndex is 0 indexed, totalPages is not
+    const forwardButtonDisabled =
+      expired || totalPages === 0 || this.currentPageIndex + 1 === totalPages;
+
     const forwardButton = new ButtonBuilder()
       .setEmoji("➡️")
       .setCustomId(ButtonId.Forward)
       .setStyle(ButtonStyle.Secondary)
-      // When expired or at the end, currentPageIndex is 0 indexed, totalPages is not
-      .setDisabled(
-        expired || totalPages === 0 || this.currentPageIndex + 1 === totalPages
-      );
+      .setDisabled(forwardButtonDisabled);
+
+    const forward5Button = new ButtonBuilder()
+      .setEmoji("⏩")
+      .setCustomId(ButtonId.Forward5)
+      .setStyle(ButtonStyle.Secondary)
+      .setDisabled(forwardButtonDisabled);
 
     const components = [
       new ActionRowBuilder<ButtonBuilder>().addComponents(
+        back5Button,
         backButton,
         currentPage,
-        forwardButton
+        forwardButton,
+        forward5Button
       ),
     ];
 
@@ -180,6 +197,12 @@ export default class Paginator {
       embeds: [embed],
       components,
     });
+
+    let totalPages = await this.getTotalPages(false);
+    if (totalPages < 1) {
+      // No pages, no need to listen for button presses
+      return;
+    }
 
     const collector = message.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -198,7 +221,7 @@ export default class Paginator {
         return;
       }
 
-      const totalPages = await this.getTotalPages(false);
+      totalPages = await this.getTotalPages(false);
 
       logger.debug({
         message: "Paginator button pressed",
@@ -217,13 +240,13 @@ export default class Paginator {
         case ButtonId.Forward:
           this.currentPageIndex = Math.min(
             this.currentPageIndex + 1,
-            totalPages
+            totalPages - 1
           );
           break;
         case ButtonId.Forward5:
           this.currentPageIndex = Math.min(
             this.currentPageIndex + 5,
-            totalPages
+            totalPages - 1
           );
           break;
         default:
