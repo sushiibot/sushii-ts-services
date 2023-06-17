@@ -15,11 +15,13 @@ import {
 import { t } from "i18next";
 import fetch from "node-fetch";
 import { Err, Ok, Result } from "ts-results";
-import { Tag, TagFilter } from "../../generated/graphql";
+import { Tag } from "../../generated/graphql";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorMessage } from "../responses/error";
+import Paginator from "../../utils/Paginator";
+import db from "../../model/db";
 
 const NAME_STARTS_WITH = "name_starts_with";
 const NAME_CONTAINS = "name_contains";
@@ -592,30 +594,41 @@ export default class TagCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const tags = await ctx.sushiiAPI.sdk.listGuildTags({
-      guildId: interaction.guildId,
-    });
+    const tags = await db
+      .selectFrom("app_public.tags")
+      .selectAll()
+      .where("guild_id", "=", interaction.guildId)
+      .orderBy("tag_name", "asc")
+      .execute();
 
-    if (!tags.allTags) {
-      // Empty tags should still return empty array
-      throw new Error("Failed to fetch tags.");
+    if (!tags) {
+      const embed = new EmbedBuilder()
+        .setTitle("Server Tags")
+        .setDescription("There are no tags, add some first!")
+        .setColor(Color.Info);
+
+      await interaction.reply({
+        embeds: [embed],
+      });
+
+      return;
     }
 
-    const { edges, totalCount } = tags.allTags;
+    const tagNames = tags.map((tag) => tag.tag_name);
 
-    const tagNames = edges.map((edge) => edge.node.tagName);
+    const addEmbedOptions = (embed: EmbedBuilder): EmbedBuilder =>
+      embed.setTitle("Server Tags").setColor(Color.Info);
 
-    const attachment = new AttachmentBuilder(
-      Buffer.from(tagNames.join("\n"))
-    ).setName("tags.txt");
-
-    await interaction.reply({
-      content: t("tag.fulllist.success.message_content", {
-        ns: "commands",
-        count: totalCount,
-      }),
-      files: [attachment],
+    const paginator = new Paginator({
+      interaction,
+      getPageFn: async (pageNum, pageSize) =>
+        tagNames.slice(pageNum * pageSize, (pageNum + 1) * pageSize).join("\n"),
+      getTotalEntriesFn: async () => tagNames.length,
+      pageSize: 25,
+      embedModifierFn: addEmbedOptions,
     });
+
+    await paginator.paginate();
   }
 
   static async searchHandler(
@@ -659,43 +672,67 @@ export default class TagCommand extends SlashCommandHandler {
       return;
     }
 
-    let filter: TagFilter | undefined;
+    const tags = await db
+      .selectFrom("app_public.tags")
+      .selectAll()
+      .where("guild_id", "=", interaction.guildId)
+      .$if(owner !== null, (q) => q.where("owner_id", "=", owner!.id))
+      .$if(startsWith !== null, (q) =>
+        q.where("tag_name", "ilike", `${startsWith}%`)
+      )
+      .$if(contains !== null, (q) =>
+        q.where("tag_name", "ilike", `%${contains}%`)
+      )
+      .orderBy("tag_name", "asc")
+      .execute();
 
-    if (startsWith || contains) {
-      filter = {
-        tagName: {
-          includesInsensitive: contains,
-          startsWithInsensitive: startsWith,
-        },
-      };
+    if (tags.length === 0) {
+      const embed = new EmbedBuilder()
+        .setTitle("Server Tags")
+        .setDescription("There are no tags, add some first!")
+        .setColor(Color.Info);
+
+      await interaction.reply({
+        embeds: [embed],
+      });
+
+      return;
     }
 
-    const tags = await ctx.sushiiAPI.sdk.searchTags({
-      guildId: interaction.guildId,
-      ownerId: owner?.id,
-      filter,
-    });
+    const tagNames = tags.map((tag) => tag.tag_name);
 
-    if (!tags.allTags) {
-      // Empty tags should still return empty array
-      throw new Error("Failed to fetch tags.");
+    let title = owner !== null ? `Created by ${owner.username}` : "";
+
+    if (title === null && contains !== null) {
+      title = `Containing ${contains}`;
+    } else if (title !== null && contains !== null) {
+      title += ` and containing ${contains}`;
     }
 
-    const { edges, totalCount } = tags.allTags;
+    if (title === null && startsWith !== null) {
+      title = `Starting with ${startsWith}`;
+    } else if (title !== null && startsWith !== null) {
+      title += ` and starting with ${startsWith}`;
+    }
 
-    const tagNames = edges.map((edge) => edge.node.tagName);
+    const addEmbedOptions = (embed: EmbedBuilder): EmbedBuilder =>
+      embed
+        .setTitle(title)
+        .setAuthor({
+          name: "Server Tags",
+        })
+        .setColor(Color.Info);
 
-    const attachment = new AttachmentBuilder(tagNames.join("\n")).setName(
-      "tags.txt"
-    );
-
-    await interaction.reply({
-      content: t("tag.search.success.message_content", {
-        ns: "commands",
-        count: totalCount,
-      }),
-      files: [attachment],
+    const paginator = new Paginator({
+      interaction,
+      getPageFn: async (pageNum, pageSize) =>
+        tagNames.slice(pageNum * pageSize, (pageNum + 1) * pageSize).join("\n"),
+      getTotalEntriesFn: async () => tagNames.length,
+      pageSize: 25,
+      embedModifierFn: addEmbedOptions,
     });
+
+    await paginator.paginate();
   }
 
   static async editHandler(
