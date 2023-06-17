@@ -2,16 +2,19 @@ import {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   EmbedBuilder,
+  GuildEmoji,
+  Collection,
 } from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import db from "../../model/db";
 import Color from "../../utils/colors";
-import { AppPublicEmojiStickerActionType } from "../../model/dbTypes";
+import Paginator from "../../utils/Paginator";
 
 enum GroupingOptions {
   Sum = "sum",
-  Separate = "separate",
+  Message = "message",
+  Reaction = "reaction",
 }
 
 enum OrderOptions {
@@ -28,15 +31,109 @@ enum OrderOptions {
 type EmojiStat = {
   guild_id: string;
   asset_id: string;
-  action_type: AppPublicEmojiStickerActionType;
   total_count: string;
 };
 
-type EmojiStatSum = {
-  guild_id: string;
-  asset_id: string;
-  total_count: number;
-};
+async function getTotalEntries(
+  interaction: ChatInputCommandInteraction,
+  guildEmojis: Collection<string, GuildEmoji>,
+  grouping: GroupingOptions
+): Promise<number> {
+  const res = await db
+    .selectFrom("app_public.emoji_sticker_stats")
+    .select((eb) => [
+      eb.fn.count("app_public.emoji_sticker_stats.asset_id").as("count"),
+    ])
+    // Currently only show stats for emojis used in this server.
+    .where("guild_id", "=", interaction.guildId)
+    // Only emojis from this guild.
+    // TODO: Deleted emojis will be unrecoverable.
+    .where(
+      "asset_id",
+      "in",
+      guildEmojis.map((e) => e.id)
+    )
+    // ---------------------
+    // Specific types -- if not specified, adds both together
+    .$if(grouping === GroupingOptions.Message, (q) =>
+      q.where("action_type", "=", "message")
+    )
+    .$if(grouping === GroupingOptions.Reaction, (q) =>
+      q.where("action_type", "=", "reaction")
+    )
+    .executeTakeFirstOrThrow();
+
+  if (typeof res.count === "string") {
+    return parseInt(res.count, 10);
+  }
+
+  if (typeof res.count === "bigint") {
+    return Number(res.count);
+  }
+
+  return res.count;
+}
+
+async function getStatsPage(
+  interaction: ChatInputCommandInteraction,
+  guildEmojis: Collection<string, GuildEmoji>,
+  pageNum: number,
+  pageSize: number,
+  grouping: GroupingOptions,
+  order: OrderOptions
+): Promise<string> {
+  const values = await db
+    .selectFrom("app_public.emoji_sticker_stats")
+    .select((eb) => [
+      "asset_id",
+      "guild_id",
+      eb.fn<string>("sum", ["count"]).as("total_count"),
+    ])
+    // Currently only show stats for emojis used in this server.
+    // TODO: Add support for showing use outside of the server, it will only
+    // show emojis for this guild in the list still as we filter by emoji ids
+    // from this guild.
+    .where("guild_id", "=", interaction.guildId)
+    // Only emojis from this guild.
+    // TODO: Deleted emojis will be unrecoverable.
+    .where(
+      "asset_id",
+      "in",
+      guildEmojis.map((e) => e.id)
+    )
+    // ---------------------
+    // Specific types -- if not specified, adds both together
+    .$if(grouping === GroupingOptions.Message, (q) =>
+      q.where("action_type", "=", "message")
+    )
+    .$if(grouping === GroupingOptions.Reaction, (q) =>
+      q.where("action_type", "=", "reaction")
+    )
+    // Want to see emojis used in the same server and outside separately
+    .groupBy(["asset_id", "guild_id"])
+    // ---------------------
+    // Order by total_count
+    .$if(order === OrderOptions.HighToLow, (q) =>
+      q.orderBy("total_count", "desc")
+    )
+    .$if(order === OrderOptions.LowToHigh, (q) =>
+      q.orderBy("total_count", "asc")
+    )
+    .limit(pageSize)
+    .offset(pageNum * pageSize)
+    .execute();
+
+  const formatStat = (v: EmojiStat): string => {
+    const emoji = guildEmojis.get(v.asset_id);
+    if (!emoji) {
+      return `ID \`${v.asset_id}\` (not found) - \`${v.total_count}\``;
+    }
+
+    return `${emoji} - \`${v.total_count}\``;
+  };
+
+  return values.map(formatStat).join("\n");
+}
 
 export default class EmojiStatsCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
@@ -47,7 +144,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
       o
         .setName("grouping")
         .setDescription(
-          "Do you want to see the sum of messages and reactions, or separately?"
+          "Do you want to see a sum of emojis used in messages and reactions, or separately?"
         )
         .addChoices(
           {
@@ -55,8 +152,12 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
             value: GroupingOptions.Sum,
           },
           {
-            name: "Separate: Show message and reaction counts separately",
-            value: GroupingOptions.Separate,
+            name: "Messages only: Show emojis used in messages only",
+            value: GroupingOptions.Message,
+          },
+          {
+            name: "Reactions only: Show emojis used in reactions only",
+            value: GroupingOptions.Reaction,
           }
         )
     )
@@ -109,144 +210,65 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
 
     const guildEmojis = await interaction.guild.emojis.fetch();
 
-    const values = await db
-      .selectFrom("app_public.emoji_sticker_stats")
-      .select((eb) => [
-        "asset_id",
-        "guild_id",
-        eb.fn<string>("sum", ["count"]).as("total_count"),
-        "action_type",
-      ])
-      // Currently only show stats for emojis used in this server.
-      // TODO: Add support for showing use outside of the server, it will only
-      // show emojis for this guild in the list still as we filter by emoji ids
-      // from this guild.
-      .where("guild_id", "=", interaction.guildId)
-      // Only emojis from this guild.
-      // TODO: Deleted emojis will be unrecoverable.
-      .where(
-        "asset_id",
-        "in",
-        guildEmojis.map((e) => e.id)
-      )
-      // Want to see emojis used in the same server and outside separately
-      .groupBy(["asset_id", "guild_id", "action_type"])
-      .orderBy("total_count", "desc")
-      .execute();
+    const order = (interaction.options.getString("order") ||
+      OrderOptions.HighToLow) as OrderOptions;
 
-    if (values.length === 0) {
-      const embed = new EmbedBuilder()
-        .setTitle("Emoji Stats")
-        .setColor(Color.Error)
-        .setDescription(
-          "No emoji stats found. Try again later when there are emojis used more."
-        );
+    const grouping = (interaction.options.getString("grouping") ||
+      GroupingOptions.Sum) as GroupingOptions;
 
-      await interaction.reply({
-        embeds: [embed],
-      });
+    const addEmbedOptions = (eb: EmbedBuilder): EmbedBuilder => {
+      eb.setColor(Color.Info);
 
-      return;
-    }
+      switch (order) {
+        case OrderOptions.HighToLow:
+          eb.setFooter({
+            text: "Showing most used first",
+          });
 
-    const order = interaction.options.getString("order") as
-      | OrderOptions
-      | undefined;
-
-    const grouping = interaction.options.getString("grouping") as
-      | GroupingOptions
-      | undefined;
-
-    if (grouping === GroupingOptions.Sum) {
-      const sumValues = values
-        .map((v) => ({
-          ...v,
-          total_count: parseInt(v.total_count, 10),
-        }))
-        .reduce((acc, curr) => {
-          let v = acc.get(curr.asset_id);
-          if (!v) {
-            v = {
-              asset_id: curr.asset_id,
-              guild_id: curr.guild_id,
-              total_count: 0,
-            };
-          }
-
-          v.total_count += curr.total_count;
-          acc.set(curr.asset_id, v);
-
-          return acc;
-        }, new Map<string, EmojiStatSum>());
-
-      // Sort sumValues by total_count
-      const sortedSumValues = Array.from(sumValues.values()).sort(
-        (a, b) => b.total_count - a.total_count
-      );
-
-      if (order === OrderOptions.LowToHigh) {
-        sortedSumValues.reverse();
+          break;
+        case OrderOptions.LowToHigh:
+          eb.setFooter({
+            text: "Showing least used first",
+          });
+          break;
+        default:
+          break;
       }
 
-      const desc = sortedSumValues.map((v) => {
-        const emoji = guildEmojis.get(v.asset_id);
-        if (!emoji) {
-          return `ID \`${v.asset_id}\` (not found): ${v.total_count}`;
-        }
-
-        return `${emoji} - \`${v.total_count}\``;
-      });
-
-      const embed = new EmbedBuilder()
-        .setTitle("Emoji Stats - Sum of messages and reactions")
-        .setColor(Color.Info)
-        .setDescription(desc.join("\n"));
-
-      await interaction.reply({
-        embeds: [embed],
-      });
-
-      return;
-    }
-
-    const formatStat = (v: EmojiStat): string => {
-      const emoji = guildEmojis.get(v.asset_id);
-      if (!emoji) {
-        return `ID \`${v.asset_id}\` (not found) (${v.action_type}): ${v.total_count}`;
+      switch (grouping) {
+        case GroupingOptions.Sum:
+          eb.setTitle("Emoji Stats - Total for both messages and reactions");
+          break;
+        case GroupingOptions.Message:
+          eb.setTitle("Emoji Stats - Messages only");
+          break;
+        case GroupingOptions.Reaction:
+          eb.setTitle("Emoji Stats - Reactions only");
+          break;
+        default:
+          break;
       }
 
-      return `${emoji} - \`${v.total_count}\``;
+      return eb;
     };
 
-    const messageValues = values
-      .filter((v) => v.action_type === "message")
-      .map(formatStat);
-
-    const reactionValues = values
-      .filter((v) => v.action_type === "reaction")
-      .map(formatStat);
-
-    if (order === OrderOptions.LowToHigh) {
-      messageValues.reverse();
-      reactionValues.reverse();
-    }
-
-    const embed = new EmbedBuilder()
-      .setTitle("Emoji Stats - Separately for messages and reactions")
-      .setColor(Color.Info)
-      .addFields(
-        {
-          name: "Messages",
-          value: messageValues.join("\n") || "None",
-        },
-        {
-          name: "Reactions",
-          value: reactionValues.join("\n") || "None",
-        }
-      );
-
-    await interaction.reply({
-      embeds: [embed],
+    const paginator = new Paginator({
+      interaction,
+      getPageFn: (pageNum, pageSize) =>
+        getStatsPage(
+          interaction,
+          guildEmojis,
+          pageNum,
+          pageSize,
+          grouping,
+          order
+        ),
+      getTotalEntriesFn: async () =>
+        getTotalEntries(interaction, guildEmojis, grouping),
+      pageSize: 25,
+      embedModifierFn: addEmbedOptions,
     });
+
+    await paginator.paginate();
   }
 }
