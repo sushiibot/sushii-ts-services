@@ -4,7 +4,6 @@ import { getCreatedTimestampSeconds } from "../../../utils/snowflake";
 import timestampToUnixTime from "../../../utils/timestampToUnixTime";
 import SushiiEmoji from "../../../constants/SushiiEmoji";
 import Color from "../../../utils/colors";
-import logger from "../../../logger";
 
 export interface UserLookupBan {
   guild_id: string;
@@ -70,97 +69,84 @@ export default async function buildUserLookupEmbed(
 
   let smallServersCount = 0;
 
-  if (bans.length === 0) {
-    embed = embed.setDescription("No bans found for this user.");
-  } else {
-    let desc = "";
+  let desc = "";
 
-    // Sort bans by guild_members
-    bans.sort((a, b) => {
-      if (a.guild_members === null && b.guild_members === null) {
-        return 0;
-      }
-
-      if (a.guild_members === null) {
-        return 1;
-      }
-
-      if (b.guild_members === null) {
-        return -1;
-      }
-
-      return b.guild_members - a.guild_members;
-    });
-
-    for (let i = 0; i < bans.length; i += 1) {
-      const ban = bans[i];
-
-      if (ban.guild_members && ban.guild_members < 250) {
-        smallServersCount += 1;
-        // Skip small servers
-        continue;
-      }
-
-      let newEntry = "";
-
-      // Add emojis
-      newEntry += getFeatureEmojis(ban.guild_features);
-
-      // If the current guild is opted out, show no reasons and anonymous for all.
-      // Otherwise show the guild name and reason if the other server opted in.
-      // OR If sushii doesn't have ban permissions, show anonymous for all.
-      if (!guildOptedIn || !ban.lookup_details_opt_in || !botHasBanPermission) {
-        newEntry += "`anonymous`";
-
-        if (ban.action_time) {
-          logger.debug(
-            {
-              date: ban.action_time,
-              offset: ban.action_time.getTimezoneOffset(),
-            },
-            "ban.action_time"
-          );
-
-          newEntry += ` - <t:${dayjs.utc(ban.action_time.getTime()).unix()}:R>`;
-        }
-
-        newEntry += "\n";
-        continue;
-      }
-
-      if (ban.guild_name && ban.guild_id) {
-        newEntry += `**${ban.guild_name}** - \`${ban.guild_id}\``;
-
-        if (ban.action_time) {
-          logger.debug(
-            {
-              date: ban.action_time,
-              offset: ban.action_time.getTimezoneOffset(),
-            },
-            "ban.action_time"
-          );
-
-          newEntry += ` - <t:${dayjs.utc(ban.action_time.getTime()).unix()}:R>`;
-        }
-
-        if (ban.reason) {
-          newEntry += "\n";
-          newEntry += `╰ Reason: ${ban.reason}`;
-        }
-      }
-
-      newEntry += "\n";
-
-      if (desc.length + newEntry.length > 4000) {
-        // If the description is too long, stop adding entries
-        desc += `\n... and ${bans.length - i} more`;
-        break;
-      }
-
-      desc += newEntry;
+  // Sort bans by guild_members
+  bans.sort((a, b) => {
+    if (a.guild_members === null && b.guild_members === null) {
+      return 0;
     }
 
+    if (a.guild_members === null) {
+      return 1;
+    }
+
+    if (b.guild_members === null) {
+      return -1;
+    }
+
+    return b.guild_members - a.guild_members;
+  });
+
+  for (let i = 0; i < bans.length; i += 1) {
+    const ban = bans[i];
+
+    if (ban.guild_members && ban.guild_members < 250) {
+      smallServersCount += 1;
+      // Skip small servers
+      continue;
+    }
+
+    // Make sure required fields are non-null, could be no longer in the
+    if (!ban.guild_name) {
+      continue;
+    }
+
+    let newEntry = "";
+
+    // Add emojis
+    newEntry += getFeatureEmojis(ban.guild_features);
+
+    // If the current guild is opted out, show no reasons and anonymous for all.
+    // Otherwise show the guild name and reason if the other server opted in.
+    // OR If sushii doesn't have ban permissions, show anonymous for all.
+    if (guildOptedIn && ban.lookup_details_opt_in && botHasBanPermission) {
+      newEntry += `**${ban.guild_name}** - \`${ban.guild_id}\``;
+
+      if (ban.action_time) {
+        newEntry += ` - <t:${dayjs.utc(ban.action_time.getTime()).unix()}:R>`;
+      }
+
+      if (ban.reason) {
+        newEntry += "\n";
+        newEntry += `╰ Reason: ${ban.reason}`;
+      }
+    } else {
+      newEntry += "`anonymous`";
+
+      if (ban.action_time) {
+        newEntry += ` - <t:${dayjs.utc(ban.action_time.getTime()).unix()}:R>`;
+      }
+    }
+
+    // ------------------------------------
+    // Done entry, add to full description
+
+    newEntry += "\n";
+
+    if (desc.length + newEntry.length > 4000) {
+      // If the description is too long, stop adding entries
+      desc += `\n... and ${bans.length - i} more`;
+      break;
+    }
+
+    desc += newEntry;
+  }
+
+  if (desc.length > 0) {
     embed = embed.setDescription(desc);
+  } else {
+    embed = embed.setDescription("No bans found for this user.");
   }
 
   const fields = [];

@@ -9,6 +9,7 @@ import Context from "../../model/context";
 import db from "../../model/db";
 import { SlashCommandHandler } from "../handlers";
 import buildUserLookupEmbed, { UserLookupBan } from "./formatters/lookup";
+import logger from "../../logger";
 
 export async function getUserLookupData(
   ctx: Context,
@@ -30,12 +31,20 @@ export async function getUserLookupData(
       "action_time",
       "lookup_details_opt_in",
     ])
+    .distinctOn("app_public.guild_bans.guild_id")
     .where(({ cmpr, and, or }) =>
       and([
+        // User ID
         cmpr("app_public.guild_bans.user_id", "=", user.id),
+        // Ignore pending cases
+        cmpr("logs.pending", "=", false),
+        // Bans only
         or([cmpr("action", "is", null), cmpr("action", "=", "ban")]),
       ])
     )
+    .orderBy("app_public.guild_bans.guild_id", "desc")
+    // Use the newest mod log if there are multiple. Distinct uses the first one
+    .orderBy("logs.action_time", "desc")
     .execute();
 
   const bansWithGuild = await Promise.all(
@@ -120,6 +129,8 @@ export default class LookupCommand extends SlashCommandHandler {
     }
 
     const bans = await getUserLookupData(ctx, user);
+
+    logger.debug(bans, "bans");
 
     const userEmbed = await buildUserLookupEmbed(
       user,
