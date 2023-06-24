@@ -107,6 +107,7 @@ export default class TagCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("tag")
     .setDescription("Create and use custom commands with custom responses.")
+    .setDMPermission(false)
     .addSubcommand((c) =>
       c
         .setName("add")
