@@ -26,7 +26,7 @@ import {
 import {
   emojiStatsMsgHandler,
   emojiStatsReactHandler,
-  emojiStatsReadyHandler,
+  emojiAndStickerStatsReadyHandler,
 } from "./events/EmojiStatsHandler";
 
 async function handleEvent<K extends keyof ClientEvents>(
@@ -94,7 +94,7 @@ export default function registerEventHandlers(
     await handleEvent(
       ctx,
       Events.ClientReady,
-      [banReadyHandler, emojiStatsReadyHandler],
+      [banReadyHandler, emojiAndStickerStatsReadyHandler],
       client
     );
   });
