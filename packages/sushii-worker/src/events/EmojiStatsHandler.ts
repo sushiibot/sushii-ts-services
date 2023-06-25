@@ -6,15 +6,18 @@ import {
   MessageReaction,
   PartialMessageReaction,
   PartialUser,
+  Sticker,
   User,
 } from "discord.js";
 import dayjs from "dayjs";
+import { InsertObject } from "kysely/dist/cjs/parser/insert-values-parser";
 import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
 import db from "../model/db";
 import {
   AppPublicEmojiStickerActionType,
   AppPublicGuildAssetType,
+  DB,
 } from "../model/dbTypes";
 import logger from "../logger";
 
@@ -40,7 +43,7 @@ async function incrementEmojiCounts(
 ): Promise<void> {
   // Check the guilds the emoji is from
   const knownEmojis = await db
-    .selectFrom("app_public.guild_emojis")
+    .selectFrom("app_public.guild_emojis_and_stickers")
     .selectAll()
     .where(
       "id",
@@ -49,7 +52,7 @@ async function incrementEmojiCounts(
     )
     .execute();
 
-  // Exclude the ones that aren't found
+  // Exclude the ones that aren't found in db, from a server sushii isn't in
   const foundEmojiIds = new Map(knownEmojis.map((r) => [r.id, r]));
 
   const valuesKnown: NewExpressionStatWithGuild[] = values
@@ -63,6 +66,11 @@ async function incrementEmojiCounts(
         is_external: guildEmoji?.guild_id !== v.guild_id,
       };
     });
+
+  // No emojis found that are in the database, shared w sushii
+  if (valuesKnown.length === 0) {
+    return;
+  }
 
   // TODO: Modify emoji counts for is_external
 
@@ -184,6 +192,10 @@ export const emojiStatsMsgHandler: EventHandlerFn<
     values.push(...stickers);
   }
 
+  if (values.length === 0) {
+    return;
+  }
+
   await incrementEmojiCounts(msg.author.id, "message", values);
 };
 
@@ -214,50 +226,119 @@ export const emojiStatsReactHandler: EventHandlerFn<
   ]);
 };
 
-export const emojiStatsReadyHandler: EventHandlerFn<
+export const emojiAndStickerStatsReadyHandler: EventHandlerFn<
   Events.ClientReady
 > = async (ctx: Context, client: Client<true>): Promise<void> => {
   for (const [, guild] of client.guilds.cache) {
-    // Update database with all the emojis
+    // Update database with all the emojis and stickers
     const emojis = Array.from(guild.emojis.cache.values());
+    const stickers = Array.from(guild.stickers.cache.values());
+
+    const values: InsertObject<DB, "app_public.guild_emojis_and_stickers">[] =
+      emojis.map((e) => ({
+        id: e.id,
+        guild_id: guild.id,
+        name: e.name || "", // Shouldn't be null, but just in case
+        type: "emoji",
+      }));
+
+    const stickerValues: InsertObject<
+      DB,
+      "app_public.guild_emojis_and_stickers"
+    >[] = stickers.map((s) => ({
+      id: s.id,
+      guild_id: guild.id,
+      name: s.name,
+      type: "sticker",
+    }));
+
+    // Add stickers
+    values.push(...stickerValues);
 
     // eslint-disable-next-line no-await-in-loop
     await db
-      .insertInto("app_public.guild_emojis")
-      .values(
-        emojis.map((e) => ({
-          guild_id: guild.id,
-          id: e.id,
-          name: e.name || "", // Shouldn't be null, but just in case
-        }))
-      )
+      .insertInto("app_public.guild_emojis_and_stickers")
+      .values(values)
       // Ignore any existing emojis
       .onConflict((oc) => oc.doNothing())
       .execute();
   }
 };
 
+async function addGuildEmojiOrSticker(
+  guildId: string,
+  assetId: string,
+  name: string,
+  type: AppPublicGuildAssetType
+): Promise<void> {
+  await db
+    .insertInto("app_public.guild_emojis_and_stickers")
+    .values({
+      guild_id: guildId,
+      id: assetId,
+      name,
+      type,
+    })
+    // When updating asset
+    .onConflict((oc) =>
+      oc.doUpdateSet({
+        name,
+      })
+    )
+    .execute();
+}
+
 export const emojiAddHandler: EventHandlerFn<Events.GuildEmojiCreate> = async (
   ctx: Context,
   emoji: GuildEmoji
 ) => {
-  await db
-    .insertInto("app_public.guild_emojis")
-    .values({
-      guild_id: emoji.guild.id,
-      id: emoji.id,
-      name: emoji.name || "", // Shouldn't be null, but just in case
-    })
-    .onConflict((oc) =>
-      oc.doUpdateSet({
-        name: emoji.name || "",
-      })
-    )
-    .execute();
+  await addGuildEmojiOrSticker(
+    emoji.guild.id,
+    emoji.id,
+    emoji.name || "",
+    "emoji"
+  );
 };
 
 export const emojiUpdateHandler: EventHandlerFn<
   Events.GuildEmojiUpdate
 > = async (ctx: Context, emoji: GuildEmoji) => {
-  await emojiAddHandler(ctx, emoji);
+  await addGuildEmojiOrSticker(
+    emoji.guild.id,
+    emoji.id,
+    emoji.name || "",
+    "emoji"
+  );
 };
+
+export const stickerAddHandler: EventHandlerFn<
+  Events.GuildStickerCreate
+> = async (ctx: Context, sticker: Sticker) => {
+  if (sticker.guildId === null) {
+    return;
+  }
+
+  await addGuildEmojiOrSticker(
+    sticker.guildId,
+    sticker.id,
+    sticker.name,
+    "sticker"
+  );
+};
+
+export const stickerUpdateHandler: EventHandlerFn<
+  Events.GuildStickerUpdate
+> = async (ctx: Context, sticker: Sticker) => {
+  if (sticker.guildId === null) {
+    return;
+  }
+
+  await addGuildEmojiOrSticker(
+    sticker.guildId,
+    sticker.id,
+    sticker.name,
+    "sticker"
+  );
+};
+
+// Ignore emoji/sticker deletes since we want to keep those

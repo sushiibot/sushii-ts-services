@@ -386,10 +386,11 @@ export interface AppPublicGuildConfigs {
   lookup_prompted: Generated<boolean>;
 }
 
-export interface AppPublicGuildEmojis {
+export interface AppPublicGuildEmojisAndStickers {
   id: Int8;
   guild_id: Int8;
   name: string;
+  type: AppPublicGuildAssetType;
 }
 
 export interface AppPublicLevelRoleApplyJobs {
@@ -722,7 +723,7 @@ export interface DB {
   "app_public.feeds": AppPublicFeeds;
   "app_public.guild_bans": AppPublicGuildBans;
   "app_public.guild_configs": AppPublicGuildConfigs;
-  "app_public.guild_emojis": AppPublicGuildEmojis;
+  "app_public.guild_emojis_and_stickers": AppPublicGuildEmojisAndStickers;
   "app_public.level_role_apply_jobs": AppPublicLevelRoleApplyJobs;
   "app_public.level_role_overrides": AppPublicLevelRoleOverrides;
   "app_public.level_roles": AppPublicLevelRoles;
