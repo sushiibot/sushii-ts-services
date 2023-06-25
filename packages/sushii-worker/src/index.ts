@@ -47,6 +47,7 @@ async function main(): Promise<void> {
       GatewayIntentBits.GuildMessageReactions,
       GatewayIntentBits.DirectMessages,
       GatewayIntentBits.MessageContent,
+      GatewayIntentBits.GuildEmojisAndStickers,
     ],
     // Required to not receive reaction events on uncached messages
     partials: [Partials.Message, Partials.Reaction],
