@@ -329,6 +329,13 @@ export interface AppPublicEmojiStickerStats {
   count: Int8;
 }
 
+export interface AppPublicEmojiStickerStatsRateLimits {
+  user_id: Int8;
+  asset_id: Int8;
+  action_type: AppPublicEmojiStickerActionType;
+  last_used: Generated<Timestamp>;
+}
+
 export interface AppPublicFeedItems {
   feed_id: string;
   item_id: string;
@@ -377,6 +384,12 @@ export interface AppPublicGuildConfigs {
   data: Generated<Json>;
   lookup_details_opt_in: Generated<boolean>;
   lookup_prompted: Generated<boolean>;
+}
+
+export interface AppPublicGuildEmojis {
+  id: Int8;
+  guild_id: Int8;
+  name: string;
 }
 
 export interface AppPublicLevelRoleApplyJobs {
@@ -703,11 +716,13 @@ export interface DB {
   "app_public.cached_guilds": AppPublicCachedGuilds;
   "app_public.cached_users": AppPublicCachedUsers;
   "app_public.emoji_sticker_stats": AppPublicEmojiStickerStats;
+  "app_public.emoji_sticker_stats_rate_limits": AppPublicEmojiStickerStatsRateLimits;
   "app_public.feed_items": AppPublicFeedItems;
   "app_public.feed_subscriptions": AppPublicFeedSubscriptions;
   "app_public.feeds": AppPublicFeeds;
   "app_public.guild_bans": AppPublicGuildBans;
   "app_public.guild_configs": AppPublicGuildConfigs;
+  "app_public.guild_emojis": AppPublicGuildEmojis;
   "app_public.level_role_apply_jobs": AppPublicLevelRoleApplyJobs;
   "app_public.level_role_overrides": AppPublicLevelRoleOverrides;
   "app_public.level_roles": AppPublicLevelRoles;

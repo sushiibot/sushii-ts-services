@@ -59,12 +59,18 @@ export async function updateStat(
 const task: BackgroundTask = {
   name: "Update bot stats in db",
 
-  // Cron every 10 minutes
-  cronTime: "0 */10 * * *",
+  // Cron every hour
+  cronTime: "0 * * * *",
 
   async onTick(ctx: Context): Promise<void> {
     await updateStat(StatName.GuildCount, ctx.client.guilds.cache.size, "set");
-    await updateStat(StatName.MemberCount, ctx.client.users.cache.size, "set");
+
+    const totalMembers = ctx.client.guilds.cache.reduce(
+      (acc, guild) => acc + guild.memberCount,
+      0
+    );
+
+    await updateStat(StatName.MemberCount, totalMembers, "set");
   },
 };
 

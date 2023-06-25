@@ -1,27 +1,140 @@
 import {
+  Client,
   Events,
+  GuildEmoji,
   Message,
   MessageReaction,
   PartialMessageReaction,
+  PartialUser,
+  User,
 } from "discord.js";
-import { InsertObjectOrList } from "kysely/dist/cjs/parser/insert-values-parser";
-import { InsertResult } from "kysely";
+import dayjs from "dayjs";
 import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
 import db from "../model/db";
-import { DB } from "../model/dbTypes";
+import {
+  AppPublicEmojiStickerActionType,
+  AppPublicGuildAssetType,
+} from "../model/dbTypes";
+import logger from "../logger";
 
 const EMOJI_RE = /<(?<animated>a)?:(?<name>\w+):(?<id>\d{16,21})>/g;
 
+export const UserEmojiRateLimitDuration = dayjs.duration({ hours: 1 });
+
+type NewExpressionStat = {
+  guild_id: string;
+  asset_id: string;
+  asset_type: AppPublicGuildAssetType;
+  count: number;
+};
+
+type NewExpressionStatWithGuild = NewExpressionStat & {
+  is_external: boolean;
+};
+
 async function incrementEmojiCounts(
-  values: InsertObjectOrList<DB, "app_public.emoji_sticker_stats">
-): Promise<InsertResult[]> {
-  return db
+  userId: string,
+  actionType: AppPublicEmojiStickerActionType,
+  values: NewExpressionStat[]
+): Promise<void> {
+  // Check the guilds the emoji is from
+  const knownEmojis = await db
+    .selectFrom("app_public.guild_emojis")
+    .selectAll()
+    .where(
+      "id",
+      "in",
+      values.map((v) => v.asset_id)
+    )
+    .execute();
+
+  // Exclude the ones that aren't found
+  const foundEmojiIds = new Map(knownEmojis.map((r) => [r.id, r]));
+
+  const valuesKnown: NewExpressionStatWithGuild[] = values
+    .filter((v) => foundEmojiIds.has(v.asset_id))
+    .map((v) => {
+      const guildEmoji = foundEmojiIds.get(v.asset_id);
+
+      return {
+        ...v,
+        // If message guild_id is different from emoji guild_id, it's an external emoji
+        is_external: guildEmoji?.guild_id !== v.guild_id,
+      };
+    });
+
+  // TODO: Modify emoji counts for is_external
+
+  // Check if user already contributed to metrics in the past hour
+  // Does not need to know if this is a sticker or not
+  const rateLimitedAssets = await db
+    .selectFrom("app_public.emoji_sticker_stats_rate_limits")
+    .select(["asset_id"])
+    // All values are the same user
+    .where("user_id", "=", userId)
+    .where("action_type", "=", actionType)
+    .where(
+      "asset_id",
+      "in",
+      valuesKnown.map((v) => v.asset_id)
+    )
+    // Within the past hour, ignore any older entries which are deleted later
+    .where(
+      "last_used",
+      ">=",
+      dayjs.utc().subtract(UserEmojiRateLimitDuration).toDate()
+    )
+    .execute();
+
+  const assetIdSet = new Set<string>(
+    rateLimitedAssets.map((ra) => ra.asset_id)
+  );
+
+  // Remove the ratelimited users from the values
+  const eligibleVals = values.filter((v) => !assetIdSet.has(v.asset_id));
+
+  logger.debug(
+    {
+      userId,
+      ratelimitedAssets: rateLimitedAssets,
+      eligibleCount: eligibleVals.length,
+    },
+    "Emoji rate limited emoji+users"
+  );
+
+  if (eligibleVals.length === 0) {
+    // No values to insert
+    return;
+  }
+
+  await db
     .insertInto("app_public.emoji_sticker_stats")
-    .values(values)
+    // Add actionType to all values
+    .values(eligibleVals.map((v) => ({ ...v, action_type: actionType })))
     .onConflict((oc) =>
       oc.columns(["time", "guild_id", "asset_id", "action_type"]).doUpdateSet({
         count: (eb) => eb.bxp("app_public.emoji_sticker_stats.count", "+", "1"),
+      })
+    )
+    .execute();
+
+  // Insert the assets_id into the rate limit table
+  await db
+    .insertInto("app_public.emoji_sticker_stats_rate_limits")
+    .values(
+      eligibleVals.map((v) => ({
+        user_id: userId,
+        asset_id: v.asset_id,
+        action_type: actionType,
+        last_used: dayjs.utc().toDate(),
+      }))
+    )
+    .onConflict((oc) =>
+      // Conflict if there is an older entry, as it's not queried to check if user is rate limited.
+      // Update the last_used time in the existing entry
+      oc.columns(["user_id", "asset_id", "action_type"]).doUpdateSet({
+        last_used: dayjs.utc().toDate(),
       })
     )
     .execute();
@@ -50,24 +163,36 @@ export const emojiStatsMsgHandler: EventHandlerFn<
     return;
   }
 
-  const values: InsertObjectOrList<DB, "app_public.emoji_sticker_stats"> =
-    Array.from(uniqueEmojiIds).map((emojiId) => ({
+  const values: NewExpressionStat[] = Array.from(uniqueEmojiIds).map(
+    (emojiId) => ({
       guild_id: msg.guild.id,
       asset_id: emojiId,
-      action_type: "message",
       asset_type: "emoji",
+      count: 1,
+    })
+  );
+
+  // Add stickers if any
+  if (msg.stickers.size > 0) {
+    const stickers: NewExpressionStat[] = msg.stickers.map((s) => ({
+      guild_id: msg.guild.id,
+      asset_id: s.id,
+      asset_type: "sticker",
       count: 1,
     }));
 
-  await incrementEmojiCounts(values);
+    values.push(...stickers);
+  }
+
+  await incrementEmojiCounts(msg.author.id, "message", values);
 };
 
 export const emojiStatsReactHandler: EventHandlerFn<
   Events.MessageReactionAdd
 > = async (
   ctx: Context,
-  reaction: MessageReaction | PartialMessageReaction
-  // user: User | PartialUser
+  reaction: MessageReaction | PartialMessageReaction,
+  user: User | PartialUser
 ): Promise<void> => {
   // DM message
   if (!reaction.message.inGuild()) {
@@ -79,11 +204,60 @@ export const emojiStatsReactHandler: EventHandlerFn<
     return;
   }
 
-  await incrementEmojiCounts({
-    guild_id: reaction.message.guild.id,
-    asset_id: reaction.emoji.id,
-    action_type: "reaction",
-    asset_type: "emoji",
-    count: 1,
-  });
+  await incrementEmojiCounts(user.id, "reaction", [
+    {
+      guild_id: reaction.message.guild.id,
+      asset_id: reaction.emoji.id,
+      asset_type: "emoji",
+      count: 1,
+    },
+  ]);
+};
+
+export const emojiStatsReadyHandler: EventHandlerFn<
+  Events.ClientReady
+> = async (ctx: Context, client: Client<true>): Promise<void> => {
+  for (const [, guild] of client.guilds.cache) {
+    // Update database with all the emojis
+    const emojis = Array.from(guild.emojis.cache.values());
+
+    // eslint-disable-next-line no-await-in-loop
+    await db
+      .insertInto("app_public.guild_emojis")
+      .values(
+        emojis.map((e) => ({
+          guild_id: guild.id,
+          id: e.id,
+          name: e.name || "", // Shouldn't be null, but just in case
+        }))
+      )
+      // Ignore any existing emojis
+      .onConflict((oc) => oc.doNothing())
+      .execute();
+  }
+};
+
+export const emojiAddHandler: EventHandlerFn<Events.GuildEmojiCreate> = async (
+  ctx: Context,
+  emoji: GuildEmoji
+) => {
+  await db
+    .insertInto("app_public.guild_emojis")
+    .values({
+      guild_id: emoji.guild.id,
+      id: emoji.id,
+      name: emoji.name || "", // Shouldn't be null, but just in case
+    })
+    .onConflict((oc) =>
+      oc.doUpdateSet({
+        name: emoji.name || "",
+      })
+    )
+    .execute();
+};
+
+export const emojiUpdateHandler: EventHandlerFn<
+  Events.GuildEmojiUpdate
+> = async (ctx: Context, emoji: GuildEmoji) => {
+  await emojiAddHandler(ctx, emoji);
 };

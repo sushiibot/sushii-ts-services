@@ -26,6 +26,7 @@ import {
 import {
   emojiStatsMsgHandler,
   emojiStatsReactHandler,
+  emojiStatsReadyHandler,
 } from "./events/EmojiStatsHandler";
 
 async function handleEvent<K extends keyof ClientEvents>(
@@ -90,7 +91,12 @@ export default function registerEventHandlers(
 
     await webhookLog("Ready", `Logged in as ${c.user.tag}`, Color.Success);
 
-    await handleEvent(ctx, Events.ClientReady, [banReadyHandler], client);
+    await handleEvent(
+      ctx,
+      Events.ClientReady,
+      [banReadyHandler, emojiStatsReadyHandler],
+      client
+    );
   });
 
   client.on(Events.Debug, async (msg) => {
