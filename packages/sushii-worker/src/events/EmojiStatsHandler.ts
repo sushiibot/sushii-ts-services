@@ -33,7 +33,7 @@ type NewExpressionStat = {
 };
 
 type NewExpressionStatWithGuild = NewExpressionStat & {
-  is_external: boolean;
+  count_external: number;
 };
 
 async function incrementEmojiCounts(
@@ -60,10 +60,18 @@ async function incrementEmojiCounts(
     .map((v) => {
       const guildEmoji = foundEmojiIds.get(v.asset_id);
 
+      if (guildEmoji?.guild_id === v.guild_id) {
+        return {
+          ...v,
+          count_external: 0,
+        };
+      }
+
       return {
         ...v,
-        // If message guild_id is different from emoji guild_id, it's an external emoji
-        is_external: guildEmoji?.guild_id !== v.guild_id,
+        // Swap count with external count
+        count_external: v.count,
+        count: 0,
       };
     });
 
@@ -71,8 +79,6 @@ async function incrementEmojiCounts(
   if (valuesKnown.length === 0) {
     return;
   }
-
-  // TODO: Modify emoji counts for is_external
 
   // Check if user already contributed to metrics in the past hour
   // Does not need to know if this is a sticker or not
@@ -99,8 +105,8 @@ async function incrementEmojiCounts(
     rateLimitedAssets.map((ra) => ra.asset_id)
   );
 
-  // Remove the ratelimited users from the values
-  const eligibleVals = values.filter((v) => !assetIdSet.has(v.asset_id));
+  // Remove the ratelimited users from the valuesKnown
+  const eligibleVals = valuesKnown.filter((v) => !assetIdSet.has(v.asset_id));
 
   logger.debug(
     {
@@ -116,13 +122,27 @@ async function incrementEmojiCounts(
     return;
   }
 
+  // Update stats, mix of both internal and external assets
   await db
     .insertInto("app_public.emoji_sticker_stats")
     // Add actionType to all values
     .values(eligibleVals.map((v) => ({ ...v, action_type: actionType })))
     .onConflict((oc) =>
-      oc.columns(["time", "guild_id", "asset_id", "action_type"]).doUpdateSet({
-        count: (eb) => eb.bxp("app_public.emoji_sticker_stats.count", "+", "1"),
+      oc.columns(["time", "asset_id", "action_type"]).doUpdateSet({
+        count: (eb) =>
+          eb.bxp(
+            "app_public.emoji_sticker_stats.count",
+            "+",
+            // Increment by the insert value's count
+            eb.ref("excluded.count")
+          ),
+        count_external: (eb) =>
+          eb.bxp(
+            "app_public.emoji_sticker_stats.count_external",
+            "+",
+            // Increment by the insert value's count_external
+            eb.ref("excluded.count_external")
+          ),
       })
     )
     .execute();
@@ -229,10 +249,18 @@ export const emojiStatsReactHandler: EventHandlerFn<
 export const emojiAndStickerStatsReadyHandler: EventHandlerFn<
   Events.ClientReady
 > = async (ctx: Context, client: Client<true>): Promise<void> => {
+  logger.info("Saving all guild emojis and stickers to database");
+
+  let emojiCount = 0;
+  let stickerCount = 0;
+
   for (const [, guild] of client.guilds.cache) {
     // Update database with all the emojis and stickers
     const emojis = Array.from(guild.emojis.cache.values());
     const stickers = Array.from(guild.stickers.cache.values());
+
+    emojiCount += emojis.length;
+    stickerCount += stickers.length;
 
     const values: InsertObject<DB, "app_public.guild_emojis_and_stickers">[] =
       emojis.map((e) => ({
@@ -260,9 +288,13 @@ export const emojiAndStickerStatsReadyHandler: EventHandlerFn<
       .insertInto("app_public.guild_emojis_and_stickers")
       .values(values)
       // Ignore any existing emojis
-      .onConflict((oc) => oc.doNothing())
+      .onConflict((oc) => oc.column("id").doNothing())
       .execute();
   }
+
+  logger.info(
+    `Saved ${emojiCount} emojis and ${stickerCount} stickers to database`
+  );
 };
 
 async function addGuildEmojiOrSticker(
@@ -281,7 +313,7 @@ async function addGuildEmojiOrSticker(
     })
     // When updating asset
     .onConflict((oc) =>
-      oc.doUpdateSet({
+      oc.column("id").doUpdateSet({
         name,
       })
     )

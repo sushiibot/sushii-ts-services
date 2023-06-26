@@ -327,6 +327,7 @@ export interface AppPublicEmojiStickerStats {
   action_type: AppPublicEmojiStickerActionType;
   asset_type: AppPublicGuildAssetType;
   count: Int8;
+  count_external: Generated<Int8>;
 }
 
 export interface AppPublicEmojiStickerStatsRateLimits {

@@ -36,9 +36,8 @@ enum ServerOption {
 }
 
 type EmojiStat = {
-  guild_id: string;
   asset_id: string;
-  total_count: string;
+  total_count?: string;
 };
 
 type RequestOptions = {
@@ -54,26 +53,35 @@ async function getAllStats(
 ): Promise<string[]> {
   const values = await db
     .selectFrom("app_public.emoji_sticker_stats")
-    .select((eb) => [
-      "asset_id",
-      "guild_id",
-      eb.fn<string>("sum", ["count"]).as("total_count"),
-    ])
+    // Right join, since we want to exclude the items that are missing from the emoji/sticker table
+    .innerJoin(
+      "app_public.guild_emojis_and_stickers",
+      "app_public.emoji_sticker_stats.asset_id",
+      "app_public.guild_emojis_and_stickers.id"
+    )
+    .select(["asset_id"])
     // ---------------------
     // Specific servers -- if not specified, only internal
-    // If sum, there is no where clause for guild_id
+    // Includes where clause for the count in order to exclude 0 counts
     .$if(server === ServerOption.Internal, (q) =>
-      q.where("guild_id", "=", interaction.guildId)
+      q.select("count as total_count").where("count", ">", "0")
     )
     .$if(server === ServerOption.External, (q) =>
-      q.where("guild_id", "!=", interaction.guildId)
+      q
+        .select("count_external as total_count")
+        .where("count_external", ">", "0")
     )
-    // Only emojis from this guild.
-    // TODO: Deleted emojis will be unrecoverable.
+    .$if(server === ServerOption.Sum, (q) =>
+      q.select((eb) =>
+        eb.bxp("count", "+", eb.ref("count_external")).as("total_count")
+      )
+    )
+    // Limit by emojis from this guild, specifying the emoji/sticker table, not metrics.
+    // This may include deleted expressions.
     .where(
-      "asset_id",
-      "in",
-      guildEmojis.map((e) => e.id)
+      "app_public.guild_emojis_and_stickers.guild_id",
+      "=",
+      interaction.guildId
     )
     // ---------------------
     // Specific types -- if not specified, adds both together
@@ -83,8 +91,6 @@ async function getAllStats(
     .$if(group === GroupOption.Reaction, (q) =>
       q.where("action_type", "=", "reaction")
     )
-    // Want to see emojis used in the same server and outside separately
-    .groupBy(["asset_id", "guild_id"])
     // ---------------------
     // Order by total_count
     .$if(order === OrderOption.HighToLow, (q) =>
@@ -93,6 +99,9 @@ async function getAllStats(
     .$if(order === OrderOption.LowToHigh, (q) =>
       q.orderBy("total_count", "asc")
     )
+    // Secondary sort so it's consistent
+    .orderBy("asset_id")
+    // Exclude 0 counts, e.g. used internal but not external
     .execute();
 
   logger.debug(
@@ -103,12 +112,14 @@ async function getAllStats(
   );
 
   const formatStat = (v: EmojiStat): string => {
+    const totalCount = v.total_count || "0";
+
     const emoji = guildEmojis.get(v.asset_id);
     if (!emoji) {
-      return `ID \`${v.asset_id}\` (not found) - \`${v.total_count}\``;
+      return `ID \`${v.asset_id}\` (not found) - \`${totalCount}\``;
     }
 
-    return `${emoji} - \`${v.total_count}\``;
+    return `${emoji} - \`${totalCount}\``;
   };
 
   return values.map(formatStat);
