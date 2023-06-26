@@ -249,12 +249,17 @@ export const emojiStatsReactHandler: EventHandlerFn<
 export const emojiAndStickerStatsReadyHandler: EventHandlerFn<
   Events.ClientReady
 > = async (ctx: Context, client: Client<true>): Promise<void> => {
-  logger.info("Saving all guild emojis and stickers to database");
+  logger.info(
+    {
+      guildsCount: client.guilds.cache.size,
+    },
+    "Saving all guild emojis and stickers to database"
+  );
 
   let emojiCount = 0;
   let stickerCount = 0;
 
-  for (const [, guild] of client.guilds.cache) {
+  for (const guild of client.guilds.cache.values()) {
     // Update database with all the emojis and stickers
     const emojis = Array.from(guild.emojis.cache.values());
     const stickers = Array.from(guild.stickers.cache.values());
@@ -282,6 +287,11 @@ export const emojiAndStickerStatsReadyHandler: EventHandlerFn<
 
     // Add stickers
     values.push(...stickerValues);
+
+    // Skip if no emojis or stickers
+    if (values.length === 0) {
+      continue;
+    }
 
     // eslint-disable-next-line no-await-in-loop
     await db

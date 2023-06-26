@@ -8,7 +8,6 @@ import config from "../model/config";
 async function getGuildBans(guild: Guild): Promise<string[]> {
   const guildAllBans: string[] = [];
   let after: string | undefined;
-  let pageNumber = 0;
 
   // -------------------------------------------------------------------------
   // Page through bans for this guild
@@ -34,20 +33,6 @@ async function getGuildBans(guild: Guild): Promise<string[]> {
       // If we failed to fetch a page, just return what we have so far
       return guildAllBans;
     }
-
-    logger.debug(
-      {
-        guildId: guild.id,
-        guildName: guild.name,
-        pageNumber,
-        pageSize: page.size,
-        after,
-      },
-      "Fetched server bans page"
-    );
-
-    // Just for logging
-    pageNumber += 1;
 
     // Add all the ban user ids in this page to the array
     guildAllBans.push(...Array.from(page.keys()).map((userId) => userId));
