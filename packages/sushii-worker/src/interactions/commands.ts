@@ -38,6 +38,7 @@ import ReasonConfirmButtonHandler from "./moderation/reason/ReasonConfirmButtonH
 import SettingsCommand from "./settings/SettingsCommand";
 import LookupCommand from "./moderation/LookupCommand";
 import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
+import TagAdminCommand from "./tags/TagAdminCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -69,6 +70,7 @@ export default function addCommands(
     new SlowmodeCommand(),
 
     // Guild
+    new TagAdminCommand(),
     new EmojiStatsCommand(),
 
     new NotificationCommand(),

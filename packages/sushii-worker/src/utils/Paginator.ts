@@ -31,6 +31,7 @@ type PaginationOptions = {
   getTotalEntriesFn: GetTotalEntriesFn;
   pageSize: number;
   embedModifierFn: EmbedModifierFn;
+  hideButtonsIfSinglePage?: boolean;
 };
 
 export default class Paginator {
@@ -48,12 +49,15 @@ export default class Paginator {
 
   pageSize: number;
 
+  hideButtonsIfSinglePage: boolean;
+
   constructor({
     interaction,
     getPageFn,
     getTotalEntriesFn,
     pageSize,
     embedModifierFn,
+    hideButtonsIfSinglePage = false,
   }: PaginationOptions) {
     this.interaction = interaction;
     this.getPageDescriptionFn = getPageFn;
@@ -63,6 +67,7 @@ export default class Paginator {
     this.currentPageIndex = 0;
     this.totalPages = null;
     this.pageSize = pageSize;
+    this.hideButtonsIfSinglePage = hideButtonsIfSinglePage;
   }
 
   /**
@@ -191,6 +196,17 @@ export default class Paginator {
 
   async paginate(): Promise<void> {
     let embed = await this.getEmbed();
+    let totalPages = await this.getTotalPages(false);
+
+    if (this.hideButtonsIfSinglePage && totalPages <= 0) {
+      // No pages, and no buttons
+      await this.interaction.reply({
+        embeds: [embed],
+      });
+
+      return;
+    }
+
     let components = await this.getComponents(false);
 
     const message = await this.interaction.reply({
@@ -198,7 +214,6 @@ export default class Paginator {
       components,
     });
 
-    let totalPages = await this.getTotalPages(false);
     if (totalPages < 1) {
       // No pages, no need to listen for button presses
       return;

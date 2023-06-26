@@ -97,7 +97,7 @@ export default async function buildUserLookupEmbed(
       continue;
     }
 
-    // Make sure required fields are non-null, could be no longer in the
+    // Make sure required fields are non-null, could be no longer in the guild
     if (!ban.guild_name) {
       continue;
     }

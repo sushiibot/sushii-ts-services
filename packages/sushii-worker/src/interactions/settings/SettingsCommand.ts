@@ -732,12 +732,12 @@ export default class SettingsCommand extends SlashCommandHandler {
   }
 
   static getLookupHandlerComponents(
-    lookup_details_opt_in: boolean,
+    currentlyOptedIn: boolean,
     disabled: boolean = false
   ): ActionRowBuilder<ButtonBuilder>[] {
     let button;
     if (disabled) {
-      const labelAction = lookup_details_opt_in ? "opt-out" : "opt-in";
+      const labelAction = currentlyOptedIn ? "opt-out" : "opt-in";
 
       button = new ButtonBuilder()
         .setDisabled(true)
@@ -746,13 +746,9 @@ export default class SettingsCommand extends SlashCommandHandler {
         .setCustomId("meow");
     } else {
       button = new ButtonBuilder()
-        .setStyle(
-          lookup_details_opt_in ? ButtonStyle.Danger : ButtonStyle.Success
-        )
-        .setLabel(
-          lookup_details_opt_in ? "Opt-out of sharing" : "Opt-in to sharing"
-        )
-        .setCustomId(lookup_details_opt_in ? "opt-out" : "opt-in");
+        .setStyle(currentlyOptedIn ? ButtonStyle.Danger : ButtonStyle.Success)
+        .setLabel(currentlyOptedIn ? "Opt-out of sharing" : "Opt-in to sharing")
+        .setCustomId(currentlyOptedIn ? "opt-out" : "opt-in");
     }
 
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
