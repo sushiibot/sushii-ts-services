@@ -325,7 +325,6 @@ export interface AppPublicEmojiStickerStats {
   guild_id: Int8;
   asset_id: Int8;
   action_type: AppPublicEmojiStickerActionType;
-  asset_type: AppPublicGuildAssetType;
   count: Int8;
   count_external: Generated<Int8>;
 }

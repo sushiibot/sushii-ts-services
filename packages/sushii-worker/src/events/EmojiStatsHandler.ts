@@ -28,7 +28,6 @@ export const UserEmojiRateLimitDuration = dayjs.duration({ hours: 1 });
 type NewExpressionStat = {
   guild_id: string;
   asset_id: string;
-  asset_type: AppPublicGuildAssetType;
   count: number;
 };
 
@@ -195,7 +194,6 @@ export const emojiStatsMsgHandler: EventHandlerFn<
     (emojiId) => ({
       guild_id: msg.guild.id,
       asset_id: emojiId,
-      asset_type: "emoji",
       count: 1,
     })
   );
@@ -205,7 +203,6 @@ export const emojiStatsMsgHandler: EventHandlerFn<
     const stickers: NewExpressionStat[] = msg.stickers.map((s) => ({
       guild_id: msg.guild.id,
       asset_id: s.id,
-      asset_type: "sticker",
       count: 1,
     }));
 
@@ -240,7 +237,6 @@ export const emojiStatsReactHandler: EventHandlerFn<
     {
       guild_id: reaction.message.guild.id,
       asset_id: reaction.emoji.id,
-      asset_type: "emoji",
       count: 1,
     },
   ]);
