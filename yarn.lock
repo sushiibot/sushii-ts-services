@@ -2843,7 +2843,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/semantic-conventions@npm:1.11.0, @opentelemetry/semantic-conventions@npm:^1.0.0, @opentelemetry/semantic-conventions@npm:^1.7.0":
+"@opentelemetry/semantic-conventions@npm:1.11.0, @opentelemetry/semantic-conventions@npm:^1.0.0":
   version: 1.11.0
   resolution: "@opentelemetry/semantic-conventions@npm:1.11.0"
   checksum: 310f2aad2a958b02ea2e661251e202989c662306e85a1c27bc99dec9c4d42fce5fc9b34bf21169276798acdae9d52af3b7ec19d8e5e9bb420fc145d0b901823c
@@ -2861,6 +2861,13 @@ __metadata:
   version: 1.7.0
   resolution: "@opentelemetry/semantic-conventions@npm:1.7.0"
   checksum: 5214501648a002cc92fc6ad2296be8fa95b1803b360fc7732222e74a7f3743f3f72952740bed18ea9207741e450f3a32bf11752d732dc83f8770681eb8a6656b
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/semantic-conventions@npm:^1.14.0":
+  version: 1.14.0
+  resolution: "@opentelemetry/semantic-conventions@npm:1.14.0"
+  checksum: 0d4f752035ac25d10cfcaf0e16f29bff8fa47877baff61dc4d047f9fe1e70f1459d02f5b70982c579db48584038e4fe263755b35ffa7254385604917337469f3
   languageName: node
   linkType: hard
 
@@ -3168,7 +3175,7 @@ __metadata:
     "@opentelemetry/exporter-trace-otlp-http": ^0.33.0
     "@opentelemetry/resources": ^1.7.0
     "@opentelemetry/sdk-node": ^0.33.0
-    "@opentelemetry/semantic-conventions": ^1.7.0
+    "@opentelemetry/semantic-conventions": ^1.14.0
     "@sapphire/shapeshift": ^3.6.0
     "@sapphire/snowflake": ^3.2.0
     "@sentry/node": ^7.7.0
