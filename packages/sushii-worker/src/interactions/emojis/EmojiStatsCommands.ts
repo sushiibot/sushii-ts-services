@@ -3,6 +3,7 @@ import {
   ChatInputCommandInteraction,
   EmbedBuilder,
   GuildEmoji,
+  Sticker,
   Collection,
 } from "discord.js";
 import Context from "../../model/context";
@@ -11,8 +12,10 @@ import db from "../../model/db";
 import Color from "../../utils/colors";
 import Paginator from "../../utils/Paginator";
 import logger from "../../logger";
+import { AppPublicGuildAssetType } from "../../model/dbTypes";
 
 enum CommandOption {
+  Type = "type",
   Group = "group",
   Order = "order",
   Server = "server",
@@ -35,23 +38,33 @@ enum ServerOption {
   External = "external",
 }
 
+enum AssetTypeOption {
+  EmojiOnly = "emoji",
+  StickerOnly = "sticker",
+  Both = "both",
+}
+
 type EmojiStat = {
   asset_id: string;
   total_count?: string;
+  name: string;
+  type: AppPublicGuildAssetType;
 };
 
 type RequestOptions = {
   group: GroupOption;
   order: OrderOption;
   server: ServerOption;
+  assetType: AssetTypeOption;
 };
 
 async function getAllStats(
   interaction: ChatInputCommandInteraction,
   guildEmojis: Collection<string, GuildEmoji>,
-  { group, order, server }: RequestOptions
+  guildStickers: Collection<string, Sticker>,
+  { group, order, server, assetType }: RequestOptions
 ): Promise<string[]> {
-  const values = await db
+  let query = db
     .selectFrom("app_public.emoji_sticker_stats")
     // Right join, since we want to exclude the items that are missing from the emoji/sticker table
     .innerJoin(
@@ -59,10 +72,11 @@ async function getAllStats(
       "app_public.emoji_sticker_stats.asset_id",
       "app_public.guild_emojis_and_stickers.id"
     )
-    .select(["asset_id"])
+    .select(["asset_id", "type", "name"])
     // ---------------------
     // Specific servers -- if not specified, only internal
     // Includes where clause for the count in order to exclude 0 counts
+    // This uses $if since we need it for the total_count alias to work later
     .$if(server === ServerOption.Internal, (q) =>
       q.select("count as total_count").where("count", ">", "0")
     )
@@ -82,23 +96,61 @@ async function getAllStats(
       "app_public.guild_emojis_and_stickers.guild_id",
       "=",
       interaction.guildId
-    )
-    // ---------------------
-    // Specific types -- if not specified, adds both together
-    .$if(group === GroupOption.Message, (q) =>
-      q.where("action_type", "=", "message")
-    )
-    .$if(group === GroupOption.Reaction, (q) =>
-      q.where("action_type", "=", "reaction")
-    )
-    // ---------------------
-    // Order by total_count
-    .$if(order === OrderOption.HighToLow, (q) =>
-      q.orderBy("total_count", "desc")
-    )
-    .$if(order === OrderOption.LowToHigh, (q) =>
-      q.orderBy("total_count", "asc")
-    )
+    );
+
+  switch (assetType) {
+    case AssetTypeOption.EmojiOnly: {
+      query = query.where(
+        "app_public.guild_emojis_and_stickers.type",
+        "=",
+        "emoji"
+      );
+      break;
+    }
+    case AssetTypeOption.StickerOnly: {
+      query = query.where(
+        "app_public.guild_emojis_and_stickers.type",
+        "=",
+        "sticker"
+      );
+      break;
+    }
+    case AssetTypeOption.Both: {
+      // do nothing
+      break;
+    }
+  }
+
+  // ---------------------
+  // Specific types -- if not specified, adds both together
+  switch (group) {
+    case GroupOption.Message: {
+      query = query.where("action_type", "=", "message");
+      break;
+    }
+    case GroupOption.Reaction: {
+      query = query.where("action_type", "=", "reaction");
+      break;
+    }
+    case GroupOption.Sum: {
+      break;
+    }
+  }
+
+  // ---------------------
+  // Order by total_count
+  switch (order) {
+    case OrderOption.HighToLow: {
+      query = query.orderBy("total_count", "desc");
+      break;
+    }
+    case OrderOption.LowToHigh: {
+      query = query.orderBy("total_count", "asc");
+      break;
+    }
+  }
+
+  const values = await query
     // Secondary sort so it's consistent
     .orderBy("asset_id")
     // Exclude 0 counts, e.g. used internal but not external
@@ -114,12 +166,21 @@ async function getAllStats(
   const formatStat = (v: EmojiStat): string => {
     const totalCount = v.total_count || "0";
 
-    const emoji = guildEmojis.get(v.asset_id);
-    if (!emoji) {
-      return `ID \`${v.asset_id}\` (not found) - \`${totalCount}\``;
+    if (v.type === "emoji") {
+      const emoji = guildEmojis.get(v.asset_id);
+      if (!emoji) {
+        return `\`${v.name}\` (ID \`${v.asset_id}\`) not found - \`${totalCount}\``;
+      }
+
+      return `${emoji} - \`${totalCount}\``;
     }
 
-    return `${emoji} - \`${totalCount}\``;
+    const sticker = guildStickers.get(v.asset_id);
+    if (!sticker) {
+      return `\`${v.name}\` (ID \`${v.asset_id}\`) not found - \`${totalCount}\``;
+    }
+
+    return `${sticker.name} - \`${totalCount}\` (sticker)`;
   };
 
   return values.map(formatStat);
@@ -148,6 +209,27 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
           {
             name: "Reactions only: Show emojis used in reactions only",
             value: GroupOption.Reaction,
+          }
+        )
+    )
+    .addStringOption((o) =>
+      o
+        .setName(CommandOption.Type)
+        .setDescription(
+          "Do you want to see Emojis or Stickers? (default: Emojis)"
+        )
+        .addChoices(
+          {
+            name: "Emojis Only: Show emojis only",
+            value: AssetTypeOption.EmojiOnly,
+          },
+          {
+            name: "Stickers only: Show stickers only",
+            value: AssetTypeOption.StickerOnly,
+          },
+          {
+            name: "Both: Show both emojis and stickers",
+            value: AssetTypeOption.Both,
           }
         )
     )
@@ -201,8 +283,21 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
     }
 
     const guildEmojis = await interaction.guild.emojis.fetch();
+    const guildStickers = await interaction.guild.stickers.fetch();
 
-    if (guildEmojis.size === 0) {
+    const order = (interaction.options.getString(CommandOption.Order) ||
+      OrderOption.HighToLow) as OrderOption;
+
+    const group = (interaction.options.getString(CommandOption.Group) ||
+      GroupOption.Sum) as GroupOption;
+
+    const server = (interaction.options.getString(CommandOption.Server) ||
+      ServerOption.Internal) as ServerOption;
+
+    const assetType = (interaction.options.getString(CommandOption.Type) ||
+      AssetTypeOption.EmojiOnly) as AssetTypeOption;
+
+    if (assetType === AssetTypeOption.EmojiOnly && guildEmojis.size === 0) {
       const embed = new EmbedBuilder()
         .setTitle("Emoji Stats")
         .setDescription("No emojis found in this server. Add some first!")
@@ -215,20 +310,49 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
       return;
     }
 
-    const order = (interaction.options.getString(CommandOption.Order) ||
-      OrderOption.HighToLow) as OrderOption;
+    if (assetType === AssetTypeOption.StickerOnly && guildStickers.size === 0) {
+      const embed = new EmbedBuilder()
+        .setTitle("Sticker Stats")
+        .setDescription("No stickers found in this server. Add some first!")
+        .setColor(Color.Info);
 
-    const group = (interaction.options.getString(CommandOption.Group) ||
-      GroupOption.Sum) as GroupOption;
+      await interaction.reply({
+        embeds: [embed],
+      });
 
-    const server = (interaction.options.getString(CommandOption.Server) ||
-      ServerOption.Internal) as ServerOption;
+      return;
+    }
 
-    const allStats = await getAllStats(interaction, guildEmojis, {
-      group,
-      order,
-      server,
-    });
+    if (
+      assetType === AssetTypeOption.Both &&
+      guildEmojis.size === 0 &&
+      guildStickers.size === 0
+    ) {
+      const embed = new EmbedBuilder()
+        .setTitle("Emoji and Sticker Stats")
+        .setDescription(
+          "No emojis or stickers found in this server. Add some first!"
+        )
+        .setColor(Color.Info);
+
+      await interaction.reply({
+        embeds: [embed],
+      });
+
+      return;
+    }
+
+    const allStats = await getAllStats(
+      interaction,
+      guildEmojis,
+      guildStickers,
+      {
+        group,
+        order,
+        server,
+        assetType,
+      }
+    );
 
     const addEmbedOptions = (eb: EmbedBuilder): EmbedBuilder => {
       eb.setColor(Color.Info);
@@ -249,8 +373,21 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
           break;
       }
 
+      let assetTypeText;
+      switch (assetType) {
+        case AssetTypeOption.EmojiOnly:
+          assetTypeText = "Emoji Stats";
+          break;
+        case AssetTypeOption.StickerOnly:
+          assetTypeText = "Sticker Stats";
+          break;
+        case AssetTypeOption.Both:
+          assetTypeText = "Emoji and Sticker Stats";
+          break;
+      }
+
       eb.setAuthor({
-        name: "Emoji Stats",
+        name: assetTypeText,
       });
 
       let title = "";
