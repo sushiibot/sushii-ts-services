@@ -107,15 +107,6 @@ async function incrementEmojiCounts(
   // Remove the ratelimited users from the valuesKnown
   const eligibleVals = valuesKnown.filter((v) => !assetIdSet.has(v.asset_id));
 
-  logger.debug(
-    {
-      userId,
-      ratelimitedAssets: rateLimitedAssets,
-      eligibleCount: eligibleVals.length,
-    },
-    "Emoji rate limited emoji+users"
-  );
-
   if (eligibleVals.length === 0) {
     // No values to insert
     return;
@@ -185,11 +176,6 @@ export const emojiStatsMsgHandler: EventHandlerFn<
     uniqueEmojiIds.add(match.groups?.id ?? "");
   }
 
-  // No emojis in message
-  if (uniqueEmojiIds.size === 0) {
-    return;
-  }
-
   const values: NewExpressionStat[] = Array.from(uniqueEmojiIds).map(
     (emojiId) => ({
       guild_id: msg.guild.id,
@@ -209,6 +195,7 @@ export const emojiStatsMsgHandler: EventHandlerFn<
     values.push(...stickers);
   }
 
+  // Check both emoji and sticker don't exist
   if (values.length === 0) {
     return;
   }
