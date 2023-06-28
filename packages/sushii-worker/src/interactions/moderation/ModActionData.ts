@@ -73,7 +73,7 @@ export default class ModActionData {
     const dmReasonString = this.options.getString(ModerationOption.DMReason);
 
     // If dmReasonString not provided, keep it undefined
-    if (dmReasonString !== undefined) {
+    if (dmReasonString !== null) {
       this.DMReason = dmReasonString === DMReasonChoiceValue.Yes;
     }
   }
