@@ -36,8 +36,11 @@ export async function getUserLookupData(
       and([
         // User ID
         cmpr("app_public.guild_bans.user_id", "=", user.id),
-        // Ignore pending cases
-        cmpr("logs.pending", "=", false),
+        // Ignore missing or pending cases
+        or([
+          cmpr("logs.pending", "is", null),
+          cmpr("logs.pending", "=", false),
+        ]),
         // Bans only
         or([cmpr("action", "is", null), cmpr("action", "=", "ban")]),
       ])
