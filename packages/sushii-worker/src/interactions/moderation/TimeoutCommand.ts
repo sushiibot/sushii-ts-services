@@ -61,7 +61,9 @@ export default class TimeoutCommand extends SlashCommandHandler {
 
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
-      await interactionReplyErrorMessage(ctx, interaction, fetchTargetsRes.val);
+      await interaction.editReply(
+        getErrorMessage("Error", fetchTargetsRes.val)
+      );
 
       return;
     }

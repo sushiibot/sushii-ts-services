@@ -7,10 +7,7 @@ import {
 
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
-import {
-  getErrorMessage,
-  interactionReplyErrorMessage,
-} from "../responses/error";
+import { getErrorMessage } from "../responses/error";
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
@@ -49,7 +46,9 @@ export default class UnbanCommand extends SlashCommandHandler {
       true // skipMember fetch
     );
     if (fetchTargetsRes.err) {
-      await interactionReplyErrorMessage(ctx, interaction, fetchTargetsRes.val);
+      await interaction.editReply(
+        getErrorMessage("Error", fetchTargetsRes.val)
+      );
 
       return;
     }

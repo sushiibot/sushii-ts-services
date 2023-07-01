@@ -6,10 +6,7 @@ import {
 import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
-import {
-  getErrorMessage,
-  interactionReplyErrorMessage,
-} from "../responses/error";
+import { getErrorMessage } from "../responses/error";
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
@@ -45,7 +42,9 @@ export default class KickCommand extends SlashCommandHandler {
     const data = new ModActionData(interaction);
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
-      await interactionReplyErrorMessage(ctx, interaction, fetchTargetsRes.val);
+      await interaction.editReply(
+        getErrorMessage("Error", fetchTargetsRes.val)
+      );
 
       return;
     }
