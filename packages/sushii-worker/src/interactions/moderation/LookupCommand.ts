@@ -9,7 +9,6 @@ import Context from "../../model/context";
 import db from "../../model/db";
 import { SlashCommandHandler } from "../handlers";
 import buildUserLookupEmbed, { UserLookupBan } from "./formatters/lookup";
-import logger from "../../logger";
 
 export async function getUserLookupData(
   ctx: Context,
@@ -132,8 +131,6 @@ export default class LookupCommand extends SlashCommandHandler {
     }
 
     const bans = await getUserLookupData(ctx, user);
-
-    logger.debug(bans, "bans");
 
     const userEmbed = await buildUserLookupEmbed(
       user,

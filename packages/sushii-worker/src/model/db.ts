@@ -38,6 +38,18 @@ const defaultGuildconfig: AllSelection<DB, "app_public.guild_configs"> = {
   data: {},
 };
 
+const defaultUser: AllSelection<DB, "app_public.users"> = {
+  id: "0",
+  rep: "0",
+  fishies: "0",
+  is_patron: false,
+  last_fishies: null,
+  last_rep: null,
+  lastfm_username: null,
+  patron_emoji: null,
+  profile_data: null,
+};
+
 class SushiiDB extends Kysely<DB> {
   async getGuildConfig(
     guildId: string
@@ -82,6 +94,40 @@ class SushiiDB extends Kysely<DB> {
       .executeTakeFirstOrThrow();
 
     return parseInt(lastCaseId.last_case_id, 10) + 1;
+  }
+
+  async getUser(userId: string): Promise<AllSelection<DB, "app_public.users">> {
+    const user = await this.selectFrom("app_public.users")
+      .selectAll()
+      .where("id", "=", userId)
+      .executeTakeFirst();
+
+    if (user) {
+      return user;
+    }
+
+    return {
+      ...defaultUser,
+      id: userId,
+    };
+  }
+
+  async updateUser(
+    patch: AllSelection<DB, "app_public.users">
+  ): Promise<AllSelection<DB, "app_public.users">> {
+    return this.insertInto("app_public.users")
+      .values({
+        ...patch,
+        profile_data: sql`${JSON.stringify(patch.profile_data)}`,
+      })
+      .returningAll()
+      .onConflict((oc) =>
+        oc.column("id").doUpdateSet({
+          ...patch,
+          profile_data: sql`${JSON.stringify(patch.profile_data)}`,
+        })
+      )
+      .executeTakeFirstOrThrow();
   }
 }
 

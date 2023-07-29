@@ -7,7 +7,6 @@ import {
   ButtonBuilder,
   ButtonStyle,
   ComponentType,
-  MessageFlags,
   ChannelType,
 } from "discord.js";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
@@ -545,23 +544,10 @@ export default class SettingsCommand extends SlashCommandHandler {
       const newEmbed = getGuildConfigEmbed(ctx, newConfig);
       const newComponents = getSettingsComponents(newConfig);
 
-      await msg.edit({
+      await i.editReply({
         embeds: [newEmbed],
         components: newComponents,
       });
-
-      const actionStr = newState === "enable" ? "Enabled" : "Disabled";
-
-      const buttonPressConfirmMessage = await i.reply({
-        content: `${actionStr} now!`,
-        flags: MessageFlags.Ephemeral,
-      });
-
-      // Delete this button response after 2.5 seconds -- only if there isn't another button press
-      setTimeout(() => {
-        // Discard error
-        buttonPressConfirmMessage?.delete().catch(() => {});
-      }, 2000);
     });
 
     collector.on("end", async (collected) => {
@@ -808,21 +794,11 @@ export default class SettingsCommand extends SlashCommandHandler {
         config.lookup_details_opt_in
       );
 
-      await msg.edit({
+      // Edit original message
+      await i.editReply({
         embeds: [newEmbed],
         components: newComponents,
       });
-
-      const buttonPressConfirmMessage = await i.reply({
-        content: newOptedInState ? "Opted in now!" : "Opted out now!",
-        flags: MessageFlags.Ephemeral,
-      });
-
-      // Delete this button response after 2.5 seconds
-      setTimeout(() => {
-        // Discard error
-        buttonPressConfirmMessage?.delete().catch(() => {});
-      }, 2500);
     });
 
     collector.on("end", async (collected) => {

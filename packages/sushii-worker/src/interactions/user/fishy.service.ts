@@ -1,7 +1,10 @@
 import dayjs from "dayjs";
 import { User } from "discord.js";
+import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import Context from "../../model/context";
 import logger from "../../logger";
+import db from "../../model/db";
+import { DB } from "../../model/dbTypes";
 
 /**
  * Get inclusive random number between min and max
@@ -232,19 +235,19 @@ export async function fishyForUser(
   invoker: User,
   target: User
 ): Promise<FishyResponse | dayjs.Dayjs> {
-  const dbTargetUser = await ctx.sushiiAPI.getOrCreateUser(target.id);
+  const dbTargetUser = await db.getUser(target.id);
 
-  let dbInvokerUser = null;
+  let dbInvokerUser: AllSelection<DB, "app_public.users"> | null = null;
   if (invoker.id !== target.id) {
-    dbInvokerUser = await ctx.sushiiAPI.getOrCreateUser(invoker.id);
+    dbInvokerUser = await db.getUser(invoker.id);
   }
 
   // Invoker same as target
-  let lastFishies = dayjs.utc(dbTargetUser.lastFishies);
+  let lastFishies = dayjs.utc(dbTargetUser.last_fishies);
 
   // If invoker different target
   if (dbInvokerUser) {
-    lastFishies = dayjs.utc(dbInvokerUser.lastFishies);
+    lastFishies = dayjs.utc(dbInvokerUser.last_fishies);
   }
 
   const nextFishies = lastFishies.add(dayjs.duration({ hours: 12 }));
@@ -274,25 +277,20 @@ export async function fishyForUser(
   // Update lastFishy timestamp for invoker
   if (dbInvokerUser) {
     // If invoker different from target, update invoker
-    dbInvokerUser.lastFishies = dayjs().utc().toISOString();
+    dbInvokerUser.last_fishies = dayjs().utc().toDate();
     // Update invoker
-    await ctx.sushiiAPI.sdk.updateUser({
-      id: dbInvokerUser.id,
-      userPatch: dbInvokerUser,
-    });
+
+    await db.updateUser(dbInvokerUser);
   } else {
     // Invoker is target, update target
-    dbTargetUser.lastFishies = dayjs().utc().toISOString();
+    dbTargetUser.last_fishies = dayjs().utc().toDate();
   }
 
   logger.debug(dbTargetUser, "target after");
   logger.debug(dbInvokerUser, "invoker after");
 
   // Update target
-  await ctx.sushiiAPI.sdk.updateUser({
-    id: target.id,
-    userPatch: dbTargetUser,
-  });
+  await db.updateUser(dbTargetUser);
 
   return {
     caughtAmount: caughtNum,

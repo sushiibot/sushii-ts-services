@@ -31,8 +31,12 @@ export default class UserinfoHandler extends SlashCommandHandler {
     }
 
     let member;
-    if (interaction.inCachedGuild()) {
-      member = await interaction.guild.members.fetch(target.id);
+    try {
+      if (interaction.inCachedGuild()) {
+        member = await interaction.guild.members.fetch(target.id);
+      }
+    } catch (err) {
+      // Ignore
     }
 
     if (!target) {
