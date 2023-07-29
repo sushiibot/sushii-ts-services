@@ -277,12 +277,17 @@ export default class Paginator {
       });
     });
 
-    collector.on("end", async () => {
-      // Disable all buttons
-      components = await this.getComponents(true);
+    // Wait until the collector ends
+    await new Promise<void>((resolve) => {
+      collector.on("end", async () => {
+        // Disable all buttons
+        components = await this.getComponents(true);
 
-      await message.edit({
-        components,
+        await message.edit({
+          components,
+        });
+
+        resolve();
       });
     });
   }
