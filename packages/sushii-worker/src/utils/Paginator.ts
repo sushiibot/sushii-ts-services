@@ -198,7 +198,17 @@ export default class Paginator {
     let embed = await this.getEmbed();
     let totalPages = await this.getTotalPages(false);
 
+    logger.debug(
+      {
+        embed,
+        totalPages,
+      },
+      "starting pagination"
+    );
+
     if (this.hideButtonsIfSinglePage && totalPages <= 0) {
+      logger.debug("no pages, so no buttons");
+
       // No pages, and no buttons
       await this.interaction.reply({
         embeds: [embed],
@@ -215,6 +225,7 @@ export default class Paginator {
     });
 
     if (totalPages < 1) {
+      logger.debug({ totalPages }, "no need to listen for button presses");
       // No pages, no need to listen for button presses
       return;
     }
@@ -271,6 +282,14 @@ export default class Paginator {
       embed = await this.getEmbed();
       components = await this.getComponents(false);
 
+      logger.debug(
+        {
+          embed,
+          components,
+        },
+        "Updating message with new page"
+      );
+
       await i.update({
         embeds: [embed],
         components,
@@ -280,6 +299,8 @@ export default class Paginator {
     // Wait until the collector ends
     await new Promise<void>((resolve) => {
       collector.on("end", async () => {
+        logger.debug("Collector ended, disabling buttons");
+
         // Disable all buttons
         components = await this.getComponents(true);
 

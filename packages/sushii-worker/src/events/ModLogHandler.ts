@@ -208,7 +208,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   // Not necessary to check if the target is a member, since you cannot
   // timeout a non-member.
   const shouldDMReason =
-    !matchingCase &&
+    matchingCase === undefined &&
     (ActionType.Timeout === actionType ||
       ActionType.TimeoutRemove === actionType);
 
@@ -272,14 +272,18 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
     })
     .execute();
 
-  if (
-    shouldDMReason &&
-    (timeoutChange?.actionType === ActionType.Timeout ||
-      timeoutChange?.actionType === ActionType.TimeoutRemove)
-  ) {
+  if (shouldDMReason && timeoutChange) {
     // DM the user the reason if it is a timeout
     // Ignore cases where timeout is adjusted, since that can only done through a bot command.
     // Users can only add or remove timeouts.
+
+    logger.info(
+      {
+        actionType,
+        timeoutChange,
+      },
+      "Sending timeout DM to user"
+    );
 
     const dmEmbed = await buildDMEmbed(
       ctx,
@@ -291,10 +295,40 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
     );
 
     if (event.target instanceof User) {
-      await event.target.send({
-        embeds: [dmEmbed.toJSON()],
-      });
+      try {
+        await event.target.send({
+          embeds: [dmEmbed],
+        });
+      } catch (err) {
+        logger.warn(
+          {
+            actionType,
+            timeoutChange,
+            eventTarget: event.target,
+            err,
+          },
+          "Failed to send timeout DM to user"
+        );
+      }
+    } else {
+      logger.warn(
+        {
+          actionType,
+          timeoutChange,
+          eventTarget: event.target,
+        },
+        "Target is not a user"
+      );
     }
+  } else {
+    logger.debug(
+      {
+        actionType,
+        shouldDMReason,
+        timeoutChange,
+      },
+      "Not sending timeout DM to user"
+    );
   }
 };
 
