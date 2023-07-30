@@ -7,11 +7,8 @@ import {
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import {
-  isNoValuesDeletedError,
-  isUniqueViolation,
-} from "../../utils/graphqlError";
 import { SlashCommandHandler } from "../handlers";
+import db from "../../model/db";
 
 export default class NotificationCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -77,21 +74,19 @@ export default class NotificationCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const keyword = interaction.options.getString("keyword", true);
+    const keywordRaw = interaction.options.getString("keyword", true);
 
-    try {
-      await ctx.sushiiAPI.sdk.createNotification({
-        notification: {
-          guildId: interaction.guildId,
-          userId: interaction.user.id,
-          keyword,
-        },
-      });
-    } catch (err) {
-      if (!isUniqueViolation(err)) {
-        throw err;
-      }
+    const keyword = keywordRaw.toLowerCase().trim();
 
+    const exists = await db
+      .selectFrom("app_public.notifications")
+      .selectAll()
+      .where("guild_id", "=", interaction.guildId)
+      .where("user_id", "=", interaction.user.id)
+      .where("keyword", "=", keyword)
+      .executeTakeFirst();
+
+    if (exists) {
       await interaction.reply({
         content: t("notification.add.error.duplicate", {
           ns: "commands",
@@ -102,6 +97,15 @@ export default class NotificationCommand extends SlashCommandHandler {
 
       return;
     }
+
+    await db
+      .insertInto("app_public.notifications")
+      .values({
+        guild_id: interaction.guildId,
+        user_id: interaction.user.id,
+        keyword,
+      })
+      .execute();
 
     const embed = new EmbedBuilder()
       .setTitle("Added notification.")
@@ -118,14 +122,14 @@ export default class NotificationCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const notifications = await ctx.sushiiAPI.sdk.getUserNotifications({
-      guildId: interaction.guildId,
-      userId: interaction.user.id,
-    });
+    const notifications = await db
+      .selectFrom("app_public.notifications")
+      .selectAll()
+      .where("guild_id", "=", interaction.guildId)
+      .where("user_id", "=", interaction.user.id)
+      .execute();
 
-    const keywords = notifications.allNotifications?.nodes.map(
-      (n) => n.keyword
-    );
+    const keywords = notifications.map((n) => n.keyword);
 
     if (!keywords || keywords.length === 0) {
       await interaction.reply({
@@ -155,18 +159,14 @@ export default class NotificationCommand extends SlashCommandHandler {
   ): Promise<void> {
     const keyword = interaction.options.getString("keyword", true);
 
-    try {
-      await ctx.sushiiAPI.sdk.deleteNotification({
-        guildId: interaction.guildId,
-        userId: interaction.user.id,
-        keyword,
-      });
-    } catch (err) {
-      if (!isNoValuesDeletedError(err)) {
-        throw err;
-      }
+    const deleted = await db
+      .deleteFrom("app_public.notifications")
+      .where("guild_id", "=", interaction.guildId)
+      .where("user_id", "=", interaction.user.id)
+      .where("keyword", "=", keyword)
+      .executeTakeFirst();
 
-      // Returns correct error
+    if (deleted.numDeletedRows === BigInt(0)) {
       await interaction.reply({
         content: t("notification.delete.not_found", {
           ns: "commands",
