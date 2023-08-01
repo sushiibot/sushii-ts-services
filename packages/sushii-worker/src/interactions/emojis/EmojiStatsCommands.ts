@@ -46,7 +46,7 @@ enum AssetTypeOption {
 
 type EmojiStat = {
   asset_id: string;
-  total_count?: string;
+  total_count?: string | number | bigint;
   name: string;
   type: AppPublicGuildAssetType;
 };
@@ -78,16 +78,20 @@ async function getAllStats(
     // Includes where clause for the count in order to exclude 0 counts
     // This uses $if since we need it for the total_count alias to work later
     .$if(server === ServerOption.Internal, (q) =>
-      q.select("count as total_count").where("count", ">", "0")
+      q
+        .select((eb) => eb.fn.sum("count").as("total_count"))
+        .where("count", ">", "0")
     )
     .$if(server === ServerOption.External, (q) =>
       q
-        .select("count_external as total_count")
+        .select((eb) => eb.fn.sum("count_external").as("total_count"))
         .where("count_external", ">", "0")
     )
     .$if(server === ServerOption.Sum, (q) =>
       q.select((eb) =>
-        eb.bxp("count", "+", eb.ref("count_external")).as("total_count")
+        eb.fn
+          .sum(eb.bxp("count", "+", eb.ref("count_external")))
+          .as("total_count")
       )
     )
     // Limit by emojis from this guild, specifying the emoji/sticker table, not metrics.
@@ -96,7 +100,8 @@ async function getAllStats(
       "app_public.guild_emojis_and_stickers.guild_id",
       "=",
       interaction.guildId
-    );
+    )
+    .groupBy(["asset_id", "type", "name"]);
 
   switch (assetType) {
     case AssetTypeOption.EmojiOnly: {
@@ -296,6 +301,16 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
 
     const assetType = (interaction.options.getString(CommandOption.Type) ||
       AssetTypeOption.EmojiOnly) as AssetTypeOption;
+
+    logger.debug(
+      {
+        order,
+        group,
+        server,
+        assetType,
+      },
+      "emojistats options"
+    );
 
     if (assetType === AssetTypeOption.EmojiOnly && guildEmojis.size === 0) {
       const embed = new EmbedBuilder()

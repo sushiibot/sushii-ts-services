@@ -36,7 +36,7 @@
     "graphql-ws": "^5.11.2",
     "i18next": "^21.6.13",
     "i18next-fs-backend": "^1.1.4",
-    "kysely": "^0.24.2",
+    "kysely": "^0.26.0",
     "kysely-codegen": "^0.10.0",
     "node-fetch": "2.6.7",
     "parse-duration": "^1.0.2",

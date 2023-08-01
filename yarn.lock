@@ -3232,7 +3232,7 @@ __metadata:
     i18next: ^21.6.13
     i18next-fs-backend: ^1.1.4
     jest: ^27.5.1
-    kysely: ^0.24.2
+    kysely: ^0.26.0
     kysely-codegen: ^0.10.0
     node-fetch: 2.6.7
     parse-duration: ^1.0.2
@@ -8525,10 +8525,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kysely@npm:^0.24.2":
-  version: 0.24.2
-  resolution: "kysely@npm:0.24.2"
-  checksum: b45a820c098f60440d6d601aae227cdbb58503a94a71dda928095b0f2cf7205a0b173a0940a36c89b4ff99c95174f223c0ff018c3845c1575fa779a6e297ca93
+"kysely@npm:^0.26.0":
+  version: 0.26.1
+  resolution: "kysely@npm:0.26.1"
+  checksum: 4803313e58dd3a572de6bba88fdf8e0b7ed27ec180948104818ab4dca509ef6aa9f740383656ebc72b94d5605340219e1733c8939f29475a17e7d6050b247d78
   languageName: node
   linkType: hard
 

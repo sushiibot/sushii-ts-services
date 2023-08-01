@@ -282,14 +282,6 @@ export default class Paginator {
       embed = await this.getEmbed();
       components = await this.getComponents(false);
 
-      logger.debug(
-        {
-          embed,
-          components,
-        },
-        "Updating message with new page"
-      );
-
       await i.update({
         embeds: [embed],
         components,
