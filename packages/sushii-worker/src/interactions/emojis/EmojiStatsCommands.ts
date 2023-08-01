@@ -168,6 +168,45 @@ async function getAllStats(
     "getStatsPage"
   );
 
+  const valueIDSet = new Set(values.map((v) => v.asset_id));
+
+  // Add emojis that have no stats (not used yet, but useful if querying by least to most used)
+  if (
+    assetType === AssetTypeOption.Both ||
+    assetType === AssetTypeOption.EmojiOnly
+  ) {
+    const zeroUseEmojis = guildEmojis
+      .filter((e) => !valueIDSet.has(e.id))
+      .map(
+        (e): EmojiStat => ({
+          asset_id: e.id,
+          name: e.name || "Unknown",
+          total_count: "0",
+          type: "emoji",
+        })
+      );
+
+    values.push(...zeroUseEmojis);
+  }
+
+  if (
+    assetType === AssetTypeOption.Both ||
+    assetType === AssetTypeOption.StickerOnly
+  ) {
+    const zeroUseStickers = guildStickers
+      .filter((e) => !valueIDSet.has(e.id))
+      .map(
+        (e): EmojiStat => ({
+          asset_id: e.id,
+          name: e.name,
+          total_count: "0",
+          type: "sticker",
+        })
+      );
+
+    values.push(...zeroUseStickers);
+  }
+
   const formatStat = (v: EmojiStat): string => {
     const totalCount = v.total_count || "0";
 
@@ -200,7 +239,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
       o
         .setName(CommandOption.Group)
         .setDescription(
-          "Do you want to see a sum of emojis used in messages and reactions, or separately?"
+          "Sum of both emojis in messages and reactions, or separately? (default: sum)"
         )
         .addChoices(
           {
@@ -220,9 +259,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
     .addStringOption((o) =>
       o
         .setName(CommandOption.Type)
-        .setDescription(
-          "Do you want to see Emojis or Stickers? (default: Emojis)"
-        )
+        .setDescription("Emojis or Stickers? (default: Emojis Only)")
         .addChoices(
           {
             name: "Emojis Only: Show emojis only",
@@ -241,9 +278,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
     .addStringOption((o) =>
       o
         .setName(CommandOption.Order)
-        .setDescription(
-          "What order do you want to see the stats in? (default: Most used first)"
-        )
+        .setDescription("Order for stats? (default: Most used first)")
         .addChoices(
           {
             name: "High to low: Most used first",
@@ -259,7 +294,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
       o
         .setName(CommandOption.Server)
         .setDescription(
-          "Show emoji use in this server or others? (default: Only this server)"
+          "Emoji used in this server or others? (default: Only this server)"
         )
         .addChoices(
           {
