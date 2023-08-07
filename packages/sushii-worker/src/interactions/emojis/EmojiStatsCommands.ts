@@ -19,6 +19,7 @@ enum CommandOption {
   Group = "group",
   Order = "order",
   Server = "server",
+  EmojiType = "emoji_type",
 }
 
 enum GroupOption {
@@ -44,6 +45,12 @@ enum AssetTypeOption {
   Both = "both",
 }
 
+enum EmojiTypeOption {
+  AnimatedOnly = "animated",
+  StaticOnly = "static",
+  Both = "both",
+}
+
 type EmojiStat = {
   asset_id: string;
   total_count?: string | number | bigint;
@@ -56,13 +63,14 @@ type RequestOptions = {
   order: OrderOption;
   server: ServerOption;
   assetType: AssetTypeOption;
+  emojiType: EmojiTypeOption;
 };
 
 async function getAllStats(
   interaction: ChatInputCommandInteraction,
   guildEmojis: Collection<string, GuildEmoji>,
   guildStickers: Collection<string, Sticker>,
-  { group, order, server, assetType }: RequestOptions
+  { group, order, server, assetType, emojiType }: RequestOptions
 ): Promise<string[]> {
   let query = db
     .selectFrom("app_public.emoji_sticker_stats")
@@ -89,9 +97,7 @@ async function getAllStats(
     )
     .$if(server === ServerOption.Sum, (q) =>
       q.select((eb) =>
-        eb.fn
-          .sum(eb.bxp("count", "+", eb.ref("count_external")))
-          .as("total_count")
+        eb.fn.sum(eb("count", "+", eb.ref("count_external"))).as("total_count")
       )
     )
     // Limit by emojis from this guild, specifying the emoji/sticker table, not metrics.
@@ -155,7 +161,7 @@ async function getAllStats(
     }
   }
 
-  const values = await query
+  let values = await query
     // Secondary sort so it's consistent
     .orderBy("asset_id")
     // Exclude 0 counts, e.g. used internal but not external
@@ -207,24 +213,91 @@ async function getAllStats(
     values.push(...zeroUseStickers);
   }
 
+  if (
+    assetType === AssetTypeOption.EmojiOnly ||
+    assetType === AssetTypeOption.Both
+  ) {
+    values = values.filter((v) => {
+      if (v.type !== "emoji") {
+        return true;
+      }
+
+      const emoji = guildEmojis.get(v.asset_id);
+      if (!emoji) {
+        return true;
+      }
+
+      // Filter by desired emoji type
+      switch (emojiType) {
+        case EmojiTypeOption.AnimatedOnly: {
+          return emoji.animated;
+        }
+        case EmojiTypeOption.StaticOnly: {
+          return !emoji.animated;
+        }
+        case EmojiTypeOption.Both: {
+          return true;
+        }
+      }
+    });
+  }
+
+  let maxCount: string | undefined;
+  if (order === OrderOption.HighToLow) {
+    maxCount = values.at(0)?.total_count?.toString();
+  } else {
+    maxCount = values.at(values.length - 1)?.total_count?.toString();
+  }
+
+  const maxCountLength = maxCount?.length || 0;
+
   const formatStat = (v: EmojiStat): string => {
-    const totalCount = v.total_count || "0";
+    const totalCount = v.total_count?.toString() || "0";
+    const totalCountPadded = totalCount.padStart(maxCountLength);
 
     if (v.type === "emoji") {
       const emoji = guildEmojis.get(v.asset_id);
       if (!emoji) {
-        return `\`${v.name}\` (ID \`${v.asset_id}\`) not found - \`${totalCount}\``;
+        let s = "";
+        s += `\`${totalCountPadded}\``;
+        s += " - ";
+        s += v.name;
+        s += " - ";
+        s += `(ID \`${v.asset_id}\`) not found`;
+
+        return s;
       }
 
-      return `${emoji} - \`${totalCount}\``;
+      let s = "";
+      s += `\`${totalCountPadded}\``;
+      s += " - ";
+      s += `${emoji}`;
+      s += " - ";
+      s += `\`${v.name}\``;
+
+      return s;
     }
 
     const sticker = guildStickers.get(v.asset_id);
     if (!sticker) {
-      return `\`${v.name}\` (ID \`${v.asset_id}\`) not found - \`${totalCount}\``;
+      let s = "";
+      s += `\`${totalCountPadded}\``;
+      s += " - ";
+      s += v.name;
+      s += " - ";
+      s += `(ID \`${v.asset_id}\`) not found`;
+
+      return s;
     }
 
-    return `${sticker.name} - \`${totalCount}\` (sticker)`;
+    let s = "";
+    s += `\`${totalCountPadded}\``;
+    s += " - ";
+    s += `${sticker.name}`;
+    s += " - ";
+    s += `\`${sticker.name}\``;
+
+    return s;
   };
 
   return values.map(formatStat);
@@ -266,12 +339,31 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
             value: AssetTypeOption.EmojiOnly,
           },
           {
-            name: "Stickers only: Show stickers only",
+            name: "Stickers Only: Show stickers only",
             value: AssetTypeOption.StickerOnly,
           },
           {
             name: "Both: Show both emojis and stickers",
             value: AssetTypeOption.Both,
+          }
+        )
+    )
+    .addStringOption((o) =>
+      o
+        .setName(CommandOption.EmojiType)
+        .setDescription("Animated or static emojis? (default: Both)")
+        .addChoices(
+          {
+            name: "Static Only: Show static only",
+            value: EmojiTypeOption.StaticOnly,
+          },
+          {
+            name: "Animated Only: Show animated only",
+            value: EmojiTypeOption.AnimatedOnly,
+          },
+          {
+            name: "Both: Show both static and animated",
+            value: EmojiTypeOption.Both,
           }
         )
     )
@@ -337,6 +429,9 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
     const assetType = (interaction.options.getString(CommandOption.Type) ||
       AssetTypeOption.EmojiOnly) as AssetTypeOption;
 
+    const emojiType = (interaction.options.getString(CommandOption.EmojiType) ||
+      EmojiTypeOption.Both) as EmojiTypeOption;
+
     logger.debug(
       {
         order,
@@ -401,6 +496,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
         order,
         server,
         assetType,
+        emojiType,
       }
     );
 
@@ -426,13 +522,33 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
       let assetTypeText;
       switch (assetType) {
         case AssetTypeOption.EmojiOnly:
-          assetTypeText = "Emoji Stats";
+          switch (emojiType) {
+            case EmojiTypeOption.AnimatedOnly:
+              assetTypeText = "Animated Emoji Stats";
+              break;
+            case EmojiTypeOption.StaticOnly:
+              assetTypeText = "Static Emoji Stats";
+              break;
+            case EmojiTypeOption.Both:
+              assetTypeText = "Emoji Stats";
+          }
+
           break;
         case AssetTypeOption.StickerOnly:
           assetTypeText = "Sticker Stats";
           break;
         case AssetTypeOption.Both:
-          assetTypeText = "Emoji and Sticker Stats";
+          switch (emojiType) {
+            case EmojiTypeOption.AnimatedOnly:
+              assetTypeText = "Animated Emoji and Sticker Stats";
+              break;
+            case EmojiTypeOption.StaticOnly:
+              assetTypeText = "Static Emoji and Sticker Stats";
+              break;
+            case EmojiTypeOption.Both:
+              assetTypeText = "Emoji and Sticker Stats";
+          }
+
           break;
       }
 
