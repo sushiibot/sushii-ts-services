@@ -47,7 +47,7 @@ const defaultUser: AllSelection<DB, "app_public.users"> = {
   last_rep: null,
   lastfm_username: null,
   patron_emoji: null,
-  profile_data: null,
+  profile_data: {},
 };
 
 class SushiiDB extends Kysely<DB> {
