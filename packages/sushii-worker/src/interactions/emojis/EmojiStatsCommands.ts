@@ -192,7 +192,13 @@ async function getAllStats(
         })
       );
 
-    values.push(...zeroUseEmojis);
+    if (order === OrderOption.HighToLow) {
+      // Add to end
+      values.push(...zeroUseEmojis);
+    } else {
+      // Add to beginning
+      values.unshift(...zeroUseEmojis);
+    }
   }
 
   if (
@@ -210,7 +216,13 @@ async function getAllStats(
         })
       );
 
-    values.push(...zeroUseStickers);
+    if (order === OrderOption.HighToLow) {
+      // Add to end
+      values.push(...zeroUseStickers);
+    } else {
+      // Add to beginning
+      values.unshift(...zeroUseStickers);
+    }
   }
 
   if (
@@ -260,7 +272,7 @@ async function getAllStats(
       if (!emoji) {
         let s = "";
         s += `\`${totalCountPadded}\``;
-        s += " - ";
+        s += " ";
         s += v.name;
         s += " - ";
         s += `(ID \`${v.asset_id}\`) not found`;
@@ -282,7 +294,7 @@ async function getAllStats(
     if (!sticker) {
       let s = "";
       s += `\`${totalCountPadded}\``;
-      s += " - ";
+      s += " ";
       s += v.name;
       s += " - ";
       s += `(ID \`${v.asset_id}\`) not found`;
@@ -292,7 +304,7 @@ async function getAllStats(
 
     let s = "";
     s += `\`${totalCountPadded}\``;
-    s += " - ";
+    s += " ";
     s += `${sticker.name}`;
     s += " - ";
     s += `\`${sticker.name}\``;
