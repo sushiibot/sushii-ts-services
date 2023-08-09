@@ -294,30 +294,22 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
       timeoutChange.new || null
     );
 
-    if (event.target instanceof User) {
-      try {
-        await event.target.send({
-          embeds: [dmEmbed],
-        });
-      } catch (err) {
-        logger.warn(
-          {
-            actionType,
-            timeoutChange,
-            eventTarget: event.target,
-            err,
-          },
-          "Failed to send timeout DM to user"
-        );
-      }
-    } else {
+    // event.target is null, only event.targetId exists
+    const targetUser = await guild.client.users.fetch(event.targetId);
+
+    try {
+      await targetUser.send({
+        embeds: [dmEmbed],
+      });
+    } catch (err) {
       logger.warn(
         {
           actionType,
           timeoutChange,
           eventTarget: event.target,
+          err,
         },
-        "Target is not a user"
+        "Failed to send timeout DM to user"
       );
     }
   } else {
