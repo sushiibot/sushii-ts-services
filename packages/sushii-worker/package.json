@@ -22,7 +22,7 @@
     "@sapphire/shapeshift": "^3.6.0",
     "@sapphire/snowflake": "^3.2.0",
     "@sentry/node": "^7.59.3",
-    "@sentry/tracing": "^7.7.0",
+    "@sentry/tracing": "^7.63.0",
     "@types/express": "^4.17.13",
     "cron": "^2.3.1",
     "dayjs": "^1.10.7",
