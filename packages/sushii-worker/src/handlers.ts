@@ -6,6 +6,7 @@ import {
   GatewayDispatchPayload,
 } from "discord.js";
 import * as Sentry from "@sentry/node";
+import opentelemetry, { Span } from "@opentelemetry/api";
 import logger from "./logger";
 import InteractionClient from "./client";
 import { EventHandlerFn } from "./events/EventHandler";
@@ -28,6 +29,8 @@ import {
   emojiStatsReactHandler,
   emojiAndStickerStatsReadyHandler,
 } from "./events/EmojiStatsHandler";
+
+const tracer = opentelemetry.trace.getTracer("event-handler");
 
 async function handleEvent<K extends keyof ClientEvents>(
   ctx: Context,
@@ -91,12 +94,16 @@ export default function registerEventHandlers(
 
     await webhookLog("Ready", `Logged in as ${c.user.tag}`, Color.Success);
 
-    await handleEvent(
-      ctx,
-      Events.ClientReady,
-      [banReadyHandler, emojiAndStickerStatsReadyHandler],
-      client
-    );
+    await tracer.startActiveSpan(Events.ClientReady, async (span: Span) => {
+      await handleEvent(
+        ctx,
+        Events.ClientReady,
+        [banReadyHandler, emojiAndStickerStatsReadyHandler],
+        client
+      );
+
+      span.end();
+    });
   });
 
   client.on(Events.Debug, async (msg) => {
@@ -195,84 +202,62 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.InteractionCreate, async (interaction) => {
-    try {
-      await interactionHandler.handleAPIInteraction(interaction);
+    await tracer.startActiveSpan(
+      Events.InteractionCreate,
+      async (span: Span) => {
+        await interactionHandler.handleAPIInteraction(interaction);
+        await updateStat(StatName.CommandCount, 1, "add");
 
-      await updateStat(StatName.CommandCount, 1, "add");
-    } catch (err) {
-      logger.error(
-        {
-          err,
-          interaction,
-        },
-        "Error handling interaction"
-      );
-    }
+        span.end();
+      }
+    );
   });
 
   client.on(Events.GuildAuditLogEntryCreate, async (entry, guild) => {
-    try {
-      await handleEvent(
-        ctx,
-        Events.GuildAuditLogEntryCreate,
-        [modLogHandler],
-        entry,
-        guild
-      );
-    } catch (err) {
-      logger.error(
-        {
-          err,
-          entryId: entry.id,
-          guildId: guild.id,
-        },
-        "error handling guild audit log entry create, this should be caught"
-      );
-    }
+    await tracer.startActiveSpan(
+      Events.GuildAuditLogEntryCreate,
+      async (span: Span) => {
+        await handleEvent(
+          ctx,
+          Events.GuildAuditLogEntryCreate,
+          [modLogHandler],
+          entry,
+          guild
+        );
+
+        span.end();
+      }
+    );
   });
 
   client.on(Events.GuildBanAdd, async (guildBan) => {
-    try {
+    await tracer.startActiveSpan(Events.GuildBanAdd, async (span: Span) => {
       await handleEvent(
         ctx,
         Events.GuildBanAdd,
         [legacyModLogNotifierHandler, banCacheBanHandler],
         guildBan
       );
-    } catch (err) {
-      logger.error(
-        {
-          err,
-          guildId: guildBan.guild.id,
-        },
-        "error handling guild ban add, this should be caught"
-      );
-    }
+
+      span.end();
+    });
   });
 
   client.on(Events.GuildBanRemove, async (guildBan) => {
-    try {
+    await tracer.startActiveSpan(Events.GuildBanRemove, async (span: Span) => {
       await handleEvent(
         ctx,
         Events.GuildBanRemove,
         [banCacheUnbanHandler],
         guildBan
       );
-    } catch (err) {
-      logger.error(
-        {
-          err,
-          guildId: guildBan.guild.id,
-        },
-        "error handling guild ban remove, this should be caught"
-      );
-    }
+
+      span.end();
+    });
   });
 
   client.on(Events.MessageCreate, async (msg) => {
-    try {
-      const startTime = process.hrtime.bigint();
-
+    await tracer.startActiveSpan(Events.MessageCreate, async (span: Span) => {
       await handleEvent(
         ctx,
         Events.MessageCreate,
@@ -280,44 +265,29 @@ export default function registerEventHandlers(
         msg
       );
 
-      const endTime = process.hrtime.bigint();
-      const durationMs = Number(endTime - startTime) / 1000000;
-
-      if (durationMs > 1000) {
-        logger.debug(
-          {
-            id: msg.id,
-            duration: `${Number(endTime - startTime) / 1000000} ms`,
-          },
-          "slow msg handler"
-        );
-      }
-    } catch (err) {
-      logger.error(err, "error handling message create, this should be caught");
-    }
+      span.end();
+    });
   });
 
   client.on(Events.MessageReactionAdd, async (reaction, user) => {
-    try {
-      await handleEvent(
-        ctx,
-        Events.MessageReactionAdd,
-        [emojiStatsReactHandler],
-        reaction,
-        user
-      );
-    } catch (err) {
-      logger.error(
-        err,
-        "error handling message reaction add, this should be caught"
-      );
-    }
+    await tracer.startActiveSpan(
+      Events.MessageReactionAdd,
+      async (span: Span) => {
+        await handleEvent(
+          ctx,
+          Events.MessageReactionAdd,
+          [emojiStatsReactHandler],
+          reaction,
+          user
+        );
+
+        span.end();
+      }
+    );
   });
 
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
-    try {
-      const startTime = process.hrtime.bigint();
-
+    await tracer.startActiveSpan(Events.Raw, async (span: Span) => {
       if (event.t === GatewayDispatchEvents.MessageDelete) {
         await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
       }
@@ -338,22 +308,8 @@ export default function registerEventHandlers(
         await runParallel(event.t, [msgLogCacheHandler(ctx, event.t, event.d)]);
       }
 
-      const endTime = process.hrtime.bigint();
-      const durationMs = Number(endTime - startTime) / 1000000;
-
-      if (durationMs > 1000) {
-        logger.warn(
-          {
-            type: event.t,
-            seq: event.s,
-            duration: `${durationMs} ms`,
-          },
-          "slow raw event"
-        );
-      }
-    } catch (err) {
-      logger.error(err, "error handling raw event, this should be caught");
-    }
+      span.end();
+    });
   });
 
   logger.info("Registered Discord.js event handlers");

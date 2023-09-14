@@ -4,11 +4,14 @@ import Cursor from "pg-cursor";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import { UpdateExpression } from "kysely/dist/cjs/parser/update-set-parser";
+import opentelemetry, { Span } from "@opentelemetry/api";
 import logger from "../logger";
 import config from "./config";
 import { DB } from "./dbTypes";
 
 const dbLogger = logger.child({ module: "db" });
+
+const tracer = opentelemetry.trace.getTracer("db");
 
 const defaultGuildconfig: AllSelection<DB, "app_public.guild_configs"> = {
   id: "0",
@@ -54,19 +57,23 @@ class SushiiDB extends Kysely<DB> {
   async getGuildConfig(
     guildId: string
   ): Promise<AllSelection<DB, "app_public.guild_configs">> {
-    const conf = await this.selectFrom("app_public.guild_configs")
-      .selectAll()
-      .where("id", "=", guildId)
-      .executeTakeFirst();
+    return tracer.startActiveSpan("getGuildConfig", {}, async (span: Span) => {
+      const conf = await this.selectFrom("app_public.guild_configs")
+        .selectAll()
+        .where("id", "=", guildId)
+        .executeTakeFirst();
 
-    if (conf) {
-      return conf;
-    }
+      span.end();
 
-    return {
-      ...defaultGuildconfig,
-      id: guildId,
-    };
+      if (conf) {
+        return conf;
+      }
+
+      return {
+        ...defaultGuildconfig,
+        id: guildId,
+      };
+    });
   }
 
   async updateGuildConfig(
@@ -131,12 +138,19 @@ class SushiiDB extends Kysely<DB> {
   }
 }
 
+const pool = new Pool({
+  connectionString: config.DATABASE_URL,
+  max: 20,
+});
+
+pool.on("error", (err) => {
+  dbLogger.error(err, "pg pool error");
+});
+
 const db = new SushiiDB({
   // PostgresDialect requires the Cursor dependency
   dialect: new PostgresDialect({
-    pool: new Pool({
-      connectionString: config.DATABASE_URL,
-    }),
+    pool,
     cursor: Cursor,
   }),
 });
