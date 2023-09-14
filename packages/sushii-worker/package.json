@@ -15,7 +15,7 @@
     "@cloudamqp/amqp-client": "^2.1.0",
     "@godaddy/terminus": "^4.11.1",
     "@opentelemetry/api": "^1.4.1",
-    "@opentelemetry/auto-instrumentations-node": "^0.32.1",
+    "@opentelemetry/auto-instrumentations-node": "^0.39.2",
     "@opentelemetry/exporter-trace-otlp-http": "^0.33.0",
     "@opentelemetry/resources": "^1.7.0",
     "@opentelemetry/sdk-node": "^0.33.0",
