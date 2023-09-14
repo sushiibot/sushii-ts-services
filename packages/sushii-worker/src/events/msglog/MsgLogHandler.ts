@@ -1,4 +1,10 @@
-import { EmbedBuilder, GatewayDispatchEvents } from "discord.js";
+import {
+  AnyThreadChannel,
+  EmbedBuilder,
+  Events,
+  GatewayDispatchEvents,
+  User,
+} from "discord.js";
 import {
   APIMessage,
   GatewayMessageDeleteBulkDispatchData,
@@ -14,6 +20,7 @@ import buildChunks from "../../utils/buildChunks";
 import Color from "../../utils/colors";
 import logger from "../../logger";
 import db from "../../model/db";
+import { EventHandlerFn } from "../EventHandler";
 
 type EventData =
   | GatewayMessageDeleteDispatchData
@@ -160,8 +167,10 @@ function buildBulkDeleteEmbed(
   const description = `${SushiiEmoji.MessageDelete} **${deleteCount} messages deleted in <#${event.channel_id}>**`;
 
   const messagesStrs = messages.map((m) => {
+    let msgStr = `<@${m.author_id}>: `;
+
     if (m.content) {
-      return `<@${m.author_id}>: ${m.content}`;
+      msgStr += `${m.content}`;
     }
 
     const msg = m.msg as any as APIMessage;
@@ -171,11 +180,8 @@ function buildBulkDeleteEmbed(
       const stickerURL = ctx.CDN.sticker(sticker.id);
 
       // Can have both message and sticker
-      if (msg.content) {
-        return `<@${m.author_id}>: ${msg.content}\n> **Sticker:** [${sticker.name}](${stickerURL})`;
-      }
-
-      return `<@${m.author_id}>: [${sticker.name}](${stickerURL})`;
+      // Technically can have multiple stickers but users can only send 1
+      msgStr += `\n> **Sticker:** [${sticker.name}](${stickerURL})`;
     }
 
     if (msg.attachments && msg.attachments.length > 0) {
@@ -183,15 +189,16 @@ function buildBulkDeleteEmbed(
         .map((a) => `> [${a.filename}](${a.proxy_url})`)
         .join("\n");
 
-      if (msg.content) {
-        return `<@${m.author_id}>: ${msg.content}\n> **Attachments:**\n${attachments}`;
-      }
+      // TODO: Escape emojis
+      // We don't know which emojis sushii knows, don't want to rely on cache
+      // So we can just add additional details at the bottom embed.
+      // msg.content = msg.content.replace(EMOJI_RE, "`$&`");
 
       // Multiple attachments
-      return `<@${m.author_id}>: **Attachments:**\n${attachments}`;
+      msgStr += `\n> **Attachments:**\n${attachments}`;
     }
 
-    return `<@${m.author_id}>: ${m.content}`;
+    return msgStr;
   });
 
   // Split into chunks of 4096 characters
@@ -325,3 +332,34 @@ export async function msgLogHandler(
     });
   }
 }
+
+export const threadDeleteHandler: EventHandlerFn<Events.ThreadDelete> = async (
+  ctx: Context,
+  thread: AnyThreadChannel
+): Promise<void> => {
+  const guildConfig = await db.getGuildConfig(thread.guildId);
+
+  if (
+    !guildConfig.log_msg || // No msg log set
+    !guildConfig.log_msg_enabled // Msg log disabled
+  ) {
+    return;
+  }
+
+  // const threadOwner = await thread.fetchOwner();
+  const parentChannel = thread.parent;
+
+  if (!parentChannel) {
+    throw new Error("Thread has no parent channel");
+  }
+
+  // const embed = buildThreadDeleteEmbed(thread, threadOwner);
+
+  // const threadMessages = await db
+  //   .selectFrom("app_public.messages")
+  //   .selectAll()
+  //   .where("channel_id", "in", thread.id)
+  //   // Oldest message is first, newest is at the bottom most embed
+  //   .orderBy("created", "asc")
+  //   .execute();
+};
