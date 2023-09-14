@@ -10,7 +10,6 @@ import {
   Events,
   Guild,
   GuildAuditLogsEntry,
-  User,
 } from "discord.js";
 import dayjs from "dayjs";
 import logger from "../logger";
@@ -163,6 +162,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
     return;
   }
 
+  // event.target is null, only event.targetId exists
   const targetUser = await guild.client.users.fetch(event.targetId);
 
   let matchingCase = await db
@@ -293,9 +293,6 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
       reason || null, // reason
       timeoutChange.new || null
     );
-
-    // event.target is null, only event.targetId exists
-    const targetUser = await guild.client.users.fetch(event.targetId);
 
     try {
       await targetUser.send({

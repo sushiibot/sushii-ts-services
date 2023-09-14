@@ -42,7 +42,7 @@ export default async function buildModLogEmbed(
 
   fields.push({
     name: `User ${ActionType.toString(actionType)}`,
-    value: `<@${targetUser.id}> \`${targetUser.username}#${targetUser.discriminator}\` | \`${targetUser.id}\``,
+    value: `<@${targetUser.id}> ${targetUser.displayName} (\`@${targetUser.tag}}\`) | \`${targetUser.id}\``,
     inline: false,
   });
 
