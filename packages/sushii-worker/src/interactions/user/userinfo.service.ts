@@ -8,9 +8,9 @@ export default async function getUserinfoEmbed(
   user: User,
   member: GuildMember | undefined
 ): Promise<APIEmbed> {
-  let authorName = user.username;
+  let authorName = `${user.displayName} (@${user.username})`;
   if (member?.nickname) {
-    authorName = `${user.username} ~ ${member.nickname}`;
+    authorName = `${user.displayName} (@${user.username}) ~ ${member.nickname}`;
   }
 
   const faceURL = member?.displayAvatarURL() || user.displayAvatarURL();
