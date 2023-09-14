@@ -250,6 +250,9 @@ async function getAllStats(
         case EmojiTypeOption.Both: {
           return true;
         }
+        default: {
+          throw new Error(`Invalid emoji type ${emojiType}`);
+        }
       }
     });
   }
