@@ -24,6 +24,7 @@ services:
             - SENTRY_DSN=$SENTRY_DSN
             - TWILIGHT_PROXY_URL=http://twilight-http-proxy:80/api
             - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
+            - TRACING_EXPORTER_URL=http://host.docker.internal:4318/v1/traces
             # Notifications
             - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
             - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
