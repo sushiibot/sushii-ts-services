@@ -504,59 +504,67 @@ export default class SettingsCommand extends SlashCommandHandler {
     });
 
     collector.on("collect", async (i) => {
-      if (i.user.id !== interaction.user.id) {
-        const replied = await i.reply({
-          content: "These buttons aren't for you! 😡",
-          ephemeral: true,
+      try {
+        if (i.user.id !== interaction.user.id) {
+          const replied = await i.reply({
+            content: "These buttons aren't for you! 😡",
+            ephemeral: true,
+          });
+
+          setTimeout(() => {
+            // Discard error
+            replied.delete().catch(() => {});
+          }, 2500);
+
+          return;
+        }
+
+        const match = customIds.settingsToggleButton.match(i.customId);
+        if (!match) {
+          throw new Error("Invalid custom ID.");
+        }
+
+        const { field, newState } = match.params;
+
+        if (!field || !newState) {
+          throw new Error(`Invalid custom ID: ${i.customId}`);
+        }
+
+        const newConfig = await db
+          .updateTable("app_public.guild_configs")
+          .where("app_public.guild_configs.id", "=", interaction.guildId)
+          .set({
+            // Assumes field is correct, only enforced by typescript, convert string to boolean
+            [field]: newState === "enable",
+          })
+          .returningAll()
+          .executeTakeFirstOrThrow();
+
+        logger.debug(newConfig, "compiled query");
+
+        const newEmbed = getGuildConfigEmbed(ctx, newConfig);
+        const newComponents = getSettingsComponents(newConfig);
+
+        await i.update({
+          embeds: [newEmbed],
+          components: newComponents,
         });
-
-        setTimeout(() => {
-          // Discard error
-          replied.delete().catch(() => {});
-        }, 2500);
-
-        return;
+      } catch (err) {
+        logger.error(err, "Failed to update settings collector.");
       }
-
-      const match = customIds.settingsToggleButton.match(i.customId);
-      if (!match) {
-        throw new Error("Invalid custom ID.");
-      }
-
-      const { field, newState } = match.params;
-
-      if (!field || !newState) {
-        throw new Error(`Invalid custom ID: ${i.customId}`);
-      }
-
-      const newConfig = await db
-        .updateTable("app_public.guild_configs")
-        .where("app_public.guild_configs.id", "=", interaction.guildId)
-        .set({
-          // Assumes field is correct, only enforced by typescript, convert string to boolean
-          [field]: newState === "enable",
-        })
-        .returningAll()
-        .executeTakeFirstOrThrow();
-
-      logger.debug(newConfig, "compiled query");
-
-      const newEmbed = getGuildConfigEmbed(ctx, newConfig);
-      const newComponents = getSettingsComponents(newConfig);
-
-      await i.editReply({
-        embeds: [newEmbed],
-        components: newComponents,
-      });
     });
 
     collector.on("end", async (collected) => {
-      logger.debug(`Collected ${collected.size} interactions.`);
+      try {
+        logger.debug(`Collected ${collected.size} interactions.`);
 
-      // Remove buttons so they can't be clicked again
-      await msg.edit({
-        components: [],
-      });
+        // Remove buttons so they can't be clicked again
+        await msg.edit({
+          components: [],
+        });
+      } catch (err) {
+        logger.error(err, "Failed to end settings view collector.");
+      }
     });
   }
 
@@ -764,55 +772,63 @@ export default class SettingsCommand extends SlashCommandHandler {
     });
 
     collector.on("collect", async (i) => {
-      if (i.user.id !== interaction.user.id) {
-        const replied = await i.reply({
-          content: "These buttons aren't for you! 😡",
-          ephemeral: true,
+      try {
+        if (i.user.id !== interaction.user.id) {
+          const replied = await i.reply({
+            content: "These buttons aren't for you! 😡",
+            ephemeral: true,
+          });
+  
+          setTimeout(() => {
+            // Discard error
+            replied.delete().catch(() => {});
+          }, 2500);
+  
+          return;
+        }
+  
+        const match = i.customId === "opt-in" || i.customId === "opt-out";
+        if (!match) {
+          throw new Error("Invalid custom ID.");
+        }
+  
+        const newOptedInState = i.customId === "opt-in";
+  
+        config = await db.updateGuildConfig(interaction.guildId, {
+          lookup_details_opt_in: newOptedInState,
         });
-
-        setTimeout(() => {
-          // Discard error
-          replied.delete().catch(() => {});
-        }, 2500);
-
-        return;
+  
+        const newEmbed = SettingsCommand.getLookupHandlerEmbed(config);
+        const newComponents = SettingsCommand.getLookupHandlerComponents(
+          config.lookup_details_opt_in
+        );
+  
+        // Edit original message
+        await i.update({
+          embeds: [newEmbed],
+          components: newComponents,
+        });
+      } catch (err) {
+        logger.error(err, "Failed to update settings lookup collector.");
       }
-
-      const match = i.customId === "opt-in" || i.customId === "opt-out";
-      if (!match) {
-        throw new Error("Invalid custom ID.");
-      }
-
-      const newOptedInState = i.customId === "opt-in";
-
-      config = await db.updateGuildConfig(interaction.guildId, {
-        lookup_details_opt_in: newOptedInState,
-      });
-
-      const newEmbed = SettingsCommand.getLookupHandlerEmbed(config);
-      const newComponents = SettingsCommand.getLookupHandlerComponents(
-        config.lookup_details_opt_in
-      );
-
-      // Edit original message
-      await i.editReply({
-        embeds: [newEmbed],
-        components: newComponents,
-      });
     });
 
     collector.on("end", async (collected) => {
-      logger.debug(`Collected ${collected.size} interactions.`);
-
-      const newComponents = SettingsCommand.getLookupHandlerComponents(
-        config.lookup_details_opt_in,
-        true
-      );
-
-      // Remove buttons so they can't be clicked again
-      await msg.edit({
-        components: newComponents,
-      });
+      try {
+        logger.debug(`Collected ${collected.size} interactions.`);
+  
+        const newComponents = SettingsCommand.getLookupHandlerComponents(
+          config.lookup_details_opt_in,
+          true
+        );
+  
+        // Remove buttons so they can't be clicked again
+        await msg.edit({
+          components: newComponents,
+        });
+      } catch (err) {
+        logger.error(err, "Failed to end settings lookup collector.");
+      }
     });
   }
 
