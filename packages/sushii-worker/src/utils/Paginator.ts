@@ -237,70 +237,78 @@ export default class Paginator {
     });
 
     collector.on("collect", async (i) => {
-      if (i.user.id !== this.interaction.user.id) {
-        await i.reply({
-          content:
-            "This isn't for you!! Run your own command to use these buttons.",
-          ephemeral: true,
+      try {
+        if (i.user.id !== this.interaction.user.id) {
+          await i.reply({
+            content:
+              "This isn't for you!! Run your own command to use these buttons.",
+            ephemeral: true,
+          });
+
+          return;
+        }
+
+        totalPages = await this.getTotalPages(false);
+
+        logger.debug({
+          message: "Paginator button pressed",
+          buttonId: i.customId,
+          totalPages,
+          currentPage: this.currentPageIndex,
         });
 
-        return;
+        switch (i.customId) {
+          case ButtonId.Back5:
+            this.currentPageIndex = Math.max(this.currentPageIndex - 5, 0);
+            break;
+          case ButtonId.Back:
+            this.currentPageIndex = Math.max(this.currentPageIndex - 1, 0);
+            break;
+          case ButtonId.Forward:
+            this.currentPageIndex = Math.min(
+              this.currentPageIndex + 1,
+              totalPages - 1
+            );
+            break;
+          case ButtonId.Forward5:
+            this.currentPageIndex = Math.min(
+              this.currentPageIndex + 5,
+              totalPages - 1
+            );
+            break;
+          default:
+            throw new Error(`Unknown button custom id ${i.customId}`);
+        }
+
+        embed = await this.getEmbed();
+        components = await this.getComponents(false);
+
+        await i.update({
+          embeds: [embed],
+          components,
+        });
+      } catch (err) {
+        logger.error(err, "Error while handling paginator button press");
       }
-
-      totalPages = await this.getTotalPages(false);
-
-      logger.debug({
-        message: "Paginator button pressed",
-        buttonId: i.customId,
-        totalPages,
-        currentPage: this.currentPageIndex,
-      });
-
-      switch (i.customId) {
-        case ButtonId.Back5:
-          this.currentPageIndex = Math.max(this.currentPageIndex - 5, 0);
-          break;
-        case ButtonId.Back:
-          this.currentPageIndex = Math.max(this.currentPageIndex - 1, 0);
-          break;
-        case ButtonId.Forward:
-          this.currentPageIndex = Math.min(
-            this.currentPageIndex + 1,
-            totalPages - 1
-          );
-          break;
-        case ButtonId.Forward5:
-          this.currentPageIndex = Math.min(
-            this.currentPageIndex + 5,
-            totalPages - 1
-          );
-          break;
-        default:
-          throw new Error(`Unknown button custom id ${i.customId}`);
-      }
-
-      embed = await this.getEmbed();
-      components = await this.getComponents(false);
-
-      await i.update({
-        embeds: [embed],
-        components,
-      });
     });
 
     // Wait until the collector ends
     await new Promise<void>((resolve) => {
       collector.on("end", async () => {
-        logger.debug("Collector ended, disabling buttons");
+        try {
+          logger.debug("Collector ended, disabling buttons");
 
-        // Disable all buttons
-        components = await this.getComponents(true);
+          // Disable all buttons
+          components = await this.getComponents(true);
 
-        await message.edit({
-          components,
-        });
+          await message.edit({
+            components,
+          });
 
-        resolve();
+          resolve();
+        } catch (err) {
+          logger.error(err, "Error while disabling buttons");
+        }
       });
     });
   }
