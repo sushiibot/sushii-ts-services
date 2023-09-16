@@ -22,6 +22,8 @@ const schema = z.object({
   NOTIFY_WEBHOOK_URL: z.string().optional(),
   NOTIFY_WEBHOOK_USERNAME: z.string().optional(),
 
+  TRACING_EXPORTER_URL: z.string().optional(),
+
   DISABLE_BAN_FETCH_ON_READY: z
     .preprocess((x) => x === "true", z.boolean())
     .optional()
