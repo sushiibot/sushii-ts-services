@@ -8,3 +8,6 @@ services:
     shlink:
         ports:
             - "8080:8080"
+    keydb:
+        ports:
+            - "6379:6379"
