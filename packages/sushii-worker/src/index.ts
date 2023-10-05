@@ -96,7 +96,7 @@ async function main(): Promise<void> {
     },
     onShutdown: async () => {
       log.info("closing Discord client");
-      djsClient.destroy();
+      await djsClient.destroy();
 
       log.info("closing websocket connection to sushii API");
       await wsClient.dispose();

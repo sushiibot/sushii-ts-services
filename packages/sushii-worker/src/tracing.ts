@@ -31,7 +31,7 @@ const sdk = new NodeSDK({
 // this enables the API to record telemetry
 sdk
   .start()
-  .then(() => logger.info("Tracing initialized"))
+  .then(() => logger.info(exporterOptions, "Tracing initialized"))
   .catch((error) => logger.error(error, "Error initializing tracing"));
 
 export default sdk;

@@ -554,32 +554,40 @@ export default class Client {
   }
 
   public async handleAPIInteraction(interaction: Interaction): Promise<void> {
-    this.metrics.handleInteraction(interaction);
+    try {
+      this.metrics.handleInteraction(interaction);
 
-    if (interaction.isChatInputCommand()) {
-      return this.handleSlashCommandInteraction(interaction);
+      if (interaction.isChatInputCommand()) {
+        return await this.handleSlashCommandInteraction(interaction);
+      }
+
+      if (interaction.isContextMenuCommand()) {
+        return await this.handleContextMenuInteraction(interaction);
+      }
+
+      if (interaction.isAutocomplete()) {
+        return await this.handleAutocompleteInteraction(interaction);
+      }
+
+      if (interaction.isButton()) {
+        return await this.handleButtonSubmit(interaction);
+      }
+
+      if (interaction.isAnySelectMenu()) {
+        return await this.handleSelectMenuSubmit(interaction);
+      }
+
+      if (interaction.isModalSubmit()) {
+        return await this.handleModalSubmit(interaction);
+      }
+
+      return undefined;
+    } catch (err) {
+      log.error(
+        err,
+        "error handling interaction, should be caught %s",
+        interaction.id
+      );
     }
-
-    if (interaction.isContextMenuCommand()) {
-      return this.handleContextMenuInteraction(interaction);
-    }
-
-    if (interaction.isAutocomplete()) {
-      return this.handleAutocompleteInteraction(interaction);
-    }
-
-    if (interaction.isButton()) {
-      return this.handleButtonSubmit(interaction);
-    }
-
-    if (interaction.isAnySelectMenu()) {
-      return this.handleSelectMenuSubmit(interaction);
-    }
-
-    if (interaction.isModalSubmit()) {
-      return this.handleModalSubmit(interaction);
-    }
-
-    return undefined;
   }
 }

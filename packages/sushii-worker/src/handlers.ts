@@ -297,11 +297,28 @@ export default function registerEventHandlers(
       }
 
       if (event.t === GatewayDispatchEvents.MessageUpdate) {
-        // Log first to keep old message, then cache after for new update.
-        // Fine to await since each event is a specific type, no other types that
-        // this blocks.
-        await msgLogHandler(ctx, event.t, event.d);
-        await msgLogCacheHandler(ctx, event.t, event.d);
+        try {
+          // Log first to keep old message, then cache after for new update.
+          // Fine to await since each event is a specific type, no other types that
+          // this blocks.
+          await msgLogHandler(ctx, event.t, event.d);
+          await msgLogCacheHandler(ctx, event.t, event.d);
+        } catch (err) {
+          Sentry.captureException(err, {
+            tags: {
+              event: "MessageUpdate",
+            },
+          });
+
+          logger.error(
+            {
+              err,
+              event,
+            },
+            "error handling event %s",
+            event.t
+          );
+        }
       }
 
       if (event.t === GatewayDispatchEvents.MessageCreate) {
