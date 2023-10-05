@@ -142,6 +142,9 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
               ],
               flags: MessageFlags.Ephemeral,
             });
+
+            // Prevent throwing error again
+            return;
           }
 
           // Uh oh
