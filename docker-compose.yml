@@ -36,6 +36,8 @@ services:
             - "host.docker.internal:host-gateway"
         labels:
             - "traefik.enable=false"
+            - "logging=promtail"
+            - "logging_jobname=sushii_worker"
     sushii_data:
         build:
             dockerfile: ./dockerfiles/sushii-data/Dockerfile
