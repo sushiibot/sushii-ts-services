@@ -35,6 +35,7 @@
     "graphql-request": "5.1.0",
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.11.2",
+    "hi-base32": "^0.5.1",
     "i18next": "^21.6.13",
     "i18next-fs-backend": "^1.1.4",
     "kysely": "^0.26.3",

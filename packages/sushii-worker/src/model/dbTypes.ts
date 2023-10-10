@@ -424,6 +424,27 @@ export interface AppPublicLevelRoles {
   remove_level: Int8 | null;
 }
 
+export interface AppPublicLookupGroupInvites {
+  owner_guild_id: Int8;
+  name: string;
+  invite_code: string;
+  expires_at: Timestamp | null;
+}
+
+export interface AppPublicLookupGroupMembers {
+  owner_guild_id: Int8;
+  name: string;
+  member_guild_id: Int8;
+}
+
+export interface AppPublicLookupGroups {
+  id: Generated<number>;
+  guild_id: Int8;
+  name: string;
+  creator_id: Int8;
+  description: string | null;
+}
+
 export interface AppPublicMembers {
   guild_id: Int8;
   user_id: Int8;
@@ -727,6 +748,9 @@ export interface DB {
   "app_public.level_role_apply_jobs": AppPublicLevelRoleApplyJobs;
   "app_public.level_role_overrides": AppPublicLevelRoleOverrides;
   "app_public.level_roles": AppPublicLevelRoles;
+  "app_public.lookup_group_invites": AppPublicLookupGroupInvites;
+  "app_public.lookup_group_members": AppPublicLookupGroupMembers;
+  "app_public.lookup_groups": AppPublicLookupGroups;
   "app_public.members": AppPublicMembers;
   "app_public.messages": AppPublicMessages;
   "app_public.mod_logs": AppPublicModLogs;
