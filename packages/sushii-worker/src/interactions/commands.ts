@@ -39,6 +39,7 @@ import SettingsCommand from "./settings/SettingsCommand";
 import LookupCommand from "./moderation/LookupCommand";
 import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
 import TagAdminCommand from "./tags/TagAdminCommand";
+import LookupGroupCommand from "./moderation/LookupGroupCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -55,7 +56,6 @@ export default function addCommands(
     new PingCommand(),
 
     // Moderation
-    new LookupCommand(),
     new BanCommand(),
     new UnbanCommand(),
     new KickCommand(),
@@ -68,6 +68,8 @@ export default function addCommands(
     new UncaseCommand(),
     new PruneCommand(),
     new SlowmodeCommand(),
+    new LookupCommand(),
+    new LookupGroupCommand(),
 
     // Guild
     new TagAdminCommand(),

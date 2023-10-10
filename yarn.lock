@@ -3851,6 +3851,7 @@ __metadata:
     graphql-request: 5.1.0
     graphql-tag: ^2.12.6
     graphql-ws: ^5.11.2
+    hi-base32: ^0.5.1
     i18next: ^21.6.13
     i18next-fs-backend: ^1.1.4
     jest: ^27.5.1
@@ -7791,6 +7792,13 @@ __metadata:
   version: 1.0.0
   resolution: "hexoid@npm:1.0.0"
   checksum: 27a148ca76a2358287f40445870116baaff4a0ed0acc99900bf167f0f708ffd82e044ff55e9949c71963852b580fc024146d3ac6d5d76b508b78d927fa48ae2d
+  languageName: node
+  linkType: hard
+
+"hi-base32@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "hi-base32@npm:0.5.1"
+  checksum: 6655682b5796d75ed3068071e61d05a490e2086c4908af3b94a730059147b8a4a5e8870e656b828d0550dcc9988d8748bda54a53e428cbce28e0d7a785b2ffde
   languageName: node
   linkType: hard
 
