@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "test": "jest",
+    "test": "vitest",
     "build": "tsc --skipLibCheck",
     "start": "node dist/index.js",
     "build:graphql": "graphql-codegen --config codegen.yml",
@@ -79,6 +79,7 @@
     "prettier": "^3.0.0",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6"
   }
 }
