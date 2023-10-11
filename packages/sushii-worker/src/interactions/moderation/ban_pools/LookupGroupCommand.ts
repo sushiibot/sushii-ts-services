@@ -6,22 +6,22 @@ import {
   EmbedBuilder,
 } from "discord.js";
 import dayjs from "dayjs";
-import Context from "../../model/context";
-import db from "../../model/db";
-import { SlashCommandHandler } from "../handlers";
-import Color from "../../utils/colors";
-import toTimestamp from "../../utils/toTimestamp";
+import Context from "../../../model/context";
+import db from "../../../model/db";
+import { SlashCommandHandler } from "../../handlers";
+import Color from "../../../utils/colors";
+import toTimestamp from "../../../utils/toTimestamp";
 import {
-  LookupGroupError,
-  createGroup,
+  BanPoolError,
+  createPool,
   createInvite,
-  deleteGroup,
+  deletePool,
   deleteInvite,
-  joinGroup,
-  showGroup,
-} from "./LookupGroup.service";
+  joinPool,
+  showPool,
+} from "./BanPool.service";
 
-enum LookupGroupOptionCommand {
+enum BanPoolOptionCommand {
   Create = "create",
   List = "list",
   Show = "show",
@@ -29,99 +29,101 @@ enum LookupGroupOptionCommand {
   Invite = "invite",
   DeleteInvite = "delete_invite",
   Join = "join",
+  ServerKick = "kick-server",
+  ServerPermissions = "server-permissions",
 }
 
-enum LookupGroupOption {
+enum BanPoolOption {
   Name = "name",
   Description = "description",
   ExpireAfter = "expire_after",
   InviteCode = "invite_code",
 }
 
-export default class LookupGroupCommand extends SlashCommandHandler {
+export default class BanPoolCommand extends SlashCommandHandler {
   serverOnly = true;
 
   requiredBotPermissions = new PermissionsBitField();
 
   command = new SlashCommandBuilder()
-    .setName("lookupgroup")
+    .setName("banpool")
     .setDescription(
-      "Manage lookup group settings, to control which servers you want to share lookup reasons with."
+      "Manage ban pool settings, sync bans or share ban reasons."
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .setDMPermission(false)
     .addSubcommand((c) =>
       c
-        .setName(LookupGroupOptionCommand.Create)
-        .setDescription("Create a new lookup group.")
+        .setName(BanPoolOptionCommand.Create)
+        .setDescription("Create a new ban pool.")
         .addStringOption((o) =>
           o
-            .setName(LookupGroupOption.Name)
-            .setDescription("Name of the lookup group.")
+            .setName(BanPoolOption.Name)
+            .setDescription("Name of the ban pool.")
             .setRequired(true)
         )
         .addStringOption((o) =>
           o
-            .setName(LookupGroupOption.Description)
-            .setDescription("Description of the lookup group.")
+            .setName(BanPoolOption.Description)
+            .setDescription("Description of the ban pool.")
             .setRequired(false)
         )
     )
     .addSubcommand((c) =>
       c
-        .setName(LookupGroupOptionCommand.Join)
-        .setDescription("Join another server's lookup group.")
+        .setName(BanPoolOptionCommand.Join)
+        .setDescription("Join another server's ban pool.")
         .addStringOption((o) =>
           o
-            .setName(LookupGroupOption.InviteCode)
-            .setDescription("Invite code for lookup group.")
+            .setName(BanPoolOption.InviteCode)
+            .setDescription("Invite code for ban pool.")
             .setRequired(true)
         )
     )
     .addSubcommand((c) =>
       c
-        .setName(LookupGroupOptionCommand.List)
+        .setName(BanPoolOptionCommand.List)
         .setDescription(
-          "List lookup groups your server created or is member of."
+          "List ban pools your server created or is member of."
         )
     )
     .addSubcommand((c) =>
       c
-        .setName(LookupGroupOptionCommand.Show)
-        .setDescription("Show details of a specific lookup group.")
+        .setName(BanPoolOptionCommand.Show)
+        .setDescription("Show details of a specific ban pool.")
         .addStringOption((o) =>
           o
-            .setName(LookupGroupOption.Name)
-            .setDescription("Name or ID of the lookup group.")
+            .setName(BanPoolOption.Name)
+            .setDescription("Name or ID of the ban pool.")
             .setRequired(true)
         )
     )
     .addSubcommand((c) =>
       c
-        .setName(LookupGroupOptionCommand.Delete)
-        .setDescription("Delete a lookup group.")
+        .setName(BanPoolOptionCommand.Delete)
+        .setDescription("Delete a ban pool.")
         .addStringOption((o) =>
           o
-            .setName(LookupGroupOption.Name)
-            .setDescription("Name of the lookup group to delete.")
+            .setName(BanPoolOption.Name)
+            .setDescription("Name of the ban pool to delete.")
             .setRequired(true)
         )
     )
     .addSubcommand((c) =>
       c
-        .setName(LookupGroupOptionCommand.Invite)
+        .setName(BanPoolOptionCommand.Invite)
         .setDescription(
-          "Create an invite for a lookup group, for other servers to join."
+          "Create an invite for a ban pool, for other servers to join."
         )
         .addStringOption((o) =>
           o
-            .setName(LookupGroupOption.Name)
-            .setDescription("Name of the lookup group to create an invite for.")
+            .setName(BanPoolOption.Name)
+            .setDescription("Name of the ban pool to create an invite for.")
             .setRequired(true)
         )
         .addStringOption((o) =>
           o
-            .setName(LookupGroupOption.ExpireAfter)
+            .setName(BanPoolOption.ExpireAfter)
             .setDescription("How long should this invite be valid for?")
             .setRequired(true)
             .setChoices(
@@ -142,12 +144,12 @@ export default class LookupGroupCommand extends SlashCommandHandler {
     )
     .addSubcommand((c) =>
       c
-        .setName(LookupGroupOptionCommand.DeleteInvite)
-        .setDescription("Delete an invite for a lookup group.")
+        .setName(BanPoolOptionCommand.DeleteInvite)
+        .setDescription("Delete an invite for a ban pool.")
         .addStringOption((o) =>
           o
-            .setName(LookupGroupOption.InviteCode)
-            .setDescription("Invite code for lookup group.")
+            .setName(BanPoolOption.InviteCode)
+            .setDescription("Invite code for ban pool.")
             .setRequired(true)
         )
     )
@@ -165,25 +167,25 @@ export default class LookupGroupCommand extends SlashCommandHandler {
     const subcommand = interaction.options.getSubcommand();
 
     switch (subcommand) {
-      case LookupGroupOptionCommand.Create:
+      case BanPoolOptionCommand.Create:
         await this.handleCreate(ctx, interaction);
         break;
-      case LookupGroupOptionCommand.Join:
+      case BanPoolOptionCommand.Join:
         await this.handleJoin(ctx, interaction);
         break;
-      case LookupGroupOptionCommand.List:
+      case BanPoolOptionCommand.List:
         await this.handleList(ctx, interaction);
         break;
-      case LookupGroupOptionCommand.Show:
+      case BanPoolOptionCommand.Show:
         await this.handleShow(ctx, interaction);
         break;
-      case LookupGroupOptionCommand.Delete:
+      case BanPoolOptionCommand.Delete:
         await this.handleDelete(ctx, interaction);
         break;
-      case LookupGroupOptionCommand.Invite:
+      case BanPoolOptionCommand.Invite:
         await this.handleInvite(ctx, interaction);
         break;
-      case LookupGroupOptionCommand.DeleteInvite:
+      case BanPoolOptionCommand.DeleteInvite:
         await this.handleDeleteInvite(ctx, interaction);
         break;
       default:
@@ -195,21 +197,25 @@ export default class LookupGroupCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const name = interaction.options.getString(LookupGroupOption.Name, true);
+    const name = interaction.options.getString(BanPoolOption.Name, true);
     const description = interaction.options.getString(
-      LookupGroupOption.Description
+      BanPoolOption.Description
     );
 
+    let pool;
     let inviteCode;
     try {
-      inviteCode = await createGroup(
+      const res = await createPool(
         name,
         interaction.guildId,
         interaction.user.id,
         description
       );
+
+      pool = res.pool;
+      inviteCode = res.inviteCode;
     } catch (err) {
-      if (err instanceof LookupGroupError) {
+      if (err instanceof BanPoolError) {
         await interaction.reply({
           embeds: [err.embed],
         });
@@ -221,11 +227,11 @@ export default class LookupGroupCommand extends SlashCommandHandler {
     }
 
     const embed = new EmbedBuilder()
-      .setTitle(`Lookup group ${name} created`)
+      .setTitle(`Ban pool ${name} created`)
       .setDescription(
-        `You can now invite other servers to join this lookup group with the following invite: \`${inviteCode}\` (expires in 1 day)\n
-Use it with \`/lookupgroup join\` in another server to join this lookup group.\n\
-If you want to make a new invite, use \`/lookupgroup invite\``
+        `You can now invite other servers to join this ban pool with the following invite: \`${inviteCode}\` (expires in 1 day)\n
+Use it with \`/banpool join\` in another server to join this ban pool.\n\
+If you want to make a new invite, use \`/banpool invite\``
       )
       .addFields(
         {
@@ -235,7 +241,7 @@ If you want to make a new invite, use \`/lookupgroup invite\``
         {
           name: "Creator",
           value: `${interaction.user}`,
-        }
+        },
       )
       .setColor(Color.Success);
 
@@ -249,23 +255,23 @@ If you want to make a new invite, use \`/lookupgroup invite\``
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
     const inviteCode = interaction.options.getString(
-      LookupGroupOption.InviteCode,
+      BanPoolOption.InviteCode,
       true
     );
 
-    let group;
+    let pool;
     let ownerGuild;
     try {
-      const joinRes = await joinGroup(
+      const joinRes = await joinPool(
         inviteCode,
         interaction.guildId,
         (guildId) => interaction.client.guilds.cache.get(guildId)
       );
 
-      group = joinRes.group;
+      pool = joinRes.pool;
       ownerGuild = joinRes.guild;
     } catch (err) {
-      if (err instanceof LookupGroupError) {
+      if (err instanceof BanPoolError) {
         await interaction.reply({
           embeds: [err.embed],
         });
@@ -277,18 +283,18 @@ If you want to make a new invite, use \`/lookupgroup invite\``
     }
 
     const embed = new EmbedBuilder()
-      .setTitle(`Lookup group ${group.name} joined`)
+      .setTitle(`Ban pool ${pool.pool_name} joined`)
       .setDescription(
-        "You are now sharing lookup reasons with other servers in this lookup group."
+        "You are now sharing lookup reasons with other servers in this ban pool."
       )
       .addFields(
         {
           name: "Description",
-          value: group.description ?? "No description provided",
+          value: pool.description ?? "No description provided",
         },
         {
           name: "Owner",
-          value: `Server: ${ownerGuild.name} (ID \`${ownerGuild.id}\`)\n Created by: <@${group.creator_id}>`,
+          value: `Server: ${ownerGuild.name} (ID \`${ownerGuild.id}\`)\n Created by: <@${pool.creator_id}>`,
         }
       )
       .setColor(Color.Success);
@@ -302,80 +308,80 @@ If you want to make a new invite, use \`/lookupgroup invite\``
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const ownedGroups = await db
-      .selectFrom("app_public.lookup_groups")
+    const ownedPools = await db
+      .selectFrom("app_public.ban_pools")
       .selectAll()
       .where("guild_id", "=", interaction.guild.id)
       .execute();
 
-    const memberGroups = await db
-      .selectFrom("app_public.lookup_group_members")
-      .innerJoin("app_public.lookup_groups", (join) =>
+    const memberPools = await db
+      .selectFrom("app_public.ban_pool_members")
+      .innerJoin("app_public.ban_pools", (join) =>
         join
           .onRef(
-            "app_public.lookup_group_members.owner_guild_id",
+            "app_public.ban_pool_members.owner_guild_id",
             "=",
-            "app_public.lookup_groups.guild_id"
+            "app_public.ban_pools.guild_id"
           )
           .onRef(
-            "app_public.lookup_group_members.name",
+            "app_public.ban_pool_members.pool_name",
             "=",
-            "app_public.lookup_groups.name"
+            "app_public.ban_pools.pool_name"
           )
       )
       .selectAll()
       .where("member_guild_id", "=", interaction.guild.id)
       .orderBy([
-        "app_public.lookup_groups.guild_id",
-        "app_public.lookup_groups.name desc",
+        "app_public.ban_pools.guild_id",
+        "app_public.ban_pools.pool_name desc",
       ])
       .execute();
 
     const embed = new EmbedBuilder()
-      .setTitle("Lookup groups")
+      .setTitle("Ban pools")
       .setDescription(
-        `This server owns \`${ownedGroups.length}\` lookup groups and is in \`${memberGroups.length}\` groups created by other servers.\n\n\
-Use \`/lookupgroup show <id>\` to show more details and invites about a specific lookup group.`
+        `This server owns \`${ownedPools.length}\` ban pools and is in \`${memberPools.length}\` pools created by other servers.\n\n\
+Use \`/banpool show <id>\` to show more details and invites about a specific ban pool.`
       )
       .addFields(
         {
-          name: "Owned groups",
+          name: "Owned pools",
           value:
-            ownedGroups
-              .map((group) => {
-                let s = `**${group.name}**`;
+            ownedPools
+              .map((pool) => {
+                let s = `- **${pool.pool_name}**`;
                 s += "\n";
-                s += `╰ **ID:** \`${group.id}\``;
+                s += `╰ **ID:** \`${pool.id}\``;
                 s += "\n";
-                s += `╰ **Description:** ${group.description ?? "None"}`;
+                s += `╰ **Description:** ${pool.description ?? "None"}`;
 
                 return s;
               })
               .join("\n") ||
-            "No groups created. Create one with `/lookupgroup create`",
+            "No pools created. Create one with `/banpool create`",
         },
         {
-          name: "Member groups",
+          name: "Member pools",
           value:
-            memberGroups
-              .map((group) => {
+            memberPools
+              .map((pool) => {
                 const guildName =
-                  interaction.client.guilds.cache.get(group.guild_id)?.name ??
+                  interaction.client.guilds.cache.get(pool.guild_id)?.name ??
                   "Unknown server";
 
-                let s = `**${group.name}**`;
+                let s = `**${pool.pool_name}**`;
                 s += "\n";
-                s += `╰ **ID:** \`${group.id}\``;
+                s += `╰ **ID:** \`${pool.id}\``;
                 s += "\n";
-                s += `╰ **Server:** ${guildName} (ID \`${group.guild_id}\`)`;
+                s += `╰ **Server:** ${guildName} (ID \`${pool.guild_id}\`)`;
                 s += "\n";
-                s += `╰ **Owner:** <@${group.creator_id}>`;
+                s += `╰ **Owner:** <@${pool.creator_id}>`;
                 s += "\n";
-                s += `╰ **Description:** ${group.description ?? "None"}`;
+                s += `╰ **Description:** ${pool.description ?? "None"}`;
 
                 return s;
               })
-              .join("\n") || "No groups joined.",
+              .join("\n") || "No pools joined.",
         }
       )
 
@@ -391,18 +397,18 @@ Use \`/lookupgroup show <id>\` to show more details and invites about a specific
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
     const nameOrID = interaction.options.getString(
-      LookupGroupOption.Name,
+      BanPoolOption.Name,
       true
     );
 
     let members;
-    let group;
+    let pool;
     try {
-      const shown = await showGroup(nameOrID, interaction.guildId);
+      const shown = await showPool(nameOrID, interaction.guildId);
       members = shown.members;
-      group = shown.group;
+      pool = shown.pool;
     } catch (err) {
-      if (err instanceof LookupGroupError) {
+      if (err instanceof BanPoolError) {
         await interaction.reply({
           embeds: [err.embed],
         });
@@ -424,28 +430,28 @@ Use \`/lookupgroup show <id>\` to show more details and invites about a specific
         })
         .join("\n") || "No members.";
 
-    // Only show invites if the server owns the group
-    const isOwner = group.guild_id === interaction.guild.id;
+    // Only show invites if the server owns the pool
+    const isOwner = pool.guild_id === interaction.guild.id;
 
     if (!isOwner) {
       const ownerGuildName =
-        interaction.client.guilds.cache.get(group.guild_id)?.name ??
+        interaction.client.guilds.cache.get(pool.guild_id)?.name ??
         "Unknown server";
 
       const embed = new EmbedBuilder()
-        .setTitle(`Lookup group ${group.name}`)
-        .setDescription("This server is a **member** of this lookup group.")
+        .setTitle(`Ban pool ${pool.pool_name}`)
+        .setDescription("This server is a **member** of this ban pool.")
         .addFields(
           {
             name: "Description",
-            value: group.description ?? "No description provided",
+            value: pool.description ?? "No description provided",
           },
           {
             name: "Owner",
-            value: `Server: ${ownerGuildName} (ID \`${group.guild_id}\`)\n Created by: <@${group.creator_id}>`,
+            value: `Server: ${ownerGuildName} (ID \`${pool.guild_id}\`)\n Created by: <@${pool.creator_id}>`,
           },
           {
-            name: `Members - ${membersStr.length} total`,
+            name: `Members - ${members.length} total`,
             value: membersStr,
           }
         )
@@ -458,25 +464,26 @@ Use \`/lookupgroup show <id>\` to show more details and invites about a specific
       return;
     }
 
-    // Own group, show invites and members
+    // Own pool, show invites and members
     const invites = await db
-      .selectFrom("app_public.lookup_group_invites")
+      .selectFrom("app_public.ban_pool_invites")
       .selectAll()
       .where("owner_guild_id", "=", interaction.guild.id)
-      .where("name", "=", group.name)
+      .where("pool_name", "=", pool.pool_name)
+      .where("expires_at", ">", dayjs.utc().toDate()) // ignore expired
       .execute();
 
     const embed = new EmbedBuilder()
-      .setTitle(`Lookup group ${group.name}`)
-      .setDescription("This server **owns** this lookup group.")
+      .setTitle(`Ban pool ${pool.pool_name}`)
+      .setDescription("This server **owns** this ban pool.")
       .addFields(
         {
           name: "Description",
-          value: group.description ?? "No description provided",
+          value: pool.description ?? "No description provided",
         },
         {
           name: "Creator",
-          value: `<@${group.creator_id}>`,
+          value: `<@${pool.creator_id}>`,
         },
         {
           name: `Members - ${membersStr.length} total`,
@@ -512,12 +519,12 @@ Use \`/lookupgroup show <id>\` to show more details and invites about a specific
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const name = interaction.options.getString(LookupGroupOption.Name, true);
+    const name = interaction.options.getString(BanPoolOption.Name, true);
 
     try {
-      await deleteGroup(name, interaction.guildId);
+      await deletePool(name, interaction.guildId);
     } catch (err) {
-      if (err instanceof LookupGroupError) {
+      if (err instanceof BanPoolError) {
         await interaction.reply({
           embeds: [err.embed],
         });
@@ -529,10 +536,10 @@ Use \`/lookupgroup show <id>\` to show more details and invites about a specific
     }
 
     const embed = new EmbedBuilder()
-      .setTitle(`Lookup group ${name} deleted`)
+      .setTitle(`Ban pool ${name} deleted`)
       .setDescription(
-        `The lookup group ${name} has been deleted. \
-All members of this lookup group have also been removed and reasons will no longer be shared.`
+        `The ban pool ${name} has been deleted. \
+All members of this ban pool have also been removed and reasons will no longer be shared.`
       )
       .setColor(Color.Success);
 
@@ -545,9 +552,9 @@ All members of this lookup group have also been removed and reasons will no long
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const name = interaction.options.getString(LookupGroupOption.Name, true);
+    const name = interaction.options.getString(BanPoolOption.Name, true);
     const expireAfter = interaction.options.getString(
-      LookupGroupOption.ExpireAfter,
+      BanPoolOption.ExpireAfter,
       true
     );
 
@@ -555,7 +562,7 @@ All members of this lookup group have also been removed and reasons will no long
     try {
       inviteCode = await createInvite(name, interaction.guildId, expireAfter);
     } catch (err) {
-      if (err instanceof LookupGroupError) {
+      if (err instanceof BanPoolError) {
         await interaction.reply({
           embeds: [err.embed],
         });
@@ -569,9 +576,9 @@ All members of this lookup group have also been removed and reasons will no long
     const embed = new EmbedBuilder()
       .setTitle("Invite created")
       .setDescription(
-        `You can now invite other servers to join this lookup group with the following invite: \`${inviteCode}\` (expires in 1 day)\n\n
-Use \`/lookupgroup join ${inviteCode}\` in another server to join this lookup group.\n\
-If you want to make a new invite, use \`/lookupgroup invite ${name} <invite_code>\``
+        `You can now invite other servers to join this ban pool with the following invite: \`${inviteCode}\` (expires in 1 day)\n\n
+Use \`/banpool join ${inviteCode}\` in another server to join this ban pool.\n\
+If you want to make a new invite, use \`/banpool invite ${name} <invite_code>\``
       )
       .setColor(Color.Success);
 
@@ -585,14 +592,14 @@ If you want to make a new invite, use \`/lookupgroup invite ${name} <invite_code
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
     const inviteCode = interaction.options.getString(
-      LookupGroupOption.InviteCode,
+      BanPoolOption.InviteCode,
       true
     );
 
     try {
       await deleteInvite(inviteCode);
     } catch (err) {
-      if (err instanceof LookupGroupError) {
+      if (err instanceof BanPoolError) {
         await interaction.reply({
           embeds: [err.embed],
         });
@@ -604,11 +611,11 @@ If you want to make a new invite, use \`/lookupgroup invite ${name} <invite_code
     }
 
     const embed = new EmbedBuilder()
-      .setTitle(`Lookup group invite ${inviteCode} deleted`)
+      .setTitle("Invite deleted")
       .setDescription(
-        `The lookup group invite ${inviteCode} has been deleted. \
-The invite is no longer valid and cannot be used to join the lookup group.
-You can create a new invite with \`/lookupgroup invite\``
+        `The ban pool invite \`${inviteCode}\` has been deleted. \n\
+The invite is no longer valid and cannot be used to join the ban pool.
+You can create a new invite with \`/banpool invite\``
       )
       .setColor(Color.Success);
 

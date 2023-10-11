@@ -39,7 +39,7 @@ import SettingsCommand from "./settings/SettingsCommand";
 import LookupCommand from "./moderation/LookupCommand";
 import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
 import TagAdminCommand from "./tags/TagAdminCommand";
-import LookupGroupCommand from "./moderation/LookupGroupCommand";
+import LookupGroupCommand from "./moderation/ban_pools/LookupGroupCommand";
 
 export default function addCommands(
   interactionClient: InteractionClient
