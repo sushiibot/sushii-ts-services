@@ -12,7 +12,6 @@ import { SlashCommandHandler } from "../../handlers";
 import Color from "../../../utils/colors";
 import toTimestamp from "../../../utils/toTimestamp";
 import {
-  BanPoolError,
   createPool,
   createInvite,
   deletePool,
@@ -20,6 +19,10 @@ import {
   joinPool,
   showPool,
 } from "./BanPool.service";
+import {
+BanPoolError
+} from "./errors"
+import { buildPoolSettingsString } from "./settings";
 
 enum BanPoolOptionCommand {
   Create = "create",
@@ -242,6 +245,11 @@ If you want to make a new invite, use \`/banpool invite\``
           name: "Creator",
           value: `${interaction.user}`,
         },
+        {
+          name: "Settings",
+          value: buildPoolSettingsString(pool),
+          inline: false,
+        }
       )
       .setColor(Color.Success);
 
@@ -401,12 +409,14 @@ Use \`/banpool show <id>\` to show more details and invites about a specific ban
       true
     );
 
-    let members;
     let pool;
+    let poolMember;
+    let members;
     try {
       const shown = await showPool(nameOrID, interaction.guildId);
-      members = shown.members;
       pool = shown.pool;
+      poolMember = shown.poolMember;
+      members = shown.members;
     } catch (err) {
       if (err instanceof BanPoolError) {
         await interaction.reply({
@@ -433,7 +443,7 @@ Use \`/banpool show <id>\` to show more details and invites about a specific ban
     // Only show invites if the server owns the pool
     const isOwner = pool.guild_id === interaction.guild.id;
 
-    if (!isOwner) {
+    if (!isOwner && poolMember) {
       const ownerGuildName =
         interaction.client.guilds.cache.get(pool.guild_id)?.name ??
         "Unknown server";
@@ -453,6 +463,12 @@ Use \`/banpool show <id>\` to show more details and invites about a specific ban
           {
             name: `Members - ${members.length} total`,
             value: membersStr,
+          },
+          {
+            name: "Settings",
+            // Use poolMember for MEMBER settings, not owner settings
+            value: buildPoolSettingsString(poolMember),
+            inline: false,
           }
         )
         .setColor(Color.Success);
@@ -486,7 +502,7 @@ Use \`/banpool show <id>\` to show more details and invites about a specific ban
           value: `<@${pool.creator_id}>`,
         },
         {
-          name: `Members - ${membersStr.length} total`,
+          name: `Members - ${members.length} total`,
           value: membersStr,
         },
         {
@@ -506,6 +522,11 @@ Use \`/banpool show <id>\` to show more details and invites about a specific ban
                 return s;
               })
               .join("\n") || "No invites created.",
+        },
+        {
+          name: "Settings",
+          value: buildPoolSettingsString(pool),
+          inline: false,
         }
       )
       .setColor(Color.Success);

@@ -13,13 +13,22 @@ export function getRadioButton<T>(selectedValue: T, choiceValue: T): string {
   return selectedValue === choiceValue ? SushiiEmoji.RadioOn : SushiiEmoji.RadioOff
 }
 
+function isPoolMember(
+  pool: AllSelection<DB, "app_public.ban_pools"> |
+   AllSelection<DB, "app_public.ban_pool_members">
+): pool is AllSelection<DB, "app_public.ban_pool_members"> {
+  return "permission" in pool
+}
+
 export function buildPoolSettingsString(
-  pool: AllSelection<DB, "app_public.ban_pools">,
-  poolMember: AllSelection<DB, "app_public.ban_pool_members">,
+  pool: AllSelection<DB, "app_public.ban_pools"> |
+   AllSelection<DB, "app_public.ban_pool_members">,
   ): string {
+    const isMember = isPoolMember(pool)
+
     // Ignore blocked members
-    if (poolMember.permission === "blocked") {
-      return ""
+    if (isMember && pool.permission === "blocked") {
+      throw new Error("Member is blocked, shouldn't be able to call this.")
     }
 
     /*
@@ -37,93 +46,138 @@ export function buildPoolSettingsString(
   */
 
   let permissionStr
-  switch (poolMember.permission) {
-    case "view":
-      permissionStr = "Viewer"
-      break;
-    case "edit":
-      permissionStr = "Editor (add / remove bans)"
-      break;
+  if (isMember) {
+    switch (pool.permission) {
+      case "view":
+        permissionStr = "Viewer"
+        break;
+      case "edit":
+        permissionStr = "Editor (add / remove bans)"
+        break;
+      case "blocked":
+        permissionStr = ""
+        break;
+    }
   }
+
+  // ---------------------------------------------------------------------------
+  // Mode - Bans in this server
+  // ---------------------------------------------------------------------------
+
+  const modeSection = "__**Ban / Unban in THIS server**__"
 
   // ---------------------------------------------------------------------------
   // Add mode
   // When to add bans in this server to this pool
-  let addModeStr = "**When to add this server's bans to pool:**\n"
+  let addModeStr = "**When a user is banned in this server...**\n"
 
-  addModeStr += getRadioButton(poolMember.add_mode, "all_bans")
-  addModeStr += "Automatically add all bans"
-  addModeStr += "\n"
+  addModeStr += [
+    "> ",
+    getRadioButton(pool.add_mode, "all_bans"),
+    " Automatically add to pool",
+    "\n",
 
-  addModeStr += getRadioButton(poolMember.add_mode, "manual")
-  addModeStr += "Manually add bans"
-  addModeStr += "\n"
+    "> ",
+    getRadioButton(pool.add_mode, "manual"),
+    " Ask to add to pool",
+    "\n",
 
-  addModeStr += getRadioButton(poolMember.add_mode, "nothing")
-  addModeStr += "Add nothing (lookup reasons only)"
-  addModeStr += "\n"
+    "> ",
+    getRadioButton(pool.add_mode, "nothing"),
+    " Do nothing",
+    "\n",
+  ].join("")
 
   // ---------------------------------------------------------------------------
   // Remove mode
   // When to remove bans in this server from this pool
-  let removeModeStr = "**When to remove this server's bans from pool:**\n"
+  let removeModeStr = "**When a user is unbanned from this server...**\n"
 
-  removeModeStr += getRadioButton(poolMember.remove_mode, "all_unbans")
-  removeModeStr += "Automatically remove all unbans"
-  removeModeStr += "\n"
+  removeModeStr += [
+    "> ",
+    getRadioButton(pool.remove_mode, "all_unbans"),
+    " Automatically remove from pool",
+    "\n",
 
-  removeModeStr += getRadioButton(poolMember.remove_mode, "manual")
-  removeModeStr += "Manually remove unbans"
-  removeModeStr += "\n"
+    "> ",
+    getRadioButton(pool.remove_mode, "manual"),
+    " Ask to remove from pool",
+    "\n",
 
-  removeModeStr += getRadioButton(poolMember.remove_mode, "nothing")
-  removeModeStr += "Remove nothing (lookup reasons only)"
-  removeModeStr += "\n"
+    "> ",
+    getRadioButton(pool.remove_mode, "nothing"),
+    " Do nothing",
+    "\n"
+  ].join("")
+
+  // ---------------------------------------------------------------------------
+  // Action - Bans in other servers
+  // ---------------------------------------------------------------------------
+
+  const actionSection = "__**Ban / Unban by OTHER servers in this pool**__"
 
   // ---------------------------------------------------------------------------
   // Add action
 
-  let addActionStr = "**What to do when pool bans are added by other servers:**\n"
-  
-  addActionStr += getRadioButton(poolMember.add_action, "ban")
-  addActionStr += "Automatically ban"
-  addActionStr += "\n"
+  let addActionStr = "**When a user is banned by a different server...**\n"
 
-  addActionStr += getRadioButton(poolMember.add_action, "require_confirmation")
-  addActionStr += "Ask for confirmation"
-  addActionStr += "\n"
+  addActionStr += [
+    "> ",
+    getRadioButton(pool.add_action, "ban"),
+    " Automatically ban",
+    "\n",
 
-  addActionStr += getRadioButton(poolMember.add_action, "nothing")
-  addActionStr += "Do nothing"
-  addActionStr += "\n"
+    "> ",
+    getRadioButton(pool.add_action, "require_confirmation"),
+    " Ask what to do", // TODO: In alerts channel
+    "\n",
+
+    "> ",
+    getRadioButton(pool.add_action, "nothing"),
+    " Do nothing",
+    "\n",
+  ].join("")
 
   // ---------------------------------------------------------------------------
   // Remove action
 
-  let removeActionStr = "**What to do when pool bans are removed by other servers:**\n"
+  let removeActionStr = "**When a user is unbanned by another server...**\n"
 
-  removeActionStr += getRadioButton(poolMember.remove_action, "unban")
-  removeActionStr += "Automatically unban"
-  removeActionStr += "\n"
+  removeActionStr += [
+    "> ",
+    getRadioButton(pool.remove_action, "unban"),
+    " Automatically unban",
+    "\n",
 
-  removeActionStr += getRadioButton(poolMember.remove_action, "require_confirmation")
-  removeActionStr += "Ask for confirmation"
-  removeActionStr += "\n"
+    "> ",
+    getRadioButton(pool.remove_action, "require_confirmation"),
+    " Ask what to do",
+    "\n",
 
-  removeActionStr += getRadioButton(poolMember.remove_action, "nothing")
-  removeActionStr += "Do nothing"
-  removeActionStr += "\n"
+    "> ",
+    getRadioButton(pool.remove_action, "nothing"),
+    " Do nothing",
+    "\n",
+  ].join("")
 
   // ---------------------------------------------------------------------------
   // Done
 
-  const fullStr = [
-    `**Permission**: ${permissionStr}`,
+  const fullStr = []
+
+  if (permissionStr) {
+    fullStr.push(permissionStr)
+  }
+  
+  fullStr.push(...[
+    modeSection,
     addModeStr,
     removeModeStr,
+
+    actionSection,
     addActionStr,
     removeActionStr
-  ].join("\n")
+  ])
   
-  return fullStr;
+  return fullStr.join("\n");
 }

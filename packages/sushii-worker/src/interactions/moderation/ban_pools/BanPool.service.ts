@@ -22,6 +22,18 @@ function generateInvite(): string {
   return base32.encode(randomBytes(6)).toLowerCase().replace(/=/g, "");
 }
 
+function getPool(
+  poolName: string,
+  guildId: string,
+): Promise<AllSelection<DB, "app_public.ban_pools"> | undefined>  {
+  return db
+    .selectFrom("app_public.ban_pools")
+    .selectAll()
+    .where("pool_name", "=", poolName)
+    .where("guild_id", "=", guildId)
+    .executeTakeFirst();
+}
+
 export async function createPool(
   poolName: string,
   guildId: string,
@@ -31,12 +43,7 @@ export async function createPool(
   pool: AllSelection<DB, "app_public.ban_pools">,
   inviteCode: string
 }> {
-  const existingPool = await db
-    .selectFrom("app_public.ban_pools")
-    .selectAll()
-    .where("pool_name", "=", poolName)
-    .where("guild_id", "=", guildId)
-    .executeTakeFirst();
+  const existingPool = await getPool(poolName, guildId);
 
   if (existingPool) {
     const embed = new EmbedBuilder()
@@ -119,13 +126,8 @@ export async function joinPool(
     );
   }
 
-  const pool = await db
-    .selectFrom("app_public.ban_pools")
-    .selectAll()
-    .where("pool_name", "=", invite.pool_name)
-    // Invite's guild id, not current guild id
-    .where("guild_id", "=", invite.owner_guild_id)
-    .executeTakeFirst();
+  // Invite's guild id, not current guild id
+  const pool = await getPool(invite.pool_name, invite.owner_guild_id);
 
   // This shouldn't really happen since invite will be deleted if pool is also deleted
   if (!pool) {
@@ -190,6 +192,7 @@ export async function showPool(
   guildId: string
 ): Promise<{
   pool: AllSelection<DB, "app_public.ban_pools">;
+  poolMember?: AllSelection<DB, "app_public.ban_pool_members">;
   members: AllSelection<DB, "app_public.ban_pool_members">[];
 }> {
   const poolID = parseInt(nameOrID, 10);
@@ -225,8 +228,9 @@ export async function showPool(
   let canView = pool.guild_id === guildId;
 
   // Not owner, check if member
+  let poolMember
   if (!canView) {
-    const member = await db
+    poolMember = await db
       .selectFrom("app_public.ban_pool_members")
       .selectAll()
       .where("member_guild_id", "=", guildId)
@@ -234,7 +238,7 @@ export async function showPool(
       .executeTakeFirst();
 
     // If member was found
-    canView = !!member;
+    canView = poolMember !== undefined;
   }
 
   if (!canView) {
@@ -254,6 +258,7 @@ export async function showPool(
 
   return {
     pool,
+    poolMember,
     members,
   };
 }
@@ -262,13 +267,7 @@ export async function deletePool(
   poolName: string,
   guildId: string
 ): Promise<void> {
-  const pool = await db
-    .selectFrom("app_public.ban_pools")
-    .selectAll()
-    .where("pool_name", "=", poolName)
-    .where("guild_id", "=", guildId)
-    .executeTakeFirst();
-
+  const pool = await getPool(poolName, guildId);
   if (!pool) {
     throw new BanPoolError(
       "POOL_NOT_FOUND",
@@ -290,13 +289,7 @@ export async function createInvite(
   guildId: string,
   expireAfter: string
 ): Promise<string> {
-  const pool = await db
-    .selectFrom("app_public.ban_pools")
-    .selectAll()
-    .where("pool_name", "=", poolName)
-    .where("guild_id", "=", guildId)
-    .executeTakeFirst();
-
+  const pool = await getPool(poolName, guildId);
   if (!pool) {
     throw new BanPoolError(
       "POOL_NOT_FOUND",
