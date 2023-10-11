@@ -1,6 +1,18 @@
 import type { ColumnType } from "kysely";
 import type { IPostgresInterval } from "postgres-interval";
 
+export type AppPublicBanPoolAddAction = "ban" | "nothing" | "require_confirmation";
+
+export type AppPublicBanPoolAddMode = "all_bans" | "manual" | "nothing";
+
+export type AppPublicBanPoolPermission = "blocked" | "edit" | "view";
+
+export type AppPublicBanPoolRemoveAction = "nothing" | "require_confirmation" | "unban";
+
+export type AppPublicBanPoolRemoveMode = "all_unbans" | "manual" | "nothing";
+
+export type AppPublicBanPoolVisibility = "private" | "public";
+
 export type AppPublicBlockType = "channel" | "role";
 
 export type AppPublicEmojiStickerActionType = "message" | "reaction";
@@ -291,6 +303,47 @@ export interface AppPrivateSessions {
 export interface AppPrivateUserAuthenticationSecrets {
   user_id: Int8;
   details: Generated<Json>;
+}
+
+export interface AppPublicBanPoolEntries {
+  owner_guild_id: Int8;
+  pool_name: string;
+  source_guild_id: Int8;
+  user_id: Int8;
+  reason: string | null;
+}
+
+export interface AppPublicBanPoolInvites {
+  owner_guild_id: Int8;
+  pool_name: string;
+  invite_code: string;
+  expires_at: Timestamp | null;
+}
+
+export interface AppPublicBanPoolMembers {
+  owner_guild_id: Int8;
+  pool_name: string;
+  member_guild_id: Int8;
+  permission: Generated<AppPublicBanPoolPermission>;
+  add_mode: Generated<AppPublicBanPoolAddMode>;
+  remove_mode: Generated<AppPublicBanPoolRemoveMode>;
+  add_action: Generated<AppPublicBanPoolAddAction>;
+  remove_action: Generated<AppPublicBanPoolRemoveAction>;
+}
+
+export interface AppPublicBanPools {
+  id: Generated<number>;
+  guild_id: Int8;
+  pool_name: string;
+  description: string | null;
+  creator_id: Int8;
+  add_mode: Generated<AppPublicBanPoolAddMode>;
+  remove_mode: Generated<AppPublicBanPoolRemoveMode>;
+  add_action: Generated<AppPublicBanPoolAddAction>;
+  remove_action: Generated<AppPublicBanPoolRemoveAction>;
+  visibility: Generated<AppPublicBanPoolVisibility>;
+  created_at: Generated<Timestamp>;
+  updated_at: Generated<Timestamp>;
 }
 
 export interface AppPublicBotStats {
@@ -734,6 +787,10 @@ export interface DB {
   "app_hidden.failures": AppHiddenFailures;
   "app_private.sessions": AppPrivateSessions;
   "app_private.user_authentication_secrets": AppPrivateUserAuthenticationSecrets;
+  "app_public.ban_pool_entries": AppPublicBanPoolEntries;
+  "app_public.ban_pool_invites": AppPublicBanPoolInvites;
+  "app_public.ban_pool_members": AppPublicBanPoolMembers;
+  "app_public.ban_pools": AppPublicBanPools;
   "app_public.bot_stats": AppPublicBotStats;
   "app_public.cached_guilds": AppPublicCachedGuilds;
   "app_public.cached_users": AppPublicCachedUsers;
