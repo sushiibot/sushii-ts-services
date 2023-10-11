@@ -27,10 +27,14 @@ export default class Metrics {
     const register = new Registry();
     const prefix = "sushii_ts_worker_";
 
-    collectDefaultMetrics({
-      register,
-      prefix,
-    });
+    // Only collect when not running with bun
+    // PerformanceObserver is not yet implemented in Bun.
+    if (!process.versions.bun) {
+      collectDefaultMetrics({
+        register,
+        prefix,
+      });
+    }
 
     this.registry = register;
 
