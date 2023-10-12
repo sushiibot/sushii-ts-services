@@ -8,7 +8,7 @@ import {
   showPool,
   deletePool,
   createInvite,
-  deleteInvite,
+  checkAndDeleteInvite,
 } from "./BanPool.service";
 
 import {BanPoolError} from "./errors"
@@ -109,7 +109,9 @@ describe("BanPool.service", () => {
     });
 
     it("should throw an error if the guild is the owner of the pool", async () => {
-      const inviteCode = await createPool(
+      const {
+        inviteCode
+      } = await createPool(
         givePoolName,
         giveGuildId,
         giveUserId,

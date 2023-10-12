@@ -15,7 +15,7 @@ import {
   createPool,
   createInvite,
   deletePool,
-  deleteInvite,
+  checkAndDeleteInvite,
   joinPool,
   showPool,
 } from "./BanPool.service";
@@ -618,7 +618,10 @@ If you want to make a new invite, use \`/banpool invite ${name} <invite_code>\``
     );
 
     try {
-      await deleteInvite(inviteCode);
+      await checkAndDeleteInvite(
+        interaction.guildId,
+        inviteCode,
+        );
     } catch (err) {
       if (err instanceof BanPoolError) {
         await interaction.reply({
