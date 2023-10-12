@@ -13,9 +13,7 @@ import Color from "../../../utils/colors";
 import toTimestamp from "../../../utils/toTimestamp";
 import {
   createPool,
-  createInvite,
   deletePool,
-  checkAndDeleteInvite,
   joinPool,
   showPool,
 } from "./BanPool.service";
@@ -23,6 +21,7 @@ import {
 BanPoolError
 } from "./errors"
 import { buildPoolSettingsString } from "./settings";
+import { checkAndDeleteInvite, createInvite } from "./BanPoolInvite.service";
 
 enum BanPoolOptionCommand {
   Create = "create",
@@ -33,6 +32,7 @@ enum BanPoolOptionCommand {
   DeleteInvite = "delete_invite",
   Join = "join",
   ServerKick = "kick-server",
+  // Grant permissions to a specific server, using their server ID
   ServerPermissions = "server-permissions",
 }
 
