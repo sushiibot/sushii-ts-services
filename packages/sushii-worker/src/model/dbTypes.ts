@@ -1,13 +1,13 @@
 import type { ColumnType } from "kysely";
 import type { IPostgresInterval } from "postgres-interval";
 
-export type AppPublicBanPoolAddAction = "ban" | "nothing" | "require_confirmation";
+export type AppPublicBanPoolAddAction = "ask" | "ban" | "nothing" | "timeout_and_ask";
 
 export type AppPublicBanPoolAddMode = "all_bans" | "manual" | "nothing";
 
 export type AppPublicBanPoolPermission = "blocked" | "edit" | "view";
 
-export type AppPublicBanPoolRemoveAction = "nothing" | "require_confirmation" | "unban";
+export type AppPublicBanPoolRemoveAction = "ask" | "nothing" | "unban";
 
 export type AppPublicBanPoolRemoveMode = "all_unbans" | "manual" | "nothing";
 
