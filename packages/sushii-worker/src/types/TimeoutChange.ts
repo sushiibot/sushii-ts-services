@@ -25,7 +25,7 @@ export type TimeoutChange =
     };
 
 export function getTimeoutChangeData(
-  event: GuildAuditLogsEntry
+  event: GuildAuditLogsEntry,
 ): TimeoutChange | undefined {
   const timeoutChange = findTimeoutChange(event.changes);
   if (!timeoutChange) {
@@ -41,7 +41,7 @@ export function getTimeoutChangeData(
       {
         timeoutChange,
       },
-      "Mismatch audit log change type"
+      "Mismatch audit log change type",
     );
 
     return;

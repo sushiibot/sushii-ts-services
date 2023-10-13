@@ -29,8 +29,8 @@ export default class TagAdminCommand extends SlashCommandHandler {
             .setName("name")
             .setDescription("The tag name to delete.")
             .setAutocomplete(true)
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -40,15 +40,15 @@ export default class TagAdminCommand extends SlashCommandHandler {
           o
             .setName("user")
             .setDescription("The user to delete ALL tags.")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not in cached guild");
@@ -67,7 +67,7 @@ export default class TagAdminCommand extends SlashCommandHandler {
 
   async deleteHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const tagName = interaction.options.getString("name", true);
 
@@ -102,7 +102,7 @@ export default class TagAdminCommand extends SlashCommandHandler {
 
   async deleteUserTagsHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const user = interaction.options.getUser("user", true);
 

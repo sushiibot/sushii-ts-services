@@ -14,10 +14,23 @@ import {
   joinPoolAlreadyMemberEmbed,
   notFoundBasic,
   notFoundWithIDEmbed,
-} from "./errors"
-import { getPoolByNameAndGuildId, getPoolByNameOrIdAndGuildId, insertPool } from "./BanPool.repository";
-import { deleteBanPoolInvite, getBanPoolInviteByCode, incrementBanPoolInviteUse, insertBanPoolInvite } from "./BanPoolInvite.repository";
-import { getBanPoolMember, getBanPoolMembers, insertBanPoolMember } from "./BanPoolMember.repository";
+} from "./errors";
+import {
+  getPoolByNameAndGuildId,
+  getPoolByNameOrIdAndGuildId,
+  insertPool,
+} from "./BanPool.repository";
+import {
+  deleteBanPoolInvite,
+  getBanPoolInviteByCode,
+  incrementBanPoolInviteUse,
+  insertBanPoolInvite,
+} from "./BanPoolInvite.repository";
+import {
+  getBanPoolMember,
+  getBanPoolMembers,
+  insertBanPoolMember,
+} from "./BanPoolMember.repository";
 import { BanPoolRow } from "./BanPool.table";
 import { BanPoolMemberRow } from "./BanPoolMember.table";
 import { generateInvite } from "./BanPoolInvite.service";
@@ -26,10 +39,10 @@ export async function createPool(
   poolName: string,
   guildId: string,
   creatorId: string,
-  description: string | null
+  description: string | null,
 ): Promise<{
-  pool: AllSelection<DB, "app_public.ban_pools">,
-  inviteCode: string
+  pool: AllSelection<DB, "app_public.ban_pools">;
+  inviteCode: string;
 }> {
   const existingPool = await getPoolByNameAndGuildId(db, poolName, guildId);
 
@@ -42,29 +55,26 @@ export async function createPool(
     throw new BanPoolError(
       "POOL_ALREADY_EXISTS",
       "Ban pool already exists",
-      embed
+      embed,
     );
   }
 
-  const pool = await insertPool(
-    db,{
-      pool_name: poolName,
-      description,
-      guild_id: guildId,
-      creator_id: creatorId,
-    });
+  const pool = await insertPool(db, {
+    pool_name: poolName,
+    description,
+    guild_id: guildId,
+    creator_id: creatorId,
+  });
 
   const inviteCode = generateInvite();
 
   // Create 1d invite code
-  await insertBanPoolInvite(
-    db,
-    {
+  await insertBanPoolInvite(db, {
     owner_guild_id: guildId,
     pool_name: poolName,
     invite_code: inviteCode,
     expires_at: dayjs.utc().add(1, "day").toDate(),
-  })
+  });
 
   return {
     pool,
@@ -75,18 +85,18 @@ export async function createPool(
 export async function joinPool(
   inviteCode: string,
   guildId: string,
-  getOwnerGuild: (guildId: string) => Guild | undefined
+  getOwnerGuild: (guildId: string) => Guild | undefined,
 ): Promise<{
   pool: AllSelection<DB, "app_public.ban_pools">;
   guild: Guild;
 }> {
-  const invite = await getBanPoolInviteByCode(db,inviteCode)
+  const invite = await getBanPoolInviteByCode(db, inviteCode);
 
   if (!invite) {
     throw new BanPoolError(
       "INVITE_NOT_FOUND",
       "Invite not found",
-      inviteNotFoundEmbed
+      inviteNotFoundEmbed,
     );
   }
 
@@ -97,24 +107,28 @@ export async function joinPool(
     throw new BanPoolError(
       "INVITE_MAX_USES_REACHED",
       "Invite max uses reached",
-      inviteMaxUseReachedEmbed
+      inviteMaxUseReachedEmbed,
     );
   }
 
   // Check if invite is expired
   if (dayjs.utc(invite.expires_at).isBefore(dayjs.utc())) {
     // Delete the expired invite
-    await deleteBanPoolInvite(db,inviteCode)
+    await deleteBanPoolInvite(db, inviteCode);
 
     throw new BanPoolError(
       "INVITE_EXPIRED",
       "Invite expired",
-      inviteExpiredEmbed
+      inviteExpiredEmbed,
     );
   }
 
   // Invite's guild id, not current guild id
-  const pool = await getPoolByNameAndGuildId(db,invite.pool_name, invite.owner_guild_id);
+  const pool = await getPoolByNameAndGuildId(
+    db,
+    invite.pool_name,
+    invite.owner_guild_id,
+  );
 
   // This shouldn't really happen since invite will be deleted if pool is also deleted
   if (!pool) {
@@ -126,22 +140,18 @@ export async function joinPool(
     throw new BanPoolError(
       "CANNOT_JOIN_OWN_POOL",
       "Can't join your own pool",
-      joinOwnPoolEmbed
+      joinOwnPoolEmbed,
     );
   }
 
   // Check if this guild is already a member of the pool
-  const existingMember = await getBanPoolMember(
-    db,
-    guildId,
-    pool,
-  )
+  const existingMember = await getBanPoolMember(db, guildId, pool);
 
   if (existingMember) {
     throw new BanPoolError(
       "POOL_ALREADY_MEMBER",
       "Already in pool",
-      joinPoolAlreadyMemberEmbed
+      joinPoolAlreadyMemberEmbed,
     );
   }
 
@@ -151,23 +161,21 @@ export async function joinPool(
     throw new BanPoolError(
       "GUILD_UNAVAILABLE",
       "Guild unavailable",
-      guildUnavailableEmbed
+      guildUnavailableEmbed,
     );
   }
 
   // Join pool
-  await insertBanPoolMember(
-    db,
-    {
+  await insertBanPoolMember(db, {
     member_guild_id: guildId,
     owner_guild_id: pool.guild_id,
     pool_name: pool.pool_name,
-  })
+  });
 
-  await db.transaction().execute(async tx => {
+  await db.transaction().execute(async (tx) => {
     // Always increment
     await incrementBanPoolInviteUse(tx, inviteCode);
-  })
+  });
 
   return {
     pool,
@@ -177,18 +185,18 @@ export async function joinPool(
 
 export async function showPool(
   nameOrID: string,
-  guildId: string
+  guildId: string,
 ): Promise<{
   pool: BanPoolRow;
   poolMember?: BanPoolMemberRow;
   members: BanPoolMemberRow[];
 }> {
-  const pool = await getPoolByNameOrIdAndGuildId(db,nameOrID, guildId);
+  const pool = await getPoolByNameOrIdAndGuildId(db, nameOrID, guildId);
   if (!pool) {
     throw new BanPoolError(
       "POOL_NOT_FOUND",
       "Ban pool not found",
-      notFoundWithIDEmbed
+      notFoundWithIDEmbed,
     );
   }
 
@@ -196,9 +204,9 @@ export async function showPool(
   let canView = pool.guild_id === guildId;
 
   // Not owner, check if member
-  let poolMember
+  let poolMember;
   if (!canView) {
-    poolMember = await getBanPoolMember(db,guildId, pool)
+    poolMember = await getBanPoolMember(db, guildId, pool);
 
     // If member was found
     canView = poolMember !== undefined;
@@ -208,11 +216,11 @@ export async function showPool(
     throw new BanPoolError(
       "POOL_NOT_FOUND",
       "Ban pool not found",
-      notFoundWithIDEmbed
+      notFoundWithIDEmbed,
     );
   }
 
-  const members = await getBanPoolMembers(db,pool.guild_id, pool.pool_name)
+  const members = await getBanPoolMembers(db, pool.guild_id, pool.pool_name);
 
   return {
     pool,
@@ -223,14 +231,14 @@ export async function showPool(
 
 export async function deletePool(
   poolName: string,
-  guildId: string
+  guildId: string,
 ): Promise<void> {
-  const pool = await getPoolByNameAndGuildId(db,poolName, guildId);
+  const pool = await getPoolByNameAndGuildId(db, poolName, guildId);
   if (!pool) {
     throw new BanPoolError(
       "POOL_NOT_FOUND",
       "Ban pool not found",
-      notFoundBasic
+      notFoundBasic,
     );
   }
 

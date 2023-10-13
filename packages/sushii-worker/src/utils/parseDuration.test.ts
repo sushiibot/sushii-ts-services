@@ -41,6 +41,6 @@ describe("parseDuration", () => {
           expect(dur.milliseconds()).toEqual(expectedDuration.milliseconds());
         }
       });
-    }
+    },
   );
 });

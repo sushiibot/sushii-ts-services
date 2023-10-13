@@ -24,7 +24,7 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
     ctx: Context,
-    interaction: ButtonInteraction
+    interaction: ButtonInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
@@ -71,7 +71,7 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
 
         // Update button
         const secondRow = ActionRowBuilder.from<ButtonBuilder>(
-          components[1] as ActionRow<ButtonComponent>
+          components[1] as ActionRow<ButtonComponent>,
         );
 
         // Create a new builder for the history button, second row first button
@@ -103,7 +103,7 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
 
         const sushiiMember = interaction.guild.members.me;
         const hasPermission = sushiiMember?.permissions.has(
-          PermissionFlagsBits.BanMembers
+          PermissionFlagsBits.BanMembers,
         );
 
         const bans = await getUserLookupData(ctx, targetUser);
@@ -116,18 +116,18 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
           {
             botHasBanPermission: hasPermission ?? true,
             showBasicInfo: false,
-          }
+          },
         );
 
         embedBuilders.push(embed);
 
         // Disable lookup button, second row, second button
         const secondRow = ActionRowBuilder.from<ButtonBuilder>(
-          components[1] as ActionRow<ButtonComponent>
+          components[1] as ActionRow<ButtonComponent>,
         );
 
         const lookupButton = ButtonBuilder.from(
-          secondRow.components[1]
+          secondRow.components[1],
         ).setDisabled(true);
         secondRow.components[1] = lookupButton;
 

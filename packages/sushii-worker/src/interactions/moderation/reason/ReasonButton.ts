@@ -15,7 +15,7 @@ export default class ModLogReasonButtonHandler extends ButtonHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
     ctx: Context,
-    interaction: ButtonInteraction
+    interaction: ButtonInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
@@ -35,7 +35,7 @@ export default class ModLogReasonButtonHandler extends ButtonHandler {
       .setStyle(TextInputStyle.Paragraph)
       .setCustomId("reason");
     const row = new ActionRowBuilder<TextInputBuilder>().addComponents(
-      textInput
+      textInput,
     );
 
     await interaction.showModal({

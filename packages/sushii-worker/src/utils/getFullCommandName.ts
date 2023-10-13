@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 
 export default function getFullCommandName(
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ): string {
   const subCommand = interaction.options.getSubcommand(false);
   const subCommandGroup = interaction.options.getSubcommandGroup();

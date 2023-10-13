@@ -21,13 +21,13 @@ export default class PingCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const discordRestStart = process.hrtime.bigint();
     await interaction.reply(
       t("ping.title", {
         ns: "commands",
-      })
+      }),
     );
     const discordRestEnd = process.hrtime.bigint();
 
@@ -48,7 +48,7 @@ export default class PingCommand extends SlashCommandHandler {
             BigInt(1e6)
           ).toString(),
           sushiiDbMs: ((sushiiDbEnd - sushiiDbStart) / BigInt(1000)).toString(),
-        })
+        }),
       )
       .setColor(Color.Success);
 

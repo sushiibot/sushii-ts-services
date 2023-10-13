@@ -40,7 +40,7 @@ if (!parsed.success) {
     {
       error: parsed.error.format(),
     },
-    "❌ Invalid environment variables"
+    "❌ Invalid environment variables",
   );
 
   process.exit(1);

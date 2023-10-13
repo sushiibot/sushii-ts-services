@@ -12,7 +12,7 @@ interface MenuRoleData {
 }
 
 export function getRoleMenuRequiredRole(
-  msg: ButtonInteraction["message"]
+  msg: ButtonInteraction["message"],
 ): string | null {
   if (!msg.embeds) {
     return null;
@@ -24,7 +24,7 @@ export function getRoleMenuRequiredRole(
   }
 
   const roleMention = embed.fields?.find(
-    (field) => field.name === "Required role"
+    (field) => field.name === "Required role",
   )?.value;
 
   if (!roleMention) {
@@ -40,7 +40,7 @@ export function getRoleMenuRequiredRole(
 }
 
 export function getRoleMenuMaxRoles(
-  msg: ButtonInteraction["message"]
+  msg: ButtonInteraction["message"],
 ): number | null {
   if (!msg.embeds) {
     return null;
@@ -52,7 +52,7 @@ export function getRoleMenuMaxRoles(
   }
 
   const maxRoles = embed.fields?.find(
-    (field) => field.name === "Maximum roles you can pick"
+    (field) => field.name === "Maximum roles you can pick",
   )?.value;
   if (!maxRoles) {
     return null;
@@ -66,7 +66,7 @@ export function getRoleMenuMaxRoles(
  * Parse a message to get all the roles contained in buttons.
  */
 export function getRoleMenuMessageButtonRoles(
-  msg: ButtonInteraction["message"]
+  msg: ButtonInteraction["message"],
 ): MenuRoleData[] {
   if (!msg.components) {
     return [];
@@ -77,7 +77,7 @@ export function getRoleMenuMessageButtonRoles(
       row.components
         .filter(
           (component): component is ButtonComponent =>
-            component.type === ComponentType.Button
+            component.type === ComponentType.Button,
         )
         .map((button) => {
           if (!button.customId) {
@@ -94,13 +94,13 @@ export function getRoleMenuMessageButtonRoles(
             label: button.label!,
           };
         })
-        .filter((button): button is MenuRoleData => !!button.roleId)
+        .filter((button): button is MenuRoleData => !!button.roleId),
     )
     .flat();
 }
 
 export function getRoleMenuMessageSelectRoles(
-  msg: ButtonInteraction["message"]
+  msg: ButtonInteraction["message"],
 ): MenuRoleData[] {
   if (!msg.components) {
     return [];
@@ -111,15 +111,15 @@ export function getRoleMenuMessageSelectRoles(
       row.components
         .filter(
           (component): component is StringSelectMenuComponent =>
-            component.type === ComponentType.StringSelect
+            component.type === ComponentType.StringSelect,
         )
         .flatMap((selectMenu) =>
           selectMenu.options.map((option) => ({
             roleId: option.value,
             label: option.label,
-          }))
+          })),
         )
-        .filter((option): option is MenuRoleData => !!option.roleId)
+        .filter((option): option is MenuRoleData => !!option.roleId),
     )
     .flat();
 }

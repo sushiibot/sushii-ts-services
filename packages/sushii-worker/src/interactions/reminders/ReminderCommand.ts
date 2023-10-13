@@ -27,17 +27,17 @@ export default class ReminderCommand extends SlashCommandHandler {
           o
             .setName("duration")
             .setDescription("When in the future to remind you.")
-            .setRequired(true)
+            .setRequired(true),
         )
         .addStringOption((o) =>
           o
             .setName("description")
             .setDescription("Description of the reminder.")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((c) =>
-      c.setName("list").setDescription("List all of your pending reminders.")
+      c.setName("list").setDescription("List all of your pending reminders."),
     )
     .addSubcommand((c) =>
       c
@@ -48,15 +48,15 @@ export default class ReminderCommand extends SlashCommandHandler {
             .setName("reminder")
             .setDescription("Which reminder to delete.")
             .setRequired(true)
-            .setAutocomplete(true)
-        )
+            .setAutocomplete(true),
+        ),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const subcommand = interaction.options.getSubcommand();
     switch (subcommand) {
@@ -74,7 +74,7 @@ export default class ReminderCommand extends SlashCommandHandler {
 
   static async addHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const durationStr = interaction.options.getString("duration", true);
 
@@ -86,12 +86,14 @@ export default class ReminderCommand extends SlashCommandHandler {
         embeds: [
           new EmbedBuilder()
             .setTitle(
-              t("reminder.add.error.invalid_duration_title", { ns: "commands" })
+              t("reminder.add.error.invalid_duration_title", {
+                ns: "commands",
+              }),
             )
             .setDescription(
               t("reminder.add.error.invalid_duration_description", {
                 ns: "commands",
-              })
+              }),
             )
             .setColor(Color.Error)
             .toJSON(),
@@ -120,7 +122,7 @@ export default class ReminderCommand extends SlashCommandHandler {
           ns: "commands",
           expireAtTimestamp: expireAt.unix(),
           description,
-        })
+        }),
       )
       .setColor(Color.Success);
 
@@ -132,7 +134,7 @@ export default class ReminderCommand extends SlashCommandHandler {
 
   static async listHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const reminders = await ctx.sushiiAPI.sdk.getUserReminders({
       userId: interaction.user.id,
@@ -148,10 +150,10 @@ export default class ReminderCommand extends SlashCommandHandler {
         embeds: [
           new EmbedBuilder()
             .setTitle(
-              t("reminder.list.success.empty_title", { ns: "commands" })
+              t("reminder.list.success.empty_title", { ns: "commands" }),
             )
             .setDescription(
-              t("reminder.list.success.empty_description", { ns: "commands" })
+              t("reminder.list.success.empty_description", { ns: "commands" }),
             )
             .setColor(Color.Success)
             .toJSON(),
@@ -175,7 +177,7 @@ export default class ReminderCommand extends SlashCommandHandler {
 
   static async deleteHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const reminder = interaction.options.getString("reminder", true);
 
@@ -184,7 +186,7 @@ export default class ReminderCommand extends SlashCommandHandler {
         ctx,
         interaction,
         "Invalid reminder, please select a reminder from the autocomplete list!",
-        true
+        true,
       );
 
       return;
@@ -211,7 +213,7 @@ export default class ReminderCommand extends SlashCommandHandler {
             .setTitle(
               t("reminder.delete.error.not_found", {
                 ns: "commands",
-              })
+              }),
             )
             .setColor(Color.Warning)
             .toJSON(),
@@ -229,7 +231,7 @@ export default class ReminderCommand extends SlashCommandHandler {
           ns: "commands",
           expireAtTimestamp: dayjs.utc(deletedReminder?.expireAt).unix(),
           description: deletedReminder?.description || "unknown",
-        })
+        }),
       )
       .setColor(Color.Success);
 

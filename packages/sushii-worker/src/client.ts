@@ -43,7 +43,7 @@ interface FocusedOption {
 
 function findFocusedOptionRecur(
   options: AutocompleteInteraction["options"],
-  parents: string[]
+  parents: string[],
 ): FocusedOption | undefined {
   const subGroup = options.getSubcommandGroup();
 
@@ -65,7 +65,7 @@ function findFocusedOptionRecur(
 }
 
 function findFocusedOption(
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ): FocusedOption | undefined {
   // eslint-disable-next-line no-restricted-syntax
   return findFocusedOptionRecur(interaction.options, [interaction.commandName]);
@@ -152,7 +152,7 @@ export default class Client {
     handlers.forEach((handler) => {
       if (Array.isArray(handler.fullCommandNamePath)) {
         handler.fullCommandNamePath.forEach((path) =>
-          this.autocompleteHandlers.set(path, handler)
+          this.autocompleteHandlers.set(path, handler),
         );
       } else {
         this.autocompleteHandlers.set(handler.fullCommandNamePath, handler);
@@ -203,7 +203,7 @@ export default class Client {
   private getCommandsArray(): RESTPostAPIApplicationCommandsJSONBody[] {
     const slashCmds = Array.from(this.commands.values()).map((c) => c.command);
     const contextMenus = Array.from(this.contextMenuHandlers.values()).map(
-      (c) => c.command
+      (c) => c.command,
     );
 
     return [...slashCmds, ...contextMenus];
@@ -220,7 +220,7 @@ export default class Client {
     try {
       const res = await this.context.client.rest.put(
         Routes.applicationCommands(config.APPLICATION_ID),
-        { body: this.getCommandsArray() }
+        { body: this.getCommandsArray() },
       );
 
       this.context.setCommands(res as RESTPutAPIApplicationCommandsResult);
@@ -238,7 +238,7 @@ export default class Client {
    * @returns
    */
   private async handleSlashCommandInteraction(
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const command = this.commands.get(interaction.commandName);
 
@@ -253,7 +253,7 @@ export default class Client {
         guildId: interaction.guildId,
         userId: interaction.user.id,
       },
-      "received command"
+      "received command",
     );
 
     try {
@@ -267,7 +267,7 @@ export default class Client {
           log.info(
             "command %s failed check: %s",
             interaction.commandName,
-            checkRes.message
+            checkRes.message,
           );
           return;
         }
@@ -279,7 +279,7 @@ export default class Client {
           guildId: interaction.guildId,
           userId: interaction.user.id,
         },
-        "running command"
+        "running command",
       );
 
       await command.handler(this.context, interaction);
@@ -326,14 +326,14 @@ export default class Client {
    * @returns
    */
   private async handleAutocompleteInteraction(
-    interaction: AutocompleteInteraction
+    interaction: AutocompleteInteraction,
   ): Promise<void> {
     // Find focused option path, e.g. notification.delete
     const focusedOption = findFocusedOption(interaction);
 
     if (!focusedOption) {
       throw new Error(
-        `no focused option found for autocomplete ${interaction.commandName}`
+        `no focused option found for autocomplete ${interaction.commandName}`,
       );
     }
 
@@ -351,7 +351,7 @@ export default class Client {
         guildId: interaction.guildId,
         userId: interaction.user.id,
       },
-      "received autocomplete"
+      "received autocomplete",
     );
 
     try {
@@ -366,7 +366,7 @@ export default class Client {
         log.info(
           "autocomplete %s failed check: %s",
           focusedOption.path,
-          checkRes.message
+          checkRes.message,
         );
         return;
       }
@@ -374,7 +374,7 @@ export default class Client {
       await autocomplete.handler(
         this.context,
         interaction,
-        focusedOption.option
+        focusedOption.option,
       );
     } catch (e) {
       Sentry.captureException(e, {
@@ -395,7 +395,7 @@ export default class Client {
    * @returns
    */
   private async handleContextMenuInteraction(
-    interaction: ContextMenuCommandInteraction
+    interaction: ContextMenuCommandInteraction,
   ): Promise<void> {
     const command = this.contextMenuHandlers.get(interaction.commandName);
 
@@ -420,7 +420,7 @@ export default class Client {
           log.info(
             "command %s failed check: %s",
             interaction.commandName,
-            checkRes.message
+            checkRes.message,
           );
           return;
         }
@@ -454,16 +454,16 @@ export default class Client {
    * @param interaction modal submit interaction
    */
   private async handleModalSubmit(
-    interaction: ModalSubmitInteraction
+    interaction: ModalSubmitInteraction,
   ): Promise<void> {
     const modalHandler = this.modalHandlers.find(
-      (handler) => handler.customIDMatch(interaction.customId) !== false
+      (handler) => handler.customIDMatch(interaction.customId) !== false,
     );
 
     if (!modalHandler) {
       log.error(
         "received unknown modal submit interaction: %s",
-        interaction.customId
+        interaction.customId,
       );
 
       return;
@@ -491,12 +491,12 @@ export default class Client {
    * @param interaction button interaction
    */
   private async handleButtonSubmit(
-    interaction: ButtonInteraction
+    interaction: ButtonInteraction,
   ): Promise<void> {
     // TODO: button / select menu handlers don't really need to be a collection
     // as we are always iterating through all handlers
     const buttonHandler = this.buttonHandlers.find(
-      (handler) => handler.customIDMatch(interaction.customId) !== false
+      (handler) => handler.customIDMatch(interaction.customId) !== false,
     );
 
     if (!buttonHandler) {
@@ -528,16 +528,16 @@ export default class Client {
    * @param interaction select menu interaction
    */
   private async handleSelectMenuSubmit(
-    interaction: AnySelectMenuInteraction
+    interaction: AnySelectMenuInteraction,
   ): Promise<void> {
     const selectMenuHandler = this.selectMenuHandlers.find(
-      (handler) => handler.customIDMatch(interaction.customId) !== false
+      (handler) => handler.customIDMatch(interaction.customId) !== false,
     );
 
     if (!selectMenuHandler) {
       log.error(
         "received unknown select menu interaction: %s",
-        interaction.customId
+        interaction.customId,
       );
 
       return;
@@ -586,7 +586,7 @@ export default class Client {
       log.error(
         err,
         "error handling interaction, should be caught %s",
-        interaction.id
+        interaction.id,
       );
     }
   }

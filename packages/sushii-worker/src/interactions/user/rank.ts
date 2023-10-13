@@ -17,14 +17,17 @@ export default class RankCommand extends SlashCommandHandler {
     .setDescription("View your or another user's rank.")
     .setDMPermission(false)
     .addUserOption((o) =>
-      o.setName("user").setDescription("Whose rank to view.").setRequired(false)
+      o
+        .setName("user")
+        .setDescription("Whose rank to view.")
+        .setRequired(false),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild missing");
@@ -39,14 +42,14 @@ export default class RankCommand extends SlashCommandHandler {
     if (res.err) {
       logger.error({ err: res.val }, "Failed to get user rank");
       await interaction.editReply(
-        getErrorMessage("Failed to get user rank", res.val)
+        getErrorMessage("Failed to get user rank", res.val),
       );
 
       return;
     }
 
     const attachment = new AttachmentBuilder(
-      Buffer.from(res.safeUnwrap().rankBuffer)
+      Buffer.from(res.safeUnwrap().rankBuffer),
     ).setName("rank.png");
 
     await interaction.editReply({

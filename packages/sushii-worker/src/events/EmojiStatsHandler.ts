@@ -40,7 +40,7 @@ type NewExpressionStatWithGuild = NewExpressionStat & {
 async function incrementEmojiCounts(
   userId: string,
   actionType: AppPublicEmojiStickerActionType,
-  values: NewExpressionStat[]
+  values: NewExpressionStat[],
 ): Promise<void> {
   return startCaughtActiveSpan(tracer, "incrementEmojiCounts", async () => {
     // Check the guilds the emoji is from
@@ -50,7 +50,7 @@ async function incrementEmojiCounts(
       .where(
         "id",
         "in",
-        values.map((v) => v.asset_id)
+        values.map((v) => v.asset_id),
       )
       .execute();
 
@@ -94,20 +94,20 @@ async function incrementEmojiCounts(
       .where(
         "asset_id",
         "in",
-        valuesKnown.map((v) => v.asset_id)
+        valuesKnown.map((v) => v.asset_id),
       )
       // Within the past hour, ignore any older entries which are deleted later
       .where(
         "last_used",
         ">=",
-        dayjs.utc().subtract(UserEmojiRateLimitDuration).toDate()
+        dayjs.utc().subtract(UserEmojiRateLimitDuration).toDate(),
       )
       .execute();
 
     span.end();
 
     const assetIdSet = new Set<string>(
-      rateLimitedAssets.map((ra) => ra.asset_id)
+      rateLimitedAssets.map((ra) => ra.asset_id),
     );
 
     // Remove the ratelimited users from the valuesKnown
@@ -131,16 +131,16 @@ async function incrementEmojiCounts(
               "app_public.emoji_sticker_stats.count",
               "+",
               // Increment by the insert value's count
-              eb.ref("excluded.count")
+              eb.ref("excluded.count"),
             ),
           count_external: (eb) =>
             eb.bxp(
               "app_public.emoji_sticker_stats.count_external",
               "+",
               // Increment by the insert value's count_external
-              eb.ref("excluded.count_external")
+              eb.ref("excluded.count_external"),
             ),
-        })
+        }),
       )
       .execute();
     span2.end();
@@ -155,14 +155,14 @@ async function incrementEmojiCounts(
           asset_id: v.asset_id,
           action_type: actionType,
           last_used: dayjs.utc().toDate(),
-        }))
+        })),
       )
       .onConflict((oc) =>
         // Conflict if there is an older entry, as it's not queried to check if user is rate limited.
         // Update the last_used time in the existing entry
         oc.columns(["user_id", "asset_id", "action_type"]).doUpdateSet({
           last_used: dayjs.utc().toDate(),
-        })
+        }),
       )
       .execute();
 
@@ -194,7 +194,7 @@ export const emojiStatsMsgHandler: EventHandlerFn<
         guild_id: msg.guild.id,
         asset_id: emojiId,
         count: 1,
-      })
+      }),
     );
 
     // Add stickers if any
@@ -222,7 +222,7 @@ export const emojiStatsReactHandler: EventHandlerFn<
 > = async (
   ctx: Context,
   reaction: MessageReaction | PartialMessageReaction,
-  user: User | PartialUser
+  user: User | PartialUser,
 ): Promise<void> => {
   // DM message
   if (!reaction.message.inGuild()) {
@@ -250,7 +250,7 @@ export const emojiAndStickerStatsReadyHandler: EventHandlerFn<
     {
       guildsCount: client.guilds.cache.size,
     },
-    "Saving all guild emojis and stickers to database"
+    "Saving all guild emojis and stickers to database",
   );
 
   let emojiCount = 0;
@@ -300,7 +300,7 @@ export const emojiAndStickerStatsReadyHandler: EventHandlerFn<
   }
 
   logger.info(
-    `Saved ${emojiCount} emojis and ${stickerCount} stickers to database`
+    `Saved ${emojiCount} emojis and ${stickerCount} stickers to database`,
   );
 };
 
@@ -308,7 +308,7 @@ async function addGuildEmojiOrSticker(
   guildId: string,
   assetId: string,
   name: string,
-  type: AppPublicGuildAssetType
+  type: AppPublicGuildAssetType,
 ): Promise<void> {
   await db
     .insertInto("app_public.guild_emojis_and_stickers")
@@ -322,20 +322,20 @@ async function addGuildEmojiOrSticker(
     .onConflict((oc) =>
       oc.column("id").doUpdateSet({
         name,
-      })
+      }),
     )
     .execute();
 }
 
 export const emojiAddHandler: EventHandlerFn<Events.GuildEmojiCreate> = async (
   ctx: Context,
-  emoji: GuildEmoji
+  emoji: GuildEmoji,
 ) => {
   await addGuildEmojiOrSticker(
     emoji.guild.id,
     emoji.id,
     emoji.name || "",
-    "emoji"
+    "emoji",
   );
 };
 
@@ -346,7 +346,7 @@ export const emojiUpdateHandler: EventHandlerFn<
     emoji.guild.id,
     emoji.id,
     emoji.name || "",
-    "emoji"
+    "emoji",
   );
 };
 
@@ -361,7 +361,7 @@ export const stickerAddHandler: EventHandlerFn<
     sticker.guildId,
     sticker.id,
     sticker.name,
-    "sticker"
+    "sticker",
   );
 };
 
@@ -376,7 +376,7 @@ export const stickerUpdateHandler: EventHandlerFn<
     sticker.guildId,
     sticker.id,
     sticker.name,
-    "sticker"
+    "sticker",
   );
 };
 

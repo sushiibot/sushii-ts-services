@@ -9,7 +9,7 @@ import {
   // deletePool,
 } from "./BanPool.service";
 
-import {BanPoolError} from "./errors"
+import { BanPoolError } from "./errors";
 
 describe("BanPool.service", () => {
   const givePoolName = "testing-pool";
@@ -37,11 +37,11 @@ describe("BanPool.service", () => {
     });
 
     it("should create a new pool", async () => {
-      const {pool, inviteCode} = await createPool(
+      const { pool, inviteCode } = await createPool(
         givePoolName,
         giveGuildId,
         giveUserId,
-        giveDescription
+        giveDescription,
       );
 
       expect(inviteCode).toBeDefined();
@@ -82,7 +82,7 @@ describe("BanPool.service", () => {
           givePoolName,
           giveGuildId,
           giveUserId,
-          giveDescription
+          giveDescription,
         );
       } catch (err) {
         expect(err).toBeInstanceOf(BanPoolError);
@@ -107,13 +107,11 @@ describe("BanPool.service", () => {
     });
 
     it("should throw an error if the guild is the owner of the pool", async () => {
-      const {
-        inviteCode
-      } = await createPool(
+      const { inviteCode } = await createPool(
         givePoolName,
         giveGuildId,
         giveUserId,
-        giveDescription
+        giveDescription,
       );
 
       expect(inviteCode).toBeDefined();

@@ -20,14 +20,14 @@ export default class FishyCommand extends SlashCommandHandler {
       o
         .setName("user")
         .setDescription("Who to fishy for or yourself if you have no friends")
-        .setRequired(true)
+        .setRequired(true),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const target = interaction.options.getUser("user", true);
 
@@ -39,7 +39,7 @@ export default class FishyCommand extends SlashCommandHandler {
         i18next.t("fishy.cooldown", {
           ns: "commands",
           nextFishyTimestamp: res.unix(),
-        })
+        }),
       );
     } else {
       embed = embed.setColor(Color.Success).setDescription(
@@ -50,7 +50,7 @@ export default class FishyCommand extends SlashCommandHandler {
           count: res.caughtAmount,
           oldAmount: res.oldAmount,
           newAmount: res.newAmount,
-        })
+        }),
       );
     }
 

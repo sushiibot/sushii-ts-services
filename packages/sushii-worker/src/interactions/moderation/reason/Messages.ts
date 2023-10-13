@@ -12,7 +12,7 @@ ${SushiiEmoji.BlueDot}A range of cases: \`120-130\` - Updates all cases includin
 ${SushiiEmoji.BlueDot}The latest case: \`latest\` - Updates the latest case\n\
 ${SushiiEmoji.BlueDot}Multiple latest cases: \`latest~3\` - Updates the latest 3 cases\n\n\
 Note that if you are updating multiple cases, you can only update up to 25 cases at a time.\n\
-If you're only updating 1 case, it may be easier to use the button in your mod log to set reasons.`
+If you're only updating 1 case, it may be easier to use the button in your mod log to set reasons.`,
   )
   .setColor(Color.Error)
   .toJSON();

@@ -8,7 +8,7 @@ interface ValidationError {
 }
 
 export default function validationErrorToString(
-  err: unknown
+  err: unknown,
 ): ValidationError | undefined {
   // Validation errors from @sapphire/shapeshift
   if (err instanceof BaseError) {

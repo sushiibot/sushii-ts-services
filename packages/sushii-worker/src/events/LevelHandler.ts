@@ -22,7 +22,7 @@ type UpdateUserXpResult = z.infer<typeof UpdateUserXpResultSchema>;
 
 const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
   ctx: Context,
-  msg: Message
+  msg: Message,
 ): Promise<void> =>
   startCaughtActiveSpan(tracer, "levelHandler", async () => {
     // Ignore dms
@@ -56,14 +56,14 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
           ${msg.channelId},
           ${msg.author.id},
           ${msg.member?.roles.cache.map((r) => r.id)}
-        )`.as("q")
+        )`.as("q"),
             )
             .selectAll()
             .executeTakeFirst();
         } finally {
           span.end();
         }
-      }
+      },
     );
 
     // Parse to enforce schema matches, this throws if returned object doesn't match.
@@ -78,7 +78,7 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
           channelId: msg.channelId,
           userId: msg.author.id,
         },
-        "Empty response from update_user_xp"
+        "Empty response from update_user_xp",
       );
       return;
     }
@@ -157,7 +157,7 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
         removeRoleIds,
         newMemberRoles: [...newRoles],
       },
-      "Level role update"
+      "Level role update",
     );
   });
 

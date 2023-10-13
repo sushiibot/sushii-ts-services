@@ -13,7 +13,7 @@ export interface RepResponse {
 export default async function repForUser(
   ctx: Context,
   invoker: User,
-  target: User
+  target: User,
 ): Promise<RepResponse | dayjs.Dayjs> {
   // Fetch both target and invoker
   const [dbUser, dbInvokerUser] = await Promise.all([

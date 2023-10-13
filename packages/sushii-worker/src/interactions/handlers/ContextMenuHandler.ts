@@ -19,6 +19,6 @@ export default abstract class ContextMenuHandler extends InteractionHandler {
    */
   abstract handler(
     ctx: Context,
-    interaction: ContextMenuCommandInteraction
+    interaction: ContextMenuCommandInteraction,
   ): Promise<void>;
 }

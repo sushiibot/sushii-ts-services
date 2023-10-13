@@ -65,7 +65,7 @@ type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
  * @returns
  */
 function paramsOrNull<T extends object>(
-  fn: MatchFunction<T>
+  fn: MatchFunction<T>,
 ): (path: string) => MatchResult<T>["params"] | null {
   return (path: string) => {
     const result = fn(path);

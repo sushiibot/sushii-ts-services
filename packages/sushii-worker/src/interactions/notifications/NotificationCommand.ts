@@ -25,13 +25,13 @@ export default class NotificationCommand extends SlashCommandHandler {
           o
             .setName("keyword")
             .setDescription("The keyword to notify you when mentioned.")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((c) =>
       c
         .setName("list")
-        .setDescription("List all of your current notifications.")
+        .setDescription("List all of your current notifications."),
     )
     .addSubcommand((c) =>
       c
@@ -42,15 +42,15 @@ export default class NotificationCommand extends SlashCommandHandler {
             .setName("keyword")
             .setDescription("The keyword to delete.")
             .setRequired(true)
-            .setAutocomplete(true)
-        )
+            .setAutocomplete(true),
+        ),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
@@ -72,7 +72,7 @@ export default class NotificationCommand extends SlashCommandHandler {
 
   static async addHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const keywordRaw = interaction.options.getString("keyword", true);
 
@@ -120,7 +120,7 @@ export default class NotificationCommand extends SlashCommandHandler {
 
   static async listHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const notifications = await db
       .selectFrom("app_public.notifications")
@@ -155,7 +155,7 @@ export default class NotificationCommand extends SlashCommandHandler {
 
   static async deleteHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const keyword = interaction.options.getString("keyword", true);
 

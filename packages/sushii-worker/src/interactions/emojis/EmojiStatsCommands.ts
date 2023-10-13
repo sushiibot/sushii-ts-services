@@ -70,7 +70,7 @@ async function getAllStats(
   interaction: ChatInputCommandInteraction,
   guildEmojis: Collection<string, GuildEmoji>,
   guildStickers: Collection<string, Sticker>,
-  { group, order, server, assetType, emojiType }: RequestOptions
+  { group, order, server, assetType, emojiType }: RequestOptions,
 ): Promise<string[]> {
   let query = db
     .selectFrom("app_public.emoji_sticker_stats")
@@ -78,7 +78,7 @@ async function getAllStats(
     .innerJoin(
       "app_public.guild_emojis_and_stickers",
       "app_public.emoji_sticker_stats.asset_id",
-      "app_public.guild_emojis_and_stickers.id"
+      "app_public.guild_emojis_and_stickers.id",
     )
     .select(["asset_id", "type", "name"])
     // ---------------------
@@ -88,24 +88,24 @@ async function getAllStats(
     .$if(server === ServerOption.Internal, (q) =>
       q
         .select((eb) => eb.fn.sum("count").as("total_count"))
-        .where("count", ">", "0")
+        .where("count", ">", "0"),
     )
     .$if(server === ServerOption.External, (q) =>
       q
         .select((eb) => eb.fn.sum("count_external").as("total_count"))
-        .where("count_external", ">", "0")
+        .where("count_external", ">", "0"),
     )
     .$if(server === ServerOption.Sum, (q) =>
       q.select((eb) =>
-        eb.fn.sum(eb("count", "+", eb.ref("count_external"))).as("total_count")
-      )
+        eb.fn.sum(eb("count", "+", eb.ref("count_external"))).as("total_count"),
+      ),
     )
     // Limit by emojis from this guild, specifying the emoji/sticker table, not metrics.
     // This may include deleted expressions.
     .where(
       "app_public.guild_emojis_and_stickers.guild_id",
       "=",
-      interaction.guildId
+      interaction.guildId,
     )
     .groupBy(["asset_id", "type", "name"]);
 
@@ -114,7 +114,7 @@ async function getAllStats(
       query = query.where(
         "app_public.guild_emojis_and_stickers.type",
         "=",
-        "emoji"
+        "emoji",
       );
       break;
     }
@@ -122,7 +122,7 @@ async function getAllStats(
       query = query.where(
         "app_public.guild_emojis_and_stickers.type",
         "=",
-        "sticker"
+        "sticker",
       );
       break;
     }
@@ -171,7 +171,7 @@ async function getAllStats(
     {
       valueLength: values.length,
     },
-    "getStatsPage"
+    "getStatsPage",
   );
 
   const valueIDSet = new Set(values.map((v) => v.asset_id));
@@ -189,7 +189,7 @@ async function getAllStats(
           name: e.name || "Unknown",
           total_count: "0",
           type: "emoji",
-        })
+        }),
       );
 
     if (order === OrderOption.HighToLow) {
@@ -213,7 +213,7 @@ async function getAllStats(
           name: e.name,
           total_count: "0",
           type: "sticker",
-        })
+        }),
       );
 
     if (order === OrderOption.HighToLow) {
@@ -327,7 +327,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
       o
         .setName(CommandOption.Group)
         .setDescription(
-          "Sum of both emojis in messages and reactions, or separately? (default: sum)"
+          "Sum of both emojis in messages and reactions, or separately? (default: sum)",
         )
         .addChoices(
           {
@@ -341,8 +341,8 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
           {
             name: "Reactions only: Show emojis used in reactions only",
             value: GroupOption.Reaction,
-          }
-        )
+          },
+        ),
     )
     .addStringOption((o) =>
       o
@@ -360,8 +360,8 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
           {
             name: "Both: Show both emojis and stickers",
             value: AssetTypeOption.Both,
-          }
-        )
+          },
+        ),
     )
     .addStringOption((o) =>
       o
@@ -379,8 +379,8 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
           {
             name: "Both: Show both static and animated",
             value: EmojiTypeOption.Both,
-          }
-        )
+          },
+        ),
     )
     .addStringOption((o) =>
       o
@@ -394,14 +394,14 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
           {
             name: "Low to high: Least used first",
             value: OrderOption.LowToHigh,
-          }
-        )
+          },
+        ),
     )
     .addStringOption((o) =>
       o
         .setName(CommandOption.Server)
         .setDescription(
-          "Emoji used in this server or others? (default: Only this server)"
+          "Emoji used in this server or others? (default: Only this server)",
         )
         .addChoices(
           {
@@ -415,15 +415,15 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
           {
             name: "Other servers: Only count emojis used in OTHER servers",
             value: ServerOption.External,
-          }
-        )
+          },
+        ),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not in cached guild");
@@ -454,7 +454,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
         server,
         assetType,
       },
-      "emojistats options"
+      "emojistats options",
     );
 
     if (assetType === AssetTypeOption.EmojiOnly && guildEmojis.size === 0) {
@@ -491,7 +491,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
       const embed = new EmbedBuilder()
         .setTitle("Emoji and Sticker Stats")
         .setDescription(
-          "No emojis or stickers found in this server. Add some first!"
+          "No emojis or stickers found in this server. Add some first!",
         )
         .setColor(Color.Info);
 
@@ -512,7 +512,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
         server,
         assetType,
         emojiType,
-      }
+      },
     );
 
     const addEmbedOptions = (eb: EmbedBuilder): EmbedBuilder => {

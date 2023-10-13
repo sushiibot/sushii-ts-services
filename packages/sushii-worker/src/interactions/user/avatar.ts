@@ -17,14 +17,14 @@ export default class AvatarCommand extends SlashCommandHandler {
     .addUserOption((o) =>
       o
         .setName("user")
-        .setDescription("Who to get the avatar of, your own if not provided.")
+        .setDescription("Who to get the avatar of, your own if not provided."),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const target =
       interaction.options.getUser("user", false) || interaction.user;
@@ -39,7 +39,7 @@ export default class AvatarCommand extends SlashCommandHandler {
         t("avatar.user_avatar_title", {
           ns: "commands",
           username: target.username,
-        })
+        }),
       )
       .setURL(userFaceURL)
       .setImage(userFaceURL)
@@ -63,7 +63,7 @@ export default class AvatarCommand extends SlashCommandHandler {
               t("avatar.member_avatar_title", {
                 ns: "commands",
                 username: member.nickname || target.username,
-              })
+              }),
             )
             .setURL(memberFaceURL)
             .setImage(memberFaceURL)

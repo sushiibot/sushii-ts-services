@@ -19,7 +19,7 @@ export default class RoleMenuAutocomplete extends AutocompleteHandler {
   async handler(
     ctx: Context,
     interaction: AutocompleteInteraction,
-    option: AutocompleteFocusedOption
+    option: AutocompleteFocusedOption,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild missing");

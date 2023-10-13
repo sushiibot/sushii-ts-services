@@ -27,7 +27,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
   async handler(
     ctx: Context,
     interaction: AutocompleteInteraction,
-    option: AutocompleteFocusedOption
+    option: AutocompleteFocusedOption,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Must be in guild.");
@@ -48,7 +48,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
           guildId: interaction.guildId,
           recentCount: allModLogs?.nodes.length || 0,
         },
-        "empty case autocomplete"
+        "empty case autocomplete",
       );
 
       const choices = this.formatCases(allModLogs?.nodes || []);
@@ -101,7 +101,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
                 `latest~${latestCount}: ${s.action} ${s.userTag} - ${
                   s.reason || "No reason set"
                 }`,
-                MAX_CHOICE_NAME_LEN
+                MAX_CHOICE_NAME_LEN,
               ),
               value: `latest~${latestCount}`,
             };
@@ -121,7 +121,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
           endCases =
             allModLogs?.nodes.filter(
               // Only use cases that are > startId
-              (c) => parseInt(c.caseId, 10) > caseSpec.startId
+              (c) => parseInt(c.caseId, 10) > caseSpec.startId,
             ) || [];
         } else {
           // Both start and end ID provided, we are just adding to the last
@@ -134,7 +134,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
           endCases =
             searchModLogs?.nodes.filter(
               // Only use cases that are > startId
-              (c) => parseInt(c.caseId, 10) > caseSpec.startId
+              (c) => parseInt(c.caseId, 10) > caseSpec.startId,
             ) || [];
         }
 
@@ -143,7 +143,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
             `${caseSpec.startId}-${s.caseId}: ${s.action} ${s.userTag} - ${
               s.reason || "No reason set"
             }`,
-            MAX_CHOICE_NAME_LEN
+            MAX_CHOICE_NAME_LEN,
           ),
           value: `${caseSpec.startId}-${s.caseId}`,
         }));
@@ -166,7 +166,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
   }
 
   private formatCaseName(
-    modLog: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">
+    modLog: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">,
   ): string {
     const s = `${modLog.caseId}: ${modLog.action} ${modLog.userTag} - ${
       modLog.reason || "No reason set"
@@ -176,7 +176,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
   }
 
   private formatCases(
-    cases: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">[]
+    cases: Omit<ModLog, "nodeId" | "mutesByGuildIdAndCaseId">[],
   ): { name: string; value: string }[] {
     // Max 25, slice from 0 to end 25
     return cases.slice(0, 25).map((s) => ({

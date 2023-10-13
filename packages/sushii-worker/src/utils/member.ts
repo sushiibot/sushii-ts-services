@@ -5,7 +5,7 @@ import {
 } from "discord-api-types/v10";
 
 export default function memberIsTimedOut(
-  member: APIGuildMember | APIInteractionDataResolvedGuildMember | undefined
+  member: APIGuildMember | APIInteractionDataResolvedGuildMember | undefined,
 ): boolean {
   if (!member?.communication_disabled_until) {
     return false;

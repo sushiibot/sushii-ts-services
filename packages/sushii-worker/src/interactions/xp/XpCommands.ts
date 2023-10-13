@@ -55,8 +55,8 @@ export default class XpCommand extends SlashCommandHandler {
               o
                 .setName(XpOption.Channel)
                 .setDescription("The channel to block.")
-                .setRequired(true)
-            )
+                .setRequired(true),
+            ),
         )
         .addSubcommand((c) =>
           c
@@ -66,14 +66,14 @@ export default class XpCommand extends SlashCommandHandler {
               o
                 .setName(XpOption.Role)
                 .setDescription("The role to block.")
-                .setRequired(true)
-            )
+                .setRequired(true),
+            ),
         )
         .addSubcommand((c) =>
           c
             .setName(XpCommandName.BlockList)
-            .setDescription("List all blocked channels or roles.")
-        )
+            .setDescription("List all blocked channels or roles."),
+        ),
     )
     .addSubcommandGroup((g) =>
       g
@@ -87,8 +87,8 @@ export default class XpCommand extends SlashCommandHandler {
               o
                 .setName(XpOption.Channel)
                 .setDescription("The channel unblock.")
-                .setRequired(true)
-            )
+                .setRequired(true),
+            ),
         )
         .addSubcommand((c) =>
           c
@@ -98,16 +98,16 @@ export default class XpCommand extends SlashCommandHandler {
               o
                 .setName(XpOption.Role)
                 .setDescription("The role to unblock.")
-                .setRequired(true)
-            )
-        )
+                .setRequired(true),
+            ),
+        ),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
@@ -127,7 +127,7 @@ export default class XpCommand extends SlashCommandHandler {
             return this.listBlocksHandler(ctx, interaction);
           default:
             throw new Error(
-              `Invalid subcommand for group ${subgroup}: ${subcommand}`
+              `Invalid subcommand for group ${subgroup}: ${subcommand}`,
             );
         }
       case XpGroupName.Unblock:
@@ -138,7 +138,7 @@ export default class XpCommand extends SlashCommandHandler {
             return this.unblockRoleHandler(ctx, interaction);
           default:
             throw new Error(
-              `Invalid subcommand for group ${subgroup}: ${subcommand}`
+              `Invalid subcommand for group ${subgroup}: ${subcommand}`,
             );
         }
       default:
@@ -148,7 +148,7 @@ export default class XpCommand extends SlashCommandHandler {
 
   private async blockChannelHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel(XpOption.Channel);
     if (!channel) {
@@ -170,7 +170,7 @@ export default class XpCommand extends SlashCommandHandler {
         ctx,
         interaction,
         `Channel <#${channel.id}> is already blocked`,
-        true
+        true,
       );
 
       return;
@@ -194,7 +194,7 @@ export default class XpCommand extends SlashCommandHandler {
 
   private async blockRoleHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const role = interaction.options.getRole(XpOption.Role);
     if (!role) {
@@ -216,7 +216,7 @@ export default class XpCommand extends SlashCommandHandler {
         ctx,
         interaction,
         `Role <@&${role.id}> is already blocked`,
-        true
+        true,
       );
 
       return;
@@ -240,7 +240,7 @@ export default class XpCommand extends SlashCommandHandler {
 
   private async listBlocksHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const { allXpBlocks } = await ctx.sushiiAPI.sdk.getXpBlocks({
       guildId: interaction.guildId,
@@ -292,7 +292,7 @@ export default class XpCommand extends SlashCommandHandler {
 
   private async unblockChannelHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel(XpOption.Channel);
     if (!channel) {
@@ -313,7 +313,7 @@ export default class XpCommand extends SlashCommandHandler {
         ctx,
         interaction,
         `No XP block was found for <#${channel.id}>`,
-        true
+        true,
       );
 
       return;
@@ -337,7 +337,7 @@ export default class XpCommand extends SlashCommandHandler {
 
   private async unblockRoleHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const role = interaction.options.getRole(XpOption.Role);
     if (!role) {
@@ -358,7 +358,7 @@ export default class XpCommand extends SlashCommandHandler {
         ctx,
         interaction,
         `No XP block was found for <@&${role.id}>`,
-        true
+        true,
       );
 
       return;

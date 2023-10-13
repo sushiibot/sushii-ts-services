@@ -11,7 +11,7 @@ const webhookClient = config.NOTIFY_WEBHOOK_URL
 export default async function webhookLog(
   title: string,
   message: string,
-  color?: number
+  color?: number,
 ): Promise<void> {
   if (!webhookClient) {
     logger.warn("No webhook client, skipping webhook log");

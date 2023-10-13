@@ -28,7 +28,7 @@ export default abstract class InteractionHandler {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _ctx: Context,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _interaction: BaseInteraction
+    _interaction: BaseInteraction,
   ): Promise<CheckResponse> {
     return { pass: true };
   }
@@ -39,6 +39,6 @@ export default abstract class InteractionHandler {
   abstract handler(
     ctx: Context,
     interaction: BaseInteraction,
-    data?: any // Any additional data to pass
+    data?: any, // Any additional data to pass
   ): Promise<void>;
 }

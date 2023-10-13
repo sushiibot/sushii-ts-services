@@ -8,6 +8,6 @@ export default abstract class ButtonHandler extends MessageComponentHandler {
    */
   abstract handleInteraction(
     ctx: Context,
-    interaction: ButtonInteraction
+    interaction: ButtonInteraction,
   ): Promise<void>;
 }

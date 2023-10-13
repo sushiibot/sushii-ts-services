@@ -58,7 +58,7 @@ function formatTextOption(
   name: string,
   text: string | null,
   missingText: string,
-  enabled?: boolean
+  enabled?: boolean,
 ): string {
   let s = "";
   s += toToggleButton(enabled);
@@ -73,7 +73,7 @@ function formatChannelOption(
   name: string,
   channel: string | null,
   missingText: string,
-  enabled?: boolean
+  enabled?: boolean,
 ): string {
   let s = "";
   s += toToggleButton(enabled);
@@ -91,7 +91,7 @@ function formatChannelOption(
 
 function getGuildConfigEmbed(
   ctx: Context,
-  config: AllSelection<DB, "app_public.guild_configs">
+  config: AllSelection<DB, "app_public.guild_configs">,
 ): EmbedBuilder {
   let embed = new EmbedBuilder()
     .setTitle("Server Settings")
@@ -121,18 +121,18 @@ function getGuildConfigEmbed(
     "Join Message",
     config.join_msg,
     `No join message set, use ${ctx.getCommandMention(
-      "settings joinmsg"
+      "settings joinmsg",
     )} to set one.`,
-    config.join_msg_enabled
+    config.join_msg_enabled,
   );
 
   joinLeave += formatTextOption(
     "Leave Message",
     config.leave_msg,
     `No leave message set, use ${ctx.getCommandMention(
-      "settings leavemsg"
+      "settings leavemsg",
     )} to set one.`,
-    config.leave_msg_enabled
+    config.leave_msg_enabled,
   );
   joinLeave += "\n";
 
@@ -140,7 +140,7 @@ function getGuildConfigEmbed(
     joinLeave += `Join/Leave messages will be sent to <#${config.msg_channel}>`;
   } else {
     joinLeave += `⚠️ Join/Leave message channel needs to be set with ${ctx.getCommandMention(
-      "settings joinleavechannel"
+      "settings joinleavechannel",
     )}`;
   }
 
@@ -161,7 +161,7 @@ function getGuildConfigEmbed(
     "Mod logs",
     config.log_mod,
     `No mod log channel set, use ${ctx.getCommandMention("settings modlog")}`,
-    config.log_mod_enabled
+    config.log_mod_enabled,
   );
   logging += "\n";
 
@@ -169,9 +169,9 @@ function getGuildConfigEmbed(
     "Member join/leave logs",
     config.log_member,
     `No member log channel set, use ${ctx.getCommandMention(
-      "settings memberlog"
+      "settings memberlog",
     )}`,
-    config.log_member_enabled
+    config.log_member_enabled,
   );
   logging += "\n";
 
@@ -179,9 +179,9 @@ function getGuildConfigEmbed(
     "Message logs",
     config.log_msg,
     `No message log channel set, use ${ctx.getCommandMention(
-      "settings msglog set_channel"
+      "settings msglog set_channel",
     )}`,
-    config.log_msg_enabled
+    config.log_msg_enabled,
   );
   logging += "\n";
 
@@ -203,7 +203,7 @@ function getGuildConfigEmbed(
   const stateText = config.lookup_details_opt_in ? "opted-in" : "opted-out";
 
   lookup += ` Lookup details currently ${stateText}, use ${ctx.getCommandMention(
-    "settings lookup"
+    "settings lookup",
   )} to see additional details and modify this setting.`;
 
   embed = embed.addFields([
@@ -219,7 +219,7 @@ function getGuildConfigEmbed(
 function getToggleButton(
   currentlyEnabled: boolean,
   name: string,
-  field: SettingsToggleOptions
+  field: SettingsToggleOptions,
 ): ButtonBuilder {
   const actionName = currentlyEnabled ? "Disable" : "Enable";
 
@@ -231,23 +231,23 @@ function getToggleButton(
         field,
         // If currently enabled, disable
         newState: currentlyEnabled ? "disable" : "enable",
-      })
+      }),
     );
 }
 
 function getSettingsComponents(
-  config: AllSelection<DB, "app_public.guild_configs">
+  config: AllSelection<DB, "app_public.guild_configs">,
 ): ActionRowBuilder<ButtonBuilder>[] {
   const joinLeaveButtons = new ActionRowBuilder<ButtonBuilder>().addComponents([
     getToggleButton(
       config.join_msg_enabled,
       "join message",
-      "join_msg_enabled"
+      "join_msg_enabled",
     ),
     getToggleButton(
       config.leave_msg_enabled,
       "leave message",
-      "leave_msg_enabled"
+      "leave_msg_enabled",
     ),
   ]);
 
@@ -257,14 +257,14 @@ function getSettingsComponents(
       getToggleButton(
         config.log_member_enabled,
         "member logs",
-        "log_member_enabled"
+        "log_member_enabled",
       ),
       getToggleButton(
         config.log_msg_enabled,
         "message logs",
-        "log_msg_enabled"
+        "log_msg_enabled",
       ),
-    ]
+    ],
   );
 
   return [joinLeaveButtons, moderationButtons];
@@ -277,7 +277,7 @@ export default class SettingsCommand extends SlashCommandHandler {
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .setDMPermission(false)
     .addSubcommand((c) =>
-      c.setName("view").setDescription("View the current server settings.")
+      c.setName("view").setDescription("View the current server settings."),
     )
     .addSubcommand((c) =>
       c
@@ -287,10 +287,10 @@ export default class SettingsCommand extends SlashCommandHandler {
           o
             .setName("message")
             .setDescription(
-              "You can use <username>, <mention>, <server>, <member_number>"
+              "You can use <username>, <mention>, <server>, <member_number>",
             )
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -300,8 +300,8 @@ export default class SettingsCommand extends SlashCommandHandler {
           o
             .setName("message")
             .setDescription("You can use <username>, <mention>, <server>")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -313,10 +313,10 @@ export default class SettingsCommand extends SlashCommandHandler {
             .setDescription("Where to send the messages.")
             .addChannelTypes(
               ChannelType.GuildText,
-              ChannelType.GuildAnnouncement
+              ChannelType.GuildAnnouncement,
             )
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -328,10 +328,10 @@ export default class SettingsCommand extends SlashCommandHandler {
             .setDescription("Where to send mod logs to.")
             .addChannelTypes(
               ChannelType.GuildText,
-              ChannelType.GuildAnnouncement
+              ChannelType.GuildAnnouncement,
             )
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -343,10 +343,10 @@ export default class SettingsCommand extends SlashCommandHandler {
             .setDescription("Where to send member logs to.")
             .addChannelTypes(
               ChannelType.GuildText,
-              ChannelType.GuildAnnouncement
+              ChannelType.GuildAnnouncement,
             )
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     // /settings messagelog
     .addSubcommandGroup((g) =>
@@ -364,10 +364,10 @@ export default class SettingsCommand extends SlashCommandHandler {
                 .setDescription("Channel to send message logs to.")
                 .addChannelTypes(
                   ChannelType.GuildText,
-                  ChannelType.GuildAnnouncement
+                  ChannelType.GuildAnnouncement,
                 )
-                .setRequired(true)
-            )
+                .setRequired(true),
+            ),
         )
         // settings messagelog ignore
         .addSubcommand((c) =>
@@ -378,13 +378,13 @@ export default class SettingsCommand extends SlashCommandHandler {
               o
                 .setName(MsgLogOptionName.Channel)
                 .setDescription("Channel to ignore.")
-                .setRequired(true)
+                .setRequired(true),
             )
             .addStringOption((o) =>
               o
                 .setName(MsgLogOptionName.BlockType)
                 .setDescription(
-                  "What type of logs to ignore? By default all logs will be ignored."
+                  "What type of logs to ignore? By default all logs will be ignored.",
                 )
                 .addChoices(
                   {
@@ -398,15 +398,15 @@ export default class SettingsCommand extends SlashCommandHandler {
                   {
                     name: "All",
                     value: blockTypes.all,
-                  }
-                )
-            )
+                  },
+                ),
+            ),
         )
         // settings messagelog ignorelist
         .addSubcommand((c) =>
           c
             .setName(MsgLogCommandName.IgnoreList)
-            .setDescription("List channels that are ignored.")
+            .setDescription("List channels that are ignored."),
         )
         // settings messagelog unignore
         .addSubcommand((c) =>
@@ -417,19 +417,19 @@ export default class SettingsCommand extends SlashCommandHandler {
               o
                 .setName(MsgLogOptionName.Channel)
                 .setDescription("Channel to un-ignore.")
-                .setRequired(true)
-            )
-        )
+                .setRequired(true),
+            ),
+        ),
     )
     .addSubcommand((c) =>
-      c.setName("lookup").setDescription("Modify lookup settings.")
+      c.setName("lookup").setDescription("Modify lookup settings."),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached.");
@@ -481,7 +481,7 @@ export default class SettingsCommand extends SlashCommandHandler {
 
   static async viewHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const config = await db.getGuildConfig(interaction.guildId);
 
@@ -570,7 +570,7 @@ export default class SettingsCommand extends SlashCommandHandler {
 
   static async joinMsgHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const message = interaction.options.getString("message", true);
 
@@ -591,7 +591,7 @@ export default class SettingsCommand extends SlashCommandHandler {
 
   static async leaveMsgHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const message = interaction.options.getString("message", true);
 
@@ -612,7 +612,7 @@ export default class SettingsCommand extends SlashCommandHandler {
 
   static async joinLeaveChannelHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel("channel", true);
 
@@ -625,7 +625,7 @@ export default class SettingsCommand extends SlashCommandHandler {
         new EmbedBuilder()
           .setTitle("Join/Leave channel set!")
           .setDescription(
-            `Join/Leave messages will be sent to <#${channel.id}>`
+            `Join/Leave messages will be sent to <#${channel.id}>`,
           )
           .setColor(Color.Success)
           .toJSON(),
@@ -635,7 +635,7 @@ export default class SettingsCommand extends SlashCommandHandler {
 
   static async logChannelHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const subcommand = interaction.options.getSubcommand();
     const channel = interaction.options.getChannel("channel", true);
@@ -683,7 +683,7 @@ export default class SettingsCommand extends SlashCommandHandler {
   }
 
   static getLookupHandlerEmbed(
-    config: AllSelection<DB, "app_public.guild_configs">
+    config: AllSelection<DB, "app_public.guild_configs">,
   ): EmbedBuilder {
     let description = toToggleButton(config.lookup_details_opt_in);
 
@@ -727,7 +727,7 @@ export default class SettingsCommand extends SlashCommandHandler {
 
   static getLookupHandlerComponents(
     currentlyOptedIn: boolean,
-    disabled: boolean = false
+    disabled: boolean = false,
   ): ActionRowBuilder<ButtonBuilder>[] {
     let button;
     if (disabled) {
@@ -752,12 +752,12 @@ export default class SettingsCommand extends SlashCommandHandler {
 
   static async lookupHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     let config = await db.getGuildConfig(interaction.guildId);
     const embed = SettingsCommand.getLookupHandlerEmbed(config);
     const components = SettingsCommand.getLookupHandlerComponents(
-      config.lookup_details_opt_in
+      config.lookup_details_opt_in,
     );
 
     const msg = await interaction.reply({
@@ -778,31 +778,31 @@ export default class SettingsCommand extends SlashCommandHandler {
             content: "These buttons aren't for you! 😡",
             ephemeral: true,
           });
-  
+
           setTimeout(() => {
             // Discard error
             replied.delete().catch(() => {});
           }, 2500);
-  
+
           return;
         }
-  
+
         const match = i.customId === "opt-in" || i.customId === "opt-out";
         if (!match) {
           throw new Error("Invalid custom ID.");
         }
-  
+
         const newOptedInState = i.customId === "opt-in";
-  
+
         config = await db.updateGuildConfig(interaction.guildId, {
           lookup_details_opt_in: newOptedInState,
         });
-  
+
         const newEmbed = SettingsCommand.getLookupHandlerEmbed(config);
         const newComponents = SettingsCommand.getLookupHandlerComponents(
-          config.lookup_details_opt_in
+          config.lookup_details_opt_in,
         );
-  
+
         // Edit original message
         await i.update({
           embeds: [newEmbed],
@@ -816,12 +816,12 @@ export default class SettingsCommand extends SlashCommandHandler {
     collector.on("end", async (collected) => {
       try {
         logger.debug(`Collected ${collected.size} interactions.`);
-  
+
         const newComponents = SettingsCommand.getLookupHandlerComponents(
           config.lookup_details_opt_in,
-          true
+          true,
         );
-  
+
         // Remove buttons so they can't be clicked again
         await msg.edit({
           components: newComponents,
@@ -837,11 +837,11 @@ export default class SettingsCommand extends SlashCommandHandler {
 
   async msgLogSetHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel(
       MsgLogOptionName.Channel,
-      true
+      true,
     );
 
     await db.updateGuildConfig(interaction.guildId, {
@@ -861,11 +861,11 @@ export default class SettingsCommand extends SlashCommandHandler {
 
   async msgLogIgnoreHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel(
       MsgLogOptionName.Channel,
-      true
+      true,
     );
 
     const blockType =
@@ -890,7 +890,7 @@ export default class SettingsCommand extends SlashCommandHandler {
       .onConflict((oc) =>
         oc.columns(["guild_id", "channel_id"]).doUpdateSet({
           block_type: blockType,
-        })
+        }),
       )
       .execute();
 
@@ -899,7 +899,7 @@ export default class SettingsCommand extends SlashCommandHandler {
         new EmbedBuilder()
           .setTitle("Added new message log ignore")
           .setDescription(
-            `ignoring ${blockTypeToString(blockType)} in <#${channel.id}>`
+            `ignoring ${blockTypeToString(blockType)} in <#${channel.id}>`,
           )
           .setColor(Color.Success)
           .toJSON(),
@@ -909,7 +909,7 @@ export default class SettingsCommand extends SlashCommandHandler {
 
   async msgLogIgnoreListHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const ignoredChannels = await db
       .selectFrom("app_public.msg_log_blocks")
@@ -938,11 +938,11 @@ export default class SettingsCommand extends SlashCommandHandler {
 
   async msgLogUnignoreHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel(
       MsgLogOptionName.Channel,
-      true
+      true,
     );
 
     await db

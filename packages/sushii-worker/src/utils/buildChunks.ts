@@ -1,7 +1,7 @@
 export default function buildChunks(
   strings: string[],
   joiner: string,
-  maxChunkLength: number
+  maxChunkLength: number,
 ): string[] {
   const chunks: string[] = [];
 

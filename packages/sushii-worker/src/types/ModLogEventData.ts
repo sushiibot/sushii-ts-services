@@ -14,7 +14,7 @@ export function isAPIAuditLogChange<V extends AuditLogChange["key"]>(val: V) {
 }
 
 export function findTimeoutChange(
-  changes?: AuditLogChange[]
+  changes?: AuditLogChange[],
 ): AuditLogChange | undefined {
   return changes?.find(isAPIAuditLogChange("communication_disabled_until"));
 }

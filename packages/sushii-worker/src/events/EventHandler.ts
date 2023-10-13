@@ -4,7 +4,7 @@ import Context from "../model/context";
 export type RawEventHandlerFn<T extends Events> = (
   ctx: Context,
   eventType: T,
-  payload: GatewayDispatchPayload
+  payload: GatewayDispatchPayload,
 ) => Promise<void>;
 
 export type EventHandlerFn<K extends keyof ClientEvents> = (

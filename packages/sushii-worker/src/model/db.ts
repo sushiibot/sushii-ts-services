@@ -55,7 +55,7 @@ const defaultUser: AllSelection<DB, "app_public.users"> = {
 
 class SushiiDB extends Kysely<DB> {
   async getGuildConfig(
-    guildId: string
+    guildId: string,
   ): Promise<AllSelection<DB, "app_public.guild_configs">> {
     return tracer.startActiveSpan("getGuildConfig", {}, async (span: Span) => {
       const conf = await this.selectFrom("app_public.guild_configs")
@@ -78,7 +78,7 @@ class SushiiDB extends Kysely<DB> {
 
   async updateGuildConfig(
     guildId: string,
-    patch: UpdateExpression<DB, "app_public.guild_configs">
+    patch: UpdateExpression<DB, "app_public.guild_configs">,
   ): Promise<AllSelection<DB, "app_public.guild_configs">> {
     return this.insertInto("app_public.guild_configs")
       .values({
@@ -95,7 +95,7 @@ class SushiiDB extends Kysely<DB> {
       .select(
         this.fn
           .coalesce(this.fn.max("case_id"), sql<string>`0`)
-          .as("last_case_id")
+          .as("last_case_id"),
       )
       .where("guild_id", "=", guildId)
       .executeTakeFirstOrThrow();
@@ -120,7 +120,7 @@ class SushiiDB extends Kysely<DB> {
   }
 
   async updateUser(
-    patch: AllSelection<DB, "app_public.users">
+    patch: AllSelection<DB, "app_public.users">,
   ): Promise<AllSelection<DB, "app_public.users">> {
     return this.insertInto("app_public.users")
       .values({
@@ -132,7 +132,7 @@ class SushiiDB extends Kysely<DB> {
         oc.column("id").doUpdateSet({
           ...patch,
           profile_data: sql`${JSON.stringify(patch.profile_data)}`,
-        })
+        }),
       )
       .executeTakeFirstOrThrow();
   }

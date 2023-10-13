@@ -6,7 +6,7 @@ import timestampToUnixTime from "../../utils/timestampToUnixTime";
 
 export default async function getUserinfoEmbed(
   user: User,
-  member: GuildMember | undefined
+  member: GuildMember | undefined,
 ): Promise<APIEmbed> {
   let authorName = `${user.displayName} (@${user.username})`;
   if (member?.nickname) {

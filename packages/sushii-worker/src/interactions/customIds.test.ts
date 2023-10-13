@@ -38,7 +38,7 @@ describe("customIds", () => {
           expect(
             customIds.roleMenuButton.compile({
               roleId: wantMatch.params.roleId,
-            })
+            }),
           ).toEqual(customID);
         }
       });

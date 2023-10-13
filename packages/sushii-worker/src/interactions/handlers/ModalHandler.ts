@@ -13,6 +13,6 @@ export default abstract class ModalHandler {
    */
   abstract handleModalSubmit(
     ctx: Context,
-    interaction: ModalSubmitInteraction
+    interaction: ModalSubmitInteraction,
   ): Promise<void>;
 }

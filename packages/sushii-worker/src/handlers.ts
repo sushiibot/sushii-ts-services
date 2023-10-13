@@ -39,7 +39,7 @@ async function handleEvent<K extends keyof ClientEvents>(
   ...args: ClientEvents[K]
 ): Promise<void> {
   const results = await Promise.allSettled(
-    handlers.map((h) => h(ctx, ...args))
+    handlers.map((h) => h(ctx, ...args)),
   );
 
   for (const result of results) {
@@ -54,7 +54,7 @@ async function handleEvent<K extends keyof ClientEvents>(
       logger.error(
         { err: result.reason },
         "error handling event %s",
-        eventType
+        eventType,
       );
     }
   }
@@ -62,7 +62,7 @@ async function handleEvent<K extends keyof ClientEvents>(
 
 async function runParallel(
   eventType: string,
-  promises: Promise<void>[]
+  promises: Promise<void>[],
 ): Promise<void> {
   const results = await Promise.allSettled(promises);
 
@@ -78,7 +78,7 @@ async function runParallel(
       logger.error(
         { err: result.reason },
         "error handling event %s",
-        eventType
+        eventType,
       );
     }
   }
@@ -87,7 +87,7 @@ async function runParallel(
 export default function registerEventHandlers(
   ctx: Context,
   client: Client,
-  interactionHandler: InteractionClient
+  interactionHandler: InteractionClient,
 ): void {
   client.once(Events.ClientReady, async (c) => {
     logger.info(`Ready! Logged in as ${c.user.tag}`);
@@ -99,7 +99,7 @@ export default function registerEventHandlers(
         ctx,
         Events.ClientReady,
         [banReadyHandler, emojiAndStickerStatsReadyHandler],
-        client
+        client,
       );
 
       span.end();
@@ -116,13 +116,13 @@ export default function registerEventHandlers(
         shardId,
         unavailableGuilds,
       },
-      "Shard ready"
+      "Shard ready",
     );
 
     await webhookLog(
       `[Shard ${shardId}] Ready`,
       `unavailable guilds: \`${unavailableGuilds || "none"}\``,
-      Color.Success
+      Color.Success,
     );
   });
 
@@ -132,7 +132,7 @@ export default function registerEventHandlers(
         shardId,
         event: closeEvent,
       },
-      "Shard disconnected"
+      "Shard disconnected",
     );
 
     await webhookLog(`[Shard ${shardId}] Disconnected`, "", Color.Warning);
@@ -144,7 +144,7 @@ export default function registerEventHandlers(
         shardId,
         error,
       },
-      "Shard error"
+      "Shard error",
     );
 
     await webhookLog(`[Shard ${shardId}] Error`, error.message, Color.Error);
@@ -155,7 +155,7 @@ export default function registerEventHandlers(
       {
         shardId,
       },
-      "Shard reconnecting"
+      "Shard reconnecting",
     );
   });
 
@@ -165,7 +165,7 @@ export default function registerEventHandlers(
         shardId,
         replayedEvents,
       },
-      "Shard resumed"
+      "Shard resumed",
     );
   });
 
@@ -175,13 +175,13 @@ export default function registerEventHandlers(
         guildId: guild.id,
       },
       "Joined guild %s",
-      guild.name
+      guild.name,
     );
 
     await webhookLog(
       "Joined guild",
       `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
-      Color.Info
+      Color.Info,
     );
   });
 
@@ -191,13 +191,13 @@ export default function registerEventHandlers(
         guildId: guild.id,
       },
       "Removed guild %s",
-      guild.name
+      guild.name,
     );
 
     await webhookLog(
       "Left guild",
       `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
-      Color.Error
+      Color.Error,
     );
   });
 
@@ -209,7 +209,7 @@ export default function registerEventHandlers(
         await updateStat(StatName.CommandCount, 1, "add");
 
         span.end();
-      }
+      },
     );
   });
 
@@ -222,11 +222,11 @@ export default function registerEventHandlers(
           Events.GuildAuditLogEntryCreate,
           [modLogHandler],
           entry,
-          guild
+          guild,
         );
 
         span.end();
-      }
+      },
     );
   });
 
@@ -236,7 +236,7 @@ export default function registerEventHandlers(
         ctx,
         Events.GuildBanAdd,
         [legacyModLogNotifierHandler, banCacheBanHandler],
-        guildBan
+        guildBan,
       );
 
       span.end();
@@ -249,7 +249,7 @@ export default function registerEventHandlers(
         ctx,
         Events.GuildBanRemove,
         [banCacheUnbanHandler],
-        guildBan
+        guildBan,
       );
 
       span.end();
@@ -262,7 +262,7 @@ export default function registerEventHandlers(
         ctx,
         Events.MessageCreate,
         [levelHandler, emojiStatsMsgHandler],
-        msg
+        msg,
       );
 
       span.end();
@@ -278,11 +278,11 @@ export default function registerEventHandlers(
           Events.MessageReactionAdd,
           [emojiStatsReactHandler],
           reaction,
-          user
+          user,
         );
 
         span.end();
-      }
+      },
     );
   });
 
@@ -316,7 +316,7 @@ export default function registerEventHandlers(
               event,
             },
             "error handling event %s",
-            event.t
+            event.t,
           );
         }
       }

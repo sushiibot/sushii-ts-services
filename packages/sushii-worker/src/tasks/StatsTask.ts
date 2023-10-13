@@ -13,7 +13,7 @@ export enum StatName {
 export async function updateStat(
   name: StatName,
   value: number,
-  action: "set" | "add"
+  action: "set" | "add",
 ): Promise<void> {
   logger.info(
     {
@@ -21,7 +21,7 @@ export async function updateStat(
       value,
       action,
     },
-    "Updating bot stat"
+    "Updating bot stat",
   );
 
   if (action === "add") {
@@ -36,7 +36,7 @@ export async function updateStat(
         oc.columns(["name", "category"]).doUpdateSet({
           count: (eb) =>
             eb.bxp("app_public.bot_stats.count", "+", value.toString()),
-        })
+        }),
       )
       .execute();
   } else {
@@ -50,7 +50,7 @@ export async function updateStat(
       .onConflict((oc) =>
         oc.columns(["name", "category"]).doUpdateSet({
           count: value,
-        })
+        }),
       )
       .execute();
   }
@@ -67,7 +67,7 @@ const task: BackgroundTask = {
 
     const totalMembers = ctx.client.guilds.cache.reduce(
       (acc, guild) => acc + guild.memberCount,
-      0
+      0,
     );
 
     await updateStat(StatName.MemberCount, totalMembers, "set");

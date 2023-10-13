@@ -3,7 +3,7 @@ import { ChatInputCommandInteraction, Role } from "discord.js";
 
 export default async function canAddRole(
   interaction: ChatInputCommandInteraction<"cached">,
-  role: Role
+  role: Role,
 ): Promise<Result<void, string>> {
   const sushiiMember = interaction.guild.members.me;
 
@@ -18,7 +18,7 @@ export default async function canAddRole(
   // 0 if equal
   if (sushiiMember.roles.highest.comparePositionTo(role) <= 0) {
     Err(
-      "Role must be lower than sushii's highest role. Please move the role below sushii's role or move sushii's role to be higher."
+      "Role must be lower than sushii's highest role. Please move the role below sushii's role or move sushii's role to be higher.",
     );
   }
 

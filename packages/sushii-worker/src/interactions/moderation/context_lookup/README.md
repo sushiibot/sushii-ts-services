@@ -9,17 +9,18 @@ If the user running the command has moderator permissions, additional data and b
 will be added:
 
 Data:
-* Another embed with short history summary
-* short lookup data
+
+- Another embed with short history summary
+- short lookup data
 
 Buttons:
 
-* Ban
-* Kick
-* Mute
-* Warn
-* History
-* Lookup
+- Ban
+- Kick
+- Mute
+- Warn
+- History
+- Lookup
 
 Each button has a custom id:
 
@@ -33,12 +34,11 @@ This runs the button handler which will edit the message with the following:
 
 If ban, kick, mute, warn:
 
-* Select menu with available reasons
-* Button to continue without a reason
+- Select menu with available reasons
+- Button to continue without a reason
 
 If history, lookup just edit message with requested data without any additional
 message components.
-
 
 1. Context menu handler
 2. Button handler

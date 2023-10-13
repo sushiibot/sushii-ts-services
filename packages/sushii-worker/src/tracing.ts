@@ -47,7 +47,7 @@ export default sdk;
 export function startCaughtActiveSpan<F extends (span?: Span) => unknown>(
   tracer: Tracer,
   name: string,
-  fn: F
+  fn: F,
 ): ReturnType<F> {
   return tracer.startActiveSpan(name, ((span: Span) => {
     try {

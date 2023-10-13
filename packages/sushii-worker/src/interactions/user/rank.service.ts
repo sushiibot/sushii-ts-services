@@ -10,7 +10,7 @@ export interface RankResponse {
 export async function getUserRank(
   ctx: Context,
   user: User,
-  guildId: string
+  guildId: string,
 ): Promise<Result<RankResponse, string>> {
   const { userById: userData } = await ctx.sushiiAPI.sdk.userByID({
     id: user.id,
@@ -29,13 +29,13 @@ export async function getUserRank(
   }
 
   const userLevel = new UserLevelProgress(
-    parseInt(userGuildLevel.msgAllTime || "0", 10)
+    parseInt(userGuildLevel.msgAllTime || "0", 10),
   );
   const { allUserLevels: globalXP } = await ctx.sushiiAPI.sdk.userGlobalLevel({
     userId: user.id,
   });
   const globalLevel = new UserLevelProgress(
-    parseInt(globalXP?.aggregates?.sum?.msgAllTime || 0, 10)
+    parseInt(globalXP?.aggregates?.sum?.msgAllTime || 0, 10),
   );
 
   const repInt = parseInt(userData.rep, 10);

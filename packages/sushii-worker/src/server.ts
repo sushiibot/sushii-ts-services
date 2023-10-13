@@ -12,7 +12,7 @@ interface ServerOptions {
 
 export default function server(
   promRegistry: client.Registry,
-  { onHealthcheck, onShutdown }: ServerOptions
+  { onHealthcheck, onShutdown }: ServerOptions,
 ): http.Server {
   const app = express();
 
@@ -58,10 +58,10 @@ export default function server(
   s.listen(config.METRICS_PORT);
 
   logger.info(
-    `metrics listening on http://localhost:${config.METRICS_PORT}/metrics`
+    `metrics listening on http://localhost:${config.METRICS_PORT}/metrics`,
   );
   logger.info(
-    `healthcheck listening on http://localhost:${config.METRICS_PORT}/healthcheck`
+    `healthcheck listening on http://localhost:${config.METRICS_PORT}/healthcheck`,
   );
 
   return s;

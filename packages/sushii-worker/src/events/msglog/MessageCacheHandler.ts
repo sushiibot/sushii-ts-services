@@ -16,7 +16,7 @@ export default async function msgLogCacheHandler(
   eventType:
     | GatewayDispatchEvents.MessageCreate
     | GatewayDispatchEvents.MessageUpdate,
-  event: EventData
+  event: EventData,
 ): Promise<void> {
   // Ignore DMS
   if (!event.guild_id) {
@@ -90,7 +90,7 @@ export default async function msgLogCacheHandler(
       oc.column("message_id").doUpdateSet({
         content: event.content || "",
         msg: sql`${eventStr}`,
-      })
+      }),
     )
     .execute();
 }

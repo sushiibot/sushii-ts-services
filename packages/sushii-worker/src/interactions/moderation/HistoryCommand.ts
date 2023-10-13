@@ -23,14 +23,14 @@ export default class HistoryCommand extends SlashCommandHandler {
       o
         .setName("user")
         .setDescription("The user to show moderation case history for.")
-        .setRequired(true)
+        .setRequired(true),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");

@@ -27,7 +27,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ContextMenuCommandInteraction
+    interaction: ContextMenuCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
@@ -40,7 +40,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
     const { targetUser, targetMember } = interaction;
 
     const isModerator = interaction.memberPermissions.has(
-      PermissionFlagsBits.BanMembers
+      PermissionFlagsBits.BanMembers,
     );
 
     const embed = await getUserinfoEmbed(targetUser, targetMember);
@@ -61,7 +61,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
         customIds.lookupButton.compile({
           actionType: ActionType.Ban,
           targetId: targetUser.id,
-        })
+        }),
       )
       .setLabel("Ban")
       .setEmoji({
@@ -74,7 +74,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
         customIds.lookupButton.compile({
           actionType: ActionType.Kick,
           targetId: targetUser.id,
-        })
+        }),
       )
       .setLabel("Kick")
       .setEmoji({
@@ -89,7 +89,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
             customIds.lookupButton.compile({
               actionType: ActionType.TimeoutRemove,
               targetId: targetUser.id,
-            })
+            }),
           )
           .setLabel("Unmute")
           .setEmoji({
@@ -101,7 +101,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
             customIds.lookupButton.compile({
               actionType: ActionType.Timeout,
               targetId: targetUser.id,
-            })
+            }),
           )
           .setLabel("Mute")
           .setEmoji({
@@ -114,7 +114,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
         customIds.lookupButton.compile({
           actionType: ActionType.Warn,
           targetId: targetUser.id,
-        })
+        }),
       )
       .setLabel("Warn")
       .setEmoji({
@@ -134,7 +134,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
         customIds.lookupButton.compile({
           actionType: ActionType.History,
           targetId: targetUser.id,
-        })
+        }),
       )
       .setLabel("History")
       .setStyle(ButtonStyle.Secondary);
@@ -144,7 +144,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
         customIds.lookupButton.compile({
           actionType: ActionType.Lookup,
           targetId: targetUser.id,
-        })
+        }),
       )
       .setLabel("Lookup")
       .setStyle(ButtonStyle.Secondary);
