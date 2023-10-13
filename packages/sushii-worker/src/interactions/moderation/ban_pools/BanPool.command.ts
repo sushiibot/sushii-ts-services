@@ -352,7 +352,7 @@ If you want to make a new invite, use \`/banpool invite\``
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const ownedPools = await getAllGuildBanPools(interaction.guildId);
+    const ownedPools = await getAllGuildBanPools(db,interaction.guildId);
     const memberPools = await getAllBanPoolMemberships(db, interaction.guild.id)
 
     const embed = new EmbedBuilder()

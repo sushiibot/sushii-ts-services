@@ -26,7 +26,7 @@ export async function createInvite(
   expireDate: dayjs.Dayjs | null,
   maxUses: number | null,
 ): Promise<string> {
-  const pool = await getPoolByNameAndGuildId(poolName, guildId);
+  const pool = await getPoolByNameAndGuildId(db,poolName, guildId);
   if (!pool) {
     throw new BanPoolError(
       "POOL_NOT_FOUND",
@@ -93,7 +93,7 @@ export async function clearBanPoolInvites(
   poolName: string,
   guildId: string,
 ): Promise<void> {
-  const pool = await getPoolByNameAndGuildId(poolName, guildId);
+  const pool = await getPoolByNameAndGuildId(db,poolName, guildId);
   if (!pool) {
     throw new BanPoolError(
       "POOL_NOT_FOUND",

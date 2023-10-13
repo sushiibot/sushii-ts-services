@@ -31,7 +31,7 @@ export async function createPool(
   pool: AllSelection<DB, "app_public.ban_pools">,
   inviteCode: string
 }> {
-  const existingPool = await getPoolByNameAndGuildId(poolName, guildId);
+  const existingPool = await getPoolByNameAndGuildId(db, poolName, guildId);
 
   if (existingPool) {
     const embed = new EmbedBuilder()
@@ -46,7 +46,8 @@ export async function createPool(
     );
   }
 
-  const pool = await insertPool({
+  const pool = await insertPool(
+    db,{
       pool_name: poolName,
       description,
       guild_id: guildId,
@@ -113,7 +114,7 @@ export async function joinPool(
   }
 
   // Invite's guild id, not current guild id
-  const pool = await getPoolByNameAndGuildId(invite.pool_name, invite.owner_guild_id);
+  const pool = await getPoolByNameAndGuildId(db,invite.pool_name, invite.owner_guild_id);
 
   // This shouldn't really happen since invite will be deleted if pool is also deleted
   if (!pool) {
@@ -182,7 +183,7 @@ export async function showPool(
   poolMember?: BanPoolMemberRow;
   members: BanPoolMemberRow[];
 }> {
-  const pool = await getPoolByNameOrIdAndGuildId(nameOrID, guildId);
+  const pool = await getPoolByNameOrIdAndGuildId(db,nameOrID, guildId);
   if (!pool) {
     throw new BanPoolError(
       "POOL_NOT_FOUND",
@@ -224,7 +225,7 @@ export async function deletePool(
   poolName: string,
   guildId: string
 ): Promise<void> {
-  const pool = await getPoolByNameAndGuildId(poolName, guildId);
+  const pool = await getPoolByNameAndGuildId(db,poolName, guildId);
   if (!pool) {
     throw new BanPoolError(
       "POOL_NOT_FOUND",
