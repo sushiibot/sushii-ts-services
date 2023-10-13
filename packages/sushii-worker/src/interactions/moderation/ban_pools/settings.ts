@@ -1,6 +1,6 @@
-import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
-import { DB } from "../../../model/dbTypes";
 import SushiiEmoji from "../../../constants/SushiiEmoji";
+import { BanPoolRow } from "./BanPool.table";
+import { BanPoolMemberRow } from "./BanPoolMember.table";
 
 /**
  * Get the corresponding emoji for the current radio button
@@ -15,18 +15,18 @@ export function getRadioButton<T>(selectedValue: T, choiceValue: T): string {
     : SushiiEmoji.RadioOff;
 }
 
-function isPoolMember(
+export function isPoolMember(
   pool:
-    | AllSelection<DB, "app_public.ban_pools">
-    | AllSelection<DB, "app_public.ban_pool_members">,
-): pool is AllSelection<DB, "app_public.ban_pool_members"> {
+  | BanPoolRow
+  | BanPoolMemberRow,
+): pool is BanPoolMemberRow {
   return "permission" in pool;
 }
 
 export function buildPoolSettingsString(
   pool:
-    | AllSelection<DB, "app_public.ban_pools">
-    | AllSelection<DB, "app_public.ban_pool_members">,
+    | BanPoolRow
+    | BanPoolMemberRow,
 ): string {
   const isMember = isPoolMember(pool);
 
@@ -54,6 +54,10 @@ export function buildPoolSettingsString(
     switch (pool.permission) {
       case "view":
         permissionStr = "Viewer";
+
+        // TODO: Ensure view permissions is shown as nothing and can't edit these
+        pool.add_mode = "nothing";
+        pool.remove_mode = "nothing";
         break;
       case "edit":
         permissionStr = "Editor (add / remove bans)";
@@ -68,7 +72,14 @@ export function buildPoolSettingsString(
   // Mode - Bans in this server
   // ---------------------------------------------------------------------------
 
-  const modeSection = "__**Ban / Unban in THIS server**__";
+  let modeSection = "__**Ban / Unban in THIS server**__";
+
+  if (isMember && pool.permission === "view") {
+    modeSection += "\n";
+    modeSection += "These settings are disabled because you aren't a pool editor. \
+This server can't add or remove users from this pool. If you want edit permissions, \
+ask the pool owner."
+  }
 
   // ---------------------------------------------------------------------------
   // Add mode
@@ -174,15 +185,13 @@ export function buildPoolSettingsString(
   }
 
   fullStr.push(
-    ...[
-      modeSection,
-      addModeStr,
-      removeModeStr,
+    modeSection,
+    addModeStr,
+    removeModeStr,
 
-      actionSection,
-      addActionStr,
-      removeActionStr,
-    ],
+    actionSection,
+    addActionStr,
+    removeActionStr,
   );
 
   return fullStr.join("\n");

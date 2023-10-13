@@ -62,7 +62,7 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
           for (const pool of poolOwnerships) {
             choices.push({
               name: `${pool.pool_name} - Owned`,
-              value: pool.id,
+              value: pool.id.toString(),
             });
           }
 
@@ -76,7 +76,7 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
               name: `${pool.pool_name} - ${
                 ownerGuild?.name || "Unknown owner server"
               }`,
-              value: pool.id,
+              value: pool.id.toString(),
             });
           }
 

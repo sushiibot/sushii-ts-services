@@ -91,3 +91,26 @@ export function deleteAllBanPoolInvites(
     .where("owner_guild_id", "=", guildId)
     .executeTakeFirstOrThrow();
 }
+
+/**
+ * Gets the number of invites for a ban pool
+ *
+ * @param db
+ * @param poolName
+ * @param guildId
+ * @returns
+ */
+export async function getBanPoolInviteCount(
+  db: Kysely<DB>,
+  poolName: string,
+  guildId: string,
+): Promise<number> {
+  const { count } = await db
+    .selectFrom("app_public.ban_pool_invites")
+    .select((eb) => eb.fn.countAll<number>().as("count"))
+    .where("pool_name", "=", poolName)
+    .where("owner_guild_id", "=", guildId)
+    .executeTakeFirstOrThrow();
+
+  return count;
+}
