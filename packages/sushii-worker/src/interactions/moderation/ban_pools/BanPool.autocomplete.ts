@@ -12,6 +12,7 @@ import { searchBanPoolMemberships } from "./BanPoolMember.repository";
 import { getAllBanPoolInvites } from "./BanPoolInvite.repository";
 import toTimestamp from "../../../utils/toTimestamp";
 import db from "../../../model/db";
+import { BanPoolMemberRowWithPool } from "./BanPoolMember.table";
 
 export default class BanPoolAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [
@@ -42,7 +43,7 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
       case BanPoolOption.PoolName: {
         // Should also show membership pools, not just owned pools
         if (subcommand === BanPoolOptionCommand.Show) {
-          const poolOwnerships = await getPoolByNameOrIdAndGuildId(
+          const poolOwnerships = await searchGuildBanPools(
             db,
             interaction.guildId,
             option.value,
@@ -54,20 +55,31 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
             option.value,
             )
 
-            const choices = poolMemberships.map(
-              (pool): APIApplicationCommandOptionChoice =>  {
-                const ownerGuild = interaction.client.guilds.cache.get(pool.owner_guild_id);
+          const choices = []
 
-                return {
-                name: `${pool.pool_name} - ${ownerGuild?.name || "Unknown owner server"}`,
-                // Use ID since there could be duplicates
-                value: pool.id,
-              }
-              }
-            );
+          // Add owned pools
+          for (const pool of poolOwnerships) {
+            choices.push({
+              name: `${pool.pool_name} - Owned`,
+              value: pool.id,
+            })
+          }
 
-            await interaction.respond(choices);
-            return;
+          // Add memberships
+          for (const pool of poolMemberships) {
+            const ownerGuild = interaction.client.guilds.cache.get(pool.owner_guild_id);
+
+            choices.push({
+              name: `${pool.pool_name} - ${ownerGuild?.name || "Unknown owner server"}`,
+              value: pool.id,
+            })
+          }
+
+          // Sort
+          choices.sort((a, b) => a.name.localeCompare(b.name))
+
+          await interaction.respond(choices);
+          return;
         }
 
         // Don't show any memberships -- only owned pools
