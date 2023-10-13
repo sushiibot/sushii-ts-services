@@ -1,7 +1,6 @@
-import { DeleteResult } from "kysely";
-import db from "../../../model/db";
+import { DeleteResult, Kysely } from "kysely";
 import { BanPoolRow, InsertableBanPoolRow } from "./BanPool.table";
-
+import { DB } from "../../../model/dbTypes";
 
 /**
  * Get a ban pool by pool name and guild ID
@@ -11,6 +10,7 @@ import { BanPoolRow, InsertableBanPoolRow } from "./BanPool.table";
  * @returns ban pool
  */
 export function getPoolByNameAndGuildId(
+  db: Kysely<DB>,
   poolName: string,
   guildId: string,
 ): Promise<BanPoolRow | undefined>  {
@@ -29,6 +29,7 @@ export function getPoolByNameAndGuildId(
  * @returns ban pools
  */
 export function getAllGuildBanPools(
+  db: Kysely<DB>,
   guildId: string,
 ): Promise<BanPoolRow[]> {
   return db
@@ -46,6 +47,7 @@ export function getAllGuildBanPools(
  * @returns ban pools that start with the search string
  */
 export function searchGuildBanPools(
+  db: Kysely<DB>,
   guildId: string,
   search: string,
 ): Promise<BanPoolRow[]> {
@@ -65,6 +67,7 @@ export function searchGuildBanPools(
  * @returns ban pool or undefined if not found
  */
 export function getPoolByNameOrIdAndGuildId(
+  db: Kysely<DB>,
   nameOrID: string,
   guildId: string
 ): Promise<BanPoolRow | undefined> {
@@ -102,6 +105,7 @@ export function getPoolByNameOrIdAndGuildId(
  * @returns inserted ban pool
  */
 export function insertPool(
+  db: Kysely<DB>,
   pool: InsertableBanPoolRow
 ): Promise<BanPoolRow> {
    return db
@@ -119,6 +123,7 @@ export function insertPool(
  * @returns 
  */
 export function deletePool(
+  db: Kysely<DB>,
   poolName: string,
   guildId: string
 ): Promise<DeleteResult> {

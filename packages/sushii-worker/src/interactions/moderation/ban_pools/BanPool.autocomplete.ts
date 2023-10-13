@@ -43,6 +43,7 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
         // Should also show membership pools, not just owned pools
         if (subcommand === BanPoolOptionCommand.Show) {
           const poolOwnerships = await getPoolByNameOrIdAndGuildId(
+            db,
             interaction.guildId,
             option.value,
           )
@@ -71,6 +72,7 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
 
         // Don't show any memberships -- only owned pools
         const banPools = await searchGuildBanPools(
+          db,
           interaction.guildId,
           option.value
         )
