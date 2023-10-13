@@ -4,6 +4,7 @@ import Color from "../../../utils/colors";
 type ErrorType =
   | "INVITE_NOT_FOUND"
   | "INVITE_EXPIRED"
+  | "INVITE_MAX_USES_REACHED"
   | "POOL_NOT_FOUND"
   | "POOL_ALREADY_EXISTS"
   | "POOL_ALREADY_MEMBER"
@@ -28,8 +29,16 @@ Check with the server that provided you with an invite code. They can use `/look
 export const inviteExpiredEmbed = new EmbedBuilder()
   .setTitle("Invite expired")
   .setDescription(
-    "The invite code you provided has expired. \
-Check with the server that provided you with an invite code. They can use `/lookuppool invite` to create a new invite."
+    "The invite code is expired. \
+Please request a new one from your inviter. They can use `/lookuppool invite` to create a new invite."
+  )
+  .setColor(Color.Error);
+
+export const inviteMaxUseReachedEmbed = new EmbedBuilder()
+  .setTitle("Invite can no longer be used")
+  .setDescription(
+    "The invite code reached it's max use. \
+Please request a new one from your inviter. They can use `/lookuppool invite` to create a new invite."
   )
   .setColor(Color.Error);
 

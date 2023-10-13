@@ -23,6 +23,41 @@ export function getPoolByNameAndGuildId(
 }
 
 /**
+ * Get all ban pools for a guild
+ * 
+ * @param guildId guild ID of the ban pools
+ * @returns ban pools
+ */
+export function getAllGuildBanPools(
+  guildId: string,
+): Promise<BanPoolRow[]> {
+  return db
+      .selectFrom("app_public.ban_pools")
+      .selectAll()
+      .where("guild_id", "=", guildId)
+      .execute();
+}
+
+/**
+ * Search for ban pools by name
+ * 
+ * @param guildId guild ID of the ban pools
+ * @param search  search string to search for
+ * @returns ban pools that start with the search string
+ */
+export function searchGuildBanPools(
+  guildId: string,
+  search: string,
+): Promise<BanPoolRow[]> {
+  return db
+      .selectFrom("app_public.ban_pools")
+      .selectAll()
+      .where("guild_id", "=", guildId)
+      .where("pool_name", "like", `${search}%`)
+      .execute();
+}
+
+/**
  * Gets a ban pool by name or ID. If by ID, it will NOt check the guild_id.
  * 
  * @param nameOrID name of pool or the unique ID of the pool

@@ -40,6 +40,7 @@ import LookupCommand from "./moderation/LookupCommand";
 import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
 import TagAdminCommand from "./tags/TagAdminCommand";
 import LookupGroupCommand from "./moderation/ban_pools/BanPool.command";
+import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
 
 export default function addCommands(
   interactionClient: InteractionClient
@@ -103,7 +104,9 @@ export default function addCommands(
 
     new RoleMenuAutocomplete(),
 
-    new ReasonAutocomplete()
+    new ReasonAutocomplete(),
+
+    new BanPoolAutocomplete(),
   );
 
   // ----------------------------------------
