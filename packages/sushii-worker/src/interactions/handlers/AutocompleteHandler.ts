@@ -16,6 +16,6 @@ export default abstract class AutocompleteHandler extends InteractionHandler {
   abstract handler(
     ctx: Context,
     interaction: AutocompleteInteraction,
-    option: AutocompleteFocusedOption
+    option: AutocompleteFocusedOption,
   ): Promise<void>;
 }

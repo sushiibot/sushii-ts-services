@@ -30,7 +30,7 @@ export default class TimeoutCommand extends SlashCommandHandler {
       o
         .setName("duration")
         .setDescription("How long to timeout the user.")
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption(reasonOption(ActionType.Timeout))
     // .addAttachmentOption(attachmentOption)
@@ -40,7 +40,7 @@ export default class TimeoutCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not in cached guild");
@@ -51,7 +51,7 @@ export default class TimeoutCommand extends SlashCommandHandler {
       await interactionReplyErrorMessage(
         ctx,
         interaction,
-        "Invalid duration! Please use a valid duration such as 1d, 6h, etc."
+        "Invalid duration! Please use a valid duration such as 1d, 6h, etc.",
       );
 
       return;
@@ -62,7 +62,7 @@ export default class TimeoutCommand extends SlashCommandHandler {
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
       await interaction.editReply(
-        getErrorMessage("Error", fetchTargetsRes.val)
+        getErrorMessage("Error", fetchTargetsRes.val),
       );
 
       return;

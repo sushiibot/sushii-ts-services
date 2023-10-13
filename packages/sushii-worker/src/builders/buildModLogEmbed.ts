@@ -18,7 +18,7 @@ export default async function buildModLogEmbed(
   actionType: ActionType,
   targetUser: User,
   modCase: ModCase,
-  timeoutChange?: TimeoutChange
+  timeoutChange?: TimeoutChange,
 ): Promise<EmbedBuilder> {
   let executorUser;
   if (modCase.executor_id) {
@@ -56,7 +56,7 @@ export default async function buildModLogEmbed(
     if (timeoutChange.actionType === ActionType.Timeout) {
       const newTsR = toTimestamp(
         timeoutChange.new,
-        TimestampStyles.RelativeTime
+        TimestampStyles.RelativeTime,
       );
       const dur = timeoutChange.duration.humanize();
 
@@ -70,13 +70,13 @@ export default async function buildModLogEmbed(
     if (timeoutChange.actionType === ActionType.TimeoutAdjust) {
       const newTsR = toTimestamp(
         timeoutChange.new,
-        TimestampStyles.RelativeTime
+        TimestampStyles.RelativeTime,
       );
       const dur = timeoutChange.duration.humanize();
 
       const oldTsR = toTimestamp(
         timeoutChange.old,
-        TimestampStyles.RelativeTime
+        TimestampStyles.RelativeTime,
       );
 
       fields.push(
@@ -89,14 +89,14 @@ export default async function buildModLogEmbed(
           name: "Previous Timeout",
           value: `Would have expired ${oldTsR}`,
           inline: false,
-        }
+        },
       );
     }
 
     if (timeoutChange.actionType === ActionType.TimeoutRemove) {
       const oldTsR = toTimestamp(
         timeoutChange.old,
-        TimestampStyles.RelativeTime
+        TimestampStyles.RelativeTime,
       );
 
       fields.push({

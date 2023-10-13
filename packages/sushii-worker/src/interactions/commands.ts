@@ -43,7 +43,7 @@ import LookupGroupCommand from "./moderation/ban_pools/BanPool.command";
 import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
 
 export default function addCommands(
-  interactionClient: InteractionClient
+  interactionClient: InteractionClient,
 ): void {
   interactionClient.addCommands(
     // User
@@ -90,7 +90,7 @@ export default function addCommands(
     new XpCommand(),
 
     // Settings
-    new SettingsCommand()
+    new SettingsCommand(),
   );
 
   // ----------------------------------------
@@ -122,7 +122,7 @@ export default function addCommands(
 
     new ModLogReasonButtonHandler(),
 
-    new ReasonConfirmButtonHandler()
+    new ReasonConfirmButtonHandler(),
   );
 
   // ----------------------------------------

@@ -8,14 +8,14 @@ const notifiedCache = new Set<string>();
 
 const legacyModLogNotifierHandler: EventHandlerFn<Events.GuildBanAdd> = async (
   ctx: Context,
-  ban: GuildBan
+  ban: GuildBan,
 ): Promise<void> => {
   // Ban event
   // Ban event, exit if already sent notification
   if (notifiedCache.has(ban.guild.id)) {
     logger.debug(
       { guildId: ban.guild.id },
-      "Already notified guild of missing audit log perms"
+      "Already notified guild of missing audit log perms",
     );
     return;
   }
@@ -48,7 +48,7 @@ const legacyModLogNotifierHandler: EventHandlerFn<Events.GuildBanAdd> = async (
   const embed = new EmbedBuilder()
     .setTitle("Missing audit log permissions")
     .setDescription(
-      "sushii now needs extra permissions to log mod actions, please make sure my role has the `View Audit Log` permission!"
+      "sushii now needs extra permissions to log mod actions, please make sure my role has the `View Audit Log` permission!",
     )
     .setColor(Color.Error);
 
@@ -68,7 +68,7 @@ const legacyModLogNotifierHandler: EventHandlerFn<Events.GuildBanAdd> = async (
 
   logger.debug(
     { guildId: ban.guild.id },
-    "Notified guild of missing audit log perms (ban event)"
+    "Notified guild of missing audit log perms (ban event)",
   );
 };
 

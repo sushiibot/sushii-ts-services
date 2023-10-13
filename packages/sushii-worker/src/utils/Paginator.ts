@@ -100,7 +100,7 @@ export default class Paginator {
   private async getEmbed(): Promise<EmbedBuilder> {
     const page = await this.getPageDescriptionFn(
       this.currentPageIndex,
-      this.pageSize
+      this.pageSize,
     );
 
     logger.debug(
@@ -109,7 +109,7 @@ export default class Paginator {
         pageSize: this.pageSize,
         page,
       },
-      "Fetched page"
+      "Fetched page",
     );
 
     const embed = new EmbedBuilder();
@@ -130,7 +130,7 @@ export default class Paginator {
    * @returns Message components
    */
   private async getComponents(
-    expired: boolean
+    expired: boolean,
   ): Promise<ActionRowBuilder<ButtonBuilder>[]> {
     // Get forward and back pages, along with the current page on the center
 
@@ -187,7 +187,7 @@ export default class Paginator {
         backButton,
         currentPage,
         forwardButton,
-        forward5Button
+        forward5Button,
       ),
     ];
 
@@ -203,7 +203,7 @@ export default class Paginator {
         embed,
         totalPages,
       },
-      "starting pagination"
+      "starting pagination",
     );
 
     if (this.hideButtonsIfSinglePage && totalPages <= 0) {
@@ -267,13 +267,13 @@ export default class Paginator {
           case ButtonId.Forward:
             this.currentPageIndex = Math.min(
               this.currentPageIndex + 1,
-              totalPages - 1
+              totalPages - 1,
             );
             break;
           case ButtonId.Forward5:
             this.currentPageIndex = Math.min(
               this.currentPageIndex + 5,
-              totalPages - 1
+              totalPages - 1,
             );
             break;
           default:

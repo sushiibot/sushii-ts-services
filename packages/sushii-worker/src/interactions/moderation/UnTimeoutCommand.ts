@@ -30,7 +30,7 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not in cached guild");
@@ -43,7 +43,7 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
       await interaction.editReply(
-        getErrorMessage("Error", fetchTargetsRes.val)
+        getErrorMessage("Error", fetchTargetsRes.val),
       );
 
       return;
@@ -53,7 +53,7 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
       ctx,
       interaction,
       data,
-      ActionType.TimeoutRemove
+      ActionType.TimeoutRemove,
     );
     if (res.err) {
       await interaction.editReply(getErrorMessage("Error", res.val.message));

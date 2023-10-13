@@ -37,24 +37,24 @@ export default class SlowmodeCommand extends SlashCommandHandler {
       o
         .setName(SlowmodeOption.Duration)
         .setDescription(
-          "Duration to set slowmode to (Example: 5s or 1m). Set to 0 to disable."
+          "Duration to set slowmode to (Example: 5s or 1m). Set to 0 to disable.",
         )
-        .setRequired(true)
+        .setRequired(true),
     )
     .addChannelOption((o) =>
       o
         .setName(SlowmodeOption.ChannelOption)
         .setDescription(
-          "Channel to set slowmode for. Defaults to the current channel."
+          "Channel to set slowmode for. Defaults to the current channel.",
         )
-        .setRequired(false)
+        .setRequired(false),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
@@ -68,7 +68,7 @@ export default class SlowmodeCommand extends SlashCommandHandler {
     const channelOption = interaction.options.getChannel(
       SlowmodeOption.ChannelOption,
       false,
-      [ChannelType.GuildText]
+      [ChannelType.GuildText],
     );
 
     const targetChanel = channelOption || interaction.channel;
@@ -93,7 +93,7 @@ export default class SlowmodeCommand extends SlashCommandHandler {
         ctx,
         interaction,
         "Invalid duration, please use a valid duration like 5s or 1m.",
-        true
+        true,
       );
 
       return;
@@ -104,7 +104,7 @@ export default class SlowmodeCommand extends SlashCommandHandler {
         ctx,
         interaction,
         "Slowmode must be less than 6 hours.",
-        true
+        true,
       );
 
       return;
@@ -120,7 +120,7 @@ export default class SlowmodeCommand extends SlashCommandHandler {
           ctx,
           interaction,
           `Failed to update slowmode: ${err.message}`,
-          true
+          true,
         );
 
         return;
@@ -159,7 +159,7 @@ export default class SlowmodeCommand extends SlashCommandHandler {
             {
               name: "Duration",
               value: formattedDuration || "Disabled",
-            }
+            },
           )
           .setColor(Color.Success),
       ],

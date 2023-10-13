@@ -58,7 +58,7 @@ export default class ModActionData {
     this.attachment = this.options.getAttachment(ModerationOption.Attachment);
 
     this.deleteMessageDays = this.options.getInteger(
-      ModerationOption.DaysToDelete
+      ModerationOption.DaysToDelete,
     );
 
     const durationStr = this.options.getString(ModerationOption.Duration);
@@ -116,7 +116,7 @@ export default class ModActionData {
   async fetchTargets(
     ctx: Context,
     interaction: ChatInputCommandInteraction,
-    skipMembers?: boolean
+    skipMembers?: boolean,
   ): Promise<Result<void, string>> {
     if (!interaction.inCachedGuild()) {
       return Err("This command can only be used in cached guild.");
@@ -132,7 +132,7 @@ export default class ModActionData {
     const targetIds = targetsString.match(ID_REGEX);
     if (!targetIds) {
       return Err(
-        "No users were provided, please specify which users to target with IDs or mentions."
+        "No users were provided, please specify which users to target with IDs or mentions.",
       );
     }
 
@@ -217,7 +217,7 @@ export default class ModActionData {
         logger.debug(
           "fetch member not found (%s - %s), fetching user instead",
           result.reason,
-          result.status
+          result.status,
         );
       }
     }
@@ -242,7 +242,7 @@ export default class ModActionData {
 
     if (this.targets.size === 0) {
       return Err(
-        "No valid target users were found. Please check IDs are correct and try again."
+        "No valid target users were found. Please check IDs are correct and try again.",
       );
     }
 

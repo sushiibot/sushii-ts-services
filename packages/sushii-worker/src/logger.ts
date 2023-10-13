@@ -9,7 +9,7 @@ logger.info(
   {
     level: logger.level,
   },
-  "Logger initialized"
+  "Logger initialized",
 );
 
 export default logger;

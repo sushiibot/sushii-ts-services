@@ -16,7 +16,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleModalSubmit(
     ctx: Context,
-    interaction: ModalSubmitInteraction
+    interaction: ModalSubmitInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
@@ -46,7 +46,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
-        `Case #${caseId} was not found, it may have been deleted.`
+        `Case #${caseId} was not found, it may have been deleted.`,
       );
 
       return;
@@ -68,7 +68,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
-        `Failed to update case #${caseId}`
+        `Failed to update case #${caseId}`,
       );
 
       return;
@@ -89,7 +89,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
-        "Failed to get user"
+        "Failed to get user",
       );
 
       return;
@@ -100,7 +100,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       ctx,
       ActionType.fromString(modCase.action),
       targetUser,
-      updatedModCase
+      updatedModCase,
     );
 
     // Edit message to show reason and remove button

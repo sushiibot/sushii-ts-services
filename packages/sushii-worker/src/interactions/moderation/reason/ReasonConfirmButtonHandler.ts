@@ -12,14 +12,14 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
     ctx: Context,
-    interaction: ButtonInteraction
+    interaction: ButtonInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
     }
 
     const customIDMatch = customIds.reasonConfirmButton.match(
-      interaction.customId
+      interaction.customId,
     );
     if (!customIDMatch) {
       throw new Error("No pending reason match");
@@ -64,7 +64,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
       const embed = new EmbedBuilder()
         .setTitle("Error")
         .setDescription(
-          "No pending reason confirmation found, please try the reason command again"
+          "No pending reason confirmation found, please try the reason command again",
         )
         .setColor(Color.Error);
 
@@ -109,7 +109,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
       [caseStartId, caseEndId],
       reason,
       // onlyEmptyReason
-      action === "empty"
+      action === "empty",
     );
 
     if (!responseEmbed) {

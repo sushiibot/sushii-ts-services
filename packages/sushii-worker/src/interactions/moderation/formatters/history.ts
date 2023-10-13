@@ -7,7 +7,7 @@ import { ActionType } from "../ActionType";
 
 export default function buildUserHistoryEmbed(
   query: GetUserModLogHistoryQuery,
-  format: "context_menu" | "command"
+  format: "context_menu" | "command",
 ): EmbedBuilder {
   const count = query.allModLogs?.nodes.length || 0;
 
@@ -15,7 +15,7 @@ export default function buildUserHistoryEmbed(
     .setTitle(
       format === "command"
         ? t("history.command.title", { ns: "commands", count })
-        : t("history.context_menu.title", { ns: "commands" })
+        : t("history.context_menu.title", { ns: "commands" }),
     )
     .setColor(Color.Success);
 
@@ -38,7 +38,7 @@ export default function buildUserHistoryEmbed(
   }, new Map<string, number>());
 
   const summaryStr = Array.from(summary.entries()).map(
-    ([action, num]) => `${action} - ${num}`
+    ([action, num]) => `${action} - ${num}`,
   );
 
   // Build case history

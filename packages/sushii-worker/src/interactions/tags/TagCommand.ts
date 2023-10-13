@@ -33,7 +33,7 @@ interface TagUpdateData {
 
 async function getFieldsAndFiles(
   newContent: string | null,
-  newAttachment: Attachment | null
+  newAttachment: Attachment | null,
 ): Promise<Result<TagUpdateData, string>> {
   const fields = [];
   const files: AttachmentBuilder[] = [];
@@ -71,7 +71,7 @@ async function deniedTagPermission(
   interaction: ChatInputCommandInteraction,
   tag: Omit<Tag, "nodeId">,
   userID: string,
-  member: GuildMember
+  member: GuildMember,
 ): Promise<boolean> {
   const denied =
     tag.ownerId !== userID &&
@@ -113,21 +113,21 @@ export default class TagCommand extends SlashCommandHandler {
         .setName("add")
         .setDescription("Create a new tag.")
         .addStringOption((o) =>
-          o.setName("name").setDescription("The tag name.").setRequired(true)
+          o.setName("name").setDescription("The tag name.").setRequired(true),
         )
         // Content / attachment optional, but requires at least one
         .addStringOption((o) =>
           o
             .setName("content")
             .setDescription("The content of the tag.")
-            .setRequired(false)
+            .setRequired(false),
         )
         .addAttachmentOption((o) =>
           o
             .setName("attachment")
             .setDescription("Optional tag attachment.")
-            .setRequired(false)
-        )
+            .setRequired(false),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -138,8 +138,8 @@ export default class TagCommand extends SlashCommandHandler {
             .setName("name")
             .setDescription("The tag name.")
             .setRequired(true)
-            .setAutocomplete(true)
-        )
+            .setAutocomplete(true),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -149,20 +149,20 @@ export default class TagCommand extends SlashCommandHandler {
           o
             .setName(NAME_STARTS_WITH)
             .setDescription("Filter tags name starting with this text.")
-            .setRequired(false)
+            .setRequired(false),
         )
         .addStringOption((o) =>
           o
             .setName(NAME_CONTAINS)
             .setDescription("Filter tags name containing this text.")
-            .setRequired(false)
+            .setRequired(false),
         )
         .addUserOption((o) =>
           o
             .setName("owner")
             .setDescription("Filter tags created by this user.")
-            .setRequired(false)
-        )
+            .setRequired(false),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -173,11 +173,11 @@ export default class TagCommand extends SlashCommandHandler {
             .setName("name")
             .setDescription("The tag name.")
             .setRequired(true)
-            .setAutocomplete(true)
-        )
+            .setAutocomplete(true),
+        ),
     )
     .addSubcommand((c) =>
-      c.setName("list").setDescription("Get all server tags.")
+      c.setName("list").setDescription("Get all server tags."),
     )
     .addSubcommand((c) =>
       c
@@ -188,20 +188,20 @@ export default class TagCommand extends SlashCommandHandler {
           o
             .setName(NAME_STARTS_WITH)
             .setDescription("Filter tags name starting with this text.")
-            .setRequired(false)
+            .setRequired(false),
         )
         .addStringOption((o) =>
           o
             .setName(NAME_CONTAINS)
             .setDescription("Filter tags containing this text.")
-            .setRequired(false)
+            .setRequired(false),
         )
         .addUserOption((o) =>
           o
             .setName("owner")
             .setDescription("Filter tags created by this user.")
-            .setRequired(false)
-        )
+            .setRequired(false),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -212,21 +212,21 @@ export default class TagCommand extends SlashCommandHandler {
             .setName("name")
             .setDescription("The tag name.")
             .setRequired(true)
-            .setAutocomplete(true)
+            .setAutocomplete(true),
         )
         // Requires at least one
         .addStringOption((o) =>
           o
             .setName("content")
             .setDescription("The new content of the tag.")
-            .setRequired(false)
+            .setRequired(false),
         )
         .addAttachmentOption((o) =>
           o
             .setName("attachment")
             .setDescription("Optional tag attachment.")
-            .setRequired(false)
-        )
+            .setRequired(false),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -237,14 +237,14 @@ export default class TagCommand extends SlashCommandHandler {
             .setName("name")
             .setDescription("The tag name.")
             .setRequired(true)
-            .setAutocomplete(true)
+            .setAutocomplete(true),
         )
         .addStringOption((o) =>
           o
             .setName("new_name")
             .setDescription("The new name of the tag.")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -255,15 +255,15 @@ export default class TagCommand extends SlashCommandHandler {
             .setName("name")
             .setDescription("The tag name.")
             .setRequired(true)
-            .setAutocomplete(true)
-        )
+            .setAutocomplete(true),
+        ),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("This command can only be used in a guild.");
@@ -297,7 +297,7 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async addHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     // Make new tags case insensitive - always lowercase
     const tagName = interaction.options.getString("name")?.toLowerCase();
@@ -315,7 +315,7 @@ export default class TagCommand extends SlashCommandHandler {
             .setDescription(
               t("tag.add.error.missing_content_and_attachment", {
                 ns: "commands",
-              })
+              }),
             )
             .setColor(Color.Error)
             .toJSON(),
@@ -339,7 +339,7 @@ export default class TagCommand extends SlashCommandHandler {
               t("tag.add.error.already_exists_description", {
                 ns: "commands",
                 tagName,
-              })
+              }),
             )
             .setColor(Color.Error)
             .toJSON(),
@@ -381,12 +381,12 @@ export default class TagCommand extends SlashCommandHandler {
               .setTitle(
                 t("tag.add.error.failed_title", {
                   ns: "commands",
-                })
+                }),
               )
               .setDescription(
                 t("tag.add.error.failed_get_original_message", {
                   ns: "commands",
-                })
+                }),
               )
               .toJSON(),
           ],
@@ -411,7 +411,7 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async getHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const tagName = interaction.options.getString("name");
     if (!tagName) {
@@ -471,7 +471,7 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async randomHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const startsWith = interaction.options.getString(NAME_STARTS_WITH);
     const contains = interaction.options.getString(NAME_CONTAINS);
@@ -484,7 +484,9 @@ export default class TagCommand extends SlashCommandHandler {
           new EmbedBuilder()
             .setTitle(t("tag.random.error.title", { ns: "commands" }))
             .setDescription(
-              t("tag.random.error.starts_with_contains_xor", { ns: "commands" })
+              t("tag.random.error.starts_with_contains_xor", {
+                ns: "commands",
+              }),
             )
             .setColor(Color.Error)
             .toJSON(),
@@ -535,7 +537,7 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async infoHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const tagName = interaction.options.getString("name");
     if (!tagName) {
@@ -552,7 +554,7 @@ export default class TagCommand extends SlashCommandHandler {
         embeds: [
           new EmbedBuilder()
             .setDescription(
-              t("tag.get.error.not_found", { ns: "commands", tagName })
+              t("tag.get.error.not_found", { ns: "commands", tagName }),
             )
             .setColor(Color.Error)
             .toJSON(),
@@ -593,7 +595,7 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async fulllistHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const tags = await db
       .selectFrom("app_public.tags")
@@ -634,7 +636,7 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async searchHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const startsWith = interaction.options.getString(NAME_STARTS_WITH);
     const contains = interaction.options.getString(NAME_CONTAINS);
@@ -646,7 +648,7 @@ export default class TagCommand extends SlashCommandHandler {
           new EmbedBuilder()
             .setTitle(t("tag.search.error.title", { ns: "commands" }))
             .setDescription(
-              t("tag.search.error.no_options", { ns: "commands" })
+              t("tag.search.error.no_options", { ns: "commands" }),
             )
             .setColor(Color.Error)
             .toJSON(),
@@ -663,7 +665,9 @@ export default class TagCommand extends SlashCommandHandler {
           new EmbedBuilder()
             .setTitle(t("tag.search.error.title", { ns: "commands" }))
             .setDescription(
-              t("tag.search.error.starts_with_contains_xor", { ns: "commands" })
+              t("tag.search.error.starts_with_contains_xor", {
+                ns: "commands",
+              }),
             )
             .setColor(Color.Error)
             .toJSON(),
@@ -679,10 +683,10 @@ export default class TagCommand extends SlashCommandHandler {
       .where("guild_id", "=", interaction.guildId)
       .$if(owner !== null, (q) => q.where("owner_id", "=", owner!.id))
       .$if(startsWith !== null, (q) =>
-        q.where("tag_name", "ilike", `${startsWith}%`)
+        q.where("tag_name", "ilike", `${startsWith}%`),
       )
       .$if(contains !== null, (q) =>
-        q.where("tag_name", "ilike", `%${contains}%`)
+        q.where("tag_name", "ilike", `%${contains}%`),
       )
       .orderBy("tag_name", "asc")
       .execute();
@@ -738,7 +742,7 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async editHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const tagName = interaction.options.getString("name");
     if (!tagName) {
@@ -769,7 +773,7 @@ export default class TagCommand extends SlashCommandHandler {
         interaction,
         tag.tagByGuildIdAndTagName,
         interaction.user.id,
-        interaction.member
+        interaction.member,
       )
     ) {
       return;
@@ -811,7 +815,7 @@ export default class TagCommand extends SlashCommandHandler {
           ? {
               text: t("tag.edit.success.footer", { ns: "commands" }),
             }
-          : null
+          : null,
       );
 
     await interaction.reply({
@@ -832,12 +836,12 @@ export default class TagCommand extends SlashCommandHandler {
               .setTitle(
                 t("tag.edit.error.failed_title", {
                   ns: "commands",
-                })
+                }),
               )
               .setDescription(
                 t("tag.edit.error.failed_get_original_message", {
                   ns: "commands",
-                })
+                }),
               )
               .toJSON(),
           ],
@@ -861,7 +865,7 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async renameHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const tagName = interaction.options.getString("name");
     if (!tagName) {
@@ -892,7 +896,7 @@ export default class TagCommand extends SlashCommandHandler {
         interaction,
         tag.tagByGuildIdAndTagName,
         interaction.user.id,
-        interaction.member
+        interaction.member,
       )
     ) {
       return;
@@ -918,7 +922,7 @@ export default class TagCommand extends SlashCommandHandler {
               t("tag.rename.error.already_exists_description", {
                 ns: "commands",
                 tagName,
-              })
+              }),
             )
             .setColor(Color.Error)
             .toJSON(),
@@ -955,7 +959,7 @@ export default class TagCommand extends SlashCommandHandler {
 
   static async deleteHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const tagName = interaction.options.getString("name");
     if (!tagName) {
@@ -986,7 +990,7 @@ export default class TagCommand extends SlashCommandHandler {
         interaction,
         tag.tagByGuildIdAndTagName,
         interaction.user.id,
-        interaction.member
+        interaction.member,
       )
     ) {
       return;

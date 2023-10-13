@@ -32,7 +32,7 @@ function buildResponseEmbed(
   data: ModActionData,
   action: ActionType,
   content: string,
-  triedDMNonMemberCount: number
+  triedDMNonMemberCount: number,
 ): EmbedBuilder {
   const fields = [];
 
@@ -95,7 +95,7 @@ function buildResponseEmbed(
     .setTitle(
       `${toSentenceCase(ActionType.toPastTense(action))} ${
         data.targets.size
-      } users`
+      } users`,
     )
     .setDescription(content)
     .setFields(fields)
@@ -109,14 +109,14 @@ async function sendModLog(
   guildConfig: AllSelection<DB, "app_public.guild_configs">,
   actionType: ActionType,
   target: ModActionTarget,
-  modCase: AllSelection<DB, "app_public.mod_logs">
+  modCase: AllSelection<DB, "app_public.mod_logs">,
 ): Promise<void> {
   const embed = await buildModLogEmbed(ctx, actionType, target.user, modCase);
   const components = buildModLogComponents(actionType, modCase);
 
   if (guildConfig.log_mod_enabled && guildConfig.log_mod) {
     const modLogChannel = await interaction.guild.channels.fetch(
-      guildConfig.log_mod
+      guildConfig.log_mod,
     );
 
     if (modLogChannel && modLogChannel.isTextBased()) {
@@ -134,7 +134,7 @@ async function execActionUser(
   data: ModActionData,
   target: ModActionTarget,
   actionType: ActionType,
-  modCase: AllSelection<DB, "app_public.mod_logs">
+  modCase: AllSelection<DB, "app_public.mod_logs">,
 ): Promise<Result<ModActionTarget, ActionError>> {
   if (!interaction.inCachedGuild()) {
     throw new Error("Interaction is not in guild");
@@ -223,7 +223,7 @@ async function execActionUser(
           guildConfig,
           actionType,
           target,
-          modCase
+          modCase,
         );
 
         break;
@@ -238,7 +238,7 @@ async function execActionUser(
           guildConfig,
           actionType,
           target,
-          modCase
+          modCase,
         );
 
         break;
@@ -281,7 +281,7 @@ async function executeActionUser(
   interaction: ChatInputCommandInteraction<"cached">,
   data: ModActionData,
   target: ModActionTarget,
-  actionType: ActionType
+  actionType: ActionType,
 ): Promise<Result<ExecuteActionUserResult, ActionError>> {
   if (!interaction.inGuild()) {
     throw new Error("Not in guild");
@@ -290,7 +290,7 @@ async function executeActionUser(
   const hasPermsTargetingMember = await hasPermissionTargetingMember(
     interaction,
     target.user,
-    target.member || undefined
+    target.member || undefined,
   );
 
   if (hasPermsTargetingMember.err) {
@@ -306,7 +306,7 @@ async function executeActionUser(
     {
       nextCaseId,
     },
-    "Creating new mod log"
+    "Creating new mod log",
   );
 
   // Should not be pending for note or warn actions
@@ -345,7 +345,7 @@ async function executeActionUser(
       interaction,
       data,
       target.user,
-      actionType
+      actionType,
     );
   }
 
@@ -357,7 +357,7 @@ async function executeActionUser(
     data,
     target,
     actionType,
-    modLog
+    modLog,
   );
 
   // DM after for non-ban and send dm
@@ -367,7 +367,7 @@ async function executeActionUser(
       interaction,
       data,
       target.user,
-      actionType
+      actionType,
     );
   }
 
@@ -411,7 +411,7 @@ export default async function executeAction(
   ctx: Context,
   interaction: ChatInputCommandInteraction<"cached">,
   data: ModActionData,
-  actionType: ActionType
+  actionType: ActionType,
 ): Promise<Result<EmbedBuilder, Error>> {
   if (!interaction.guildId) {
     return Err(new Error("Guild ID is missing"));
@@ -430,7 +430,7 @@ export default async function executeAction(
       interaction,
       data,
       target,
-      actionType
+      actionType,
     );
 
     if (res.err) {
@@ -453,6 +453,6 @@ export default async function executeAction(
   }
 
   return Ok(
-    buildResponseEmbed(ctx, data, actionType, msg, triedDMNonMemberCount)
+    buildResponseEmbed(ctx, data, actionType, msg, triedDMNonMemberCount),
   );
 }

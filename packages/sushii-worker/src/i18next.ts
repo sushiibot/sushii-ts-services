@@ -24,7 +24,7 @@ export default async function initI18next(): Promise<void> {
       }
 
       log.info("i18next initialized");
-    }
+    },
   );
 
   i18next.on("missingKey", (lngs, namespace, key, res) => {
@@ -42,7 +42,7 @@ export default async function initI18next(): Promise<void> {
       lngs.join(","),
       namespace,
       key,
-      res
+      res,
     );
   });
 }

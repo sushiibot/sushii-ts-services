@@ -8,6 +8,6 @@ export default abstract class SelectMenuHandler extends MessageComponentHandler 
    */
   abstract handleInteraction(
     ctx: Context,
-    interaction: AnySelectMenuInteraction
+    interaction: AnySelectMenuInteraction,
   ): Promise<void>;
 }

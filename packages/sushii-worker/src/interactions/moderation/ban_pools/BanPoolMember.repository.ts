@@ -1,12 +1,16 @@
 import { Kysely, SelectQueryBuilder } from "kysely";
 import { BanPoolRow } from "./BanPool.table";
-import { BanPoolMemberRow, BanPoolMemberRowWithPool, InsertableBanPoolMemberRow } from "./BanPoolMember.table";
+import {
+  BanPoolMemberRow,
+  BanPoolMemberRowWithPool,
+  InsertableBanPoolMemberRow,
+} from "./BanPoolMember.table";
 import { DB } from "../../../model/dbTypes";
 
 export function getBanPoolMember(
   db: Kysely<DB>,
   guildId: string,
-  pool: BanPoolRow
+  pool: BanPoolRow,
 ): Promise<BanPoolMemberRow | undefined> {
   return db
     .selectFrom("app_public.ban_pool_members")
@@ -20,39 +24,41 @@ export function getBanPoolMember(
 function getAllBanPoolMembershipsQuery(
   db: Kysely<DB>,
   guildId: string,
-): SelectQueryBuilder<DB, "app_public.ban_pools" | "app_public.ban_pool_members", BanPoolMemberRowWithPool> {
-  return db
+): SelectQueryBuilder<
+  DB,
+  "app_public.ban_pools" | "app_public.ban_pool_members",
+  BanPoolMemberRowWithPool
+> {
+  return (
+    db
       .selectFrom("app_public.ban_pool_members")
       .innerJoin("app_public.ban_pools", (join) =>
         join
           .onRef(
             "app_public.ban_pool_members.owner_guild_id",
             "=",
-            "app_public.ban_pools.guild_id"
+            "app_public.ban_pools.guild_id",
           )
           .onRef(
             "app_public.ban_pool_members.pool_name",
             "=",
-            "app_public.ban_pools.pool_name"
-          )
+            "app_public.ban_pools.pool_name",
+          ),
       )
       // Only select the ban pool member rows
       .selectAll("app_public.ban_pool_members")
-      .select([
-        "id",
-        "creator_id",
-        "description",
-      ])
+      .select(["id", "creator_id", "description"])
       .where("member_guild_id", "=", guildId)
       .orderBy([
         "app_public.ban_pools.guild_id",
         "app_public.ban_pools.pool_name desc",
       ])
+  );
 }
 
 /**
  * Get all ban pool memberships for a guild
- * 
+ *
  * @param guildId guild ID of the ban pool members
  * @returns all ban pool memberships for a guild
  */
@@ -65,7 +71,7 @@ export function getAllBanPoolMemberships(
 
 /**
  * Search for ban pool memberships by pool name
- * 
+ *
  * @param guildId guild ID of the ban pool members
  * @param search  search string to search for
  * @returns ban pool memberships that start with the search string
@@ -75,15 +81,17 @@ export function searchBanPoolMemberships(
   guildId: string,
   search: string,
 ): Promise<BanPoolMemberRowWithPool[]> {
-  return getAllBanPoolMembershipsQuery(db, guildId)
+  return (
+    getAllBanPoolMembershipsQuery(db, guildId)
       // Additional search criteria
       .where("app_public.ban_pools.pool_name", "like", `${search}%`)
-      .execute();
+      .execute()
+  );
 }
 
 export function insertBanPoolMember(
   db: Kysely<DB>,
-  member: InsertableBanPoolMemberRow
+  member: InsertableBanPoolMemberRow,
 ): Promise<BanPoolMemberRow> {
   return db
     .insertInto("app_public.ban_pool_members")
@@ -95,7 +103,7 @@ export function insertBanPoolMember(
 export function getBanPoolMembers(
   db: Kysely<DB>,
   guildId: string,
-  poolName: string
+  poolName: string,
 ): Promise<BanPoolMemberRow[]> {
   return db
     .selectFrom("app_public.ban_pool_members")

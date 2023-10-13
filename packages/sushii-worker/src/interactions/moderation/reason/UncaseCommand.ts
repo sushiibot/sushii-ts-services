@@ -23,22 +23,22 @@ export default class UncaseCommand extends SlashCommandHandler {
         .setName("case")
         .setDescription("Case numbers you want to set the reason for.")
         .setAutocomplete(true)
-        .setRequired(true)
+        .setRequired(true),
     )
     .addBooleanOption((o) =>
       o
         .setName("keep_log_messages")
         .setDescription(
-          "Prevent deletion of messages in the mod log for the deleted cases. By default, messages are deleted."
+          "Prevent deletion of messages in the mod log for the deleted cases. By default, messages are deleted.",
         )
-        .setRequired(false)
+        .setRequired(false),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
@@ -95,7 +95,7 @@ export default class UncaseCommand extends SlashCommandHandler {
           new EmbedBuilder()
             .setTitle("Too many cases")
             .setDescription(
-              "You can only delete up to 25 cases at a time. Please try again with a smaller range."
+              "You can only delete up to 25 cases at a time. Please try again with a smaller range.",
             )
             .setColor(Color.Error)
             .toJSON(),
@@ -142,7 +142,7 @@ export default class UncaseCommand extends SlashCommandHandler {
       .map((l) => l.msgId!);
 
     const modLogChannel = await interaction.guild.channels.fetch(
-      guildConfigById.logMod
+      guildConfigById.logMod,
     );
 
     if (!modLogChannel || !modLogChannel.isTextBased()) {

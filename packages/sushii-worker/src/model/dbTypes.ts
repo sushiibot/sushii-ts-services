@@ -1,7 +1,11 @@
 import type { ColumnType } from "kysely";
 import type { IPostgresInterval } from "postgres-interval";
 
-export type AppPublicBanPoolAddAction = "ask" | "ban" | "nothing" | "timeout_and_ask";
+export type AppPublicBanPoolAddAction =
+  | "ask"
+  | "ban"
+  | "nothing"
+  | "timeout_and_ask";
 
 export type AppPublicBanPoolAddMode = "all_bans" | "manual" | "nothing";
 
@@ -27,9 +31,17 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
-export type Int8 = ColumnType<string, string | number | bigint, string | number | bigint>;
+export type Int8 = ColumnType<
+  string,
+  string | number | bigint,
+  string | number | bigint
+>;
 
-export type Interval = ColumnType<IPostgresInterval, IPostgresInterval | number, IPostgresInterval | number>;
+export type Interval = ColumnType<
+  IPostgresInterval,
+  IPostgresInterval | number,
+  IPostgresInterval | number
+>;
 
 export type Json = ColumnType<JsonValue, string, string>;
 

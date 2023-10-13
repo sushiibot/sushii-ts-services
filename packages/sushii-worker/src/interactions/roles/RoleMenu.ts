@@ -52,7 +52,7 @@ type QueriedRoleMenuRole = Omit<RoleMenuRole, "nodeId">;
 
 function sortRoleMenuRoles(
   a: QueriedRoleMenuRole,
-  b: QueriedRoleMenuRole
+  b: QueriedRoleMenuRole,
 ): number {
   if (a.position === b.position) {
     return 0;
@@ -91,13 +91,13 @@ export default class RoleMenuCommand extends SlashCommandHandler {
           o
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the role menu.")
-            .setRequired(true)
+            .setRequired(true),
         )
         .addStringOption((o) =>
           o
             .setName(RoleMenuOption.Description)
             .setDescription("The content of the role menu.")
-            .setRequired(false)
+            .setRequired(false),
         )
         .addIntegerOption((o) =>
           o
@@ -105,14 +105,14 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setDescription("The maximum number of roles to allow.")
             .setRequired(false)
             .setMinValue(1)
-            .setMaxValue(25)
+            .setMaxValue(25),
         )
         .addRoleOption((o) =>
           o
             .setName(RoleMenuOption.RequiredRole)
             .setDescription("A role that the user must have to use this menu")
-            .setRequired(false)
-        )
+            .setRequired(false),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -123,19 +123,19 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the role menu to edit.")
             .setRequired(true)
-            .setAutocomplete(true)
+            .setAutocomplete(true),
         )
         .addStringOption((o) =>
           o
             .setName(RoleMenuOption.NewName)
             .setDescription("The new name of the role menu.")
-            .setRequired(false)
+            .setRequired(false),
         )
         .addStringOption((o) =>
           o
             .setName(RoleMenuOption.Description)
             .setDescription("The new content of the role menu.")
-            .setRequired(false)
+            .setRequired(false),
         )
         .addIntegerOption((o) =>
           o
@@ -143,14 +143,14 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setDescription("The new maximum number of roles to allow.")
             .setRequired(false)
             .setMinValue(1)
-            .setMaxValue(25)
+            .setMaxValue(25),
         )
         .addRoleOption((o) =>
           o
             .setName(RoleMenuOption.RequiredRole)
             .setDescription("A role that the user must have to use this menu")
-            .setRequired(false)
-        )
+            .setRequired(false),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -161,14 +161,14 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the menu to add the roles to.")
             .setRequired(true)
-            .setAutocomplete(true)
+            .setAutocomplete(true),
         )
         .addStringOption((o) =>
           o
             .setName(RoleMenuOption.Roles)
             .setDescription("The new order of the roles in the menu.")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -179,11 +179,11 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the role menu.")
             .setRequired(true)
-            .setAutocomplete(true)
-        )
+            .setAutocomplete(true),
+        ),
     )
     .addSubcommand((c) =>
-      c.setName("list").setDescription("List all your role menus.")
+      c.setName("list").setDescription("List all your role menus."),
     )
     .addSubcommand((c) =>
       c
@@ -194,14 +194,14 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the menu to add the roles to.")
             .setRequired(true)
-            .setAutocomplete(true)
+            .setAutocomplete(true),
         )
         .addStringOption((o) =>
           o
             .setName(RoleMenuOption.Roles)
             .setDescription("The roles to add, you can add multiple at a time.")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -212,16 +212,16 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the menu to remove the roles from.")
             .setRequired(true)
-            .setAutocomplete(true)
+            .setAutocomplete(true),
         )
         .addStringOption((o) =>
           o
             .setName(RoleMenuOption.Roles)
             .setDescription(
-              "The roles to remove, you can add multiple at a time."
+              "The roles to remove, you can add multiple at a time.",
             )
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -232,29 +232,29 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the menu to add the roles to.")
             .setRequired(true)
-            .setAutocomplete(true)
+            .setAutocomplete(true),
         )
         .addRoleOption((o) =>
           o
             .setName(RoleMenuOption.RoleOption)
             .setDescription("The role to update.")
-            .setRequired(true)
+            .setRequired(true),
         )
         .addStringOption((o) =>
           o
             .setName(RoleMenuOption.Emoji)
             .setDescription("An emoji to represent the role in the menu.")
-            .setRequired(false)
+            .setRequired(false),
         )
         .addStringOption((o) =>
           o
             .setName(RoleMenuOption.Description)
             .setDescription(
-              "A description for the role. Only shows for select menus."
+              "A description for the role. Only shows for select menus.",
             )
             .setMaxLength(100)
-            .setRequired(false)
-        )
+            .setRequired(false),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -265,8 +265,8 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the menu to add the roles to.")
             .setRequired(true)
-            .setAutocomplete(true)
-        )
+            .setAutocomplete(true),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -277,7 +277,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             .setName(RoleMenuOption.Name)
             .setDescription("The name of the role menu.")
             .setRequired(true)
-            .setAutocomplete(true)
+            .setAutocomplete(true),
         )
         .addStringOption((o) =>
           o
@@ -292,14 +292,14 @@ export default class RoleMenuCommand extends SlashCommandHandler {
               {
                 name: "Buttons",
                 value: RoleMenuType.Buttons,
-              }
-            )
+              },
+            ),
         )
         .addChannelOption((o) =>
           o
             .setName(RoleMenuOption.Channel)
             .setDescription(
-              "The channel to send the role menu to, by default the current channel."
+              "The channel to send the role menu to, by default the current channel.",
             )
             .addChannelTypes(
               ChannelType.GuildVoice,
@@ -307,16 +307,16 @@ export default class RoleMenuCommand extends SlashCommandHandler {
               ChannelType.AnnouncementThread,
               ChannelType.PublicThread,
               ChannelType.PrivateThread,
-              ChannelType.GuildStageVoice
+              ChannelType.GuildStageVoice,
             )
-            .setRequired(false)
-        )
+            .setRequired(false),
+        ),
     )
     .toJSON();
 
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("This command can only be used in a server.");
@@ -351,7 +351,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
   private async newHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const name = interaction.options.getString(RoleMenuOption.Name);
     if (!name) {
@@ -375,11 +375,11 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     // Create menu
 
     const description = interaction.options.getString(
-      RoleMenuOption.Description
+      RoleMenuOption.Description,
     );
     const maxRoles = interaction.options.getInteger(RoleMenuOption.MaxRoles);
     const requiredRole = interaction.options.getRole(
-      RoleMenuOption.RequiredRole
+      RoleMenuOption.RequiredRole,
     );
 
     // Save to DB
@@ -427,7 +427,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
   private async getHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const name = interaction.options.getString(RoleMenuOption.Name);
     if (!name) {
@@ -505,7 +505,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
   private async listHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menus = await ctx.sushiiAPI.sdk.listRoleMenus({
       guildId: interaction.guildId,
@@ -534,7 +534,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
   private async editHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menuName = interaction.options.getString(RoleMenuOption.Name);
     if (!menuName) {
@@ -567,11 +567,11 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     }
 
     const description = interaction.options.getString(
-      RoleMenuOption.Description
+      RoleMenuOption.Description,
     );
     const maxCount = interaction.options.getInteger(RoleMenuOption.MaxRoles);
     const requiredRole = interaction.options.getRole(
-      RoleMenuOption.RequiredRole
+      RoleMenuOption.RequiredRole,
     );
 
     // Save to DB
@@ -625,7 +625,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
   private async editOrderHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menuName = interaction.options.getString(RoleMenuOption.Name);
     if (!menuName) {
@@ -676,7 +676,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         t("rolemenu.editorder.error.mismatched_roles", {
           name: menuName,
           roles: currentRoleIDs.map((id) => `<@&${id}>`).join(", "),
-        })
+        }),
       );
 
       return;
@@ -710,7 +710,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
   private async addRolesHandlerMenu(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menuName = interaction.options.getString(RoleMenuOption.Name);
     if (!menuName) {
@@ -742,7 +742,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const rows = [
       new ActionRowBuilder<RoleSelectMenuBuilder>().addComponents(selectMenu),
       new ActionRowBuilder<UserSelectMenuBuilder>().addComponents(
-        userSelectMenu
+        userSelectMenu,
       ),
     ];
 
@@ -768,7 +768,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
   private async addRolesHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menuName = interaction.options.getString(RoleMenuOption.Name);
     if (!menuName) {
@@ -867,7 +867,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   private async removeRolesHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menuName = interaction.options.getString(RoleMenuOption.Name);
     if (!menuName) {
@@ -889,7 +889,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     }
 
     const roleIdsToRemove = [...roles.matchAll(RE_ROLE)].map(
-      (match) => match[1]
+      (match) => match[1],
     );
 
     if (roleIdsToRemove.length === 0) {
@@ -937,7 +937,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
   private async roleOptionsHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menuName = interaction.options.getString(RoleMenuOption.Name);
     if (!menuName) {
@@ -962,7 +962,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     const menuContainsRole =
       menuData.roleMenuRolesByGuildIdAndMenuName.nodes.find(
-        (r) => r.roleId === role.id
+        (r) => r.roleId === role.id,
       );
 
     if (!menuContainsRole) {
@@ -975,14 +975,14 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     const emojiStr = interaction.options.getString(RoleMenuOption.Emoji);
     const description = interaction.options.getString(
-      RoleMenuOption.Description
+      RoleMenuOption.Description,
     );
 
     if (!emojiStr && !description) {
       await interactionReplyErrorMessage(
         ctx,
         interaction,
-        t("rolemenu.roleoptions.error.no_option_provided")
+        t("rolemenu.roleoptions.error.no_option_provided"),
       );
 
       return;
@@ -998,7 +998,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         await interactionReplyErrorMessage(
           ctx,
           interaction,
-          t("rolemenu.roleoptions.error.invalid_emoji")
+          t("rolemenu.roleoptions.error.invalid_emoji"),
         );
 
         return;
@@ -1009,7 +1009,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       await interactionReplyErrorMessage(
         ctx,
         interaction,
-        t("rolemenu.roleoptions.error.description_too_long")
+        t("rolemenu.roleoptions.error.description_too_long"),
       );
 
       return;
@@ -1052,7 +1052,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
   private async deleteHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const name = interaction.options.getString(RoleMenuOption.Name);
     if (!name) {
@@ -1076,7 +1076,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
   private async sendHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const name = interaction.options.getString(RoleMenuOption.Name);
     if (!name) {
@@ -1129,7 +1129,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       await interactionReplyErrorMessage(
         ctx,
         interaction,
-        t("rolemenu.send.error.menu_has_no_roles")
+        t("rolemenu.send.error.menu_has_no_roles"),
       );
 
       return;
@@ -1139,7 +1139,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       await interactionReplyErrorMessage(
         ctx,
         interaction,
-        t("rolemenu.send.error.menu_has_less_roles_than_max")
+        t("rolemenu.send.error.menu_has_less_roles_than_max"),
       );
 
       return;
@@ -1296,7 +1296,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   private async getMenu(
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
-    menuName: string
+    menuName: string,
   ): Promise<
     Option<NonNullable<GetRoleMenuQuery["roleMenuByGuildIdAndMenuName"]>>
   > {

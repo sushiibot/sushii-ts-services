@@ -58,9 +58,9 @@ describe("UserLevelProgress", () => {
         expect(levelProg.nextLevelXpProgress).toEqual(wantNextLevelXpProgress);
         expect(levelProg.nextLevelXpPercentage).toEqual(
           (levelProg.nextLevelXpProgress / levelProg.nextLevelXpRequired) *
-            100.0
+            100.0,
         );
       });
-    }
+    },
   );
 });

@@ -19,6 +19,6 @@ export default abstract class SlashCommandHandler extends InteractionHandler {
    */
   abstract handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void>;
 }

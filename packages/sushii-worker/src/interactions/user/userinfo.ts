@@ -14,15 +14,15 @@ export default class UserinfoHandler extends SlashCommandHandler {
       o
         .setName("user")
         .setDescription(
-          "The user to get information about, yourself if not provided"
-        )
+          "The user to get information about, yourself if not provided",
+        ),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     let target = interaction.options.getUser("user");
 

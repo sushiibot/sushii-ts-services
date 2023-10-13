@@ -30,7 +30,7 @@ enum ReasonError {
 function getReasonConfirmComponents(
   userId: string,
   interactionId: string,
-  hidePartialUpdateButton: boolean
+  hidePartialUpdateButton: boolean,
 ): ActionRowBuilder<ButtonBuilder> {
   const buttons = [
     new ButtonBuilder()
@@ -42,7 +42,7 @@ function getReasonConfirmComponents(
           // Tie the buttons to this specific interaction
           buttonId: interactionId,
           action: "override",
-        })
+        }),
       ),
   ];
 
@@ -55,7 +55,7 @@ function getReasonConfirmComponents(
           userId,
           buttonId: interactionId,
           action: "empty",
-        })
+        }),
       );
 
     buttons.push(emptyButton);
@@ -69,7 +69,7 @@ function getReasonConfirmComponents(
         userId,
         buttonId: interactionId,
         action: "cancel",
-      })
+      }),
     );
   buttons.push(cancelButton);
 
@@ -86,7 +86,7 @@ export async function updateModLogReasons(
   executorId: string,
   [caseStartId, caseEndId]: [number, number],
   reason: string,
-  onlyEmptyReason: boolean
+  onlyEmptyReason: boolean,
 ): Promise<EmbedBuilder | undefined> {
   if (!interaction.channel) {
     throw new Error("Channel not found");
@@ -124,7 +124,7 @@ export async function updateModLogReasons(
   const errs = new Map<ReasonError, string[]>();
 
   const uniqueAffectedUsers = new Set<string>(
-    bulkUpdateModLogReason.modLogs.map((m) => `<@${m.userId}>`)
+    bulkUpdateModLogReason.modLogs.map((m) => `<@${m.userId}>`),
   );
 
   const responseEmbed = new EmbedBuilder()
@@ -255,20 +255,20 @@ export default class ReasonCommand extends SlashCommandHandler {
         .setName("case")
         .setDescription("Case numbers you want to set the reason for.")
         .setAutocomplete(true)
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((o) =>
       o
         .setName("reason")
         .setDescription("Reason for the mod case.")
-        .setRequired(true)
+        .setRequired(true),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const caseRangeStr = interaction.options.getString("case", true);
     const reason = interaction.options.getString("reason", true);
@@ -300,7 +300,7 @@ export default class ReasonCommand extends SlashCommandHandler {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
-        `You can only modify up to 25 cases at a time (${affectedCaseCount} > 25)`
+        `You can only modify up to 25 cases at a time (${affectedCaseCount} > 25)`,
       );
 
       return;
@@ -370,7 +370,7 @@ export default class ReasonCommand extends SlashCommandHandler {
         interaction.id,
         // All cases have reasons set, so it's either override all or cancel.
         // No option to set for empty reasons only
-        casesWithReason.length === allModLogs?.nodes.length
+        casesWithReason.length === allModLogs?.nodes.length,
       );
 
       await interaction.reply({
@@ -390,7 +390,7 @@ export default class ReasonCommand extends SlashCommandHandler {
 
       // Check if the confirmation in store still exists - not clicked yet
       const pendingConf = ctx.memoryStore.pendingReasonConfirmations.get(
-        interaction.id
+        interaction.id,
       );
 
       // Still pending, update message and delete
@@ -399,7 +399,7 @@ export default class ReasonCommand extends SlashCommandHandler {
           {
             interactionId: interaction.id,
           },
-          "Confirmation message is still pending, deleting"
+          "Confirmation message is still pending, deleting",
         );
 
         ctx.memoryStore.pendingReasonConfirmations.delete(interaction.id);
@@ -407,7 +407,7 @@ export default class ReasonCommand extends SlashCommandHandler {
         const expiredEmbed = new EmbedBuilder()
           .setTitle("Confirmation Expired")
           .setDescription(
-            "Reason confirmation expired. Run the `/reason` command again if you still want to update the cases."
+            "Reason confirmation expired. Run the `/reason` command again if you still want to update the cases.",
           )
           .setColor(Color.Error);
 
@@ -432,7 +432,7 @@ export default class ReasonCommand extends SlashCommandHandler {
       caseRange,
       reason,
       // update all cases, not just empty reasons
-      false
+      false,
     );
 
     if (!responseEmbed) {

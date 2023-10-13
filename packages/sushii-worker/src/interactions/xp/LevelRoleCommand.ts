@@ -40,7 +40,7 @@ export default class LevelRoleCommand extends SlashCommandHandler {
           o
             .setName(LevelRoleOption.Role)
             .setDescription("The role to add.")
-            .setRequired(true)
+            .setRequired(true),
         )
         .addIntegerOption((o) =>
           o
@@ -48,18 +48,18 @@ export default class LevelRoleCommand extends SlashCommandHandler {
             .setDescription("The level to add the role at.")
             .setRequired(true)
             .setMinValue(2)
-            .setMaxValue(500)
+            .setMaxValue(500),
         )
         .addIntegerOption((o) =>
           o
             .setName(LevelRoleOption.RemoveLevel)
             .setDescription(
-              "The level to remove the role at. This must be higher than add_level"
+              "The level to remove the role at. This must be higher than add_level",
             )
             .setRequired(false)
             .setMinValue(3)
-            .setMaxValue(500)
-        )
+            .setMaxValue(500),
+        ),
     )
     .addSubcommand((c) =>
       c
@@ -69,18 +69,18 @@ export default class LevelRoleCommand extends SlashCommandHandler {
           o
             .setName(LevelRoleOption.Role)
             .setDescription("The role to remove.")
-            .setRequired(true)
-        )
+            .setRequired(true),
+        ),
     )
     .addSubcommand((c) =>
-      c.setName(CommandName.LevelRoleList).setDescription("List level roles.")
+      c.setName(CommandName.LevelRoleList).setDescription("List level roles."),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
@@ -102,15 +102,15 @@ export default class LevelRoleCommand extends SlashCommandHandler {
 
   private async newLevelRoleHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const role = interaction.options.getRole(LevelRoleOption.Role, true);
     const addLevel = interaction.options.getInteger(
       LevelRoleOption.AddLevel,
-      true
+      true,
     );
     const removeLevel = interaction.options.getInteger(
-      LevelRoleOption.RemoveLevel
+      LevelRoleOption.RemoveLevel,
     );
 
     const canAddRes = await canAddRole(interaction, role);
@@ -119,7 +119,7 @@ export default class LevelRoleCommand extends SlashCommandHandler {
         ctx,
         interaction,
         canAddRes.val,
-        true
+        true,
       );
 
       return;
@@ -130,7 +130,7 @@ export default class LevelRoleCommand extends SlashCommandHandler {
         ctx,
         interaction,
         "remove_level must be higher than add_level",
-        true
+        true,
       );
 
       return;
@@ -171,7 +171,7 @@ export default class LevelRoleCommand extends SlashCommandHandler {
 
   private async deleteLevelRoleHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const role = interaction.options.getRole(LevelRoleOption.Role, true);
 
@@ -189,7 +189,7 @@ export default class LevelRoleCommand extends SlashCommandHandler {
         ctx,
         interaction,
         `No level role was found for <@&${role.id}>`,
-        true
+        true,
       );
 
       return;
@@ -213,7 +213,7 @@ export default class LevelRoleCommand extends SlashCommandHandler {
 
   private async listLevelRoleHandler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction<"cached">
+    interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const { allLevelRoles } = await ctx.sushiiAPI.sdk.getLevelRoles({
       guildId: interaction.guildId,

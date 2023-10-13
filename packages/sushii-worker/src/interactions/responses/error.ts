@@ -18,7 +18,7 @@ type ReplyableInteraction =
 export function getErrorMessage(
   title: string,
   description: string,
-  ephemeral: boolean = false
+  ephemeral: boolean = false,
 ): InteractionReplyOptions {
   return {
     embeds: [
@@ -37,7 +37,7 @@ export async function interactionReplyError(
   interaction: ReplyableInteraction,
   title: string,
   description: string,
-  ephemeral: boolean = false
+  ephemeral: boolean = false,
 ): Promise<void> {
   await interaction.reply(getErrorMessage(title, description, ephemeral));
 }
@@ -45,26 +45,26 @@ export async function interactionReplyError(
 export async function interactionReplyErrorPermission(
   ctx: Context,
   interaction: ReplyableInteraction,
-  permission: string
+  permission: string,
 ): Promise<void> {
   return interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
-    t("generic.error.no_permission", { ns: "commands", permission })
+    t("generic.error.no_permission", { ns: "commands", permission }),
   );
 }
 
 export async function interactionReplyErrorUnauthorized(
   ctx: Context,
   interaction: ReplyableInteraction,
-  message: string
+  message: string,
 ): Promise<void> {
   return interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
-    t("generic.error.unauthorized_target", { ns: "commands", message })
+    t("generic.error.unauthorized_target", { ns: "commands", message }),
   );
 }
 
@@ -72,14 +72,14 @@ export async function interactionReplyErrorMessage(
   ctx: Context,
   interaction: ReplyableInteraction,
   message: string,
-  ephemeral: boolean = false
+  ephemeral: boolean = false,
 ): Promise<void> {
   return interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
     t("generic.error.message", { ns: "commands", message }),
-    ephemeral
+    ephemeral,
   );
 }
 
@@ -87,25 +87,25 @@ export async function interactionReplyErrorPlainMessage(
   ctx: Context,
   interaction: ReplyableInteraction,
   message: string,
-  ephemeral: boolean = false
+  ephemeral: boolean = false,
 ): Promise<void> {
   return interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
     message,
-    ephemeral
+    ephemeral,
   );
 }
 
 export async function interactionReplyErrorInternal(
   ctx: Context,
-  interaction: ReplyableInteraction
+  interaction: ReplyableInteraction,
 ): Promise<void> {
   return interactionReplyError(
     ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
-    t("generic.error.internal", { ns: "commands" })
+    t("generic.error.internal", { ns: "commands" }),
   );
 }

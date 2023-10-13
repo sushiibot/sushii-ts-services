@@ -31,7 +31,7 @@ interface ActionTypeEventData {
 }
 
 function getActionTypeFromEvent(
-  event: GuildAuditLogsEntry
+  event: GuildAuditLogsEntry,
 ): ActionTypeEventData | undefined {
   if (!event.targetId) {
     return;
@@ -90,7 +90,7 @@ interface ModLogComponents {
 
 export function buildModLogComponents(
   actionType: ActionType,
-  modCase: ModLogComponents
+  modCase: ModLogComponents,
 ): APIActionRowComponent<APIMessageActionRowComponent>[] {
   // Currently only add button for ban and timeout
   if (actionType !== ActionType.Ban && actionType !== ActionType.Timeout) {
@@ -115,7 +115,7 @@ export function buildModLogComponents(
     .setCustomId(
       customIds.modLogReason.compile({
         caseId: modCase.case_id,
-      })
+      }),
     );
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
@@ -126,7 +126,7 @@ export function buildModLogComponents(
 const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   ctx: Context,
   event: GuildAuditLogsEntry,
-  guild: Guild
+  guild: Guild,
 ): Promise<void> => {
   const actionTypeData = getActionTypeFromEvent(event);
   if (!actionTypeData) {
@@ -142,7 +142,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
       reason,
       timeoutChange,
     },
-    "received mod log"
+    "received mod log",
   );
 
   // Check event before fetching guild config
@@ -246,7 +246,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
     actionType,
     targetUser,
     matchingCase,
-    timeoutChange
+    timeoutChange,
   );
   const components = buildModLogComponents(actionType, matchingCase);
 
@@ -282,7 +282,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
         actionType,
         timeoutChange,
       },
-      "Sending timeout DM to user"
+      "Sending timeout DM to user",
     );
 
     const dmEmbed = await buildDMEmbed(
@@ -291,7 +291,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
       actionType,
       true, // should dm reason
       reason || null, // reason
-      timeoutChange.new || null
+      timeoutChange.new || null,
     );
 
     try {
@@ -306,7 +306,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
           eventTarget: event.target,
           err,
         },
-        "Failed to send timeout DM to user"
+        "Failed to send timeout DM to user",
       );
     }
   } else {
@@ -316,7 +316,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
         shouldDMReason,
         timeoutChange,
       },
-      "Not sending timeout DM to user"
+      "Not sending timeout DM to user",
     );
   }
 };

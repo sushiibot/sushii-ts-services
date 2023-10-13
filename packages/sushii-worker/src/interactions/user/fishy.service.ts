@@ -233,7 +233,7 @@ export interface FishyResponse {
 export async function fishyForUser(
   ctx: Context,
   invoker: User,
-  target: User
+  target: User,
 ): Promise<FishyResponse | dayjs.Dayjs> {
   const dbTargetUser = await db.getUser(target.id);
 
@@ -264,7 +264,7 @@ export async function fishyForUser(
   const caughtType = getRandomCatchable();
   const valueRange = getFishyValueRange(caughtType);
   const caughtNum = Math.floor(
-    randDistNumber(valueRange.min, valueRange.max, valueRange.skew)
+    randDistNumber(valueRange.min, valueRange.max, valueRange.skew),
   );
 
   const oldAmount = dbTargetUser.fishies;

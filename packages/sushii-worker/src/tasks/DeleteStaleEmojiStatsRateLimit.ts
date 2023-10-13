@@ -18,13 +18,13 @@ const task: BackgroundTask = {
       .where(
         "last_used",
         "<",
-        dayjs().utc().subtract(UserEmojiRateLimitDuration).toDate()
+        dayjs().utc().subtract(UserEmojiRateLimitDuration).toDate(),
       )
       .executeTakeFirst();
 
     logger.info(
       "Deleted %d old emoji stats rate limits",
-      deleted.numDeletedRows
+      deleted.numDeletedRows,
     );
   },
 };

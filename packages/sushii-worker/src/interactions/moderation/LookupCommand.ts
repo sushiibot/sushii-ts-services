@@ -12,17 +12,17 @@ import buildUserLookupEmbed, { UserLookupBan } from "./formatters/lookup";
 
 export async function getUserLookupData(
   ctx: Context,
-  user: User
+  user: User,
 ): Promise<UserLookupBan[]> {
   const bans = await db
     .selectFrom("app_public.guild_bans")
     .leftJoin("app_public.mod_logs as logs", (join) =>
       join
         .onRef("logs.user_id", "=", "app_public.guild_bans.user_id")
-        .onRef("logs.guild_id", "=", "app_public.guild_bans.guild_id")
+        .onRef("logs.guild_id", "=", "app_public.guild_bans.guild_id"),
     )
     .leftJoin("app_public.guild_configs as config", (join) =>
-      join.onRef("config.id", "=", "app_public.guild_bans.guild_id")
+      join.onRef("config.id", "=", "app_public.guild_bans.guild_id"),
     )
     .select([
       "app_public.guild_bans.guild_id as guild_id",
@@ -42,7 +42,7 @@ export async function getUserLookupData(
         ]),
         // Bans only
         or([cmpr("action", "is", null), cmpr("action", "=", "ban")]),
-      ])
+      ]),
     )
     .orderBy("app_public.guild_bans.guild_id", "desc")
     // Use the newest mod log if there are multiple. Distinct uses the first one
@@ -73,12 +73,12 @@ export async function getUserLookupData(
           guild_name: null,
         };
       }
-    })
+    }),
   );
 
   const filteredBans = bansWithGuild.filter(
     (ban): ban is UserLookupBan =>
-      ban.guild_name !== null && ban.guild_id !== null
+      ban.guild_name !== null && ban.guild_id !== null,
   );
 
   return filteredBans;
@@ -98,14 +98,14 @@ export default class LookupCommand extends SlashCommandHandler {
       o
         .setName("user")
         .setDescription("The user to show server bans for.")
-        .setRequired(true)
+        .setRequired(true),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
@@ -120,7 +120,7 @@ export default class LookupCommand extends SlashCommandHandler {
 
     const sushiiMember = interaction.guild.members.me;
     const hasPermission = sushiiMember?.permissions.has(
-      PermissionFlagsBits.BanMembers
+      PermissionFlagsBits.BanMembers,
     );
 
     let member;
@@ -140,7 +140,7 @@ export default class LookupCommand extends SlashCommandHandler {
       {
         botHasBanPermission: hasPermission ?? true,
         showBasicInfo: true,
-      }
+      },
     );
 
     await interaction.reply({

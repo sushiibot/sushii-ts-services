@@ -27,7 +27,7 @@ async function getGuildBans(guild: Guild): Promise<string[]> {
           guildName: guild.name,
           err,
         },
-        "Failed to fetch server bans page"
+        "Failed to fetch server bans page",
       );
 
       // If we failed to fetch a page, just return what we have so far
@@ -62,7 +62,7 @@ async function getGuildBans(guild: Guild): Promise<string[]> {
 }
 
 export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
-  ctx: Context
+  ctx: Context,
 ): Promise<void> => {
   if (config.DISABLE_BAN_FETCH_ON_READY) {
     logger.info("Skipping ban fetch on ready");
@@ -83,7 +83,7 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
         guildName: guild.name,
         banCount: guildBans.length,
       },
-      "Updating server bans in database"
+      "Updating server bans in database",
     );
 
     // First clear the bans for this guild, so we can remove bans that were removed
@@ -105,7 +105,7 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
         guildBans.map((userId) => ({
           guild_id: guild.id,
           user_id: userId,
-        }))
+        })),
       )
       // Ignore conflicts, there shouldn't be any cuz we just cleared them but
       // who knows
@@ -123,7 +123,7 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
 
 export const banCacheBanHandler: EventHandlerFn<Events.GuildBanAdd> = async (
   ctx: Context,
-  ban: GuildBan
+  ban: GuildBan,
 ): Promise<void> => {
   // Add the ban to the database
   await db
@@ -160,7 +160,7 @@ export const banCacheGuildCreateHandler: EventHandlerFn<
         guildName: guild.name,
         err,
       },
-      "Failed to fetch server bans"
+      "Failed to fetch server bans",
     );
 
     return;
@@ -183,7 +183,7 @@ export const banCacheGuildCreateHandler: EventHandlerFn<
       guildBans.map((userId) => ({
         guild_id: guild.id,
         user_id: userId,
-      }))
+      })),
     )
     // Ignore conflicts, there shouldn't be any cuz we just cleared them but
     // who knows

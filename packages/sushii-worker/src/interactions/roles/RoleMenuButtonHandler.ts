@@ -23,7 +23,7 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
     ctx: Context,
-    interaction: ButtonInteraction
+    interaction: ButtonInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
@@ -40,7 +40,7 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
             .setColor(Color.Error)
             .setTitle("Failed to update your roles")
             .setDescription(
-              `You need to have the <@&${requiredRole}> role to use this menu.`
+              `You need to have the <@&${requiredRole}> role to use this menu.`,
             )
             .toJSON(),
         ],
@@ -75,7 +75,9 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
 
     // Check number of roles the member already has selected from this menu
     const memberAlreadySelectedRoles = new Set(
-      interaction.member.roles.cache.filter((role) => menuRolesSet.has(role.id))
+      interaction.member.roles.cache.filter((role) =>
+        menuRolesSet.has(role.id),
+      ),
     );
 
     // Only check for max roles if user is adding a role, not removing
@@ -90,7 +92,7 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
             .setColor(Color.Error)
             .setTitle("Failed to update your roles")
             .setDescription(
-              `You can only have a max of ${maxRoles} roles from this menu. You will need to remove one of your roles before you can add another.`
+              `You can only have a max of ${maxRoles} roles from this menu. You will need to remove one of your roles before you can add another.`,
             )
             .toJSON(),
         ],

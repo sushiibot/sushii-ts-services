@@ -13,6 +13,6 @@ export default abstract class MessageComponentHandler {
    */
   abstract handleInteraction(
     ctx: Context,
-    interaction: MessageComponentInteraction
+    interaction: MessageComponentInteraction,
   ): Promise<void>;
 }

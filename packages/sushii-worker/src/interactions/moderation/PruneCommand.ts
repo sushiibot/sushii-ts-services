@@ -83,7 +83,7 @@ export function filterMessages(
     attachments,
     botsOrUsers,
     maxDeleteCount,
-  }: FilterOptions
+  }: FilterOptions,
 ): FilterResponse {
   const filteredMsgs = msgs.filter((msg) => {
     if (skipPinned && msg.pinned) {
@@ -136,15 +136,18 @@ export function filterMessages(
 
   const trimmedMsgs = filteredMsgs.slice(0, maxDeleteCount || 100);
 
-  const userDeletedSummary = trimmedMsgs.reduce((acc, msg) => {
-    if (acc[msg.author.id]) {
-      acc[msg.author.id] += 1;
-    } else {
-      acc[msg.author.id] = 1;
-    }
+  const userDeletedSummary = trimmedMsgs.reduce(
+    (acc, msg) => {
+      if (acc[msg.author.id]) {
+        acc[msg.author.id] += 1;
+      } else {
+        acc[msg.author.id] = 1;
+      }
 
-    return acc;
-  }, {} as Record<string, number>);
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   return {
     filteredMessages: trimmedMsgs,
@@ -166,35 +169,35 @@ export default class PruneCommand extends SlashCommandHandler {
         .setDescription("Max messages to delete. (2-100)")
         .setMinValue(2)
         .setMaxValue(100)
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((o) =>
       o
         .setName(PruneOption.AfterMessageID)
         .setDescription(
-          "Delete messages **after** this message ID or message link. (exclusive)"
+          "Delete messages **after** this message ID or message link. (exclusive)",
         )
-        .setRequired(false)
+        .setRequired(false),
     )
     .addStringOption((o) =>
       o
         .setName(PruneOption.BeforeMessageID)
         .setDescription(
-          "Delete messages **before** this message ID or message link. (exclusive)"
+          "Delete messages **before** this message ID or message link. (exclusive)",
         )
-        .setRequired(false)
+        .setRequired(false),
     )
     .addUserOption((o) =>
       o
         .setName(PruneOption.UserOption)
         .setDescription("Delete messages from only this user.")
-        .setRequired(false)
+        .setRequired(false),
     )
     .addBooleanOption((o) =>
       o
         .setName(PruneOption.SkipPinned)
         .setDescription("Don't delete pinned messages.")
-        .setRequired(false)
+        .setRequired(false),
     )
     .addStringOption((o) =>
       o
@@ -208,9 +211,9 @@ export default class PruneCommand extends SlashCommandHandler {
           {
             name: "Only delete messages by BOTS",
             value: PruneBotsOrUsersOption.BotsOnly,
-          }
+          },
         )
-        .setRequired(false)
+        .setRequired(false),
     )
     .addStringOption((o) =>
       o
@@ -224,16 +227,16 @@ export default class PruneCommand extends SlashCommandHandler {
           {
             name: "Only delete messages WITHOUT attachments",
             value: PruneAttachmentsOption.WithoutAttachments,
-          }
+          },
         )
-        .setRequired(false)
+        .setRequired(false),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       return;
@@ -244,14 +247,14 @@ export default class PruneCommand extends SlashCommandHandler {
     }
 
     const afterMessageIDStr = interaction.options.getString(
-      PruneOption.AfterMessageID
+      PruneOption.AfterMessageID,
     );
     const beforeMessageIDStr = interaction.options.getString(
-      PruneOption.BeforeMessageID
+      PruneOption.BeforeMessageID,
     );
     const user = interaction.options.getUser(PruneOption.UserOption);
     const maxDeleteCount = interaction.options.getInteger(
-      PruneOption.MaxDeleteCount
+      PruneOption.MaxDeleteCount,
     );
     const skipPinned = interaction.options.getBoolean(PruneOption.SkipPinned);
     const attachments = interaction.options.getString(PruneOption.Attachments);
@@ -273,7 +276,7 @@ export default class PruneCommand extends SlashCommandHandler {
           ctx,
           interaction,
           "After message ID must be older than before message ID.",
-          true
+          true,
         );
 
         return;
@@ -302,7 +305,7 @@ export default class PruneCommand extends SlashCommandHandler {
           ctx,
           interaction,
           `Failed to fetch messages: ${err.message}`,
-          true
+          true,
         );
 
         return;
@@ -341,7 +344,7 @@ export default class PruneCommand extends SlashCommandHandler {
         channelId: interaction.channelId,
         messages: filteredMessages,
       },
-      "pruning messages"
+      "pruning messages",
     );
 
     try {
@@ -352,7 +355,7 @@ export default class PruneCommand extends SlashCommandHandler {
           ctx,
           interaction,
           `Failed to delete messages: ${err.message}`,
-          true
+          true,
         );
 
         return;

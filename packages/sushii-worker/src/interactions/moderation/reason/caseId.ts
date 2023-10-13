@@ -41,7 +41,7 @@ export function caseSpecCount(cs: CaseSpec): number | undefined {
 
 export function parseCaseId(
   rawValue: string,
-  ignoreRangeOrder: boolean = false
+  ignoreRangeOrder: boolean = false,
 ): CaseSpec | undefined {
   // Get the case range from the autocomplete value, otherwise it's just
   // the current value
@@ -130,7 +130,7 @@ export async function getCaseRange(
   ctx: Context,
   guildId: string,
   caseSpec: CaseSpec,
-  validate: boolean = true
+  validate: boolean = true,
 ): Promise<[number, number] | undefined> {
   switch (caseSpec.type) {
     case "single": {

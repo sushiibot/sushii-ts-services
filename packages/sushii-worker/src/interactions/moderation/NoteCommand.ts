@@ -24,7 +24,7 @@ export default class NoteCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not in cached guild");
@@ -36,7 +36,7 @@ export default class NoteCommand extends SlashCommandHandler {
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
       await interaction.editReply(
-        getErrorMessage("Error", fetchTargetsRes.val)
+        getErrorMessage("Error", fetchTargetsRes.val),
       );
 
       return;

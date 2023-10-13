@@ -33,7 +33,7 @@ function quoteMarkdownString(str: string): string {
 
 export function isChannelIgnored(
   eventType: GatewayDispatchEvents,
-  blockType: Selectable<AppPublicMsgLogBlocks>["block_type"]
+  blockType: Selectable<AppPublicMsgLogBlocks>["block_type"],
 ): boolean {
   if (
     eventType === GatewayDispatchEvents.MessageDelete ||
@@ -66,7 +66,7 @@ function getMessageIDs(event: EventData): string[] {
 function buildDeleteEmbed(
   ctx: Context,
   event: EventData,
-  message: Selectable<AppPublicMessages>
+  message: Selectable<AppPublicMessages>,
 ): EmbedBuilder {
   let description = `${SushiiEmoji.MessageDelete} **Message deleted in <#${event.channel_id}>**\n`;
 
@@ -115,7 +115,7 @@ function buildDeleteEmbed(
 function buildEditEmbed(
   ctx: Context,
   event: EventData,
-  message: Selectable<AppPublicMessages>
+  message: Selectable<AppPublicMessages>,
 ): Option<EmbedBuilder> {
   const updateEvent = event as GatewayMessageUpdateDispatchData;
 
@@ -160,7 +160,7 @@ function buildEditEmbed(
 function buildBulkDeleteEmbed(
   ctx: Context,
   event: GatewayMessageDeleteBulkDispatchData,
-  messages: Selectable<AppPublicMessages>[]
+  messages: Selectable<AppPublicMessages>[],
 ): EmbedBuilder[] {
   const deleteCount = messages.length.toLocaleString();
   // No new-line at the end of this since it's joined in buildChunks
@@ -206,12 +206,12 @@ function buildBulkDeleteEmbed(
 
   // Build an embed for each chunk
   const embeds = embedChunks.map((chunk) =>
-    new EmbedBuilder().setDescription(chunk).setColor(Color.Error)
+    new EmbedBuilder().setDescription(chunk).setColor(Color.Error),
   );
 
   // Add timestamp to last embed
   embeds[embeds.length - 1] = embeds[embeds.length - 1].setTimestamp(
-    new Date()
+    new Date(),
   );
 
   return embeds;
@@ -221,7 +221,7 @@ function buildEmbeds(
   ctx: Context,
   eventType: GatewayDispatchEvents,
   event: EventData,
-  messages: Selectable<AppPublicMessages>[]
+  messages: Selectable<AppPublicMessages>[],
 ): Option<EmbedBuilder[]> {
   if (eventType === GatewayDispatchEvents.MessageDelete && event) {
     const embed = buildDeleteEmbed(ctx, event, messages[0]);
@@ -233,7 +233,7 @@ function buildEmbeds(
     const embeds = buildBulkDeleteEmbed(
       ctx,
       event as GatewayMessageDeleteBulkDispatchData,
-      messages
+      messages,
     );
 
     return Some(embeds);
@@ -252,7 +252,7 @@ export async function msgLogHandler(
     | GatewayDispatchEvents.MessageDelete
     | GatewayDispatchEvents.MessageDeleteBulk
     | GatewayDispatchEvents.MessageUpdate,
-  payload: EventData
+  payload: EventData,
 ): Promise<void> {
   // Ignore dms
   if (!payload.guild_id) {
@@ -316,7 +316,7 @@ export async function msgLogHandler(
         guildId: payload.guild_id,
         channelId: guildConfig.log_msg,
       },
-      "Log msg channel not found or not text based"
+      "Log msg channel not found or not text based",
     );
     return;
   }
@@ -335,7 +335,7 @@ export async function msgLogHandler(
 
 export const threadDeleteHandler: EventHandlerFn<Events.ThreadDelete> = async (
   ctx: Context,
-  thread: AnyThreadChannel
+  thread: AnyThreadChannel,
 ): Promise<void> => {
   const guildConfig = await db.getGuildConfig(thread.guildId);
 

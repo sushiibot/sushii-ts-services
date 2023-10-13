@@ -7,12 +7,13 @@ import dayjs from "dayjs";
 import Context from "../../../model/context";
 import { AutocompleteHandler } from "../../handlers";
 import { BanPoolOption, BanPoolOptionCommand } from "./BanPool.command";
-import { getPoolByNameOrIdAndGuildId, searchGuildBanPools } from "./BanPool.repository";
+import {
+  searchGuildBanPools,
+} from "./BanPool.repository";
 import { searchBanPoolMemberships } from "./BanPoolMember.repository";
 import { getAllBanPoolInvites } from "./BanPoolInvite.repository";
 import toTimestamp from "../../../utils/toTimestamp";
 import db from "../../../model/db";
-import { BanPoolMemberRowWithPool } from "./BanPoolMember.table";
 
 export default class BanPoolAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [
@@ -21,13 +22,13 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
     BanPoolOptionCommand.Invite,
     BanPoolOptionCommand.DeleteInvite,
     BanPoolOptionCommand.ClearInvites,
-  ].map((subcommand) => `banpool.${subcommand}`)
+  ].map((subcommand) => `banpool.${subcommand}`);
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: AutocompleteInteraction,
-    option: AutocompleteFocusedOption
+    option: AutocompleteFocusedOption,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Must be in guild.");
@@ -37,7 +38,7 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
       throw new Error("Option type must be a string.");
     }
 
-    const subcommand = interaction.options.getSubcommand()
+    const subcommand = interaction.options.getSubcommand();
 
     switch (option.name) {
       case BanPoolOption.PoolName: {
@@ -47,36 +48,40 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
             db,
             interaction.guildId,
             option.value,
-          )
+          );
 
           const poolMemberships = await searchBanPoolMemberships(
             db,
             interaction.guildId,
             option.value,
-            )
+          );
 
-          const choices = []
+          const choices = [];
 
           // Add owned pools
           for (const pool of poolOwnerships) {
             choices.push({
               name: `${pool.pool_name} - Owned`,
               value: pool.id,
-            })
+            });
           }
 
           // Add memberships
           for (const pool of poolMemberships) {
-            const ownerGuild = interaction.client.guilds.cache.get(pool.owner_guild_id);
+            const ownerGuild = interaction.client.guilds.cache.get(
+              pool.owner_guild_id,
+            );
 
             choices.push({
-              name: `${pool.pool_name} - ${ownerGuild?.name || "Unknown owner server"}`,
+              name: `${pool.pool_name} - ${
+                ownerGuild?.name || "Unknown owner server"
+              }`,
               value: pool.id,
-            })
+            });
           }
 
           // Sort
-          choices.sort((a, b) => a.name.localeCompare(b.name))
+          choices.sort((a, b) => a.name.localeCompare(b.name));
 
           await interaction.respond(choices);
           return;
@@ -86,14 +91,14 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
         const banPools = await searchGuildBanPools(
           db,
           interaction.guildId,
-          option.value
-        )
+          option.value,
+        );
 
         const choices = banPools.map(
           (pool): APIApplicationCommandOptionChoice => ({
             name: pool.pool_name,
             value: pool.pool_name,
-          })
+          }),
         );
 
         await interaction.respond(choices);
@@ -109,7 +114,7 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
             {
               name: "Enter the pool name first to see auto-completed invite codes",
               value: "empty",
-            }
+            },
           ]);
           return;
         }
@@ -117,8 +122,8 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
         const invites = await getAllBanPoolInvites(
           db,
           poolName,
-          interaction.guildId
-        )
+          interaction.guildId,
+        );
 
         const choices = invites.map(
           (invite): APIApplicationCommandOptionChoice => {
@@ -126,19 +131,19 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
               ? dayjs.utc(invite.expires_at)
               : null;
 
-            let expiresStr
+            let expiresStr;
             if (expiresAt) {
-              expiresStr = `Expires ${toTimestamp(expiresAt)}`
+              expiresStr = `Expires ${toTimestamp(expiresAt)}`;
             } else {
-              expiresStr = "Never expires"
+              expiresStr = "Never expires";
             }
 
             return {
               name: `${invite.invite_code} - ${expiresStr}`,
               value: invite.invite_code,
-            }
-          }
-        )
+            };
+          },
+        );
 
         await interaction.respond(choices);
         break;

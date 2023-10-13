@@ -22,7 +22,7 @@ export async function buildDMEmbed(
   action: ActionType,
   shouldDMReason: boolean,
   reason: string | null,
-  timeoutEnd: dayjs.Dayjs | null
+  timeoutEnd: dayjs.Dayjs | null,
 ): Promise<EmbedBuilder> {
   const fields = [];
 
@@ -38,7 +38,7 @@ export async function buildDMEmbed(
       name: "Timeout Duration",
       value: `Your timeout will expire ${toTimestamp(
         timeoutEnd,
-        TimestampStyles.RelativeTime
+        TimestampStyles.RelativeTime,
       )}`,
     });
   }
@@ -63,7 +63,7 @@ export default async function sendModActionDM(
   interaction: Interaction<"cached">,
   data: ModActionData,
   target: User,
-  action: ActionType
+  action: ActionType,
 ): Promise<Result<Message, string>> {
   const embed = await buildDMEmbed(
     ctx,
@@ -71,7 +71,7 @@ export default async function sendModActionDM(
     action,
     data.shouldDMReason(action),
     data.reason,
-    data.communicationDisabledUntil().unwrapOr(null)
+    data.communicationDisabledUntil().unwrapOr(null),
   );
 
   try {

@@ -20,14 +20,14 @@ export default class RepCommand extends SlashCommandHandler {
       o
         .setName("user")
         .setDescription("Who to give reputation to.")
-        .setRequired(true)
+        .setRequired(true),
     )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const target = interaction.options.getUser("user", true);
     const res = await repForUser(ctx, interaction.user, target);
@@ -39,7 +39,7 @@ export default class RepCommand extends SlashCommandHandler {
         i18next.t("rep.cooldown", {
           ns: "commands",
           nexRepTimestamp: res.unix(),
-        })
+        }),
       );
     } else {
       embed = new EmbedBuilder().setColor(Color.Success).setDescription(
@@ -48,7 +48,7 @@ export default class RepCommand extends SlashCommandHandler {
           username: target.username,
           oldAmount: res.oldAmount,
           newAmount: res.newAmount,
-        })
+        }),
       );
     }
 

@@ -4,7 +4,7 @@ import { Err, Ok, Result } from "ts-results";
 export default async function hasPermissionTargetingMember(
   interaction: ChatInputCommandInteraction,
   targetUser?: User,
-  targetMember?: GuildMember
+  targetMember?: GuildMember,
 ): Promise<Result<true, string>> {
   if (!interaction.inCachedGuild()) {
     // Not really but whatever lol
@@ -43,7 +43,7 @@ export default async function hasPermissionTargetingMember(
 
   if (highestTargetRolePosition === highestMemberRolePosition) {
     return Err(
-      "You cannot target a member with the same highest role than you"
+      "You cannot target a member with the same highest role than you",
     );
   }
 

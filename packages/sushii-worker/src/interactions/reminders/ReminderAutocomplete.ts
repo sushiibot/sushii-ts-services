@@ -16,7 +16,7 @@ export default class ReminderDeleteAutocomplete extends AutocompleteHandler {
   async handler(
     ctx: Context,
     interaction: AutocompleteInteraction,
-    option: AutocompleteFocusedOption
+    option: AutocompleteFocusedOption,
   ): Promise<void> {
     if (option.type !== ApplicationCommandOptionType.String) {
       throw new Error("Option type must be string.");

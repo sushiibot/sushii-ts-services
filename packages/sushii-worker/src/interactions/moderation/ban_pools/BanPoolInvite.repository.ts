@@ -1,11 +1,14 @@
 import { DeleteResult, Kysely, UpdateResult } from "kysely";
 import dayjs from "dayjs";
-import { BanPoolInviteRow, InsertableBanPoolInviteRow } from "./BanPoolInvite.table";
+import {
+  BanPoolInviteRow,
+  InsertableBanPoolInviteRow,
+} from "./BanPoolInvite.table";
 import { DB } from "../../../model/dbTypes";
 
 export function insertBanPoolInvite(
   db: Kysely<DB>,
-  invite: InsertableBanPoolInviteRow
+  invite: InsertableBanPoolInviteRow,
 ): Promise<BanPoolInviteRow> {
   return db
     .insertInto("app_public.ban_pool_invites")
@@ -16,7 +19,7 @@ export function insertBanPoolInvite(
 
 export function getBanPoolInviteByCode(
   db: Kysely<DB>,
-  inviteCode: string
+  inviteCode: string,
 ): Promise<BanPoolInviteRow | undefined> {
   return db
     .selectFrom("app_public.ban_pool_invites")
@@ -27,7 +30,7 @@ export function getBanPoolInviteByCode(
 
 export function incrementBanPoolInviteUse(
   db: Kysely<DB>,
-  inviteCode: string
+  inviteCode: string,
 ): Promise<UpdateResult> {
   return db
     .updateTable("app_public.ban_pool_invites")
@@ -41,27 +44,29 @@ export function incrementBanPoolInviteUse(
 export function getAllBanPoolInvites(
   db: Kysely<DB>,
   poolName: string,
-  guildId: string
+  guildId: string,
 ): Promise<BanPoolInviteRow[]> {
-  return db
+  return (
+    db
       .selectFrom("app_public.ban_pool_invites")
       .selectAll()
       .where("owner_guild_id", "=", guildId)
       .where("pool_name", "=", poolName)
       // Ignore expired invites - only include expires_at in future
       .where("expires_at", ">", dayjs.utc().toDate())
-      .execute();
+      .execute()
+  );
 }
 
 /**
  * Deletes a ban pool invite
- * 
+ *
  * @param inviteCode the invite code to delete
- * @returns 
+ * @returns
  */
 export function deleteBanPoolInvite(
   db: Kysely<DB>,
-  inviteCode: string
+  inviteCode: string,
 ): Promise<DeleteResult> {
   return db
     .deleteFrom("app_public.ban_pool_invites")
@@ -71,9 +76,9 @@ export function deleteBanPoolInvite(
 
 /**
  * Deletes all invites for a ban pool
- * 
+ *
  * @param inviteCode the invite code to delete
- * @returns 
+ * @returns
  */
 export function deleteAllBanPoolInvites(
   db: Kysely<DB>,

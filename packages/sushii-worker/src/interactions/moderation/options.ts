@@ -24,7 +24,7 @@ export const usersOption = (action: ActionType): SlashCommandStringOption =>
   new SlashCommandStringOption()
     .setName(ModerationOption.Users)
     .setDescription(
-      `Which users to ${action}. This can be multiple users with IDs or mentions.`
+      `Which users to ${action}. This can be multiple users with IDs or mentions.`,
     )
     .setRequired(true);
 
@@ -39,18 +39,18 @@ export const sendDMReasonOption = new SlashCommandStringOption()
     {
       name: "No: Do not DM the user the reason",
       value: DMReasonChoiceValue.No,
-    }
+    },
   )
   .setRequired(false);
 
 export const reasonOption = (
   action: ActionType,
-  required: boolean = false
+  required: boolean = false,
 ): SlashCommandStringOption =>
   new SlashCommandStringOption()
     .setName(ModerationOption.Reason)
     .setDescription(
-      `Reason for ${ActionType.toPresentTense(action)} this user.`
+      `Reason for ${ActionType.toPresentTense(action)} this user.`,
     )
     .setRequired(required);
 

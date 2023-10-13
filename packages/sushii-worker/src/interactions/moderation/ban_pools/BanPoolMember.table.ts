@@ -13,4 +13,4 @@ export type BanPoolMemberRowWithPool = BanPoolMemberRow & {
   id: BanPoolRow["id"];
   creator_id: BanPoolRow["creator_id"];
   description: BanPoolRow["description"];
-}
+};

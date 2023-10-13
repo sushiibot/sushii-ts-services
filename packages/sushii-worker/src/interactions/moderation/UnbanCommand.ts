@@ -31,7 +31,7 @@ export default class UnbanCommand extends SlashCommandHandler {
   // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not in cached guild");
@@ -43,11 +43,11 @@ export default class UnbanCommand extends SlashCommandHandler {
     const fetchTargetsRes = await data.fetchTargets(
       ctx,
       interaction,
-      true // skipMember fetch
+      true, // skipMember fetch
     );
     if (fetchTargetsRes.err) {
       await interaction.editReply(
-        getErrorMessage("Error", fetchTargetsRes.val)
+        getErrorMessage("Error", fetchTargetsRes.val),
       );
 
       return;
@@ -58,7 +58,7 @@ export default class UnbanCommand extends SlashCommandHandler {
       res = await executeAction(ctx, interaction, data, ActionType.BanRemove);
     } catch (err) {
       await interaction.editReply(
-        getErrorMessage("Error", "hmm something failed")
+        getErrorMessage("Error", "hmm something failed"),
       );
 
       return;

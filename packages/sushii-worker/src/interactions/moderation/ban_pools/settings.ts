@@ -4,34 +4,38 @@ import SushiiEmoji from "../../../constants/SushiiEmoji";
 
 /**
  * Get the corresponding emoji for the current radio button
- * 
+ *
  * @param selectedValue Current user selected value
  * @param choiceValue The value of the radio option
  * @returns Emoji for the radio button
  */
 export function getRadioButton<T>(selectedValue: T, choiceValue: T): string {
-  return selectedValue === choiceValue ? SushiiEmoji.RadioOn : SushiiEmoji.RadioOff
+  return selectedValue === choiceValue
+    ? SushiiEmoji.RadioOn
+    : SushiiEmoji.RadioOff;
 }
 
 function isPoolMember(
-  pool: AllSelection<DB, "app_public.ban_pools"> |
-   AllSelection<DB, "app_public.ban_pool_members">
+  pool:
+    | AllSelection<DB, "app_public.ban_pools">
+    | AllSelection<DB, "app_public.ban_pool_members">,
 ): pool is AllSelection<DB, "app_public.ban_pool_members"> {
-  return "permission" in pool
+  return "permission" in pool;
 }
 
 export function buildPoolSettingsString(
-  pool: AllSelection<DB, "app_public.ban_pools"> |
-   AllSelection<DB, "app_public.ban_pool_members">,
-  ): string {
-    const isMember = isPoolMember(pool)
+  pool:
+    | AllSelection<DB, "app_public.ban_pools">
+    | AllSelection<DB, "app_public.ban_pool_members">,
+): string {
+  const isMember = isPoolMember(pool);
 
-    // Ignore blocked members
-    if (isMember && pool.permission === "blocked") {
-      throw new Error("Member is blocked, shouldn't be able to call this.")
-    }
+  // Ignore blocked members
+  if (isMember && pool.permission === "blocked") {
+    throw new Error("Member is blocked, shouldn't be able to call this.");
+  }
 
-    /*
+  /*
      -- Invited guilds can view the pool, but not edit it.
   -- Can be changed to 'edit' by pool owner, which lets them add bans.
   permission  app_public.ban_pool_permission  not null default 'view',
@@ -45,17 +49,17 @@ export function buildPoolSettingsString(
   remove_action app_public.ban_pool_remove_action not null default 'unban',
   */
 
-  let permissionStr
+  let permissionStr;
   if (isMember) {
     switch (pool.permission) {
       case "view":
-        permissionStr = "Viewer"
+        permissionStr = "Viewer";
         break;
       case "edit":
-        permissionStr = "Editor (add / remove bans)"
+        permissionStr = "Editor (add / remove bans)";
         break;
       case "blocked":
-        permissionStr = ""
+        permissionStr = "";
         break;
     }
   }
@@ -64,12 +68,12 @@ export function buildPoolSettingsString(
   // Mode - Bans in this server
   // ---------------------------------------------------------------------------
 
-  const modeSection = "__**Ban / Unban in THIS server**__"
+  const modeSection = "__**Ban / Unban in THIS server**__";
 
   // ---------------------------------------------------------------------------
   // Add mode
   // When to add bans in this server to this pool
-  let addModeStr = "**When a user is banned in this server...**\n"
+  let addModeStr = "**When a user is banned in this server...**\n";
 
   addModeStr += [
     "> ",
@@ -86,12 +90,12 @@ export function buildPoolSettingsString(
     getRadioButton(pool.add_mode, "nothing"),
     " Do nothing",
     "\n",
-  ].join("")
+  ].join("");
 
   // ---------------------------------------------------------------------------
   // Remove mode
   // When to remove bans in this server from this pool
-  let removeModeStr = "**When a user is unbanned from this server...**\n"
+  let removeModeStr = "**When a user is unbanned from this server...**\n";
 
   removeModeStr += [
     "> ",
@@ -107,19 +111,19 @@ export function buildPoolSettingsString(
     "> ",
     getRadioButton(pool.remove_mode, "nothing"),
     " Do nothing",
-    "\n"
-  ].join("")
+    "\n",
+  ].join("");
 
   // ---------------------------------------------------------------------------
   // Action - Bans in other servers
   // ---------------------------------------------------------------------------
 
-  const actionSection = "__**Ban / Unban by OTHER servers in this pool**__"
+  const actionSection = "__**Ban / Unban by OTHER servers in this pool**__";
 
   // ---------------------------------------------------------------------------
   // Add action
 
-  let addActionStr = "**When a user is banned by a different server...**\n"
+  let addActionStr = "**When a user is banned by a different server...**\n";
 
   addActionStr += [
     "> ",
@@ -136,12 +140,12 @@ export function buildPoolSettingsString(
     getRadioButton(pool.add_action, "nothing"),
     " Do nothing",
     "\n",
-  ].join("")
+  ].join("");
 
   // ---------------------------------------------------------------------------
   // Remove action
 
-  let removeActionStr = "**When a user is unbanned by another server...**\n"
+  let removeActionStr = "**When a user is unbanned by another server...**\n";
 
   removeActionStr += [
     "> ",
@@ -158,26 +162,28 @@ export function buildPoolSettingsString(
     getRadioButton(pool.remove_action, "nothing"),
     " Do nothing",
     "\n",
-  ].join("")
+  ].join("");
 
   // ---------------------------------------------------------------------------
   // Done
 
-  const fullStr = []
+  const fullStr = [];
 
   if (permissionStr) {
-    fullStr.push(permissionStr)
+    fullStr.push(permissionStr);
   }
-  
-  fullStr.push(...[
-    modeSection,
-    addModeStr,
-    removeModeStr,
 
-    actionSection,
-    addActionStr,
-    removeActionStr
-  ])
-  
+  fullStr.push(
+    ...[
+      modeSection,
+      addModeStr,
+      removeModeStr,
+
+      actionSection,
+      addActionStr,
+      removeActionStr,
+    ],
+  );
+
   return fullStr.join("\n");
 }

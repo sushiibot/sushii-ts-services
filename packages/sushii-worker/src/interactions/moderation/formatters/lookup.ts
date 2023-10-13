@@ -16,7 +16,7 @@ export interface UserLookupBan {
 }
 
 function getFeatureEmojis(
-  guildFeatures: UserLookupBan["guild_features"]
+  guildFeatures: UserLookupBan["guild_features"],
 ): string {
   if (!guildFeatures) {
     return "";
@@ -57,7 +57,7 @@ export default async function buildUserLookupEmbed(
   }: {
     showBasicInfo: boolean;
     botHasBanPermission: boolean;
-  }
+  },
 ): Promise<EmbedBuilder> {
   let embed = new EmbedBuilder()
     .setTitle("🔎 User Lookup")

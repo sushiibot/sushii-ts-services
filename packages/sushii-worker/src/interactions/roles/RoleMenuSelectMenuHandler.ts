@@ -17,7 +17,7 @@ export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
   // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
     ctx: Context,
-    interaction: AnySelectMenuInteraction
+    interaction: AnySelectMenuInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
@@ -31,7 +31,7 @@ export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
             .setColor(Color.Error)
             .setTitle("Failed to update your roles")
             .setDescription(
-              `You need to have the <@&${requiredRole}> role to use this menu.`
+              `You need to have the <@&${requiredRole}> role to use this menu.`,
             )
             .toJSON(),
         ],
