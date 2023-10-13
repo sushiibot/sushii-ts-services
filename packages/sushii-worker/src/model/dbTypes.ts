@@ -313,11 +313,18 @@ export interface AppPublicBanPoolEntries {
   reason: string | null;
 }
 
+export interface AppPublicBanPoolGuildSettings {
+  guild_id: Int8;
+  alert_channel_id: Int8 | null;
+}
+
 export interface AppPublicBanPoolInvites {
   owner_guild_id: Int8;
   pool_name: string;
   invite_code: string;
   expires_at: Timestamp | null;
+  max_uses: number | null;
+  uses: Generated<number>;
 }
 
 export interface AppPublicBanPoolMembers {
@@ -788,6 +795,7 @@ export interface DB {
   "app_private.sessions": AppPrivateSessions;
   "app_private.user_authentication_secrets": AppPrivateUserAuthenticationSecrets;
   "app_public.ban_pool_entries": AppPublicBanPoolEntries;
+  "app_public.ban_pool_guild_settings": AppPublicBanPoolGuildSettings;
   "app_public.ban_pool_invites": AppPublicBanPoolInvites;
   "app_public.ban_pool_members": AppPublicBanPoolMembers;
   "app_public.ban_pools": AppPublicBanPools;

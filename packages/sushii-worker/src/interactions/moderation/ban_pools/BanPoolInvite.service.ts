@@ -8,7 +8,8 @@ import {
   notFoundBasic,
 } from "./errors"
 import { getPoolByNameAndGuildId } from "./BanPool.repository";
-import { deleteBanPoolInvite, getBanPoolInviteByCode, insertBanPoolInvite } from "./BanPoolInvite.repository";
+import { deleteAllBanPoolInvites, deleteBanPoolInvite, getBanPoolInviteByCode, insertBanPoolInvite } from "./BanPoolInvite.repository";
+import db from "../../../model/db";
 
 /**
  *  Create a randomized base64 string without special characters
@@ -22,7 +23,8 @@ export function generateInvite(): string {
 export async function createInvite(
   poolName: string,
   guildId: string,
-  expireAfter: string
+  expireDate: dayjs.Dayjs | null,
+  maxUses: number | null,
 ): Promise<string> {
   const pool = await getPoolByNameAndGuildId(poolName, guildId);
   if (!pool) {
@@ -36,26 +38,26 @@ export async function createInvite(
   // Create invite
   const inviteCode = generateInvite();
 
-  const expireDate =
-    expireAfter === "never"
-      ? null
-      : dayjs.utc().add(parseInt(expireAfter, 10), "seconds");
-
-  await insertBanPoolInvite({
+  await insertBanPoolInvite(
+    db,
+    {
     owner_guild_id: guildId,
     pool_name: poolName,
     invite_code: inviteCode,
     expires_at: expireDate?.toDate(),
+    max_uses: maxUses,
+    // Default is 0
+    // uses: 0,
   })
 
   return inviteCode;
 }
 
 export async function checkAndDeleteInvite(
-  currentGuildId: string,
   inviteCode: string,
+  currentGuildId: string,
   ): Promise<void> {
-  const invite = await getBanPoolInviteByCode(inviteCode);
+  const invite = await getBanPoolInviteByCode(db,inviteCode);
 
   // Not found OR expired
   if (!invite || (invite.expires_at && dayjs.utc(invite.expires_at).isBefore(dayjs.utc()))) {
@@ -78,5 +80,27 @@ export async function checkAndDeleteInvite(
   }
 
   // Delete invite
-  await deleteBanPoolInvite(inviteCode);
+  await deleteBanPoolInvite(db,inviteCode);
+}
+
+/**
+ * Clears all invites for a ban pool
+ * 
+ * @param poolName pool name to clear invites for
+ * @param guildId guild ID to clear invites for
+ */
+export async function clearBanPoolInvites(
+  poolName: string,
+  guildId: string,
+): Promise<void> {
+  const pool = await getPoolByNameAndGuildId(poolName, guildId);
+  if (!pool) {
+    throw new BanPoolError(
+      "POOL_NOT_FOUND",
+      "Ban pool not found",
+      notFoundBasic
+    );
+  }
+
+  await deleteAllBanPoolInvites(db, poolName, guildId);
 }

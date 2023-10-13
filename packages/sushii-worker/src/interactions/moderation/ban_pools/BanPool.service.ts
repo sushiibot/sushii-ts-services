@@ -8,6 +8,7 @@ import {
   BanPoolError,
   guildUnavailableEmbed,
   inviteExpiredEmbed,
+  inviteMaxUseReachedEmbed,
   inviteNotFoundEmbed,
   joinOwnPoolEmbed,
   joinPoolAlreadyMemberEmbed,
@@ -15,7 +16,7 @@ import {
   notFoundWithIDEmbed,
 } from "./errors"
 import { getPoolByNameAndGuildId, getPoolByNameOrIdAndGuildId, insertPool } from "./BanPool.repository";
-import { getBanPoolInviteByCode, insertBanPoolInvite } from "./BanPoolInvite.repository";
+import { deleteBanPoolInvite, getBanPoolInviteByCode, incrementBanPoolInviteUse, insertBanPoolInvite } from "./BanPoolInvite.repository";
 import { getBanPoolMember, getBanPoolMembers, insertBanPoolMember } from "./BanPoolMember.repository";
 import { BanPoolRow } from "./BanPool.table";
 import { BanPoolMemberRow } from "./BanPoolMember.table";
@@ -55,7 +56,9 @@ export async function createPool(
   const inviteCode = generateInvite();
 
   // Create 1d invite code
-  await insertBanPoolInvite({
+  await insertBanPoolInvite(
+    db,
+    {
     owner_guild_id: guildId,
     pool_name: poolName,
     invite_code: inviteCode,
@@ -76,7 +79,7 @@ export async function joinPool(
   pool: AllSelection<DB, "app_public.ban_pools">;
   guild: Guild;
 }> {
-  const invite = await getBanPoolInviteByCode(inviteCode)
+  const invite = await getBanPoolInviteByCode(db,inviteCode)
 
   if (!invite) {
     throw new BanPoolError(
@@ -86,13 +89,21 @@ export async function joinPool(
     );
   }
 
+  // Check if max uses is reached
+  if (invite.max_uses && invite.uses >= invite.max_uses) {
+    // Don't delete to keep track of how many times it was used
+
+    throw new BanPoolError(
+      "INVITE_MAX_USES_REACHED",
+      "Invite max uses reached",
+      inviteMaxUseReachedEmbed
+    );
+  }
+
   // Check if invite is expired
   if (dayjs.utc(invite.expires_at).isBefore(dayjs.utc())) {
     // Delete the expired invite
-    await db
-      .deleteFrom("app_public.ban_pool_invites")
-      .where("invite_code", "=", inviteCode)
-      .execute();
+    await deleteBanPoolInvite(db,inviteCode)
 
     throw new BanPoolError(
       "INVITE_EXPIRED",
@@ -120,6 +131,7 @@ export async function joinPool(
 
   // Check if this guild is already a member of the pool
   const existingMember = await getBanPoolMember(
+    db,
     guildId,
     pool,
   )
@@ -143,10 +155,17 @@ export async function joinPool(
   }
 
   // Join pool
-  await insertBanPoolMember({
+  await insertBanPoolMember(
+    db,
+    {
     member_guild_id: guildId,
     owner_guild_id: pool.guild_id,
     pool_name: pool.pool_name,
+  })
+
+  await db.transaction().execute(async tx => {
+    // Always increment
+    await incrementBanPoolInviteUse(tx, inviteCode);
   })
 
   return {
@@ -178,7 +197,7 @@ export async function showPool(
   // Not owner, check if member
   let poolMember
   if (!canView) {
-    poolMember = await getBanPoolMember(guildId, pool)
+    poolMember = await getBanPoolMember(db,guildId, pool)
 
     // If member was found
     canView = poolMember !== undefined;
@@ -192,7 +211,7 @@ export async function showPool(
     );
   }
 
-  const members = await getBanPoolMembers(pool.guild_id, pool.pool_name)
+  const members = await getBanPoolMembers(db,pool.guild_id, pool.pool_name)
 
   return {
     pool,

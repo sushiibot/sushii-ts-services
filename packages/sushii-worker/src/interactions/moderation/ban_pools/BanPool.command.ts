@@ -7,7 +7,6 @@ import {
 } from "discord.js";
 import dayjs from "dayjs";
 import Context from "../../../model/context";
-import db from "../../../model/db";
 import { SlashCommandHandler } from "../../handlers";
 import Color from "../../../utils/colors";
 import toTimestamp from "../../../utils/toTimestamp";
@@ -21,26 +20,32 @@ import {
 BanPoolError
 } from "./errors"
 import { buildPoolSettingsString } from "./settings";
-import { checkAndDeleteInvite, createInvite } from "./BanPoolInvite.service";
+import { checkAndDeleteInvite, clearBanPoolInvites, createInvite } from "./BanPoolInvite.service";
+import { getAllGuildBanPools } from "./BanPool.repository";
+import { getAllBanPoolMemberships } from "./BanPoolMember.repository";
+import { getAllBanPoolInvites } from "./BanPoolInvite.repository";
+import db from "../../../model/db";
 
-enum BanPoolOptionCommand {
+export enum BanPoolOptionCommand {
   Create = "create",
   List = "list",
   Show = "show",
   Delete = "delete",
   Invite = "invite",
-  DeleteInvite = "delete_invite",
+  DeleteInvite = "delete-invite",
+  ClearInvites = "clear-invites",
   Join = "join",
   ServerKick = "kick-server",
   // Grant permissions to a specific server, using their server ID
   ServerPermissions = "server-permissions",
 }
 
-enum BanPoolOption {
-  Name = "name",
+export enum BanPoolOption {
+  PoolName = "pool-name",
   Description = "description",
-  ExpireAfter = "expire_after",
-  InviteCode = "invite_code",
+  InviteCode = "invite-code",
+  ExpireAfter = "expire-after",
+  MaxUses = "max-uses",
 }
 
 export default class BanPoolCommand extends SlashCommandHandler {
@@ -61,7 +66,7 @@ export default class BanPoolCommand extends SlashCommandHandler {
         .setDescription("Create a new ban pool.")
         .addStringOption((o) =>
           o
-            .setName(BanPoolOption.Name)
+            .setName(BanPoolOption.PoolName)
             .setDescription("Name of the ban pool.")
             .setRequired(true)
         )
@@ -96,8 +101,9 @@ export default class BanPoolCommand extends SlashCommandHandler {
         .setDescription("Show details of a specific ban pool.")
         .addStringOption((o) =>
           o
-            .setName(BanPoolOption.Name)
+            .setName(BanPoolOption.PoolName)
             .setDescription("Name or ID of the ban pool.")
+            .setAutocomplete(true)
             .setRequired(true)
         )
     )
@@ -107,8 +113,9 @@ export default class BanPoolCommand extends SlashCommandHandler {
         .setDescription("Delete a ban pool.")
         .addStringOption((o) =>
           o
-            .setName(BanPoolOption.Name)
+            .setName(BanPoolOption.PoolName)
             .setDescription("Name of the ban pool to delete.")
+            .setAutocomplete(true)
             .setRequired(true)
         )
     )
@@ -120,8 +127,9 @@ export default class BanPoolCommand extends SlashCommandHandler {
         )
         .addStringOption((o) =>
           o
-            .setName(BanPoolOption.Name)
+            .setName(BanPoolOption.PoolName)
             .setDescription("Name of the ban pool to create an invite for.")
+            .setAutocomplete(true)
             .setRequired(true)
         )
         .addStringOption((o) =>
@@ -144,6 +152,11 @@ export default class BanPoolCommand extends SlashCommandHandler {
               }
             )
         )
+        .addIntegerOption(o => 
+          o.setName(BanPoolOption.MaxUses)
+          .setDescription("How many times can this invite be used? (Default: Unlimited)")
+          .setRequired(false)
+        )
     )
     .addSubcommand((c) =>
       c
@@ -151,10 +164,30 @@ export default class BanPoolCommand extends SlashCommandHandler {
         .setDescription("Delete an invite for a ban pool.")
         .addStringOption((o) =>
           o
-            .setName(BanPoolOption.InviteCode)
-            .setDescription("Invite code for ban pool.")
+            .setName(BanPoolOption.PoolName)
+            .setDescription("Name of the ban pool to delete an invite for.")
+            .setAutocomplete(true)
             .setRequired(true)
         )
+        .addStringOption((o) =>
+          o
+            .setName(BanPoolOption.InviteCode)
+            .setDescription("Invite code for ban pool.")
+            .setAutocomplete(true)
+            .setRequired(true)
+        )
+    )
+    .addSubcommand((c) =>
+      c.setName(BanPoolOptionCommand.ClearInvites).setDescription(
+        "Delete all invites for a ban pool."
+      )
+      .addStringOption((o) =>
+      o
+        .setName(BanPoolOption.PoolName)
+        .setDescription("Name of the ban pool to delete an invite for.")
+        .setAutocomplete(true)
+        .setRequired(true)
+    )
     )
     .toJSON();
 
@@ -191,6 +224,9 @@ export default class BanPoolCommand extends SlashCommandHandler {
       case BanPoolOptionCommand.DeleteInvite:
         await this.handleDeleteInvite(ctx, interaction);
         break;
+      case BanPoolOptionCommand.ClearInvites:
+        await this.handleClearInvites(ctx, interaction);
+        break;
       default:
         throw new Error("Unknown subcommand");
     }
@@ -200,7 +236,7 @@ export default class BanPoolCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const name = interaction.options.getString(BanPoolOption.Name, true);
+    const name = interaction.options.getString(BanPoolOption.PoolName, true);
     const description = interaction.options.getString(
       BanPoolOption.Description
     );
@@ -316,44 +352,17 @@ If you want to make a new invite, use \`/banpool invite\``
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const ownedPools = await db
-      .selectFrom("app_public.ban_pools")
-      .selectAll()
-      .where("guild_id", "=", interaction.guild.id)
-      .execute();
-
-    const memberPools = await db
-      .selectFrom("app_public.ban_pool_members")
-      .innerJoin("app_public.ban_pools", (join) =>
-        join
-          .onRef(
-            "app_public.ban_pool_members.owner_guild_id",
-            "=",
-            "app_public.ban_pools.guild_id"
-          )
-          .onRef(
-            "app_public.ban_pool_members.pool_name",
-            "=",
-            "app_public.ban_pools.pool_name"
-          )
-      )
-      .selectAll()
-      .where("member_guild_id", "=", interaction.guild.id)
-      .orderBy([
-        "app_public.ban_pools.guild_id",
-        "app_public.ban_pools.pool_name desc",
-      ])
-      .execute();
+    const ownedPools = await getAllGuildBanPools(interaction.guildId);
+    const memberPools = await getAllBanPoolMemberships(db, interaction.guild.id)
 
     const embed = new EmbedBuilder()
       .setTitle("Ban pools")
       .setDescription(
-        `This server owns \`${ownedPools.length}\` ban pools and is in \`${memberPools.length}\` pools created by other servers.\n\n\
-Use \`/banpool show <id>\` to show more details and invites about a specific ban pool.`
+        "Use `/banpool show <id>` to show more details and invites about a specific ban pool."
       )
       .addFields(
         {
-          name: "Owned pools",
+          name: `Owned pools - ${ownedPools.length} total`,
           value:
             ownedPools
               .map((pool) => {
@@ -369,19 +378,19 @@ Use \`/banpool show <id>\` to show more details and invites about a specific ban
             "No pools created. Create one with `/banpool create`",
         },
         {
-          name: "Member pools",
+          name: `Member pools - ${memberPools.length} total`,
           value:
             memberPools
               .map((pool) => {
                 const guildName =
-                  interaction.client.guilds.cache.get(pool.guild_id)?.name ??
+                  interaction.client.guilds.cache.get(pool.owner_guild_id)?.name ??
                   "Unknown server";
 
                 let s = `**${pool.pool_name}**`;
                 s += "\n";
                 s += `╰ **ID:** \`${pool.id}\``;
                 s += "\n";
-                s += `╰ **Server:** ${guildName} (ID \`${pool.guild_id}\`)`;
+                s += `╰ **Server:** ${guildName} (ID \`${pool.owner_guild_id}\`)`;
                 s += "\n";
                 s += `╰ **Owner:** <@${pool.creator_id}>`;
                 s += "\n";
@@ -405,7 +414,7 @@ Use \`/banpool show <id>\` to show more details and invites about a specific ban
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
     const nameOrID = interaction.options.getString(
-      BanPoolOption.Name,
+      BanPoolOption.PoolName,
       true
     );
 
@@ -481,13 +490,7 @@ Use \`/banpool show <id>\` to show more details and invites about a specific ban
     }
 
     // Own pool, show invites and members
-    const invites = await db
-      .selectFrom("app_public.ban_pool_invites")
-      .selectAll()
-      .where("owner_guild_id", "=", interaction.guild.id)
-      .where("pool_name", "=", pool.pool_name)
-      .where("expires_at", ">", dayjs.utc().toDate()) // ignore expired
-      .execute();
+    const invites = await getAllBanPoolInvites(db, pool.pool_name, pool.guild_id);
 
     const embed = new EmbedBuilder()
       .setTitle(`Ban pool ${pool.pool_name}`)
@@ -540,7 +543,7 @@ Use \`/banpool show <id>\` to show more details and invites about a specific ban
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const name = interaction.options.getString(BanPoolOption.Name, true);
+    const name = interaction.options.getString(BanPoolOption.PoolName, true);
 
     try {
       await deletePool(name, interaction.guildId);
@@ -573,15 +576,26 @@ All members of this ban pool have also been removed and reasons will no longer b
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<void> {
-    const name = interaction.options.getString(BanPoolOption.Name, true);
+    const name = interaction.options.getString(BanPoolOption.PoolName, true);
     const expireAfter = interaction.options.getString(
       BanPoolOption.ExpireAfter,
       true
     );
+    const maxUses = interaction.options.getInteger(BanPoolOption.MaxUses);
+
+    const expireDate =
+    expireAfter === "never"
+      ? null
+      : dayjs.utc().add(parseInt(expireAfter, 10), "seconds");
 
     let inviteCode;
     try {
-      inviteCode = await createInvite(name, interaction.guildId, expireAfter);
+      inviteCode = await createInvite(
+        name, 
+        interaction.guildId,
+        expireDate,
+        maxUses,
+      );
     } catch (err) {
       if (err instanceof BanPoolError) {
         await interaction.reply({
@@ -619,8 +633,8 @@ If you want to make a new invite, use \`/banpool invite ${name} <invite_code>\``
 
     try {
       await checkAndDeleteInvite(
-        interaction.guildId,
         inviteCode,
+        interaction.guildId,
         );
     } catch (err) {
       if (err instanceof BanPoolError) {
@@ -639,6 +653,45 @@ If you want to make a new invite, use \`/banpool invite ${name} <invite_code>\``
       .setDescription(
         `The ban pool invite \`${inviteCode}\` has been deleted. \n\
 The invite is no longer valid and cannot be used to join the ban pool.
+You can create a new invite with \`/banpool invite\``
+      )
+      .setColor(Color.Success);
+
+    await interaction.reply({
+      embeds: [embed],
+    });
+  }
+
+  async handleClearInvites(
+    ctx: Context,
+    interaction: ChatInputCommandInteraction<"cached">
+  ): Promise<void> {
+    const poolName = interaction.options.getString(
+      BanPoolOption.PoolName,
+      true
+    );
+
+    try {
+      await clearBanPoolInvites(
+        poolName,
+        interaction.guildId,
+        );
+    } catch (err) {
+      if (err instanceof BanPoolError) {
+        await interaction.reply({
+          embeds: [err.embed],
+        });
+
+        return;
+      }
+
+      throw err;
+    }
+
+    const embed = new EmbedBuilder()
+      .setTitle("All invites deleted")
+      .setDescription(
+        `All ban pool invites for the ${poolName} pool have been deleted. \n\
 You can create a new invite with \`/banpool invite\``
       )
       .setColor(Color.Success);
