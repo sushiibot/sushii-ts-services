@@ -9,7 +9,6 @@ import dayjs from "dayjs";
 import Context from "../../../model/context";
 import { SlashCommandHandler } from "../../handlers";
 import Color from "../../../utils/colors";
-import toTimestamp from "../../../utils/toTimestamp";
 import { createPool, deletePool, joinPool, showPool } from "./BanPool.service";
 import { BanPoolError } from "./errors";
 import { buildPoolSettingsString } from "./settings";
@@ -20,8 +19,9 @@ import {
 } from "./BanPoolInvite.service";
 import { getAllGuildBanPools } from "./BanPool.repository";
 import { getAllBanPoolMemberships } from "./BanPoolMember.repository";
-import { getAllBanPoolInvites } from "./BanPoolInvite.repository";
 import db from "../../../model/db";
+import { getShowComponentsMain } from "./BanPool.component";
+import { getShowEmbed } from "./BanPool.embed";
 
 export enum BanPoolOptionCommand {
   Create = "create",
@@ -397,7 +397,8 @@ If you want to make a new invite, use \`/banpool invite\``,
 
                 return s;
               })
-              .join("\n") || "No pools joined.",
+              .join("\n") ||
+            "No pools joined. If you have an invite, use `/banpool join`",
         },
       )
 
@@ -417,14 +418,9 @@ If you want to make a new invite, use \`/banpool invite\``,
       true,
     );
 
-    let pool;
-    let poolMember;
-    let members;
+    let poolData;
     try {
-      const shown = await showPool(nameOrID, interaction.guildId);
-      pool = shown.pool;
-      poolMember = shown.poolMember;
-      members = shown.members;
+      poolData = await showPool(nameOrID, interaction.guildId);
     } catch (err) {
       if (err instanceof BanPoolError) {
         await interaction.reply({
@@ -437,16 +433,7 @@ If you want to make a new invite, use \`/banpool invite\``,
       throw err;
     }
 
-    const membersStr =
-      members
-        .map((member) => {
-          const guildName =
-            interaction.client.guilds.cache.get(member.member_guild_id)?.name ??
-            "Unknown server";
-
-          return `${guildName} (ID \`${member.member_guild_id}\`)`;
-        })
-        .join("\n") || "No members.";
+    const { pool, poolMember, memberCount, inviteCount } = poolData;
 
     // Only show invites if the server owns the pool
     const isOwner = pool.guild_id === interaction.guild.id;
@@ -456,89 +443,45 @@ If you want to make a new invite, use \`/banpool invite\``,
         interaction.client.guilds.cache.get(pool.guild_id)?.name ??
         "Unknown server";
 
-      const embed = new EmbedBuilder()
-        .setTitle(`Ban pool ${pool.pool_name}`)
-        .setDescription("This server is a **member** of this ban pool.")
-        .addFields(
-          {
-            name: "Description",
-            value: pool.description ?? "No description provided",
-          },
-          {
-            name: "Owner",
-            value: `Server: ${ownerGuildName} (ID \`${pool.guild_id}\`)\n Created by: <@${pool.creator_id}>`,
-          },
-          {
-            name: `Members - ${members.length} total`,
-            value: membersStr,
-          },
-          {
-            name: "Settings",
-            // Use poolMember for MEMBER settings, not owner settings
-            value: buildPoolSettingsString(poolMember),
-            inline: false,
-          },
-        )
-        .setColor(Color.Success);
+      const embed = getShowEmbed(
+        pool,
+        false, // is not owner
+        ownerGuildName,
+        memberCount,
+        inviteCount,
+      );
+
+      const components = getShowComponentsMain(
+        poolMember,
+        memberCount, // will always be at least 1 since we are a member too
+        0, // 0 invites, member shouldn't see
+      );
 
       await interaction.reply({
         embeds: [embed],
+        components,
       });
 
       return;
     }
 
-    // Own pool, show invites and members
-    const invites = await getAllBanPoolInvites(
-      db,
-      pool.pool_name,
-      pool.guild_id,
+    const embed = getShowEmbed(
+      pool,
+      true, // is owner
+      null, // ignore guild name, not shown
+      memberCount,
+      inviteCount,
     );
 
-    const embed = new EmbedBuilder()
-      .setTitle(`Ban pool ${pool.pool_name}`)
-      .setDescription("This server **owns** this ban pool.")
-      .addFields(
-        {
-          name: "Description",
-          value: pool.description ?? "No description provided",
-        },
-        {
-          name: "Creator",
-          value: `<@${pool.creator_id}>`,
-        },
-        {
-          name: `Members - ${members.length} total`,
-          value: membersStr,
-        },
-        {
-          name: "Invites",
-          value:
-            invites
-              .map((invite) => {
-                const expiresAt = invite.expires_at
-                  ? dayjs.utc(invite.expires_at)
-                  : null;
-
-                let s = `\`${invite.invite_code}\``;
-                s += "\n";
-                s += "╰ Expires: ";
-                s += expiresAt ? toTimestamp(expiresAt) : "Never";
-
-                return s;
-              })
-              .join("\n") || "No invites created.",
-        },
-        {
-          name: "Settings",
-          value: buildPoolSettingsString(pool),
-          inline: false,
-        },
-      )
-      .setColor(Color.Success);
+    const components = getShowComponentsMain(
+      null, // not member, pass null
+      memberCount, // could be 0 or more
+      inviteCount, // could be 0 or more
+    );
 
     await interaction.reply({
       embeds: [embed],
+      components,
     });
   }
 

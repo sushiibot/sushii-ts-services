@@ -112,3 +112,26 @@ export function getBanPoolMembers(
     .where("pool_name", "=", poolName)
     .execute();
 }
+
+/**
+ * Gets the number of members in a ban pool, excluding the owner
+ *
+ * @param db
+ * @param guildId
+ * @param poolName
+ * @returns
+ */
+export async function getBanPoolMemberCount(
+  db: Kysely<DB>,
+  guildId: string,
+  poolName: string,
+): Promise<number> {
+  const { count } = await db
+    .selectFrom("app_public.ban_pool_members")
+    .select((eb) => eb.fn.countAll<number>().as("count"))
+    .where("owner_guild_id", "=", guildId)
+    .where("pool_name", "=", poolName)
+    .executeTakeFirstOrThrow();
+
+  return count;
+}

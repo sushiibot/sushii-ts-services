@@ -23,12 +23,13 @@ import {
 import {
   deleteBanPoolInvite,
   getBanPoolInviteByCode,
+  getBanPoolInviteCount,
   incrementBanPoolInviteUse,
   insertBanPoolInvite,
 } from "./BanPoolInvite.repository";
 import {
   getBanPoolMember,
-  getBanPoolMembers,
+  getBanPoolMemberCount,
   insertBanPoolMember,
 } from "./BanPoolMember.repository";
 import { BanPoolRow } from "./BanPool.table";
@@ -189,7 +190,8 @@ export async function showPool(
 ): Promise<{
   pool: BanPoolRow;
   poolMember?: BanPoolMemberRow;
-  members: BanPoolMemberRow[];
+  memberCount: number;
+  inviteCount: number;
 }> {
   const pool = await getPoolByNameOrIdAndGuildId(db, nameOrID, guildId);
   if (!pool) {
@@ -220,12 +222,27 @@ export async function showPool(
     );
   }
 
-  const members = await getBanPoolMembers(db, pool.guild_id, pool.pool_name);
+  const memberCount = await getBanPoolMemberCount(
+    db,
+    pool.guild_id,
+    pool.pool_name,
+  );
+
+  let inviteCount = 0;
+  // Only fetch count if owner
+  if (!poolMember) {
+    inviteCount = await getBanPoolInviteCount(
+      db,
+      pool.guild_id,
+      pool.pool_name,
+    );
+  }
 
   return {
     pool,
     poolMember,
-    members,
+    memberCount,
+    inviteCount,
   };
 }
 
