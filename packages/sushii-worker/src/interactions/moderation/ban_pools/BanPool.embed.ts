@@ -9,14 +9,14 @@ import toTimestamp from "../../../utils/toTimestamp";
 
 export function getShowEmbed(
   pool: BanPoolRow,
-  isMember: boolean,
+  isOwner: boolean,
   ownerGuildName: string | null,
   memberCount: number,
   inviteCount: number,
 ): EmbedBuilder {
-  const description = isMember
-    ? "This server is a member of this ban pool."
-    : "This server **owns** this ban pool.";
+  const description = isOwner
+    ? "This server **owns** this ban pool."
+    : "This server is a member of this ban pool.";
 
   const fields = [
     {
@@ -26,11 +26,13 @@ export function getShowEmbed(
   ];
 
   if (ownerGuildName) {
+    // member - show owner server name and id
     fields.push({
       name: "Owner",
-      value: `${ownerGuildName} (ID \`${pool.guild_id}\`)`,
+      value: `${ownerGuildName} (ID \`${pool.guild_id}\`) - <@${pool.creator_id}>`,
     });
   } else {
+    // owner - only show creator user
     fields.push({
       name: "Creator",
       value: `<@${pool.creator_id}>`,
@@ -43,7 +45,7 @@ export function getShowEmbed(
   });
 
   // Add invites count for owner
-  if (!isMember) {
+  if (isOwner) {
     fields.push({
       name: "Invites",
       value: `${inviteCount} invites`,
@@ -59,13 +61,16 @@ export function getShowEmbed(
   return builder;
 }
 
-export function getSettingsEmbed(pool: BanPoolRow): EmbedBuilder {
+export function getSettingsEmbed(
+  pool: BanPoolRow,
+  poolMember: BanPoolMemberRow | null,
+): EmbedBuilder {
   return new EmbedBuilder()
     .setTitle("Ban Pool Settings")
     .setAuthor({
       name: pool.pool_name,
     })
-    .setDescription(buildPoolSettingsString(pool))
+    .setDescription(buildPoolSettingsString(pool, poolMember))
     .setColor(Color.Info);
 }
 

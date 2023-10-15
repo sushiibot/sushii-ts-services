@@ -189,7 +189,7 @@ export async function showPool(
   guildId: string,
 ): Promise<{
   pool: BanPoolRow;
-  poolMember?: BanPoolMemberRow;
+  poolMember: BanPoolMemberRow | null;
   memberCount: number;
   inviteCount: number;
 }> {
@@ -206,12 +206,13 @@ export async function showPool(
   let canView = pool.guild_id === guildId;
 
   // Not owner, check if member
-  let poolMember;
+  let poolMember = null;
   if (!canView) {
-    poolMember = await getBanPoolMember(db, guildId, pool);
+    const r = await getBanPoolMember(db, guildId, pool);
+    poolMember = r || null;
 
     // If member was found
-    canView = poolMember !== undefined;
+    canView = poolMember !== null;
   }
 
   if (!canView) {
@@ -224,8 +225,8 @@ export async function showPool(
 
   const memberCount = await getBanPoolMemberCount(
     db,
-    pool.guild_id,
     pool.pool_name,
+    pool.guild_id,
   );
 
   let inviteCount = 0;
@@ -233,8 +234,8 @@ export async function showPool(
   if (!poolMember) {
     inviteCount = await getBanPoolInviteCount(
       db,
-      pool.guild_id,
       pool.pool_name,
+      pool.guild_id,
     );
   }
 

@@ -1,5 +1,9 @@
 import { DeleteResult, Kysely } from "kysely";
-import { BanPoolRow, InsertableBanPoolRow } from "./BanPool.table";
+import {
+  BanPoolRow,
+  InsertableBanPoolRow,
+  UpdateableBanPoolRow,
+} from "./BanPool.table";
 import { DB } from "../../../model/dbTypes";
 
 /**
@@ -72,7 +76,6 @@ export function getPoolByNameOrIdAndGuildId(
   guildId: string,
 ): Promise<BanPoolRow | undefined> {
   const poolID = parseInt(nameOrID, 10);
-
   let poolQuery = db.selectFrom("app_public.ban_pools").selectAll();
 
   if (Number.isNaN(poolID)) {
@@ -108,6 +111,17 @@ export function insertPool(
   return db
     .insertInto("app_public.ban_pools")
     .values(pool)
+    .returningAll()
+    .executeTakeFirstOrThrow();
+}
+
+export function updatePool(
+  db: Kysely<DB>,
+  pool: UpdateableBanPoolRow,
+): Promise<BanPoolRow> {
+  return db
+    .updateTable("app_public.ban_pools")
+    .set(pool)
     .returningAll()
     .executeTakeFirstOrThrow();
 }

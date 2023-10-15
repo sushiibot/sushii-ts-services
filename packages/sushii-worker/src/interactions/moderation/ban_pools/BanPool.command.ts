@@ -22,6 +22,7 @@ import { getAllBanPoolMemberships } from "./BanPoolMember.repository";
 import db from "../../../model/db";
 import { getShowComponentsMain } from "./BanPool.component";
 import { getShowEmbed } from "./BanPool.embed";
+import { handleShowMsgInteractions } from "./BanPool.button";
 
 export enum BanPoolOptionCommand {
   Create = "create",
@@ -279,7 +280,8 @@ If you want to make a new invite, use \`/banpool invite\``,
         },
         {
           name: "Settings",
-          value: buildPoolSettingsString(pool),
+          // no member
+          value: buildPoolSettingsString(pool, null),
           inline: false,
         },
       )
@@ -436,23 +438,23 @@ If you want to make a new invite, use \`/banpool invite\``,
     const { pool, poolMember, memberCount, inviteCount } = poolData;
 
     // Only show invites if the server owns the pool
-    const isOwner = pool.guild_id === interaction.guild.id;
+    const isOwner = !poolMember;
 
-    if (!isOwner && poolMember) {
+    if (poolMember) {
       const ownerGuildName =
         interaction.client.guilds.cache.get(pool.guild_id)?.name ??
         "Unknown server";
 
       const embed = getShowEmbed(
         pool,
-        false, // is not owner
+        isOwner, // is not owner
         ownerGuildName,
         memberCount,
         inviteCount,
       );
 
       const components = getShowComponentsMain(
-        poolMember,
+        isOwner,
         memberCount, // will always be at least 1 since we are a member too
         0, // 0 invites, member shouldn't see
       );
@@ -467,22 +469,24 @@ If you want to make a new invite, use \`/banpool invite\``,
 
     const embed = getShowEmbed(
       pool,
-      true, // is owner
+      isOwner, // is owner
       null, // ignore guild name, not shown
       memberCount,
       inviteCount,
     );
 
     const components = getShowComponentsMain(
-      null, // not member, pass null
+      isOwner,
       memberCount, // could be 0 or more
       inviteCount, // could be 0 or more
     );
 
-    await interaction.reply({
+    const msg = await interaction.reply({
       embeds: [embed],
       components,
     });
+
+    await handleShowMsgInteractions(msg, pool, poolMember);
   }
 
   async handleDelete(

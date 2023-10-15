@@ -4,6 +4,7 @@ import {
   BanPoolMemberRow,
   BanPoolMemberRowWithPool,
   InsertableBanPoolMemberRow,
+  UpdateableBanPoolMemberRow,
 } from "./BanPoolMember.table";
 import { DB } from "../../../model/dbTypes";
 
@@ -100,10 +101,21 @@ export function insertBanPoolMember(
     .executeTakeFirstOrThrow();
 }
 
+export function updateBanPoolMember(
+  db: Kysely<DB>,
+  member: UpdateableBanPoolMemberRow,
+): Promise<BanPoolMemberRow> {
+  return db
+    .updateTable("app_public.ban_pool_members")
+    .set(member)
+    .returningAll()
+    .executeTakeFirstOrThrow();
+}
+
 export function getBanPoolMembers(
   db: Kysely<DB>,
-  guildId: string,
   poolName: string,
+  guildId: string,
 ): Promise<BanPoolMemberRow[]> {
   return db
     .selectFrom("app_public.ban_pool_members")
@@ -123,8 +135,8 @@ export function getBanPoolMembers(
  */
 export async function getBanPoolMemberCount(
   db: Kysely<DB>,
-  guildId: string,
   poolName: string,
+  guildId: string,
 ): Promise<number> {
   const { count } = await db
     .selectFrom("app_public.ban_pool_members")
