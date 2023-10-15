@@ -20,11 +20,26 @@ import {
   AppPublicBanPoolRemoveAction,
   AppPublicBanPoolRemoveMode,
 } from "../../../model/dbTypes";
+import logger from "../../../logger";
 
-enum BanPoolCustomId {
+export enum BanPoolShowPage {
+  Home = "home",
   Settings = "settings",
   Members = "members",
   Invites = "invites",
+}
+
+export enum BanPoolShowMainCustomId {
+  GoSettings = `${BanPoolShowPage.Home}_settings`,
+  GoMembers = `${BanPoolShowPage.Home}_members`,
+  GoInvites = `${BanPoolShowPage.Home}_invites`,
+}
+
+export enum SettingsCustomId {
+  AddMode = `${BanPoolShowPage.Settings}_add_mode`,
+  RemoveMode = `${BanPoolShowPage.Settings}_remove_mode`,
+  AddAction = `${BanPoolShowPage.Settings}_add_action`,
+  RemoveAction = `${BanPoolShowPage.Settings}_remove_action`,
 }
 
 /**
@@ -33,7 +48,7 @@ enum BanPoolCustomId {
  * @returns
  */
 export function getShowComponentsMain(
-  poolMember: BanPoolMemberRow | null,
+  isOwner: boolean,
   poolMemberCount: number,
   inviteCount: number,
 ): ActionRowBuilder<MessageActionRowComponentBuilder>[] {
@@ -46,21 +61,27 @@ export function getShowComponentsMain(
   const row = new ActionRowBuilder<ButtonBuilder>();
 
   const settingsButton = new ButtonBuilder()
-    .setCustomId(BanPoolCustomId.Settings)
+    .setCustomId(BanPoolShowMainCustomId.GoSettings)
     .setLabel("Settings")
     .setStyle(ButtonStyle.Primary);
 
   const membersButton = new ButtonBuilder()
-    .setCustomId(BanPoolCustomId.Members)
+    .setCustomId(BanPoolShowMainCustomId.GoMembers)
     .setLabel("Members")
     .setStyle(ButtonStyle.Secondary)
     .setDisabled(poolMemberCount === 0);
 
-  // If there is no pool member, then we're the owner
-  const isOwner = poolMember === undefined;
+  logger.debug(
+    {
+      isOwner,
+      poolMemberCount,
+      inviteCount,
+    },
+    "getShowComponentsMain",
+  );
 
   const invitesButton = new ButtonBuilder()
-    .setCustomId(BanPoolCustomId.Invites)
+    .setCustomId(BanPoolShowMainCustomId.GoInvites)
     .setLabel("Invites")
     .setStyle(ButtonStyle.Secondary)
     // Disable if not owner
@@ -77,6 +98,21 @@ type OptionDetails<T> = {
   description: string;
   value: T;
 };
+
+/**
+ * Returns a function that converts an option details to a select menu option
+ *
+ * @param currentOption
+ * @returns
+ */
+function optionDetailsToSelectMenuOption<T extends string>(
+  o: OptionDetails<T>,
+): StringSelectMenuOptionBuilder {
+  return new StringSelectMenuOptionBuilder()
+    .setLabel(o.label)
+    .setDescription(o.description)
+    .setValue(o.value);
+}
 
 function getAddModeOption(
   mode: AppPublicBanPoolAddMode,
@@ -103,20 +139,6 @@ function getAddModeOption(
     default:
       throw new Error(`Unknown add mode '${mode}'`);
   }
-}
-
-function getAddModeSelectMenuOptions(
-  currentOption: AppPublicBanPoolAddMode,
-): StringSelectMenuOptionBuilder[] {
-  const addModeOptions = addModeValues.map(getAddModeOption).map((o) =>
-    new StringSelectMenuOptionBuilder()
-      .setLabel(o.label)
-      .setDescription(o.description)
-      .setValue(o.value)
-      .setDefault(o.value === currentOption),
-  );
-
-  return addModeOptions;
 }
 
 function getRemoveModeOption(
@@ -146,20 +168,6 @@ function getRemoveModeOption(
   }
 }
 
-function getRemoveModeSelectMenuOptions(
-  currentOption: AppPublicBanPoolRemoveMode,
-): StringSelectMenuOptionBuilder[] {
-  const removeModeOptions = removeModeValues.map(getRemoveModeOption).map((o) =>
-    new StringSelectMenuOptionBuilder()
-      .setLabel(o.label)
-      .setDescription(o.description)
-      .setValue(o.value)
-      .setDefault(o.value === currentOption),
-  );
-
-  return removeModeOptions;
-}
-
 function getAddActionOption(
   mode: AppPublicBanPoolAddAction,
 ): OptionDetails<AppPublicBanPoolAddAction> {
@@ -168,6 +176,18 @@ function getAddActionOption(
       return {
         label: "Ban",
         description: "Ban the user",
+        value: mode,
+      };
+    case "ask":
+      return {
+        label: "Ask",
+        description: "Ask what to do",
+        value: mode,
+      };
+    case "timeout_and_ask":
+      return {
+        label: "Timeout and ask",
+        description: "Timeout user and ask what to do",
         value: mode,
       };
     case "nothing":
@@ -191,6 +211,12 @@ function getRemoveActionOption(
         description: "Unban the user",
         value: mode,
       };
+    case "ask":
+      return {
+        label: "Ask",
+        description: "Ask what to do",
+        value: mode,
+      };
     case "nothing":
       return {
         label: "Nothing",
@@ -202,54 +228,32 @@ function getRemoveActionOption(
   }
 }
 
-function getAddActionSelectMenuOptions(
-  currentOption: AppPublicBanPoolAddAction,
-): StringSelectMenuOptionBuilder[] {
-  return addActionValues.map(getAddActionOption).map((o) =>
-    new StringSelectMenuOptionBuilder()
-      .setLabel(o.label)
-      .setDescription(o.description)
-      .setValue(o.value)
-      .setDefault(o.value === currentOption),
-  );
+function getAddModeSelectMenuOptions(): StringSelectMenuOptionBuilder[] {
+  const addModeOptions = addModeValues
+    .map(getAddModeOption)
+    .map(optionDetailsToSelectMenuOption);
+
+  return addModeOptions;
 }
 
-function getRemoveActionSelectMenuOptions(
-  currentOption: AppPublicBanPoolRemoveAction,
-): StringSelectMenuOptionBuilder[] {
-  return removeActionValues.map(getRemoveActionOption).map((o) =>
-    new StringSelectMenuOptionBuilder()
-      .setLabel(o.label)
-      .setDescription(o.description)
-      .setValue(o.value)
-      .setDefault(o.value === currentOption),
-  );
+function getRemoveModeSelectMenuOptions(): StringSelectMenuOptionBuilder[] {
+  const removeModeOptions = removeModeValues
+    .map(getRemoveModeOption)
+    .map(optionDetailsToSelectMenuOption);
+
+  return removeModeOptions;
 }
 
-function getCurrentPoolSettings(
-  pool: BanPoolRow,
-  poolMember: BanPoolMemberRow | null,
-): {
-  addMode: AppPublicBanPoolAddMode;
-  removeMode: AppPublicBanPoolRemoveMode;
-  addAction: AppPublicBanPoolAddAction;
-  removeAction: AppPublicBanPoolRemoveAction;
-} {
-  if (poolMember) {
-    return {
-      addMode: poolMember.add_mode,
-      removeMode: poolMember.remove_mode,
-      addAction: poolMember.add_action,
-      removeAction: poolMember.remove_action,
-    };
-  }
+function getAddActionSelectMenuOptions(): StringSelectMenuOptionBuilder[] {
+  return addActionValues
+    .map(getAddActionOption)
+    .map(optionDetailsToSelectMenuOption);
+}
 
-  return {
-    addMode: pool.add_mode,
-    removeMode: pool.remove_mode,
-    addAction: pool.add_action,
-    removeAction: pool.remove_action,
-  };
+function getRemoveActionSelectMenuOptions(): StringSelectMenuOptionBuilder[] {
+  return removeActionValues
+    .map(getRemoveActionOption)
+    .map(optionDetailsToSelectMenuOption);
 }
 
 /**
@@ -268,22 +272,23 @@ export function getSettingsComponents(
   // Either no pool member (owner) or pool member with edit permissions
   const canEdit = poolMember === null || poolMember.permission === "edit";
 
-  const poolSettings = getCurrentPoolSettings(pool, poolMember);
+  // const poolSettings = getTruePoolSettings(pool, poolMember);
 
+  // Don't set values by default, otherwise placeholder isn't shown
   if (canEdit) {
-    const addModeOptions = getAddModeSelectMenuOptions(poolSettings.addMode);
-    const removeModeOptions = getRemoveModeSelectMenuOptions(
-      poolSettings.removeMode,
-    );
+    const addModeOptions = getAddModeSelectMenuOptions();
+    const removeModeOptions = getRemoveModeSelectMenuOptions();
 
     const addModeMenu = new StringSelectMenuBuilder()
-      .setPlaceholder("Change add mode")
+      .setPlaceholder("When a user is banned in this server...")
+      .setCustomId(SettingsCustomId.AddMode)
       .setMaxValues(1)
       .setMinValues(1)
       .addOptions(addModeOptions);
 
     const removeModeMenu = new StringSelectMenuBuilder()
-      .setPlaceholder("Change remove mode")
+      .setPlaceholder("When a user is unbanned from this server...")
+      .setCustomId(SettingsCustomId.RemoveMode)
       .setMaxValues(1)
       .setMinValues(1)
       .addOptions(removeModeOptions);
@@ -291,22 +296,20 @@ export function getSettingsComponents(
     menus.push(addModeMenu, removeModeMenu);
   }
 
-  const addActionOptions = getAddActionSelectMenuOptions(
-    poolSettings.addAction,
-  );
-  const removeActionOptions = getRemoveActionSelectMenuOptions(
-    poolSettings.removeAction,
-  );
+  const addActionOptions = getAddActionSelectMenuOptions();
+  const removeActionOptions = getRemoveActionSelectMenuOptions();
 
   // Always show these
   const addAction = new StringSelectMenuBuilder()
-    .setPlaceholder("Change add action")
+    .setPlaceholder("When a user is banned by a different server...")
+    .setCustomId(SettingsCustomId.AddAction)
     .setMaxValues(1)
     .setMinValues(1)
     .addOptions(addActionOptions);
 
   const removeAction = new StringSelectMenuBuilder()
-    .setPlaceholder("Change remove action")
+    .setPlaceholder("When a user is unbanned by another server...")
+    .setCustomId(SettingsCustomId.RemoveAction)
     .setMaxValues(1)
     .setMinValues(1)
     .addOptions(removeActionOptions);
