@@ -4006,6 +4006,7 @@ __metadata:
     "@types/pg-cursor": ^2.7.0
     "@typescript-eslint/eslint-plugin": ^5.12.0
     "@typescript-eslint/parser": ^5.12.0
+    bun-types: ^1.0.5
     cron: ^2.3.1
     dayjs: ^1.10.7
     discord-api-types: next
@@ -4017,7 +4018,7 @@ __metadata:
     eslint-config-prettier: ^8.4.0
     eslint-plugin-import: ^2.25.4
     express: ^4.18.1
-    graphql: ^16.6.0
+    graphql: ^16.8.1
     graphql-request: 5.1.0
     graphql-tag: ^2.12.6
     graphql-ws: ^5.11.2
@@ -5678,6 +5679,13 @@ __metadata:
     hexer: ^1.5.0
     xtend: ^4.0.0
   checksum: e0cdfae2d1f4c0a2ffdc4e352ce3dbd547c4683c76072d48b98322945c318cbb0b6c2ccb5719d7de14abbe2076d68796f7d905b9b2c859fa29259fe66894b6c6
+  languageName: node
+  linkType: hard
+
+"bun-types@npm:^1.0.5":
+  version: 1.0.6
+  resolution: "bun-types@npm:1.0.6"
+  checksum: d10bdcce0577a9a779f963f07146f40c4f2ac3b3312135e3941e596f60ea42c8f243949cdf81c2d984de49525d287784594ec0dc5d85dc2d08fa385a5b97ad0b
   languageName: node
   linkType: hard
 
@@ -8061,7 +8069,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:*, graphql@npm:^16.6.0":
+"graphql@npm:*":
   version: 16.6.0
   resolution: "graphql@npm:16.6.0"
   checksum: bf1d9e3c1938ce3c1a81e909bd3ead1ae4707c577f91cff1ca2eca474bfbc7873d5d7b942e1e9777ff5a8304421dba57a4b76d7a29eb19de8711cb70e3c2415e
@@ -8072,6 +8080,13 @@ __metadata:
   version: 15.8.0
   resolution: "graphql@npm:15.8.0"
   checksum: 423325271db8858428641b9aca01699283d1fe5b40ef6d4ac622569ecca927019fce8196208b91dd1d8eb8114f00263fe661d241d0eb40c10e5bfd650f86ec5e
+  languageName: node
+  linkType: hard
+
+"graphql@npm:^16.8.1":
+  version: 16.8.1
+  resolution: "graphql@npm:16.8.1"
+  checksum: 8d304b7b6f708c8c5cc164b06e92467dfe36aff6d4f2cf31dd19c4c2905a0e7b89edac4b7e225871131fd24e21460836b369de0c06532644d15b461d55b1ccc0
   languageName: node
   linkType: hard
 
