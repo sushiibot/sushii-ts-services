@@ -4,6 +4,7 @@ import {
   ChatInputCommandInteraction,
   PermissionsBitField,
   EmbedBuilder,
+  ChannelType,
 } from "discord.js";
 import dayjs from "dayjs";
 import Context from "../../../model/context";
@@ -23,6 +24,8 @@ import db from "../../../model/db";
 import { getShowComponentsMain } from "./BanPool.component";
 import { getShowEmbed } from "./BanPool.embed";
 import { handleShowMsgInteractions } from "./BanPool.button";
+import { getGuildSettings } from "./GuildSettings.repository";
+import { settingsSetAlertsChannel } from "./GuildSettings.service";
 
 export enum BanPoolOptionCommand {
   Create = "create",
@@ -33,9 +36,15 @@ export enum BanPoolOptionCommand {
   DeleteInvite = "delete-invite",
   ClearInvites = "clear-invites",
   Join = "join",
-  ServerKick = "kick-server",
+  ServerSettings = "settings",
+  // Block a server from joining any ban pools
+  ServerBlock = "block-server",
   // Grant permissions to a specific server, using their server ID
   ServerPermissions = "server-permissions",
+}
+
+export enum BanPoolSettingsSubCommand {
+  AlertsChannel = "alerts-channel",
 }
 
 export enum BanPoolOption {
@@ -186,6 +195,23 @@ export default class BanPoolCommand extends SlashCommandHandler {
             .setRequired(true),
         ),
     )
+    .addSubcommandGroup((g) =>
+      g
+        .setName(BanPoolOptionCommand.ServerSettings)
+        .setDescription("Update ban pool settings for your server.")
+        .addSubcommand((c) =>
+          c
+            .setName(BanPoolSettingsSubCommand.AlertsChannel)
+            .setDescription("Set the channel to send ban pool alerts to.")
+            .addChannelOption((o) =>
+              o
+                .setName("channel")
+                .setDescription("Channel to send pool alerts to.")
+                .addChannelTypes(ChannelType.GuildText)
+                .setRequired(true),
+            ),
+        ),
+    )
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
@@ -197,7 +223,23 @@ export default class BanPoolCommand extends SlashCommandHandler {
       throw new Error("Guild not cached");
     }
 
+    const subgroup = interaction.options.getSubcommandGroup();
     const subcommand = interaction.options.getSubcommand();
+
+    switch (subgroup) {
+      case BanPoolOptionCommand.ServerSettings:
+        switch (subcommand) {
+          case BanPoolSettingsSubCommand.AlertsChannel:
+            await this.handleSettingsAlertsChannel(ctx, interaction);
+            break;
+          default:
+            throw new Error("Unknown subcommand");
+        }
+
+        break;
+      default:
+      // continue with base subcommands
+    }
 
     switch (subcommand) {
       case BanPoolOptionCommand.Create:
@@ -262,6 +304,8 @@ export default class BanPoolCommand extends SlashCommandHandler {
       throw err;
     }
 
+    const guildSettings = await getGuildSettings(db, interaction.guildId);
+
     const embed = new EmbedBuilder()
       .setTitle(`Ban pool ${name} created`)
       .setDescription(
@@ -281,7 +325,7 @@ If you want to make a new invite, use \`/banpool invite\``,
         {
           name: "Settings",
           // no member
-          value: buildPoolSettingsString(pool, null),
+          value: buildPoolSettingsString(pool, null, guildSettings || null),
           inline: false,
         },
       )
@@ -637,6 +681,28 @@ You can create a new invite with \`/banpool invite\``,
       .setDescription(
         `All ban pool invites for the ${poolName} pool have been deleted. \n\
 You can create a new invite with \`/banpool invite\``,
+      )
+      .setColor(Color.Success);
+
+    await interaction.reply({
+      embeds: [embed],
+    });
+  }
+
+  async handleSettingsAlertsChannel(
+    ctx: Context,
+    interaction: ChatInputCommandInteraction<"cached">,
+  ): Promise<void> {
+    const channel = interaction.options.getChannel("channel", true);
+
+    await settingsSetAlertsChannel(interaction.guildId, channel.id);
+
+    const embed = new EmbedBuilder()
+      .setTitle("Alerts channel set")
+      .setDescription(
+        `The alerts channel has been set to ${channel} (${channel.id}). \
+This will be used for all ban pool alerts and prompts on what to do for new pool additions, \
+depending on the pool settings.`,
       )
       .setColor(Color.Success);
 

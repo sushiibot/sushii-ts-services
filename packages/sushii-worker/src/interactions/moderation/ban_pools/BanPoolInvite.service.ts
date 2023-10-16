@@ -3,12 +3,13 @@ import dayjs from "dayjs";
 import { randomBytes } from "crypto";
 import base32 from "hi-base32";
 import Color from "../../../utils/colors";
-import { BanPoolError, notFoundBasic } from "./errors";
+import { BanPoolError, inviteLimitReachedEmbed, notFoundBasic } from "./errors";
 import { getPoolByNameAndGuildId } from "./BanPool.repository";
 import {
   deleteAllBanPoolInvites,
   deleteBanPoolInvite,
   getBanPoolInviteByCode,
+  getBanPoolInviteCount,
   insertBanPoolInvite,
 } from "./BanPoolInvite.repository";
 import db from "../../../model/db";
@@ -34,6 +35,16 @@ export async function createInvite(
       "POOL_NOT_FOUND",
       "Ban pool not found",
       notFoundBasic,
+    );
+  }
+
+  // Check how many invites this pool already has
+  const inviteCount = await getBanPoolInviteCount(db, poolName, guildId);
+  if (inviteCount >= 20) {
+    throw new BanPoolError(
+      "INVITE_LIMIT_REACHED",
+      "Invite limit reached",
+      inviteLimitReachedEmbed,
     );
   }
 

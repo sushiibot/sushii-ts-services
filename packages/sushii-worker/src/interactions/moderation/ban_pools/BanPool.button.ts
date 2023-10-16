@@ -30,6 +30,7 @@ import {
   AppPublicBanPoolRemoveMode,
 } from "../../../model/dbTypes";
 import { updatePool } from "./BanPool.repository";
+import { getGuildSettings } from "./GuildSettings.repository";
 
 const log = logger.child({ module: "BanPoolShow.button" });
 
@@ -77,7 +78,10 @@ async function handleHome(
 
   switch (interaction.customId) {
     case BanPoolShowMainCustomId.GoSettings: {
-      const embed = getSettingsEmbed(pool, poolMember);
+      const guildId = poolMember?.member_guild_id || pool.guild_id;
+      const guildSettings = await getGuildSettings(db, guildId);
+
+      const embed = getSettingsEmbed(pool, poolMember, guildSettings);
       const components = getSettingsComponents(pool, poolMember);
 
       await interaction.update({
@@ -184,7 +188,14 @@ async function handleSettings(
     updatedPool = await updatePool(db, update);
   }
 
-  const embed = getSettingsEmbed(updatedPool, updatedMember);
+  const guildId = poolMember?.member_guild_id || pool.guild_id;
+  const guildSettings = await getGuildSettings(db, guildId);
+
+  const embed = getSettingsEmbed(
+    updatedPool,
+    updatedMember,
+    guildSettings || null,
+  );
   const components = getSettingsComponents(updatedPool, updatedMember);
 
   await interaction.update({

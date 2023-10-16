@@ -5,6 +5,7 @@ type ErrorType =
   | "INVITE_NOT_FOUND"
   | "INVITE_EXPIRED"
   | "INVITE_MAX_USES_REACHED"
+  | "INVITE_LIMIT_REACHED"
   | "POOL_NOT_FOUND"
   | "POOL_ALREADY_EXISTS"
   | "POOL_ALREADY_MEMBER"
@@ -39,6 +40,13 @@ export const inviteMaxUseReachedEmbed = new EmbedBuilder()
   .setDescription(
     "The invite code reached it's max use. \
 Please request a new one from your inviter. They can use `/lookuppool invite` to create a new invite.",
+  )
+  .setColor(Color.Error);
+
+export const inviteLimitReachedEmbed = new EmbedBuilder()
+  .setTitle("Invite limit reached")
+  .setDescription(
+    "You can only have 20 invites per ban pool. Please delete some invites to create new ones, or re-use old ones.",
   )
   .setColor(Color.Error);
 
