@@ -35,7 +35,8 @@ module.exports = {
         "checkLoops": false
       },
     ],
-    "no-multi-str": "off"
+    "no-multi-str": "off",
+    "import/prefer-default-export": "off",
   },
   settings: {
     "import/resolver": {
