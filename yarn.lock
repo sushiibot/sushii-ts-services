@@ -4006,6 +4006,7 @@ __metadata:
     "@types/pg-cursor": ^2.7.0
     "@typescript-eslint/eslint-plugin": ^5.12.0
     "@typescript-eslint/parser": ^5.12.0
+    bun-types: ^1.0.5
     cron: ^2.3.1
     dayjs: ^1.10.7
     discord-api-types: next
@@ -4042,7 +4043,7 @@ __metadata:
     typescript: ^5.2.2
     vitest: ^0.34.6
     ws: ^8.11.0
-    zod: ^3.21.4
+    zod: ^3.22.4
   languageName: unknown
   linkType: soft
 
@@ -5678,6 +5679,13 @@ __metadata:
     hexer: ^1.5.0
     xtend: ^4.0.0
   checksum: e0cdfae2d1f4c0a2ffdc4e352ce3dbd547c4683c76072d48b98322945c318cbb0b6c2ccb5719d7de14abbe2076d68796f7d905b9b2c859fa29259fe66894b6c6
+  languageName: node
+  linkType: hard
+
+"bun-types@npm:^1.0.5":
+  version: 1.0.6
+  resolution: "bun-types@npm:1.0.6"
+  checksum: d10bdcce0577a9a779f963f07146f40c4f2ac3b3312135e3941e596f60ea42c8f243949cdf81c2d984de49525d287784594ec0dc5d85dc2d08fa385a5b97ad0b
   languageName: node
   linkType: hard
 
@@ -13638,9 +13646,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.21.4":
-  version: 3.21.4
-  resolution: "zod@npm:3.21.4"
-  checksum: f185ba87342ff16f7a06686767c2b2a7af41110c7edf7c1974095d8db7a73792696bcb4a00853de0d2edeb34a5b2ea6a55871bc864227dace682a0a28de33e1f
+"zod@npm:^3.22.4":
+  version: 3.22.4
+  resolution: "zod@npm:3.22.4"
+  checksum: 80bfd7f8039b24fddeb0718a2ec7c02aa9856e4838d6aa4864335a047b6b37a3273b191ef335bf0b2002e5c514ef261ffcda5a589fb084a48c336ffc4cdbab7f
   languageName: node
   linkType: hard
