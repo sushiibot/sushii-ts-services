@@ -850,10 +850,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cloudamqp/amqp-client@npm:^2.1.0":
-  version: 2.1.1
-  resolution: "@cloudamqp/amqp-client@npm:2.1.1"
-  checksum: c68cd459536dc8d9cb859da2fb0493e81ea2d482dcd68d3d0ef106cfb98817f1e361efc80b165b22f9b6060a61f4b33f36a9556616389f24e74abc1e8994ba8f
+"@cloudamqp/amqp-client@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "@cloudamqp/amqp-client@npm:3.1.1"
+  checksum: 1ef50bba8c331acb2399b4cad208557cfbc7c33f6ca0975c183c00a23a9a2bdc37cb405a9261998c2f3adb4baff847b79cea1cb2f125f11afad43238727fc8ba
   languageName: node
   linkType: hard
 
@@ -3978,7 +3978,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.17.10
     "@babel/preset-typescript": ^7.16.7
-    "@cloudamqp/amqp-client": ^2.1.0
+    "@cloudamqp/amqp-client": ^3.1.1
     "@godaddy/terminus": ^4.12.1
     "@graphql-codegen/cli": ^3.3.0
     "@graphql-codegen/introspection": 2.1.1
@@ -4006,6 +4006,7 @@ __metadata:
     "@types/pg-cursor": ^2.7.0
     "@typescript-eslint/eslint-plugin": ^5.12.0
     "@typescript-eslint/parser": ^5.12.0
+    bun-types: ^1.0.5
     cron: ^2.3.1
     dayjs: ^1.10.7
     discord-api-types: next
@@ -5678,6 +5679,13 @@ __metadata:
     hexer: ^1.5.0
     xtend: ^4.0.0
   checksum: e0cdfae2d1f4c0a2ffdc4e352ce3dbd547c4683c76072d48b98322945c318cbb0b6c2ccb5719d7de14abbe2076d68796f7d905b9b2c859fa29259fe66894b6c6
+  languageName: node
+  linkType: hard
+
+"bun-types@npm:^1.0.5":
+  version: 1.0.6
+  resolution: "bun-types@npm:1.0.6"
+  checksum: d10bdcce0577a9a779f963f07146f40c4f2ac3b3312135e3941e596f60ea42c8f243949cdf81c2d984de49525d287784594ec0dc5d85dc2d08fa385a5b97ad0b
   languageName: node
   linkType: hard
 
