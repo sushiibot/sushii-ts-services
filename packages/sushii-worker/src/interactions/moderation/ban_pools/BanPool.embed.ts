@@ -6,6 +6,7 @@ import { BanPoolInviteRow } from "./BanPoolInvite.table";
 import Color from "../../../utils/colors";
 import { buildPoolSettingsString } from "./settings";
 import toTimestamp from "../../../utils/toTimestamp";
+import { BanPoolGuildSettingsRow } from "./GuildSettings.table";
 
 export function getShowEmbed(
   pool: BanPoolRow,
@@ -64,13 +65,14 @@ export function getShowEmbed(
 export function getSettingsEmbed(
   pool: BanPoolRow,
   poolMember: BanPoolMemberRow | null,
+  settings: BanPoolGuildSettingsRow | null,
 ): EmbedBuilder {
   return new EmbedBuilder()
     .setTitle("Ban Pool Settings")
     .setAuthor({
       name: pool.pool_name,
     })
-    .setDescription(buildPoolSettingsString(pool, poolMember))
+    .setDescription(buildPoolSettingsString(pool, poolMember, settings))
     .setColor(Color.Info);
 }
 

@@ -1,6 +1,7 @@
 import SushiiEmoji from "../../../constants/SushiiEmoji";
 import { BanPoolRow } from "./BanPool.table";
 import { BanPoolMemberRow } from "./BanPoolMember.table";
+import { BanPoolGuildSettingsRow } from "./GuildSettings.table";
 import { getTruePoolSettings } from "./util";
 
 /**
@@ -19,6 +20,7 @@ export function getRadioButton<T>(selectedValue: T, choiceValue: T): string {
 export function buildPoolSettingsString(
   pool: BanPoolRow,
   poolMember: BanPoolMemberRow | null,
+  settings: BanPoolGuildSettingsRow | null,
 ): string {
   const trueSettings = getTruePoolSettings(pool, poolMember);
 
@@ -40,6 +42,15 @@ export function buildPoolSettingsString(
   add_action    app_public.ban_pool_add_action    not null default 'ban',
   remove_action app_public.ban_pool_remove_action not null default 'unban',
   */
+
+  let alertChannelStr;
+  if (!settings?.alert_channel_id) {
+    alertChannelStr =
+      "⚠️ **Warning:** This server does not have an alert channel set. \
+Use `/banpool settings` to set one.";
+  } else {
+    alertChannelStr = `Alerts will be sent to <#${settings.alert_channel_id}>.`;
+  }
 
   let permissionStr;
   if (poolMember) {
@@ -177,7 +188,7 @@ ask the pool owner.";
   // ---------------------------------------------------------------------------
   // Done
 
-  const fullStr = [];
+  const fullStr = [alertChannelStr];
 
   if (permissionStr) {
     fullStr.push(permissionStr);
