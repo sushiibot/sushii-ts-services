@@ -9,6 +9,8 @@ import Color from "../../../utils/colors";
 import { SlashCommandHandler } from "../../handlers";
 import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
 import { invalidCaseRangeEmbed } from "./Messages";
+import { getGuildConfigById } from "../../../model/guild/guildConfig.repository";
+import db from "../../../model/db";
 
 export default class UncaseCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -50,15 +52,13 @@ export default class UncaseCommand extends SlashCommandHandler {
 
     const caseRangeStr = interaction.options.getString("case", true);
 
-    const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
-      guildId: interaction.guildId,
-    });
+    const config = await getGuildConfigById(db, interaction.guildId);
 
     // No guild config found, ignore
     if (
-      !guildConfigById || // Config not found
-      !guildConfigById.logMod || // No mod log set
-      !guildConfigById.logModEnabled // Mod log disabled
+      !config || // Config not found
+      !config.log_mod || // No mod log set
+      !config.log_mod_enabled // Mod log disabled
     ) {
       return;
     }
@@ -142,7 +142,7 @@ export default class UncaseCommand extends SlashCommandHandler {
       .map((l) => l.msgId!);
 
     const modLogChannel = await interaction.guild.channels.fetch(
-      guildConfigById.logMod,
+      config.log_mod,
     );
 
     if (!modLogChannel || !modLogChannel.isTextBased()) {

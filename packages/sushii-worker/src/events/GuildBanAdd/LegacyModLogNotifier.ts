@@ -3,6 +3,8 @@ import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { EventHandlerFn } from "../EventHandler";
+import { getGuildConfigById } from "../../model/guild/guildConfig.repository";
+import db from "../../model/db";
 
 const notifiedCache = new Set<string>();
 
@@ -20,15 +22,13 @@ const legacyModLogNotifierHandler: EventHandlerFn<Events.GuildBanAdd> = async (
     return;
   }
 
-  const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
-    guildId: ban.guild.id,
-  });
+  const config = await getGuildConfigById(db, ban.guild.id);
 
   // No guild config found, ignore
   if (
-    !guildConfigById || // Config not found
-    !guildConfigById.logMod || // No msg log set
-    !guildConfigById.logModEnabled // Msg log disabled
+    !config || // Config not found
+    !config.log_mod || // No msg log set
+    !config.log_mod_enabled // Msg log disabled
   ) {
     return;
   }
@@ -52,7 +52,7 @@ const legacyModLogNotifierHandler: EventHandlerFn<Events.GuildBanAdd> = async (
     )
     .setColor(Color.Error);
 
-  const channel = ban.guild.channels.cache.get(guildConfigById.logMod);
+  const channel = ban.guild.channels.cache.get(config.log_mod);
 
   if (!channel || !channel.isTextBased()) {
     // Unknown channel, maybe deleted

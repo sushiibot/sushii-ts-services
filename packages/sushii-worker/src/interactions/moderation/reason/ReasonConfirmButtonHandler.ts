@@ -4,6 +4,8 @@ import Color from "../../../utils/colors";
 import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";
 import { updateModLogReasons } from "./ReasonCommand";
+import { getGuildConfigById } from "../../../model/guild/guildConfig.repository";
+import db from "../../../model/db";
 
 // Button on mod log opens a modal
 export default class ReasonConfirmButtonHandler extends ButtonHandler {
@@ -82,11 +84,9 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
 
     const { caseStartId, caseEndId, reason } = pendingConfirmation;
 
-    const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
-      guildId: interaction.guildId,
-    });
+    const config = await getGuildConfigById(db, interaction.guildId);
 
-    if (!guildConfigById?.logMod) {
+    if (!config?.log_mod) {
       const embed = new EmbedBuilder()
         .setTitle("Error")
         .setDescription("Mod log channel not set")
@@ -104,7 +104,7 @@ export default class ReasonConfirmButtonHandler extends ButtonHandler {
       ctx,
       interaction,
       interaction.guildId,
-      guildConfigById.logMod,
+      config.log_mod,
       interaction.member.user.id,
       [caseStartId, caseEndId],
       reason,

@@ -20,6 +20,8 @@ import { ActionType } from "../ActionType";
 import customIds from "../../customIds";
 import sleep from "../../../utils/sleep";
 import logger from "../../../logger";
+import { getGuildConfigById } from "../../../model/guild/guildConfig.repository";
+import db from "../../../model/db";
 
 enum ReasonError {
   UserFetch,
@@ -273,15 +275,13 @@ export default class ReasonCommand extends SlashCommandHandler {
     const caseRangeStr = interaction.options.getString("case", true);
     const reason = interaction.options.getString("reason", true);
 
-    const { guildConfigById } = await ctx.sushiiAPI.sdk.guildConfigByID({
-      guildId: interaction.guildId,
-    });
+    const config = await getGuildConfigById(db, interaction.guildId);
 
     // No guild config found, ignore
     if (
-      !guildConfigById || // Config not found
-      !guildConfigById.logMod || // No mod log set
-      !guildConfigById.logModEnabled // Mod log disabled
+      !config || // Config not found
+      !config.log_mod || // No mod log set
+      !config.log_mod_enabled // Mod log disabled
     ) {
       return;
     }
@@ -427,7 +427,7 @@ export default class ReasonCommand extends SlashCommandHandler {
       ctx,
       interaction,
       interaction.guildId,
-      guildConfigById.logMod,
+      config.log_mod,
       interaction.member.user.id,
       caseRange,
       reason,
