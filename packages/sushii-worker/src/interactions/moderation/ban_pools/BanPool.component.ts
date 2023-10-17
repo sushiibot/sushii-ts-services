@@ -42,6 +42,21 @@ export enum SettingsCustomId {
   RemoveAction = `${BanPoolShowPage.Settings}_remove_action`,
 }
 
+export const GoBackOverviewCustomId = "go_back_home";
+
+function getBackButtonRow(): ActionRowBuilder<MessageActionRowComponentBuilder> {
+  const row = new ActionRowBuilder<ButtonBuilder>();
+
+  const backButton = new ButtonBuilder()
+    .setCustomId(GoBackOverviewCustomId)
+    .setLabel("Back to pool overview")
+    .setStyle(ButtonStyle.Secondary);
+
+  row.addComponents(backButton);
+
+  return row;
+}
+
 /**
  *
  * @param pool
@@ -316,7 +331,49 @@ export function getSettingsComponents(
 
   menus.push(addAction, removeAction);
 
-  return menus.map((menu) =>
-    new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(menu),
+  const rows: ActionRowBuilder<MessageActionRowComponentBuilder>[] = menus.map(
+    (menu) =>
+      new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(menu),
   );
+
+  // Add back button
+  rows.push(getBackButtonRow());
+
+  return rows;
+}
+
+export function getMembersComponents(): ActionRowBuilder<MessageActionRowComponentBuilder>[] {
+  const rows: ActionRowBuilder<MessageActionRowComponentBuilder>[] = [];
+
+  // TODO: Add block dropdown menu? But more than 25 is not possible
+
+  // Currently only back button
+  rows.push(getBackButtonRow());
+
+  return rows;
+}
+
+export function getInvitesComponents(): ActionRowBuilder<MessageActionRowComponentBuilder>[] {
+  const rows: ActionRowBuilder<MessageActionRowComponentBuilder>[] = [];
+
+  // Currently only back button
+  rows.push(getBackButtonRow());
+
+  return rows;
+}
+
+export function getExpiredComponents(): ActionRowBuilder<MessageActionRowComponentBuilder>[] {
+  const rows: ActionRowBuilder<MessageActionRowComponentBuilder>[] = [];
+
+  const button = new ButtonBuilder()
+    .setLabel("Expired - re-run command")
+    .setCustomId("disabled")
+    .setDisabled(true);
+
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
+
+  // Currently only back button
+  rows.push(row);
+
+  return rows;
 }

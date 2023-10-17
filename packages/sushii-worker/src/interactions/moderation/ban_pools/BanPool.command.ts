@@ -503,10 +503,19 @@ If you want to make a new invite, use \`/banpool invite\``,
         0, // 0 invites, member shouldn't see
       );
 
-      await interaction.reply({
+      const msg = await interaction.reply({
         embeds: [embed],
         components,
       });
+
+      await handleShowMsgInteractions(
+        msg,
+        pool,
+        poolMember,
+        ownerGuildName,
+        memberCount,
+        inviteCount,
+      );
 
       return;
     }
@@ -530,7 +539,14 @@ If you want to make a new invite, use \`/banpool invite\``,
       components,
     });
 
-    await handleShowMsgInteractions(msg, pool, poolMember);
+    await handleShowMsgInteractions(
+      msg,
+      pool,
+      poolMember,
+      null,
+      memberCount,
+      inviteCount,
+    );
   }
 
   async handleDelete(

@@ -3,13 +3,19 @@ import logger from "../../../logger";
 import {
   BanPoolShowMainCustomId,
   BanPoolShowPage,
+  GoBackOverviewCustomId,
   SettingsCustomId,
+  getExpiredComponents,
+  getInvitesComponents,
+  getMembersComponents,
   getSettingsComponents,
+  getShowComponentsMain,
 } from "./BanPool.component";
 import {
   getInvitesEmbed,
   getMembersEmbed,
   getSettingsEmbed,
+  getShowEmbed,
 } from "./BanPool.embed";
 import { BanPoolRow, UpdateableBanPoolRow } from "./BanPool.table";
 import {
@@ -64,7 +70,7 @@ function getCurrentPage(customId: string): BanPoolShowPage {
     }
   }
 
-  throw new Error("Unknown page");
+  throw new Error(`Unknown page with custom ID ${customId}`);
 }
 
 async function handleHome(
@@ -96,12 +102,11 @@ async function handleHome(
       const members = await getAllBanPoolMemberships(db, pool.guild_id);
 
       const embed = getMembersEmbed(pool, members, getGuildNameFn);
-      // TODO: Components
-      // const components = getMembersComponents(pool, poolMember);
+      const components = getMembersComponents();
 
       await interaction.update({
         embeds: [embed],
-        components: [],
+        components,
       });
 
       break;
@@ -114,11 +119,11 @@ async function handleHome(
       );
 
       const embed = getInvitesEmbed(pool, invites);
-      // TODO: Components to delete
+      const components = getInvitesComponents();
 
       await interaction.update({
         embeds: [embed],
-        components: [],
+        components,
       });
 
       break;
@@ -246,10 +251,42 @@ async function handleInvites(
   });
 }
 
+async function handleGoHome(
+  interaction: Interaction<"cached">,
+  pool: BanPoolRow,
+  poolMember: BanPoolMemberRow | null,
+  ownerGuildName: string | null,
+  memberCount: number,
+  inviteCount: number,
+): Promise<void> {
+  if (!interaction.isButton()) {
+    throw new Error("Expected button interaction");
+  }
+
+  const isOwner = poolMember === null;
+
+  const embed = getShowEmbed(
+    pool,
+    isOwner,
+    ownerGuildName,
+    memberCount,
+    inviteCount,
+  );
+  const components = getShowComponentsMain(isOwner, memberCount, inviteCount);
+
+  await interaction.update({
+    embeds: [embed],
+    components,
+  });
+}
+
 export async function handleShowMsgInteractions(
   msg: InteractionResponse<true>,
   pool: BanPoolRow,
   poolMember: BanPoolMemberRow | null,
+  ownerGuildName: string | null,
+  memberCount: number,
+  inviteCount: number,
 ): Promise<void> {
   const collector = msg.createMessageComponentCollector({
     idle: 2 * 60 * 1000, // 2 minutes
@@ -257,6 +294,19 @@ export async function handleShowMsgInteractions(
 
   collector.on("collect", async (interaction) => {
     try {
+      // Home button is always available and the same on non-home pages
+      if (interaction.customId === GoBackOverviewCustomId) {
+        await handleGoHome(
+          interaction,
+          pool,
+          poolMember,
+          ownerGuildName,
+          memberCount,
+          inviteCount,
+        );
+        return;
+      }
+
       // Check which page we're on
       const currentPage = getCurrentPage(interaction.customId);
 
@@ -293,9 +343,10 @@ export async function handleShowMsgInteractions(
     collector.on("end", async () => {
       try {
         // TODO: Disable components instead of removing
+        const components = getExpiredComponents();
 
         await msg.edit({
-          components: [],
+          components,
         });
 
         resolve();
