@@ -101,7 +101,9 @@ export default class BanPoolCommand extends SlashCommandHandler {
     .addSubcommand((c) =>
       c
         .setName(BanPoolOptionCommand.Show)
-        .setDescription("Show details of a specific ban pool.")
+        .setDescription(
+          "Show settings, members, and invites of a specific ban pool.",
+        )
         .addStringOption((o) =>
           o
             .setName(BanPoolOption.PoolName)
