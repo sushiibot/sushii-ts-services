@@ -44,6 +44,22 @@ export function getAllGuildBanPools(
 }
 
 /**
+ * Get the number of owned pools a guild has
+ */
+export async function getGuildBanPoolCount(
+  db: Kysely<DB>,
+  guildId: string,
+): Promise<number> {
+  const { count } = await db
+    .selectFrom("app_public.ban_pools")
+    .select((eb) => eb.fn.countAll<number>().as("count"))
+    .where("guild_id", "=", guildId)
+    .executeTakeFirstOrThrow();
+
+  return count;
+}
+
+/**
  * Search for ban pools by name
  *
  * @param guildId guild ID of the ban pools

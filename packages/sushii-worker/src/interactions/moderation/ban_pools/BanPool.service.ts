@@ -1,9 +1,7 @@
 import { EmbedBuilder, Guild } from "discord.js";
 import dayjs from "dayjs";
-import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import db from "../../../model/db";
 import Color from "../../../utils/colors";
-import { DB } from "../../../model/dbTypes";
 import {
   BanPoolError,
   guildUnavailableEmbed,
@@ -14,8 +12,10 @@ import {
   joinPoolAlreadyMemberEmbed,
   notFoundBasic,
   notFoundWithIDEmbed,
+  ownedPoolLimitReachedEmbed,
 } from "./errors";
 import {
+  getGuildBanPoolCount,
   getPoolByNameAndGuildId,
   getPoolByNameOrIdAndGuildId,
   insertPool,
@@ -36,15 +36,27 @@ import { BanPoolRow } from "./BanPool.table";
 import { BanPoolMemberRow } from "./BanPoolMember.table";
 import { generateInvite } from "./BanPoolInvite.service";
 
+const GUILD_MAX_OWNED_POOLS = 10;
+
 export async function createPool(
   poolName: string,
   guildId: string,
   creatorId: string,
   description: string | null,
 ): Promise<{
-  pool: AllSelection<DB, "app_public.ban_pools">;
+  pool: BanPoolRow;
+  member: BanPoolMemberRow;
   inviteCode: string;
 }> {
+  const guildPoolCount = await getGuildBanPoolCount(db, guildId);
+  if (guildPoolCount >= GUILD_MAX_OWNED_POOLS) {
+    throw new BanPoolError(
+      "POOL_OWN_COUNT_LIMIT_REACHED",
+      "Too many ban pools",
+      ownedPoolLimitReachedEmbed,
+    );
+  }
+
   const existingPool = await getPoolByNameAndGuildId(db, poolName, guildId);
 
   if (existingPool) {
@@ -60,12 +72,29 @@ export async function createPool(
     );
   }
 
-  const pool = await insertPool(db, {
-    pool_name: poolName,
-    description,
-    guild_id: guildId,
-    creator_id: creatorId,
+  // Insert BOTH pool and pool member
+  let pool: BanPoolRow | undefined;
+  let member: BanPoolMemberRow | undefined;
+  await db.transaction().execute(async (tx) => {
+    pool = await insertPool(tx, {
+      pool_name: poolName,
+      description,
+      guild_id: guildId,
+      creator_id: creatorId,
+    });
+
+    member = await insertBanPoolMember(tx, {
+      member_guild_id: guildId,
+      owner_guild_id: guildId,
+      pool_name: poolName,
+      permission: "owner",
+    });
   });
+
+  // Tx awaited so it should be set
+  if (!pool || !member) {
+    throw new Error("this shouldn't happen but it probably will lol");
+  }
 
   const inviteCode = generateInvite();
 
@@ -79,6 +108,7 @@ export async function createPool(
 
   return {
     pool,
+    member,
     inviteCode,
   };
 }
@@ -88,7 +118,7 @@ export async function joinPool(
   guildId: string,
   getOwnerGuild: (guildId: string) => Guild | undefined,
 ): Promise<{
-  pool: AllSelection<DB, "app_public.ban_pools">;
+  pool: BanPoolRow;
   guild: Guild;
 }> {
   const invite = await getBanPoolInviteByCode(db, inviteCode);
@@ -189,7 +219,7 @@ export async function showPool(
   guildId: string,
 ): Promise<{
   pool: BanPoolRow;
-  poolMember: BanPoolMemberRow | null;
+  poolMember: BanPoolMemberRow;
   memberCount: number;
   inviteCount: number;
 }> {
@@ -202,20 +232,12 @@ export async function showPool(
     );
   }
 
-  // Make sure this server is allowed to view it, either owner or member
-  let canView = pool.guild_id === guildId;
+  // Owner is still a member - only null if not owner OR not member
+  const poolMember = await getBanPoolMember(db, guildId, pool);
 
-  // Not owner, check if member
-  let poolMember = null;
-  if (!canView) {
-    const r = await getBanPoolMember(db, guildId, pool);
-    poolMember = r || null;
-
-    // If member was found
-    canView = poolMember !== null;
-  }
-
-  if (!canView) {
+  // No member, not allowed to view
+  // TODO: Probably separate blocked to a different table ?
+  if (!poolMember || poolMember.permission === "blocked") {
     throw new BanPoolError(
       "POOL_NOT_FOUND",
       "Ban pool not found",
@@ -230,7 +252,7 @@ export async function showPool(
   );
 
   let inviteCount = 0;
-  // Only fetch count if owner
+  // Only fetch invite count if owner
   if (!poolMember) {
     inviteCount = await getBanPoolInviteCount(
       db,

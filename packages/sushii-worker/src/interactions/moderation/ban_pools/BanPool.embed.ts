@@ -64,7 +64,7 @@ export function getShowEmbed(
 
 export function getSettingsEmbed(
   pool: BanPoolRow,
-  poolMember: BanPoolMemberRow | null,
+  poolMember: BanPoolMemberRow,
   settings: BanPoolGuildSettingsRow | null,
 ): EmbedBuilder {
   return new EmbedBuilder()
@@ -72,7 +72,7 @@ export function getSettingsEmbed(
     .setAuthor({
       name: pool.pool_name,
     })
-    .setDescription(buildPoolSettingsString(pool, poolMember, settings))
+    .setDescription(buildPoolSettingsString(poolMember, settings))
     .setColor(Color.Info);
 }
 

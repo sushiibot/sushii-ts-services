@@ -17,14 +17,14 @@ import {
   getSettingsEmbed,
   getShowEmbed,
 } from "./BanPool.embed";
-import { BanPoolRow, UpdateableBanPoolRow } from "./BanPool.table";
+import { BanPoolRow } from "./BanPool.table";
 import {
   BanPoolMemberRow,
   UpdateableBanPoolMemberRow,
 } from "./BanPoolMember.table";
 import {
   getAllBanPoolMemberships,
-  getBanPoolMembers,
+  getBanPoolAllMembers,
   updateBanPoolMember,
 } from "./BanPoolMember.repository";
 import db from "../../../model/db";
@@ -76,7 +76,7 @@ function getCurrentPage(customId: string): BanPoolShowPage {
 async function handleHome(
   interaction: Interaction<"cached">,
   pool: BanPoolRow,
-  poolMember: BanPoolMemberRow | null,
+  poolMember: BanPoolMemberRow,
 ): Promise<void> {
   if (!interaction.isButton()) {
     throw new Error("Expected button interaction");
@@ -137,7 +137,7 @@ async function handleHome(
 async function handleSettings(
   interaction: Interaction<"cached">,
   pool: BanPoolRow,
-  poolMember: BanPoolMemberRow | null,
+  poolMember: BanPoolMemberRow,
 ): Promise<void> {
   // Only select menus are allowed
   // TODO: If we add a button to go back, update this
@@ -145,7 +145,7 @@ async function handleSettings(
     throw new Error("Expected select menu interaction");
   }
 
-  const update: UpdateableBanPoolMemberRow | UpdateableBanPoolRow = {};
+  const update: UpdateableBanPoolMemberRow = {};
 
   // Get the action and set the new value
   // Limited to 1 option, min and max
@@ -217,7 +217,7 @@ async function handleMembers(
     throw new Error("Expected button interaction");
   }
 
-  const members = await getBanPoolMembers(db, pool.pool_name, pool.guild_id);
+  const members = await getBanPoolAllMembers(db, pool.pool_name, pool.guild_id);
 
   const embed = getMembersEmbed(
     pool,
@@ -283,7 +283,7 @@ async function handleGoHome(
 export async function handleShowMsgInteractions(
   msg: InteractionResponse<true>,
   pool: BanPoolRow,
-  poolMember: BanPoolMemberRow | null,
+  poolMember: BanPoolMemberRow,
   ownerGuildName: string | null,
   memberCount: number,
   inviteCount: number,

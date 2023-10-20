@@ -282,7 +282,7 @@ export default class BanPoolCommand extends SlashCommandHandler {
       BanPoolOption.Description,
     );
 
-    let pool;
+    let member;
     let inviteCode;
     try {
       const res = await createPool(
@@ -292,7 +292,7 @@ export default class BanPoolCommand extends SlashCommandHandler {
         description,
       );
 
-      pool = res.pool;
+      member = res.member;
       inviteCode = res.inviteCode;
     } catch (err) {
       if (err instanceof BanPoolError) {
@@ -327,7 +327,7 @@ If you want to make a new invite, use \`/banpool invite\``,
         {
           name: "Settings",
           // no member
-          value: buildPoolSettingsString(pool, null, guildSettings || null),
+          value: buildPoolSettingsString(member, guildSettings || null),
           inline: false,
         },
       )

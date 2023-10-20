@@ -5,13 +5,11 @@ export type AppPublicBanPoolAddAction = "ask" | "ban" | "nothing" | "timeout_and
 
 export type AppPublicBanPoolAddMode = "all_bans" | "manual" | "nothing";
 
-export type AppPublicBanPoolPermission = "blocked" | "edit" | "view";
+export type AppPublicBanPoolPermission = "blocked" | "edit" | "owner" | "view";
 
 export type AppPublicBanPoolRemoveAction = "ask" | "nothing" | "unban";
 
 export type AppPublicBanPoolRemoveMode = "all_unbans" | "manual" | "nothing";
-
-export type AppPublicBanPoolVisibility = "private" | "public";
 
 export type AppPublicBlockType = "channel" | "role";
 
@@ -344,11 +342,6 @@ export interface AppPublicBanPools {
   pool_name: string;
   description: string | null;
   creator_id: Int8;
-  add_mode: Generated<AppPublicBanPoolAddMode>;
-  remove_mode: Generated<AppPublicBanPoolRemoveMode>;
-  add_action: Generated<AppPublicBanPoolAddAction>;
-  remove_action: Generated<AppPublicBanPoolRemoveAction>;
-  visibility: Generated<AppPublicBanPoolVisibility>;
   created_at: Generated<Timestamp>;
   updated_at: Generated<Timestamp>;
 }

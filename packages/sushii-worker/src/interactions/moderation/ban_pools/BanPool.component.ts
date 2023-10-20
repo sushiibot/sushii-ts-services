@@ -345,8 +345,6 @@ export function getSettingsComponents(
 export function getMembersComponents(): ActionRowBuilder<MessageActionRowComponentBuilder>[] {
   const rows: ActionRowBuilder<MessageActionRowComponentBuilder>[] = [];
 
-  // TODO: Add block dropdown menu? But more than 25 is not possible
-
   // Currently only back button
   rows.push(getBackButtonRow());
 

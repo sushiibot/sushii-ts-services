@@ -1,8 +1,6 @@
 import SushiiEmoji from "../../../constants/SushiiEmoji";
-import { BanPoolRow } from "./BanPool.table";
 import { BanPoolMemberRow } from "./BanPoolMember.table";
 import { BanPoolGuildSettingsRow } from "./GuildSettings.table";
-import { getTruePoolSettings } from "./util";
 
 /**
  * Get the corresponding emoji for the current radio button
@@ -18,11 +16,10 @@ export function getRadioButton<T>(selectedValue: T, choiceValue: T): string {
 }
 
 export function buildPoolSettingsString(
-  pool: BanPoolRow,
-  poolMember: BanPoolMemberRow | null,
+  poolMember: BanPoolMemberRow,
   settings: BanPoolGuildSettingsRow | null,
 ): string {
-  const trueSettings = getTruePoolSettings(pool, poolMember);
+  const member = poolMember;
 
   // Ignore blocked members
   if (poolMember && poolMember.permission === "blocked") {
@@ -53,15 +50,15 @@ Use `/banpool settings` to set one.";
   }
 
   let permissionStr;
-  if (poolMember) {
-    switch (poolMember.permission) {
+  if (member) {
+    switch (member.permission) {
       case "view":
         permissionStr = "Viewer";
 
         // TODO: Ensure view permissions is shown as nothing and can't edit these
         // Display something better instead of just showing as nothing
-        trueSettings.addMode = "nothing";
-        trueSettings.removeMode = "nothing";
+        member.add_mode = "nothing";
+        member.remove_mode = "nothing";
         break;
       case "edit":
         permissionStr = "Editor (add / remove bans)";
@@ -78,7 +75,7 @@ Use `/banpool settings` to set one.";
 
   let modeSection = "__**Ban / Unban in THIS server**__";
 
-  if (poolMember && poolMember.permission === "view") {
+  if (member && member.permission === "view") {
     modeSection += "\n";
     modeSection +=
       "These settings are disabled because you aren't a pool editor. \
@@ -93,17 +90,17 @@ ask the pool owner.";
 
   addModeStr += [
     "> ",
-    getRadioButton(trueSettings.addMode, "all_bans"),
+    getRadioButton(member.add_mode, "all_bans"),
     " Automatically add to pool",
     "\n",
 
     "> ",
-    getRadioButton(trueSettings.addMode, "manual"),
+    getRadioButton(member.add_mode, "manual"),
     " Ask to add to pool",
     "\n",
 
     "> ",
-    getRadioButton(trueSettings.addMode, "nothing"),
+    getRadioButton(member.add_mode, "nothing"),
     " Do nothing",
     "\n",
   ].join("");
@@ -115,17 +112,17 @@ ask the pool owner.";
 
   removeModeStr += [
     "> ",
-    getRadioButton(trueSettings.removeMode, "all_unbans"),
+    getRadioButton(member.remove_mode, "all_unbans"),
     " Automatically remove from pool",
     "\n",
 
     "> ",
-    getRadioButton(trueSettings.removeMode, "manual"),
+    getRadioButton(member.remove_mode, "manual"),
     " Ask to remove from pool",
     "\n",
 
     "> ",
-    getRadioButton(trueSettings.removeMode, "nothing"),
+    getRadioButton(member.remove_mode, "nothing"),
     " Do nothing",
     "\n",
   ].join("");
@@ -143,22 +140,22 @@ ask the pool owner.";
 
   addActionStr += [
     "> ",
-    getRadioButton(trueSettings.addAction, "ban"),
+    getRadioButton(member.add_action, "ban"),
     " Automatically ban",
     "\n",
 
     "> ",
-    getRadioButton(trueSettings.addAction, "timeout_and_ask"),
+    getRadioButton(member.add_action, "timeout_and_ask"),
     " Timeout user and ask what to do", // TODO: In alerts channel
     "\n",
 
     "> ",
-    getRadioButton(trueSettings.addAction, "ask"),
+    getRadioButton(member.add_action, "ask"),
     " Ask what to do", // TODO: In alerts channel
     "\n",
 
     "> ",
-    getRadioButton(trueSettings.addAction, "nothing"),
+    getRadioButton(member.add_action, "nothing"),
     " Do nothing",
     "\n",
   ].join("");
@@ -170,17 +167,17 @@ ask the pool owner.";
 
   removeActionStr += [
     "> ",
-    getRadioButton(trueSettings.removeAction, "unban"),
+    getRadioButton(member.remove_action, "unban"),
     " Automatically unban",
     "\n",
 
     "> ",
-    getRadioButton(trueSettings.removeAction, "ask"),
+    getRadioButton(member.remove_action, "ask"),
     " Ask what to do",
     "\n",
 
     "> ",
-    getRadioButton(trueSettings.removeAction, "nothing"),
+    getRadioButton(member.remove_action, "nothing"),
     " Do nothing",
     "\n",
   ].join("");

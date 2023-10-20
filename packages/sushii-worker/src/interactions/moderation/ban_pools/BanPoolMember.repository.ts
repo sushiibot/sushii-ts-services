@@ -58,7 +58,7 @@ function getAllBanPoolMembershipsQuery(
 }
 
 /**
- * Get all ban pool memberships for a guild
+ * Get all ban pool memberships for a guild. Does not include owned pools.
  *
  * @param guildId guild ID of the ban pool members
  * @returns all ban pool memberships for a guild
@@ -112,7 +112,7 @@ export function updateBanPoolMember(
     .executeTakeFirstOrThrow();
 }
 
-export function getBanPoolMembers(
+export function getBanPoolAllMembers(
   db: Kysely<DB>,
   poolName: string,
   guildId: string,

@@ -10,6 +10,7 @@ type ErrorType =
   | "POOL_ALREADY_EXISTS"
   | "POOL_ALREADY_MEMBER"
   | "CANNOT_JOIN_OWN_POOL"
+  | "POOL_OWN_COUNT_LIMIT_REACHED"
   | "GUILD_UNAVAILABLE";
 
 export const notFoundBasic = new EmbedBuilder()
@@ -61,6 +62,13 @@ Use this code on another server, or join pools created by other servers if they 
 export const joinPoolAlreadyMemberEmbed = new EmbedBuilder()
   .setTitle("Failed to join pool")
   .setDescription("You are already a member of this ban pool.")
+  .setColor(Color.Error);
+
+export const ownedPoolLimitReachedEmbed = new EmbedBuilder()
+  .setTitle("Too many ban pools")
+  .setDescription(
+    "You can only have up to 10 ban pools per server. Delete one to create a new one.",
+  )
   .setColor(Color.Error);
 
 export const guildUnavailableEmbed = new EmbedBuilder()
