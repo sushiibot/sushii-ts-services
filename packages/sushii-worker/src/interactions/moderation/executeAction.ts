@@ -33,6 +33,7 @@ function buildResponseEmbed(
   action: ActionType,
   content: string,
   triedDMNonMemberCount: number,
+  failedDMCount: number,
 ): EmbedBuilder {
   const fields = [];
 
@@ -67,7 +68,10 @@ function buildResponseEmbed(
   if (![ActionType.BanRemove, ActionType.Note].includes(action)) {
     let userDMValue;
 
-    if (data.shouldDMReason(action)) {
+    if (data.targets.size === failedDMCount) {
+      userDMValue =
+        "❌ Failed to DM reason to users, likely due to their privacy settings.";
+    } else if (data.shouldDMReason(action)) {
       userDMValue = "📬 Reason sent to member in DMs";
     }
 
@@ -272,7 +276,8 @@ async function execActionUser(
 
 interface ExecuteActionUserResult {
   user: User;
-  dmSent: boolean;
+  shouldDM: boolean;
+  failedDM: boolean;
   triedDMNonMember: boolean;
 }
 
@@ -402,7 +407,8 @@ async function executeActionUser(
 
   return Ok({
     user: target.user,
-    dmSent: shouldDM,
+    shouldDM,
+    failedDM: dmRes?.err || false,
     triedDMNonMember,
   });
 }
@@ -421,6 +427,8 @@ export default async function executeAction(
 
   // If executor wants to DM, but target is not a member
   let triedDMNonMemberCount = 0;
+  // If executor wants to DM, but failed to send DM probably cuz of privacy settings
+  let failedDMCount = 0;
 
   for (const [, target] of data.targets) {
     // Should be synchronous so we don't reuse the same case ID
@@ -438,8 +446,11 @@ export default async function executeAction(
     } else {
       msg += `${ActionType.toEmoji(actionType)} `;
 
-      // Add emoji if DM was send to user
-      if (res.val.dmSent) {
+      if (res.val.failedDM) {
+        msg += "❌ ";
+        failedDMCount += 1;
+      } else if (res.val.shouldDM) {
+        // Add emoji if DM was send to user
         msg += "📬 ";
       }
 
@@ -453,6 +464,13 @@ export default async function executeAction(
   }
 
   return Ok(
-    buildResponseEmbed(ctx, data, actionType, msg, triedDMNonMemberCount),
+    buildResponseEmbed(
+      ctx,
+      data,
+      actionType,
+      msg,
+      triedDMNonMemberCount,
+      failedDMCount,
+    ),
   );
 }
