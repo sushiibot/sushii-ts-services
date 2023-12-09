@@ -1,0 +1,21 @@
+{
+  "name": "sushii-db",
+  "version": "1.0.0",
+  "description": "sushii2 PostgreSQL database migrations",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "migrate": "bun run graphile-migrate migrate",
+    "watch": "bun run graphile-migrate watch",
+    "commit": "bun run graphile-migrate commit",
+    "uncommit": "bun x graphile-migrate uncommit",
+    "reset": "bun x graphile-migrate reset",
+    "dump": "bun x graphile-migrate migrate && bun x graphile-migrate reset --shadow && bun x graphile-migrate migrate --shadow --force"
+  },
+  "dependencies": {
+    "graphile-migrate": "^1.4.0"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^6.0.0"
+  }
+}
