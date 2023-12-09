@@ -1,20 +1,23 @@
-FROM node:18-bullseye
+FROM oven/bun:1-debian
 
 WORKDIR /config
 
-COPY ./package.json ./yarn.lock .yarnrc.yml ./
-COPY .yarn ./.yarn
+COPY ./package.json ./bun.lockb ./
 
+# Copy all packages.jsons to cache dependencies and so lockfile matches
 COPY ./packages/sushii-worker/package.json ./packages/sushii-worker/
 COPY ./packages/sushii-data/package.json ./packages/sushii-data/
-RUN yarn install --immutable
+COPY ./packages/sushii-db/package.json ./packages/sushii-db/
+
+# Install dependencies, this is gonna be more than needed but lockfile idk
+# TODO: Prevent need of copying all package.jsons
+RUN bun install --frozen-lockfile --production
 
 COPY . ./
-RUN yarn workspace @sushiibot/sushii-worker build
 
 # Not yet used
 EXPOSE 8080
 
 WORKDIR /config/packages/sushii-worker
 
-ENTRYPOINT [ "node", "./dist/index.js" ]
+ENTRYPOINT [ "bun", "run", "./src/index.ts" ]
