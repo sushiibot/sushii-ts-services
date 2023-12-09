@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - packages/sushii-worker/**
+      - .github/workflows/ci_worker.yml
   pull_request:
     branches: [ main ]
 
