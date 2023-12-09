@@ -27,7 +27,7 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
       redis:
-        image: eqalpha/keydb:latest
+        image: redis:latest
         ports:
           - 6379:6379
     steps:
@@ -59,7 +59,7 @@ jobs:
           bun gm compile ./migrations/afterReset.sql | psql postgresql://postgres:postgres@localhost:5432/postgres
 
       - name: Run sushii-db migrations
-        working-directory: ./sushii-db
+        working-directory: ./packages/sushii-db
         run: bun migrate
 
       - name: Start sushii-data
