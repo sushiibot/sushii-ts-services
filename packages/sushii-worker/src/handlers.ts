@@ -29,6 +29,7 @@ import {
   emojiStatsReactHandler,
   emojiAndStickerStatsReadyHandler,
 } from "./events/EmojiStatsHandler";
+import { banPoolOnBanHandler } from "./events/ban_pool/BanPoolHandler";
 
 const tracer = opentelemetry.trace.getTracer("event-handler");
 
@@ -95,12 +96,15 @@ export default function registerEventHandlers(
     await webhookLog("Ready", `Logged in as ${c.user.tag}`, Color.Success);
 
     await tracer.startActiveSpan(Events.ClientReady, async (span: Span) => {
-      await handleEvent(
-        ctx,
-        Events.ClientReady,
-        [banReadyHandler, emojiAndStickerStatsReadyHandler],
-        client,
-      );
+      // Check to make Client<true> instead of Client<bool>
+      if (client.isReady()) {
+        await handleEvent(
+          ctx,
+          Events.ClientReady,
+          [banReadyHandler, emojiAndStickerStatsReadyHandler],
+          client,
+        );
+      }
 
       span.end();
     });
@@ -235,7 +239,7 @@ export default function registerEventHandlers(
       await handleEvent(
         ctx,
         Events.GuildBanAdd,
-        [legacyModLogNotifierHandler, banCacheBanHandler],
+        [legacyModLogNotifierHandler, banCacheBanHandler, banPoolOnBanHandler],
         guildBan,
       );
 

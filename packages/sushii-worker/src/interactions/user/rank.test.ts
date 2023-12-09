@@ -1,3 +1,4 @@
+import { describe, expect, test } from "bun:test";
 import UserLevelProgress from "./rank.entity";
 
 describe("UserLevelProgress", () => {

@@ -1,4 +1,5 @@
 import { GatewayDispatchEvents } from "discord.js";
+import { describe, expect, test } from "bun:test";
 import { isChannelIgnored } from "./msglog/MsgLogHandler";
 
 describe("MsgLogHandler", () => {

@@ -370,7 +370,6 @@ export function getExpiredComponents(): ActionRowBuilder<MessageActionRowCompone
 
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
 
-  // Currently only back button
   rows.push(row);
 
   return rows;

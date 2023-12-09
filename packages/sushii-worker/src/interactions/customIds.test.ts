@@ -1,3 +1,4 @@
+import { describe, expect, test } from "bun:test";
 import customIds from "./customIds";
 
 describe("customIds", () => {
@@ -29,7 +30,12 @@ describe("customIds", () => {
       },
     ])("roleMenuButtonMatch($customID)", ({ customID, wantMatch }) => {
       test(`matches role menu button ${customID}`, () => {
-        expect(customIds.roleMenuButton.match(customID)).toEqual(wantMatch);
+        const match = customIds.roleMenuButton.match(customID);
+        if (!match) {
+          expect(wantMatch).toBeFalse();
+        } else {
+          expect().toEqual(wantMatch);
+        }
       });
 
       test(`menu button compile matches ${customID}`, () => {

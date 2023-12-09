@@ -1,3 +1,4 @@
+import { describe, expect, test } from "bun:test";
 import { CaseSpec, parseCaseId } from "./caseId";
 
 describe("parseCaseId", () => {
@@ -99,7 +100,12 @@ describe("parseCaseId", () => {
     },
   ])("parseCaseId($giveStrValue)", ({ giveStrValue, wantCaseSpec }) => {
     test("should return the correct CaseSpec", () => {
-      expect(parseCaseId(giveStrValue)).toEqual(wantCaseSpec);
+      const parsed = parseCaseId(giveStrValue);
+      if (!wantCaseSpec) {
+        expect(parsed).toBeUndefined();
+      } else {
+        expect(parsed).toEqual(wantCaseSpec);
+      }
     });
   });
 });

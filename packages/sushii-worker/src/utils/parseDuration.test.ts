@@ -1,6 +1,7 @@
 import "../dayjs";
 
 import dayjs from "dayjs";
+import { describe, expect, test } from "bun:test";
 import parseDuration from "./parseDuration";
 
 describe("parseDuration", () => {
@@ -31,14 +32,16 @@ describe("parseDuration", () => {
       test(`parses custom ID ${durationString}`, () => {
         const dur = parseDuration(durationString);
 
-        if (dur === null) {
-          expect(dur).toEqual(expectedDuration);
+        if (expectedDuration === null) {
+          expect(dur).toBeNull();
         } else {
+          expect(dur).not.toBeNull();
+
           if (expectedDuration === null) {
             throw new Error("duration is not null but expected null");
           }
 
-          expect(dur.milliseconds()).toEqual(expectedDuration.milliseconds());
+          expect(dur!.milliseconds()).toEqual(expectedDuration.milliseconds());
         }
       });
     },

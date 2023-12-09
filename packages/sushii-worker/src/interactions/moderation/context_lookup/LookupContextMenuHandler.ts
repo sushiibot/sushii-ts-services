@@ -43,7 +43,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
       PermissionFlagsBits.BanMembers,
     );
 
-    const embed = await getUserinfoEmbed(targetUser, targetMember);
+    const embed = await getUserinfoEmbed(targetUser, targetMember || undefined);
 
     if (!isModerator) {
       await interaction.reply({

@@ -5,7 +5,7 @@
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "test": "vitest",
-    "build": "tsc --skipLibCheck",
+    "typecheck": "tsc --skipLibCheck",
     "start": "bun run ./src/index.ts",
     "build:graphql": "graphql-codegen --config codegen.yml",
     "codegen:pg": "kysely-codegen --out-file ./src/model/dbTypes.ts",
