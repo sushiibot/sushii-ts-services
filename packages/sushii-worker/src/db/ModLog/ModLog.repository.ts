@@ -27,3 +27,48 @@ export function getUserModLogHistory(
     .where("user_id", "=", userId)
     .execute();
 }
+
+/**
+ * Fetch all mod logs that start with the provided case id digits
+ */
+export function searchModLogsByIDPrefix(
+  db: Kysely<DB>,
+  {
+    guildId,
+    searchCaseId,
+    maxResults = 25,
+  }: {
+    guildId: string;
+    searchCaseId: number;
+    maxResults?: number;
+  },
+): Promise<ModLogRow[]> {
+  return db
+    .selectFrom("app_public.mod_logs")
+    .selectAll()
+    .where("guild_id", "=", guildId)
+    .where("case_id", "like", `${searchCaseId}%`)
+    .orderBy("case_id", "desc")
+    .limit(maxResults)
+    .execute();
+}
+
+/**
+ * Fetch mod logs with highest case id
+ *
+ * @param db
+ * @param param1
+ * @returns
+ */
+export function getRecentModLogs(
+  db: Kysely<DB>,
+  { guildId, maxResults = 25 }: { guildId: string; maxResults?: number },
+): Promise<ModLogRow[]> {
+  return db
+    .selectFrom("app_public.mod_logs")
+    .selectAll()
+    .where("guild_id", "=", guildId)
+    .orderBy("case_id", "desc")
+    .limit(maxResults)
+    .execute();
+}
