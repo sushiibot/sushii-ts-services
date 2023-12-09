@@ -1,15 +1,15 @@
 import { EmbedBuilder } from "discord.js";
 import dayjs from "dayjs";
 import { t } from "i18next";
-import { GetUserModLogHistoryQuery } from "../../../generated/graphql";
 import Color from "../../../utils/colors";
 import { ActionType } from "../ActionType";
+import { ModLogRow } from "../../../db/ModLog/ModLog.table";
 
 export default function buildUserHistoryEmbed(
-  query: GetUserModLogHistoryQuery,
+  modLogs: ModLogRow[],
   format: "context_menu" | "command",
 ): EmbedBuilder {
-  const count = query.allModLogs?.nodes.length || 0;
+  const count = modLogs.length || 0;
 
   let embed = new EmbedBuilder()
     .setTitle(
@@ -26,11 +26,11 @@ export default function buildUserHistoryEmbed(
   }
 
   // No description
-  if (!query.allModLogs?.nodes || query.allModLogs?.nodes.length === 0) {
+  if (modLogs.length === 0) {
     return embed;
   }
 
-  const summary = query.allModLogs.nodes.reduce((m, item) => {
+  const summary = modLogs.reduce((m, item) => {
     const oldCount = m.get(item.action) || 0;
     m.set(item.action, oldCount + 1);
 
@@ -42,7 +42,7 @@ export default function buildUserHistoryEmbed(
   );
 
   // Build case history
-  const casesStr = query.allModLogs.nodes.map((c) => {
+  const casesStr = modLogs.map((c) => {
     const action = ActionType.fromString(c.action);
 
     // Emoji
@@ -51,12 +51,12 @@ export default function buildUserHistoryEmbed(
     // Timestamp
     let s =
       `${ActionType.toEmoji(action)} ` +
-      `\`#${c.caseId}\` - ` +
+      `\`#${c.case_id}\` - ` +
       `**${ActionType.toString(action)}** ` +
-      `<t:${dayjs.utc(c.actionTime).unix()}:R> `;
+      `<t:${dayjs.utc(c.action_time).unix()}:R> `;
 
-    if (c.reason && c.executorId) {
-      s += `\n┣ **By:** <@${c.executorId}>`;
+    if (c.reason && c.executor_id) {
+      s += `\n┣ **By:** <@${c.executor_id}>`;
     }
 
     if (c.reason) {

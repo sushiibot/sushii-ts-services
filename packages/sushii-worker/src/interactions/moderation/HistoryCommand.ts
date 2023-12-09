@@ -8,6 +8,8 @@ import Context from "../../model/context";
 import timestampToUnixTime from "../../utils/timestampToUnixTime";
 import { SlashCommandHandler } from "../handlers";
 import buildUserHistoryEmbed from "./formatters/history";
+import { getUserModLogHistory } from "../../db/ModLog/ModLog.repository";
+import db from "../../model/db";
 
 export default class HistoryCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -41,8 +43,8 @@ export default class HistoryCommand extends SlashCommandHandler {
       throw new Error("no user provided");
     }
 
-    const cases = await ctx.sushiiAPI.sdk.getUserModLogHistory({
-      guildId: interaction.guildId,
+    const cases = await getUserModLogHistory(db, {
+      guildId: interaction.guild.id,
       userId: user.id,
     });
 
