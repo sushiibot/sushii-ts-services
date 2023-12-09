@@ -5,12 +5,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "migrate": "bun run graphile-migrate migrate",
-    "watch": "bun run graphile-migrate watch",
-    "commit": "bun run graphile-migrate commit",
-    "uncommit": "bun x graphile-migrate uncommit",
-    "reset": "bun x graphile-migrate reset",
-    "dump": "bun x graphile-migrate migrate && bun x graphile-migrate reset --shadow && bun x graphile-migrate migrate --shadow --force"
+    "gm": "bun run graphile-migrate",
+    "migrate": "bun run gm migrate",
+    "watch": "bun run gm watch",
+    "commit": "bun run gm commit",
+    "uncommit": "bun run gm uncommit",
+    "reset": "bun run gm reset",
+    "dump": "bun run gm migrate && bun run gm reset --shadow && bun run gm migrate --shadow --force"
   },
   "dependencies": {
     "graphile-migrate": "^1.4.0"
