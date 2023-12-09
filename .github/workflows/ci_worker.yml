@@ -37,31 +37,30 @@ jobs:
         with:
           node-version: 16
 
-      - name: Install sushii-worker dependencies
-        run: yarn install --immutable
-      - name: Build sushii-worker
-        run: yarn workspace @sushiibot/sushii-worker build
-
-      - name: Checkout sushii-db migrations
-        uses: actions/checkout@v3
+      - uses: oven-sh/setup-bun@v1
         with:
-          repository: sushiibot/sushii-db
-          path: ./sushii-db
+          bun-version: latest
+
+      - name: Install sushii-worker dependencies
+        run: bun install --immutable
+
+      - name: Typecheck sushii-worker
+        run: cd packages/sushii-worker && bun run typecheck
 
       - name: Install sushii-db dependencies
-        working-directory: ./sushii-db
-        run: yarn install
+        working-directory: ./packages/sushii-db
+        run: bun install
 
       - name: Initialize database
-        working-directory: ./sushii-db
+        working-directory: ./packages/sushii-db
         run: |
           cp .env.ci .env
-          yarn dotenv -- yarn gm compile ./init.sql | psql postgresql://postgres:postgres@localhost:5432/postgres
-          yarn dotenv -- yarn gm compile ./migrations/afterReset.sql | psql postgresql://postgres:postgres@localhost:5432/postgres
+          bun gm compile ./init.sql | psql postgresql://postgres:postgres@localhost:5432/postgres
+          bun gm compile ./migrations/afterReset.sql | psql postgresql://postgres:postgres@localhost:5432/postgres
 
       - name: Run sushii-db migrations
         working-directory: ./sushii-db
-        run: yarn dotenv -- yarn migrate
+        run: bun migrate
 
       - name: Start sushii-data
         run: |
@@ -72,4 +71,5 @@ jobs:
       - name: Test sushii-worker
         run: |
           cp ./packages/sushii-worker/.env.ci ./packages/sushii-worker/.env
-          yarn workspace @sushiibot/sushii-worker test
+          cd ./packages/sushii-worker
+          bun test
