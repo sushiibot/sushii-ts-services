@@ -2,6 +2,8 @@ import { User } from "discord.js";
 import { Err, Ok, Result } from "ts-results";
 import Context from "../../model/context";
 import UserLevelProgress from "./rank.entity";
+import { getUser } from "../../db/User/User.repository";
+import db from "../../model/db";
 
 export interface RankResponse {
   rankBuffer: ArrayBuffer;
@@ -12,9 +14,7 @@ export async function getUserRank(
   user: User,
   guildId: string,
 ): Promise<Result<RankResponse, string>> {
-  const { userById: userData } = await ctx.sushiiAPI.sdk.userByID({
-    id: user.id,
-  });
+  const userData = await getUser(db, user.id);
   if (!userData) {
     return Err("User not found");
   }
@@ -65,9 +65,9 @@ export async function getUserRank(
     FISHIES: userData.fishies,
     // Rep and fishies
     // Emojis
-    IS_PATRON: userData.isPatron,
+    IS_PATRON: userData.is_patron,
     PATRON_EMOJI_URL:
-      userData.profileData?.patronEmojiURL ||
+      userData.profile_data?.patronEmojiURL ||
       "https://cdn.discordapp.com/emojis/830976556976963644.png",
     LEVEL: userLevel.level,
     CURR_XP: userLevel.nextLevelXpProgress,

@@ -5,6 +5,7 @@ import Context from "../../model/context";
 import logger from "../../logger";
 import db from "../../model/db";
 import { DB } from "../../model/dbTypes";
+import { upsertUser } from "../../db/User/User.repository";
 
 /**
  * Get inclusive random number between min and max
@@ -280,7 +281,7 @@ export async function fishyForUser(
     dbInvokerUser.last_fishies = dayjs().utc().toDate();
     // Update invoker
 
-    await db.updateUser(dbInvokerUser);
+    await upsertUser(db, dbInvokerUser);
   } else {
     // Invoker is target, update target
     dbTargetUser.last_fishies = dayjs().utc().toDate();
@@ -290,7 +291,7 @@ export async function fishyForUser(
   logger.debug(dbInvokerUser, "invoker after");
 
   // Update target
-  await db.updateUser(dbTargetUser);
+  await upsertUser(db, dbTargetUser);
 
   return {
     caughtAmount: caughtNum,

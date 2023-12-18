@@ -118,24 +118,6 @@ class SushiiDB extends Kysely<DB> {
       id: userId,
     };
   }
-
-  async updateUser(
-    patch: AllSelection<DB, "app_public.users">,
-  ): Promise<AllSelection<DB, "app_public.users">> {
-    return this.insertInto("app_public.users")
-      .values({
-        ...patch,
-        profile_data: sql`${JSON.stringify(patch.profile_data)}`,
-      })
-      .returningAll()
-      .onConflict((oc) =>
-        oc.column("id").doUpdateSet({
-          ...patch,
-          profile_data: sql`${JSON.stringify(patch.profile_data)}`,
-        }),
-      )
-      .executeTakeFirstOrThrow();
-  }
 }
 
 const pool = new Pool({
