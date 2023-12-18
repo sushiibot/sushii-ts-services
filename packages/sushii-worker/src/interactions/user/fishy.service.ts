@@ -5,7 +5,7 @@ import Context from "../../model/context";
 import logger from "../../logger";
 import db from "../../model/db";
 import { DB } from "../../model/dbTypes";
-import { upsertUser } from "../../db/User/User.repository";
+import { getUserOrDefault, upsertUser } from "../../db/User/User.repository";
 
 /**
  * Get inclusive random number between min and max
@@ -236,11 +236,11 @@ export async function fishyForUser(
   invoker: User,
   target: User,
 ): Promise<FishyResponse | dayjs.Dayjs> {
-  const dbTargetUser = await db.getUser(target.id);
+  const dbTargetUser = await getUserOrDefault(db, target.id);
 
   let dbInvokerUser: AllSelection<DB, "app_public.users"> | null = null;
   if (invoker.id !== target.id) {
-    dbInvokerUser = await db.getUser(invoker.id);
+    dbInvokerUser = await getUserOrDefault(db, invoker.id);
   }
 
   // Invoker same as target

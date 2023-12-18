@@ -3,6 +3,18 @@ import { DB } from "../../model/dbTypes";
 import { UserRow } from "./User.table";
 import { json } from "../json";
 
+const defaultUser: UserRow = {
+  id: "0",
+  rep: "0",
+  fishies: "0",
+  is_patron: false,
+  last_fishies: null,
+  last_rep: null,
+  lastfm_username: null,
+  patron_emoji: null,
+  profile_data: {},
+};
+
 /**
  * Upsert a user into the database
  *
@@ -43,4 +55,27 @@ export function getUser(
     .selectAll()
     .where("id", "=", userId)
     .executeTakeFirst();
+}
+
+/**
+ * Get a user from the database by ID, or return a default user if the user
+ * doesn't exist
+ *
+ * @param db database
+ * @param userId user ID
+ */
+export async function getUserOrDefault(
+  db: Kysely<DB>,
+  userId: string,
+): Promise<UserRow> {
+  const user = await getUser(db, userId);
+  if (user) {
+    return user;
+  }
+
+  return {
+    ...defaultUser,
+    // ID should always be set
+    id: userId,
+  };
 }
