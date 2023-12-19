@@ -64,30 +64,25 @@ export async function totalUsersInTimeFrame(
     case "day": {
       query = query
         .where(sql`extract(doy from last_msg) = extract(doy from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`)
-        .orderBy("msg_day", "desc");
+        .where(sql`extract(year from last_msg) = extract(year from now())`);
 
       break;
     }
     case "week": {
       query = query
         .where(sql`extract(week from last_msg) = extract(week from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`)
-        .orderBy("msg_week", "desc");
+        .where(sql`extract(year from last_msg) = extract(year from now())`);
 
       break;
     }
     case "month": {
       query = query
         .where(sql`extract(month from last_msg) = extract(month from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`)
-        .orderBy("msg_month", "desc");
+        .where(sql`extract(year from last_msg) = extract(year from now())`);
 
       break;
     }
     case "all_time": {
-      query = query.orderBy("msg_all_time", "desc");
-
       break;
     }
   }
@@ -118,7 +113,10 @@ function allRanksQuery(
 > {
   let query = db
     .selectFrom("app_public.user_levels")
-    .select(({ fn }) => ["user_id", fn.agg<number>("row_number").as("rank")])
+    .select(({ fn }) => [
+      "user_id",
+      fn.agg<number>("row_number").over().as("rank"),
+    ])
     .where("guild_id", "=", guildId)
     .orderBy("msg_day", "desc");
 
@@ -180,30 +178,25 @@ async function guildUserCountInTimeFrame(
     case "day": {
       query = query
         .where(sql`extract(doy from last_msg) = extract(doy from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`)
-        .orderBy("msg_day", "desc");
+        .where(sql`extract(year from last_msg) = extract(year from now())`);
 
       break;
     }
     case "week": {
       query = query
         .where(sql`extract(week from last_msg) = extract(week from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`)
-        .orderBy("msg_week", "desc");
+        .where(sql`extract(year from last_msg) = extract(year from now())`);
 
       break;
     }
     case "month": {
       query = query
         .where(sql`extract(month from last_msg) = extract(month from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`)
-        .orderBy("msg_month", "desc");
+        .where(sql`extract(year from last_msg) = extract(year from now())`);
 
       break;
     }
     case "all_time": {
-      query = query.orderBy("msg_all_time", "desc");
-
       break;
     }
   }
@@ -332,6 +325,7 @@ export async function getUserGlobalAllMessages(
     .selectFrom("app_public.user_levels")
     .select(({ fn }) => fn.sum<number>("msg_all_time").as("msg_all_time"))
     .where("user_id", "=", userId)
+    .groupBy("msg_all_time")
     .executeTakeFirst();
 
   return res?.msg_all_time ?? 0;
