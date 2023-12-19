@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import { User } from "discord.js";
 import Context from "../../model/context";
+import { getUserOrDefault, upsertUser } from "../../db/User/User.repository";
+import db from "../../model/db";
 
 /**
  * Response value of caught fishy
@@ -17,11 +19,11 @@ export default async function repForUser(
 ): Promise<RepResponse | dayjs.Dayjs> {
   // Fetch both target and invoker
   const [dbUser, dbInvokerUser] = await Promise.all([
-    ctx.sushiiAPI.getOrCreateUser(target.id),
-    ctx.sushiiAPI.getOrCreateUser(invoker.id),
+    getUserOrDefault(db, target.id),
+    getUserOrDefault(db, invoker.id),
   ]);
 
-  const lastRep = dayjs.utc(dbInvokerUser.lastRep);
+  const lastRep = dayjs.utc(dbInvokerUser.last_rep);
   const nextRep = lastRep.add(dayjs.duration({ hours: 12 }));
   // Now is before next rep
   if (dayjs().utc().isBefore(nextRep)) {
@@ -35,18 +37,12 @@ export default async function repForUser(
   // Update rep for target
   dbUser.rep = newAmount.toString();
   // Update lastRep for invoker
-  dbInvokerUser.lastRep = dayjs().utc().toISOString();
+  dbInvokerUser.last_rep = dayjs().utc().toDate();
 
   // Update invoker
-  const updateInvokerPromise = ctx.sushiiAPI.sdk.updateUser({
-    id: dbInvokerUser.id,
-    userPatch: dbInvokerUser,
-  });
+  const updateInvokerPromise = upsertUser(db, dbInvokerUser);
   // Update target
-  const updateUserPromise = ctx.sushiiAPI.sdk.updateUser({
-    id: target.id,
-    userPatch: dbUser,
-  });
+  const updateUserPromise = upsertUser(db, dbUser);
 
   // Save to db
   await Promise.all([updateInvokerPromise, updateUserPromise]);
