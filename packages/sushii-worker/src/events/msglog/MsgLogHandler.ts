@@ -3,7 +3,6 @@ import {
   EmbedBuilder,
   Events,
   GatewayDispatchEvents,
-  User,
 } from "discord.js";
 import {
   APIMessage,
