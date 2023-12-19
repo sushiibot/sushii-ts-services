@@ -9,6 +9,9 @@ import {
   getUserGuildAllRanks,
   getUserGuildLevel,
 } from "../../db/UserLevel/UserLevel.repository";
+import logger from "../../logger";
+
+const log = logger.child({ module: "rank" });
 
 export interface RankResponse {
   rankBuffer: ArrayBuffer;
@@ -32,6 +35,16 @@ export async function getUserRank(
 
   const globalXP = await getUserGlobalAllMessages(db, user.id);
   const globalLevel = new UserLevelProgress(globalXP);
+
+  log.debug({
+    guildId,
+    userId: user.id,
+    guildRanks,
+    guildLevel,
+    userLevel,
+    globalXP,
+    globalLevel,
+  });
 
   const repInt = parseInt(userData.rep, 10);
 
