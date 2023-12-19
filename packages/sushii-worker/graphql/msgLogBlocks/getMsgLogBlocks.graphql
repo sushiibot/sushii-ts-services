@@ -1,7 +1,0 @@
-query getMsgLogBlocks($guildId: BigInt!) {
-  allMsgLogBlocks(condition: { guildId: $guildId }) {
-    nodes {
-      ...MsgLogBlockData
-    }
-  }
-}

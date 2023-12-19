@@ -1,7 +1,0 @@
-mutation updateGuildConfig($id: BigInt!, $patch: GuildConfigPatch!) {
-  updateGuildConfigById(input: { guildConfigPatch: $patch, id: $id }) {
-    guildConfig {
-      ...GuildConfigData
-    }
-  }
-}

@@ -1,5 +1,0 @@
-query guildConfigByID($guildId: BigInt!) {
-  guildConfigById(id: $guildId) {
-    ...GuildConfigData
-  }
-}

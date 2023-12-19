@@ -1,7 +1,0 @@
-query getUserNotifications($guildId: BigInt!, $userId: BigInt!) {
-  allNotifications(condition: { guildId: $guildId, userId: $userId }) {
-    nodes {
-      ...NotificationData
-    }
-  }
-}

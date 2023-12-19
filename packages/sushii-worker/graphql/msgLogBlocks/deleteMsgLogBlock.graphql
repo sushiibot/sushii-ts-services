@@ -1,9 +1,0 @@
-mutation deleteMsgLogBlock($channelId: BigInt!, $guildId: BigInt!) {
-  deleteMsgLogBlockByGuildIdAndChannelId(
-    input: { guildId: $guildId, channelId: $channelId }
-  ) {
-    msgLogBlock {
-      ...MsgLogBlockData
-    }
-  }
-}

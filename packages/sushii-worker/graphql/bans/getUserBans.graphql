@@ -1,8 +1,0 @@
-query getUserBans($userId: BigInt!) {
-  allGuildBans(condition: { userId: $userId }) {
-    nodes {
-      ...BanData
-    }
-    totalCount
-  }
-}

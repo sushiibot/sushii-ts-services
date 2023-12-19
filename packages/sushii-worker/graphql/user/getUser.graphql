@@ -1,5 +1,0 @@
-query userByID($id: BigInt!) {
-  userById(id: $id) {
-    ...UserData
-  }
-}

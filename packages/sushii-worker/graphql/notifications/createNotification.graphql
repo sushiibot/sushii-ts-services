@@ -1,7 +1,0 @@
-mutation createNotification($notification: NotificationInput!) {
-  createNotification(input: { notification: $notification }) {
-    notification {
-      ...NotificationData
-    }
-  }
-}
