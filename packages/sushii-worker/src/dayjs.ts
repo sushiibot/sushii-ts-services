@@ -1,8 +1,12 @@
 import dayjs from "dayjs";
-import "dayjs/plugin/utc";
-import "dayjs/plugin/duration";
-import "dayjs/plugin/relativeTime";
+import utc from "dayjs/plugin/utc";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+import dayOfYear from "dayjs/plugin/dayOfYear";
+import weekOfYear from "dayjs/plugin/weekOfYear";
 
-dayjs.extend(require("dayjs/plugin/utc"));
-dayjs.extend(require("dayjs/plugin/duration"));
-dayjs.extend(require("dayjs/plugin/relativeTime"));
+dayjs.extend(utc);
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+dayjs.extend(dayOfYear);
+dayjs.extend(weekOfYear);

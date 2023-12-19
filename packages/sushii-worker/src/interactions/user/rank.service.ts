@@ -4,6 +4,11 @@ import Context from "../../model/context";
 import UserLevelProgress from "./rank.entity";
 import { getUser } from "../../db/User/User.repository";
 import db from "../../model/db";
+import {
+  getUserGlobalAllMessages,
+  getUserGuildAllRanks,
+  getUserGuildLevel,
+} from "../../db/UserLevel/UserLevel.repository";
 
 export interface RankResponse {
   rankBuffer: ArrayBuffer;
@@ -19,24 +24,14 @@ export async function getUserRank(
     return Err("User not found");
   }
 
-  const { userGuildRank: userGuildLevel } =
-    await ctx.sushiiAPI.sdk.userGuildLevelAndRank({
-      guildId,
-      userId: user.id,
-    });
-  if (!userGuildLevel) {
-    return Err("User has no server XP");
-  }
-
+  const guildRanks = await getUserGuildAllRanks(db, guildId, user.id);
+  const guildLevel = await getUserGuildLevel(db, guildId, user.id);
   const userLevel = new UserLevelProgress(
-    parseInt(userGuildLevel.msgAllTime || "0", 10),
+    parseInt(guildLevel?.msg_all_time || "0", 10),
   );
-  const { allUserLevels: globalXP } = await ctx.sushiiAPI.sdk.userGlobalLevel({
-    userId: user.id,
-  });
-  const globalLevel = new UserLevelProgress(
-    parseInt(globalXP?.aggregates?.sum?.msgAllTime || 0, 10),
-  );
+
+  const globalXP = await getUserGlobalAllMessages(db, user.id);
+  const globalLevel = new UserLevelProgress(globalXP);
 
   const repInt = parseInt(userData.rep, 10);
 
@@ -67,7 +62,7 @@ export async function getUserRank(
     // Emojis
     IS_PATRON: userData.is_patron,
     PATRON_EMOJI_URL:
-      userData.profile_data?.patronEmojiURL ||
+      userData.profile_data?.patronEmojiURL! ||
       "https://cdn.discordapp.com/emojis/830976556976963644.png",
     LEVEL: userLevel.level,
     CURR_XP: userLevel.nextLevelXpProgress,
@@ -79,14 +74,14 @@ export async function getUserRank(
     GLOBAL_REQ_XP: globalLevel.nextLevelXpRequired,
     GLOBAL_XP_PROGRESS: globalLevel.nextLevelXpPercentage,
     // ranks
-    RANK_ALL: userGuildLevel.msgAllTimeRank || "0",
-    RANK_ALL_TOTAL: userGuildLevel.msgAllTimeTotal || "0",
-    RANK_WEEK: userGuildLevel.msgWeekRank || "0",
-    RANK_WEEK_TOTAL: userGuildLevel.msgWeekTotal || "0",
-    RANK_MONTH: userGuildLevel.msgMonthRank || "0",
-    RANK_MONTH_TOTAL: userGuildLevel.msgMonthTotal || "0",
-    RANK_DAY: userGuildLevel.msgDayRank || "0",
-    RANK_DAY_TOTAL: userGuildLevel.msgDayTotal || "0",
+    RANK_ALL: guildRanks.all_time.rank || "-",
+    RANK_ALL_TOTAL: guildRanks.all_time.total_count || "-",
+    RANK_WEEK: guildRanks.week.rank || "-",
+    RANK_WEEK_TOTAL: guildRanks.week.total_count || "-",
+    RANK_MONTH: guildRanks.month.rank || "-",
+    RANK_MONTH_TOTAL: guildRanks.month.total_count || "-",
+    RANK_DAY: guildRanks.day.rank || "-",
+    RANK_DAY_TOTAL: guildRanks.day.total_count || "-",
   };
 
   const rankBuffer = await ctx.sushiiImageServer.getUserRank(rankContext);
