@@ -14,7 +14,7 @@ const schema = z.object({
   SUSHII_GRAPHQL_TOKEN: z.string(),
   SUSHII_IMAGE_SERVER_URL: z.string(),
 
-  METRICS_PORT: z.string().optional().default("3000"),
+  METRICS_PORT: z.string().optional().default("8080"),
 
   // Example: 'https://discord.com/api'
   TWILIGHT_PROXY_URL: z.string(),
