@@ -1,29 +1,26 @@
 {
   "name": "@sushiibot/html2image",
-  "packageManager": "yarn@3.2.0",
-  "files": [
-    "dist"
-  ],
+  "version": "0.0.1",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
+  "module": "dist/getImage.js",
+  "main": "dist/getImage.js",
+  "types": "dist/getImage.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
-    }
+    ".": "./dist/getImage.js"
   },
   "dependencies": {
+    "@resvg/resvg-js": "^2.6.0",
     "@resvg/resvg-wasm": "^2.4.1",
-    "satori": "^0.10.1",
-    "satori-html": "^0.3.2"
+    "satori": "^0.10.11",
+    "satori-html": "^0.3.2",
+    "sharp": "^0.33.1"
   },
   "peerDependencies": {
     "react": "*"
   },
   "devDependencies": {
     "@types/react": "^18.2.14",
-    "ts-node": "^10.9.1",
+    "prettier": "^3.1.1",
     "typescript": "^5.1.6"
   }
 }
