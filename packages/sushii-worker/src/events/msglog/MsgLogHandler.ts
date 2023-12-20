@@ -3,6 +3,7 @@ import {
   EmbedBuilder,
   Events,
   GatewayDispatchEvents,
+  messageLink,
 } from "discord.js";
 import {
   APIMessage,
@@ -77,24 +78,38 @@ function buildDeleteEmbed(
     description += "\n";
   }
 
+  const fields = [];
+
   if (msg.sticker_items && msg.sticker_items.length > 0) {
     const sticker = msg.sticker_items[0];
     const stickerURL = ctx.CDN.sticker(sticker.id);
 
-    description += "**Stickers**";
-    description += "\n";
-    description += `> [${sticker.name}](${stickerURL})`;
-    description += "\n";
+    fields.push({
+      name: "Stickers",
+      value: `[${sticker.name}](${stickerURL})`,
+    });
   }
 
   if (msg.attachments && msg.attachments.length > 0) {
     const attachments = msg.attachments
-      .map((a) => `> [${a.filename}](${a.proxy_url})`)
+      .map((a) => `[${a.filename}](${a.proxy_url})`)
       .join("\n");
 
-    description += "**Attachments**";
-    description += "\n";
-    description += attachments;
+    fields.push({
+      name: "Attachments",
+      value: attachments,
+    });
+  }
+
+  if (msg.referenced_message) {
+    const replied = msg.referenced_message.id;
+    // Guild ID will always exist, checked in parent handler
+    const repliedURL = messageLink(msg.channel_id, replied, event.guild_id!);
+
+    fields.push({
+      name: "Replied to",
+      value: `<@${msg.referenced_message.author.id}> ${repliedURL}`,
+    });
   }
 
   const authorIcon = msg.author.avatar
@@ -108,6 +123,10 @@ function buildDeleteEmbed(
     })
     .setDescription(description)
     .setColor(Color.Error)
+    .setFields(fields)
+    .setFooter({
+      text: `Message ID: ${msg.id}`,
+    })
     .setTimestamp(new Date());
 }
 
