@@ -116,35 +116,37 @@ export const banPoolOnBanHandler: EventHandlerFn<Events.GuildBanAdd> = async (
     }),
   );
 
-  // Batch insert all entries
-  await insertBanPoolEntry(db, poolEntries);
-  log.debug(
-    {
-      poolEntriesCount: poolEntries.length,
-      banSourceGuildId: ban.guild.id,
-      banUserId: ban.user.id,
-    },
-    "Inserted ban pool entries",
-  );
+  if (poolEntries.length > 0) {
+    // Batch insert all entries
+    await insertBanPoolEntry(db, poolEntries);
+    log.debug(
+      {
+        poolEntriesCount: poolEntries.length,
+        banSourceGuildId: ban.guild.id,
+        banUserId: ban.user.id,
+      },
+      "Inserted ban pool entries",
+    );
 
-  /* eslint-disable no-await-in-loop */
-  log.debug(
-    {
-      poolEntriesCount: poolEntries.length,
-      banSourceGuildId: ban.guild.id,
-      banUserId: ban.user.id,
-    },
-    "Emitting ban pool add events",
-  );
-  for (const poolData of poolDataCategories.add) {
-    banPoolEmitter.emit("poolAdd", {
-      ownerGuildId: poolData.owner_guild_id,
-      poolName: poolData.pool_name,
-      sourceGuildId: ban.guild.id,
-      user: ban.user,
-    });
+    /* eslint-disable no-await-in-loop */
+    log.debug(
+      {
+        poolEntriesCount: poolEntries.length,
+        banSourceGuildId: ban.guild.id,
+        banUserId: ban.user.id,
+      },
+      "Emitting ban pool add events",
+    );
+    for (const poolData of poolDataCategories.add) {
+      banPoolEmitter.emit("poolAdd", {
+        ownerGuildId: poolData.owner_guild_id,
+        poolName: poolData.pool_name,
+        sourceGuildId: ban.guild.id,
+        user: ban.user,
+      });
+    }
+    /* eslint-enable */
   }
-  /* eslint-enable */
 
   if (!settings?.alert_channel_id) {
     return;
