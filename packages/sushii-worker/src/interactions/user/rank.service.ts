@@ -29,9 +29,11 @@ export async function getUserRank(
 
   const guildRanks = await getUserGuildAllRanks(db, guildId, user.id);
   const guildLevel = await getUserGuildLevel(db, guildId, user.id);
-  const userLevel = new UserLevelProgress(
-    parseInt(guildLevel?.msg_all_time || "0", 10),
-  );
+
+  const allTimeXP = guildLevel?.msg_all_time
+    ? parseInt(guildLevel.msg_all_time, 10)
+    : 0;
+  const userLevel = new UserLevelProgress(allTimeXP);
 
   const globalXP = await getUserGlobalAllMessages(db, user.id);
   const globalLevel = new UserLevelProgress(globalXP);
