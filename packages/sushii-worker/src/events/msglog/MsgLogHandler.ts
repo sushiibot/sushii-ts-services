@@ -104,7 +104,11 @@ function buildDeleteEmbed(
   if (msg.referenced_message) {
     const replied = msg.referenced_message.id;
     // Guild ID will always exist, checked in parent handler
-    const repliedURL = messageLink(msg.channel_id, replied, event.guild_id!);
+    const repliedURL = messageLink(
+      message.channel_id,
+      replied,
+      event.guild_id!,
+    );
 
     fields.push({
       name: "Replied to",
@@ -125,7 +129,7 @@ function buildDeleteEmbed(
     .setColor(Color.Error)
     .setFields(fields)
     .setFooter({
-      text: `Message ID: ${msg.id}`,
+      text: `Message ID: ${message.message_id}`,
     })
     .setTimestamp(new Date());
 }

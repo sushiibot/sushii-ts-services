@@ -68,6 +68,7 @@ export default async function msgLogCacheHandler(
     content: event.content,
     sticker_items: event.sticker_items,
     attachments: event.attachments,
+    referenced_message: event.referenced_message,
     // Circular structure somewhere that I cant repro locally
     // member: undefined,
   };
