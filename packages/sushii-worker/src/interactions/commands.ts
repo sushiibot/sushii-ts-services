@@ -39,8 +39,9 @@ import SettingsCommand from "./settings/SettingsCommand";
 import LookupCommand from "./moderation/LookupCommand";
 import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
 import TagAdminCommand from "./tags/TagAdminCommand";
-import LookupGroupCommand from "./moderation/ban_pools/BanPool.command";
 import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
+import config from "../model/config";
+import BanPoolCommand from "./moderation/ban_pools/BanPool.command";
 
 export default function addCommands(
   interactionClient: InteractionClient,
@@ -70,7 +71,6 @@ export default function addCommands(
     new PruneCommand(),
     new SlowmodeCommand(),
     new LookupCommand(),
-    new LookupGroupCommand(),
 
     // Guild
     new TagAdminCommand(),
@@ -97,16 +97,10 @@ export default function addCommands(
   // Autocomplete
   interactionClient.addAutocompleteHandlers(
     new NotificationListAutocomplete(),
-
     new TagGetAutocomplete(),
-
     new ReminderDeleteAutocomplete(),
-
     new RoleMenuAutocomplete(),
-
     new ReasonAutocomplete(),
-
-    new BanPoolAutocomplete(),
   );
 
   // ----------------------------------------
@@ -132,4 +126,12 @@ export default function addCommands(
   // ----------------------------------------
   // Modals
   interactionClient.addModalHandlers(new ModLogReasonModalHandler());
+
+  // ----------------------------------------
+  // Feature flagged commands
+
+  if (config.BAN_POOL_ENABLED) {
+    interactionClient.addCommand(new BanPoolCommand());
+    interactionClient.addAutocompleteHandlers(new BanPoolAutocomplete());
+  }
 }

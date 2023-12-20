@@ -28,6 +28,12 @@ const schema = z.object({
     .preprocess((x) => x === "true", z.boolean())
     .optional()
     .default(false),
+
+  // Feature flags
+  BAN_POOL_ENABLED: z
+    .preprocess((x) => x === "true", z.boolean())
+    .optional()
+    .default(false),
 });
 
 const parsed = schema.safeParse(process.env);

@@ -30,6 +30,7 @@ import {
   emojiAndStickerStatsReadyHandler,
 } from "./events/EmojiStatsHandler";
 import { banPoolOnBanHandler } from "./events/ban_pool/BanPoolHandler";
+import config from "./model/config";
 
 const tracer = opentelemetry.trace.getTracer("event-handler");
 
@@ -236,12 +237,14 @@ export default function registerEventHandlers(
 
   client.on(Events.GuildBanAdd, async (guildBan) => {
     await tracer.startActiveSpan(Events.GuildBanAdd, async (span: Span) => {
-      await handleEvent(
-        ctx,
-        Events.GuildBanAdd,
-        [legacyModLogNotifierHandler, banCacheBanHandler, banPoolOnBanHandler],
-        guildBan,
-      );
+      const handlers = [legacyModLogNotifierHandler, banCacheBanHandler];
+
+      // Only handle ban pool events if the flag is enabled
+      if (config.BAN_POOL_ENABLED) {
+        handlers.push(banPoolOnBanHandler);
+      }
+
+      await handleEvent(ctx, Events.GuildBanAdd, handlers, guildBan);
 
       span.end();
     });
