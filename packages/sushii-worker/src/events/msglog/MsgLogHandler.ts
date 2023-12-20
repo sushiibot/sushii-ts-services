@@ -4,13 +4,11 @@ import {
   Events,
   GatewayDispatchEvents,
   messageLink,
-} from "discord.js";
-import {
   APIMessage,
   GatewayMessageDeleteBulkDispatchData,
   GatewayMessageDeleteDispatchData,
   GatewayMessageUpdateDispatchData,
-} from "discord-api-types/v10";
+} from "discord.js";
 import { None, Option, Some } from "ts-results";
 import { Selectable } from "kysely";
 import { AppPublicMessages, AppPublicMsgLogBlocks } from "../../model/dbTypes";
@@ -21,6 +19,7 @@ import Color from "../../utils/colors";
 import logger from "../../logger";
 import db from "../../model/db";
 import { EventHandlerFn } from "../EventHandler";
+import { getAPIUserTag } from "../../utils/APIUser";
 
 type EventData =
   | GatewayMessageDeleteDispatchData
@@ -120,9 +119,11 @@ function buildDeleteEmbed(
     ? ctx.CDN.avatar(msg.author.id, msg.author.avatar)
     : ctx.CDN.defaultAvatar(parseInt(msg.author.discriminator, 10));
 
+  const authorTag = getAPIUserTag(msg.author);
+
   return new EmbedBuilder()
     .setAuthor({
-      name: `${msg.author.username}#${msg.author.discriminator} (ID: ${msg.author.id})`,
+      name: `${authorTag} (ID: ${msg.author.id})`,
       iconURL: authorIcon || undefined,
     })
     .setDescription(description)

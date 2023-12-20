@@ -326,7 +326,7 @@ async function executeActionUser(
       action: actionType,
       pending: isPending,
       user_id: target.user.id,
-      user_tag: `${target.user.username}#${target.user.discriminator}`,
+      user_tag: target.user.tag,
       executor_id: data.invoker.id,
       action_time: dayjs().utc().toISOString(),
       reason: data.reason,

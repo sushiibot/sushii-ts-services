@@ -77,7 +77,7 @@ export default class HistoryCommand extends SlashCommandHandler {
 
     const userEmbed = buildUserHistoryEmbed(cases, "command")
       .setAuthor({
-        name: `${user.username}#${user.discriminator} - ${user.id}`,
+        name: `${user.tag} - ${user.id}`,
         iconURL: userFaceURL,
       })
       .addFields(fields);

@@ -226,7 +226,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
         action: actionType,
         pending: false,
         user_id: event.targetId,
-        user_tag: `${targetUser.username}#${targetUser.discriminator}`,
+        user_tag: targetUser.tag,
         executor_id: executorId,
         action_time: dayjs().utc().toISOString(),
         reason,

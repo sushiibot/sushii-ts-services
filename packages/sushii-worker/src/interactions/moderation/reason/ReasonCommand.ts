@@ -193,7 +193,7 @@ export async function updateModLogReasons(
 
     const newEmbed = new EmbedBuilder(modLogMsg.embeds[0].data)
       .setAuthor({
-        name: `${interaction.user.username}#${interaction.user.discriminator}`,
+        name: interaction.user.tag,
         iconURL: interaction.user.displayAvatarURL(),
       })
       // Replaces 1 element at index `indexOfReasonField`

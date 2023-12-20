@@ -124,7 +124,7 @@ export default async function buildModLogEmbed(
 
   return new EmbedBuilder()
     .setAuthor({
-      name: `${executorUser.username}#${executorUser.discriminator}`,
+      name: executorUser.tag,
       iconURL: executorUser.displayAvatarURL(),
     })
     .setFields(fields)
