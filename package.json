@@ -1,6 +1,5 @@
 {
-  "name": "ts",
-  "packageManager": "yarn@3.2.0",
+  "name": "sushiibot",
   "private": true,
   "workspaces": [
     "packages/*"
