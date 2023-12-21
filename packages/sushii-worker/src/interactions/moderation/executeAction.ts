@@ -70,7 +70,7 @@ function buildResponseEmbed(
 
     if (data.targets.size === failedDMCount) {
       userDMValue =
-        "❌ Failed to DM reason to users, likely due to their privacy settings.";
+        "❌ Failed to DM reason to users, their privacy settings do not allow me to DM or they have blocked me :(";
     } else if (data.shouldDMReason(action)) {
       userDMValue = "📬 Reason sent to member in DMs";
     }
