@@ -117,8 +117,7 @@ function allRanksQuery(
       "user_id",
       fn.agg<number>("row_number").over().as("rank"),
     ])
-    .where("guild_id", "=", guildId)
-    .orderBy("msg_day", "desc");
+    .where("guild_id", "=", guildId);
 
   switch (timeframe) {
     case "day": {
