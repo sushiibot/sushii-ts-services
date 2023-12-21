@@ -111,7 +111,7 @@ function allRanksQuery(
     rank: number;
   }
 > {
-  let query = db
+  const query = db
     .selectFrom("app_public.user_levels")
     .select(({ fn }) => [
       "user_id",
@@ -121,7 +121,7 @@ function allRanksQuery(
 
   switch (timeframe) {
     case "day": {
-      query = query
+      return query
         .where(
           sql`extract(doy from last_msg)`,
           "=",
@@ -133,11 +133,9 @@ function allRanksQuery(
           sql`extract(year from now())`,
         )
         .orderBy("msg_day", "desc");
-
-      break;
     }
     case "week": {
-      query = query
+      return query
         .where(
           sql`extract(week from last_msg)`,
           "=",
@@ -149,11 +147,9 @@ function allRanksQuery(
           sql`extract(year from now())`,
         )
         .orderBy("msg_week", "desc");
-
-      break;
     }
     case "month": {
-      query = query
+      return query
         .where(
           sql`extract(month from last_msg)`,
           "=",
@@ -165,17 +161,11 @@ function allRanksQuery(
           sql`extract(year from now())`,
         )
         .orderBy("msg_month", "desc");
-
-      break;
     }
     case "all_time": {
-      query = query.orderBy("msg_all_time", "desc");
-
-      break;
+      return query.orderBy("msg_all_time", "desc");
     }
   }
-
-  return query;
 }
 
 /**
