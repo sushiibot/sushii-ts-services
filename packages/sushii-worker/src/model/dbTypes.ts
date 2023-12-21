@@ -1,6 +1,8 @@
 import type { ColumnType } from "kysely";
 import type { IPostgresInterval } from "postgres-interval";
 
+export type AppPrivateDeploymentName = "blue" | "green";
+
 export type AppPublicBanPoolAddAction = "ask" | "ban" | "nothing" | "timeout_and_ask";
 
 export type AppPublicBanPoolAddMode = "all_bans" | "manual" | "nothing";
@@ -289,6 +291,11 @@ export interface AppHiddenFailures {
   attempt_count: number;
   last_attempt: Timestamp;
   next_attempt: Generated<Timestamp>;
+}
+
+export interface AppPrivateActiveDeployment {
+  id: Generated<number>;
+  name: AppPrivateDeploymentName;
 }
 
 export interface AppPrivateSessions {
@@ -785,6 +792,7 @@ export interface DB {
   "_timescaledb_internal.compressed_chunk_stats": _TimescaledbInternalCompressedChunkStats;
   "_timescaledb_internal.hypertable_chunk_local_size": _TimescaledbInternalHypertableChunkLocalSize;
   "app_hidden.failures": AppHiddenFailures;
+  "app_private.active_deployment": AppPrivateActiveDeployment;
   "app_private.sessions": AppPrivateSessions;
   "app_private.user_authentication_secrets": AppPrivateUserAuthenticationSecrets;
   "app_public.ban_pool_entries": AppPublicBanPoolEntries;

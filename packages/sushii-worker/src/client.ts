@@ -29,6 +29,7 @@ import Metrics from "./model/metrics";
 import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
 import config from "./model/config";
+import { isCurrentDeploymentActive } from "./db/Deployment/Deployment.repository";
 
 // For JSON.stringify()
 // eslint-disable-next-line no-extend-native, func-names
@@ -554,6 +555,20 @@ export default class Client {
   }
 
   public async handleAPIInteraction(interaction: Interaction): Promise<void> {
+    // Ignore all interactions that are not from the current deployment
+    const active = await isCurrentDeploymentActive();
+    if (!active) {
+      log.info(
+        {
+          processDeploymentName: config.DEPLOYMENT_NAME,
+          interactionId: interaction.id,
+        },
+        "Not active deployment, ignoring interaction",
+      );
+
+      return;
+    }
+
     try {
       this.metrics.handleInteraction(interaction);
 

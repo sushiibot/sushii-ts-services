@@ -31,8 +31,23 @@ import {
 } from "./events/EmojiStatsHandler";
 import { banPoolOnBanHandler } from "./events/ban_pool/BanPoolHandler";
 import config from "./model/config";
+import { isCurrentDeploymentActive } from "./db/Deployment/Deployment.repository";
 
 const tracer = opentelemetry.trace.getTracer("event-handler");
+
+async function isActive(): Promise<boolean> {
+  const active = await isCurrentDeploymentActive();
+  if (!active) {
+    logger.info(
+      {
+        processDeploymentName: config.DEPLOYMENT_NAME,
+      },
+      "Not active deployment, ignoring events",
+    );
+  }
+
+  return active;
+}
 
 async function handleEvent<K extends keyof ClientEvents>(
   ctx: Context,
@@ -92,7 +107,13 @@ export default function registerEventHandlers(
   interactionHandler: InteractionClient,
 ): void {
   client.once(Events.ClientReady, async (c) => {
-    logger.info(`Ready! Logged in as ${c.user.tag}`);
+    logger.info(
+      {
+        botUser: c.user.tag,
+        deployment: config.DEPLOYMENT_NAME,
+      },
+      "Ready!",
+    );
 
     await webhookLog("Ready", `Logged in as ${c.user.tag}`, Color.Success);
 
@@ -207,6 +228,10 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.InteractionCreate, async (interaction) => {
+    if (!(await isActive())) {
+      return;
+    }
+
     await tracer.startActiveSpan(
       Events.InteractionCreate,
       async (span: Span) => {
@@ -219,6 +244,10 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildAuditLogEntryCreate, async (entry, guild) => {
+    if (!(await isActive())) {
+      return;
+    }
+
     await tracer.startActiveSpan(
       Events.GuildAuditLogEntryCreate,
       async (span: Span) => {
@@ -236,6 +265,10 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildBanAdd, async (guildBan) => {
+    if (!(await isActive())) {
+      return;
+    }
+
     await tracer.startActiveSpan(Events.GuildBanAdd, async (span: Span) => {
       const handlers = [legacyModLogNotifierHandler, banCacheBanHandler];
 
@@ -251,6 +284,10 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildBanRemove, async (guildBan) => {
+    if (!(await isActive())) {
+      return;
+    }
+
     await tracer.startActiveSpan(Events.GuildBanRemove, async (span: Span) => {
       await handleEvent(
         ctx,
@@ -264,6 +301,10 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.MessageCreate, async (msg) => {
+    if (!(await isActive())) {
+      return;
+    }
+
     await tracer.startActiveSpan(Events.MessageCreate, async (span: Span) => {
       await handleEvent(
         ctx,
@@ -277,6 +318,10 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.MessageReactionAdd, async (reaction, user) => {
+    if (!(await isActive())) {
+      return;
+    }
+
     await tracer.startActiveSpan(
       Events.MessageReactionAdd,
       async (span: Span) => {
@@ -294,6 +339,10 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
+    if (!(await isActive())) {
+      return;
+    }
+
     await tracer.startActiveSpan(Events.Raw, async (span: Span) => {
       if (event.t === GatewayDispatchEvents.MessageDelete) {
         await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);

@@ -127,6 +127,16 @@ CREATE TYPE app_hidden.level_timeframe AS ENUM (
 
 
 --
+-- Name: deployment_name; Type: TYPE; Schema: app_private; Owner: -
+--
+
+CREATE TYPE app_private.deployment_name AS ENUM (
+    'blue',
+    'green'
+);
+
+
+--
 -- Name: ban_pool_add_action; Type: TYPE; Schema: app_public; Owner: -
 --
 
@@ -1411,7 +1421,7 @@ CREATE TABLE app_hidden.failures (
 
 CREATE TABLE app_private.active_deployment (
     id integer GENERATED ALWAYS AS (1) STORED NOT NULL,
-    name text NOT NULL
+    name app_private.deployment_name NOT NULL
 );
 
 
