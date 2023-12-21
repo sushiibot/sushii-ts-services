@@ -122,24 +122,48 @@ function allRanksQuery(
   switch (timeframe) {
     case "day": {
       query = query
-        .where(sql`extract(doy from last_msg) = extract(doy from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`)
+        .where(
+          sql`extract(doy from last_msg)`,
+          "=",
+          sql`extract(doy from now())`,
+        )
+        .where(
+          sql`extract(year from last_msg)`,
+          "=",
+          sql`extract(year from now())`,
+        )
         .orderBy("msg_day", "desc");
 
       break;
     }
     case "week": {
       query = query
-        .where(sql`extract(week from last_msg) = extract(week from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`)
+        .where(
+          sql`extract(week from last_msg)`,
+          "=",
+          sql`extract(week from now())`,
+        )
+        .where(
+          sql`extract(year from last_msg)`,
+          "=",
+          sql`extract(year from now())`,
+        )
         .orderBy("msg_week", "desc");
 
       break;
     }
     case "month": {
       query = query
-        .where(sql`extract(month from last_msg) = extract(month from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`)
+        .where(
+          sql`extract(month from last_msg)`,
+          "=",
+          sql`extract(month from now())`,
+        )
+        .where(
+          sql`extract(year from last_msg)`,
+          "=",
+          sql`extract(year from now())`,
+        )
         .orderBy("msg_month", "desc");
 
       break;
