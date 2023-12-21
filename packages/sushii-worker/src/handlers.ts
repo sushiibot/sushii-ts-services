@@ -35,15 +35,23 @@ import { isCurrentDeploymentActive } from "./db/Deployment/Deployment.repository
 
 const tracer = opentelemetry.trace.getTracer("event-handler");
 
+let lastLogTime = 0;
+
 async function isActive(): Promise<boolean> {
   const active = await isCurrentDeploymentActive();
   if (!active) {
-    logger.info(
-      {
-        processDeploymentName: config.DEPLOYMENT_NAME,
-      },
-      "Not active deployment, ignoring events",
-    );
+    const currentTime = Date.now();
+
+    // Log max one time every 10 seconds
+    if (currentTime - lastLogTime >= 10000) {
+      logger.info(
+        {
+          processDeploymentName: config.DEPLOYMENT_NAME,
+        },
+        "Not active deployment, ignoring events",
+      );
+      lastLogTime = currentTime;
+    }
   }
 
   return active;

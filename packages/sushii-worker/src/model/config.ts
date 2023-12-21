@@ -4,10 +4,13 @@ import pino from "pino";
 
 dotenv.config();
 
+const deploymentNameSchema = z.enum(["blue", "green"]);
+
 const schema = z.object({
   // Name of the deployment of the current running process. This is used to
   // switch handling of events/interactions between multiple running processes.
-  DEPLOYMENT_NAME: z.string(),
+  // Default is "blue"
+  DEPLOYMENT_NAME: deploymentNameSchema,
   DATABASE_URL: z.string(),
   DISCORD_TOKEN: z.string(),
   LOG_LEVEL: z.string().optional().default("info"),
