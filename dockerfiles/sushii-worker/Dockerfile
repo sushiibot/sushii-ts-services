@@ -11,7 +11,7 @@ COPY ./packages/sushii-db/package.json ./packages/sushii-db/
 
 # Install dependencies, this is gonna be more than needed but lockfile idk
 # TODO: Prevent need of copying all package.jsons
-RUN bun install --frozen-lockfile --production
+RUN bun install --frozen-lockfile
 
 COPY . ./
 
