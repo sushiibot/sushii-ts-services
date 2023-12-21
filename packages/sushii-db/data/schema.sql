@@ -127,6 +127,63 @@ CREATE TYPE app_hidden.level_timeframe AS ENUM (
 
 
 --
+-- Name: ban_pool_add_action; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.ban_pool_add_action AS ENUM (
+    'ban',
+    'timeout_and_ask',
+    'ask',
+    'nothing'
+);
+
+
+--
+-- Name: ban_pool_add_mode; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.ban_pool_add_mode AS ENUM (
+    'all_bans',
+    'manual',
+    'nothing'
+);
+
+
+--
+-- Name: ban_pool_permission; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.ban_pool_permission AS ENUM (
+    'owner',
+    'edit',
+    'view',
+    'blocked'
+);
+
+
+--
+-- Name: ban_pool_remove_action; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.ban_pool_remove_action AS ENUM (
+    'unban',
+    'ask',
+    'nothing'
+);
+
+
+--
+-- Name: ban_pool_remove_mode; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.ban_pool_remove_mode AS ENUM (
+    'all_unbans',
+    'manual',
+    'nothing'
+);
+
+
+--
 -- Name: block_type; Type: TYPE; Schema: app_public; Owner: -
 --
 
@@ -1349,6 +1406,16 @@ CREATE TABLE app_hidden.failures (
 
 
 --
+-- Name: active_deployment; Type: TABLE; Schema: app_private; Owner: -
+--
+
+CREATE TABLE app_private.active_deployment (
+    id integer GENERATED ALWAYS AS (1) STORED NOT NULL,
+    name text NOT NULL
+);
+
+
+--
 -- Name: sessions; Type: TABLE; Schema: app_private; Owner: -
 --
 
@@ -1368,6 +1435,94 @@ CREATE TABLE app_private.user_authentication_secrets (
     user_id bigint NOT NULL,
     details jsonb DEFAULT '{}'::jsonb NOT NULL
 );
+
+
+--
+-- Name: ban_pool_entries; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.ban_pool_entries (
+    owner_guild_id bigint NOT NULL,
+    pool_name text NOT NULL,
+    source_guild_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    reason text
+);
+
+
+--
+-- Name: ban_pool_guild_settings; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.ban_pool_guild_settings (
+    guild_id bigint NOT NULL,
+    alert_channel_id bigint
+);
+
+
+--
+-- Name: ban_pool_invites; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.ban_pool_invites (
+    owner_guild_id bigint NOT NULL,
+    pool_name text NOT NULL,
+    invite_code text NOT NULL,
+    expires_at timestamp with time zone,
+    max_uses integer,
+    uses integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: ban_pool_members; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.ban_pool_members (
+    owner_guild_id bigint NOT NULL,
+    pool_name text NOT NULL,
+    member_guild_id bigint NOT NULL,
+    permission app_public.ban_pool_permission DEFAULT 'view'::app_public.ban_pool_permission NOT NULL,
+    add_mode app_public.ban_pool_add_mode DEFAULT 'all_bans'::app_public.ban_pool_add_mode NOT NULL,
+    remove_mode app_public.ban_pool_remove_mode DEFAULT 'all_unbans'::app_public.ban_pool_remove_mode NOT NULL,
+    add_action app_public.ban_pool_add_action DEFAULT 'ban'::app_public.ban_pool_add_action NOT NULL,
+    remove_action app_public.ban_pool_remove_action DEFAULT 'unban'::app_public.ban_pool_remove_action NOT NULL
+);
+
+
+--
+-- Name: ban_pools; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.ban_pools (
+    id integer NOT NULL,
+    guild_id bigint NOT NULL,
+    pool_name text NOT NULL,
+    description text,
+    creator_id bigint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: ban_pools_id_seq; Type: SEQUENCE; Schema: app_public; Owner: -
+--
+
+CREATE SEQUENCE app_public.ban_pools_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: ban_pools_id_seq; Type: SEQUENCE OWNED BY; Schema: app_public; Owner: -
+--
+
+ALTER SEQUENCE app_public.ban_pools_id_seq OWNED BY app_public.ban_pools.id;
 
 
 --
@@ -1596,6 +1751,62 @@ CREATE TABLE app_public.level_roles (
 
 
 --
+-- Name: lookup_group_invites; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.lookup_group_invites (
+    owner_guild_id bigint NOT NULL,
+    name text NOT NULL,
+    invite_code text NOT NULL,
+    expires_at timestamp with time zone
+);
+
+
+--
+-- Name: lookup_group_members; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.lookup_group_members (
+    owner_guild_id bigint NOT NULL,
+    name text NOT NULL,
+    member_guild_id bigint NOT NULL
+);
+
+
+--
+-- Name: lookup_groups; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.lookup_groups (
+    id integer NOT NULL,
+    guild_id bigint NOT NULL,
+    name text NOT NULL,
+    creator_id bigint NOT NULL,
+    description text
+);
+
+
+--
+-- Name: lookup_groups_id_seq; Type: SEQUENCE; Schema: app_public; Owner: -
+--
+
+CREATE SEQUENCE app_public.lookup_groups_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: lookup_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: app_public; Owner: -
+--
+
+ALTER SEQUENCE app_public.lookup_groups_id_seq OWNED BY app_public.lookup_groups.id;
+
+
+--
 -- Name: members; Type: TABLE; Schema: app_public; Owner: -
 --
 
@@ -1748,11 +1959,33 @@ CREATE TABLE app_public.xp_blocks (
 
 
 --
+-- Name: ban_pools id; Type: DEFAULT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.ban_pools ALTER COLUMN id SET DEFAULT nextval('app_public.ban_pools_id_seq'::regclass);
+
+
+--
+-- Name: lookup_groups id; Type: DEFAULT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.lookup_groups ALTER COLUMN id SET DEFAULT nextval('app_public.lookup_groups_id_seq'::regclass);
+
+
+--
 -- Name: failures failures_pkey; Type: CONSTRAINT; Schema: app_hidden; Owner: -
 --
 
 ALTER TABLE ONLY app_hidden.failures
     ADD CONSTRAINT failures_pkey PRIMARY KEY (failure_id);
+
+
+--
+-- Name: active_deployment active_deployment_id_key; Type: CONSTRAINT; Schema: app_private; Owner: -
+--
+
+ALTER TABLE ONLY app_private.active_deployment
+    ADD CONSTRAINT active_deployment_id_key UNIQUE (id);
 
 
 --
@@ -1769,6 +2002,54 @@ ALTER TABLE ONLY app_private.sessions
 
 ALTER TABLE ONLY app_private.user_authentication_secrets
     ADD CONSTRAINT user_authentication_secrets_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: ban_pool_entries ban_pool_entries_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.ban_pool_entries
+    ADD CONSTRAINT ban_pool_entries_pkey PRIMARY KEY (owner_guild_id, pool_name, user_id);
+
+
+--
+-- Name: ban_pool_invites ban_pool_invites_invite_code_key; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.ban_pool_invites
+    ADD CONSTRAINT ban_pool_invites_invite_code_key UNIQUE (invite_code);
+
+
+--
+-- Name: ban_pool_invites ban_pool_invites_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.ban_pool_invites
+    ADD CONSTRAINT ban_pool_invites_pkey PRIMARY KEY (owner_guild_id, pool_name, invite_code);
+
+
+--
+-- Name: ban_pool_members ban_pool_members_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.ban_pool_members
+    ADD CONSTRAINT ban_pool_members_pkey PRIMARY KEY (owner_guild_id, pool_name, member_guild_id);
+
+
+--
+-- Name: ban_pools ban_pools_id_key; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.ban_pools
+    ADD CONSTRAINT ban_pools_id_key UNIQUE (id);
+
+
+--
+-- Name: ban_pools ban_pools_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.ban_pools
+    ADD CONSTRAINT ban_pools_pkey PRIMARY KEY (guild_id, pool_name);
 
 
 --
@@ -1889,6 +2170,46 @@ ALTER TABLE ONLY app_public.level_role_overrides
 
 ALTER TABLE ONLY app_public.level_roles
     ADD CONSTRAINT level_roles_pkey PRIMARY KEY (guild_id, role_id);
+
+
+--
+-- Name: lookup_group_invites lookup_group_invites_invite_code_key; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.lookup_group_invites
+    ADD CONSTRAINT lookup_group_invites_invite_code_key UNIQUE (invite_code);
+
+
+--
+-- Name: lookup_group_invites lookup_group_invites_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.lookup_group_invites
+    ADD CONSTRAINT lookup_group_invites_pkey PRIMARY KEY (owner_guild_id, name);
+
+
+--
+-- Name: lookup_group_members lookup_group_members_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.lookup_group_members
+    ADD CONSTRAINT lookup_group_members_pkey PRIMARY KEY (owner_guild_id, name);
+
+
+--
+-- Name: lookup_groups lookup_groups_id_key; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.lookup_groups
+    ADD CONSTRAINT lookup_groups_id_key UNIQUE (id);
+
+
+--
+-- Name: lookup_groups lookup_groups_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.lookup_groups
+    ADD CONSTRAINT lookup_groups_pkey PRIMARY KEY (guild_id, name);
 
 
 --
@@ -2131,6 +2452,13 @@ CREATE INDEX web_user_guilds_user_id_idx ON app_public.web_user_guilds USING btr
 
 
 --
+-- Name: ban_pools _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.ban_pools FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
+
+
+--
 -- Name: bot_stats _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
@@ -2175,6 +2503,30 @@ ALTER TABLE ONLY app_private.user_authentication_secrets
 
 
 --
+-- Name: ban_pool_entries ban_pool_entries_owner_guild_id_pool_name_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.ban_pool_entries
+    ADD CONSTRAINT ban_pool_entries_owner_guild_id_pool_name_fkey FOREIGN KEY (owner_guild_id, pool_name) REFERENCES app_public.ban_pools(guild_id, pool_name) ON DELETE CASCADE;
+
+
+--
+-- Name: ban_pool_invites ban_pool_invites_owner_guild_id_pool_name_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.ban_pool_invites
+    ADD CONSTRAINT ban_pool_invites_owner_guild_id_pool_name_fkey FOREIGN KEY (owner_guild_id, pool_name) REFERENCES app_public.ban_pools(guild_id, pool_name) ON DELETE CASCADE;
+
+
+--
+-- Name: ban_pool_members ban_pool_members_owner_guild_id_pool_name_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.ban_pool_members
+    ADD CONSTRAINT ban_pool_members_owner_guild_id_pool_name_fkey FOREIGN KEY (owner_guild_id, pool_name) REFERENCES app_public.ban_pools(guild_id, pool_name) ON DELETE CASCADE;
+
+
+--
 -- Name: feed_subscriptions fk_feed_subscription_feed_id; Type: FK CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -2188,6 +2540,22 @@ ALTER TABLE ONLY app_public.feed_subscriptions
 
 ALTER TABLE ONLY app_public.mutes
     ADD CONSTRAINT fk_mod_action FOREIGN KEY (guild_id, case_id) REFERENCES app_public.mod_logs(guild_id, case_id);
+
+
+--
+-- Name: lookup_group_invites lookup_group_invites_owner_guild_id_name_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.lookup_group_invites
+    ADD CONSTRAINT lookup_group_invites_owner_guild_id_name_fkey FOREIGN KEY (owner_guild_id, name) REFERENCES app_public.lookup_groups(guild_id, name) ON DELETE CASCADE;
+
+
+--
+-- Name: lookup_group_members lookup_group_members_owner_guild_id_name_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.lookup_group_members
+    ADD CONSTRAINT lookup_group_members_owner_guild_id_name_fkey FOREIGN KEY (owner_guild_id, name) REFERENCES app_public.lookup_groups(guild_id, name) ON DELETE CASCADE;
 
 
 --
@@ -2742,6 +3110,49 @@ GRANT ALL ON FUNCTION public.snowflake_now() TO sushii_visitor;
 
 
 --
+-- Name: TABLE ban_pool_entries; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.ban_pool_entries TO sushii_admin;
+
+
+--
+-- Name: TABLE ban_pool_guild_settings; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.ban_pool_guild_settings TO sushii_admin;
+
+
+--
+-- Name: TABLE ban_pool_invites; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.ban_pool_invites TO sushii_admin;
+
+
+--
+-- Name: TABLE ban_pool_members; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.ban_pool_members TO sushii_admin;
+
+
+--
+-- Name: TABLE ban_pools; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.ban_pools TO sushii_admin;
+
+
+--
+-- Name: SEQUENCE ban_pools_id_seq; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,USAGE ON SEQUENCE app_public.ban_pools_id_seq TO sushii_visitor;
+GRANT SELECT,USAGE ON SEQUENCE app_public.ban_pools_id_seq TO sushii_admin;
+
+
+--
 -- Name: TABLE bot_stats; Type: ACL; Schema: app_public; Owner: -
 --
 
@@ -2989,6 +3400,35 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.level_role_overrides TO su
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.level_roles TO sushii_admin;
 GRANT SELECT ON TABLE app_public.level_roles TO sushii_visitor;
+
+
+--
+-- Name: TABLE lookup_group_invites; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.lookup_group_invites TO sushii_admin;
+
+
+--
+-- Name: TABLE lookup_group_members; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.lookup_group_members TO sushii_admin;
+
+
+--
+-- Name: TABLE lookup_groups; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.lookup_groups TO sushii_admin;
+
+
+--
+-- Name: SEQUENCE lookup_groups_id_seq; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,USAGE ON SEQUENCE app_public.lookup_groups_id_seq TO sushii_visitor;
+GRANT SELECT,USAGE ON SEQUENCE app_public.lookup_groups_id_seq TO sushii_admin;
 
 
 --
