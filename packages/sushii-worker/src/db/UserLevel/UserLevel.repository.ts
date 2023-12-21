@@ -324,7 +324,7 @@ export async function getUserGlobalAllMessages(
     .selectFrom("app_public.user_levels")
     .select(({ fn }) => fn.sum<number>("msg_all_time").as("msg_all_time"))
     .where("user_id", "=", userId)
-    .groupBy("msg_all_time")
+    .groupBy("user_id")
     .executeTakeFirst();
 
   return res?.msg_all_time ?? 0;
