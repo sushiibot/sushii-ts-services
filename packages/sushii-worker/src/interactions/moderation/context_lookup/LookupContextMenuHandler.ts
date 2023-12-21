@@ -54,6 +54,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
       return;
     }
 
+    /* TODO: Either remove or implement mod actions in context
     const isMuted = targetMember?.isCommunicationDisabled() ?? false;
 
     const banButton = new ButtonBuilder()
@@ -128,6 +129,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
       muteButton,
       warnButton,
     ]);
+    */
 
     const historyButton = new ButtonBuilder()
       .setCustomId(
@@ -157,7 +159,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
     await interaction.reply({
       embeds: [embed],
       flags: MessageFlags.Ephemeral,
-      components: [topRow.toJSON(), secondRow.toJSON()],
+      components: [secondRow],
     });
   }
 }
