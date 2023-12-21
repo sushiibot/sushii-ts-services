@@ -1,145 +1,147 @@
 version: "3.8"
 services:
-    sushii_worker:
-        build:
-            dockerfile: ./dockerfiles/sushii-worker/Dockerfile
-            context: .
-        logging:
-            driver: json-file
-            options:
-                tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
-                max-size: "10m"
-                max-file: "3"
-        depends_on:
-            - sushii_data
-        restart: unless-stopped
-        environment:
-            - LOG_LEVEL=debug
-            - NODE_ENV=production
-            - DISCORD_TOKEN=$DISCORD_TOKEN
-            - APPLICATION_ID=193163942502072320
-            - DATABASE_URL=$DATABASE_URL
-            - SUSHII_GRAPHQL_WS_URL=ws://sushii_data:8080/graphql
-            - SUSHII_GRAPHQL_TOKEN=$SUSHII_GRAPHQL_TOKEN
-            - SENTRY_DSN=$SENTRY_DSN
-            - TWILIGHT_PROXY_URL=http://twilight-http-proxy:80/api
-            - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
-            - TRACING_EXPORTER_URL=http://host.docker.internal:4318/v1/traces
-            # Notifications
-            - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
-            - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
-            # Increase max memory usage - should use approx 1100 MB on start
-            - NODE_OPTIONS=--max-old-space-size=4096
-        networks:
-            - sushii_net
-        extra_hosts:
-            - "host.docker.internal:host-gateway"
-        labels:
-            - "traefik.enable=false"
-            - "logging=promtail"
-            - "logging_jobname=sushii_worker"
-    sushii_data:
-        build:
-            dockerfile: ./dockerfiles/sushii-data/Dockerfile
-            context: .
-        logging:
-            options:
-                max-size: "10m"
-                max-file: "3"
-        restart: unless-stopped
-        env_file:
-            - .sushii_data.env
-        networks:
-            - sushii_net
-        labels:
-            - "traefik.enable=false"
-    jaeger:
-        image: jaegertracing/all-in-one
-        restart: unless-stopped
-        ports:
-            - "16686:16686" # The UI port
-        expose:
-            - "16686"
-            - "5778"
-        networks:
-            - sushii_net
-    twilight-http-proxy:
-        image: ghcr.io/twilight-rs/http-proxy:metrics
-        container_name: twilight-http-proxy
-        restart: unless-stopped
-        logging:
-            options:
-                max-size: "10m"
-                max-file: "3"
-        expose:
-            - "80"
-        environment:
-            - DISCORD_TOKEN=$DISCORD_TOKEN
-            - RUST_LOG=trace
-        networks:
-            - sushii_net
-        labels:
-            - "traefik.enable=false"
-    shlink:
-        image: shlinkio/shlink:stable
-        container_name: shlink
-        restart: unless-stopped
-        depends_on:
-            shlink_db:
-                condition: service_healthy
-        expose:
-            - "8080"
-        networks:
-            - sushii_net
-            - web
-        environment:
-            - DEFAULT_DOMAIN=a.sushii.xyz
-            - IS_HTTPS_ENABLED=true
-            - DB_DRIVER=postgres
-            - DB_HOST=shlink_db
-            - DB_PORT=5432
-            - DB_NAME=shlink
-            - DB_USER=shlink
-            - DB_PASSWORD=$SHLINK_DB_PASSWORD
-        labels:
-            - "traefik.docker.network=sushii-2_web"
-            - "traefik.http.services.shlink.loadbalancer.server.port=8080"
-            - "traefik.http.routers.shlink.rule=Host(`a.sushii.xyz`)"
-            - "traefik.http.routers.shlink.entrypoints=secure"
-            - "traefik.http.routers.shlink.tls.certresolver=acme"
-    shlink_db:
-        image: postgres:15.1-bullseye
-        container_name: shlink_db
-        restart: unless-stopped
-        healthcheck:
-            test: [ "CMD-SHELL", "pg_isready -d shlink -U shlink" ]
-            interval: 10s
-            timeout: 5s
-            retries: 5
-        volumes:
-            - ~/docker/shlink_postgres/15:/var/lib/postgresql/data
-        expose:
-            - "5432"
-        networks:
-            - sushii_net
-        environment:
-            - POSTGRES_USER=shlink
-            - POSTGRES_DB=shlink
-            - POSTGRES_PASSWORD=$SHLINK_DB_PASSWORD
-    keydb:
-        image: eqalpha/keydb:x86_64_v6.3.1
-        container_name: sushii-keydb
-        restart: unless-stopped
-        expose:
-            - "6379"
-        networks:
-            - sushii_net
-        labels:
-            - "traefik.enable=false"
+  sushii_worker:
+    build:
+      dockerfile: ./dockerfiles/sushii-worker/Dockerfile
+      context: .
+    logging:
+      driver: json-file
+      options:
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
+        max-size: "10m"
+        max-file: "3"
+    depends_on:
+      - sushii_data
+    restart: unless-stopped
+    environment:
+      # blue is default, and for now just 1 deployment green later
+      - DEPLOYMENT_NAME=blue
+      - LOG_LEVEL=debug
+      - NODE_ENV=production
+      - DISCORD_TOKEN=$DISCORD_TOKEN
+      - APPLICATION_ID=193163942502072320
+      - DATABASE_URL=$DATABASE_URL
+      - SUSHII_GRAPHQL_WS_URL=ws://sushii_data:8080/graphql
+      - SUSHII_GRAPHQL_TOKEN=$SUSHII_GRAPHQL_TOKEN
+      - SENTRY_DSN=$SENTRY_DSN
+      - TWILIGHT_PROXY_URL=http://twilight-http-proxy:80/api
+      - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
+      - TRACING_EXPORTER_URL=http://host.docker.internal:4318/v1/traces
+      # Notifications
+      - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
+      - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
+      # Increase max memory usage - should use approx 1100 MB on start
+      - NODE_OPTIONS=--max-old-space-size=4096
+    networks:
+      - sushii_net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    labels:
+      - "traefik.enable=false"
+      - "logging=promtail"
+      - "logging_jobname=sushii_worker"
+  sushii_data:
+    build:
+      dockerfile: ./dockerfiles/sushii-data/Dockerfile
+      context: .
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: unless-stopped
+    env_file:
+      - .sushii_data.env
+    networks:
+      - sushii_net
+    labels:
+      - "traefik.enable=false"
+  jaeger:
+    image: jaegertracing/all-in-one
+    restart: unless-stopped
+    ports:
+      - "16686:16686" # The UI port
+    expose:
+      - "16686"
+      - "5778"
+    networks:
+      - sushii_net
+  twilight-http-proxy:
+    image: ghcr.io/twilight-rs/http-proxy:metrics
+    container_name: twilight-http-proxy
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    expose:
+      - "80"
+    environment:
+      - DISCORD_TOKEN=$DISCORD_TOKEN
+      - RUST_LOG=trace
+    networks:
+      - sushii_net
+    labels:
+      - "traefik.enable=false"
+  shlink:
+    image: shlinkio/shlink:stable
+    container_name: shlink
+    restart: unless-stopped
+    depends_on:
+      shlink_db:
+        condition: service_healthy
+    expose:
+      - "8080"
+    networks:
+      - sushii_net
+      - web
+    environment:
+      - DEFAULT_DOMAIN=a.sushii.xyz
+      - IS_HTTPS_ENABLED=true
+      - DB_DRIVER=postgres
+      - DB_HOST=shlink_db
+      - DB_PORT=5432
+      - DB_NAME=shlink
+      - DB_USER=shlink
+      - DB_PASSWORD=$SHLINK_DB_PASSWORD
+    labels:
+      - "traefik.docker.network=sushii-2_web"
+      - "traefik.http.services.shlink.loadbalancer.server.port=8080"
+      - "traefik.http.routers.shlink.rule=Host(`a.sushii.xyz`)"
+      - "traefik.http.routers.shlink.entrypoints=secure"
+      - "traefik.http.routers.shlink.tls.certresolver=acme"
+  shlink_db:
+    image: postgres:15.1-bullseye
+    container_name: shlink_db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d shlink -U shlink"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ~/docker/shlink_postgres/15:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    networks:
+      - sushii_net
+    environment:
+      - POSTGRES_USER=shlink
+      - POSTGRES_DB=shlink
+      - POSTGRES_PASSWORD=$SHLINK_DB_PASSWORD
+  keydb:
+    image: eqalpha/keydb:x86_64_v6.3.1
+    container_name: sushii-keydb
+    restart: unless-stopped
+    expose:
+      - "6379"
+    networks:
+      - sushii_net
+    labels:
+      - "traefik.enable=false"
 networks:
-    web:
-        external: true
-        name: sushii-2_web
-    sushii_net:
-        external: true
-        name: sushii-2_sushii_net
+  web:
+    external: true
+    name: sushii-2_web
+  sushii_net:
+    external: true
+    name: sushii-2_sushii_net
