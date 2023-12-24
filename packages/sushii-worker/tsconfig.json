@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["bun-types"],
+    "types": ["node"],
     "target": "es2016",
     "sourceMap": true,
     "inlineSources": true,

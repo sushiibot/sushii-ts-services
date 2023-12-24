@@ -1,4 +1,4 @@
-FROM oven/bun:1.0.18-debian
+FROM oven/bun:1.0.20-debian
 
 WORKDIR /config
 
