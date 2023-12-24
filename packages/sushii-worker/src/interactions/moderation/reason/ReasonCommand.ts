@@ -20,8 +20,8 @@ import { ActionType } from "../ActionType";
 import customIds from "../../customIds";
 import sleep from "../../../utils/sleep";
 import logger from "../../../logger";
-import { getGuildConfigById } from "../../../model/guild/guildConfig.repository";
 import db from "../../../model/db";
+import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
 
 enum ReasonError {
   UserFetch,
@@ -275,7 +275,7 @@ export default class ReasonCommand extends SlashCommandHandler {
     const caseRangeStr = interaction.options.getString("case", true);
     const reason = interaction.options.getString("reason", true);
 
-    const config = await getGuildConfigById(db, interaction.guildId);
+    const config = await getGuildConfig(db, interaction.guildId);
 
     // No guild config found, ignore
     if (

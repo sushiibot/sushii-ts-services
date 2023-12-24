@@ -1,0 +1,134 @@
+import {
+  DiscordAPIError,
+  EmbedBuilder,
+  Events,
+  GuildMember,
+  PartialGuildMember,
+  RESTJSONErrorCodes,
+  TimestampStyles,
+} from "discord.js";
+import dayjs from "dayjs";
+import { EventHandlerFn } from "./EventHandler";
+import Context from "../model/context";
+import db from "../model/db";
+import {
+  getGuildConfig,
+  upsertGuildConfig,
+} from "../db/GuildConfig/GuildConfig.repository";
+import Color from "../utils/colors";
+import toTimestamp from "../utils/toTimestamp";
+
+async function logMember(
+  member: GuildMember | PartialGuildMember,
+  action: "join" | "leave",
+): Promise<void> {
+  const conf = await getGuildConfig(db, member.guild.id);
+
+  if (!conf.msg_channel) {
+    return;
+  }
+
+  if (!conf.log_member_enabled || !conf.log_member) {
+    return;
+  }
+
+  const channel = member.guild.channels.cache.get(conf.log_member);
+  if (!channel || !channel.isTextBased()) {
+    return;
+  }
+
+  const name = member.nickname
+    ? `${member.nickname} ~ ${member.user.displayName} (@${member.user.tag})`
+    : `${member.user.displayName} (@${member.user.tag})`;
+
+  let accountCreated = toTimestamp(dayjs.utc(member.user.createdAt));
+  accountCreated += " ~ ";
+  accountCreated += ` ${toTimestamp(
+    dayjs.utc(member.user.createdAt),
+    TimestampStyles.RelativeTime,
+  )}`;
+
+  const embed = new EmbedBuilder()
+    .setAuthor({
+      name,
+      iconURL: member.user.displayAvatarURL(),
+    })
+    .setFooter({
+      text: `ID: ${member.user.id}`,
+    })
+    .setTimestamp(new Date());
+
+  // Always add account age
+  embed.addFields({
+    name: "Account created",
+    value: accountCreated,
+    inline: true,
+  });
+
+  if (action === "join") {
+    embed
+      .setColor(Color.Success)
+      .setDescription(`**${member.user.tag}** joined the server.`);
+  } else {
+    embed
+      .setColor(Color.Error)
+      .setDescription(`**${member.user.tag}** left the server.`);
+
+    // Only add member age when leaving
+    let memberAge = toTimestamp(dayjs.utc(member.joinedAt));
+    memberAge += " ~ ";
+    memberAge += ` ${toTimestamp(
+      dayjs.utc(member.joinedAt),
+      TimestampStyles.RelativeTime,
+    )}`;
+
+    embed.addFields({
+      name: "Joined server",
+      value: memberAge,
+      inline: true,
+    });
+
+    if (member.roles.cache.size > 1) {
+      embed.addFields([
+        {
+          name: "Roles",
+          value: member.roles.cache.map((role) => role.toString()).join(", "),
+        },
+      ]);
+    }
+  }
+
+  try {
+    await channel.send({ embeds: [embed] });
+  } catch (err) {
+    if (!(err instanceof DiscordAPIError)) {
+      throw err;
+    }
+
+    // Channel was deleted or something
+    if (err.code === RESTJSONErrorCodes.UnknownChannel) {
+      // Remove channel from config
+      conf.log_member = null;
+      await upsertGuildConfig(db, conf);
+    }
+
+    if (err.code === RESTJSONErrorCodes.MissingAccess) {
+      // No permission to send to channel
+    }
+  }
+}
+
+export const memberLogJoinHandler: EventHandlerFn<
+  Events.GuildMemberAdd
+> = async (ctx: Context, member: GuildMember): Promise<void> => {
+  await logMember(member, "join");
+};
+
+export const memberLogLeaveHandler: EventHandlerFn<
+  Events.GuildMemberRemove
+> = async (
+  ctx: Context,
+  member: GuildMember | PartialGuildMember,
+): Promise<void> => {
+  await logMember(member, "join");
+};

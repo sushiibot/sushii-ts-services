@@ -9,8 +9,8 @@ import Color from "../../../utils/colors";
 import { SlashCommandHandler } from "../../handlers";
 import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
 import { invalidCaseRangeEmbed } from "./Messages";
-import { getGuildConfigById } from "../../../model/guild/guildConfig.repository";
 import db from "../../../model/db";
+import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
 
 export default class UncaseCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -52,7 +52,7 @@ export default class UncaseCommand extends SlashCommandHandler {
 
     const caseRangeStr = interaction.options.getString("case", true);
 
-    const config = await getGuildConfigById(db, interaction.guildId);
+    const config = await getGuildConfig(db, interaction.guildId);
 
     // No guild config found, ignore
     if (

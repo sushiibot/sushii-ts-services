@@ -4,6 +4,10 @@ import { EventHandlerFn } from "./EventHandler";
 import db from "../model/db";
 import logger from "../logger";
 import config from "../model/config";
+import {
+  clearGuildBans,
+  insertGuildBans,
+} from "../db/GuildBan/GuildBan.repository";
 
 async function getGuildBans(guild: Guild): Promise<string[]> {
   const guildAllBans: string[] = [];
@@ -88,29 +92,23 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
 
     // First clear the bans for this guild, so we can remove bans that were removed
     // eslint-disable-next-line no-await-in-loop
-    await db
-      .deleteFrom("app_public.guild_bans")
-      .where("guild_id", "=", guild.id)
-      .execute();
+    await clearGuildBans(db, guild.id);
 
     if (guildBans.length === 0) {
       // No bans, skip insertion
+      logger.debug(
+        {
+          guildId: guild.id,
+          guildName: guild.name,
+        },
+        "No bans to insert, skipping",
+      );
+
       continue;
     }
 
     // eslint-disable-next-line no-await-in-loop
-    await db
-      .insertInto("app_public.guild_bans")
-      .values(
-        guildBans.map((userId) => ({
-          guild_id: guild.id,
-          user_id: userId,
-        })),
-      )
-      // Ignore conflicts, there shouldn't be any cuz we just cleared them but
-      // who knows
-      .onConflict((oc) => oc.doNothing())
-      .execute();
+    await insertGuildBans(db, guild.id, guildBans);
 
     // Sleep for 5 seconds
 

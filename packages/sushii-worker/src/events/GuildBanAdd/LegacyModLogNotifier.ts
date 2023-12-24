@@ -3,8 +3,8 @@ import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { EventHandlerFn } from "../EventHandler";
-import { getGuildConfigById } from "../../model/guild/guildConfig.repository";
 import db from "../../model/db";
+import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
 
 const notifiedCache = new Set<string>();
 
@@ -22,7 +22,7 @@ const legacyModLogNotifierHandler: EventHandlerFn<Events.GuildBanAdd> = async (
     return;
   }
 
-  const config = await getGuildConfigById(db, ban.guild.id);
+  const config = await getGuildConfig(db, ban.guild.id);
 
   // No guild config found, ignore
   if (
