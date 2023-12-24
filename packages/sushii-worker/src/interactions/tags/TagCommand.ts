@@ -59,7 +59,7 @@ async function getFieldsAndFiles(
 
       files.push(attachment);
     } catch (err) {
-      return Err(t("tag.edit.error.attachment_fetch", { ns: "commands" }));
+      return Err("Failed to fetch attachment from Discord.");
     }
   }
 
@@ -508,7 +508,7 @@ export default class TagCommand extends SlashCommandHandler {
         embeds: [
           new EmbedBuilder()
             .setTitle(t("tag.random.error.title", { ns: "commands" }))
-            .setDescription(t("tag.random.error.not_found", { ns: "commands" }))
+            .setDescription("No tags found.")
             .setColor(Color.Error)
             .toJSON(),
         ],
