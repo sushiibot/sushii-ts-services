@@ -32,6 +32,10 @@ import {
 import { banPoolOnBanHandler } from "./events/ban_pool/BanPoolHandler";
 import config from "./model/config";
 import { isCurrentDeploymentActive } from "./db/Deployment/Deployment.repository";
+import {
+  memberLogJoinHandler,
+  memberLogLeaveHandler,
+} from "./events/MemberLog";
 
 const tracer = opentelemetry.trace.getTracer("event-handler");
 
@@ -232,6 +236,43 @@ export default function registerEventHandlers(
       "Left guild",
       `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
       Color.Error,
+    );
+  });
+
+  client.on(Events.GuildMemberAdd, async (member) => {
+    if (!(await isActive())) {
+      return;
+    }
+
+    await tracer.startActiveSpan(Events.GuildMemberAdd, async (span: Span) => {
+      await handleEvent(
+        ctx,
+        Events.GuildMemberAdd,
+        [memberLogJoinHandler],
+        member,
+      );
+
+      span.end();
+    });
+  });
+
+  client.on(Events.GuildMemberRemove, async (member) => {
+    if (!(await isActive())) {
+      return;
+    }
+
+    await tracer.startActiveSpan(
+      Events.GuildMemberRemove,
+      async (span: Span) => {
+        await handleEvent(
+          ctx,
+          Events.GuildMemberRemove,
+          [memberLogLeaveHandler],
+          member,
+        );
+
+        span.end();
+      },
     );
   });
 

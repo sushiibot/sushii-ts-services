@@ -127,3 +127,8 @@ main().catch((e) => {
   log.error(e, "fatal error rip");
   process.exit(1);
 });
+
+process.on("exit", (code) => {
+  log.info(`Exiting with code ${code}`);
+  log.flush();
+});
