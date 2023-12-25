@@ -16,7 +16,6 @@ import {
 } from "discord.js";
 import { t } from "i18next";
 import { None, Option, Some } from "ts-results";
-import { GetRoleMenuQuery, RoleMenuRole } from "../../generated/graphql";
 import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -27,6 +26,20 @@ import {
   interactionReplyErrorMessage,
   interactionReplyErrorPlainMessage,
 } from "../responses/error";
+import {
+  addRoleMenuRoles,
+  deleteRoleMenu,
+  deleteRoleMenuRoles,
+  getRoleMenu,
+  getRoleMenuRole,
+  getRoleMenuRoles,
+  listRoleMenus,
+  reorderRoleMenuRoles,
+  upsertRoleMenu,
+  upsertRoleMenuRole,
+} from "../../db/RoleMenu/ModLog.repository";
+import db from "../../model/db";
+import { RoleMenuRow } from "../../db/RoleMenu/RoleMenu.table";
 
 const RE_ROLE = /(?:<@&)?(\d{17,20})>?/g;
 
@@ -46,27 +59,6 @@ enum RoleMenuOption {
 enum RoleMenuType {
   SelectMenu = "select_menu",
   Buttons = "buttons",
-}
-
-type QueriedRoleMenuRole = Omit<RoleMenuRole, "nodeId">;
-
-function sortRoleMenuRoles(
-  a: QueriedRoleMenuRole,
-  b: QueriedRoleMenuRole,
-): number {
-  if (a.position === b.position) {
-    return 0;
-  }
-
-  if (a.position == null) {
-    return 1;
-  }
-
-  if (b.position == null) {
-    return -1;
-  }
-
-  return a.position - b.position;
 }
 
 export default class RoleMenuCommand extends SlashCommandHandler {
@@ -383,14 +375,12 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     );
 
     // Save to DB
-    await ctx.sushiiAPI.sdk.createRoleMenu({
-      roleMenu: {
-        guildId: interaction.guildId,
-        menuName: name,
-        requiredRole: requiredRole?.id,
-        description,
-        maxCount: maxRoles,
-      },
+    await upsertRoleMenu(db, {
+      guild_id: interaction.guildId,
+      menu_name: name,
+      required_role: requiredRole?.id,
+      description,
+      max_count: maxRoles,
     });
 
     // TODO: Add role select menu to this message, so that the user can
@@ -445,12 +435,11 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     const menuData = menu.safeUnwrap();
 
-    const roles = menuData.roleMenuRolesByGuildIdAndMenuName.nodes;
-    roles.sort(sortRoleMenuRoles);
+    const roles = await getRoleMenuRoles(db, interaction.guildId, name);
 
     const rolesStr = roles
       .map((r) => {
-        let s = `<@&${r.roleId}>`;
+        let s = `<@&${r.role_id}>`;
 
         if (r.emoji && !r.description) {
           s += `\n┗ **Emoji:** ${r.emoji}`;
@@ -481,12 +470,12 @@ export default class RoleMenuCommand extends SlashCommandHandler {
             },
             {
               name: "Max Roles",
-              value: menuData.maxCount?.toString() || "No limit on max roles.",
+              value: menuData.max_count?.toString() || "No limit on max roles.",
             },
             {
               name: "Required Role",
-              value: menuData.requiredRole
-                ? `<&@${menuData.requiredRole}>`
+              value: menuData.required_role
+                ? `<&@${menuData.required_role}>`
                 : "No required role.",
             },
             {
@@ -507,13 +496,9 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
-    const menus = await ctx.sushiiAPI.sdk.listRoleMenus({
-      guildId: interaction.guildId,
-    });
+    const menus = await listRoleMenus(db, interaction.guildId);
 
-    const nodes = menus.allRoleMenus?.nodes;
-
-    if (!nodes || nodes.length === 0) {
+    if (menus.length === 0) {
       await interaction.reply({
         content: "No role menus found.",
       });
@@ -525,7 +510,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       embeds: [
         new EmbedBuilder()
           .setTitle("All role menus")
-          .setDescription(nodes.map((n) => n.menuName).join("\n"))
+          .setDescription(menus.map((n) => n.menu_name).join("\n"))
           .setColor(Color.Success)
           .toJSON(),
       ],
@@ -574,20 +559,16 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       RoleMenuOption.RequiredRole,
     );
 
-    // Save to DB
-    await ctx.sushiiAPI.sdk.updateRoleMenu({
-      guildId: interaction.guildId,
-      menuName,
-      roleMenuPatch: {
-        guildId: interaction.guildId,
-        menuName: newName,
-        requiredRole: requiredRole?.id,
-        description,
-        maxCount,
-      },
+    // Save to DB, fall back to previous value if not provided
+    await upsertRoleMenu(db, {
+      guild_id: interaction.guildId,
+      menu_name: newName || menuName,
+      required_role: requiredRole?.id || menuData.required_role,
+      description: description || menuData.description,
+      max_count: maxCount || menuData.max_count,
     });
 
-    const requiredRoleId = requiredRole?.id || menuData.requiredRole;
+    const requiredRoleId = requiredRole?.id || menuData.required_role;
 
     await interaction.reply({
       embeds: [
@@ -608,7 +589,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
               name: "Max Roles",
               value:
                 maxCount?.toString() ||
-                menuData.maxCount?.toString() ||
+                menuData.max_count?.toString() ||
                 "No limit on max roles.",
             },
             {
@@ -656,11 +637,13 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
-    const roleMenuData = roleMenu.safeUnwrap();
-    const currentRoles = roleMenuData.roleMenuRolesByGuildIdAndMenuName.nodes;
-    currentRoles.sort(sortRoleMenuRoles);
+    const currentRoles = await getRoleMenuRoles(
+      db,
+      interaction.guildId,
+      menuName,
+    );
 
-    const currentRoleIDs = currentRoles.map((r) => r.roleId);
+    const currentRoleIDs = currentRoles.map((r) => r.role_id);
 
     const currentRoleIDsSet = new Set(currentRoleIDs);
     const newOrderRoleIDsSet = new Set(roleIds);
@@ -682,11 +665,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
-    await ctx.sushiiAPI.sdk.setRoleMenuRoleOrder({
-      guildId: interaction.guildId,
-      menuName,
-      roleIds,
-    });
+    await reorderRoleMenuRoles(db, interaction.guildId, menuName, roleIds);
 
     await interaction.reply({
       embeds: [
@@ -726,8 +705,9 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
-    const currentRoleIDs =
-      roleMenu.val.roleMenuRolesByGuildIdAndMenuName.nodes.map((r) => r.roleId);
+    const roles = await getRoleMenuRoles(db, interaction.guildId, menuName);
+
+    const currentRoleIDs = roles.map((r) => r.role_id);
 
     const selectMenu = new RoleSelectMenuBuilder()
       .setPlaceholder("Select roles to add to menu")
@@ -821,10 +801,9 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     }
 
     // Add new roles to the menu
-    let newAllRoleIds =
-      roleMenu
-        .safeUnwrap()
-        .roleMenuRolesByGuildIdAndMenuName.nodes.map((n) => n.roleId) || [];
+    const menuRoles = await getRoleMenuRoles(db, interaction.guildId, menuName);
+
+    let newAllRoleIds = menuRoles.map((r) => r.role_id);
     newAllRoleIds = newAllRoleIds.concat(roleIds);
 
     // Deduplicate -- sets are ordered so this should preserve order
@@ -838,11 +817,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
-    await ctx.sushiiAPI.sdk.addRoleMenuRoles({
-      guildId: interaction.guildId,
-      menuName,
-      roleIds,
-    });
+    await addRoleMenuRoles(db, interaction.guildId, menuName, roleIds);
 
     await interaction.reply({
       embeds: [
@@ -901,17 +876,19 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     }
 
     // Remove roles from the menu
-    const newRoleIds = roleMenu
-      .safeUnwrap()
-      .roleMenuRolesByGuildIdAndMenuName.nodes.map((n) => n.roleId)
+    const menuRoles = await getRoleMenuRoles(db, interaction.guildId, menuName);
+
+    const newRoleIds = menuRoles
+      .map((n) => n.role_id)
       .filter((id) => id && !roleIdsToRemove.includes(id));
 
-    // Save to DB
-    await ctx.sushiiAPI.sdk.deleteRoleMenuRoles({
-      guildId: interaction.guildId,
+    // Delete from db
+    await deleteRoleMenuRoles(
+      db,
+      interaction.guildId,
       menuName,
-      roleIds: roleIdsToRemove,
-    });
+      roleIdsToRemove,
+    );
 
     await interaction.reply({
       embeds: [
@@ -958,14 +935,14 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No role provided.");
     }
 
-    const menuData = roleMenu.safeUnwrap();
+    const roleMenuRole = await getRoleMenuRole(
+      db,
+      interaction.guildId,
+      menuName,
+      role.id,
+    );
 
-    const menuContainsRole =
-      menuData.roleMenuRolesByGuildIdAndMenuName.nodes.find(
-        (r) => r.roleId === role.id,
-      );
-
-    if (!menuContainsRole) {
+    if (!roleMenuRole) {
       await interaction.reply({
         content: t("rolemenu.roleoptions.error.role_not_in_menu"),
       });
@@ -1003,25 +980,27 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
         return;
       }
+
+      roleMenuRole.emoji = parsedEmoji.string;
     }
 
-    if (description && description.length > 100) {
-      await interactionReplyErrorMessage(
-        ctx,
-        interaction,
-        t("rolemenu.roleoptions.error.description_too_long"),
-      );
+    if (description) {
+      // First check if description is too long
+      if (description.length > 100) {
+        await interactionReplyErrorMessage(
+          ctx,
+          interaction,
+          t("rolemenu.roleoptions.error.description_too_long"),
+        );
 
-      return;
+        return;
+      }
+
+      // Set description
+      roleMenuRole.description = description;
     }
 
-    await ctx.sushiiAPI.sdk.upsertRoleMenuRole({
-      guildId: interaction.guildId,
-      menuName,
-      roleId: role.id,
-      description,
-      emoji: parsedEmoji?.string,
-    });
+    await upsertRoleMenuRole(db, roleMenuRole);
 
     const fields = [];
 
@@ -1059,10 +1038,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No name provided.");
     }
 
-    await ctx.sushiiAPI.sdk.deleteRoleMenu({
-      guildId: interaction.guildId,
-      menuName: name,
-    });
+    await deleteRoleMenu(db, interaction.guildId, name);
 
     await interaction.reply({
       embeds: [
@@ -1122,8 +1098,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return map;
     }, new Map<string, Role>());
 
-    const roles = roleMenuData.roleMenuRolesByGuildIdAndMenuName.nodes;
-    roles.sort(sortRoleMenuRoles);
+    const roles = await getRoleMenuRoles(db, interaction.guildId, name);
 
     if (roles.length === 0) {
       await interactionReplyErrorMessage(
@@ -1135,7 +1110,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       return;
     }
 
-    if (roleMenuData.maxCount && roles.length < roleMenuData.maxCount) {
+    if (roleMenuData.max_count && roles.length < roleMenuData.max_count) {
       await interactionReplyErrorMessage(
         ctx,
         interaction,
@@ -1146,17 +1121,17 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     }
 
     const fields = [];
-    if (roleMenuData.requiredRole) {
+    if (roleMenuData.required_role) {
       fields.push({
         name: "Required role",
-        value: `<@&${roleMenuData.requiredRole}>`,
+        value: `<@&${roleMenuData.required_role}>`,
       });
     }
 
-    if (roleMenuData.maxCount) {
+    if (roleMenuData.max_count) {
       fields.push({
         name: "Maximum roles you can pick",
-        value: roleMenuData.maxCount.toString(),
+        value: roleMenuData.max_count.toString(),
       });
     }
 
@@ -1182,10 +1157,11 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     if (type === RoleMenuType.Buttons) {
       let row = new ActionRowBuilder<ButtonBuilder>();
 
-      for (const { roleId, emoji } of roles) {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      for (const { role_id, emoji } of roles) {
         let button = new ButtonBuilder()
-          .setCustomId(customIds.roleMenuButton.compile({ roleId }))
-          .setLabel(guildRolesMap.get(roleId)?.name || roleId)
+          .setCustomId(customIds.roleMenuButton.compile({ roleId: role_id }))
+          .setLabel(guildRolesMap.get(role_id)?.name || role_id)
           .setStyle(ButtonStyle.Secondary);
 
         const parsedEmoji = emoji ? parseEmoji(emoji) : null;
@@ -1222,10 +1198,11 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     if (type === RoleMenuType.SelectMenu) {
       const selectOptions = [];
 
-      for (const { roleId, emoji, description } of roles) {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      for (const { role_id, emoji, description } of roles) {
         let option = new StringSelectMenuOptionBuilder()
-          .setValue(roleId)
-          .setLabel(guildRolesMap.get(roleId)?.name || roleId);
+          .setValue(role_id)
+          .setLabel(guildRolesMap.get(role_id)?.name || role_id);
 
         const parsedEmoji = emoji ? parseEmoji(emoji) : null;
 
@@ -1248,7 +1225,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         .setPlaceholder("Select your roles!")
         .setCustomId(customIds.roleMenuSelect.compile())
         .addOptions(selectOptions)
-        .setMaxValues(roleMenuData.maxCount || roles.length)
+        .setMaxValues(roleMenuData.max_count || roles.length)
         // Allow 0 to let people clear all roles
         // Default is 1
         .setMinValues(0);
@@ -1297,18 +1274,13 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
     menuName: string,
-  ): Promise<
-    Option<NonNullable<GetRoleMenuQuery["roleMenuByGuildIdAndMenuName"]>>
-  > {
-    const menu = await ctx.sushiiAPI.sdk.getRoleMenu({
-      guildId: interaction.guildId,
-      menuName,
-    });
+  ): Promise<Option<RoleMenuRow>> {
+    const menu = await getRoleMenu(db, interaction.guildId, menuName);
 
-    if (!menu.roleMenuByGuildIdAndMenuName) {
+    if (!menu) {
       return None;
     }
 
-    return Some(menu.roleMenuByGuildIdAndMenuName);
+    return Some(menu);
   }
 }
