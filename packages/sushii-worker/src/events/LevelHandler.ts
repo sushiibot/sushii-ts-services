@@ -41,6 +41,8 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
       return;
     }
 
+    // TODO: Convert the update_user_xp postgres function to kysely
+
     // guild_id   bigint,
     // channel_id bigint,
     // user_id    bigint,

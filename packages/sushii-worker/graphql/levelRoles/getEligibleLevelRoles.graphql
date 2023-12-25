@@ -1,8 +1,0 @@
-query getEligibleLevelRoles($guildId: BigInt!, $userIds: [BigInt!]) {
-  getEligibleLevelRoles(guildId: $guildId, userIds: $userIds) {
-    nodes {
-      roleIds
-      userId
-    }
-  }
-}

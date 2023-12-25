@@ -6,10 +6,15 @@ import {
 import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import { isNoValuesDeletedError } from "../../utils/graphqlError";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorPlainMessage } from "../responses/error";
 import canAddRole from "../../utils/canAddRole";
+import {
+  deleteLevelRole,
+  getAllLevelRoles,
+  upsertLevelRole,
+} from "../../db/LevelRole/LevelRole.repository";
+import db from "../../model/db";
 
 enum CommandName {
   LevelRoleNew = "new",
@@ -136,12 +141,13 @@ export default class LevelRoleCommand extends SlashCommandHandler {
       return;
     }
 
-    await ctx.sushiiAPI.sdk.upsertLevelRole({
-      guildId: interaction.guildId,
-      roleId: role.id,
-      addLevel: addLevel.toString(),
-      removeLevel: removeLevel?.toString(),
-    });
+    await upsertLevelRole(
+      db,
+      interaction.guildId,
+      role.id,
+      addLevel,
+      removeLevel || undefined,
+    );
 
     await interaction.reply({
       embeds: [
@@ -175,16 +181,13 @@ export default class LevelRoleCommand extends SlashCommandHandler {
   ): Promise<void> {
     const role = interaction.options.getRole(LevelRoleOption.Role, true);
 
-    try {
-      await ctx.sushiiAPI.sdk.deleteLevelRole({
-        guildId: interaction.guildId,
-        roleId: role.id,
-      });
-    } catch (err) {
-      if (!isNoValuesDeletedError(err)) {
-        throw err;
-      }
+    const deletedCount = await deleteLevelRole(
+      db,
+      interaction.guildId,
+      role.id,
+    );
 
+    if (deletedCount.numDeletedRows === BigInt(0)) {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
@@ -215,15 +218,9 @@ export default class LevelRoleCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
-    const { allLevelRoles } = await ctx.sushiiAPI.sdk.getLevelRoles({
-      guildId: interaction.guildId,
-    });
+    const allLevelRoles = await getAllLevelRoles(db, interaction.guildId);
 
-    if (!allLevelRoles) {
-      throw new Error("No level roles");
-    }
-
-    if (allLevelRoles.nodes.length === 0) {
+    if (allLevelRoles.length === 0) {
       await interaction.reply({
         embeds: [
           new EmbedBuilder()
@@ -237,15 +234,15 @@ export default class LevelRoleCommand extends SlashCommandHandler {
       return;
     }
 
-    const levelRoles = allLevelRoles.nodes.map((node) => {
-      let s = `<@&${node.roleId}>`;
+    const levelRoles = allLevelRoles.map((node) => {
+      let s = `<@&${node.role_id}>`;
 
-      if (node.addLevel) {
-        s += ` at level ${node.addLevel}`;
+      if (node.add_level) {
+        s += ` at level ${node.add_level}`;
       }
 
-      if (node.removeLevel) {
-        s += ` and removed at level ${node.removeLevel}`;
+      if (node.remove_level) {
+        s += ` and removed at level ${node.remove_level}`;
       }
 
       return s;

@@ -1,6 +1,0 @@
-fragment LevelRoleData on LevelRole {
-  guildId
-  roleId
-  addLevel
-  removeLevel
-}

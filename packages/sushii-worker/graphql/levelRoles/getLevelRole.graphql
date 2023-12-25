@@ -1,5 +1,0 @@
-query getLevelRole($guildId: BigInt!, $roleId: BigInt!) {
-  levelRoleByGuildIdAndRoleId(guildId: $guildId, roleId: $roleId) {
-    ...LevelRoleData
-  }
-}

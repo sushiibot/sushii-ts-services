@@ -1,9 +1,0 @@
-mutation deleteLevelRole($guildId: BigInt!, $roleId: BigInt!) {
-  deleteLevelRoleByGuildIdAndRoleId(
-    input: { guildId: $guildId, roleId: $roleId }
-  ) {
-    levelRole {
-      ...LevelRoleData
-    }
-  }
-}
