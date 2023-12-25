@@ -1,5 +1,0 @@
-query getRoleMenu($guildId: BigInt!, $menuName: String!) {
-  roleMenuByGuildIdAndMenuName(guildId: $guildId, menuName: $menuName) {
-    ...RoleMenuData
-  }
-}

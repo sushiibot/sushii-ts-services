@@ -1,8 +1,0 @@
-fragment RoleMenuRoleData on RoleMenuRole {
-  guildId
-  menuName
-  roleId
-  emoji
-  description
-  position
-}

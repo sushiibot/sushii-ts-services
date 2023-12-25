@@ -1,9 +1,0 @@
-mutation deleteRoleMenu($guildId: BigInt!, $menuName: String!) {
-  deleteRoleMenuByGuildIdAndMenuName(
-    input: { guildId: $guildId, menuName: $menuName }
-  ) {
-    roleMenu {
-      ...RoleMenuData
-    }
-  }
-}
