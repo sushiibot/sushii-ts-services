@@ -71,21 +71,24 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
         const embedBuilders = embeds.map((e) => new EmbedBuilder(e.data));
         embedBuilders.push(buildUserHistoryEmbed(cases, "context_menu"));
 
+        // TODO: Make stateless re-generation of embeds instead of modifying
+        // existing embeds that is prone to breakage
+
         // Update button
-        const secondRow = ActionRowBuilder.from<ButtonBuilder>(
-          components[1] as ActionRow<ButtonComponent>,
+        const firstRow = ActionRowBuilder.from<ButtonBuilder>(
+          components[0] as ActionRow<ButtonComponent>,
         );
 
         // Create a new builder for the history button, second row first button
-        const newHistoryButton = ButtonBuilder.from(secondRow.components[0]);
+        const newHistoryButton = ButtonBuilder.from(firstRow.components[0]);
 
         // Disable button
         newHistoryButton.setDisabled(true);
-        secondRow.components[0] = newHistoryButton;
+        firstRow.components[0] = newHistoryButton;
 
         await interaction.update({
           embeds: embedBuilders,
-          components: [components[0], secondRow.toJSON()],
+          components: [firstRow],
         });
 
         return;
@@ -123,19 +126,19 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
 
         embedBuilders.push(embed);
 
-        // Disable lookup button, second row, second button
-        const secondRow = ActionRowBuilder.from<ButtonBuilder>(
-          components[1] as ActionRow<ButtonComponent>,
+        // Disable lookup button, first row now, second button
+        const firstRow = ActionRowBuilder.from<ButtonBuilder>(
+          components[0] as ActionRow<ButtonComponent>,
         );
 
         const lookupButton = ButtonBuilder.from(
-          secondRow.components[1],
+          firstRow.components[1],
         ).setDisabled(true);
-        secondRow.components[1] = lookupButton;
+        firstRow.components[1] = lookupButton;
 
         await interaction.update({
           embeds: embedBuilders,
-          components: [components[0], secondRow.toJSON()],
+          components: [firstRow],
         });
       }
     }
