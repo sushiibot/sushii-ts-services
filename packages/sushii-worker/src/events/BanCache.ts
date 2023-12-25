@@ -75,6 +75,11 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
 
   // Fetch all bans for all guilds the bot is in.
   for (const [, guild] of ctx.client.guilds.cache) {
+    // Ignore if guild is less than 10k members for now
+    if (guild.memberCount < 10000) {
+      continue;
+    }
+
     // eslint-disable-next-line no-await-in-loop
     const guildBans = await getGuildBans(guild);
 
