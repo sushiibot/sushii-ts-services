@@ -17,6 +17,6 @@
     "graphile-migrate": "^1.4.0"
   },
   "devDependencies": {
-    "dotenv-cli": "^6.0.0"
+    "dotenv-cli": "^7.3.0"
   }
 }
