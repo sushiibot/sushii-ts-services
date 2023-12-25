@@ -37,7 +37,9 @@ import {
   memberLogLeaveHandler,
 } from "./events/MemberLog";
 
-const tracer = opentelemetry.trace.getTracer("event-handler");
+const tracerName = "event-handler";
+const tracer = opentelemetry.trace.getTracer(tracerName);
+const prefixSpanName = (name: string): string => `${tracerName}.${name}`;
 
 let lastLogTime = 0;
 
@@ -129,19 +131,22 @@ export default function registerEventHandlers(
 
     await webhookLog("Ready", `Logged in as ${c.user.tag}`, Color.Success);
 
-    await tracer.startActiveSpan(Events.ClientReady, async (span: Span) => {
-      // Check to make Client<true> instead of Client<bool>
-      if (client.isReady()) {
-        await handleEvent(
-          ctx,
-          Events.ClientReady,
-          [banReadyHandler, emojiAndStickerStatsReadyHandler],
-          client,
-        );
-      }
+    await tracer.startActiveSpan(
+      prefixSpanName(Events.ClientReady),
+      async (span: Span) => {
+        // Check to make Client<true> instead of Client<bool>
+        if (client.isReady()) {
+          await handleEvent(
+            ctx,
+            Events.ClientReady,
+            [banReadyHandler, emojiAndStickerStatsReadyHandler],
+            client,
+          );
+        }
 
-      span.end();
-    });
+        span.end();
+      },
+    );
   });
 
   client.on(Events.Debug, async (msg) => {
@@ -244,16 +249,19 @@ export default function registerEventHandlers(
       return;
     }
 
-    await tracer.startActiveSpan(Events.GuildMemberAdd, async (span: Span) => {
-      await handleEvent(
-        ctx,
-        Events.GuildMemberAdd,
-        [memberLogJoinHandler],
-        member,
-      );
+    await tracer.startActiveSpan(
+      prefixSpanName(Events.GuildMemberAdd),
+      async (span: Span) => {
+        await handleEvent(
+          ctx,
+          Events.GuildMemberAdd,
+          [memberLogJoinHandler],
+          member,
+        );
 
-      span.end();
-    });
+        span.end();
+      },
+    );
   });
 
   client.on(Events.GuildMemberRemove, async (member) => {
@@ -262,7 +270,7 @@ export default function registerEventHandlers(
     }
 
     await tracer.startActiveSpan(
-      Events.GuildMemberRemove,
+      prefixSpanName(Events.GuildMemberRemove),
       async (span: Span) => {
         await handleEvent(
           ctx,
@@ -282,7 +290,7 @@ export default function registerEventHandlers(
     }
 
     await tracer.startActiveSpan(
-      Events.InteractionCreate,
+      prefixSpanName(Events.InteractionCreate),
       async (span: Span) => {
         await interactionHandler.handleAPIInteraction(interaction);
         await updateStat(StatName.CommandCount, 1, "add");
@@ -298,7 +306,7 @@ export default function registerEventHandlers(
     }
 
     await tracer.startActiveSpan(
-      Events.GuildAuditLogEntryCreate,
+      prefixSpanName(Events.GuildAuditLogEntryCreate),
       async (span: Span) => {
         await handleEvent(
           ctx,
@@ -318,18 +326,21 @@ export default function registerEventHandlers(
       return;
     }
 
-    await tracer.startActiveSpan(Events.GuildBanAdd, async (span: Span) => {
-      const handlers = [legacyModLogNotifierHandler, banCacheBanHandler];
+    await tracer.startActiveSpan(
+      prefixSpanName(Events.GuildBanAdd),
+      async (span: Span) => {
+        const handlers = [legacyModLogNotifierHandler, banCacheBanHandler];
 
-      // Only handle ban pool events if the flag is enabled
-      if (config.BAN_POOL_ENABLED) {
-        handlers.push(banPoolOnBanHandler);
-      }
+        // Only handle ban pool events if the flag is enabled
+        if (config.BAN_POOL_ENABLED) {
+          handlers.push(banPoolOnBanHandler);
+        }
 
-      await handleEvent(ctx, Events.GuildBanAdd, handlers, guildBan);
+        await handleEvent(ctx, Events.GuildBanAdd, handlers, guildBan);
 
-      span.end();
-    });
+        span.end();
+      },
+    );
   });
 
   client.on(Events.GuildBanRemove, async (guildBan) => {
@@ -337,16 +348,19 @@ export default function registerEventHandlers(
       return;
     }
 
-    await tracer.startActiveSpan(Events.GuildBanRemove, async (span: Span) => {
-      await handleEvent(
-        ctx,
-        Events.GuildBanRemove,
-        [banCacheUnbanHandler],
-        guildBan,
-      );
+    await tracer.startActiveSpan(
+      prefixSpanName(Events.GuildBanRemove),
+      async (span: Span) => {
+        await handleEvent(
+          ctx,
+          Events.GuildBanRemove,
+          [banCacheUnbanHandler],
+          guildBan,
+        );
 
-      span.end();
-    });
+        span.end();
+      },
+    );
   });
 
   client.on(Events.MessageCreate, async (msg) => {
@@ -354,16 +368,19 @@ export default function registerEventHandlers(
       return;
     }
 
-    await tracer.startActiveSpan(Events.MessageCreate, async (span: Span) => {
-      await handleEvent(
-        ctx,
-        Events.MessageCreate,
-        [levelHandler, emojiStatsMsgHandler],
-        msg,
-      );
+    await tracer.startActiveSpan(
+      prefixSpanName(Events.MessageCreate),
+      async (span: Span) => {
+        await handleEvent(
+          ctx,
+          Events.MessageCreate,
+          [levelHandler, emojiStatsMsgHandler],
+          msg,
+        );
 
-      span.end();
-    });
+        span.end();
+      },
+    );
   });
 
   client.on(Events.MessageReactionAdd, async (reaction, user) => {
@@ -372,7 +389,7 @@ export default function registerEventHandlers(
     }
 
     await tracer.startActiveSpan(
-      Events.MessageReactionAdd,
+      prefixSpanName(Events.MessageReactionAdd),
       async (span: Span) => {
         await handleEvent(
           ctx,
@@ -392,46 +409,51 @@ export default function registerEventHandlers(
       return;
     }
 
-    await tracer.startActiveSpan(Events.Raw, async (span: Span) => {
-      if (event.t === GatewayDispatchEvents.MessageDelete) {
-        await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
-      }
-
-      if (event.t === GatewayDispatchEvents.MessageDeleteBulk) {
-        await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
-      }
-
-      if (event.t === GatewayDispatchEvents.MessageUpdate) {
-        try {
-          // Log first to keep old message, then cache after for new update.
-          // Fine to await since each event is a specific type, no other types that
-          // this blocks.
-          await msgLogHandler(ctx, event.t, event.d);
-          await msgLogCacheHandler(ctx, event.t, event.d);
-        } catch (err) {
-          Sentry.captureException(err, {
-            tags: {
-              event: "MessageUpdate",
-            },
-          });
-
-          logger.error(
-            {
-              err,
-              event,
-            },
-            "error handling event %s",
-            event.t,
-          );
+    await tracer.startActiveSpan(
+      prefixSpanName(Events.Raw),
+      async (span: Span) => {
+        if (event.t === GatewayDispatchEvents.MessageDelete) {
+          await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
         }
-      }
 
-      if (event.t === GatewayDispatchEvents.MessageCreate) {
-        await runParallel(event.t, [msgLogCacheHandler(ctx, event.t, event.d)]);
-      }
+        if (event.t === GatewayDispatchEvents.MessageDeleteBulk) {
+          await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
+        }
 
-      span.end();
-    });
+        if (event.t === GatewayDispatchEvents.MessageUpdate) {
+          try {
+            // Log first to keep old message, then cache after for new update.
+            // Fine to await since each event is a specific type, no other types that
+            // this blocks.
+            await msgLogHandler(ctx, event.t, event.d);
+            await msgLogCacheHandler(ctx, event.t, event.d);
+          } catch (err) {
+            Sentry.captureException(err, {
+              tags: {
+                event: "MessageUpdate",
+              },
+            });
+
+            logger.error(
+              {
+                err,
+                event,
+              },
+              "error handling event %s",
+              event.t,
+            );
+          }
+        }
+
+        if (event.t === GatewayDispatchEvents.MessageCreate) {
+          await runParallel(event.t, [
+            msgLogCacheHandler(ctx, event.t, event.d),
+          ]);
+        }
+
+        span.end();
+      },
+    );
   });
 
   logger.info("Registered Discord.js event handlers");

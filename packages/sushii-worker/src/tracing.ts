@@ -8,8 +8,8 @@ import { Tracer, Span, SpanStatusCode } from "@opentelemetry/api";
 import logger from "./logger";
 import config from "./model/config";
 
-// Only create traces for 1% of events
-const samplePercentage = 0.01;
+// Only create traces for 10% of events
+const samplePercentage = 0.1;
 
 const exporterOptions = {
   // Default URL
@@ -29,10 +29,8 @@ const sdk = new NodeSDK({
 
 // initialize the SDK and register with the OpenTelemetry API
 // this enables the API to record telemetry
-sdk
-  .start()
-  .then(() => logger.info(exporterOptions, "Tracing initialized"))
-  .catch((error) => logger.error(error, "Error initializing tracing"));
+sdk.start();
+logger.info(exporterOptions, "Tracing initialized");
 
 export default sdk;
 
