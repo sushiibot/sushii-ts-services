@@ -16,6 +16,9 @@ enum SushiiEmoji {
   PartnerIcon = "<:Partner:856045536687947796>",
   VerifiedIcon = "<:Verified:856045537236353024>",
   DiscoverableIcon = "🧭",
+
+  // Message
+  SpeechBubble = "🗨️",
 }
 
 export default SushiiEmoji;

@@ -68,11 +68,11 @@ async function logMember(
   if (action === "join") {
     embed
       .setColor(Color.Success)
-      .setDescription(`**${member.user.tag}** joined the server.`);
+      .setDescription(`${member.user.toString()} joined the server.`);
   } else {
     embed
       .setColor(Color.Error)
-      .setDescription(`**${member.user.tag}** left the server.`);
+      .setDescription(`${member.user.toString()} left the server.`);
 
     // Only add member age when leaving
     let memberAge = toTimestamp(dayjs.utc(member.joinedAt));

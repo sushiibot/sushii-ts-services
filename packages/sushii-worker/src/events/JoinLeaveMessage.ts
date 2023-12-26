@@ -26,7 +26,7 @@ export const memberJoinMessageHandler: EventHandlerFn<
     .replace(/<username>/g, member.user.username)
     .replace(/<mention>/g, member.user.toString())
     .replace(/<server>/g, member.guild.name)
-    .replace(/{member_number}/g, member.guild.memberCount.toString());
+    .replace(/<member_number>/g, member.guild.memberCount.toString());
 
   await channel.send(msg);
 };
@@ -56,7 +56,7 @@ export const memberLeaveMessageHandler: EventHandlerFn<
     .replace(/<username>/g, member.user.username)
     .replace(/<mention>/g, member.user.toString())
     .replace(/<server>/g, member.guild.name)
-    .replace(/{member_number}/g, member.guild.memberCount.toString());
+    .replace(/<member_number>/g, member.guild.memberCount.toString());
 
   await channel.send(msg);
 };

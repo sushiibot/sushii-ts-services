@@ -9,6 +9,11 @@ import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
 import db from "../../model/db";
+import {
+  deleteNotification,
+  insertNotification,
+  listNotifications,
+} from "../../db/Notification/Notification.repository";
 
 export default class NotificationCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -74,19 +79,16 @@ export default class NotificationCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
-    const keywordRaw = interaction.options.getString("keyword", true);
+    const keyword = interaction.options.getString("keyword", true);
 
-    const keyword = keywordRaw.toLowerCase().trim();
+    const res = await insertNotification(
+      db,
+      interaction.guildId,
+      interaction.user.id,
+      keyword,
+    );
 
-    const exists = await db
-      .selectFrom("app_public.notifications")
-      .selectAll()
-      .where("guild_id", "=", interaction.guildId)
-      .where("user_id", "=", interaction.user.id)
-      .where("keyword", "=", keyword)
-      .executeTakeFirst();
-
-    if (exists) {
+    if (res.numInsertedOrUpdatedRows === BigInt(0)) {
       await interaction.reply({
         content: t("notification.add.error.duplicate", {
           ns: "commands",
@@ -97,15 +99,6 @@ export default class NotificationCommand extends SlashCommandHandler {
 
       return;
     }
-
-    await db
-      .insertInto("app_public.notifications")
-      .values({
-        guild_id: interaction.guildId,
-        user_id: interaction.user.id,
-        keyword,
-      })
-      .execute();
 
     const embed = new EmbedBuilder()
       .setTitle("Added notification.")
@@ -122,12 +115,11 @@ export default class NotificationCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
-    const notifications = await db
-      .selectFrom("app_public.notifications")
-      .selectAll()
-      .where("guild_id", "=", interaction.guildId)
-      .where("user_id", "=", interaction.user.id)
-      .execute();
+    const notifications = await listNotifications(
+      db,
+      interaction.guildId,
+      interaction.user.id,
+    );
 
     const keywords = notifications.map((n) => n.keyword);
 
@@ -159,12 +151,12 @@ export default class NotificationCommand extends SlashCommandHandler {
   ): Promise<void> {
     const keyword = interaction.options.getString("keyword", true);
 
-    const deleted = await db
-      .deleteFrom("app_public.notifications")
-      .where("guild_id", "=", interaction.guildId)
-      .where("user_id", "=", interaction.user.id)
-      .where("keyword", "=", keyword)
-      .executeTakeFirst();
+    const deleted = await deleteNotification(
+      db,
+      interaction.guildId,
+      interaction.user.id,
+      keyword,
+    );
 
     if (deleted.numDeletedRows === BigInt(0)) {
       await interaction.reply({

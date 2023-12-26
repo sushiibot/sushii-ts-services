@@ -6,6 +6,7 @@ import {
 import Context from "../../model/context";
 import db from "../../model/db";
 import { AutocompleteHandler } from "../handlers";
+import { searchNotifications } from "../../db/Notification/Notification.repository";
 
 export default class NotificationListAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = "notification.delete";
@@ -20,16 +21,17 @@ export default class NotificationListAutocomplete extends AutocompleteHandler {
       throw new Error("Option type must be string.");
     }
 
-    // Escape any % characters
-    const val = option.value.replace(/%/g, "%%");
+    if (!interaction.inCachedGuild()) {
+      throw new Error("Guild not cached");
+    }
 
-    const matching = await db
-      .selectFrom("app_public.notifications")
-      .select("keyword")
-      .where("guild_id", "=", interaction.guildId)
-      .where("user_id", "=", interaction.user.id)
-      .where("keyword", "ilike", `${val}%`)
-      .execute();
+    // Escaped in searchNotifications
+    const matching = await searchNotifications(
+      db,
+      interaction.guildId,
+      interaction.user.id,
+      option.value,
+    );
 
     const choices = matching.slice(0, 25).map((row) => ({
       name: row.keyword,

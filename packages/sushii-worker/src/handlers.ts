@@ -36,6 +36,11 @@ import {
   memberLogJoinHandler,
   memberLogLeaveHandler,
 } from "./events/MemberLog";
+import { notificationHandler } from "./events/Notifications";
+import {
+  memberJoinMessageHandler,
+  memberLeaveMessageHandler,
+} from "./events/JoinLeaveMessage";
 
 const tracerName = "event-handler";
 const tracer = opentelemetry.trace.getTracer(tracerName);
@@ -223,7 +228,7 @@ export default function registerEventHandlers(
 
     await webhookLog(
       "Joined guild",
-      `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
+      `${guild.name} (${guild.id}) - ${guild.memberCount} members\n${guild.client.guilds.cache.size} guilds total`,
       Color.Info,
     );
   });
@@ -239,7 +244,7 @@ export default function registerEventHandlers(
 
     await webhookLog(
       "Left guild",
-      `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
+      `${guild.name} (${guild.id}) - ${guild.memberCount} members\n${guild.client.guilds.cache.size} guilds total`,
       Color.Error,
     );
   });
@@ -255,7 +260,7 @@ export default function registerEventHandlers(
         await handleEvent(
           ctx,
           Events.GuildMemberAdd,
-          [memberLogJoinHandler],
+          [memberLogJoinHandler, memberJoinMessageHandler],
           member,
         );
 
@@ -275,7 +280,7 @@ export default function registerEventHandlers(
         await handleEvent(
           ctx,
           Events.GuildMemberRemove,
-          [memberLogLeaveHandler],
+          [memberLogLeaveHandler, memberLeaveMessageHandler],
           member,
         );
 
@@ -374,7 +379,7 @@ export default function registerEventHandlers(
         await handleEvent(
           ctx,
           Events.MessageCreate,
-          [levelHandler, emojiStatsMsgHandler],
+          [levelHandler, emojiStatsMsgHandler, notificationHandler],
           msg,
         );
 
