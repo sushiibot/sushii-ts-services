@@ -130,5 +130,5 @@ export const memberLogLeaveHandler: EventHandlerFn<
   ctx: Context,
   member: GuildMember | PartialGuildMember,
 ): Promise<void> => {
-  await logMember(member, "join");
+  await logMember(member, "leave");
 };
