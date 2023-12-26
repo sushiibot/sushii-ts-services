@@ -8,6 +8,8 @@ import {
 import Context from "../../model/context";
 import { getDurationFromNow } from "../../utils/getDuration";
 import { AutocompleteHandler } from "../handlers";
+import { listReminders } from "../../db/Reminder/Reminder.repository";
+import db from "../../model/db";
 
 export default class ReminderDeleteAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = "reminder.delete";
@@ -22,21 +24,18 @@ export default class ReminderDeleteAutocomplete extends AutocompleteHandler {
       throw new Error("Option type must be string.");
     }
 
-    const matching = await ctx.sushiiAPI.sdk.getUserReminders({
-      userId: interaction.user.id,
-    });
+    const matching = await listReminders(db, interaction.user.id);
 
-    const choices: APIApplicationCommandOptionChoice[] | undefined =
-      matching.allReminders?.nodes
-        .filter((r) => r.description.startsWith(option.value) && r)
-        .filter((r) => !!r)
-        .slice(0, 25)
-        .map((s) => ({
-          name: `${getDurationFromNow(dayjs.utc(s.expireAt)).humanize()} - ${
-            s.description
-          }`,
-          value: s.setAt,
-        }));
+    const choices: APIApplicationCommandOptionChoice[] | undefined = matching
+      .filter((r) => r.description.startsWith(option.value) && r)
+      .filter((r) => !!r)
+      .slice(0, 25)
+      .map((s) => ({
+        name: `${getDurationFromNow(dayjs.utc(s.expire_at)).humanize()} - ${
+          s.description
+        }`,
+        value: s.set_at.toISOString(),
+      }));
 
     await interaction.respond(choices || []);
   }

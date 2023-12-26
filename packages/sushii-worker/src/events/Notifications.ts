@@ -26,18 +26,23 @@ export const notificationHandler: EventHandlerFn<Events.MessageCreate> = async (
   ctx: Context,
   msg: Message,
 ): Promise<void> => {
+  // Ignore dms
+  if (!msg.inGuild()) {
+    return;
+  }
+
+  // Ignore bots
+  if (msg.author.bot) {
+    return;
+  }
+
+  // Empty message, either attachment or sticker only
+  if (!msg.content) {
+    return;
+  }
+
   await tracer.startActiveSpan("notificationHandler", async (span) => {
     try {
-      // Ignore dms
-      if (!msg.inGuild()) {
-        return;
-      }
-
-      // Ignore bots
-      if (msg.author.bot) {
-        return;
-      }
-
       const matched = await getMatchingNotifications(
         db,
         msg.guildId,

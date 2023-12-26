@@ -2,6 +2,8 @@ import dayjs from "dayjs";
 import logger from "../logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
+import { deleteMessagesBefore } from "../db/Message/Message.repository";
+import db from "../model/db";
 
 const RETAIN_DURATION = dayjs.duration({
   days: 7,
@@ -14,16 +16,17 @@ const task: BackgroundTask = {
   cronTime: "0 0 * * *",
 
   async onTick(ctx: Context): Promise<void> {
-    const { deleteMessagesBefore } =
-      await ctx.sushiiAPI.sdk.deleteMessagesBefore({
-        before: dayjs().utc().subtract(RETAIN_DURATION).toISOString(),
-      });
+    const res = await deleteMessagesBefore(
+      db,
+      dayjs().utc().subtract(RETAIN_DURATION).toDate(),
+    );
 
-    if (!deleteMessagesBefore) {
-      return;
-    }
-
-    logger.info("Deleted %d messages", deleteMessagesBefore.bigInt || 0);
+    logger.info(
+      {
+        deleteCount: res.numDeletedRows,
+      },
+      "Deleted old messages",
+    );
   },
 };
 

@@ -8,10 +8,15 @@ import dayjs from "dayjs";
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import { isNoValuesDeletedError } from "../../utils/graphqlError";
 import parseDuration from "../../utils/parseDuration";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorPlainMessage } from "../responses/error";
+import {
+  deleteReminder,
+  insertReminder,
+  listReminders,
+} from "../../db/Reminder/Reminder.repository";
+import db from "../../model/db";
 
 export default class ReminderCommand extends SlashCommandHandler {
   serverOnly = false;
@@ -106,14 +111,12 @@ export default class ReminderCommand extends SlashCommandHandler {
 
     const expireAt = dayjs().utc().add(duration);
 
-    await ctx.sushiiAPI.sdk.createReminder({
-      reminder: {
-        userId: interaction.user.id,
-        description,
-        setAt: dayjs().utc().toISOString(),
-        expireAt: expireAt.toISOString(),
-      },
-    });
+    await insertReminder(
+      db,
+      interaction.user.id,
+      expireAt.toDate(),
+      description,
+    );
 
     const embed = new EmbedBuilder()
       .setTitle(t("reminder.add.success.title", { ns: "commands" }))
@@ -136,12 +139,10 @@ export default class ReminderCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction,
   ): Promise<void> {
-    const reminders = await ctx.sushiiAPI.sdk.getUserReminders({
-      userId: interaction.user.id,
-    });
+    const reminders = await listReminders(db, interaction.user.id);
 
-    const remindersStr = reminders.allReminders?.nodes.map((r) => {
-      const expireAtTimestamp = dayjs.utc(r.expireAt);
+    const remindersStr = reminders.map((r) => {
+      const expireAtTimestamp = dayjs.utc(r.expire_at);
       return `<t:${expireAtTimestamp.unix()}:R> - ${r.description}`;
     });
 
@@ -180,8 +181,9 @@ export default class ReminderCommand extends SlashCommandHandler {
     interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const reminder = interaction.options.getString("reminder", true);
+    const reminderDate = dayjs.utc(reminder);
 
-    if (!dayjs.utc(reminder).isValid()) {
+    if (!reminderDate.isValid()) {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
@@ -192,21 +194,13 @@ export default class ReminderCommand extends SlashCommandHandler {
       return;
     }
 
-    let deletedReminder;
+    const deletedReminder = await deleteReminder(
+      db,
+      interaction.user.id,
+      reminderDate.toDate(),
+    );
 
-    try {
-      const r = await ctx.sushiiAPI.sdk.deleteReminder({
-        userId: interaction.user.id,
-        setAt: reminder,
-      });
-
-      deletedReminder = r.deleteReminderByUserIdAndSetAt?.reminder;
-    } catch (err) {
-      if (!isNoValuesDeletedError(err)) {
-        throw err;
-      }
-
-      // Returns correct error
+    if (!deletedReminder) {
       await interaction.reply({
         embeds: [
           new EmbedBuilder()
@@ -229,7 +223,7 @@ export default class ReminderCommand extends SlashCommandHandler {
       .setDescription(
         t("reminder.delete.success.description", {
           ns: "commands",
-          expireAtTimestamp: dayjs.utc(deletedReminder?.expireAt).unix(),
+          expireAtTimestamp: dayjs.utc(deletedReminder?.expire_at).unix(),
           description: deletedReminder?.description || "unknown",
         }),
       )
