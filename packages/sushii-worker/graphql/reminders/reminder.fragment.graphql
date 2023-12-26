@@ -1,6 +1,0 @@
-fragment ReminderData on Reminder {
-  userId
-  description
-  expireAt
-  setAt
-}

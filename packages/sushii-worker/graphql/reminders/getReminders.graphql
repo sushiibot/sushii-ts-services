@@ -1,8 +1,0 @@
-query getUserReminders($userId: BigInt!) {
-  allReminders(condition: { userId: $userId }) {
-    nodes {
-      ...ReminderData
-    }
-    totalCount
-  }
-}

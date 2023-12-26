@@ -4,15 +4,16 @@ import {
   ChatInputCommandInteraction,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
-import { BlockType } from "../../generated/graphql";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import {
-  isNoValuesDeletedError,
-  isUniqueViolation,
-} from "../../utils/graphqlError";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorPlainMessage } from "../responses/error";
+import {
+  deleteXpBlock,
+  getXpBlocks,
+  upsertXpBlock,
+} from "../../db/XpBlock/XpBlock.repository";
+import db from "../../model/db";
 
 enum XpGroupName {
   Block = "block",
@@ -155,17 +156,14 @@ export default class XpCommand extends SlashCommandHandler {
       throw new Error("Missing channel");
     }
 
-    try {
-      await ctx.sushiiAPI.sdk.addXpBlock({
-        guildId: interaction.guildId,
-        blockId: channel.id,
-        blockType: BlockType.Channel,
-      });
-    } catch (err) {
-      if (!isUniqueViolation(err)) {
-        throw err;
-      }
+    const newBlock = await upsertXpBlock(
+      db,
+      interaction.guildId,
+      channel.id,
+      "channel",
+    );
 
+    if (!newBlock) {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
@@ -201,17 +199,14 @@ export default class XpCommand extends SlashCommandHandler {
       throw new Error("Missing role");
     }
 
-    try {
-      await ctx.sushiiAPI.sdk.addXpBlock({
-        guildId: interaction.guildId,
-        blockId: role.id,
-        blockType: BlockType.Role,
-      });
-    } catch (err) {
-      if (!isUniqueViolation(err)) {
-        throw err;
-      }
+    const newBlock = await upsertXpBlock(
+      db,
+      interaction.guildId,
+      role.id,
+      "role",
+    );
 
+    if (!newBlock) {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
@@ -242,11 +237,9 @@ export default class XpCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
-    const { allXpBlocks } = await ctx.sushiiAPI.sdk.getXpBlocks({
-      guildId: interaction.guildId,
-    });
+    const allBlocks = await getXpBlocks(db, interaction.guildId);
 
-    if (!allXpBlocks || allXpBlocks.nodes.length === 0) {
+    if (allBlocks.length === 0) {
       await interaction.reply({
         embeds: [
           new EmbedBuilder()
@@ -260,13 +253,13 @@ export default class XpCommand extends SlashCommandHandler {
       return;
     }
 
-    const channelBlocks = allXpBlocks.nodes
-      .filter((node) => node.blockType === BlockType.Channel)
-      .map((node) => `<#${node.blockId}>`);
+    const channelBlocks = allBlocks
+      .filter((block) => block.block_type === "channel")
+      .map((block) => `<#${block.block_id}>`);
 
-    const roleBlocks = allXpBlocks.nodes
-      .filter((node) => node.blockType === BlockType.Role)
-      .map((node) => `<@&${node.blockId}>`);
+    const roleBlocks = allBlocks
+      .filter((block) => block.block_type === "role")
+      .map((block) => `<@&${block.block_id}>`);
 
     await interaction.reply({
       embeds: [
@@ -299,16 +292,9 @@ export default class XpCommand extends SlashCommandHandler {
       throw new Error("Missing channel");
     }
 
-    try {
-      await ctx.sushiiAPI.sdk.deleteXpBlock({
-        guildId: interaction.guildId,
-        blockId: channel.id,
-      });
-    } catch (err) {
-      if (!isNoValuesDeletedError(err)) {
-        throw err;
-      }
+    const res = await deleteXpBlock(db, interaction.guildId, channel.id);
 
+    if (!res) {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,
@@ -344,16 +330,9 @@ export default class XpCommand extends SlashCommandHandler {
       throw new Error("Missing role");
     }
 
-    try {
-      await ctx.sushiiAPI.sdk.deleteXpBlock({
-        guildId: interaction.guildId,
-        blockId: role.id,
-      });
-    } catch (err) {
-      if (!isNoValuesDeletedError(err)) {
-        throw err;
-      }
+    const res = await deleteXpBlock(db, interaction.guildId, role.id);
 
+    if (!res) {
       await interactionReplyErrorPlainMessage(
         ctx,
         interaction,

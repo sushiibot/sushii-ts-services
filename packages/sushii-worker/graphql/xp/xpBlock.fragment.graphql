@@ -1,5 +1,0 @@
-fragment XpBlockData on XpBlock {
-  guildId
-  blockId
-  blockType
-}

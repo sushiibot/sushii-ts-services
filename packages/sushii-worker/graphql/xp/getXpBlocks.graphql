@@ -1,7 +1,0 @@
-query getXpBlocks($guildId: BigInt!) {
-  allXpBlocks(condition: { guildId: $guildId }) {
-    nodes {
-      ...XpBlockData
-    }
-  }
-}
