@@ -63,6 +63,18 @@ export async function getUserRank(
     repLevel = 8;
   }
 
+  let patronEmojiURL: string;
+  if (
+    userData.profile_data &&
+    typeof userData.profile_data === "object" &&
+    !Array.isArray(userData.profile_data) &&
+    typeof userData.profile_data.patronEmojiURL === "string"
+  ) {
+    patronEmojiURL = userData.profile_data.patronEmojiURL;
+  } else {
+    patronEmojiURL = "https://cdn.discordapp.com/emojis/830976556976963644.png";
+  }
+
   const rankContext: Record<string, string | boolean | number> = {
     CONTENT_COLOR: "0, 184, 148",
     CONTENT_OPACITY: "1",
@@ -76,9 +88,7 @@ export async function getUserRank(
     // Rep and fishies
     // Emojis
     IS_PATRON: userData.is_patron,
-    PATRON_EMOJI_URL:
-      userData.profile_data?.patronEmojiURL! ||
-      "https://cdn.discordapp.com/emojis/830976556976963644.png",
+    PATRON_EMOJI_URL: patronEmojiURL,
     LEVEL: userLevel.level,
     CURR_XP: userLevel.nextLevelXpProgress,
     REQ_XP: userLevel.nextLevelXpRequired,
