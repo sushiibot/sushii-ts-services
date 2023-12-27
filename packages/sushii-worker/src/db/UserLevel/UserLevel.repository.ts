@@ -115,7 +115,21 @@ function allRanksQuery(
     .selectFrom("app_public.user_levels")
     .select(({ fn }) => [
       "user_id",
-      fn.agg<number>("row_number").over().as("rank"),
+      fn
+        .agg<number>("row_number")
+        .over((ob) => {
+          switch (timeframe) {
+            case "day":
+              return ob.orderBy("msg_day", "desc");
+            case "week":
+              return ob.orderBy("msg_week", "desc");
+            case "month":
+              return ob.orderBy("msg_month", "desc");
+            case "all_time":
+              return ob.orderBy("msg_all_time", "desc");
+          }
+        })
+        .as("rank"),
     ])
     .where("guild_id", "=", guildId);
 
