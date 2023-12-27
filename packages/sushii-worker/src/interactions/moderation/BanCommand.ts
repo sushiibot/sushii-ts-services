@@ -64,7 +64,7 @@ export default class BanCommand extends SlashCommandHandler {
     }
 
     await interaction.editReply({
-      embeds: [res.val.toJSON()],
+      embeds: [res.val],
     });
   }
 }

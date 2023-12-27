@@ -15,6 +15,8 @@ import parseDuration from "../../utils/parseDuration";
 import { ActionType } from "./ActionType";
 import { DMReasonChoiceValue, ModerationOption } from "./options";
 
+const log = logger.child({ module: "ModActionData" });
+
 const ID_REGEX = /\d{17,20}/g;
 
 export interface ModActionTarget {
@@ -118,6 +120,13 @@ export default class ModActionData {
     interaction: ChatInputCommandInteraction,
     skipMembers?: boolean,
   ): Promise<Result<void, string>> {
+    log.debug(
+      {
+        interactionId: interaction.id,
+      },
+      "fetching targets",
+    );
+
     if (!interaction.inCachedGuild()) {
       return Err("This command can only be used in cached guild.");
     }
@@ -129,12 +138,25 @@ export default class ModActionData {
       return Err("No target users provided");
     }
 
+    log.debug(
+      {
+        interactionId: interaction.id,
+        targetsString,
+      },
+      "targets string",
+    );
+
     const targetIds = targetsString.match(ID_REGEX);
     if (!targetIds) {
       return Err(
         "No users were provided, please specify which users to target with IDs or mentions.",
       );
     }
+
+    log.debug({
+      interactionId: interaction.id,
+      targetIds,
+    });
 
     if (targetIds.length > 25) {
       return Err("You can't target more than 25 users at once.");
@@ -198,6 +220,14 @@ export default class ModActionData {
     // Resolve all member fetches
     const targetMembersResult = await Promise.allSettled(targetMemberPromises);
 
+    log.debug(
+      {
+        interactionId: interaction.id,
+        targetMembersResult: targetMembersResult.map((r) => r.status),
+      },
+      "resolved target members",
+    );
+
     for (let i = 0; i < targetMembersResult.length; i += 1) {
       const result = targetMembersResult[i];
 
@@ -222,6 +252,14 @@ export default class ModActionData {
       }
     }
 
+    log.debug(
+      {
+        interactionId: interaction.id,
+        targetUserPromises: targetUserPromises.length,
+      },
+      "fetching target users instead of members",
+    );
+
     // Resolve all user fetches -- non-members
     const targetUsersResult = await Promise.allSettled(targetUserPromises);
     for (let i = 0; i < targetUsersResult.length; i += 1) {
@@ -239,6 +277,14 @@ export default class ModActionData {
         logger.error(result.reason, "fetch user promise rejected");
       }
     }
+
+    log.debug(
+      {
+        interactionId: interaction.id,
+        targetUsersResult: targetUsersResult.map((r) => r.status),
+      },
+      "fetched users",
+    );
 
     if (this.targets.size === 0) {
       return Err(
