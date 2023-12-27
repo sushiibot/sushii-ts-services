@@ -76,7 +76,7 @@ export default async function sendModActionDM(
 
   try {
     const dmMessage = await interaction.client.users.send(target.id, {
-      embeds: [embed.toJSON()],
+      embeds: [embed],
     });
 
     return Ok(dmMessage);

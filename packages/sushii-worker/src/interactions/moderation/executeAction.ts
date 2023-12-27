@@ -27,6 +27,8 @@ import {
   upsertModLog,
 } from "../../db/ModLog/ModLog.repository";
 
+const log = logger.child({ module: "executeAction" });
+
 interface ActionError {
   target: ModActionTarget;
   message: string;
@@ -342,6 +344,15 @@ async function executeActionUser(
     throw new Error("Failed to create mod log");
   }
 
+  log.debug(
+    {
+      actionType,
+      guildId: interaction.guildId,
+      caseId: modLog.case_id,
+    },
+    "Created new mod log entry",
+  );
+
   // Only DM if (dm_reason true or has dm_message) AND if target is in the server.
   const shouldDM = data.shouldDM(actionType) && target.member !== null;
 
@@ -390,6 +401,15 @@ async function executeActionUser(
       deleteDMPromise = dmRes.unwrap().delete();
     }
 
+    log.debug(
+      {
+        actionType,
+        guildId: interaction.guildId,
+        caseId: modLog.case_id,
+      },
+      "Failed to execute action, deleting mod log and dm",
+    );
+
     const [resDeleteModLog, resDeleteDM] = await Promise.allSettled([
       deleteModLog(db, interaction.guildId, nextCaseId.toString()),
       deleteDMPromise,
@@ -431,6 +451,14 @@ export default async function executeAction(
   // If executor wants to DM, but failed to send DM probably cuz of privacy settings
   let failedDMCount = 0;
 
+  log.debug(
+    {
+      actionType,
+      targets: data.targets.size,
+    },
+    "Executing mod action",
+  );
+
   for (const [, target] of data.targets) {
     // Should be synchronous so we don't reuse the same case ID
     // eslint-disable-next-line no-await-in-loop
@@ -463,6 +491,15 @@ export default async function executeAction(
 
     msg += "\n";
   }
+
+  log.debug(
+    {
+      actionType,
+      targets: data.targets.size,
+      failedDMCount,
+    },
+    "Done executing mod action",
+  );
 
   return Ok(
     buildResponseEmbed(
