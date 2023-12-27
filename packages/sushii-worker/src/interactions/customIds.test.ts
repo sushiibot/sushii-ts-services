@@ -31,10 +31,12 @@ describe("customIds", () => {
     ])("roleMenuButtonMatch($customID)", ({ customID, wantMatch }) => {
       test(`matches role menu button ${customID}`, () => {
         const match = customIds.roleMenuButton.match(customID);
-        if (!match) {
-          expect(wantMatch).toBeFalse();
+
+        if (wantMatch) {
+          expect(match).toEqual(wantMatch as any);
         } else {
-          expect().toEqual(wantMatch);
+          // Failure!
+          expect(match).toBeFalse();
         }
       });
 
