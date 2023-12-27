@@ -3,6 +3,7 @@ import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import Context from "../../model/context";
 import { AutocompleteHandler } from "../handlers";
 import db from "../../model/db";
+import { searchTagsStartsWith } from "../../db/Tag/Tab.repository";
 
 export default class TagGetAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [
@@ -28,13 +29,11 @@ export default class TagGetAutocomplete extends AutocompleteHandler {
       throw new Error("Option type must be string.");
     }
 
-    const tags = await db
-      .selectFrom("app_public.tags")
-      .selectAll()
-      .where("guild_id", "=", interaction.guildId)
-      .where("tag_name", "ilike", `${option.value}%`)
-      .limit(25)
-      .execute();
+    const tags = await searchTagsStartsWith(
+      db,
+      interaction.guildId,
+      option.value,
+    );
 
     // Max 25, slice from 0 to end 25
     const choices = tags.slice(0, 25).map((tag) => ({

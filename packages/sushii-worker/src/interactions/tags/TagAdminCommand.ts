@@ -8,6 +8,7 @@ import { SlashCommandHandler } from "../handlers";
 import Context from "../../model/context";
 import db from "../../model/db";
 import Color from "../../utils/colors";
+import { deleteOwnerTags, deleteTag } from "../../db/Tag/Tab.repository";
 
 enum TagAdminSubcommand {
   Delete = "delete",
@@ -71,13 +72,9 @@ export default class TagAdminCommand extends SlashCommandHandler {
   ): Promise<void> {
     const tagName = interaction.options.getString("name", true);
 
-    const deleteCount = await db
-      .deleteFrom("app_public.tags")
-      .where("guild_id", "=", interaction.guildId)
-      .where("tag_name", "=", tagName)
-      .executeTakeFirst();
+    const deletedTag = await deleteTag(db, interaction.guildId, tagName);
 
-    if (Number(deleteCount.numDeletedRows) === 0) {
+    if (!deletedTag) {
       const embed = new EmbedBuilder()
         .setTitle("Tag Admin")
         .setDescription(`Tag \`${tagName}\` not found.`)
@@ -106,11 +103,7 @@ export default class TagAdminCommand extends SlashCommandHandler {
   ): Promise<void> {
     const user = interaction.options.getUser("user", true);
 
-    const deleteCount = await db
-      .deleteFrom("app_public.tags")
-      .where("guild_id", "=", interaction.guildId)
-      .where("owner_id", "=", user.id)
-      .executeTakeFirst();
+    const deleteCount = await deleteOwnerTags(db, interaction.guildId, user.id);
 
     const deletedNum = Number(deleteCount.numDeletedRows);
 

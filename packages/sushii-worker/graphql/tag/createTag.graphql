@@ -1,7 +1,0 @@
-mutation createTag($tag: TagInput!) {
-  createTag(input: { tag: $tag }) {
-    tag {
-      ...TagData
-    }
-  }
-}
