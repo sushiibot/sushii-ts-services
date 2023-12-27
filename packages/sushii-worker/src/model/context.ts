@@ -1,14 +1,10 @@
 import { APIApplicationCommand } from "discord-api-types/v10";
 import { Client, CDN } from "discord.js";
 import SushiiImageServerClient from "./image_server";
-import SushiiSDK from "./api";
-import { getSdkWebsocket } from "./graphqlClient";
 import MemoryStore from "./MemoryStore";
 import logger from "../logger";
 
 export default class Context {
-  public readonly sushiiAPI: SushiiSDK;
-
   public readonly sushiiImageServer: SushiiImageServerClient;
 
   public readonly client: Client;
@@ -19,9 +15,7 @@ export default class Context {
 
   private commands: APIApplicationCommand[];
 
-  constructor(client: Client, wsSdkClient: ReturnType<typeof getSdkWebsocket>) {
-    this.sushiiAPI = new SushiiSDK(wsSdkClient);
-
+  constructor(client: Client) {
     this.sushiiImageServer = new SushiiImageServerClient();
     this.client = client;
     this.memoryStore = new MemoryStore();

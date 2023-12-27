@@ -10,7 +10,6 @@ import Metrics from "./model/metrics";
 import sdk from "./tracing";
 import Context from "./model/context";
 import startTasks from "./tasks/startTasks";
-import { getSdkWebsocket, getWsClient } from "./model/graphqlClient";
 import config from "./model/config";
 import registerEventHandlers from "./handlers";
 
@@ -29,9 +28,6 @@ async function main(): Promise<void> {
   await initI18next();
 
   const metrics = new Metrics();
-
-  const wsClient = getWsClient();
-  const wsSdk = getSdkWebsocket(wsClient, metrics);
 
   // Create a new client instance
   const djsClient = new Client({
@@ -67,7 +63,7 @@ async function main(): Promise<void> {
   // Set token for rest client early for command registration
   djsClient.rest.setToken(config.DISCORD_TOKEN);
 
-  const ctx = new Context(djsClient, wsSdk);
+  const ctx = new Context(djsClient);
   const client = new InteractionClient(ctx, metrics);
   addCommands(client);
 
@@ -99,9 +95,6 @@ async function main(): Promise<void> {
       djsClient.destroy().catch((err) => {
         log.error(err, "error closing Discord client");
       });
-
-      log.info("closing websocket connection to sushii API");
-      wsClient.terminate();
 
       log.info("closing sentry");
       await Sentry.close(2000);
