@@ -15,7 +15,7 @@ const schema = z.object({
   DISCORD_TOKEN: z.string(),
   LOG_LEVEL: z.string().optional().default("info"),
   APPLICATION_ID: z.string(),
-  SENTRY_DSN: z.string(),
+  SENTRY_DSN: z.string().optional(),
   SUSHII_GRAPHQL_WS_URL: z.string(),
   SUSHII_GRAPHQL_TOKEN: z.string(),
   SUSHII_IMAGE_SERVER_URL: z.string(),
