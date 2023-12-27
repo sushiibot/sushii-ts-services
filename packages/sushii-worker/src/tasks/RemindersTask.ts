@@ -40,7 +40,7 @@ const task: BackgroundTask = {
         .setTitle(
           `Reminder expired from ${toTimestamp(dayjs.utc(reminder.expire_at))}`,
         )
-        .setDescription(reminder.description)
+        .setDescription(reminder.description || "No description.")
         .setColor(Color.Info);
 
       try {
