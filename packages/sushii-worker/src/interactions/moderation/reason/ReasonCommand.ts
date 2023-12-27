@@ -22,6 +22,10 @@ import sleep from "../../../utils/sleep";
 import logger from "../../../logger";
 import db from "../../../model/db";
 import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
+import {
+  getModLogsRange,
+  updateModLogReasonRange,
+} from "../../../db/ModLog/ModLog.repository";
 
 enum ReasonError {
   UserFetch,
@@ -97,20 +101,17 @@ export async function updateModLogReasons(
   // -------------------------------------------------------------------------
   // Update mod log in DB
 
-  const { bulkUpdateModLogReason } =
-    await ctx.sushiiAPI.sdk.bulkUpdateModLogReason({
-      guildId,
-      startCaseId: caseStartId.toString(),
-      endCaseId: caseEndId.toString(),
-      executorId,
-      reason,
-      onlyEmptyReason,
-    });
+  const updatedModLogs = await updateModLogReasonRange(
+    db,
+    guildId,
+    executorId,
+    caseStartId.toString(),
+    caseEndId.toString(),
+    reason,
+    onlyEmptyReason,
+  );
 
-  if (
-    !bulkUpdateModLogReason?.modLogs ||
-    bulkUpdateModLogReason.modLogs.length === 0
-  ) {
+  if (updatedModLogs.length === 0) {
     return;
   }
 
@@ -126,7 +127,7 @@ export async function updateModLogReasons(
   const errs = new Map<ReasonError, string[]>();
 
   const uniqueAffectedUsers = new Set<string>(
-    bulkUpdateModLogReason.modLogs.map((m) => `<@${m.userId}>`),
+    updatedModLogs.map((m) => `<@${m.user_id}>`),
   );
 
   const responseEmbed = new EmbedBuilder()
@@ -148,17 +149,17 @@ export async function updateModLogReasons(
     throw new Error("Mod log channel not found or is not text channel");
   }
 
-  for (const modCase of bulkUpdateModLogReason.modLogs) {
+  for (const modCase of updatedModLogs) {
     // -------------------------------------------------------------------------
     // Fetch the target user
 
     try {
       // eslint-disable-next-line no-await-in-loop
-      await interaction.client.users.fetch(modCase.userId);
+      await interaction.client.users.fetch(modCase.user_id);
     } catch (err) {
       if (err instanceof DiscordAPIError) {
         const arr = errs.get(ReasonError.UserFetch) || [];
-        errs.set(ReasonError.UserFetch, [...arr, modCase.caseId]);
+        errs.set(ReasonError.UserFetch, [...arr, modCase.case_id]);
 
         continue;
       }
@@ -166,9 +167,9 @@ export async function updateModLogReasons(
       throw err;
     }
 
-    if (!modCase.msgId) {
+    if (!modCase.msg_id) {
       const arr = errs.get(ReasonError.MsgIdMissing) || [];
-      errs.set(ReasonError.MsgIdMissing, [...arr, modCase.caseId]);
+      errs.set(ReasonError.MsgIdMissing, [...arr, modCase.case_id]);
 
       continue;
     }
@@ -180,10 +181,10 @@ export async function updateModLogReasons(
     let modLogMsg;
     try {
       // eslint-disable-next-line no-await-in-loop
-      modLogMsg = await modLogchannel.messages.fetch(modCase.msgId);
+      modLogMsg = await modLogchannel.messages.fetch(modCase.msg_id);
     } catch (err) {
       const arr = errs.get(ReasonError.MsgLogFetch) || [];
-      errs.set(ReasonError.MsgLogFetch, [...arr, modCase.caseId]);
+      errs.set(ReasonError.MsgLogFetch, [...arr, modCase.case_id]);
 
       continue;
     }
@@ -321,21 +322,22 @@ export default class ReasonCommand extends SlashCommandHandler {
     // Check & confirm/cancel override
 
     // Get all mod logs in range
-    const { allModLogs } = await ctx.sushiiAPI.sdk.getModLogsInRange({
-      guildId: interaction.guildId,
-      greaterThanOrEqualTo: caseStartId.toString(),
-      lessThanOrEqualTo: caseEndId.toString(),
-    });
+    const cases = await getModLogsRange(
+      db,
+      interaction.guildId,
+      caseStartId.toString(),
+      caseEndId.toString(),
+    );
 
     // Check if any of the mod logs already have reasons set
     const casesWithReason =
-      allModLogs?.nodes
+      cases
         .filter((c) => c.reason !== null)
         .map((c) => {
           const actionType = ActionType.fromString(c.action);
 
-          let s = `\`#${c.caseId}\` - **${ActionType.toString(actionType)}**`;
-          s += ` - <@${c.userId}>\n`;
+          let s = `\`#${c.case_id}\` - **${ActionType.toString(actionType)}**`;
+          s += ` - <@${c.user_id}>\n`;
           s += `┗ **Reason:** ${c.reason}`;
 
           return s;
@@ -349,7 +351,7 @@ export default class ReasonCommand extends SlashCommandHandler {
     // Buttons should only be clickable by the user who ran the command
     // custom_id: reason_confirm/user_id/uuid
     if (casesWithReason.length > 0) {
-      let description = `**${casesWithReason.length} / ${allModLogs?.nodes.length}** of specified cases already have reasons set:\n\n`;
+      let description = `**${casesWithReason.length} / ${cases.length}** of specified cases already have reasons set:\n\n`;
       description += `${casesWithReason.join("\n")}`;
       description += "\n\nPick an option below to continue or cancel.";
 
@@ -370,7 +372,7 @@ export default class ReasonCommand extends SlashCommandHandler {
         interaction.id,
         // All cases have reasons set, so it's either override all or cancel.
         // No option to set for empty reasons only
-        casesWithReason.length === allModLogs?.nodes.length,
+        casesWithReason.length === cases.length,
       );
 
       await interaction.reply({

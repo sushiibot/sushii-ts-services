@@ -21,6 +21,7 @@ import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
 import buildModLogEmbed from "../builders/buildModLogEmbed";
 import { buildDMEmbed } from "../interactions/moderation/sendDm";
 import db from "../model/db";
+import { getNextCaseId } from "../db/ModLog/ModLog.repository";
 
 interface ActionTypeEventData {
   actionType: ActionType;
@@ -216,7 +217,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   if (!matchingCase) {
     logger.debug("No pending case found, creating new case");
 
-    const nextCaseId = await db.getNextCaseId(guild.id);
+    const nextCaseId = await getNextCaseId(db, guild.id);
 
     const newModLog = await db
       .insertInto("app_public.mod_logs")

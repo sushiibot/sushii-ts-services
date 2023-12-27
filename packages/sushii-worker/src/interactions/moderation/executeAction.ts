@@ -21,6 +21,7 @@ import buildModLogEmbed from "../../builders/buildModLogEmbed";
 import db from "../../model/db";
 import { buildModLogComponents } from "../../events/ModLogHandler";
 import { DB } from "../../model/dbTypes";
+import { getNextCaseId } from "../../db/ModLog/ModLog.repository";
 
 interface ActionError {
   target: ModActionTarget;
@@ -305,7 +306,7 @@ async function executeActionUser(
     });
   }
 
-  const nextCaseId = await db.getNextCaseId(interaction.guildId);
+  const nextCaseId = await getNextCaseId(db, interaction.guildId);
 
   logger.debug(
     {

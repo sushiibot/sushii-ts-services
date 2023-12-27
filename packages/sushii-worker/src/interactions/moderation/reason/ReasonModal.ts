@@ -8,6 +8,7 @@ import buildModLogEmbed from "../../../builders/buildModLogEmbed";
 import { ActionType } from "../ActionType";
 import sleep from "../../../utils/sleep";
 import db from "../../../model/db";
+import { getModLog, upsertModLog } from "../../../db/ModLog/ModLog.repository";
 
 // When modal submitted, update mod log message and save the reason
 export default class ModLogReasonModalHandler extends ModalHandler {
@@ -35,12 +36,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       throw new Error("No reason was set in the modal somehow");
     }
 
-    const modCase = await db
-      .selectFrom("app_public.mod_logs")
-      .selectAll()
-      .where("guild_id", "=", interaction.guildId)
-      .where("case_id", "=", caseId)
-      .executeTakeFirst();
+    const modCase = await getModLog(db, interaction.guildId, caseId);
 
     if (!modCase) {
       await interactionReplyErrorPlainMessage(
@@ -53,16 +49,11 @@ export default class ModLogReasonModalHandler extends ModalHandler {
     }
 
     // Save db reason and executor
-    const updatedModCase = await db
-      .updateTable("app_public.mod_logs")
-      .where("guild_id", "=", interaction.guildId)
-      .where("case_id", "=", caseId)
-      .set({
-        reason,
-        executor_id: interaction.member.user.id,
-      })
-      .returningAll()
-      .executeTakeFirst();
+    const updatedModCase = await upsertModLog(db, {
+      ...modCase,
+      reason,
+      executor_id: interaction.member.user.id,
+    });
 
     if (!updatedModCase) {
       await interactionReplyErrorPlainMessage(

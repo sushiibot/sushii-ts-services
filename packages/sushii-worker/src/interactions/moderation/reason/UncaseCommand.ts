@@ -11,6 +11,7 @@ import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
 import { invalidCaseRangeEmbed } from "./Messages";
 import db from "../../../model/db";
 import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
+import { deleteModLogsRange } from "../../../db/ModLog/ModLog.repository";
 
 export default class UncaseCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -115,13 +116,14 @@ export default class UncaseCommand extends SlashCommandHandler {
 
     const [startCaseId, endCaseId] = caseRange;
 
-    const { bulkDeleteModLog } = await ctx.sushiiAPI.sdk.bulkDeleteModLog({
-      guildId: interaction.guildId,
-      startCaseId: startCaseId.toString(),
-      endCaseId: endCaseId.toString(),
-    });
+    const deletedMogLogs = await deleteModLogsRange(
+      db,
+      interaction.guildId,
+      startCaseId.toString(),
+      endCaseId.toString(),
+    );
 
-    if (!bulkDeleteModLog?.modLogs) {
+    if (deletedMogLogs.length === 0) {
       await interaction.reply({
         embeds: [
           new EmbedBuilder()
@@ -131,15 +133,16 @@ export default class UncaseCommand extends SlashCommandHandler {
             .toJSON(),
         ],
       });
+
       return;
     }
 
     // Defer reply for deleting messages
     await interaction.deferReply();
 
-    const deleteIds = bulkDeleteModLog.modLogs
-      .filter((l) => l.msgId)
-      .map((l) => l.msgId!);
+    const deleteIds = deletedMogLogs
+      .filter((l) => l.msg_id)
+      .map((l) => l.msg_id!);
 
     const modLogChannel = await interaction.guild.channels.fetch(
       config.log_mod,
@@ -155,8 +158,8 @@ export default class UncaseCommand extends SlashCommandHandler {
       // Whatever
     }
 
-    const desc = bulkDeleteModLog.modLogs
-      .map((m) => `#${m.caseId} - ${m.action} <@${m.userId}>`)
+    const desc = deletedMogLogs
+      .map((m) => `#${m.case_id} - ${m.action} <@${m.user_id}>`)
       .join("\n");
 
     await interaction.editReply({

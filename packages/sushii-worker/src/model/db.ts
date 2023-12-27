@@ -77,19 +77,6 @@ class SushiiDB extends Kysely<DB> {
       .onConflict((oc) => oc.column("id").doUpdateSet(patch))
       .executeTakeFirstOrThrow();
   }
-
-  async getNextCaseId(guildId: string): Promise<number> {
-    const lastCaseId = await this.selectFrom("app_public.mod_logs")
-      .select(
-        this.fn
-          .coalesce(this.fn.max("case_id"), sql<string>`0`)
-          .as("last_case_id"),
-      )
-      .where("guild_id", "=", guildId)
-      .executeTakeFirstOrThrow();
-
-    return parseInt(lastCaseId.last_case_id, 10) + 1;
-  }
 }
 
 const pool = new Pool({

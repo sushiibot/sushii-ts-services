@@ -9,6 +9,7 @@ import { AutocompleteHandler } from "../../handlers";
 import { parseCaseId } from "./caseId";
 import db from "../../../model/db";
 import {
+  getNextCaseId,
   getRecentModLogs,
   searchModLogsByIDPrefix,
 } from "../../../db/ModLog/ModLog.repository";
@@ -86,7 +87,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
           guildId: interaction.guildId,
         });
 
-        const nextCaseId = await db.getNextCaseId(interaction.guildId);
+        const nextCaseId = await getNextCaseId(db, interaction.guildId);
         const latestCaseId = nextCaseId - 1;
 
         //                          latestCaseId - selectedCaseId + 1

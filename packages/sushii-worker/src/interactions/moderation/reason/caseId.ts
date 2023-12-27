@@ -1,3 +1,4 @@
+import { getNextCaseId } from "../../../db/ModLog/ModLog.repository";
 import Context from "../../../model/context";
 import db from "../../../model/db";
 
@@ -156,7 +157,7 @@ export async function getCaseRange(
       return [caseSpec.startId, caseSpec.endId];
     }
     case "latest": {
-      const nextCaseId = await db.getNextCaseId(guildId);
+      const nextCaseId = await getNextCaseId(db, guildId);
 
       const latestCaseId = nextCaseId - 1;
       const caseStartId = latestCaseId - caseSpec.count + 1;

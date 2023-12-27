@@ -1,5 +1,0 @@
-mutation deleteMessagesBefore($before: Datetime!) {
-  deleteMessagesBefore(input: { before: $before }) {
-    bigInt
-  }
-}

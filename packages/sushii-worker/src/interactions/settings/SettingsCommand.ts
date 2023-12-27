@@ -18,6 +18,7 @@ import { DB, AppPublicMsgLogBlockType } from "../../model/dbTypes";
 import Color from "../../utils/colors";
 import customIds, { SettingsToggleOptions } from "../customIds";
 import logger from "../../logger";
+import { upsertGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
 
 export enum MsgLogCommandName {
   SetChannel = "set_channel",
