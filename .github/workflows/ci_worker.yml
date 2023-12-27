@@ -63,12 +63,6 @@ jobs:
         working-directory: ./packages/sushii-db
         run: bun migrate
 
-      - name: Start sushii-data
-        run: |
-          cp ./packages/sushii-data/.env.ci ./packages/sushii-data/.env
-          yarn workspace @sushiibot/sushii-data build
-          yarn workspace @sushiibot/sushii-data start:prod &
-
       - name: Test sushii-worker
         run: |
           cp ./packages/sushii-worker/.env.ci ./packages/sushii-worker/.env
