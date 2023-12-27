@@ -46,6 +46,8 @@ services:
       - "8080"
     networks:
       - sushii_net
+    labels:
+      - "traefik.enable=false"
   sushii_data:
     build:
       dockerfile: ./dockerfiles/sushii-data/Dockerfile
@@ -71,23 +73,6 @@ services:
       - "5778"
     networks:
       - sushii_net
-  twilight-http-proxy:
-    image: ghcr.io/twilight-rs/http-proxy:metrics
-    container_name: twilight-http-proxy
-    restart: unless-stopped
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "3"
-    expose:
-      - "80"
-    environment:
-      - DISCORD_TOKEN=$DISCORD_TOKEN
-      - RUST_LOG=trace
-    networks:
-      - sushii_net
-    labels:
-      - "traefik.enable=false"
   shlink:
     image: shlinkio/shlink:stable
     container_name: shlink
