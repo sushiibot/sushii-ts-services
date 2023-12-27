@@ -51,7 +51,7 @@ async function main(): Promise<void> {
     rest: {
       version: "10",
       // Ensure we are using the proxy api url
-      api: config.TWILIGHT_PROXY_URL,
+      api: config.DISCORD_API_PROXY_URL,
     },
     makeCache: Options.cacheWithLimits({
       // Do not cache messages
