@@ -31,17 +31,14 @@ export async function getUserLookupData(
       "lookup_details_opt_in",
     ])
     .distinctOn("app_public.guild_bans.guild_id")
-    .where(({ cmpr, and, or }) =>
-      and([
+    .where((eb) =>
+      eb.and([
         // User ID
-        cmpr("app_public.guild_bans.user_id", "=", user.id),
+        eb("app_public.guild_bans.user_id", "=", user.id),
         // Ignore missing or pending cases
-        or([
-          cmpr("logs.pending", "is", null),
-          cmpr("logs.pending", "=", false),
-        ]),
+        eb.or([eb("logs.pending", "is", null), eb("logs.pending", "=", false)]),
         // Bans only
-        or([cmpr("action", "is", null), cmpr("action", "=", "ban")]),
+        eb.or([eb("action", "is", null), eb("action", "=", "ban")]),
       ]),
     )
     .orderBy("app_public.guild_bans.guild_id", "desc")
