@@ -21,7 +21,11 @@ import buildModLogEmbed from "../../builders/buildModLogEmbed";
 import db from "../../model/db";
 import { buildModLogComponents } from "../../events/ModLogHandler";
 import { DB } from "../../model/dbTypes";
-import { getNextCaseId } from "../../db/ModLog/ModLog.repository";
+import {
+  deleteModLog,
+  getNextCaseId,
+  upsertModLog,
+} from "../../db/ModLog/ModLog.repository";
 
 interface ActionError {
   target: ModActionTarget;
@@ -319,24 +323,24 @@ async function executeActionUser(
   const isPending =
     actionType !== ActionType.Note && actionType !== ActionType.Warn;
 
-  const modLog = await db
-    .insertInto("app_public.mod_logs")
-    .values({
-      guild_id: interaction.guildId,
-      case_id: nextCaseId,
-      action: actionType,
-      pending: isPending,
-      user_id: target.user.id,
-      user_tag: target.user.tag,
-      executor_id: data.invoker.id,
-      action_time: dayjs().utc().toISOString(),
-      reason: data.reason,
-      attachments: data.attachment?.url ? [data.attachment.url] : [],
-      // This is set in the mod logger
-      msg_id: undefined,
-    })
-    .returningAll()
-    .executeTakeFirstOrThrow();
+  const modLog = await upsertModLog(db, {
+    guild_id: interaction.guildId,
+    case_id: nextCaseId,
+    action: actionType,
+    pending: isPending,
+    user_id: target.user.id,
+    user_tag: target.user.tag,
+    executor_id: data.invoker.id,
+    action_time: dayjs().utc().toISOString(),
+    reason: data.reason,
+    attachments: data.attachment?.url ? [data.attachment.url] : [],
+    // This is set in the mod logger
+    msg_id: undefined,
+  });
+
+  if (!modLog) {
+    throw new Error("Failed to create mod log");
+  }
 
   // Only DM if (dm_reason true or has dm_message) AND if target is in the server.
   const shouldDM = data.shouldDM(actionType) && target.member !== null;
@@ -387,11 +391,7 @@ async function executeActionUser(
     }
 
     const [resDeleteModLog, resDeleteDM] = await Promise.allSettled([
-      db
-        .deleteFrom("app_public.mod_logs")
-        .where("case_id", "=", nextCaseId.toString())
-        .where("guild_id", "=", interaction.guildId)
-        .execute(),
+      deleteModLog(db, interaction.guildId, nextCaseId.toString()),
       deleteDMPromise,
     ]);
 

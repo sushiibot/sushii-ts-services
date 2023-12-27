@@ -1,7 +1,0 @@
-mutation createModLog($modLog: ModLogInput!) {
-  createModLog(input: { modLog: $modLog }) {
-    modLog {
-      ...ModLogData
-    }
-  }
-}

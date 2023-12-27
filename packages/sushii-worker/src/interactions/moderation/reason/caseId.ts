@@ -1,4 +1,4 @@
-import { getNextCaseId } from "../../../db/ModLog/ModLog.repository";
+import { getModLog, getNextCaseId } from "../../../db/ModLog/ModLog.repository";
 import Context from "../../../model/context";
 import db from "../../../model/db";
 
@@ -136,13 +136,10 @@ export async function getCaseRange(
   switch (caseSpec.type) {
     case "single": {
       if (validate) {
-        const { modLogByGuildIdAndCaseId } = await ctx.sushiiAPI.sdk.getModLog({
-          guildId,
-          caseId: caseSpec.id.toString(),
-        });
+        const modLog = await getModLog(db, guildId, caseSpec.id.toString());
 
         // Early pre-check for single case updates
-        if (!modLogByGuildIdAndCaseId) {
+        if (!modLog) {
           return;
         }
       }

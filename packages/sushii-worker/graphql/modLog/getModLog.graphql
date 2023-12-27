@@ -1,5 +1,0 @@
-query getModLog($caseId: BigInt!, $guildId: BigInt!) {
-  modLogByGuildIdAndCaseId(caseId: $caseId, guildId: $guildId) {
-    ...ModLogData
-  }
-}
