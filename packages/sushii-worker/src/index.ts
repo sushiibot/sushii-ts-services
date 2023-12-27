@@ -45,8 +45,9 @@ async function main(): Promise<void> {
       GatewayIntentBits.MessageContent,
       GatewayIntentBits.GuildEmojisAndStickers,
     ],
-    // Required to not receive reaction events on uncached messages
-    partials: [Partials.Message, Partials.Reaction],
+    // Required to receive reaction events on uncached messages, leave events
+    // on uncached members, etc
+    partials: [Partials.Message, Partials.Reaction, Partials.GuildMember],
     rest: {
       version: "10",
       // Ensure we are using the proxy api url
