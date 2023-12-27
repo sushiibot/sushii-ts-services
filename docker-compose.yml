@@ -21,10 +21,8 @@ services:
       - DISCORD_TOKEN=$DISCORD_TOKEN
       - APPLICATION_ID=193163942502072320
       - DATABASE_URL=$DATABASE_URL
-      - SUSHII_GRAPHQL_WS_URL=ws://sushii_data:8080/graphql
-      - SUSHII_GRAPHQL_TOKEN=$SUSHII_GRAPHQL_TOKEN
       - SENTRY_DSN=$SENTRY_DSN
-      - TWILIGHT_PROXY_URL=http://twilight-http-proxy:80/api
+      - DISCORD_API_PROXY_URL=http://discord_api_proxy:8080/api
       - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
       - TRACING_EXPORTER_URL=http://host.docker.internal:4318/v1/traces
       # Notifications
@@ -40,6 +38,12 @@ services:
       - "traefik.enable=false"
       - "logging=promtail"
       - "logging_jobname=sushii_worker"
+  discord_api_proxy:
+    image: discordjs/proxy
+    container_name: discord_api_proxy
+    restart: unless-stopped
+    expose:
+      - "8080"
   sushii_data:
     build:
       dockerfile: ./dockerfiles/sushii-data/Dockerfile

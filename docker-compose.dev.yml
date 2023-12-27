@@ -1,13 +1,8 @@
 version: "3.8"
 services:
-    twilight-http-proxy:
+    discord_api_proxy:
         ports:
-            - "3001:80"
-        environment:
-            - RUST_LOG=twilight_http_proxy=trace
+            - "3001:8080"
     shlink:
         ports:
             - "8080:8080"
-    keydb:
-        ports:
-            - "6379:6379"
