@@ -51,6 +51,7 @@ export function getModLogsRange(
     .where("guild_id", "=", guildId)
     .where("case_id", ">=", startCaseId)
     .where("case_id", "<=", endCaseId)
+    .orderBy("case_id", "asc")
     .execute();
 }
 
@@ -90,12 +91,16 @@ export function getUserModLogHistory(
     userId: string;
   },
 ): Promise<ModLogRow[]> {
-  return db
-    .selectFrom("app_public.mod_logs")
-    .selectAll()
-    .where("guild_id", "=", guildId)
-    .where("user_id", "=", userId)
-    .execute();
+  return (
+    db
+      .selectFrom("app_public.mod_logs")
+      .selectAll()
+      .where("guild_id", "=", guildId)
+      .where("user_id", "=", userId)
+      // Oldest first
+      .orderBy("case_id", "asc")
+      .execute()
+  );
 }
 
 /**
@@ -113,14 +118,17 @@ export function searchModLogsByIDPrefix(
     maxResults?: number;
   },
 ): Promise<ModLogRow[]> {
-  return db
-    .selectFrom("app_public.mod_logs")
-    .selectAll()
-    .where("guild_id", "=", guildId)
-    .where("case_id", "like", `${searchCaseId}%`)
-    .orderBy("case_id", "desc")
-    .limit(maxResults)
-    .execute();
+  return (
+    db
+      .selectFrom("app_public.mod_logs")
+      .selectAll()
+      .where("guild_id", "=", guildId)
+      .where("case_id", "like", `${searchCaseId}%`)
+      // Newest first - top newest in autocomplete
+      .orderBy("case_id", "desc")
+      .limit(maxResults)
+      .execute()
+  );
 }
 
 /**
@@ -134,13 +142,16 @@ export function getRecentModLogs(
   db: Kysely<DB>,
   { guildId, maxResults = 25 }: { guildId: string; maxResults?: number },
 ): Promise<ModLogRow[]> {
-  return db
-    .selectFrom("app_public.mod_logs")
-    .selectAll()
-    .where("guild_id", "=", guildId)
-    .orderBy("case_id", "desc")
-    .limit(maxResults)
-    .execute();
+  return (
+    db
+      .selectFrom("app_public.mod_logs")
+      .selectAll()
+      .where("guild_id", "=", guildId)
+      // Newest first - top newest in autocomplete
+      .orderBy("case_id", "desc")
+      .limit(maxResults)
+      .execute()
+  );
 }
 
 export function deleteModLogsRange(
@@ -155,6 +166,7 @@ export function deleteModLogsRange(
     .where("case_id", ">=", startCaseId)
     .where("case_id", "<=", endCaseId)
     .returningAll()
+    .orderBy("case_id", "desc")
     .execute();
 }
 
