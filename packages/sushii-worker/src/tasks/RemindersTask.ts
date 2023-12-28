@@ -3,11 +3,7 @@ import dayjs from "dayjs";
 import logger from "../logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
-import {
-  deleteReminder,
-  getAllExpiredReminders,
-  getAndDeleteExpiredReminders,
-} from "../db/Reminder/Reminder.repository";
+import { getAndDeleteExpiredReminders } from "../db/Reminder/Reminder.repository";
 import db from "../model/db";
 import Color from "../utils/colors";
 import toTimestamp from "../utils/toTimestamp";
