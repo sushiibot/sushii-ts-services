@@ -24,7 +24,7 @@ services:
       - SENTRY_DSN=$SENTRY_DSN
       - DISCORD_API_PROXY_URL=http://discord_api_proxy:8080/api
       - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
-      - TRACING_EXPORTER_URL=http://host.docker.internal:4318/v1/traces
+      - TRACING_EXPORTER_URL=http://jaeger:4318/v1/traces
       # Notifications
       - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
       - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
@@ -67,10 +67,18 @@ services:
     image: jaegertracing/all-in-one
     restart: unless-stopped
     ports:
-      - "16686:16686" # The UI port
+      # Localhost - only available via tunnel
+      - "127.0.0.1:16686:16686" # The UI port
     expose:
-      - "16686"
-      - "5778"
+      - "4317" # OTLP gRPC
+      - "4318" # OTLP HTTP
+    environment:
+      - SPAN_STORAGE_TYPE=badger
+      - BADGER_EPHEMERAL=false
+      - BADGER_DIRECTORY_VALUE=/badger/data
+      - BADGER_DIRECTORY_KEY=/badger/key
+    volumes:
+      - ~/docker/jaeger:/badger
     networks:
       - sushii_net
   shlink:
