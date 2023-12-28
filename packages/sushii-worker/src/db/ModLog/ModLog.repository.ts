@@ -166,7 +166,6 @@ export function deleteModLogsRange(
     .where("case_id", ">=", startCaseId)
     .where("case_id", "<=", endCaseId)
     .returningAll()
-    .orderBy("case_id", "desc")
     .execute();
 }
 
