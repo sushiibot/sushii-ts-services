@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeEach, afterEach } from "bun:test";
+import { expect, describe, it } from "bun:test";
 // Need this to not fail on utc
 import "../../dayjs";
 
@@ -25,17 +25,17 @@ describe("ModLog.repository", () => {
 
       await db.transaction().execute(async (tx) => {
         const insertedModLog = await upsertModLog(tx, expectedMogLog);
-        expect(expectedMogLog).toEqual(insertedModLog);
+        expect(expectedMogLog).toEqual(insertedModLog as any);
 
         const deleted = await deleteModLogsRange(
           tx,
-          expectedMogLog.guild_id!,
-          expectedMogLog.case_id,
-          expectedMogLog.case_id,
+          expectedMogLog.guild_id as any,
+          expectedMogLog.case_id as any,
+          expectedMogLog.case_id as any,
         );
 
         expect(deleted).toHaveLength(1);
-        expect(deleted[0]).toEqual(expectedMogLog);
+        expect(deleted[0]).toEqual(expectedMogLog as any);
       });
     });
   });
