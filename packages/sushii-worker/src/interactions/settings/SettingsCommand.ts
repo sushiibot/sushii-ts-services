@@ -277,7 +277,7 @@ export default class SettingsCommand extends SlashCommandHandler {
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .setDMPermission(false)
     .addSubcommand((c) =>
-      c.setName("view").setDescription("View the current server settings."),
+      c.setName("list").setDescription("Show the current server settings."),
     )
     .addSubcommand((c) =>
       c
@@ -456,8 +456,8 @@ export default class SettingsCommand extends SlashCommandHandler {
       // Base commands
       case null: {
         switch (subcommand) {
-          case "view":
-            return SettingsCommand.viewHandler(ctx, interaction);
+          case "list":
+            return SettingsCommand.listHandler(ctx, interaction);
           case "joinmsg":
             return SettingsCommand.joinMsgHandler(ctx, interaction);
           case "leavemsg":
@@ -479,7 +479,7 @@ export default class SettingsCommand extends SlashCommandHandler {
     }
   }
 
-  static async viewHandler(
+  static async listHandler(
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
@@ -563,7 +563,7 @@ export default class SettingsCommand extends SlashCommandHandler {
           components: [],
         });
       } catch (err) {
-        logger.error(err, "Failed to end settings view collector.");
+        logger.error(err, "Failed to end settings list collector.");
       }
     });
   }
