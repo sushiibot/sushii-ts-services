@@ -6,6 +6,7 @@ import BackgroundTask from "./BackgroundTask";
 import {
   deleteReminder,
   getAllExpiredReminders,
+  getAndDeleteExpiredReminders,
 } from "../db/Reminder/Reminder.repository";
 import db from "../model/db";
 import Color from "../utils/colors";
@@ -18,13 +19,13 @@ const task: BackgroundTask = {
   cronTime: "*/30 * * * * *",
 
   async onTick(ctx: Context): Promise<void> {
-    const expiredReminders = await getAllExpiredReminders(db);
+    const expiredReminders = await getAndDeleteExpiredReminders(db);
 
     logger.info(
       {
         expiredReminders: expiredReminders.length,
       },
-      "checking expired reminders",
+      "checking and deleting expired reminders",
     );
 
     /* eslint-disable no-await-in-loop */
@@ -52,15 +53,6 @@ const task: BackgroundTask = {
         continue;
       }
     }
-
-    // Delete reminders -- not in main loop since we want to delete them even if
-    // the reminder failed
-    for (const reminder of expiredReminders) {
-      await deleteReminder(db, reminder.user_id, reminder.set_at);
-    }
-
-    logger.debug("Cleared expired reminders.");
-
     /* eslint-enable no-await-in-loop */
   },
 };

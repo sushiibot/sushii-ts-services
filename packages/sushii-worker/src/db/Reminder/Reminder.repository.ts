@@ -51,3 +51,13 @@ export function getAllExpiredReminders(db: Kysely<DB>): Promise<ReminderRow[]> {
     .where("expire_at", "<=", new Date())
     .execute();
 }
+
+export function getAndDeleteExpiredReminders(
+  db: Kysely<DB>,
+): Promise<ReminderRow[]> {
+  return db
+    .deleteFrom("app_public.reminders")
+    .returningAll()
+    .where("expire_at", "<=", new Date())
+    .execute();
+}
