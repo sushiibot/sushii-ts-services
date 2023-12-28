@@ -41,6 +41,7 @@ import {
   memberJoinMessageHandler,
   memberLeaveMessageHandler,
 } from "./events/JoinLeaveMessage";
+import { mentionTagHandler } from "./events/TagsMention";
 
 const tracerName = "event-handler";
 const tracer = opentelemetry.trace.getTracer(tracerName);
@@ -71,24 +72,36 @@ async function isActive(): Promise<boolean> {
 async function handleEvent<K extends keyof ClientEvents>(
   ctx: Context,
   eventType: K,
-  handlers: EventHandlerFn<K>[],
+  handlers: Record<string, EventHandlerFn<K>>,
   ...args: ClientEvents[K]
 ): Promise<void> {
+  // Use handlerNames for iteration to preserve order
+  const handlerNames = Object.keys(handlers);
+
+  // Same order as handlerNames
   const results = await Promise.allSettled(
-    handlers.map((h) => h(ctx, ...args)),
+    handlerNames.map((name) => handlers[name](ctx, ...args)),
   );
 
-  for (const result of results) {
+  for (let i = 0; i < results.length; i += 1) {
+    const result = results[i];
+    const handlerName = handlerNames[i];
+
     if (result.status === "rejected") {
       Sentry.captureException(result.reason, {
         tags: {
           type: "event",
           event: eventType,
+          // Track which handler failed
+          handlerName,
         },
       });
 
       logger.error(
-        { err: result.reason },
+        {
+          err: result.reason,
+          handlerName,
+        },
         "error handling event %s",
         eventType,
       );
@@ -144,7 +157,10 @@ export default function registerEventHandlers(
           await handleEvent(
             ctx,
             Events.ClientReady,
-            [banReadyHandler, emojiAndStickerStatsReadyHandler],
+            {
+              banReady: banReadyHandler,
+              emojiAndStickerStatsReady: emojiAndStickerStatsReadyHandler,
+            },
             client,
           );
         }
@@ -260,7 +276,10 @@ export default function registerEventHandlers(
         await handleEvent(
           ctx,
           Events.GuildMemberAdd,
-          [memberLogJoinHandler, memberJoinMessageHandler],
+          {
+            memberLogJoin: memberLogJoinHandler,
+            memberjoinMsg: memberJoinMessageHandler,
+          },
           member,
         );
 
@@ -280,7 +299,10 @@ export default function registerEventHandlers(
         await handleEvent(
           ctx,
           Events.GuildMemberRemove,
-          [memberLogLeaveHandler, memberLeaveMessageHandler],
+          {
+            memberLogLeave: memberLogLeaveHandler,
+            memberLeaveMsg: memberLeaveMessageHandler,
+          },
           member,
         );
 
@@ -316,7 +338,7 @@ export default function registerEventHandlers(
         await handleEvent(
           ctx,
           Events.GuildAuditLogEntryCreate,
-          [modLogHandler],
+          { modLog: modLogHandler },
           entry,
           guild,
         );
@@ -334,11 +356,14 @@ export default function registerEventHandlers(
     await tracer.startActiveSpan(
       prefixSpanName(Events.GuildBanAdd),
       async (span: Span) => {
-        const handlers = [legacyModLogNotifierHandler, banCacheBanHandler];
+        const handlers: Record<string, EventHandlerFn<Events.GuildBanAdd>> = {
+          legacyModLogNotifier: legacyModLogNotifierHandler,
+          banCache: banCacheBanHandler,
+        };
 
         // Only handle ban pool events if the flag is enabled
         if (config.BAN_POOL_ENABLED) {
-          handlers.push(banPoolOnBanHandler);
+          handlers.banPoolOnBan = banPoolOnBanHandler;
         }
 
         await handleEvent(ctx, Events.GuildBanAdd, handlers, guildBan);
@@ -359,7 +384,7 @@ export default function registerEventHandlers(
         await handleEvent(
           ctx,
           Events.GuildBanRemove,
-          [banCacheUnbanHandler],
+          { banCacheUnban: banCacheUnbanHandler },
           guildBan,
         );
 
@@ -379,7 +404,13 @@ export default function registerEventHandlers(
         await handleEvent(
           ctx,
           Events.MessageCreate,
-          [levelHandler, emojiStatsMsgHandler, notificationHandler],
+          {
+            level: levelHandler,
+            emojiStats: emojiStatsMsgHandler,
+            notification: notificationHandler,
+            // TODO: Enable only after removed from sushii-2
+            // mentionTag: mentionTagHandler,
+          },
           msg,
         );
 
@@ -399,7 +430,7 @@ export default function registerEventHandlers(
         await handleEvent(
           ctx,
           Events.MessageReactionAdd,
-          [emojiStatsReactHandler],
+          { emojiStatsReact: emojiStatsReactHandler },
           reaction,
           user,
         );
