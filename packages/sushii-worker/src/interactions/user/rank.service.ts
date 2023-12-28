@@ -1,8 +1,8 @@
 import { User } from "discord.js";
-import { Err, Ok, Result } from "ts-results";
+import { Ok, Result } from "ts-results";
 import Context from "../../model/context";
 import UserLevelProgress from "./rank.entity";
-import { getUser } from "../../db/User/User.repository";
+import { getUserOrDefault } from "../../db/User/User.repository";
 import db from "../../model/db";
 import {
   getUserGlobalAllMessages,
@@ -22,10 +22,7 @@ export async function getUserRank(
   user: User,
   guildId: string,
 ): Promise<Result<RankResponse, string>> {
-  const userData = await getUser(db, user.id);
-  if (!userData) {
-    return Err("User not found");
-  }
+  const userData = await getUserOrDefault(db, user.id);
 
   const guildRanks = await getUserGuildAllRanks(db, guildId, user.id);
   const guildLevel = await getUserGuildLevel(db, guildId, user.id);
