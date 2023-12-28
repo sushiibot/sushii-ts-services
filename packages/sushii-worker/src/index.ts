@@ -13,6 +13,8 @@ import startTasks from "./tasks/startTasks";
 import config from "./model/config";
 import registerEventHandlers from "./handlers";
 
+Error.stackTraceLimit = 50;
+
 async function main(): Promise<void> {
   Sentry.init({
     dsn: config.SENTRY_DSN,
