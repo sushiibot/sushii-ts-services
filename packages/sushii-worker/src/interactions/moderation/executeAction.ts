@@ -9,6 +9,7 @@ import {
 import dayjs from "dayjs";
 import { Err, Ok, Result } from "ts-results";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
+import opentelemetry, { SpanStatusCode } from "@opentelemetry/api";
 import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
@@ -26,8 +27,11 @@ import {
   getNextCaseId,
   upsertModLog,
 } from "../../db/ModLog/ModLog.repository";
+import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
+import { startCaughtActiveSpan } from "../../tracing";
 
 const log = logger.child({ module: "executeAction" });
+const tracer = opentelemetry.trace.getTracer("sushii-worker");
 
 interface ActionError {
   target: ModActionTarget;
@@ -151,134 +155,143 @@ async function execActionUser(
     throw new Error("Interaction is not in guild");
   }
 
-  // Audit log header max 512 characters
-  const auditLogReason = data.reason?.slice(0, 512);
+  return tracer.startActiveSpan("execActionUser", async (span) => {
+    // Audit log header max 512 characters
+    const auditLogReason = data.reason?.slice(0, 512);
 
-  const guildConfig = await db.getGuildConfig(interaction.guildId);
+    const guildConfig = await getGuildConfig(db, interaction.guildId);
 
-  try {
-    switch (actionType) {
-      case ActionType.Kick: {
-        // Member already fetched earlier
-        if (!target.member) {
+    try {
+      switch (actionType) {
+        case ActionType.Kick: {
+          // Member already fetched earlier
+          if (!target.member) {
+            return Err({
+              target,
+              message: "User is not in the server",
+            });
+          }
+
+          await interaction.guild.members.kick(target.user.id, auditLogReason);
+
+          break;
+        }
+        case ActionType.Ban: {
+          await interaction.guild.members.ban(target.user.id, {
+            reason: auditLogReason,
+            deleteMessageSeconds: (data.deleteMessageDays || 0) * 86400,
+          });
+
+          break;
+        }
+        case ActionType.BanRemove: {
+          await interaction.guild.members.unban(target.user.id, auditLogReason);
+
+          break;
+        }
+        case ActionType.Timeout:
+        case ActionType.TimeoutAdjust: {
+          if (!target.member) {
+            return Err({
+              target,
+              message: "User is not in the server",
+            });
+          }
+
+          // Timeout and adjust are both same, just update timeout end time
+          await interaction.guild.members.edit(target.user.id, {
+            communicationDisabledUntil: data
+              .communicationDisabledUntil()
+              .unwrap()
+              .toISOString(),
+            reason: auditLogReason,
+          });
+
+          break;
+        }
+        case ActionType.TimeoutRemove: {
+          if (!target.member) {
+            return Err({
+              target,
+              message: "User is not in the server",
+            });
+          }
+
+          await interaction.guild.members.edit(target.user.id, {
+            communicationDisabledUntil: null,
+            reason: auditLogReason,
+          });
+
+          break;
+        }
+        case ActionType.Warn: {
+          // Only warn if member is in the server
+          if (!target.member) {
+            return Err({
+              target,
+              message: "User is not in the server",
+            });
+          }
+
+          await sendModLog(
+            ctx,
+            interaction,
+            guildConfig,
+            actionType,
+            target,
+            modCase,
+          );
+
+          break;
+        }
+        case ActionType.Note: {
+          // Allow for non-members, send no DM
+
+          // Send to mod log only
+          await sendModLog(
+            ctx,
+            interaction,
+            guildConfig,
+            actionType,
+            target,
+            modCase,
+          );
+
+          break;
+        }
+        case ActionType.Lookup:
+        case ActionType.History:
+          throw new Error(`unsupported action type ${actionType}`);
+      }
+    } catch (err) {
+      if (err instanceof DiscordAPIError) {
+        if (err.code === RESTJSONErrorCodes.MissingPermissions) {
           return Err({
             target,
-            message: "User is not in the server",
+            message:
+              "I don't have permission to do this action, make sure I have the \
+    `Ban Members` and`Timeout Members` permission or that my role is above the target user.",
           });
         }
 
-        await interaction.guild.members.kick(target.user.id, auditLogReason);
-
-        break;
-      }
-      case ActionType.Ban: {
-        await interaction.guild.members.ban(target.user.id, {
-          reason: auditLogReason,
-          deleteMessageSeconds: (data.deleteMessageDays || 0) * 86400,
+        span.setStatus({
+          code: SpanStatusCode.ERROR,
+          message: err.message,
         });
 
-        break;
-      }
-      case ActionType.BanRemove: {
-        await interaction.guild.members.unban(target.user.id, auditLogReason);
-
-        break;
-      }
-      case ActionType.Timeout:
-      case ActionType.TimeoutAdjust: {
-        if (!target.member) {
-          return Err({
-            target,
-            message: "User is not in the server",
-          });
-        }
-
-        // Timeout and adjust are both same, just update timeout end time
-        await interaction.guild.members.edit(target.user.id, {
-          communicationDisabledUntil: data
-            .communicationDisabledUntil()
-            .unwrap()
-            .toISOString(),
-          reason: auditLogReason,
-        });
-
-        break;
-      }
-      case ActionType.TimeoutRemove: {
-        if (!target.member) {
-          return Err({
-            target,
-            message: "User is not in the server",
-          });
-        }
-
-        await interaction.guild.members.edit(target.user.id, {
-          communicationDisabledUntil: null,
-          reason: auditLogReason,
-        });
-
-        break;
-      }
-      case ActionType.Warn: {
-        // Only warn if member is in the server
-        if (!target.member) {
-          return Err({
-            target,
-            message: "User is not in the server",
-          });
-        }
-
-        await sendModLog(
-          ctx,
-          interaction,
-          guildConfig,
-          actionType,
-          target,
-          modCase,
-        );
-
-        break;
-      }
-      case ActionType.Note: {
-        // Allow for non-members, send no DM
-
-        // Send to mod log only
-        await sendModLog(
-          ctx,
-          interaction,
-          guildConfig,
-          actionType,
-          target,
-          modCase,
-        );
-
-        break;
-      }
-      case ActionType.Lookup:
-      case ActionType.History:
-        throw new Error(`unsupported action type ${actionType}`);
-    }
-  } catch (err) {
-    if (err instanceof DiscordAPIError) {
-      if (err.code === RESTJSONErrorCodes.MissingPermissions) {
         return Err({
           target,
-          message:
-            "I don't have permission to do this action, make sure I have the \
-`Ban Members` and`Timeout Members` permission or that my role is above the target user.",
+          message: err.message,
         });
       }
 
-      return Err({
-        target,
-        message: err.message,
-      });
+      throw err;
+    } finally {
+      span.end();
     }
 
-    throw err;
-  }
-
-  return Ok(target);
+    return Ok(target);
+  });
 }
 
 interface ExecuteActionUserResult {
@@ -299,106 +312,50 @@ async function executeActionUser(
     throw new Error("Not in guild");
   }
 
-  const hasPermsTargetingMember = await hasPermissionTargetingMember(
-    interaction,
-    target.user,
-    target.member || undefined,
-  );
+  return startCaughtActiveSpan(tracer, "executeActionUser", async () => {
+    const hasPermsTargetingMember = await hasPermissionTargetingMember(
+      interaction,
+      target.user,
+      target.member || undefined,
+    );
 
-  if (hasPermsTargetingMember.err) {
-    return Err({
-      target,
-      message: hasPermsTargetingMember.val,
+    if (hasPermsTargetingMember.err) {
+      return Err({
+        target,
+        message: hasPermsTargetingMember.val,
+      });
+    }
+
+    const nextCaseId = await getNextCaseId(db, interaction.guildId);
+
+    logger.debug(
+      {
+        nextCaseId,
+      },
+      "Creating new mod log",
+    );
+
+    // Should not be pending for note or warn actions
+    const isPending =
+      actionType !== ActionType.Note && actionType !== ActionType.Warn;
+
+    const modLog = await upsertModLog(db, {
+      guild_id: interaction.guildId,
+      case_id: nextCaseId,
+      action: actionType,
+      pending: isPending,
+      user_id: target.user.id,
+      user_tag: target.user.tag,
+      executor_id: data.invoker.id,
+      action_time: dayjs().utc().toISOString(),
+      reason: data.reason,
+      attachments: data.attachment?.url ? [data.attachment.url] : [],
+      // This is set in the mod logger
+      msg_id: undefined,
     });
-  }
 
-  const nextCaseId = await getNextCaseId(db, interaction.guildId);
-
-  logger.debug(
-    {
-      nextCaseId,
-    },
-    "Creating new mod log",
-  );
-
-  // Should not be pending for note or warn actions
-  const isPending =
-    actionType !== ActionType.Note && actionType !== ActionType.Warn;
-
-  const modLog = await upsertModLog(db, {
-    guild_id: interaction.guildId,
-    case_id: nextCaseId,
-    action: actionType,
-    pending: isPending,
-    user_id: target.user.id,
-    user_tag: target.user.tag,
-    executor_id: data.invoker.id,
-    action_time: dayjs().utc().toISOString(),
-    reason: data.reason,
-    attachments: data.attachment?.url ? [data.attachment.url] : [],
-    // This is set in the mod logger
-    msg_id: undefined,
-  });
-
-  if (!modLog) {
-    throw new Error("Failed to create mod log");
-  }
-
-  log.debug(
-    {
-      actionType,
-      guildId: interaction.guildId,
-      caseId: modLog.case_id,
-    },
-    "Created new mod log entry",
-  );
-
-  // Only DM if (dm_reason true or has dm_message) AND if target is in the server.
-  const shouldDM = data.shouldDM(actionType) && target.member !== null;
-
-  const triedDMNonMember = data.shouldDM(actionType) && target.member === null;
-
-  let dmRes: Result<Message, string> | null = null;
-  // DM before for ban and send dm
-  if (actionType === ActionType.Ban && shouldDM) {
-    dmRes = await sendModActionDM(
-      ctx,
-      interaction,
-      data,
-      target.user,
-      actionType,
-    );
-  }
-
-  // Only throw if we do NOT want a mod log case, e.g. fail to kick/ban/mute
-  // REST methods will throw if it is not a successful request
-  const res = await execActionUser(
-    ctx,
-    interaction,
-    data,
-    target,
-    actionType,
-    modLog,
-  );
-
-  // DM after for non-ban and send dm
-  if (actionType !== ActionType.Ban && shouldDM) {
-    dmRes = await sendModActionDM(
-      ctx,
-      interaction,
-      data,
-      target.user,
-      actionType,
-    );
-  }
-
-  // Revert stuff if failed to execute action
-  if (res.err) {
-    // Delete DM reason if it was sent
-    let deleteDMPromise;
-    if (dmRes && dmRes.ok) {
-      // No need to catch err here, not awaited
-      deleteDMPromise = dmRes.unwrap().delete();
+    if (!modLog) {
+      throw new Error("Failed to create mod log");
     }
 
     log.debug(
@@ -407,30 +364,89 @@ async function executeActionUser(
         guildId: interaction.guildId,
         caseId: modLog.case_id,
       },
-      "Failed to execute action, deleting mod log and dm",
+      "Created new mod log entry",
     );
 
-    const [resDeleteModLog, resDeleteDM] = await Promise.allSettled([
-      deleteModLog(db, interaction.guildId, nextCaseId.toString()),
-      deleteDMPromise,
-    ]);
+    // Only DM if (dm_reason true or has dm_message) AND if target is in the server.
+    const shouldDM = data.shouldDM(actionType) && target.member !== null;
 
-    if (resDeleteModLog.status === "rejected") {
-      logger.error(resDeleteModLog.reason, "failed to delete mod log");
+    const triedDMNonMember =
+      data.shouldDM(actionType) && target.member === null;
+
+    let dmRes: Result<Message, string> | null = null;
+    // DM before for ban and send dm
+    if (actionType === ActionType.Ban && shouldDM) {
+      dmRes = await sendModActionDM(
+        ctx,
+        interaction,
+        data,
+        target.user,
+        actionType,
+      );
     }
 
-    if (resDeleteDM.status === "rejected") {
-      logger.error(resDeleteDM.reason, "failed to delete mod log DM");
+    // Only throw if we do NOT want a mod log case, e.g. fail to kick/ban/mute
+    // REST methods will throw if it is not a successful request
+    const res = await execActionUser(
+      ctx,
+      interaction,
+      data,
+      target,
+      actionType,
+      modLog,
+    );
+
+    // DM after for non-ban and send dm
+    if (actionType !== ActionType.Ban && shouldDM) {
+      dmRes = await sendModActionDM(
+        ctx,
+        interaction,
+        data,
+        target.user,
+        actionType,
+      );
     }
 
-    return res;
-  }
+    // Revert stuff if failed to execute action
+    if (res.err) {
+      // Delete DM reason if it was sent
+      let deleteDMPromise;
+      if (dmRes && dmRes.ok) {
+        // No need to catch err here, not awaited
+        deleteDMPromise = dmRes.unwrap().delete();
+      }
 
-  return Ok({
-    user: target.user,
-    shouldDM,
-    failedDM: dmRes?.err || false,
-    triedDMNonMember,
+      log.debug(
+        {
+          actionType,
+          guildId: interaction.guildId,
+          caseId: modLog.case_id,
+        },
+        "Failed to execute action, deleting mod log and dm",
+      );
+
+      const [resDeleteModLog, resDeleteDM] = await Promise.allSettled([
+        deleteModLog(db, interaction.guildId, nextCaseId.toString()),
+        deleteDMPromise,
+      ]);
+
+      if (resDeleteModLog.status === "rejected") {
+        logger.error(resDeleteModLog.reason, "failed to delete mod log");
+      }
+
+      if (resDeleteDM.status === "rejected") {
+        logger.error(resDeleteDM.reason, "failed to delete mod log DM");
+      }
+
+      return res;
+    }
+
+    return Ok({
+      user: target.user,
+      shouldDM,
+      failedDM: dmRes?.err || false,
+      triedDMNonMember,
+    });
   });
 }
 
@@ -444,71 +460,73 @@ export default async function executeAction(
     return Err(new Error("Guild ID is missing"));
   }
 
-  let msg = "";
+  return startCaughtActiveSpan(tracer, "executeAction", async () => {
+    let msg = "";
 
-  // If executor wants to DM, but target is not a member
-  let triedDMNonMemberCount = 0;
-  // If executor wants to DM, but failed to send DM probably cuz of privacy settings
-  let failedDMCount = 0;
+    // If executor wants to DM, but target is not a member
+    let triedDMNonMemberCount = 0;
+    // If executor wants to DM, but failed to send DM probably cuz of privacy settings
+    let failedDMCount = 0;
 
-  log.debug(
-    {
-      actionType,
-      targets: data.targets.size,
-    },
-    "Executing mod action",
-  );
-
-  for (const [, target] of data.targets) {
-    // Should be synchronous so we don't reuse the same case ID
-    // eslint-disable-next-line no-await-in-loop
-    const res = await executeActionUser(
-      ctx,
-      interaction,
-      data,
-      target,
-      actionType,
+    log.debug(
+      {
+        actionType,
+        targets: data.targets.size,
+      },
+      "Executing mod action",
     );
 
-    if (res.err) {
-      msg += `:x: <@${res.val.target.user.id}> (\`${res.val.target.user.id}\`) - ${res.val.message}`;
-    } else {
-      msg += `${ActionType.toEmoji(actionType)} `;
+    for (const [, target] of data.targets) {
+      // Should be synchronous so we don't reuse the same case ID
+      // eslint-disable-next-line no-await-in-loop
+      const res = await executeActionUser(
+        ctx,
+        interaction,
+        data,
+        target,
+        actionType,
+      );
 
-      if (res.val.failedDM) {
-        msg += "❌ ";
-        failedDMCount += 1;
-      } else if (res.val.shouldDM) {
-        // Add emoji if DM was send to user
-        msg += "📬 ";
+      if (res.err) {
+        msg += `:x: <@${res.val.target.user.id}> (\`${res.val.target.user.id}\`) - ${res.val.message}`;
+      } else {
+        msg += `${ActionType.toEmoji(actionType)} `;
+
+        if (res.val.failedDM) {
+          msg += "❌ ";
+          failedDMCount += 1;
+        } else if (res.val.shouldDM) {
+          // Add emoji if DM was send to user
+          msg += "📬 ";
+        }
+
+        msg += `<@${res.val.user.id}> (\`${res.val.user.id}\`)`;
+
+        // Makes triedDMNonMember true if any returned value is true
+        triedDMNonMemberCount += res.val.triedDMNonMember ? 1 : 0;
       }
 
-      msg += `<@${res.val.user.id}> (\`${res.val.user.id}\`)`;
-
-      // Makes triedDMNonMember true if any returned value is true
-      triedDMNonMemberCount += res.val.triedDMNonMember ? 1 : 0;
+      msg += "\n";
     }
 
-    msg += "\n";
-  }
+    log.debug(
+      {
+        actionType,
+        targets: data.targets.size,
+        failedDMCount,
+      },
+      "Done executing mod action",
+    );
 
-  log.debug(
-    {
-      actionType,
-      targets: data.targets.size,
-      failedDMCount,
-    },
-    "Done executing mod action",
-  );
-
-  return Ok(
-    buildResponseEmbed(
-      ctx,
-      data,
-      actionType,
-      msg,
-      triedDMNonMemberCount,
-      failedDMCount,
-    ),
-  );
+    return Ok(
+      buildResponseEmbed(
+        ctx,
+        data,
+        actionType,
+        msg,
+        triedDMNonMemberCount,
+        failedDMCount,
+      ),
+    );
+  });
 }

@@ -1,9 +1,12 @@
+import opentelemetry from "@opentelemetry/api";
 import config from "../../model/config";
 import db from "../../model/db";
 import { AppPrivateDeploymentName } from "../../model/dbTypes";
 
 // Deployment is set to this value when no deployment is active.
 const defaultDeployment: AppPrivateDeploymentName = "blue";
+
+const tracer = opentelemetry.trace.getTracer("Deployment.Repository");
 
 /**
  * Gets the name of the active deployment.
@@ -28,8 +31,14 @@ export async function getActiveDeployment(): Promise<AppPrivateDeploymentName> {
  * @returns {Promise<boolean>} Whether the current deployment is active.
  */
 export async function isCurrentDeploymentActive(): Promise<boolean> {
-  const activeName = await getActiveDeployment();
-  return activeName === config.DEPLOYMENT_NAME;
+  return tracer.startActiveSpan("isCurrentDeploymentActive", async (span) => {
+    try {
+      const activeName = await getActiveDeployment();
+      return activeName === config.DEPLOYMENT_NAME;
+    } finally {
+      span.end();
+    }
+  });
 }
 
 /**

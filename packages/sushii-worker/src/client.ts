@@ -15,6 +15,7 @@ import {
 } from "discord.js";
 import * as Sentry from "@sentry/node";
 import { t } from "i18next";
+import opentelemetry, { SpanStatusCode } from "@opentelemetry/api";
 import Context from "./model/context";
 import log from "./logger";
 import {
@@ -30,6 +31,8 @@ import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
 import config from "./model/config";
 import { isCurrentDeploymentActive } from "./db/Deployment/Deployment.repository";
+
+const tracer = opentelemetry.trace.getTracer("interaction-client");
 
 // For JSON.stringify()
 // eslint-disable-next-line no-extend-native, func-names
@@ -569,40 +572,52 @@ export default class Client {
       return;
     }
 
-    try {
-      this.metrics.handleInteraction(interaction);
+    await tracer.startActiveSpan("handleAPIInteraction", async (span) => {
+      span.setAttribute("interactionType", interaction.type);
 
-      if (interaction.isChatInputCommand()) {
-        return await this.handleSlashCommandInteraction(interaction);
+      try {
+        this.metrics.handleInteraction(interaction);
+
+        if (interaction.isChatInputCommand()) {
+          span.setAttribute("commandName", interaction.commandName);
+          return await this.handleSlashCommandInteraction(interaction);
+        }
+
+        if (interaction.isContextMenuCommand()) {
+          span.setAttribute("commandName", interaction.commandName);
+          return await this.handleContextMenuInteraction(interaction);
+        }
+
+        if (interaction.isAutocomplete()) {
+          span.setAttribute("commandName", interaction.commandName);
+          return await this.handleAutocompleteInteraction(interaction);
+        }
+
+        if (interaction.isButton()) {
+          span.setAttribute("customId", interaction.customId);
+          return await this.handleButtonSubmit(interaction);
+        }
+
+        if (interaction.isAnySelectMenu()) {
+          span.setAttribute("customId", interaction.customId);
+          return await this.handleSelectMenuSubmit(interaction);
+        }
+
+        if (interaction.isModalSubmit()) {
+          span.setAttribute("customId", interaction.customId);
+          return await this.handleModalSubmit(interaction);
+        }
+
+        return undefined;
+      } catch (err) {
+        log.error(
+          err,
+          "error handling interaction, should be caught %s",
+          interaction.id,
+        );
+      } finally {
+        span.end();
       }
-
-      if (interaction.isContextMenuCommand()) {
-        return await this.handleContextMenuInteraction(interaction);
-      }
-
-      if (interaction.isAutocomplete()) {
-        return await this.handleAutocompleteInteraction(interaction);
-      }
-
-      if (interaction.isButton()) {
-        return await this.handleButtonSubmit(interaction);
-      }
-
-      if (interaction.isAnySelectMenu()) {
-        return await this.handleSelectMenuSubmit(interaction);
-      }
-
-      if (interaction.isModalSubmit()) {
-        return await this.handleModalSubmit(interaction);
-      }
-
-      return undefined;
-    } catch (err) {
-      log.error(
-        err,
-        "error handling interaction, should be caught %s",
-        interaction.id,
-      );
-    }
+    });
   }
 }
