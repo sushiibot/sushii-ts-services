@@ -27,6 +27,10 @@ const schema = z.object({
   NOTIFY_WEBHOOK_USERNAME: z.string().optional(),
 
   TRACING_EXPORTER_URL: z.string().optional(),
+  TRACING_SAMPLE_PERCENTAGE: z
+    .preprocess((val) => Number(val), z.number())
+    .optional()
+    .default(0.05), // 5%
 
   DISABLE_BAN_FETCH_ON_READY: z
     .preprocess((x) => x === "true", z.boolean())

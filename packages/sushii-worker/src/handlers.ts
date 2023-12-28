@@ -41,7 +41,7 @@ import {
   memberJoinMessageHandler,
   memberLeaveMessageHandler,
 } from "./events/JoinLeaveMessage";
-import { mentionTagHandler } from "./events/TagsMention";
+// import { mentionTagHandler } from "./events/TagsMention";
 
 const tracerName = "event-handler";
 const tracer = opentelemetry.trace.getTracer(tracerName);

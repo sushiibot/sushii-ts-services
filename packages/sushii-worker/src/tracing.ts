@@ -8,9 +8,6 @@ import { Tracer, Span, SpanStatusCode } from "@opentelemetry/api";
 import logger from "./logger";
 import config from "./model/config";
 
-// Only create traces for 10% of events
-const samplePercentage = 0.1;
-
 const exporterOptions = {
   // Default URL
   url: config.TRACING_EXPORTER_URL || "http://localhost:4318/v1/traces",
@@ -24,7 +21,7 @@ const sdk = new NodeSDK({
   resource: new Resource({
     [SemanticResourceAttributes.SERVICE_NAME]: "sushii_worker",
   }),
-  sampler: new TraceIdRatioBasedSampler(samplePercentage),
+  sampler: new TraceIdRatioBasedSampler(config.TRACING_SAMPLE_PERCENTAGE),
 });
 
 // initialize the SDK and register with the OpenTelemetry API
