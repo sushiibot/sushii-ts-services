@@ -317,7 +317,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
         shouldDMReason,
         timeoutChange,
       },
-      "Not sending timeout DM to user",
+      "Not timeout / do not want DM: skipping timeout reason DM",
     );
   }
 };

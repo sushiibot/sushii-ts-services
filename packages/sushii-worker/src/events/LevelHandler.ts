@@ -143,6 +143,16 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
     await tracer.startActiveSpan("update_member_roles", async (span) => {
       try {
         await msg.member!.roles.set([...newRoles], `Level role ${newLevel}`);
+      } catch (err) {
+        logger.error(
+          {
+            guildId: msg.guildId,
+            channelId: msg.channelId,
+            userId: msg.author.id,
+            err,
+          },
+          "Failed to update member roles",
+        );
       } finally {
         span.end();
       }
