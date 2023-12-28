@@ -24,7 +24,9 @@ services:
       - SENTRY_DSN=$SENTRY_DSN
       - DISCORD_API_PROXY_URL=http://discord_api_proxy:8080/api
       - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
+      # Tracing
       - TRACING_EXPORTER_URL=http://jaeger:4318/v1/traces
+      - TRACING_SAMPLE_PERCENTAGE=0.01
       # Notifications
       - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
       - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
