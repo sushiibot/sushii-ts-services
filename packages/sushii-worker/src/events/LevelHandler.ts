@@ -1,4 +1,9 @@
-import { Events, Message } from "discord.js";
+import {
+  DiscordAPIError,
+  Events,
+  Message,
+  RESTJSONErrorCodes,
+} from "discord.js";
 import { sql } from "kysely";
 import { z } from "zod";
 import opentelemetry, { Span } from "@opentelemetry/api";
@@ -144,7 +149,24 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
       try {
         await msg.member!.roles.set([...newRoles], `Level role ${newLevel}`);
       } catch (err) {
-        logger.error(
+        if (err instanceof DiscordAPIError) {
+          if (err.code === RESTJSONErrorCodes.MissingPermissions) {
+            // Delete the level role ?
+
+            logger.warn(
+              {
+                guildId: msg.guildId,
+                channelId: msg.channelId,
+                userId: msg.author.id,
+                err,
+              },
+              "Missing permissions to update member roles",
+            );
+          }
+        }
+
+        // Ignore error
+        logger.warn(
           {
             guildId: msg.guildId,
             channelId: msg.channelId,
