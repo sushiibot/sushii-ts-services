@@ -42,6 +42,7 @@ import TagAdminCommand from "./tags/TagAdminCommand";
 import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
 import config from "../model/config";
 import BanPoolCommand from "./moderation/ban_pools/BanPool.command";
+import BannerCommand from "./user/banner";
 
 export default function addCommands(
   interactionClient: InteractionClient,
@@ -52,6 +53,7 @@ export default function addCommands(
     new FishyCommand(),
     new RepCommand(),
     new AvatarCommand(),
+    new BannerCommand(),
     new RankCommand(),
 
     // Meta
