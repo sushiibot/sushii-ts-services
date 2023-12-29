@@ -2,6 +2,7 @@ import opentelemetry from "@opentelemetry/api";
 import config from "../../model/config";
 import db from "../../model/db";
 import { AppPrivateDeploymentName } from "../../model/dbTypes";
+import { DeploymentRow } from "./Deployment.table";
 
 // Deployment is set to this value when no deployment is active.
 const defaultDeployment: AppPrivateDeploymentName = "blue";
@@ -44,23 +45,28 @@ export async function isCurrentDeploymentActive(): Promise<boolean> {
 /**
  * Toggles the active deployment name between blue and green.
  */
-export async function toggleActiveDeployment(): Promise<void> {
+export async function toggleActiveDeployment(): Promise<
+  DeploymentRow | undefined
+> {
   const activeName = await getActiveDeployment();
 
   // Only two deployments are supported, switching between for blue/green deployments
   // to simplify rollback process.
   const newDeploymentName = activeName === "blue" ? "green" : "blue";
 
-  await db
-    .insertInto("app_private.active_deployment")
-    .values({
-      name: newDeploymentName,
-    })
-    // Only a single row that is enforced by ID
-    .onConflict((oc) =>
-      oc.column("id").doUpdateSet({
+  return (
+    db
+      .insertInto("app_private.active_deployment")
+      .values({
         name: newDeploymentName,
-      }),
-    )
-    .execute();
+      })
+      // Only a single row that is enforced by ID
+      .onConflict((oc) =>
+        oc.column("id").doUpdateSet({
+          name: newDeploymentName,
+        }),
+      )
+      .returningAll()
+      .executeTakeFirst()
+  );
 }

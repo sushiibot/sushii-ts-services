@@ -11,6 +11,10 @@ const schema = z.object({
   // switch handling of events/interactions between multiple running processes.
   // Default is "blue"
   DEPLOYMENT_NAME: deploymentNameSchema,
+  // Only owner can modify deployment in the channel ID
+  OWNER_USER_ID: z.string(),
+  OWNER_CHANNEL_ID: z.string(),
+
   DATABASE_URL: z.string(),
   DISCORD_TOKEN: z.string(),
   LOG_LEVEL: z.string().optional().default("info"),
