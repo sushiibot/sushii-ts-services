@@ -12,8 +12,8 @@ const schema = z.object({
   // Default is "blue"
   DEPLOYMENT_NAME: deploymentNameSchema,
   // Only owner can modify deployment in the channel ID
-  OWNER_USER_ID: z.string(),
-  OWNER_CHANNEL_ID: z.string(),
+  OWNER_USER_ID: z.string().optional(),
+  OWNER_CHANNEL_ID: z.string().optional(),
 
   DATABASE_URL: z.string(),
   DISCORD_TOKEN: z.string(),

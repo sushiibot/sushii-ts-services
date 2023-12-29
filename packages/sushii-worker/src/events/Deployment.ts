@@ -12,6 +12,11 @@ export const deployToggleHandler: EventHandlerFn<Events.MessageCreate> = async (
   ctx: Context,
   msg: Message,
 ): Promise<void> => {
+  // Optional values, require both to be set.
+  if (!config.OWNER_USER_ID || !config.OWNER_CHANNEL_ID) {
+    return;
+  }
+
   if (msg.author.id !== config.OWNER_USER_ID) {
     return;
   }

@@ -41,6 +41,7 @@ import {
   memberJoinMessageHandler,
   memberLeaveMessageHandler,
 } from "./events/JoinLeaveMessage";
+import { deployToggleHandler } from "./events/Deployment";
 // import { mentionTagHandler } from "./events/TagsMention";
 
 const tracerName = "event-handler";
@@ -408,6 +409,7 @@ export default function registerEventHandlers(
             level: levelHandler,
             emojiStats: emojiStatsMsgHandler,
             notification: notificationHandler,
+            deployToggle: deployToggleHandler,
             // TODO: Enable only after removed from sushii-2
             // mentionTag: mentionTagHandler,
           },
