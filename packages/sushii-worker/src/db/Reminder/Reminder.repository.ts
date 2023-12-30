@@ -1,4 +1,4 @@
-import { Kysely } from "kysely";
+import { Kysely, sql } from "kysely";
 import { DB } from "../../model/dbTypes";
 import { ReminderRow } from "./Reminder.table";
 
@@ -7,17 +7,30 @@ export function insertReminder(
   userId: string,
   expireAt: Date,
   description: string,
-): Promise<ReminderRow | undefined> {
+): Promise<ReminderRow> {
   return db
     .insertInto("app_public.reminders")
-    .values({
+    .values(({ selectFrom }) => ({
+      // Insert the next ID for the specific user
+      id: selectFrom("app_public.reminders")
+        .select((eb) =>
+          eb.fn
+            .coalesce(
+              // Add 1 to the max ID
+              eb(eb.fn.max("id"), "+", "1"),
+              // Or start at 1
+              sql<number>`1`,
+            )
+            .as("id"),
+        )
+        .where("user_id", "=", userId),
       user_id: userId,
       set_at: new Date(),
       expire_at: expireAt,
       description,
-    })
+    }))
     .returningAll()
-    .executeTakeFirst();
+    .executeTakeFirstOrThrow();
 }
 
 export function listReminders(
@@ -34,13 +47,13 @@ export function listReminders(
 export function deleteReminder(
   db: Kysely<DB>,
   userId: string,
-  setAt: Date,
+  id: string,
 ): Promise<ReminderRow | undefined> {
   return db
     .deleteFrom("app_public.reminders")
     .returningAll()
     .where("user_id", "=", userId)
-    .where("set_at", "=", setAt)
+    .where("id", "=", id)
     .executeTakeFirst();
 }
 

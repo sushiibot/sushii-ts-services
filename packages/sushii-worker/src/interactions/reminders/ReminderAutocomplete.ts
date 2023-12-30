@@ -30,12 +30,14 @@ export default class ReminderDeleteAutocomplete extends AutocompleteHandler {
       .filter((r) => r.description.startsWith(option.value) && r)
       .filter((r) => !!r)
       .slice(0, 25)
-      .map((s) => ({
-        name: `${getDurationFromNow(dayjs.utc(s.expire_at)).humanize()} - ${
-          s.description
-        }`,
-        value: s.set_at.toISOString(),
-      }));
+      .map((s) => {
+        const durStr = getDurationFromNow(dayjs.utc(s.expire_at)).humanize();
+
+        return {
+          name: `ID: ${s.id} - Expiring in: ${durStr} - Description: ${s.description}`,
+          value: s.set_at.toISOString(),
+        };
+      });
 
     await interaction.respond(choices || []);
   }

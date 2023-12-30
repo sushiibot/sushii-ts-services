@@ -10,7 +10,6 @@ import Context from "../../model/context";
 import Color from "../../utils/colors";
 import parseDuration from "../../utils/parseDuration";
 import { SlashCommandHandler } from "../handlers";
-import { interactionReplyErrorPlainMessage } from "../responses/error";
 import {
   deleteReminder,
   insertReminder,
@@ -50,8 +49,10 @@ export default class ReminderCommand extends SlashCommandHandler {
         .setDescription("Delete a reminder.")
         .addStringOption((o) =>
           o
-            .setName("reminder")
-            .setDescription("Which reminder to delete.")
+            .setName("reminder_id")
+            .setDescription(
+              "Specify the reminder ID (number in /reminder list), or pick from the autocomplete.",
+            )
             .setRequired(true)
             .setAutocomplete(true),
         ),
@@ -100,6 +101,11 @@ export default class ReminderCommand extends SlashCommandHandler {
                 ns: "commands",
               }),
             )
+            .addFields({
+              name: "Note",
+              value:
+                "Please ensure your privacy settings allow DMs from me to receive reminders.",
+            })
             .setColor(Color.Error)
             .toJSON(),
         ],
@@ -111,7 +117,7 @@ export default class ReminderCommand extends SlashCommandHandler {
 
     const expireAt = dayjs().utc().add(duration);
 
-    await insertReminder(
+    const reminder = await insertReminder(
       db,
       interaction.user.id,
       expireAt.toDate(),
@@ -127,6 +133,9 @@ export default class ReminderCommand extends SlashCommandHandler {
           description,
         }),
       )
+      .setFooter({
+        text: `Reminder ID: ${reminder.id}`,
+      })
       .setColor(Color.Success);
 
     await interaction.reply({
@@ -143,7 +152,7 @@ export default class ReminderCommand extends SlashCommandHandler {
 
     const remindersStr = reminders.map((r) => {
       const expireAtTimestamp = dayjs.utc(r.expire_at);
-      return `<t:${expireAtTimestamp.unix()}:R> - ${r.description}`;
+      return `\`${r.id}\` <t:${expireAtTimestamp.unix()}:R> - ${r.description}`;
     });
 
     if (!remindersStr || remindersStr.length === 0) {
@@ -180,24 +189,12 @@ export default class ReminderCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction,
   ): Promise<void> {
-    const reminder = interaction.options.getString("reminder", true);
-    const reminderDate = dayjs.utc(reminder);
-
-    if (!reminderDate.isValid()) {
-      await interactionReplyErrorPlainMessage(
-        ctx,
-        interaction,
-        "Invalid reminder, please select a reminder from the autocomplete list!",
-        true,
-      );
-
-      return;
-    }
+    const reminderId = interaction.options.getString("reminder_id", true);
 
     const deletedReminder = await deleteReminder(
       db,
       interaction.user.id,
-      reminderDate.toDate(),
+      reminderId,
     );
 
     if (!deletedReminder) {
@@ -227,6 +224,9 @@ export default class ReminderCommand extends SlashCommandHandler {
           description: deletedReminder?.description || "unknown",
         }),
       )
+      .setFooter({
+        text: `Reminder ID: ${deletedReminder.id}`,
+      })
       .setColor(Color.Success);
 
     await interaction.reply({
