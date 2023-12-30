@@ -306,7 +306,7 @@ async function executeActionUser(
   interaction: ChatInputCommandInteraction<"cached">,
   data: ModActionData,
   target: ModActionTarget,
-  actionType: ActionType,
+  incomingActionType: ActionType,
 ): Promise<Result<ExecuteActionUserResult, ActionError>> {
   if (!interaction.inGuild()) {
     throw new Error("Not in guild");
@@ -337,7 +337,24 @@ async function executeActionUser(
 
     // Should not be pending for note or warn actions
     const isPending =
-      actionType !== ActionType.Note && actionType !== ActionType.Warn;
+      incomingActionType !== ActionType.Note &&
+      incomingActionType !== ActionType.Warn;
+
+    // Check if member is already timed out
+    const communicationDisabledUntil = dayjs.utc(
+      target.member?.communicationDisabledUntil,
+    );
+    // This is the current timeout **before** applying the new one
+    // If there is a timeout that hasn't expired yet, then this is an adjustment
+    const isTimeoutAdjust =
+      communicationDisabledUntil.isValid() &&
+      communicationDisabledUntil.isAfter(dayjs.utc());
+
+    // Copy the action type and modify if needed
+    let actionType = incomingActionType;
+    if (isTimeoutAdjust) {
+      actionType = ActionType.TimeoutAdjust;
+    }
 
     const modLog = await upsertModLog(db, {
       guild_id: interaction.guildId,
