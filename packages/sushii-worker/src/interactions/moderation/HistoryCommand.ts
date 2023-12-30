@@ -10,6 +10,7 @@ import { SlashCommandHandler } from "../handlers";
 import buildUserHistoryEmbed from "./formatters/history";
 import { getUserModLogHistory } from "../../db/ModLog/ModLog.repository";
 import db from "../../model/db";
+import { getUserString } from "../../utils/userString";
 
 export default class HistoryCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -77,8 +78,11 @@ export default class HistoryCommand extends SlashCommandHandler {
 
     const userEmbed = buildUserHistoryEmbed(cases, "command")
       .setAuthor({
-        name: `${user.tag} - ${user.id}`,
+        name: getUserString(member || user),
         iconURL: userFaceURL,
+      })
+      .setFooter({
+        text: `User ID: ${user.id}`,
       })
       .addFields(fields);
 
