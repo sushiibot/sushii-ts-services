@@ -78,10 +78,10 @@ async function logMember(
       // Only add member age when leaving
       let memberAge = toTimestamp(dayjs.utc(member.joinedAt));
       memberAge += " ~ ";
-      memberAge += ` ${toTimestamp(
+      memberAge += toTimestamp(
         dayjs.utc(member.joinedAt),
         TimestampStyles.RelativeTime,
-      )}`;
+      );
 
       embed.addFields({
         name: "Joined server",
