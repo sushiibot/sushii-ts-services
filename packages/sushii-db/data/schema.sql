@@ -1886,7 +1886,8 @@ CREATE TABLE app_public.reminders (
     user_id bigint NOT NULL,
     description text NOT NULL,
     set_at timestamp without time zone NOT NULL,
-    expire_at timestamp without time zone NOT NULL
+    expire_at timestamp without time zone NOT NULL,
+    id bigint NOT NULL
 );
 
 
@@ -2275,7 +2276,7 @@ ALTER TABLE ONLY app_public.notifications
 --
 
 ALTER TABLE ONLY app_public.reminders
-    ADD CONSTRAINT reminders_pkey PRIMARY KEY (user_id, set_at);
+    ADD CONSTRAINT reminders_pkey PRIMARY KEY (user_id, id);
 
 
 --
