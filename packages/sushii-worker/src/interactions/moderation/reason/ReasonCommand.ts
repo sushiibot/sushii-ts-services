@@ -126,9 +126,18 @@ export async function updateModLogReasons(
   // error type -> caseIds
   const errs = new Map<ReasonError, string[]>();
 
-  const uniqueAffectedUsers = new Set<string>(
-    updatedModLogs.map((m) => `<@${m.user_id}>`),
-  );
+  const uniqueAffectedUserIDs = [
+    ...new Set<string>(updatedModLogs.map((m) => m.user_id)),
+  ];
+  const uniqueAffectedUserMentionStr = uniqueAffectedUserIDs
+    .map((id) => `<@${id}>`)
+    .join(", ");
+  const unisueAffectedUserIDsStr = uniqueAffectedUserIDs.join("\n");
+
+  let affectedUsersStr = uniqueAffectedUserMentionStr;
+  affectedUsersStr += "\n";
+  affectedUsersStr += "User IDs:\n";
+  affectedUsersStr += unisueAffectedUserIDsStr;
 
   const responseEmbed = new EmbedBuilder()
     .setTitle(`Reason updated for case ${rangeStr}`)
@@ -139,7 +148,7 @@ export async function updateModLogReasons(
       },
       {
         name: "Affected user histories",
-        value: [...uniqueAffectedUsers].join(", "),
+        value: affectedUsersStr,
       },
     ])
     .setColor(Color.Success);
