@@ -12,6 +12,7 @@ import Context from "./model/context";
 import startTasks from "./tasks/startTasks";
 import config from "./model/config";
 import registerEventHandlers from "./handlers";
+import { registerShutdownSignals } from "./signals";
 
 Error.stackTraceLimit = 50;
 
@@ -82,31 +83,29 @@ async function main(): Promise<void> {
   // ---------------------------------------------------------------------------
   // Metrics and healthcheck
 
-  server(metrics.getRegistry(), {
-    onHealthcheck: async () => {
-      log.info("healthcheck");
+  const s = server(metrics.getRegistry());
 
-      return {
-        discordReady: djsClient.isReady(),
-        discord: djsClient.ws.shards.map((s) => ({
-          status: s.status,
-        })),
-      };
-    },
-    onShutdown: async () => {
-      log.info("closing Discord client");
-      djsClient.destroy().catch((err) => {
-        log.error(err, "error closing Discord client");
-      });
-
+  registerShutdownSignals(async () => {
+    log.info("closing Discord client");
+    try {
+      await djsClient.destroy();
       log.info("closing sentry");
       await Sentry.close(2000);
 
       log.info("closing tracing");
       await sdk.shutdown();
 
+      log.info("closing metrics server");
+      s.stop();
+
       log.flush();
-    },
+    } catch (err) {
+      log.error(err, "error shutting down");
+      process.exit(1);
+      return;
+    }
+
+    process.exit(0);
   });
 
   log.info("starting Discord client");

@@ -16,5 +16,8 @@
   "devDependencies": {
     "concurrently": "^7.6.0",
     "kysely-codegen": "^0.11.0"
+  },
+  "dependencies": {
+    "hono": "^3.11.12"
   }
 }

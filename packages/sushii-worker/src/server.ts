@@ -1,61 +1,43 @@
-import http from "http";
-import express from "express";
-import { createTerminus } from "@godaddy/terminus";
 import client from "prom-client";
+import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
+import { logger as honoLogger } from "hono/logger";
+import { Server } from "bun";
 import logger from "./logger";
 import config from "./model/config";
 
-interface ServerOptions {
-  onHealthcheck: () => Promise<any>;
-  onShutdown: () => Promise<void>;
-}
+const httpLogger = logger.child({ name: "http" });
 
-export default function server(
-  promRegistry: client.Registry,
-  { onHealthcheck, onShutdown }: ServerOptions,
-): http.Server {
-  const app = express();
+export default function server(promRegistry: client.Registry): Server {
+  const app = new Hono();
+  app.use("*", honoLogger());
+  app.notFound((c) => c.json({ message: "Not Found", ok: false }, 404));
 
-  app.get("/", (req, res) => {
-    res.send("ok");
+  app.onError((err, c) => {
+    httpLogger.error(`${err}`);
+    return c.text("Error", 500);
   });
 
+  app.get("/", (c) => c.text("ok"));
+
   // Prometheus metrics
-  app.get("/metrics", async (req, res) => {
+  app.get("/metrics", async (c) => {
     try {
-      res.set("Content-Type", promRegistry.contentType);
-      res.end(await promRegistry.metrics());
+      const metrics = await promRegistry.metrics();
+
+      c.header("Content-Type", promRegistry.contentType);
+      return c.text(metrics);
     } catch (ex) {
-      res.status(500).end(ex);
+      throw new HTTPException(500, {
+        message: "Error generating metrics",
+      });
     }
   });
 
-  const s = http.createServer(app);
-
-  createTerminus(s, {
-    signals: ["SIGINT", "SIGTERM"],
-    healthChecks: {
-      "/healthcheck": async ({ state }) => {
-        if (state.isShuttingDown) {
-          return;
-        }
-
-        return onHealthcheck();
-      }, // a function accepting a state and returning a promise indicating service health,
-      verbatim: true, // [optional = false] use object returned from /healthcheck verbatim in response,
-    },
-    onShutdown: async () => {
-      await onShutdown();
-      logger.info("bye!");
-    },
-    beforeShutdown: async () => {
-      logger.info("shutting down");
-    },
-    // Error object needs to be first argument instead of last for pino
-    logger: (msg, err) => logger.error(err, msg),
+  const s = Bun.serve({
+    port: config.METRICS_PORT,
+    fetch: app.fetch,
   });
-
-  s.listen(config.METRICS_PORT);
 
   logger.info(
     `metrics listening on http://localhost:${config.METRICS_PORT}/metrics`,
