@@ -133,11 +133,15 @@ export function insertPool(
 
 export function updatePool(
   db: Kysely<DB>,
+  poolName: string,
+  guildId: string,
   pool: UpdateableBanPoolRow,
 ): Promise<BanPoolRow> {
   return db
     .updateTable("app_public.ban_pools")
     .set(pool)
+    .where("guild_id", "=", guildId)
+    .where("pool_name", "=", poolName)
     .returningAll()
     .executeTakeFirstOrThrow();
 }

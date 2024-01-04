@@ -188,9 +188,20 @@ async function handleSettings(
 
   // Make sure to update the correct owner / member - AND update variables to re-format the embed and components
   if (poolMember) {
-    updatedMember = await updateBanPoolMember(db, update);
+    updatedMember = await updateBanPoolMember(
+      db,
+      updatedMember.pool_name,
+      updatedMember.owner_guild_id,
+      updatedMember.member_guild_id,
+      update,
+    );
   } else {
-    updatedPool = await updatePool(db, update);
+    updatedPool = await updatePool(
+      db,
+      updatedPool.pool_name,
+      updatedPool.guild_id,
+      update,
+    );
   }
 
   const guildId = poolMember?.member_guild_id || pool.guild_id;

@@ -103,11 +103,17 @@ export function insertBanPoolMember(
 
 export function updateBanPoolMember(
   db: Kysely<DB>,
+  poolName: string,
+  guildId: string,
+  memberGuildId: string,
   member: UpdateableBanPoolMemberRow,
 ): Promise<BanPoolMemberRow> {
   return db
     .updateTable("app_public.ban_pool_members")
     .set(member)
+    .where("pool_name", "=", poolName)
+    .where("owner_guild_id", "=", guildId)
+    .where("member_guild_id", "=", memberGuildId)
     .returningAll()
     .executeTakeFirstOrThrow();
 }
