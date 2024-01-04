@@ -17,6 +17,8 @@ export type AppPublicBlockType = "channel" | "role";
 
 export type AppPublicEmojiStickerActionType = "message" | "reaction";
 
+export type AppPublicGiveawayNitroType = "nitro" | "none";
+
 export type AppPublicGuildAssetType = "emoji" | "sticker";
 
 export type AppPublicLevelRoleOverrideType = "block" | "grant";
@@ -411,6 +413,30 @@ export interface AppPublicFeedSubscriptions {
   feed_id: string;
   guild_id: Int8;
   mention_role: Int8 | null;
+}
+
+export interface AppPublicGiveawayEntries {
+  created_at: Generated<Timestamp>;
+  giveaway_id: Int8;
+  is_picked: Generated<boolean>;
+  user_id: Int8;
+}
+
+export interface AppPublicGiveaways {
+  channel_id: Int8;
+  end_at: Timestamp;
+  guild_id: Int8;
+  host_user_id: Int8;
+  id: Int8;
+  manually_ended: Generated<boolean>;
+  num_winners: number;
+  prize: string;
+  required_boosting: boolean | null;
+  required_max_level: number | null;
+  required_min_level: number | null;
+  required_nitro_state: AppPublicGiveawayNitroType | null;
+  required_role_id: Int8 | null;
+  start_at: Timestamp;
 }
 
 export interface AppPublicGuildBans {
@@ -809,6 +835,8 @@ export interface DB {
   "app_public.feed_items": AppPublicFeedItems;
   "app_public.feed_subscriptions": AppPublicFeedSubscriptions;
   "app_public.feeds": AppPublicFeeds;
+  "app_public.giveaway_entries": AppPublicGiveawayEntries;
+  "app_public.giveaways": AppPublicGiveaways;
   "app_public.guild_bans": AppPublicGuildBans;
   "app_public.guild_configs": AppPublicGuildConfigs;
   "app_public.guild_emojis_and_stickers": AppPublicGuildEmojisAndStickers;

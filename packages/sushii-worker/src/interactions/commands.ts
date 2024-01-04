@@ -43,6 +43,9 @@ import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
 import config from "../model/config";
 import BanPoolCommand from "./moderation/ban_pools/BanPool.command";
 import BannerCommand from "./user/banner";
+import GiveawayCommand from "./giveaway/GiveawayCommand";
+import GiveawayButtonHandler from "./giveaway/Giveaway.button";
+import GiveawayAutocomplete from "./giveaway/Giveaway.autocomplete";
 
 export default function addCommands(
   interactionClient: InteractionClient,
@@ -77,6 +80,7 @@ export default function addCommands(
     // Guild
     new TagAdminCommand(),
     new EmojiStatsCommand(),
+    new GiveawayCommand(),
 
     new NotificationCommand(),
     new ReminderCommand(),
@@ -103,6 +107,7 @@ export default function addCommands(
     new ReminderDeleteAutocomplete(),
     new RoleMenuAutocomplete(),
     new ReasonAutocomplete(),
+    new GiveawayAutocomplete(),
   );
 
   // ----------------------------------------
@@ -113,12 +118,10 @@ export default function addCommands(
   // Buttons
   interactionClient.addButtons(
     new ContextLookUpButtonHandler(),
-
     new RoleMenuButtonHandler(),
-
     new ModLogReasonButtonHandler(),
-
     new ReasonConfirmButtonHandler(),
+    new GiveawayButtonHandler(),
   );
 
   // ----------------------------------------

@@ -15,6 +15,7 @@ enum Paths {
   ModLogReason = "/modlog/reason/:caseId",
   ReasonConfirmButton = "reason_confirm/:userId/:buttonId/:action",
   SettingsToggleButton = "settings/toggle/:field/:newState",
+  GiveawayEnterButton = "giveaway/enter",
 }
 
 export type SettingsToggleOptions =
@@ -55,6 +56,10 @@ type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
   ? {
       field: SettingsToggleOptions;
       newState: string;
+    }
+  : T extends Paths.GiveawayEnterButton
+  ? {
+      // No params, uses guild ID and message ID from interaction
     }
   : never;
 
@@ -104,6 +109,7 @@ const customIds = {
   modLogReason: createCustomID(Paths.ModLogReason),
   reasonConfirmButton: createCustomID(Paths.ReasonConfirmButton),
   settingsToggleButton: createCustomID(Paths.SettingsToggleButton),
+  giveawayEnterButton: createCustomID(Paths.GiveawayEnterButton),
 };
 
 export default customIds;
