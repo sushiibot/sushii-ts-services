@@ -15,12 +15,17 @@ import {
   deleteGiveaway,
   getAllActiveGiveaways,
   getGiveaway,
+  markGiveawayAsEnded,
 } from "../../db/Giveaway/Giveaway.repository";
 import db from "../../model/db";
 import { AppPublicGiveawayNitroType } from "../../model/dbTypes";
 import parseDuration from "../../utils/parseDuration";
 import Color from "../../utils/colors";
-import { endGiveaway, isGiveawayEnded } from "./Giveaway.service";
+import {
+  endGiveaway,
+  getGiveawayChannelFromInteraction,
+  updateGiveawayMessage,
+} from "./Giveaway.service";
 import { getGiveawayComponents } from "./Giveaway.components";
 import { getGiveawayEmbed } from "./Giveaway.embed";
 import { InsertableGiveawayRow } from "../../db/Giveaway/Giveaway.table";
@@ -73,12 +78,14 @@ export default class GiveawayCommand extends SlashCommandHandler {
           o
             .setName(GiveawayOption.RequiredMinLevel)
             .setDescription("Minimum level required to enter.")
+            .setMinValue(1)
             .setRequired(false),
         )
         .addNumberOption((o) =>
           o
             .setName(GiveawayOption.RequiredMaxLevel)
             .setDescription("Maximum level required to enter.")
+            .setMinValue(2)
             .setRequired(false),
         )
         .addStringOption((o) =>
@@ -254,8 +261,8 @@ export default class GiveawayCommand extends SlashCommandHandler {
       end_at: dayjs.utc().add(duration).toDate(),
     };
 
-    const embed = getGiveawayEmbed(giveaway);
-    const components = getGiveawayComponents(0);
+    const embed = getGiveawayEmbed(giveaway, []);
+    const components = getGiveawayComponents(0, false);
 
     const giveawayMsg = await interaction.channel.send({
       embeds: [embed],
@@ -273,15 +280,13 @@ export default class GiveawayCommand extends SlashCommandHandler {
       await giveawayMsg.delete();
     }
 
+    const responseEmbed = new EmbedBuilder()
+      .setTitle("Giveaway created!")
+      .setDescription(`You can find your giveaway [here](${giveawayMsg?.url}).`)
+      .setColor(Color.Success);
+
     await interaction.reply({
-      embeds: [
-        embed
-          .setTitle("Giveaway created!")
-          .setDescription(
-            `You can find your giveaway [here](${giveawayMsg?.url}).`,
-          )
-          .toJSON(),
-      ],
+      embeds: [responseEmbed],
     });
   }
 
@@ -305,6 +310,8 @@ export default class GiveawayCommand extends SlashCommandHandler {
       await interaction.reply({
         embeds: [embed],
       });
+
+      return;
     }
 
     let desc = "";
@@ -346,14 +353,26 @@ export default class GiveawayCommand extends SlashCommandHandler {
       throw new Error("No giveaway ID");
     }
 
-    const result = await deleteGiveaway(db, interaction.guildId, giveawayId);
-    if (Number(result.numDeletedRows) === 0) {
+    const deletedGiveaway = await deleteGiveaway(
+      db,
+      interaction.guildId,
+      giveawayId,
+    );
+    if (!deletedGiveaway) {
       await interaction.reply(
         getErrorMessage("Giveaway not found", "Please give a giveaway ID."),
       );
 
       return;
     }
+
+    const giveawayChannel = await getGiveawayChannelFromInteraction(
+      interaction,
+      deletedGiveaway,
+    );
+
+    // Delete the giveaway message
+    await giveawayChannel.messages.delete(deletedGiveaway.id);
 
     await interaction.reply({
       embeds: [
@@ -387,7 +406,7 @@ export default class GiveawayCommand extends SlashCommandHandler {
       return;
     }
 
-    if (isGiveawayEnded(giveaway)) {
+    if (giveaway.is_ended) {
       await interaction.reply(
         getErrorMessage(
           "Giveaway already ended",
@@ -398,28 +417,37 @@ export default class GiveawayCommand extends SlashCommandHandler {
       return;
     }
 
-    const response = await endGiveaway(
+    const giveawayChannel = await getGiveawayChannelFromInteraction(
       interaction,
+      giveaway,
+    );
+    const { embed, winnerIds } = await endGiveaway(
+      giveawayChannel,
       giveawayId,
       giveaway,
       allowRepeatWinners || false,
       winnerCount || 1,
     );
 
-    if (response) {
-      await interaction.reply(response);
+    await markGiveawayAsEnded(db, giveawayId);
+
+    if (embed) {
+      await interaction.reply({
+        embeds: [embed],
+        ephemeral: true,
+      });
 
       return;
     }
 
-    // TODO: Update the original giveaway message
+    await updateGiveawayMessage(giveawayChannel, giveaway, winnerIds);
 
-    const embed = new EmbedBuilder()
+    const responseEmbed = new EmbedBuilder()
       .setTitle("Ended giveaway")
       .setColor(Color.Success);
 
     await interaction.reply({
-      embeds: [embed],
+      embeds: [responseEmbed],
       flags: MessageFlags.Ephemeral,
     });
   }
@@ -450,26 +478,47 @@ export default class GiveawayCommand extends SlashCommandHandler {
       return;
     }
 
-    const response = await endGiveaway(
+    if (!giveaway.is_ended) {
+      await interaction.reply(
+        getErrorMessage(
+          "Giveaway not ended",
+          "This giveaway has not ended yet. You can end it with `/giveaway end`.",
+          true,
+        ),
+      );
+
+      return;
+    }
+
+    const giveawayChannel = await getGiveawayChannelFromInteraction(
       interaction,
+      giveaway,
+    );
+    const { embed } = await endGiveaway(
+      giveawayChannel,
       giveawayId,
       giveaway,
       allowRepeatWinners || false,
       winnerCount || 1,
     );
 
-    if (response) {
-      await interaction.reply(response);
+    if (embed) {
+      await interaction.reply({
+        embeds: [embed],
+        ephemeral: true,
+      });
 
       return;
     }
 
-    const embed = new EmbedBuilder()
+    // No updating of original giveaway message, only new one via endGiveaway
+
+    const responseEmbed = new EmbedBuilder()
       .setTitle("Giveaway rerolled!")
       .setColor(Color.Success);
 
     await interaction.reply({
-      embeds: [embed],
+      embeds: [responseEmbed],
       flags: MessageFlags.Ephemeral,
     });
   }

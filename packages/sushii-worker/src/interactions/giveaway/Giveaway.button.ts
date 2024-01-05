@@ -54,7 +54,7 @@ async function flushCacheToDb(): Promise<void> {
       dbInsertedSize: insertResult.numInsertedOrUpdatedRows,
       cacheAfterSize: entryCache.size,
     },
-    "Flushing cached entries to database",
+    "Flushing cached entries to database and updating messages",
   );
 
   // Update all giveaways with new entry count
@@ -62,7 +62,7 @@ async function flushCacheToDb(): Promise<void> {
   /* eslint-disable no-await-in-loop */
   for (const giveaway of uniqueGiveaways) {
     const totalEntries = await getGiveawayEntryCount(db, giveaway.id);
-    const components = getGiveawayComponents(totalEntries);
+    const components = getGiveawayComponents(totalEntries, false);
 
     await giveaway.edit({
       embeds: giveaway.embeds,

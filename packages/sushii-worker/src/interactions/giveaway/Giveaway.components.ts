@@ -3,15 +3,23 @@ import customIds from "../customIds";
 
 export function getGiveawayComponents(
   numEntries: number,
+  isEnded: boolean,
 ): ActionRowBuilder<ButtonBuilder>[] {
   // Static custom Id
   const customId = customIds.giveawayEnterButton.compile();
+  const row = new ActionRowBuilder<ButtonBuilder>();
 
   const entryButton = new ButtonBuilder()
     .setStyle(ButtonStyle.Primary)
     .setEmoji("🎉")
     .setLabel("Enter Giveaway")
     .setCustomId(customId);
+
+  if (isEnded) {
+    entryButton.setDisabled(true).setLabel("Giveaway Ended");
+  }
+
+  row.addComponents(entryButton);
 
   const entryCountDisplay = new ButtonBuilder()
     .setStyle(ButtonStyle.Secondary)
@@ -20,10 +28,7 @@ export function getGiveawayComponents(
     .setCustomId("dummy")
     .setDisabled(true);
 
-  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-    entryButton,
-    entryCountDisplay,
-  );
+  row.addComponents(entryCountDisplay);
 
   return [row];
 }

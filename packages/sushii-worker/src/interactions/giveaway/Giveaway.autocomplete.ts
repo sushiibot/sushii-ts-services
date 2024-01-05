@@ -10,7 +10,10 @@ import { getDurationFromNow } from "../../utils/getDuration";
 import { AutocompleteHandler } from "../handlers";
 import db from "../../model/db";
 import { GiveawaySubcommand } from "./GiveawayCommand";
-import { getAllActiveGiveaways } from "../../db/Giveaway/Giveaway.repository";
+import {
+  getAllActiveGiveaways,
+  getAllCompletedGiveaways,
+} from "../../db/Giveaway/Giveaway.repository";
 
 export default class GiveawayAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [
@@ -33,15 +36,37 @@ export default class GiveawayAutocomplete extends AutocompleteHandler {
       throw new Error("Option type must be string.");
     }
 
-    const matching = await getAllActiveGiveaways(db, interaction.guildId);
+    const subcommand = interaction.options.getSubcommand();
+
+    let matching;
+    let giveawaysCompleted = false;
+
+    if (subcommand === GiveawaySubcommand.Reroll) {
+      // Only show ENDED giveaways
+      matching = await getAllCompletedGiveaways(db, interaction.guildId);
+      giveawaysCompleted = true;
+    } else {
+      // Only show ACTIVE giveaways
+      matching = await getAllActiveGiveaways(db, interaction.guildId);
+    }
 
     const choices: APIApplicationCommandOptionChoice[] | undefined = matching
       .slice(0, 25)
       .map((s) => {
         const durStr = getDurationFromNow(dayjs.utc(s.end_at)).humanize();
 
+        let name = `ID: ${s.id} - `;
+
+        if (giveawaysCompleted) {
+          name += `Ended: ${durStr} ago`;
+        } else {
+          name += `Ending in: ${durStr}`;
+        }
+
+        name += ` - Prize: ${s.prize}`;
+
         return {
-          name: `ID: ${s.id} - Ending in: ${durStr} - Prize: ${s.prize}`,
+          name,
           value: s.id,
         };
       });

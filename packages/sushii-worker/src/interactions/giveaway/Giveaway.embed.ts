@@ -6,17 +6,35 @@ import Color from "../../utils/colors";
 
 export function getGiveawayEmbed(
   giveaway: InsertableGiveawayRow,
+  initialWinnerIds: string[],
 ): EmbedBuilder {
   const endTime = dayjs.utc(giveaway.end_at);
 
-  let desc = `Ends ${toTimestamp(endTime, "R")} ~ ${toTimestamp(endTime, "f")}`;
-  desc += "\n";
+  let desc = "";
+  if (giveaway.is_ended) {
+    desc += "Ended ";
+  } else {
+    desc += "Ends ";
+  }
+
+  desc += `${toTimestamp(endTime, "R")} ~ ${toTimestamp(endTime, "f")}`;
+  desc += "\n\n";
 
   desc += `**Host:** <@!${giveaway.host_user_id}>`;
   desc += "\n";
   desc += `**Prize:** ${giveaway.prize}`;
   desc += "\n";
-  desc += `**Winners:** ${giveaway.num_winners}`;
+
+  if (initialWinnerIds.length > 0) {
+    const winnersStr = initialWinnerIds.map((id) => `<@${id}>`).join(", ");
+
+    desc += `**Winner${
+      initialWinnerIds.length > 1 ? "s" : ""
+    }:** ${winnersStr}`;
+  } else {
+    desc += `**Winners:** ${giveaway.num_winners}`;
+  }
+
   desc += "\n\n";
 
   let reqDesc = "";
@@ -45,12 +63,8 @@ export function getGiveawayEmbed(
     reqDesc += "**Nitro:** You must __not__ have Discord Nitro\n";
   }
 
-  desc += "**Requirements**\n";
-
-  if (reqDesc.length > 0) {
-    desc += reqDesc;
-  } else {
-    desc += "There are no requirements to enter this giveaway!";
+  if (reqDesc.length === 0) {
+    reqDesc = "There are no requirements to enter this giveaway!";
   }
 
   if (!(giveaway.start_at instanceof Date)) {
@@ -60,6 +74,10 @@ export function getGiveawayEmbed(
   return new EmbedBuilder()
     .setTitle(`Giveaway - ${giveaway.prize}`)
     .setDescription(desc)
+    .addFields({
+      name: "Requirements",
+      value: reqDesc,
+    })
     .setColor(Color.Info)
     .setTimestamp(giveaway.start_at);
 }

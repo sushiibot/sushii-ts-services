@@ -32,9 +32,9 @@ create table app_public.giveaways (
   required_nitro_state app_public.giveaway_nitro_type,
   required_boosting    boolean,
 
-  -- If giveaway was manually ended with /giveaway end, it shouldn't trigger
-  -- winners again when end_at is reached.
-  manually_ended boolean not null default false,
+  -- If giveaway was manually ended with /giveaway end, or if it was
+  -- automatically ended
+  is_ended boolean not null default false,
 
   start_at timestamp not null,
   end_at   timestamp not null

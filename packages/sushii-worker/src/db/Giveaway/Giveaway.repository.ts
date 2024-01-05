@@ -41,10 +41,10 @@ export function getAllActiveGiveaways(
     .selectFrom("app_public.giveaways")
     .selectAll()
     .where("guild_id", "=", guildId)
-    // Not manually ended
-    .where("manually_ended", "=", false)
-    // Not expired
-    .where("end_at", ">", dayjs.utc().toDate());
+    // Not ended - no need to check end_at since this flag will be flipped
+    .where("is_ended", "=", false)
+    // Soonest ending first
+    .orderBy("end_at", "asc");
 
   if (limit) {
     return query.limit(limit).execute();
@@ -53,14 +53,43 @@ export function getAllActiveGiveaways(
   return query.execute();
 }
 
-export function getExpiredGiveaways(db: Kysely<DB>): Promise<GiveawayRow[]> {
+export function getAllCompletedGiveaways(
+  db: Kysely<DB>,
+  guildId: string,
+  limit: number | null = 25,
+): Promise<GiveawayRow[]> {
+  const query = db
+    .selectFrom("app_public.giveaways")
+    .selectAll()
+    .where("guild_id", "=", guildId)
+    .where("is_ended", "=", true)
+    // Most recently ended first
+    .orderBy("end_at", "desc");
+
+  if (limit) {
+    return query.limit(limit).execute();
+  }
+
+  return query.execute();
+}
+
+/**
+ * Update all giveaways that are past the end_at date to be ended, and return
+ * them.
+ */
+export function getAndEndPendingGiveaways(
+  db: Kysely<DB>,
+): Promise<GiveawayRow[]> {
   return (
     db
-      .selectFrom("app_public.giveaways")
-      .selectAll()
+      .updateTable("app_public.giveaways")
+      .set({
+        is_ended: true,
+      })
       .where("end_at", "<=", dayjs.utc().toDate())
-      // Ignore giveaways that have been manually ended
-      .where("manually_ended", "=", false)
+      // Ignore giveaways that have been already ended
+      .where("is_ended", "=", false)
+      .returningAll()
       .execute()
   );
 }
@@ -78,16 +107,26 @@ export function updateGiveaway(
     .executeTakeFirst();
 }
 
+export function markGiveawayAsEnded(
+  db: Kysely<DB>,
+  giveawayId: string,
+): Promise<GiveawayRow | undefined> {
+  return updateGiveaway(db, giveawayId, {
+    is_ended: true,
+  });
+}
+
 export function deleteGiveaway(
   db: Kysely<DB>,
   guildId: string,
   giveawayId: string,
-): Promise<DeleteResult> {
+): Promise<GiveawayRow | undefined> {
   return db
     .deleteFrom("app_public.giveaways")
     .where("guild_id", "=", guildId)
     .where("id", "=", giveawayId)
-    .executeTakeFirstOrThrow();
+    .returningAll()
+    .executeTakeFirst();
 }
 
 export function getGiveawayEntry(

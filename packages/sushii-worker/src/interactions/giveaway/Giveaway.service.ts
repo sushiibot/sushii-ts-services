@@ -1,33 +1,26 @@
 import {
   ChatInputCommandInteraction,
+  EmbedBuilder,
   GuildMember,
   GuildTextBasedChannel,
-  InteractionReplyOptions,
 } from "discord.js";
-import dayjs from "dayjs";
 import {
   createGiveawayEntries,
   getGiveawayEntry,
+  getGiveawayEntryCount,
   getRandomGiveawayEntries,
   markGiveawayEntriesAsPicked,
-  updateGiveaway,
 } from "../../db/Giveaway/Giveaway.repository";
 import { GiveawayRow } from "../../db/Giveaway/Giveaway.table";
 import db from "../../model/db";
 import { getUserGuildLevel } from "../../db/UserLevel/UserLevel.repository";
 import UserLevelProgress from "../user/rank.entity";
-import { getErrorMessage } from "../responses/error";
 import { GiveawayOption } from "./Giveaway.options";
+import Color from "../../utils/colors";
+import { getGiveawayEmbed } from "./Giveaway.embed";
+import { getGiveawayComponents } from "./Giveaway.components";
 
-export function isGiveawayEnded(giveaway: GiveawayRow): boolean {
-  if (giveaway.manually_ended) {
-    return true;
-  }
-
-  return dayjs.utc().isAfter(dayjs.utc(giveaway.end_at));
-}
-
-async function getGiveawayChannel(
+export async function getGiveawayChannelFromInteraction(
   interaction: ChatInputCommandInteraction<"cached">,
   giveaway: GiveawayRow,
 ): Promise<GuildTextBasedChannel> {
@@ -78,42 +71,91 @@ export async function rollGiveaway(
   return winners.map((w) => w.user_id);
 }
 
+export async function sendGiveawayWinnersMessage(
+  giveawayChannel: GuildTextBasedChannel,
+  giveaway: GiveawayRow,
+  winnerIds: string[],
+): Promise<void> {
+  const winnersStr = winnerIds.map((id) => `<@${id}>`).join(", ");
+  await giveawayChannel.send({
+    content: `Congratulations to ${winnersStr}! You won: **${giveaway.prize}**`,
+    reply: {
+      messageReference: giveaway.id,
+    },
+  });
+}
+
 export async function endGiveaway(
-  interaction: ChatInputCommandInteraction<"cached">,
+  giveawayChannel: GuildTextBasedChannel,
   giveawayId: string,
   giveaway: GiveawayRow,
   allowRepeatWinners: boolean,
-  winnerCount: number,
-): Promise<InteractionReplyOptions | null> {
-  const newGiveaway = giveaway;
-
+  wantWinnerCount: number,
+): Promise<{
+  embed: EmbedBuilder | null;
+  winnerIds: string[];
+}> {
   const winnerIds = await rollGiveaway(
     giveawayId,
     allowRepeatWinners || false,
-    winnerCount || 1,
+    wantWinnerCount,
   );
   if (winnerIds.length === 0) {
-    return getErrorMessage(
-      "No winners found",
-      `There were no eligible entries for this giveaway. Do you want to include previously picked users? Run this command again with the **${GiveawayOption.AllowRepeatWinners}** set to **true**`,
-      true,
-    );
+    return {
+      embed: new EmbedBuilder()
+        .setTitle("No winners found")
+        .setDescription(
+          "There were no eligible entries for this giveaway. Do you want to include previously picked users? Run this command again with the **Allow repeat winners** option set to **true**",
+        ),
+      winnerIds: [],
+    };
   }
 
-  newGiveaway.manually_ended = true;
-  await updateGiveaway(db, newGiveaway.id, newGiveaway);
+  await sendGiveawayWinnersMessage(giveawayChannel, giveaway, winnerIds);
 
-  const giveawayChannel = await getGiveawayChannel(interaction, newGiveaway);
+  if (winnerIds.length >= wantWinnerCount) {
+    // Shouldn't be greater than wantwinnerCount but yes
+    return {
+      embed: null,
+      winnerIds,
+    };
+  }
 
-  const winnersStr = winnerIds.map((id) => `<@${id}>`).join(", ");
-  await giveawayChannel.send({
-    content: `Congratulations to ${winnersStr}! You won: **${newGiveaway.prize}**`,
-    reply: {
-      messageReference: newGiveaway.id,
-    },
+  const entryCount = await getGiveawayEntryCount(db, giveawayId);
+  let desc;
+
+  if (entryCount < wantWinnerCount) {
+    desc = `There's ${wantWinnerCount} total desired winners but only ${entryCount} entries, so only ${entryCount} winners were picked.`;
+  } else {
+    desc = `There's ${wantWinnerCount} total desired winners but, only ${winnerIds.length} winners were picked.`;
+    desc += ` Some users are excluded since they were previously picked, but you can run this command again with the **${GiveawayOption.AllowRepeatWinners}** option set to **true** to include them.`;
+  }
+
+  const embed = new EmbedBuilder()
+    .setColor(Color.Warning)
+    .setTitle("Not enough winners found")
+    .setDescription(desc);
+
+  return {
+    embed,
+    winnerIds,
+  };
+}
+
+export async function updateGiveawayMessage(
+  channel: GuildTextBasedChannel,
+  giveaway: GiveawayRow,
+  winnerIds: string[],
+): Promise<void> {
+  const totalEntries = await getGiveawayEntryCount(db, giveaway.id);
+
+  const embed = getGiveawayEmbed(giveaway, winnerIds);
+  const components = getGiveawayComponents(totalEntries, giveaway.is_ended);
+
+  await channel.messages.edit(giveaway.id, {
+    embeds: [embed],
+    components,
   });
-
-  return null;
 }
 
 type GiveawayEligibility =

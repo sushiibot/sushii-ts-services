@@ -428,7 +428,7 @@ export interface AppPublicGiveaways {
   guild_id: Int8;
   host_user_id: Int8;
   id: Int8;
-  manually_ended: Generated<boolean>;
+  is_ended: Generated<boolean>;
   num_winners: number;
   prize: string;
   required_boosting: boolean | null;

@@ -6,6 +6,7 @@ import deleteOldMessages from "./DeleteOldMessagesTask";
 import updateStats from "./StatsTask";
 import deleteStaleEmojiStatsRateLimit from "./DeleteStaleEmojiStatsRateLimit";
 import sendReminders from "./RemindersTask";
+import giveaways from "./GiveawayTask";
 
 export default async function startTasks(ctx: Context): Promise<void> {
   const jobs = [
@@ -13,6 +14,7 @@ export default async function startTasks(ctx: Context): Promise<void> {
     updateStats,
     deleteStaleEmojiStatsRateLimit,
     sendReminders,
+    giveaways,
   ];
 
   logger.info("Starting background tasks");

@@ -25,8 +25,7 @@ export function getErrorMessage(
       new EmbedBuilder()
         .setTitle(title)
         .setDescription(description)
-        .setColor(Color.Error)
-        .toJSON(),
+        .setColor(Color.Error),
     ],
     flags: ephemeral ? MessageFlags.Ephemeral : undefined,
   };
