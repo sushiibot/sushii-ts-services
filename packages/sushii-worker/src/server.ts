@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { logger as honoLogger } from "hono/logger";
 import { Server } from "bun";
-import { Client } from "discord.js";
+import { Client, RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
 import logger from "./logger";
 import config from "./model/config";
 
@@ -22,7 +22,10 @@ export const ShardStatusToName = {
 
 const httpLogger = logger.child({ name: "http" });
 
-export default function server(client: Client<boolean>): Server {
+export default function server(
+  client: Client<boolean>,
+  commands: RESTPostAPIApplicationCommandsJSONBody[],
+): Server {
   const app = new Hono();
 
   // Middleware
@@ -37,6 +40,7 @@ export default function server(client: Client<boolean>): Server {
 
   // Routes
   app.get("/", (c) => c.text("ok"));
+  app.get("/commands", (c) => c.json(commands));
   app.get("/status", (c) =>
     c.json({
       config: {

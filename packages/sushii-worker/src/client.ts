@@ -198,7 +198,7 @@ export default class Client {
    *
    * @returns array of commands to register
    */
-  private getCommandsArray(): RESTPostAPIApplicationCommandsJSONBody[] {
+  public getCommandsArray(): RESTPostAPIApplicationCommandsJSONBody[] {
     const slashCmds = Array.from(this.commands.values()).map((c) => c.command);
     const contextMenus = Array.from(this.contextMenuHandlers.values()).map(
       (c) => c.command,
