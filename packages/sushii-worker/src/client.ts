@@ -26,11 +26,11 @@ import {
   AutocompleteHandler,
 } from "./interactions/handlers";
 import ContextMenuHandler from "./interactions/handlers/ContextMenuHandler";
-import Metrics from "./model/metrics";
 import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
 import config from "./model/config";
 import { isCurrentDeploymentActive } from "./db/Deployment/Deployment.repository";
+import { updateInteractionMetrics } from "./metrics";
 
 const tracer = opentelemetry.trace.getTracer("interaction-client");
 
@@ -77,11 +77,6 @@ function findFocusedOption(
 
 export default class Client {
   /**
-   * Prometheus metrics
-   */
-  private metrics: Metrics;
-
-  /**
    * Command context for shared stuff like database connections, API clients, etc.
    */
   private context: Context;
@@ -118,8 +113,7 @@ export default class Client {
    */
   private selectMenuHandlers: SelectMenuHandler[];
 
-  constructor(ctx: Context, metrics: Metrics) {
-    this.metrics = metrics;
+  constructor(ctx: Context) {
     this.context = ctx;
     this.commands = new Collection();
     this.autocompleteHandlers = new Collection();
@@ -576,7 +570,7 @@ export default class Client {
       span.setAttribute("interactionType", interaction.type);
 
       try {
-        this.metrics.handleInteraction(interaction);
+        updateInteractionMetrics(interaction);
 
         if (interaction.isChatInputCommand()) {
           span.setAttribute("commandName", interaction.commandName);

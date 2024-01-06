@@ -6,7 +6,6 @@ import InteractionClient from "./client";
 import initI18next from "./i18next";
 import registerInteractionHandlers from "./interactions/commands";
 import server from "./server";
-import Metrics from "./model/metrics";
 import sdk from "./tracing";
 import Context from "./model/context";
 import startTasks from "./tasks/startTasks";
@@ -29,8 +28,6 @@ async function main(): Promise<void> {
   });
 
   await initI18next();
-
-  const metrics = new Metrics();
 
   // Create a new client instance
   const djsClient = new Client({
@@ -68,7 +65,7 @@ async function main(): Promise<void> {
   djsClient.rest.setToken(config.DISCORD_TOKEN);
 
   const ctx = new Context(djsClient);
-  const client = new InteractionClient(ctx, metrics);
+  const client = new InteractionClient(ctx);
   registerInteractionHandlers(client);
 
   // Register commands to Discord API
@@ -83,7 +80,7 @@ async function main(): Promise<void> {
   // ---------------------------------------------------------------------------
   // Metrics and healthcheck
 
-  const s = server(metrics.getRegistry());
+  const s = server();
 
   registerShutdownSignals(async () => {
     log.info("closing Discord client");

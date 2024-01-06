@@ -1,4 +1,4 @@
-import client from "prom-client";
+import { register } from "prom-client";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { logger as honoLogger } from "hono/logger";
@@ -8,7 +8,7 @@ import config from "./model/config";
 
 const httpLogger = logger.child({ name: "http" });
 
-export default function server(promRegistry: client.Registry): Server {
+export default function server(): Server {
   const app = new Hono();
   app.use("*", honoLogger());
   app.notFound((c) => c.json({ message: "Not Found", ok: false }, 404));
@@ -35,9 +35,9 @@ export default function server(promRegistry: client.Registry): Server {
   // Prometheus metrics
   app.get("/metrics", async (c) => {
     try {
-      const metrics = await promRegistry.metrics();
+      const metrics = await register.metrics();
 
-      c.header("Content-Type", promRegistry.contentType);
+      c.header("Content-Type", register.contentType);
       return c.text(metrics);
     } catch (ex) {
       throw new HTTPException(500, {
