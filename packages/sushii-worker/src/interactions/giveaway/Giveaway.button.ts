@@ -164,7 +164,19 @@ export default class GiveawayButtonHandler extends ButtonHandler {
     );
 
     if (!giveaway) {
-      throw new Error("Giveaway not found");
+      const embed = new EmbedBuilder()
+        .setTitle("Giveaway not found")
+        .setDescription(
+          "Hmm... I either couldn't find this giveaway or it might have been deleted.",
+        )
+        .setColor(Color.Error);
+
+      await interaction.reply({
+        embeds: [embed],
+        flags: MessageFlags.Ephemeral,
+      });
+
+      return;
     }
 
     const eligibility = await isEligibleForGiveaway(
