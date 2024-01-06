@@ -244,6 +244,16 @@ CREATE TYPE app_public.emoji_sticker_stat_increment_data AS (
 
 
 --
+-- Name: giveaway_nitro_type; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.giveaway_nitro_type AS ENUM (
+    'none',
+    'nitro'
+);
+
+
+--
 -- Name: level_role_override_type; Type: TYPE; Schema: app_public; Owner: -
 --
 
@@ -1651,6 +1661,40 @@ CREATE TABLE app_public.feeds (
 
 
 --
+-- Name: giveaway_entries; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.giveaway_entries (
+    giveaway_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    is_picked boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: giveaways; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.giveaways (
+    id bigint NOT NULL,
+    channel_id bigint NOT NULL,
+    guild_id bigint NOT NULL,
+    host_user_id bigint NOT NULL,
+    prize text NOT NULL,
+    num_winners integer NOT NULL,
+    required_role_id bigint,
+    required_min_level integer,
+    required_max_level integer,
+    required_nitro_state app_public.giveaway_nitro_type,
+    required_boosting boolean,
+    is_ended boolean DEFAULT false NOT NULL,
+    start_at timestamp without time zone NOT NULL,
+    end_at timestamp without time zone NOT NULL
+);
+
+
+--
 -- Name: guild_bans; Type: TABLE; Schema: app_public; Owner: -
 --
 
@@ -2128,6 +2172,22 @@ ALTER TABLE ONLY app_public.feeds
 
 
 --
+-- Name: giveaway_entries giveaway_entries_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.giveaway_entries
+    ADD CONSTRAINT giveaway_entries_pkey PRIMARY KEY (giveaway_id, user_id);
+
+
+--
+-- Name: giveaways giveaways_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.giveaways
+    ADD CONSTRAINT giveaways_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: guild_bans guild_bans_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -2551,6 +2611,14 @@ ALTER TABLE ONLY app_public.feed_subscriptions
 
 ALTER TABLE ONLY app_public.mutes
     ADD CONSTRAINT fk_mod_action FOREIGN KEY (guild_id, case_id) REFERENCES app_public.mod_logs(guild_id, case_id);
+
+
+--
+-- Name: giveaway_entries giveaway_entries_giveaway_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.giveaway_entries
+    ADD CONSTRAINT giveaway_entries_giveaway_id_fkey FOREIGN KEY (giveaway_id) REFERENCES app_public.giveaways(id) ON DELETE CASCADE;
 
 
 --
@@ -3220,6 +3288,20 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.feed_subscriptions TO sush
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.feeds TO sushii_admin;
+
+
+--
+-- Name: TABLE giveaway_entries; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.giveaway_entries TO sushii_admin;
+
+
+--
+-- Name: TABLE giveaways; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.giveaways TO sushii_admin;
 
 
 --
