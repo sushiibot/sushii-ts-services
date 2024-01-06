@@ -19,6 +19,18 @@ export default function server(promRegistry: client.Registry): Server {
   });
 
   app.get("/", (c) => c.text("ok"));
+  app.get("/status", (c) =>
+    c.json({
+      deployment: config.DEPLOYMENT_NAME,
+      owner: {
+        userID: config.OWNER_USER_ID,
+        channelID: config.OWNER_CHANNEL_ID,
+      },
+      tracingSamplePercentage: config.TRACING_SAMPLE_PERCENTAGE,
+      disableBanFetchOnReady: config.DISABLE_BAN_FETCH_ON_READY,
+      banPoolEnabled: config.BAN_POOL_ENABLED,
+    }),
+  );
 
   // Prometheus metrics
   app.get("/metrics", async (c) => {

@@ -4,7 +4,7 @@ import { Client, GatewayIntentBits, Options, Partials } from "discord.js";
 import log from "./logger";
 import InteractionClient from "./client";
 import initI18next from "./i18next";
-import addCommands from "./interactions/commands";
+import registerInteractionHandlers from "./interactions/commands";
 import server from "./server";
 import Metrics from "./model/metrics";
 import sdk from "./tracing";
@@ -69,7 +69,7 @@ async function main(): Promise<void> {
 
   const ctx = new Context(djsClient);
   const client = new InteractionClient(ctx, metrics);
-  addCommands(client);
+  registerInteractionHandlers(client);
 
   // Register commands to Discord API
   await client.register();
@@ -102,7 +102,6 @@ async function main(): Promise<void> {
     } catch (err) {
       log.error(err, "error shutting down");
       process.exit(1);
-      return;
     }
 
     process.exit(0);

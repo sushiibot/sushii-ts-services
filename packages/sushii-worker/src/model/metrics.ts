@@ -1,27 +1,20 @@
 import { InteractionType } from "discord-api-types/v10";
 import { Events, Interaction } from "discord.js";
-import client, {
-  collectDefaultMetrics,
-  Histogram,
-  Registry,
-} from "prom-client";
+import { collectDefaultMetrics, Registry, Counter } from "prom-client";
 import logger from "../logger";
 
 export default class Metrics {
-  readonly registry: client.Registry;
+  readonly registry: Registry;
 
-  private gatewayEventsCounter: client.Counter<string>;
+  private gatewayEventsCounter: Counter<string>;
 
-  private slashCommandsCounter: client.Counter<string>;
+  private slashCommandsCounter: Counter<string>;
 
-  private autocompleteCounter: client.Counter<string>;
+  private autocompleteCounter: Counter<string>;
 
-  private messageComponentCounter: client.Counter<string>;
+  private messageComponentCounter: Counter<string>;
 
-  private modalCounter: client.Counter<string>;
-
-  // sushii api
-  private sushiiApiHistogram: client.Histogram<string>;
+  private modalCounter: Counter<string>;
 
   constructor() {
     const register = new Registry();
@@ -38,43 +31,36 @@ export default class Metrics {
 
     this.registry = register;
 
-    this.gatewayEventsCounter = new client.Counter({
+    this.gatewayEventsCounter = new Counter({
       name: `${prefix}discord_events`,
       help: "Discord gateway events",
       labelNames: ["event_name"],
       registers: [register],
     });
 
-    this.slashCommandsCounter = new client.Counter({
+    this.slashCommandsCounter = new Counter({
       name: `${prefix}slash_command`,
       help: "Slash commands",
       labelNames: ["command_name"],
       registers: [register],
     });
 
-    this.autocompleteCounter = new client.Counter({
+    this.autocompleteCounter = new Counter({
       name: `${prefix}autocomplete_interaction`,
       help: "Autocomplete interactions",
       labelNames: ["command_name"],
       registers: [register],
     });
 
-    this.messageComponentCounter = new client.Counter({
+    this.messageComponentCounter = new Counter({
       name: `${prefix}message_component_interaction`,
       help: "Message component interactions, e.g. buttons",
       registers: [register],
     });
 
-    this.modalCounter = new client.Counter({
+    this.modalCounter = new Counter({
       name: `${prefix}modal_interaction`,
       help: "Modal submit interactions",
-      registers: [register],
-    });
-
-    this.sushiiApiHistogram = new client.Histogram({
-      name: `${prefix}sushii_api_call_duration`,
-      help: "Sushii API call duration",
-      labelNames: ["method", "endpoint"],
       registers: [register],
     });
   }
@@ -114,11 +100,5 @@ export default class Metrics {
 
   public handleGatewayDispatchEvent(event: Events): void {
     this.gatewayEventsCounter.inc({ event_name: event });
-  }
-
-  public sushiiAPIStartTimer(): ReturnType<
-    InstanceType<typeof Histogram>["startTimer"]
-  > {
-    return this.sushiiApiHistogram.startTimer();
   }
 }
