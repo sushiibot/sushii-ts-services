@@ -9,7 +9,7 @@ import Context from "../../model/context";
 import { getDurationFromNow } from "../../utils/getDuration";
 import { AutocompleteHandler } from "../handlers";
 import db from "../../model/db";
-import { GiveawaySubcommand } from "./GiveawayCommand";
+import { GiveawaySubcommand } from "./Giveaway.command";
 import {
   getAllActiveGiveaways,
   getAllCompletedGiveaways,

@@ -318,7 +318,7 @@ export default class GiveawayCommand extends SlashCommandHandler {
 
     for (const giveaway of giveaways) {
       const endAt = dayjs.utc(giveaway.end_at);
-      const fullTs = toTimestamp(endAt, "F");
+      const fullTs = toTimestamp(endAt, "f");
       const relTs = toTimestamp(endAt, "R");
 
       const giveawayUrl = messageLink(
@@ -328,7 +328,7 @@ export default class GiveawayCommand extends SlashCommandHandler {
       );
 
       desc += `**ID:** [\`${giveaway.id}\`](${giveawayUrl})\n`;
-      desc += `╰ Ending at: ${fullTs} ~ ${relTs}\n`;
+      desc += `╰ Ending: ${relTs} ~ ${fullTs}\n`;
       desc += `╰ Prize: ${giveaway.prize}\n`;
       desc += `╰ Winners: ${giveaway.num_winners}\n`;
       desc += `╰ Host: <@${giveaway.host_user_id}>\n`;

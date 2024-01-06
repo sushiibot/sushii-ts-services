@@ -43,11 +43,11 @@ import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
 import config from "../model/config";
 import BanPoolCommand from "./moderation/ban_pools/BanPool.command";
 import BannerCommand from "./user/banner";
-import GiveawayCommand from "./giveaway/GiveawayCommand";
+import GiveawayCommand from "./giveaway/Giveaway.command";
 import GiveawayButtonHandler from "./giveaway/Giveaway.button";
 import GiveawayAutocomplete from "./giveaway/Giveaway.autocomplete";
 
-export default function addCommands(
+export default function registerInteractionHandlers(
   interactionClient: InteractionClient,
 ): void {
   interactionClient.addCommands(
