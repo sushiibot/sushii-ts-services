@@ -7,6 +7,7 @@ import {
   getActiveDeployment,
   toggleActiveDeployment,
 } from "../db/Deployment/Deployment.repository";
+import toTimestamp from "../utils/toTimestamp";
 
 export const deployToggleHandler: EventHandlerFn<Events.MessageCreate> = async (
   ctx: Context,
@@ -30,22 +31,25 @@ export const deployToggleHandler: EventHandlerFn<Events.MessageCreate> = async (
     seconds: uptime,
   });
 
+  const processStart = dayjs().utc().subtract(uptime, "seconds");
+  const startTimestamp = toTimestamp(processStart, "f");
+
   if (msg.content === "!deployment") {
-    const deployment = getActiveDeployment();
-    const content = `Deployment is currently set to: \`${deployment}\` (uptime: ${dur.humanize()})`;
+    const deployment = await getActiveDeployment();
+    const content = `Deployment is currently set to: \`${deployment}\` (uptime: ${dur.humanize()} - started: ${startTimestamp})`;
     await msg.reply(content);
     return;
   }
 
   if (msg.content === "!toggle-deployment") {
-    const deployment = getActiveDeployment();
+    const deployment = await getActiveDeployment();
     await msg.reply(
-      `Toggling deployment from \`${deployment}\` (uptime: ${dur.humanize()})`,
+      `Toggling deployment from \`${deployment}\` (uptime: ${dur.humanize()} - started: ${startTimestamp})`,
     );
-    const newDeployment = await toggleActiveDeployment();
 
+    const newDeployment = await toggleActiveDeployment();
     await msg.reply(
-      `Deployment toggled, new deployment is: \`${newDeployment}\``,
+      `Deployment toggled, new deployment is: \`${newDeployment?.name}\``,
     );
   }
 };
