@@ -127,14 +127,14 @@ async function incrementEmojiCounts(
       .onConflict((oc) =>
         oc.columns(["time", "asset_id", "action_type"]).doUpdateSet({
           count: (eb) =>
-            eb.bxp(
+            eb(
               "app_public.emoji_sticker_stats.count",
               "+",
               // Increment by the insert value's count
               eb.ref("excluded.count"),
             ),
           count_external: (eb) =>
-            eb.bxp(
+            eb(
               "app_public.emoji_sticker_stats.count_external",
               "+",
               // Increment by the insert value's count_external

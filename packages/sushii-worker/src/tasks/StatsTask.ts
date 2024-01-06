@@ -35,7 +35,7 @@ export async function updateStat(
       .onConflict((oc) =>
         oc.columns(["name", "category"]).doUpdateSet({
           count: (eb) =>
-            eb.bxp("app_public.bot_stats.count", "+", value.toString()),
+            eb("app_public.bot_stats.count", "+", value.toString()),
         }),
       )
       .execute();
