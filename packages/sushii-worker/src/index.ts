@@ -80,7 +80,7 @@ async function main(): Promise<void> {
   // ---------------------------------------------------------------------------
   // Metrics and healthcheck
 
-  const s = server();
+  const s = server(djsClient);
 
   registerShutdownSignals(async () => {
     log.info("closing Discord client");

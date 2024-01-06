@@ -1,5 +1,5 @@
 import { InteractionType } from "discord-api-types/v10";
-import { Events, Interaction } from "discord.js";
+import { GatewayDispatchEvents, Interaction } from "discord.js";
 import { collectDefaultMetrics, Counter, Gauge } from "prom-client";
 import logger from "./logger";
 
@@ -88,6 +88,8 @@ export function updateInteractionMetrics(interaction: Interaction): void {
   }
 }
 
-export function updateGatewayDispatchEventMetrics(event: Events): void {
+export function updateGatewayDispatchEventMetrics(
+  event: GatewayDispatchEvents,
+): void {
   gatewayEventsCounter.inc({ event_name: event });
 }

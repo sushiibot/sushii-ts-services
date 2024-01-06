@@ -42,6 +42,7 @@ import {
   memberLeaveMessageHandler,
 } from "./events/JoinLeaveMessage";
 import { deployToggleHandler } from "./events/Deployment";
+import { updateGatewayDispatchEventMetrics } from "./metrics";
 // import { mentionTagHandler } from "./events/TagsMention";
 
 const tracerName = "event-handler";
@@ -443,6 +444,8 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
+    updateGatewayDispatchEventMetrics(event.t);
+
     if (!(await isActive())) {
       return;
     }
