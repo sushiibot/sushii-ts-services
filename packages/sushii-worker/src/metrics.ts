@@ -7,13 +7,10 @@ const prefix = "sushii_ts_worker_";
 
 const prefixedName = (name: string): string => `${prefix}${name}`;
 
-// Only collect when not running with bun
-// PerformanceObserver is not yet implemented in Bun.
-if (!process.versions.bun) {
-  collectDefaultMetrics({
-    prefix,
-  });
-}
+// PerformanceObserver is implemented in Bun v1.0.22
+collectDefaultMetrics({
+  prefix,
+});
 
 // -----------------------------------------------------------------------------
 // General
