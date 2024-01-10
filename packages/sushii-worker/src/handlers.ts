@@ -43,6 +43,11 @@ import {
 } from "./events/JoinLeaveMessage";
 import { deployToggleHandler } from "./events/Deployment";
 import { updateGatewayDispatchEventMetrics } from "./metrics";
+import { cacheUserHandler } from "./events/cache/cacheUser";
+import {
+  cacheGuildCreateHandler,
+  cacheGuildUpdateHandler,
+} from "./events/cache/cacheGuild";
 // import { mentionTagHandler } from "./events/TagsMention";
 
 const tracerName = "event-handler";
@@ -249,6 +254,49 @@ export default function registerEventHandlers(
       `${guild.name} (${guild.id}) - ${guild.memberCount} members\n${guild.client.guilds.cache.size} guilds total`,
       Color.Info,
     );
+
+    if (!(await isActive())) {
+      return;
+    }
+
+    await tracer.startActiveSpan(
+      prefixSpanName(Events.GuildCreate),
+      async (span: Span) => {
+        await handleEvent(
+          ctx,
+          Events.GuildCreate,
+          {
+            cacheGuildCreate: cacheGuildCreateHandler,
+          },
+          guild,
+        );
+
+        span.end();
+      },
+    );
+  });
+
+  client.on(Events.GuildUpdate, async (oldGuild, newGuild) => {
+    if (!(await isActive())) {
+      return;
+    }
+
+    await tracer.startActiveSpan(
+      prefixSpanName(Events.GuildUpdate),
+      async (span: Span) => {
+        await handleEvent(
+          ctx,
+          Events.GuildUpdate,
+          {
+            cacheGuildUpdate: cacheGuildUpdateHandler,
+          },
+          oldGuild,
+          newGuild,
+        );
+
+        span.end();
+      },
+    );
   });
 
   client.on(Events.GuildDelete, async (guild) => {
@@ -411,6 +459,7 @@ export default function registerEventHandlers(
             emojiStats: emojiStatsMsgHandler,
             notification: notificationHandler,
             deployToggle: deployToggleHandler,
+            cacheUser: cacheUserHandler,
             // TODO: Enable only after removed from sushii-2
             // mentionTag: mentionTagHandler,
           },
