@@ -118,7 +118,7 @@ export default class GiveawayCommand extends SlashCommandHandler {
     .addSubcommand((c) =>
       c
         .setName(GiveawaySubcommand.Delete)
-        .setDescription("Delete a new giveaway.")
+        .setDescription("Delete an active giveaway.")
         .addStringOption((o) =>
           o
             .setName(GiveawayOption.GiveawayID)
@@ -135,7 +135,7 @@ export default class GiveawayCommand extends SlashCommandHandler {
     .addSubcommand((c) =>
       c
         .setName(GiveawaySubcommand.End)
-        .setDescription("Immediately pick the winners and end a giveaway.")
+        .setDescription("Immediately end and pick the winners for a giveaway.")
         .addStringOption((o) =>
           o
             .setName(GiveawayOption.GiveawayID)
@@ -147,7 +147,7 @@ export default class GiveawayCommand extends SlashCommandHandler {
     .addSubcommand((c) =>
       c
         .setName(GiveawaySubcommand.Reroll)
-        .setDescription("Pick one new winner for a giveaway.")
+        .setDescription("Pick one new winner for an ended giveaway.")
         .addStringOption((o) =>
           o
             .setName(GiveawayOption.GiveawayID)
