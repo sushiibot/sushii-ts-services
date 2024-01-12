@@ -18,7 +18,6 @@ import {
   markGiveawayAsEnded,
 } from "../../db/Giveaway/Giveaway.repository";
 import db from "../../model/db";
-import { AppPublicGiveawayNitroType } from "../../model/dbTypes";
 import parseDuration from "../../utils/parseDuration";
 import Color from "../../utils/colors";
 import {
@@ -88,24 +87,24 @@ export default class GiveawayCommand extends SlashCommandHandler {
             .setMinValue(2)
             .setRequired(false),
         )
-        .addStringOption((o) =>
-          o
-            .setName(GiveawayOption.RequiredNitroState)
-            .setDescription(
-              "Require no Nitro to enter or the other way around.",
-            )
-            .addChoices(
-              {
-                name: "No Nitro - Require user to have no Nitro to enter",
-                value: "none",
-              },
-              {
-                name: "Nitro - Require user to have Nitro to enter",
-                value: "nitro",
-              },
-            )
-            .setRequired(false),
-        )
+        // .addStringOption((o) =>
+        //   o
+        //     .setName(GiveawayOption.RequiredNitroState)
+        //     .setDescription(
+        //       "Require no Nitro to enter or the other way around.",
+        //     )
+        //     .addChoices(
+        //       {
+        //         name: "No Nitro - Require user to have no Nitro to enter",
+        //         value: "none",
+        //       },
+        //       {
+        //         name: "Nitro - Require user to have Nitro to enter",
+        //         value: "nitro",
+        //       },
+        //     )
+        //     .setRequired(false),
+        // )
         .addBooleanOption((o) =>
           o
             .setName(GiveawayOption.BoosterStatus)
@@ -234,9 +233,9 @@ export default class GiveawayCommand extends SlashCommandHandler {
     const requiredMaxLevel = interaction.options.getNumber(
       GiveawayOption.RequiredMaxLevel,
     );
-    const requiredNitroState = interaction.options.getString(
-      GiveawayOption.RequiredNitroState,
-    );
+    // const requiredNitroState = interaction.options.getString(
+    //   GiveawayOption.RequiredNitroState,
+    // );
     const boosterStatus = interaction.options.getBoolean(
       GiveawayOption.BoosterStatus,
     );
@@ -255,7 +254,7 @@ export default class GiveawayCommand extends SlashCommandHandler {
       required_role_id: requiredRole?.id,
       required_min_level: requiredMinLevel,
       required_max_level: requiredMaxLevel,
-      required_nitro_state: requiredNitroState as AppPublicGiveawayNitroType,
+      // required_nitro_state: requiredNitroState as AppPublicGiveawayNitroType,
       required_boosting: boosterStatus,
       start_at: dayjs.utc().toDate(),
       end_at: dayjs.utc().add(duration).toDate(),
