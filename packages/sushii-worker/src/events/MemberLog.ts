@@ -17,16 +17,15 @@ import {
 } from "../db/GuildConfig/GuildConfig.repository";
 import Color from "../utils/colors";
 import toTimestamp from "../utils/toTimestamp";
+import logger from "../logger";
+
+const log = logger.child({ handler: "MemberLog" });
 
 async function logMember(
   member: GuildMember | PartialGuildMember,
   action: "join" | "leave",
 ): Promise<void> {
   const conf = await getGuildConfig(db, member.guild.id);
-
-  if (!conf.msg_channel) {
-    return;
-  }
 
   if (!conf.log_member_enabled || !conf.log_member) {
     return;
@@ -116,6 +115,15 @@ async function logMember(
 
     if (err.code === RESTJSONErrorCodes.MissingAccess) {
       // No permission to send to channel
+      log.debug(
+        {
+          err,
+          channel: channel.id,
+          guild: channel.guild.id,
+          action,
+        },
+        "No permission to send to channel",
+      );
     }
   }
 }
