@@ -35,7 +35,7 @@ export default class ReminderDeleteAutocomplete extends AutocompleteHandler {
 
         return {
           name: `ID: ${s.id} - Expiring in: ${durStr} - Description: ${s.description}`,
-          value: s.set_at.toISOString(),
+          value: s.id,
         };
       });
 
