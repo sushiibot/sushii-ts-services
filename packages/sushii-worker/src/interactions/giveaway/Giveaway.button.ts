@@ -3,12 +3,14 @@ import {
   MessageFlags,
   EmbedBuilder,
   Message,
+  InteractionResponse,
 } from "discord.js";
 import { ButtonHandler } from "../handlers";
 import Context from "../../model/context";
 import customIds from "../customIds";
 import {
   createGiveawayEntries,
+  deleteGiveawayEntry,
   getGiveaway,
   getGiveawayEntry,
   getGiveawayEntryCount,
@@ -124,6 +126,65 @@ async function isAlreadyEntered(
   return !!entry;
 }
 
+async function awaitRemoveEntryButton(
+  interactionResp: InteractionResponse<true>,
+  giveawayId: string,
+  userId: string,
+): Promise<void> {
+  log.debug(
+    {
+      giveawayId,
+      userId,
+    },
+    "Awaiting remove entry button",
+  );
+
+  try {
+    // Call awaitMessageComponent on the message instead of interactionResponse,
+    // some bug with it cause it never to resolve
+    const msg = await interactionResp.fetch();
+    await msg.awaitMessageComponent({
+      // 2 Minutes
+      time: 1000 * 60 * 2,
+    });
+  } catch (err) {
+    log.debug(
+      {
+        giveawayId,
+        userId,
+      },
+      "Remove entry button timed out",
+    );
+
+    // Delete the message to remove giveaway entry
+    await interactionResp.delete();
+
+    // Promise rejects if expired, so just return
+    return;
+  }
+
+  log.debug(
+    {
+      giveawayId,
+      userId,
+    },
+    "Remove entry button clicked, deleting giveaway",
+  );
+  await deleteGiveawayEntry(db, giveawayId, userId);
+
+  const embed = new EmbedBuilder()
+    .setTitle("Entry deleted")
+    .setDescription(
+      "You've deleted your giveaway entry. You can enter again by clicking the original giveaway button.",
+    )
+    .setColor(Color.Error);
+
+  await interactionResp.edit({
+    embeds: [embed],
+    components: [],
+  });
+}
+
 export default class GiveawayButtonHandler extends ButtonHandler {
   customIDMatch = customIds.giveawayEnterButton.match;
 
@@ -148,11 +209,17 @@ export default class GiveawayButtonHandler extends ButtonHandler {
 
       const components = getRemoveEntryComponents();
 
-      await interaction.reply({
+      const deleteEntryMsg = await interaction.reply({
         embeds: [embed],
         components,
         flags: MessageFlags.Ephemeral,
       });
+
+      await awaitRemoveEntryButton(
+        deleteEntryMsg,
+        interaction.message.id,
+        interaction.user.id,
+      );
 
       return;
     }
