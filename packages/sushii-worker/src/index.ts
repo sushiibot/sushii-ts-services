@@ -8,7 +8,6 @@ import registerInteractionHandlers from "./interactions/commands";
 import server from "./server";
 import sdk from "./tracing";
 import Context from "./model/context";
-import startTasks from "./tasks/startTasks";
 import config from "./model/config";
 import registerEventHandlers from "./handlers";
 import { registerShutdownSignals } from "./signals";
@@ -73,9 +72,6 @@ async function main(): Promise<void> {
 
   // Register node.js event handlers on the Discord.js client
   registerEventHandlers(ctx, djsClient, client);
-
-  // Start background jobs
-  await startTasks(ctx);
 
   // ---------------------------------------------------------------------------
   // Metrics and healthcheck

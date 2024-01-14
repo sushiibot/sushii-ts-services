@@ -48,6 +48,7 @@ import {
   cacheGuildCreateHandler,
   cacheGuildUpdateHandler,
 } from "./events/cache/cacheGuild";
+import startTasks from "./tasks/startTasks";
 // import { mentionTagHandler } from "./events/TagsMention";
 
 const tracerName = "event-handler";
@@ -155,6 +156,9 @@ export default function registerEventHandlers(
     );
 
     await webhookLog("Ready", `Logged in as ${c.user.tag}`, Color.Success);
+
+    // After after client is ready to ensure guilds are cached
+    await startTasks(ctx);
 
     await tracer.startActiveSpan(
       prefixSpanName(Events.ClientReady),
