@@ -1949,6 +1949,18 @@ CREATE TABLE app_public.role_menus (
 
 
 --
+-- Name: temp_bans; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.temp_bans (
+    user_id bigint NOT NULL,
+    guild_id bigint NOT NULL,
+    expires_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
 -- Name: user_levels; Type: TABLE; Schema: app_public; Owner: -
 --
 
@@ -2011,6 +2023,23 @@ CREATE TABLE app_public.xp_blocks (
     block_id bigint NOT NULL,
     block_type app_public.block_type NOT NULL
 );
+
+
+--
+-- Name: testmatview; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+--
+
+CREATE MATERIALIZED VIEW public.testmatview AS
+ SELECT user_levels.user_id,
+    user_levels.guild_id,
+    user_levels.msg_all_time,
+    user_levels.msg_month,
+    user_levels.msg_week,
+    user_levels.msg_day,
+    user_levels.last_msg,
+    user_levels.level
+   FROM app_public.user_levels
+  WITH NO DATA;
 
 
 --
@@ -2361,6 +2390,14 @@ ALTER TABLE ONLY app_public.role_menus
 
 ALTER TABLE ONLY app_public.tags
     ADD CONSTRAINT tags_pkey PRIMARY KEY (guild_id, tag_name);
+
+
+--
+-- Name: temp_bans temp_bans_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.temp_bans
+    ADD CONSTRAINT temp_bans_pkey PRIMARY KEY (user_id, guild_id);
 
 
 --
@@ -3571,6 +3608,13 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.reminders TO sushii_admin;
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.role_menus TO sushii_admin;
+
+
+--
+-- Name: TABLE temp_bans; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.temp_bans TO sushii_admin;
 
 
 --
