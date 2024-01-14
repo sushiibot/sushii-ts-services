@@ -42,9 +42,9 @@ export default class ModActionData {
   public deleteMessageDays: number | null;
 
   /**
-   * Duration of timeout, only exists for timeout command
+   * Duration of timeout, only exists for timeout and tempban command
    */
-  public timeoutDuration?: Duration;
+  public duration?: Duration;
 
   private DMReason?: boolean;
 
@@ -68,7 +68,7 @@ export default class ModActionData {
     if (durationStr) {
       // This is **required** to exist if it's a timeout command, so it will
       // only be null if it's an invalid duration.
-      this.timeoutDuration = parseDuration(durationStr) || undefined;
+      this.duration = parseDuration(durationStr) || undefined;
     }
 
     // TODO: Configurable options for DM reason defaults
@@ -295,11 +295,11 @@ export default class ModActionData {
     return Ok.EMPTY;
   }
 
-  communicationDisabledUntil(): Result<dayjs.Dayjs, string> {
-    if (!this.timeoutDuration) {
+  durationEnd(): Result<dayjs.Dayjs, string> {
+    if (!this.duration) {
       return Err("Invalid duration");
     }
 
-    return Ok(dayjs.utc().add(this.timeoutDuration));
+    return Ok(dayjs.utc().add(this.duration));
   }
 }

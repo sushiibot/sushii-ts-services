@@ -15,24 +15,24 @@ import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
 import { reasonOption, sendDMReasonOption, usersOption } from "./options";
 
-export default class TimeoutCommand extends SlashCommandHandler {
-  serverOnly = true;
-
-  requiredBotPermissions = new PermissionsBitField().add("ModerateMembers");
+export default class TempbanCommand extends SlashCommandHandler {
+  requiredBotPermissions = new PermissionsBitField().add("BanMembers");
 
   command = new SlashCommandBuilder()
-    .setName("timeout")
-    .setDescription("Timeout members.")
-    .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
+    .setName("tempban")
+    .setDescription(
+      "Temporarily ban members. Run this again to change existing tempban durations.",
+    )
+    .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
     .setDMPermission(false)
-    .addStringOption(usersOption(ActionType.Timeout))
+    .addStringOption(usersOption(ActionType.TempBan))
     .addStringOption((o) =>
       o
         .setName("duration")
-        .setDescription("How long to timeout the user.")
+        .setDescription("How long to ban the user for.")
         .setRequired(true),
     )
-    .addStringOption(reasonOption(ActionType.Timeout))
+    .addStringOption(reasonOption(ActionType.TempBan))
     // .addAttachmentOption(attachmentOption)
     .addStringOption(sendDMReasonOption)
     .toJSON();
@@ -68,7 +68,7 @@ export default class TimeoutCommand extends SlashCommandHandler {
       return;
     }
 
-    const res = await executeAction(ctx, interaction, data, ActionType.Timeout);
+    const res = await executeAction(ctx, interaction, data, ActionType.TempBan);
     if (res.err) {
       await interaction.editReply(getErrorMessage("Error", res.val.message));
 

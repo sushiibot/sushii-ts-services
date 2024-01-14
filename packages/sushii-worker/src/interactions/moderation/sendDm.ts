@@ -22,7 +22,7 @@ export async function buildDMEmbed(
   action: ActionType,
   shouldDMReason: boolean,
   reason: string | null,
-  timeoutEnd: dayjs.Dayjs | null,
+  durationEnd: dayjs.Dayjs | null,
 ): Promise<EmbedBuilder> {
   const fields = [];
 
@@ -33,11 +33,12 @@ export async function buildDMEmbed(
     });
   }
 
-  if (timeoutEnd) {
+  // Timeout or tempban
+  if (durationEnd) {
     fields.push({
-      name: "Timeout Duration",
-      value: `Your timeout will expire ${toTimestamp(
-        timeoutEnd,
+      name: "Duration",
+      value: `Your ${ActionType.toString(action)} will expire ${toTimestamp(
+        durationEnd,
         TimestampStyles.RelativeTime,
       )}`,
     });
@@ -71,7 +72,7 @@ export default async function sendModActionDM(
     action,
     data.shouldDMReason(action),
     data.reason,
-    data.communicationDisabledUntil().unwrapOr(null),
+    data.durationEnd().unwrapOr(null),
   );
 
   try {

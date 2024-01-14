@@ -46,6 +46,7 @@ import BannerCommand from "./user/banner";
 import GiveawayCommand from "./giveaway/Giveaway.command";
 import GiveawayButtonHandler from "./giveaway/Giveaway.button";
 import GiveawayAutocomplete from "./giveaway/Giveaway.autocomplete";
+import TempbanCommand from "./moderation/TempbanCommand";
 
 export default function registerInteractionHandlers(
   interactionClient: InteractionClient,
@@ -65,6 +66,7 @@ export default function registerInteractionHandlers(
     // Moderation
     new BanCommand(),
     new UnbanCommand(),
+    new TempbanCommand(),
     new KickCommand(),
     new TimeoutCommand(),
     new UnTimeoutCommand(),

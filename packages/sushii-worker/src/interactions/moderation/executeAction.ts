@@ -29,6 +29,7 @@ import {
 } from "../../db/ModLog/ModLog.repository";
 import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
 import { startCaughtActiveSpan } from "../../tracing";
+import { upsertTempBan } from "../../db/TempBan/TempBan.repository";
 
 const log = logger.child({ module: "executeAction" });
 const tracer = opentelemetry.trace.getTracer("sushii-worker");
@@ -68,10 +69,10 @@ function buildResponseEmbed(
     });
   }
 
-  if (data.timeoutDuration) {
+  if (data.duration) {
     fields.push({
       name: "Timeout duration",
-      value: data.timeoutDuration.humanize(),
+      value: data.duration.humanize(),
     });
   }
 
@@ -184,6 +185,21 @@ async function execActionUser(
 
           break;
         }
+        case ActionType.TempBan: {
+          // TODO: Create tempban DB entry
+          await upsertTempBan(db, {
+            guild_id: interaction.guildId,
+            user_id: target.user.id,
+            expires_at: data.durationEnd().unwrap().toDate(),
+          });
+
+          await interaction.guild.members.ban(target.user.id, {
+            reason: auditLogReason,
+            deleteMessageDays: data.deleteMessageDays || 0,
+          });
+
+          break;
+        }
         case ActionType.BanRemove: {
           await interaction.guild.members.unban(target.user.id, auditLogReason);
 
@@ -201,7 +217,7 @@ async function execActionUser(
           // Timeout and adjust are both same, just update timeout end time
           await interaction.guild.members.edit(target.user.id, {
             communicationDisabledUntil: data
-              .communicationDisabledUntil()
+              .durationEnd()
               .unwrap()
               .toISOString(),
             reason: auditLogReason,

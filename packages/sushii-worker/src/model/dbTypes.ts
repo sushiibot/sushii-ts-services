@@ -617,6 +617,13 @@ export interface AppPublicTags {
   use_count: Int8;
 }
 
+export interface AppPublicTempBans {
+  created_at: Generated<Timestamp>;
+  expires_at: Timestamp;
+  guild_id: Int8;
+  user_id: Int8;
+}
+
 export interface AppPublicUserLevels {
   guild_id: Int8;
   last_msg: Timestamp;
@@ -856,6 +863,7 @@ export interface DB {
   "app_public.role_menu_roles": AppPublicRoleMenuRoles;
   "app_public.role_menus": AppPublicRoleMenus;
   "app_public.tags": AppPublicTags;
+  "app_public.temp_bans": AppPublicTempBans;
   "app_public.user_levels": AppPublicUserLevels;
   "app_public.users": AppPublicUsers;
   "app_public.web_user_guilds": AppPublicWebUserGuilds;

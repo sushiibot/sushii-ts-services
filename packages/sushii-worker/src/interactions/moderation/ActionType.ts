@@ -2,6 +2,7 @@ import Color from "../../utils/colors";
 
 export enum ActionType {
   Ban = "ban",
+  TempBan = "temp_ban",
   BanRemove = "unban",
   Kick = "kick",
   Timeout = "timeout",
@@ -18,6 +19,8 @@ export namespace ActionType {
     switch (action) {
       case ActionType.Ban:
         return "ban";
+      case ActionType.TempBan:
+        return "temporary ban";
       case ActionType.BanRemove:
         return "unban";
       case ActionType.Kick:
@@ -43,6 +46,8 @@ export namespace ActionType {
     switch (s) {
       case "ban":
         return ActionType.Ban;
+      case ActionType.TempBan:
+        return ActionType.TempBan;
       case "unban":
         return ActionType.BanRemove;
       case "kick":
@@ -72,6 +77,8 @@ export namespace ActionType {
     switch (action) {
       case ActionType.Ban:
         return "banning";
+      case ActionType.TempBan:
+        return "temporarily banning";
       case ActionType.BanRemove:
         return "unbanning";
       case ActionType.Kick:
@@ -97,6 +104,8 @@ export namespace ActionType {
     switch (action) {
       case ActionType.Ban:
         return "banned"; // banned user
+      case ActionType.TempBan:
+        return "temporarily banned"; // temporarily banned user
       case ActionType.BanRemove:
         return "unbanned";
       case ActionType.Kick:
@@ -122,6 +131,8 @@ export namespace ActionType {
     switch (action) {
       case ActionType.Ban:
         return "🔨";
+      case ActionType.TempBan:
+        return "⏳";
       case ActionType.BanRemove:
         return "🔓";
       case ActionType.Kick:
@@ -146,6 +157,7 @@ export namespace ActionType {
   export function toColor(actionType: ActionType): Color | null {
     switch (actionType) {
       case ActionType.Ban:
+      case ActionType.TempBan:
       case ActionType.Kick:
         return Color.Error;
       case ActionType.BanRemove:
