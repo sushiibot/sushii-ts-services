@@ -37,6 +37,7 @@ module.exports = {
     ],
     "no-multi-str": "off",
     "import/prefer-default-export": "off",
+    "no-await-in-loop": "warn"
   },
   settings: {
     "import/resolver": {
