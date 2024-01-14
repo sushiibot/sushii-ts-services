@@ -2,6 +2,7 @@ import logger from "../logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import db from "../model/db";
+import { guildGauge, membersGauge } from "../metrics";
 
 export enum StatName {
   GuildCount = "guild_count",
@@ -71,6 +72,10 @@ const task: BackgroundTask = {
     );
 
     await updateStat(StatName.MemberCount, totalMembers, "set");
+
+    // Set prometheus metrics
+    guildGauge.set(ctx.client.guilds.cache.size);
+    membersGauge.set(totalMembers);
   },
 };
 
