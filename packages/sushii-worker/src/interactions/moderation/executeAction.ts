@@ -195,7 +195,7 @@ async function execActionUser(
 
           await interaction.guild.members.ban(target.user.id, {
             reason: auditLogReason,
-            deleteMessageDays: data.deleteMessageDays || 0,
+            deleteMessageSeconds: (data.deleteMessageDays || 0) * 86400,
           });
 
           break;
