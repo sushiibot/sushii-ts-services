@@ -18,15 +18,19 @@ export async function upsertTempBan(
     .execute();
 }
 
-export async function getTempBans(
+export async function getGuildTempBans(
   db: Kysely<DB>,
   guildId: string,
 ): Promise<TempBanRow[]> {
-  return db
-    .selectFrom("app_public.temp_bans")
-    .selectAll()
-    .where("guild_id", "=", guildId)
-    .execute();
+  return (
+    db
+      .selectFrom("app_public.temp_bans")
+      .selectAll()
+      .where("guild_id", "=", guildId)
+      // Earliest expiring to latest expiring
+      .orderBy("expires_at", "asc")
+      .execute()
+  );
 }
 
 export async function getAndDeleteExpiredTempBans(
