@@ -13,7 +13,12 @@ import {
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
-import { reasonOption, sendDMReasonOption, usersOption } from "./options";
+import {
+  ModerationOption,
+  reasonOption,
+  sendDMReasonOption,
+  usersOption,
+} from "./options";
 
 export default class TempbanCommand extends SlashCommandHandler {
   requiredBotPermissions = new PermissionsBitField().add("BanMembers");
@@ -28,7 +33,7 @@ export default class TempbanCommand extends SlashCommandHandler {
     .addStringOption(usersOption(ActionType.TempBan))
     .addStringOption((o) =>
       o
-        .setName("duration")
+        .setName(ModerationOption.Duration)
         .setDescription("How long to ban the user for.")
         .setRequired(true),
     )
