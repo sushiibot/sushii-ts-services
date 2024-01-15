@@ -33,6 +33,19 @@ export async function getGuildTempBans(
   );
 }
 
+export async function deleteTempBan(
+  db: Kysely<DB>,
+  guildId: string,
+  userId: string,
+): Promise<TempBanRow | undefined> {
+  return db
+    .deleteFrom("app_public.temp_bans")
+    .where("guild_id", "=", guildId)
+    .where("user_id", "=", userId)
+    .returningAll()
+    .executeTakeFirst();
+}
+
 export async function getAndDeleteExpiredTempBans(
   db: Kysely<DB>,
 ): Promise<TempBanRow[]> {

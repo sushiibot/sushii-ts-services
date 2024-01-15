@@ -29,7 +29,10 @@ import {
 } from "../../db/ModLog/ModLog.repository";
 import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
 import { startCaughtActiveSpan } from "../../tracing";
-import { upsertTempBan } from "../../db/TempBan/TempBan.repository";
+import {
+  deleteTempBan,
+  upsertTempBan,
+} from "../../db/TempBan/TempBan.repository";
 
 const log = logger.child({ module: "executeAction" });
 const tracer = opentelemetry.trace.getTracer("sushii-worker");
@@ -186,7 +189,6 @@ async function execActionUser(
           break;
         }
         case ActionType.TempBan: {
-          // TODO: Create tempban DB entry
           await upsertTempBan(db, {
             guild_id: interaction.guildId,
             user_id: target.user.id,
@@ -202,6 +204,10 @@ async function execActionUser(
         }
         case ActionType.BanRemove: {
           await interaction.guild.members.unban(target.user.id, auditLogReason);
+
+          // Delete tempban, if any -- no error if not found
+          // TODO: Actually tell user if a tempban was removed
+          await deleteTempBan(db, interaction.guildId, target.user.id);
 
           break;
         }
