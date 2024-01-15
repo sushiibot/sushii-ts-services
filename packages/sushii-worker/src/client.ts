@@ -292,6 +292,12 @@ export default class Client {
           contentType: "application/json",
         });
 
+        scope.addAttachment({
+          filename: "interactionOptions.json",
+          data: JSON.stringify(interaction.options, null, 2),
+          contentType: "application/json",
+        });
+
         Sentry.captureException(e, {
           user: {
             id: invoker.id,
@@ -309,7 +315,11 @@ export default class Client {
         });
       });
       try {
-        await interaction.reply(t("generic.error.internal"));
+        if (interaction.deferred) {
+          await interaction.editReply(t("generic.error.internal"));
+        } else {
+          await interaction.reply(t("generic.error.internal"));
+        }
       } catch (e2) {
         Sentry.captureException(e2);
         log.warn(e2, "error replying error %s", interaction.commandName);
