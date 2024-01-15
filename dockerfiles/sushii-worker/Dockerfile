@@ -1,5 +1,10 @@
 FROM oven/bun:1.0.22-debian
 
+# Install curl
+RUN apt-get update && apt-get install -y \
+  curl \
+  && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /config
 
 COPY ./package.json ./bun.lockb ./
