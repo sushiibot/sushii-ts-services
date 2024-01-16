@@ -294,12 +294,8 @@ export default class RoleMenuCommand extends SlashCommandHandler {
               "The channel to send the role menu to, by default the current channel.",
             )
             .addChannelTypes(
-              ChannelType.GuildVoice,
               ChannelType.GuildAnnouncement,
-              ChannelType.AnnouncementThread,
-              ChannelType.PublicThread,
-              ChannelType.PrivateThread,
-              ChannelType.GuildStageVoice,
+              ChannelType.GuildText,
             )
             .setRequired(false),
         ),
