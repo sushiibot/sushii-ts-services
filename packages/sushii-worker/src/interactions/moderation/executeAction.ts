@@ -452,7 +452,7 @@ async function executeActionUser(
       let deleteDMPromise;
       if (dmRes && dmRes.ok) {
         // No need to catch err here, not awaited
-        deleteDMPromise = dmRes.unwrap().delete();
+        deleteDMPromise = dmRes.val.delete();
       }
 
       log.debug(
