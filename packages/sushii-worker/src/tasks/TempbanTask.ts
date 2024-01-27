@@ -31,7 +31,15 @@ const task: BackgroundTask = {
 
       const ts = toTimestamp(dayjs.utc(tempBan.created_at));
 
-      await guild.members.unban(tempBan.user_id, `Tempban from ${ts} expired.`);
+      try {
+        await guild.members.unban(
+          tempBan.user_id,
+          `Tempban from ${ts} expired.`,
+        );
+      } catch (err) {
+        // Ignore any errors -- either no perms or user was manually unbanned, etc
+        continue;
+      }
     }
   },
 };
