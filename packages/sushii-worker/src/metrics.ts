@@ -8,9 +8,14 @@ const prefix = "sushii_ts_worker_";
 const prefixedName = (name: string): string => `${prefix}${name}`;
 
 // PerformanceObserver is implemented in Bun v1.0.22
-collectDefaultMetrics({
-  prefix,
-});
+// monitorEventLoopDelay is missing.
+
+// Enable only if bun is not defined
+if (typeof Bun === "undefined") {
+  collectDefaultMetrics({
+    prefix,
+  });
+}
 
 // -----------------------------------------------------------------------------
 // General
