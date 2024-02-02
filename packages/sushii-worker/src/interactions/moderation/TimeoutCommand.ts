@@ -52,6 +52,13 @@ export default class TimeoutCommand extends SlashCommandHandler {
     }
 
     const data = new ModActionData(interaction);
+    const validateRes = data.validate();
+    if (validateRes.err) {
+      await interaction.editReply(getErrorMessage("Error", validateRes.val));
+
+      return;
+    }
+
     if (data.durationEnd().err) {
       await interactionReplyErrorMessage(
         ctx,

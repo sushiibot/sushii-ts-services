@@ -40,6 +40,13 @@ export default class UnbanCommand extends SlashCommandHandler {
     await interaction.deferReply();
 
     const data = new ModActionData(interaction);
+    const validateRes = data.validate();
+    if (validateRes.err) {
+      await interaction.editReply(getErrorMessage("Error", validateRes.val));
+
+      return;
+    }
+
     const fetchTargetsRes = await data.fetchTargets(
       ctx,
       interaction,

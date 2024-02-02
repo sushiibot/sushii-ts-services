@@ -302,4 +302,12 @@ export default class ModActionData {
 
     return Ok(dayjs.utc().add(this.duration));
   }
+
+  validate(): Result<void, string> {
+    if (this.reason && this.reason.length > 1024) {
+      return Err("Reason must be less than 1024 characters");
+    }
+
+    return Ok.EMPTY;
+  }
 }
