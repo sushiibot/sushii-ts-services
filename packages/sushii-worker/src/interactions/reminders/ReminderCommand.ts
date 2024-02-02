@@ -8,7 +8,6 @@ import dayjs from "dayjs";
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
-import parseDuration from "../../utils/parseDuration";
 import { SlashCommandHandler } from "../handlers";
 import {
   deleteReminder,
@@ -16,6 +15,7 @@ import {
   listReminders,
 } from "../../db/Reminder/Reminder.repository";
 import db from "../../model/db";
+import parseDurationOrTimestamp from "../../utils/parseDurationOrTimestamp";
 
 export default class ReminderCommand extends SlashCommandHandler {
   serverOnly = false;
@@ -83,10 +83,10 @@ export default class ReminderCommand extends SlashCommandHandler {
     interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const durationStr = interaction.options.getString("duration", true);
-
     const description = interaction.options.getString("description", true);
 
-    const duration = parseDuration(durationStr);
+    const duration = parseDurationOrTimestamp(durationStr);
+
     if (!duration) {
       await interaction.reply({
         embeds: [

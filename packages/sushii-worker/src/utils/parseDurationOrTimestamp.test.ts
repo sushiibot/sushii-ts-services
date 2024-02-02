@@ -2,7 +2,7 @@ import "../dayjs";
 
 import dayjs from "dayjs";
 import { describe, expect, test } from "bun:test";
-import parseDuration from "./parseDuration";
+import parseDurationOrTimestamp from "./parseDurationOrTimestamp";
 
 describe("parseDuration", () => {
   describe.each([
@@ -26,11 +26,18 @@ describe("parseDuration", () => {
       durationString: "not a valid duration",
       expectedDuration: null,
     },
+    {
+      durationString: `<t:${dayjs
+        .utc()
+        .add(dayjs.duration({ hours: 1 }))
+        .unix()}:f>`,
+      expectedDuration: dayjs.duration({ hours: 1 }),
+    },
   ])(
-    "parseDuration($durationString)",
+    "parseDurationOrTimestamp($durationString)",
     ({ durationString, expectedDuration }) => {
-      test(`parses custom ID ${durationString}`, () => {
-        const dur = parseDuration(durationString);
+      test(`parses duration string ${durationString}`, () => {
+        const dur = parseDurationOrTimestamp(durationString);
 
         if (expectedDuration === null) {
           expect(dur).toBeNull();
@@ -41,7 +48,8 @@ describe("parseDuration", () => {
             throw new Error("duration is not null but expected null");
           }
 
-          expect(dur!.asSeconds()).toEqual(expectedDuration.asSeconds());
+          const durRoundedSec = Math.ceil(dur!.asSeconds());
+          expect(durRoundedSec).toEqual(expectedDuration.asSeconds());
         }
       });
     },
