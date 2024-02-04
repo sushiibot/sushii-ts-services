@@ -1,4 +1,4 @@
-FROM oven/bun:1.0.25-debian
+FROM oven/bun:1.0.26-debian
 
 # Install curl
 RUN apt-get update && apt-get install -y \
@@ -13,6 +13,7 @@ COPY ./package.json ./bun.lockb ./
 COPY ./packages/sushii-worker/package.json ./packages/sushii-worker/
 COPY ./packages/sushii-data/package.json ./packages/sushii-data/
 COPY ./packages/sushii-db/package.json ./packages/sushii-db/
+COPY ./packages/sushii-status/package.json ./packages/sushii-status/
 
 # Install dependencies, this is gonna be more than needed but lockfile idk
 # TODO: Prevent need of copying all package.jsons
