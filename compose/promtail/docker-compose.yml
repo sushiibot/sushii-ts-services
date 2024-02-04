@@ -4,6 +4,11 @@ services:
   promtail:
     image: grafana/promtail:2.9.4
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - ${PROM_DATA_DIR}/promtail-data:/var/lib/promtail/positions
@@ -11,7 +16,6 @@ services:
     command:
       - "-config.file=/etc/promtail/docker-config.yaml"
       - "-config.expand-env=true"
-      - "-log.level=debug"
     environment:
       - LOKI_HOSTNAME=loki:3100
     networks:
