@@ -16,8 +16,12 @@ services:
       - LOKI_HOSTNAME=loki:3100
     networks:
       - metrics
+      - tailscale
 
 networks:
   metrics:
     external: true
     name: metrics
+  tailscale:
+    external: true
+    name: tailscale
