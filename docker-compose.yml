@@ -5,11 +5,11 @@ services:
       dockerfile: ./dockerfiles/sushii-worker/Dockerfile
       context: .
     logging:
-      driver: json-file
+      driver: "json-file"
       options:
-        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
-        max-size: "10m"
+        max-size: 10m
         max-file: "3"
+        labels: "production_status,service_name"
     restart: unless-stopped
     environment:
       # blue is default, and for now just 1 deployment green later
@@ -29,15 +29,18 @@ services:
       - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
       - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
       # Increase max memory usage - should use approx 1100 MB on start
-      - NODE_OPTIONS=--max-old-space-size=4096
+      - NODE_OPTIONS=--max-old-space-size=2048
     networks:
       - sushii_net
+      - metrics
     extra_hosts:
       - "host.docker.internal:host-gateway"
     labels:
       - "traefik.enable=false"
       - "logging=promtail"
       - "logging_jobname=sushii_worker"
+      - "production_status=prod"
+      - "service_name=sushii_worker"
   discord_api_proxy:
     image: discordjs/proxy
     container_name: discord_api_proxy
@@ -119,3 +122,6 @@ networks:
   sushii_net:
     external: true
     name: sushii-2_sushii_net
+  metrics:
+    external: true
+    name: metrics
