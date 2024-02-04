@@ -3,6 +3,10 @@ version: "3"
 services:
   tailscale:
     image: ghcr.io/tailscale/tailscale:v1.58.2
+    network_mode: "host"
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
     volumes:
       # a volume is used but it could be a local directory.
       - ${TS_STATE_DIR}:/var/lib/tailscale_state/
@@ -12,8 +16,6 @@ services:
       TS_STATE_DIR: "/var/lib/tailscale_state/tailscale.state"
       # (optional) set additional flags on tailscaled
       # TS_EXTRA_ARGS: --outbound-http-proxy-listen=localhost:1055
-    networks:
-      - tailscale
 
 networks:
   tailscale:

@@ -3,6 +3,7 @@ version: "3"
 services:
   promtail:
     image: grafana/promtail:2.9.4
+    container_name: promtail
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -17,15 +18,11 @@ services:
       - "-config.file=/etc/promtail/docker-config.yaml"
       - "-config.expand-env=true"
     environment:
-      - LOKI_HOSTNAME=loki:3100
+      LOKI_URL: pocatov3.tailc8948.ts.net/loki
     networks:
       - metrics
-      - tailscale
 
 networks:
   metrics:
     external: true
     name: metrics
-  tailscale:
-    external: true
-    name: tailscale
