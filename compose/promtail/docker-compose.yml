@@ -4,8 +4,6 @@ services:
   promtail:
     image: grafana/promtail:2.9.4
     restart: unless-stopped
-    depends_on:
-      - loki
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - ${PROM_DATA_DIR}/promtail-data:/var/lib/promtail/positions
