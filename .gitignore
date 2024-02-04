@@ -132,3 +132,5 @@ dist
 
 *.key
 *.pub
+
+**/docker_data

@@ -10,7 +10,7 @@ services:
     expose:
       - "3100"
     networks:
-      - grafana
+      - metrics
 
   promtail:
     image: grafana/promtail:2.9.4
@@ -27,7 +27,7 @@ services:
     environment:
       - LOKI_HOSTNAME=loki
     networks:
-      - grafana
+      - metrics
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.2
@@ -39,7 +39,7 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
     networks:
-      - grafana
+      - metrics
 
   prometheus:
     image: prom/prometheus:v2.45.3
@@ -52,7 +52,7 @@ services:
       - ${PROM_DATA_DIR}/prometheus_data:/prometheus
     networks:
       - web
-      - grafana
+      - metrics
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
@@ -73,7 +73,7 @@ services:
       - ${PROM_DATA_DIR}/grafana_data:/var/lib/grafana
     networks:
       - web
-      - grafana
+      - metrics
     labels:
       - "traefik.docker.network=sushii-2_web"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
@@ -85,6 +85,5 @@ networks:
   web:
     external: true
     name: sushii-2_web
-  grafana:
-    internal: true
-    name: grafana
+  metrics:
+    name: metrics

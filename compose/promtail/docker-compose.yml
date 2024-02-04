@@ -17,9 +17,9 @@ services:
     environment:
       - LOKI_HOSTNAME=loki:3100
     networks:
-      - grafana
+      - metrics
 
 networks:
-  grafana:
+  metrics:
     external: true
-    name: sushii-ts-services_grafana
+    name: metrics
