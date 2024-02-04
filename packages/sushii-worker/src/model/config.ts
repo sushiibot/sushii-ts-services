@@ -22,13 +22,15 @@ const schema = z.object({
   SENTRY_DSN: z.string().optional(),
   SUSHII_IMAGE_SERVER_URL: z.string(),
 
-  METRICS_PORT: z.string().optional().default("8080"),
+  METRICS_PORT: z.string().optional().default("9090"),
 
   // Example: 'https://discord.com/api'
   DISCORD_API_PROXY_URL: z.string(),
 
   NOTIFY_WEBHOOK_URL: z.string().optional(),
   NOTIFY_WEBHOOK_USERNAME: z.string().optional(),
+
+  NOTIFY_WEBHOOK_ERR_URL: z.string().optional(),
 
   TRACING_EXPORTER_URL: z.string().optional(),
   TRACING_SAMPLE_PERCENTAGE: z
