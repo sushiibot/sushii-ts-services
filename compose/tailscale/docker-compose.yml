@@ -7,11 +7,11 @@ services:
       # a volume is used but it could be a local directory.
       - ${TS_STATE_DIR}:/var/lib/tailscale_state/
     environment:
-      TAILSCALE_AUTH_KEY: ${TAILSCALE_AUTH_KEY:?err}
-      TAILSCALE_HOSTNAME: ${TAILSCALE_HOSTNAME:-sushii}
-      TAILSCALE_STATE_ARG: "/var/lib/tailscale_state/tailscale.state"
+      TS_AUTHKEY: ${TAILSCALE_AUTH_KEY:?err}
+      TS_HOSTNAME: ${TAILSCALE_HOSTNAME:-sushii}
+      TS_STATE_DIR: "/var/lib/tailscale_state/tailscale.state"
       # (optional) set additional flags on tailscaled
-      # TAILSCALE_OPT: --outbound-http-proxy-listen=localhost:1055
+      # TS_EXTRA_ARGS: --outbound-http-proxy-listen=localhost:1055
     networks:
       - tailscale
 
