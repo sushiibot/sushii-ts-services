@@ -90,9 +90,16 @@ function buildDeleteEmbed(
   }
 
   if (msg.attachments && msg.attachments.length > 0) {
-    const attachments = msg.attachments
+    let attachments = msg.attachments
       .map((a) => `[${a.filename}](${a.proxy_url})`)
-      .join("\n");
+      .join("\n")
+      .substring(0, 1024);
+
+    // Trim off the last new line
+    const lastNewline = attachments.lastIndexOf("\n");
+    if (lastNewline !== -1) {
+      attachments = attachments.substring(0, lastNewline);
+    }
 
     fields.push({
       name: "Attachments",
