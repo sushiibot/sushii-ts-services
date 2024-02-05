@@ -1,6 +1,8 @@
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
+  external_labels:
+    instance: "sushii2"
 
 remote_write:
   - url: http://pocatov3.tailc8948.ts.net/prometheus/api/v1/write
