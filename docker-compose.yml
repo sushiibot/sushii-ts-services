@@ -30,6 +30,8 @@ services:
       - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
       # Increase max memory usage - should use approx 1100 MB on start
       - NODE_OPTIONS=--max-old-space-size=2048
+    expose:
+      "9090"
     networks:
       - sushii_net
       - metrics
@@ -41,6 +43,9 @@ services:
       - "logging_jobname=sushii_worker"
       - "production_status=prod"
       - "service_name=sushii_worker"
+
+      - "prometheus.scrape.enable=true"
+      - "prometheus.scrape.port=9090"
   discord_api_proxy:
     image: discordjs/proxy
     container_name: discord_api_proxy
