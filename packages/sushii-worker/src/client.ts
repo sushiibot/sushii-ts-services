@@ -12,6 +12,9 @@ import {
   Routes,
   RESTPutAPIApplicationCommandsResult,
   RESTPostAPIApplicationCommandsJSONBody,
+  InteractionType,
+  ApplicationCommandType,
+  ComponentType,
 } from "discord.js";
 import * as Sentry from "@sentry/node";
 import { t } from "i18next";
@@ -237,12 +240,12 @@ export default class Client {
    */
   private async handleSlashCommandInteraction(
     interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const command = this.commands.get(interaction.commandName);
 
     if (!command) {
       log.error(`received unknown command: ${interaction.commandName}`);
-      return;
+      return false;
     }
 
     log.info(
@@ -267,7 +270,7 @@ export default class Client {
             interaction.commandName,
             checkRes.message,
           );
-          return;
+          return false;
         }
       }
 
@@ -324,7 +327,12 @@ export default class Client {
         Sentry.captureException(e2);
         log.warn(e2, "error replying error %s", interaction.commandName);
       }
+
+      // Failure
+      return false;
     }
+
+    return true;
   }
 
   /**
@@ -335,21 +343,23 @@ export default class Client {
    */
   private async handleAutocompleteInteraction(
     interaction: AutocompleteInteraction,
-  ): Promise<void> {
+  ): Promise<boolean> {
     // Find focused option path, e.g. notification.delete
     const focusedOption = findFocusedOption(interaction);
 
     if (!focusedOption) {
-      throw new Error(
+      log.error(
         `no focused option found for autocomplete ${interaction.commandName}`,
       );
+
+      return false;
     }
 
     const autocomplete = this.autocompleteHandlers.get(focusedOption.path);
 
     if (!autocomplete) {
       log.error(`received unknown autocomplete: ${focusedOption.path}`);
-      return;
+      return false;
     }
 
     log.info(
@@ -376,7 +386,7 @@ export default class Client {
           focusedOption.path,
           checkRes.message,
         );
-        return;
+        return false;
       }
 
       await autocomplete.handler(
@@ -393,7 +403,10 @@ export default class Client {
       });
 
       log.error(e, "error running autocomplete %s", interaction.commandName);
+      return false;
     }
+
+    return true;
   }
 
   /**
@@ -404,12 +417,12 @@ export default class Client {
    */
   private async handleContextMenuInteraction(
     interaction: ContextMenuCommandInteraction,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const command = this.contextMenuHandlers.get(interaction.commandName);
 
     if (!command) {
       log.error(`received unknown command: ${interaction.commandName}`);
-      return;
+      return false;
     }
 
     log.info("received %s command", interaction.commandName);
@@ -430,7 +443,7 @@ export default class Client {
             interaction.commandName,
             checkRes.message,
           );
-          return;
+          return false;
         }
       }
 
@@ -453,7 +466,11 @@ export default class Client {
         Sentry.captureException(e2);
         log.warn(e2, "error replying error %s", interaction.commandName);
       }
+
+      return false;
     }
+
+    return true;
   }
 
   /**
@@ -463,7 +480,7 @@ export default class Client {
    */
   private async handleModalSubmit(
     interaction: ModalSubmitInteraction,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const modalHandler = this.modalHandlers.find(
       (handler) => handler.customIDMatch(interaction.customId) !== false,
     );
@@ -474,13 +491,14 @@ export default class Client {
         interaction.customId,
       );
 
-      return;
+      return false;
     }
 
     log.info("received %s modal submit", interaction.customId);
 
     try {
       await modalHandler.handleModalSubmit(this.context, interaction);
+      return true;
     } catch (e) {
       Sentry.captureException(e, {
         tags: {
@@ -490,6 +508,7 @@ export default class Client {
       });
 
       log.error(e, "error handling modal %s: %s", interaction.id);
+      return false;
     }
   }
 
@@ -500,7 +519,7 @@ export default class Client {
    */
   private async handleButtonSubmit(
     interaction: ButtonInteraction,
-  ): Promise<void> {
+  ): Promise<boolean> {
     // TODO: button / select menu handlers don't really need to be a collection
     // as we are always iterating through all handlers
     const buttonHandler = this.buttonHandlers.find(
@@ -511,7 +530,7 @@ export default class Client {
       // This can happen if there's just an interaction collector
       log.warn("received unknown button interaction: %s", interaction.customId);
 
-      return;
+      return false;
     }
 
     log.info("received %s button", interaction.customId);
@@ -527,7 +546,11 @@ export default class Client {
       });
 
       log.error(e, "error handling button %s", interaction.id);
+
+      return false;
     }
+
+    return true;
   }
 
   /**
@@ -537,7 +560,7 @@ export default class Client {
    */
   private async handleSelectMenuSubmit(
     interaction: AnySelectMenuInteraction,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const selectMenuHandler = this.selectMenuHandlers.find(
       (handler) => handler.customIDMatch(interaction.customId) !== false,
     );
@@ -548,16 +571,18 @@ export default class Client {
         interaction.customId,
       );
 
-      return;
+      return false;
     }
 
     log.info("received %s select menu", interaction.customId);
 
     try {
       await selectMenuHandler.handleInteraction(this.context, interaction);
+      return true;
     } catch (e) {
       Sentry.captureException(e);
       log.error(e, "error handling select menu %s: %o", interaction.id);
+      return false;
     }
   }
 
@@ -580,37 +605,62 @@ export default class Client {
       span.setAttribute("interactionType", interaction.type);
 
       try {
-        updateInteractionMetrics(interaction);
+        let success = true;
 
-        if (interaction.isChatInputCommand()) {
-          span.setAttribute("commandName", interaction.commandName);
-          return await this.handleSlashCommandInteraction(interaction);
+        switch (interaction.type) {
+          case InteractionType.ApplicationCommand: {
+            switch (interaction.commandType) {
+              case ApplicationCommandType.ChatInput: {
+                span.setAttribute("commandName", interaction.commandName);
+                success = await this.handleSlashCommandInteraction(interaction);
+                break;
+              }
+              case ApplicationCommandType.Message:
+              case ApplicationCommandType.User: {
+                span.setAttribute("commandName", interaction.commandName);
+                success = await this.handleContextMenuInteraction(interaction);
+                break;
+              }
+            }
+
+            break;
+          }
+          case InteractionType.ApplicationCommandAutocomplete: {
+            span.setAttribute("commandName", interaction.commandName);
+            success = await this.handleAutocompleteInteraction(interaction);
+            break;
+          }
+
+          case InteractionType.MessageComponent: {
+            switch (interaction.componentType) {
+              case ComponentType.Button: {
+                span.setAttribute("customId", interaction.customId);
+                success = await this.handleButtonSubmit(interaction);
+                break;
+              }
+              case ComponentType.StringSelect:
+              case ComponentType.UserSelect:
+              case ComponentType.RoleSelect:
+              case ComponentType.MentionableSelect:
+              case ComponentType.ChannelSelect: {
+                span.setAttribute("customId", interaction.customId);
+                success = await this.handleSelectMenuSubmit(interaction);
+                break;
+              }
+            }
+
+            break;
+          }
+
+          case InteractionType.ModalSubmit: {
+            span.setAttribute("customId", interaction.customId);
+            success = await this.handleModalSubmit(interaction);
+            break;
+          }
         }
 
-        if (interaction.isContextMenuCommand()) {
-          span.setAttribute("commandName", interaction.commandName);
-          return await this.handleContextMenuInteraction(interaction);
-        }
-
-        if (interaction.isAutocomplete()) {
-          span.setAttribute("commandName", interaction.commandName);
-          return await this.handleAutocompleteInteraction(interaction);
-        }
-
-        if (interaction.isButton()) {
-          span.setAttribute("customId", interaction.customId);
-          return await this.handleButtonSubmit(interaction);
-        }
-
-        if (interaction.isAnySelectMenu()) {
-          span.setAttribute("customId", interaction.customId);
-          return await this.handleSelectMenuSubmit(interaction);
-        }
-
-        if (interaction.isModalSubmit()) {
-          span.setAttribute("customId", interaction.customId);
-          return await this.handleModalSubmit(interaction);
-        }
+        const status = success ? "success" : "error";
+        updateInteractionMetrics(interaction, status);
 
         return undefined;
       } catch (err) {

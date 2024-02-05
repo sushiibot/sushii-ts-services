@@ -42,46 +42,59 @@ const gatewayEventsCounter = new Counter({
 const slashCommandsCounter = new Counter({
   name: `${prefix}slash_command`,
   help: "Slash commands",
-  labelNames: ["command_name"],
+  labelNames: ["command_name", "status"],
 });
 
 const autocompleteCounter = new Counter({
   name: prefixedName("autocomplete_interaction"),
   help: "Autocomplete interactions",
-  labelNames: ["command_name"],
+  labelNames: ["command_name", "status"],
 });
 
 const messageComponentCounter = new Counter({
   name: prefixedName("message_component_interaction"),
   help: "Message component interactions, e.g. buttons",
+  labelNames: ["status"],
 });
 
 const modalCounter = new Counter({
   name: prefixedName("modal_interaction"),
   help: "Modal submit interactions",
+  labelNames: ["status"],
 });
 
-export function updateInteractionMetrics(interaction: Interaction): void {
+export function updateInteractionMetrics(
+  interaction: Interaction,
+  status: "success" | "error",
+): void {
   const { type } = interaction;
 
   switch (type) {
     case InteractionType.ApplicationCommand: {
       slashCommandsCounter.inc({
         command_name: interaction.commandName,
+        status,
       });
       break;
     }
     case InteractionType.ApplicationCommandAutocomplete: {
-      autocompleteCounter.inc({ command_name: interaction.commandName });
+      autocompleteCounter.inc({
+        command_name: interaction.commandName,
+        status,
+      });
       break;
     }
     case InteractionType.MessageComponent: {
       // Does not have custom_id since it is high cardinality
-      messageComponentCounter.inc();
+      messageComponentCounter.inc({
+        status,
+      });
       break;
     }
     case InteractionType.ModalSubmit: {
-      modalCounter.inc();
+      modalCounter.inc({
+        status,
+      });
       break;
     }
     default: {
