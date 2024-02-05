@@ -17,6 +17,8 @@ services:
     command:
       - "-config.file=/etc/promtail/docker-config.yaml"
       - "-config.expand-env=true"
+    expose:
+      - 9080
     environment:
       LOKI_URL: pocatov3.tailc8948.ts.net/loki
     networks:
