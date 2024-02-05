@@ -258,22 +258,6 @@ export default class Client {
     );
 
     try {
-      // Pre-check
-      if (command.check) {
-        const checkRes = await command.check(this.context, interaction);
-
-        if (!checkRes.pass) {
-          await interaction.reply(checkRes.message);
-
-          log.info(
-            "command %s failed check: %s",
-            interaction.commandName,
-            checkRes.message,
-          );
-          return false;
-        }
-      }
-
       log.info(
         {
           command: getFullCommandName(interaction),
@@ -373,22 +357,6 @@ export default class Client {
     );
 
     try {
-      // Server only check is not done since that's on the command side
-
-      // Pre-check
-      const checkRes = await autocomplete.check(this.context, interaction);
-
-      if (!checkRes.pass) {
-        // No reply since autocomplete
-
-        log.info(
-          "autocomplete %s failed check: %s",
-          focusedOption.path,
-          checkRes.message,
-        );
-        return false;
-      }
-
       await autocomplete.handler(
         this.context,
         interaction,
@@ -428,25 +396,6 @@ export default class Client {
     log.info("received %s command", interaction.commandName);
 
     try {
-      // Pre-check
-      if (command.check) {
-        const checkRes = await command.check(this.context, interaction);
-
-        if (!checkRes.pass) {
-          await interaction.reply({
-            content: checkRes.message,
-            flags: MessageFlags.Ephemeral,
-          });
-
-          log.info(
-            "command %s failed check: %s",
-            interaction.commandName,
-            checkRes.message,
-          );
-          return false;
-        }
-      }
-
       await command.handler(this.context, interaction);
     } catch (e) {
       Sentry.captureException(e, {
