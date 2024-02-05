@@ -29,6 +29,7 @@ scrape_configs:
             hostname: hostname
             msg: msg
           source: log
+
       - labels:
           app: service_name
           level:

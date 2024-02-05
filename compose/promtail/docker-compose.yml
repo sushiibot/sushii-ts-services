@@ -21,6 +21,9 @@ services:
       LOKI_URL: pocatov3.tailc8948.ts.net/loki
     networks:
       - metrics
+    labels:
+      - prometheus.scrape.enable=true
+      - prometheus.scrape.port=9080
 
 networks:
   metrics:
