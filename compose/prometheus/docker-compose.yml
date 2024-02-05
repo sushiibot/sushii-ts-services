@@ -12,11 +12,9 @@ services:
         max-file: "2"
     volumes:
       - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ${PROM_DATA_DIR}/prometheus_data:/prometheus
       - /var/run/docker.sock:/var/run/docker.sock:ro
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
       - '--enable-feature=agent'
     networks:
       - metrics
