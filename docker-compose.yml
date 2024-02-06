@@ -31,7 +31,7 @@ services:
       # Increase max memory usage - should use approx 1100 MB on start
       - NODE_OPTIONS=--max-old-space-size=4096
     expose:
-      "9090"
+      - "9090"
     networks:
       - sushii_net
       - metrics
