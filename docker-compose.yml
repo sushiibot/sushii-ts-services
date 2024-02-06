@@ -29,7 +29,7 @@ services:
       - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
       - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
       # Increase max memory usage - should use approx 1100 MB on start
-      - NODE_OPTIONS=--max-old-space-size=2048
+      - NODE_OPTIONS=--max-old-space-size=4096
     expose:
       "9090"
     networks:
