@@ -94,26 +94,14 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       updatedModCase,
     );
 
+    if (!interaction.isFromMessage()) {
+      throw new Error("Reason modal should be from a button on a message");
+    }
+
     // Edit message to show reason and remove button
-    await interaction.channel?.messages.edit(modCase.msg_id, {
+    await interaction.update({
       embeds: [newEmbed.toJSON()],
       components: [],
     });
-
-    const embed = new EmbedBuilder()
-      .setTitle(`Updated reason for case #${caseId}`)
-      .setFooter({
-        text: "This message will be deleted in 5 seconds",
-      })
-      .setColor(Color.Success);
-
-    const reply = await interaction.reply({
-      embeds: [embed.toJSON()],
-      flags: MessageFlags.Ephemeral,
-    });
-
-    // Delete reply after 5 seconds
-    await sleep(5000);
-    await reply.delete();
   }
 }
