@@ -14,6 +14,7 @@ import { EventHandlerFn } from "./EventHandler";
 import { startCaughtActiveSpan } from "../tracing";
 
 const tracer = opentelemetry.trace.getTracer("level-handler");
+const log = logger.child({ handler: "levelHandler" });
 
 // Must match sql response, snake case
 const UpdateUserXpResultSchema = z.object({
@@ -153,7 +154,7 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
           if (err.code === RESTJSONErrorCodes.MissingPermissions) {
             // Delete the level role ?
 
-            logger.warn(
+            log.warn(
               {
                 guildId: msg.guildId,
                 channelId: msg.channelId,
@@ -166,7 +167,7 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
         }
 
         // Ignore error
-        logger.warn(
+        log.warn(
           {
             guildId: msg.guildId,
             channelId: msg.channelId,
@@ -180,7 +181,7 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
       }
     });
 
-    logger.debug(
+    log.debug(
       {
         guildId: msg.guildId,
         channelId: msg.channelId,

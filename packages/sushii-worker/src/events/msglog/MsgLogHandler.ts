@@ -96,6 +96,7 @@ function buildDeleteEmbed(
       .substring(0, 1024);
 
     // Trim off the last new line
+    // TODO: Use multiple embeds instead of removing trimming
     const lastNewline = attachments.lastIndexOf("\n");
     if (lastNewline !== -1) {
       attachments = attachments.substring(0, lastNewline);
