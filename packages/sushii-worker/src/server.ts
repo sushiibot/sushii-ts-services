@@ -1,5 +1,5 @@
 import { register } from "prom-client";
-import { Hono } from "hono";
+import { Hono, MiddlewareHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { logger as honoLogger } from "hono/logger";
 import { Server } from "bun";
@@ -22,6 +22,27 @@ export const ShardStatusToName = {
 
 const httpLogger = logger.child({ name: "http" });
 
+const pinoLoggerMiddleware: MiddlewareHandler = async (c, next) => {
+  const start = Date.now();
+  await next();
+  const elapsed = Date.now() - start;
+
+  const log = {
+    method: c.req.method,
+    path: c.req.routePath,
+    status: c.res.status,
+    elapsed,
+  };
+
+  const message = `${c.req.method} ${c.req.path} ${c.res.status} ${elapsed} ms`;
+
+  if (c.res.status >= 400) {
+    httpLogger.error(log, message);
+  } else {
+    httpLogger.debug(log, message);
+  }
+};
+
 export default function server(
   client: Client<boolean>,
   commands: RESTPostAPIApplicationCommandsJSONBody[],
@@ -29,7 +50,7 @@ export default function server(
   const app = new Hono();
 
   // Middleware
-  app.use("*", honoLogger());
+  app.use("*", pinoLoggerMiddleware);
 
   // Handlers
   app.notFound((c) => c.json({ message: "Not Found", ok: false }, 404));
