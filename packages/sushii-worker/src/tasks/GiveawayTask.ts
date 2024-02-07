@@ -58,17 +58,27 @@ const task: BackgroundTask = {
         continue;
       }
 
-      const { winnerIds } = await endGiveaway(
-        giveawayChannel,
-        giveaway.id,
-        giveaway,
-        // Auto end ignore allow_repeat_winners
-        false,
-        // Pick the same number as desired
-        giveaway.num_winners,
-      );
+      try {
+        const { winnerIds } = await endGiveaway(
+          giveawayChannel,
+          giveaway.id,
+          giveaway,
+          // Auto end ignore allow_repeat_winners
+          false,
+          // Pick the same number as desired
+          giveaway.num_winners,
+        );
 
-      await updateGiveawayMessage(giveawayChannel, giveaway, winnerIds);
+        await updateGiveawayMessage(giveawayChannel, giveaway, winnerIds);
+      } catch (err) {
+        logger.error(
+          {
+            giveawayId: giveaway.id,
+            error: err,
+          },
+          "failed to end giveaway",
+        );
+      }
     }
     /* eslint-enable no-await-in-loop */
 
