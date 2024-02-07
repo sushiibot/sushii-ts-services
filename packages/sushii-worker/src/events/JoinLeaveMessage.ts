@@ -3,6 +3,9 @@ import { EventHandlerFn } from "./EventHandler";
 import Context from "../model/context";
 import db from "../model/db";
 import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
+import logger from "../logger";
+
+const log = logger.child({ handler: "joinLeaveMessageHandler" });
 
 export const memberJoinMessageHandler: EventHandlerFn<
   Events.GuildMemberAdd
@@ -28,7 +31,16 @@ export const memberJoinMessageHandler: EventHandlerFn<
     .replace(/<server>/g, member.guild.name)
     .replace(/<member_number>/g, member.guild.memberCount.toString());
 
-  await channel.send(msg);
+  try {
+    await channel.send(msg);
+  } catch (err) {
+    log.warn(
+      {
+        err,
+      },
+      "Failed to send join message",
+    );
+  }
 };
 
 export const memberLeaveMessageHandler: EventHandlerFn<
@@ -58,5 +70,14 @@ export const memberLeaveMessageHandler: EventHandlerFn<
     .replace(/<server>/g, member.guild.name)
     .replace(/<member_number>/g, member.guild.memberCount.toString());
 
-  await channel.send(msg);
+  try {
+    await channel.send(msg);
+  } catch (err) {
+    log.warn(
+      {
+        err,
+      },
+      "Failed to send leave message",
+    );
+  }
 };
