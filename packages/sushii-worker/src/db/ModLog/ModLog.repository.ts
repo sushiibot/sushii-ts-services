@@ -1,4 +1,4 @@
-import { DeleteResult, Kysely } from "kysely";
+import { DeleteResult, Kysely, sql } from "kysely";
 import { DB } from "../../model/dbTypes";
 import { InsertableModLogRow, ModLogRow } from "./ModLog.table";
 
@@ -123,7 +123,11 @@ export function searchModLogsByIDPrefix(
       .selectFrom("app_public.mod_logs")
       .selectAll()
       .where("guild_id", "=", guildId)
-      .where("case_id", "like", `${searchCaseId}%`)
+      .where(
+        (eb) => sql<string>`cast(${eb.ref("case_id")} as text)`,
+        "like",
+        `${searchCaseId}%`,
+      )
       // Newest first - top newest in autocomplete
       .orderBy("case_id", "desc")
       .limit(maxResults)
