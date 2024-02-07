@@ -352,15 +352,28 @@ export async function msgLogHandler(
     return;
   }
 
-  // Split embeds into chunks of 10
-  const chunkSize = 10;
-  for (let i = 0; i < embeds.val.length; i += chunkSize) {
-    const chunk = embeds.val.slice(i, i + chunkSize).map((e) => e.toJSON());
+  // Only attempt if first chunk fails, likely due to permission error so don't try
+  // all chunks
+  try {
+    // Split embeds into chunks of 10
+    const chunkSize = 10;
+    for (let i = 0; i < embeds.val.length; i += chunkSize) {
+      const chunk = embeds.val.slice(i, i + chunkSize).map((e) => e.toJSON());
 
-    // eslint-disable-next-line no-await-in-loop
-    await channel.send({
-      embeds: chunk,
-    });
+      // eslint-disable-next-line no-await-in-loop
+      await channel.send({
+        embeds: chunk,
+      });
+    }
+  } catch (err) {
+    logger.warn(
+      {
+        guildId: payload.guild_id,
+        channelId: guildConfig.log_msg,
+        error: err,
+      },
+      "Failed to send message log",
+    );
   }
 }
 
