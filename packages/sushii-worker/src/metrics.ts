@@ -1,5 +1,9 @@
 import { InteractionType } from "discord-api-types/v10";
-import { GatewayDispatchEvents, Interaction } from "discord.js";
+import {
+  ApplicationCommandType,
+  GatewayDispatchEvents,
+  Interaction,
+} from "discord.js";
 import { collectDefaultMetrics, Counter, Gauge } from "prom-client";
 import logger from "./logger";
 
@@ -63,6 +67,47 @@ const modalCounter = new Counter({
   labelNames: ["status"],
 });
 
+// -----------------------------------------------------------------------------
+// Reminders
+
+export const pendingRemindersGauge = new Gauge({
+  name: prefixedName("reminders_pending"),
+  help: "Pending reminders",
+});
+
+export const sentRemindersCounter = new Counter({
+  name: prefixedName("reminders_sent"),
+  help: "Sent reminders",
+  labelNames: ["status"],
+});
+
+// -----------------------------------------------------------------------------
+// Tempbans
+
+export const pendingTempBansGauge = new Gauge({
+  name: prefixedName("tempban_pending"),
+  help: "Pending temporary bans",
+});
+
+export const unbannedTempBansCounter = new Counter({
+  name: prefixedName("tempban_unbanned"),
+  help: "Unbanned users from temporary bans",
+  labelNames: ["status"],
+});
+
+// -----------------------------------------------------------------------------
+// Giveaways
+
+export const activeGiveawaysGauge = new Gauge({
+  name: prefixedName("giveaways_active"),
+  help: "Active giveaways",
+});
+
+export const endedGiveawaysCounter = new Counter({
+  name: prefixedName("giveaways_ended"),
+  help: "Ended giveaways",
+});
+
 export function updateInteractionMetrics(
   interaction: Interaction,
   status: "success" | "error",
@@ -71,6 +116,10 @@ export function updateInteractionMetrics(
 
   switch (type) {
     case InteractionType.ApplicationCommand: {
+      switch (interaction.commandType) {
+        case ApplicationCommandType.ChatInput: {
+        }
+      }
       slashCommandsCounter.inc({
         command_name: interaction.commandName,
         status,

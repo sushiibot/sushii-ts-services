@@ -53,6 +53,16 @@ export function getAllActiveGiveaways(
   return query.execute();
 }
 
+export async function countAllActiveGiveaways(db: Kysely<DB>): Promise<number> {
+  const { count } = await db
+    .selectFrom("app_public.giveaways")
+    .select((eb) => eb.fn.countAll<number>().as("count"))
+    .where("is_ended", "=", false)
+    .executeTakeFirstOrThrow();
+
+  return count;
+}
+
 export function getAllCompletedGiveaways(
   db: Kysely<DB>,
   guildId: string,

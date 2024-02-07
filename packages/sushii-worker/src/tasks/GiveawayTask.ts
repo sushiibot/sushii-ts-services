@@ -3,11 +3,15 @@ import logger from "../logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import db from "../model/db";
-import { getAndEndPendingGiveaways } from "../db/Giveaway/Giveaway.repository";
+import {
+  countAllActiveGiveaways,
+  getAndEndPendingGiveaways,
+} from "../db/Giveaway/Giveaway.repository";
 import {
   endGiveaway,
   updateGiveawayMessage,
 } from "../interactions/giveaway/Giveaway.service";
+import { activeGiveawaysGauge, endedGiveawaysCounter } from "../metrics";
 
 const task: BackgroundTask = {
   name: "Check for expired giveaways",
@@ -67,6 +71,13 @@ const task: BackgroundTask = {
       await updateGiveawayMessage(giveawayChannel, giveaway, winnerIds);
     }
     /* eslint-enable no-await-in-loop */
+
+    // Increment ended metric
+    endedGiveawaysCounter.inc(expiredGiveaways.length);
+
+    // Update total active metric
+    const totalActive = await countAllActiveGiveaways(db);
+    activeGiveawaysGauge.set(totalActive);
   },
 };
 
