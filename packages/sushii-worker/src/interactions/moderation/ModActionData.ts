@@ -28,6 +28,8 @@ export interface ModActionTarget {
  * Common moderation command data
  */
 export default class ModActionData {
+  public actionType: ActionType;
+
   public options: ChatInputCommandInteraction["options"];
 
   public targets = new Map<string, ModActionTarget>();
@@ -44,11 +46,16 @@ export default class ModActionData {
   /**
    * Duration of timeout, only exists for timeout and tempban command
    */
-  public duration?: Duration;
+  public duration: Duration | null;
+  public durationStr: string | null;
 
   private DMReason?: boolean;
 
-  constructor(interaction: ChatInputCommandInteraction) {
+  constructor(
+    interaction: ChatInputCommandInteraction,
+    actionType: ActionType,
+  ) {
+    this.actionType = actionType;
     this.options = interaction.options;
 
     this.invoker = interaction.user;
@@ -63,12 +70,12 @@ export default class ModActionData {
       ModerationOption.DaysToDelete,
     );
 
-    const durationStr = this.options.getString(ModerationOption.Duration);
-
-    if (durationStr) {
-      // This is **required** to exist if it's a timeout command, so it will
-      // only be null if it's an invalid duration.
-      this.duration = parseDuration(durationStr) || undefined;
+    this.durationStr = this.options.getString(ModerationOption.Duration);
+    if (this.durationStr) {
+      // Could be null if invalid -- validate() should catch this
+      this.duration = parseDuration(this.durationStr);
+    } else {
+      this.duration = null;
     }
 
     // TODO: Configurable options for DM reason defaults
@@ -295,17 +302,50 @@ export default class ModActionData {
     return Ok.EMPTY;
   }
 
-  durationEnd(): Result<dayjs.Dayjs, string> {
-    if (!this.duration) {
-      return Err("Invalid duration");
+  durationEnd(): dayjs.Dayjs {
+    if (![ActionType.TempBan, ActionType.Timeout].includes(this.actionType)) {
+      throw new Error(
+        `durationEnd can only be called for TempBan and Timeout actions, not ${this.actionType}`,
+      );
     }
 
-    return Ok(dayjs.utc().add(this.duration));
+    if (!this.durationStr) {
+      throw new Error("durationEnd called but durationStr is not set.");
+    }
+
+    // This is **required** to exist if it's a timeout command, so it will
+    // only be null if it's an invalid duration.
+    const duration = parseDuration(this.durationStr);
+    if (!duration) {
+      throw new Error(
+        `durationStr '${this.durationStr}' is not a valid duration, should be validated in validate()`,
+      );
+    }
+
+    return dayjs.utc().add(duration);
   }
 
   validate(): Result<void, string> {
     if (this.reason && this.reason.length > 1024) {
       return Err("Reason must be less than 1024 characters");
+    }
+
+    if (![ActionType.TempBan, ActionType.Timeout].includes(this.actionType)) {
+      return Ok.EMPTY;
+    }
+
+    if (this.durationStr && !this.duration) {
+      log.debug(
+        {
+          actionType: this.actionType,
+          durationStr: this.durationStr,
+        },
+        "Invalid duration in validate()",
+      );
+
+      return Err(
+        `Invalid duration! Please use a valid duration such as 1d, 6h, etc.`,
+      );
     }
 
     return Ok.EMPTY;

@@ -192,7 +192,7 @@ async function execActionUser(
           await upsertTempBan(db, {
             guild_id: interaction.guildId,
             user_id: target.user.id,
-            expires_at: data.durationEnd().unwrap().toDate(),
+            expires_at: data.durationEnd().toDate(),
           });
 
           await interaction.guild.members.ban(target.user.id, {
@@ -222,10 +222,7 @@ async function execActionUser(
 
           // Timeout and adjust are both same, just update timeout end time
           await interaction.guild.members.edit(target.user.id, {
-            communicationDisabledUntil: data
-              .durationEnd()
-              .unwrap()
-              .toISOString(),
+            communicationDisabledUntil: data.durationEnd().toISOString(),
             reason: auditLogReason,
           });
 

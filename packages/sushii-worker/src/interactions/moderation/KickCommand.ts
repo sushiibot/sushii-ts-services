@@ -37,15 +37,15 @@ export default class KickCommand extends SlashCommandHandler {
       throw new Error("Not in cached guild");
     }
 
-    await interaction.deferReply();
-
-    const data = new ModActionData(interaction);
+    const data = new ModActionData(interaction, ActionType.Kick);
     const validateRes = data.validate();
     if (validateRes.err) {
-      await interaction.editReply(getErrorMessage("Error", validateRes.val));
+      await interaction.reply(getErrorMessage("Error", validateRes.val));
 
       return;
     }
+
+    await interaction.deferReply();
 
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {

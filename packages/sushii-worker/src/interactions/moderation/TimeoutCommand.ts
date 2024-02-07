@@ -51,20 +51,10 @@ export default class TimeoutCommand extends SlashCommandHandler {
       throw new Error("Not in cached guild");
     }
 
-    const data = new ModActionData(interaction);
+    const data = new ModActionData(interaction, ActionType.Timeout);
     const validateRes = data.validate();
     if (validateRes.err) {
-      await interaction.editReply(getErrorMessage("Error", validateRes.val));
-
-      return;
-    }
-
-    if (data.durationEnd().err) {
-      await interactionReplyErrorMessage(
-        ctx,
-        interaction,
-        "Invalid duration! Please use a valid duration such as 1d, 6h, etc.",
-      );
+      await interaction.reply(getErrorMessage("Error", validateRes.val));
 
       return;
     }
