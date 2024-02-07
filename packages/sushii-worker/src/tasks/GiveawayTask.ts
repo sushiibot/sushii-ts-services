@@ -77,7 +77,7 @@ const task: BackgroundTask = {
 
     // Update total active metric
     const totalActive = await countAllActiveGiveaways(db);
-    activeGiveawaysGauge.set(totalActive);
+    activeGiveawaysGauge.set(Number(totalActive));
   },
 };
 
