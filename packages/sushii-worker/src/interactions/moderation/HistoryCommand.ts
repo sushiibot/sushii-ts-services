@@ -7,7 +7,7 @@ import {
 import Context from "../../model/context";
 import timestampToUnixTime from "../../utils/timestampToUnixTime";
 import { SlashCommandHandler } from "../handlers";
-import buildUserHistoryEmbed from "./formatters/history";
+import buildUserHistoryEmbeds from "./formatters/history";
 import { getUserModLogHistory } from "../../db/ModLog/ModLog.repository";
 import db from "../../model/db";
 import { getUserString } from "../../utils/userString";
@@ -76,18 +76,32 @@ export default class HistoryCommand extends SlashCommandHandler {
       });
     }
 
-    const userEmbed = buildUserHistoryEmbed(cases, "command")
-      .setAuthor({
-        name: getUserString(member || user),
-        iconURL: userFaceURL,
-      })
+    const historyEmbeds = buildUserHistoryEmbeds(cases, "command");
+
+    // First embed gets user info
+    historyEmbeds[0].setAuthor({
+      name: getUserString(member || user),
+      iconURL: userFaceURL,
+    });
+
+    // Last embed gets footer and fields
+    historyEmbeds[historyEmbeds.length - 1]
       .setFooter({
         text: `User ID: ${user.id}`,
       })
       .addFields(fields);
 
     await interaction.reply({
-      embeds: [userEmbed.toJSON()],
+      embeds: [historyEmbeds[0]],
     });
+
+    // Additional embeds
+    if (historyEmbeds.length > 1) {
+      for (let i = 1; i < historyEmbeds.length; i += 1) {
+        await interaction.followUp({
+          embeds: [historyEmbeds[i]],
+        });
+      }
+    }
   }
 }

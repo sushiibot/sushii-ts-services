@@ -12,7 +12,7 @@ import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";
 import { ActionType } from "../ActionType";
-import buildUserHistoryEmbed from "../formatters/history";
+import buildUserHistoryEmbeds from "../formatters/history";
 import buildUserLookupEmbed from "../formatters/lookup";
 import { getUserLookupData } from "../LookupCommand";
 import { getUserModLogHistory } from "../../../db/ModLog/ModLog.repository";
@@ -69,7 +69,7 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
 
         // Add history embed
         const embedBuilders = embeds.map((e) => new EmbedBuilder(e.data));
-        embedBuilders.push(buildUserHistoryEmbed(cases, "context_menu"));
+        embedBuilders.push(buildUserHistoryEmbeds(cases, "context_menu")[0]);
 
         // TODO: Make stateless re-generation of embeds instead of modifying
         // existing embeds that is prone to breakage

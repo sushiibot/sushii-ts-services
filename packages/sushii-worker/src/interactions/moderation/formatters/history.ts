@@ -4,14 +4,15 @@ import { t } from "i18next";
 import Color from "../../../utils/colors";
 import { ActionType } from "../ActionType";
 import { ModLogRow } from "../../../db/ModLog/ModLog.table";
+import buildChunks from "../../../utils/buildChunks";
 
-export default function buildUserHistoryEmbed(
+export default function buildUserHistoryEmbeds(
   modLogs: ModLogRow[],
   format: "context_menu" | "command",
-): EmbedBuilder {
+): EmbedBuilder[] {
   const count = modLogs.length || 0;
 
-  let embed = new EmbedBuilder()
+  let mainEmbed = new EmbedBuilder()
     .setTitle(
       format === "command"
         ? t("history.command.title", { ns: "commands", count })
@@ -20,25 +21,30 @@ export default function buildUserHistoryEmbed(
     .setColor(Color.Success);
 
   if (count === 0 && format === "context_menu") {
-    embed = embed.setDescription(t("history.context_menu.description_empty"));
+    mainEmbed = mainEmbed.setDescription(
+      t("history.context_menu.description_empty"),
+    );
 
-    return embed;
+    return [mainEmbed];
   }
 
   // No description
   if (modLogs.length === 0) {
-    return embed;
+    return [mainEmbed];
   }
 
   const summary = modLogs.reduce((m, item) => {
-    const oldCount = m.get(item.action) || 0;
-    m.set(item.action, oldCount + 1);
+    const action = ActionType.fromString(item.action);
+    const actionStr = ActionType.toSentenceString(action);
+
+    const oldCount = m.get(actionStr) || 0;
+    m.set(actionStr, oldCount + 1);
 
     return m;
   }, new Map<string, number>());
 
   const summaryStr = Array.from(summary.entries()).map(
-    ([action, num]) => `${action} - ${num}`,
+    ([action, num]) => `**${action}** - ${num}`,
   );
 
   // Build case history
@@ -66,12 +72,44 @@ export default function buildUserHistoryEmbed(
     return s;
   });
 
-  embed = embed.setDescription(casesStr.join("\n")).addFields([
-    {
-      name: t("history.summary"),
-      value: summaryStr.join("\n"),
-    },
-  ]);
+  const descChunks = buildChunks(casesStr, "\n", 4096);
 
-  return embed;
+  // Only return 1 chunk for context menu
+  if (format === "context_menu") {
+    mainEmbed.setDescription(descChunks[descChunks.length - 1]);
+    return [mainEmbed];
+  }
+
+  // First embed gets first chunk
+  mainEmbed.setDescription(descChunks[0]);
+
+  // Additional embeds get the rest excluding first chunk
+  const additionalEmbeds = descChunks
+    .slice(1)
+    .map((desc) =>
+      new EmbedBuilder()
+        .setTitle("Case History (Continued)")
+        .setColor(Color.Success)
+        .setDescription(desc),
+    );
+
+  if (additionalEmbeds.length > 0) {
+    // Add summary to last embed
+    additionalEmbeds[additionalEmbeds.length - 1].addFields([
+      {
+        name: "Summary",
+        value: summaryStr.join("\n"),
+      },
+    ]);
+  } else {
+    // Add summary to first embed
+    mainEmbed.addFields([
+      {
+        name: "Summary",
+        value: summaryStr.join("\n"),
+      },
+    ]);
+  }
+
+  return [mainEmbed, ...additionalEmbeds];
 }

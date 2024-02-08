@@ -47,6 +47,7 @@ export default class ModActionData {
    * Duration of timeout, only exists for timeout and tempban command
    */
   public duration: Duration | null;
+
   public durationStr: string | null;
 
   private DMReason?: boolean;
@@ -330,6 +331,7 @@ export default class ModActionData {
       return Err("Reason must be less than 1024 characters");
     }
 
+    // Not a tempban or timeout, no duration to validate
     if (![ActionType.TempBan, ActionType.Timeout].includes(this.actionType)) {
       return Ok.EMPTY;
     }
@@ -344,7 +346,7 @@ export default class ModActionData {
       );
 
       return Err(
-        `Invalid duration! Please use a valid duration such as 1d, 6h, etc.`,
+        "Invalid duration! Please use a valid duration such as 1d, 6h, etc.",
       );
     }
 

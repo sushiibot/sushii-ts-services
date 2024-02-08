@@ -1,4 +1,5 @@
 import Color from "../../utils/colors";
+import toSentenceCase from "../../utils/toSentenceCase";
 
 export enum ActionType {
   Ban = "ban",
@@ -40,6 +41,10 @@ export namespace ActionType {
       case ActionType.Lookup:
         return "lookup";
     }
+  }
+
+  export function toSentenceString(action: ActionType): string {
+    return toSentenceCase(toString(action));
   }
 
   export function fromString(s: string): ActionType {
