@@ -42,7 +42,7 @@ import {
   memberLeaveMessageHandler,
 } from "./events/JoinLeaveMessage";
 import { deployToggleHandler } from "./events/Deployment";
-import { updateGatewayDispatchEventMetrics } from "./metrics";
+import { updateGatewayDispatchEventMetrics } from "./metrics/metrics";
 import { cacheUserHandler } from "./events/cache/cacheUser";
 import {
   cacheGuildCreateHandler,

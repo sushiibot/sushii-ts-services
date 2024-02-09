@@ -7,7 +7,7 @@ import { getAndDeleteExpiredReminders } from "../db/Reminder/Reminder.repository
 import db from "../model/db";
 import Color from "../utils/colors";
 import toTimestamp from "../utils/toTimestamp";
-import { sentRemindersCounter } from "../metrics";
+import { sentRemindersCounter } from "../metrics/metrics";
 
 const task: BackgroundTask = {
   name: "Check for expired reminders",

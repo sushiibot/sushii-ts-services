@@ -2,7 +2,7 @@ import logger from "../logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import db from "../model/db";
-import { guildGauge, membersGauge } from "../metrics";
+import { guildGauge, membersGauge } from "../metrics/metrics";
 
 export enum StatName {
   GuildCount = "guild_count",

@@ -11,7 +11,10 @@ import {
   endGiveaway,
   updateGiveawayMessage,
 } from "../interactions/giveaway/Giveaway.service";
-import { activeGiveawaysGauge, endedGiveawaysCounter } from "../metrics";
+import {
+  activeGiveawaysGauge,
+  endedGiveawaysCounter,
+} from "../metrics/metrics";
 
 const task: BackgroundTask = {
   name: "Check for expired giveaways",

@@ -33,7 +33,7 @@ import getFullCommandName from "./utils/getFullCommandName";
 import validationErrorToString from "./utils/validationErrorToString";
 import config from "./model/config";
 import { isCurrentDeploymentActive } from "./db/Deployment/Deployment.repository";
-import { updateInteractionMetrics } from "./metrics";
+import { updateInteractionMetrics } from "./metrics/metrics";
 
 const tracer = opentelemetry.trace.getTracer("interaction-client");
 
@@ -486,15 +486,23 @@ export default class Client {
 
     try {
       await buttonHandler.handleInteraction(this.context, interaction);
-    } catch (e) {
-      Sentry.captureException(e, {
+    } catch (err) {
+      Sentry.captureException(err, {
         tags: {
           type: "button",
           custom_id: interaction.customId,
+          handler: buttonHandler.constructor.name,
         },
       });
 
-      log.error(e, "error handling button %s", interaction.id);
+      log.error(
+        {
+          err,
+          interactionId: interaction.id,
+          handler: buttonHandler.constructor.name,
+        },
+        "error handling button",
+      );
 
       return false;
     }
