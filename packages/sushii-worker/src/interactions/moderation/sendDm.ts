@@ -72,7 +72,7 @@ export default async function sendModActionDM(
     action,
     data.shouldDMReason(action),
     data.reason,
-    data.durationEnd().unwrapOr(null),
+    data.durationEnd(),
   );
 
   try {
