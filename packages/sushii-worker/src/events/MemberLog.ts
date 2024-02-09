@@ -17,9 +17,9 @@ import {
 } from "../db/GuildConfig/GuildConfig.repository";
 import Color from "../utils/colors";
 import toTimestamp from "../utils/toTimestamp";
-import logger from "../logger";
+import { newModuleLogger } from "../logger";
 
-const log = logger.child({ module: "MemberLog" });
+const log = newModuleLogger("MemberLog");
 
 async function logMember(
   member: GuildMember | PartialGuildMember,

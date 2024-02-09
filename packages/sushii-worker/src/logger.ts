@@ -17,4 +17,7 @@ logger.info(
   "Logger initialized",
 );
 
+export const newModuleLogger = (module: string): pino.Logger =>
+  logger.child({ module });
+
 export default logger;

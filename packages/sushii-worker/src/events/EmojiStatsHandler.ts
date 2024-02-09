@@ -20,8 +20,10 @@ import {
   AppPublicGuildAssetType,
   DB,
 } from "../model/dbTypes";
-import logger from "../logger";
+import { newModuleLogger } from "../logger";
 import { startCaughtActiveSpan } from "../tracing";
+
+const logger = newModuleLogger("EmojiStatsHandler");
 
 const tracer = opentelemetry.trace.getTracer("emoji-stats-handler");
 export const EMOJI_RE = /<(?<animated>a)?:(?<name>\w+):(?<id>\d{16,21})>/g;

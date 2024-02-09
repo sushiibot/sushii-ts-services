@@ -16,10 +16,12 @@ import SushiiEmoji from "../../constants/SushiiEmoji";
 import Context from "../../model/context";
 import buildChunks from "../../utils/buildChunks";
 import Color from "../../utils/colors";
-import logger from "../../logger";
+import { newModuleLogger } from "../../logger";
 import db from "../../model/db";
 import { EventHandlerFn } from "../EventHandler";
 import { getAPIUserTag } from "../../utils/APIUser";
+
+const log = newModuleLogger("MsgLogHandler");
 
 type EventData =
   | GatewayMessageDeleteDispatchData
@@ -342,7 +344,7 @@ export async function msgLogHandler(
 
   const channel = ctx.client.channels.cache.get(guildConfig.log_msg);
   if (!channel || !channel.isTextBased()) {
-    logger.warn(
+    log.warn(
       {
         guildId: payload.guild_id,
         channelId: guildConfig.log_msg,
@@ -366,7 +368,7 @@ export async function msgLogHandler(
       });
     }
   } catch (err) {
-    logger.warn(
+    log.warn(
       {
         guildId: payload.guild_id,
         channelId: guildConfig.log_msg,

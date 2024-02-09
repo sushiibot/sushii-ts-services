@@ -7,14 +7,14 @@ import {
 import { sql } from "kysely";
 import { z } from "zod";
 import opentelemetry, { Span } from "@opentelemetry/api";
-import logger from "../logger";
+import { newModuleLogger } from "../logger";
 import Context from "../model/context";
 import db from "../model/db";
 import { EventHandlerFn } from "./EventHandler";
 import { startCaughtActiveSpan } from "../tracing";
 
 const tracer = opentelemetry.trace.getTracer("level-handler");
-const log = logger.child({ module: "levelHandler" });
+const log = newModuleLogger("levelHandler");
 
 // Must match sql response, snake case
 const UpdateUserXpResultSchema = z.object({
@@ -43,7 +43,7 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
 
     if (!msg.member) {
       // This shouldn't happen as member should exist in message create events.
-      logger.warn(msg, "No member found for message");
+      log.warn(msg, "No member found for message");
       return;
     }
 
@@ -80,7 +80,7 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
 
     if (!res) {
       // Empty response
-      logger.warn(
+      log.warn(
         {
           guildId: msg.guildId,
           channelId: msg.channelId,

@@ -2,12 +2,14 @@ import { Events, Guild, GuildBan } from "discord.js";
 import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
 import db from "../model/db";
-import logger from "../logger";
+import { newModuleLogger } from "../logger";
 import config from "../model/config";
 import {
   clearGuildBans,
   insertGuildBans,
 } from "../db/GuildBan/GuildBan.repository";
+
+const log = newModuleLogger("BanCacheHandler");
 
 async function getGuildBans(guild: Guild): Promise<string[]> {
   const guildAllBans: string[] = [];
@@ -25,7 +27,7 @@ async function getGuildBans(guild: Guild): Promise<string[]> {
         cache: false,
       });
     } catch (err) {
-      logger.error(
+      log.debug(
         {
           guildId: guild.id,
           guildName: guild.name,
@@ -69,7 +71,7 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
   ctx: Context,
 ): Promise<void> => {
   if (config.DISABLE_BAN_FETCH_ON_READY) {
-    logger.info("Skipping ban fetch on ready");
+    log.info("Skipping ban fetch on ready");
     return;
   }
 
@@ -86,7 +88,7 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
     // -------------------------------------------------------------------------
     // Update database bans for this guild
 
-    logger.debug(
+    log.debug(
       {
         guildId: guild.id,
         guildName: guild.name,
@@ -101,7 +103,7 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
 
     if (guildBans.length === 0) {
       // No bans, skip insertion
-      logger.debug(
+      log.debug(
         {
           guildId: guild.id,
           guildName: guild.name,
@@ -157,7 +159,7 @@ export const banCacheGuildCreateHandler: EventHandlerFn<
   try {
     guildBans = await getGuildBans(guild);
   } catch (err) {
-    logger.error(
+    log.debug(
       {
         guildId: guild.id,
         guildName: guild.name,

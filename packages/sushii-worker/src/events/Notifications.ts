@@ -18,7 +18,9 @@ import Color from "../utils/colors";
 import SushiiEmoji from "../constants/SushiiEmoji";
 import { quoteMarkdownString } from "../utils/markdown";
 import { getUserString } from "../utils/userString";
-import logger from "../logger";
+import { newModuleLogger } from "../logger";
+
+const log = newModuleLogger("NotificationsHandler");
 
 const tracer = opentelemetry.trace.getTracer("notification-handler");
 
@@ -91,7 +93,7 @@ export const notificationHandler: EventHandlerFn<Events.MessageCreate> = async (
         // Ensure member can view the channel
         const memberPermissions = msg.channel.permissionsFor(member);
         if (!memberPermissions.has(PermissionFlagsBits.ViewChannel)) {
-          logger.debug(
+          log.debug(
             {
               guildId: msg.guildId,
               userId: member.id,

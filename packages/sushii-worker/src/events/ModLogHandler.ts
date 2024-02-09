@@ -12,7 +12,7 @@ import {
   GuildAuditLogsEntry,
 } from "discord.js";
 import dayjs from "dayjs";
-import logger from "../logger";
+import { newModuleLogger } from "../logger";
 import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
 import { ActionType } from "../interactions/moderation/ActionType";
@@ -22,6 +22,8 @@ import buildModLogEmbed from "../builders/buildModLogEmbed";
 import { buildDMEmbed } from "../interactions/moderation/sendDm";
 import db from "../model/db";
 import { getNextCaseId } from "../db/ModLog/ModLog.repository";
+
+const log = newModuleLogger("ModLogHandler");
 
 interface ActionTypeEventData {
   actionType: ActionType;
@@ -135,7 +137,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   }
 
   const { actionType, executorId, reason, timeoutChange } = actionTypeData;
-  logger.debug(
+  log.debug(
     {
       guildId: guild.id,
       actionType,
@@ -215,7 +217,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
 
   // Create a new case if there isn't a pending case
   if (!matchingCase) {
-    logger.debug("No pending case found, creating new case");
+    log.debug("No pending case found, creating new case");
 
     const nextCaseId = await getNextCaseId(db, guild.id);
 
@@ -237,7 +239,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
       .returningAll()
       .executeTakeFirstOrThrow();
 
-    logger.debug({ newModLog }, "Created new mod log case");
+    log.debug({ newModLog }, "Created new mod log case");
 
     matchingCase = newModLog;
   }
@@ -278,7 +280,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
     // Ignore cases where timeout is adjusted, since that can only done through a bot command.
     // Users can only add or remove timeouts.
 
-    logger.info(
+    log.info(
       {
         actionType,
         timeoutChange,
@@ -300,7 +302,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
         embeds: [dmEmbed],
       });
     } catch (err) {
-      logger.warn(
+      log.warn(
         {
           actionType,
           timeoutChange,
@@ -311,7 +313,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
       );
     }
   } else {
-    logger.debug(
+    log.debug(
       {
         actionType,
         shouldDMReason,
