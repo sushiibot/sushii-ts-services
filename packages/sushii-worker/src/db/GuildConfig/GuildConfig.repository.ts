@@ -1,5 +1,6 @@
 import { Kysely } from "kysely";
 import opentelemetry from "@opentelemetry/api";
+import { UpdateExpression } from "kysely/dist/cjs/parser/update-set-parser";
 import { GuildConfigRow } from "./GuildConfig.table";
 import { DB } from "../../model/dbTypes";
 import { json } from "../json";
@@ -93,5 +94,21 @@ export async function upsertGuildConfig(
         role_config: json(guildConfig.role_config),
       }),
     )
+    .executeTakeFirstOrThrow();
+}
+
+export async function updateGuildConfigColumn(
+  db: Kysely<DB>,
+  guildId: string,
+  patch: UpdateExpression<DB, "app_public.guild_configs">,
+): Promise<GuildConfigRow> {
+  return db
+    .insertInto("app_public.guild_configs")
+    .values({
+      id: guildId,
+      ...patch,
+    })
+    .returningAll()
+    .onConflict((oc) => oc.column("id").doUpdateSet(patch))
     .executeTakeFirstOrThrow();
 }

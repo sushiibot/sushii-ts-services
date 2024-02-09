@@ -22,6 +22,7 @@ import buildModLogEmbed from "../builders/buildModLogEmbed";
 import { buildDMEmbed } from "../interactions/moderation/sendDm";
 import db from "../model/db";
 import { getNextCaseId } from "../db/ModLog/ModLog.repository";
+import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
 
 const log = newModuleLogger("ModLogHandler");
 
@@ -149,7 +150,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   );
 
   // Check event before fetching guild config
-  const conf = await db.getGuildConfig(guild.id);
+  const conf = await getGuildConfig(db, guild.id);
 
   // No guild config found, ignore
   if (

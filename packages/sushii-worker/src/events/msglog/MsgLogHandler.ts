@@ -20,6 +20,7 @@ import { newModuleLogger } from "../../logger";
 import db from "../../model/db";
 import { EventHandlerFn } from "../EventHandler";
 import { getAPIUserTag } from "../../utils/APIUser";
+import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
 
 const log = newModuleLogger("MsgLogHandler");
 
@@ -292,7 +293,7 @@ export async function msgLogHandler(
     return;
   }
 
-  const guildConfig = await db.getGuildConfig(payload.guild_id);
+  const guildConfig = await getGuildConfig(db, payload.guild_id);
 
   // No guild config found, ignore
   if (
@@ -383,7 +384,7 @@ export const threadDeleteHandler: EventHandlerFn<Events.ThreadDelete> = async (
   ctx: Context,
   thread: AnyThreadChannel,
 ): Promise<void> => {
-  const guildConfig = await db.getGuildConfig(thread.guildId);
+  const guildConfig = await getGuildConfig(db, thread.guildId);
 
   if (
     !guildConfig.log_msg || // No msg log set

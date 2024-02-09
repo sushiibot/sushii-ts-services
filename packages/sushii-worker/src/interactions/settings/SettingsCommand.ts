@@ -18,6 +18,10 @@ import { DB, AppPublicMsgLogBlockType } from "../../model/dbTypes";
 import Color from "../../utils/colors";
 import customIds, { SettingsToggleOptions } from "../customIds";
 import logger from "../../logger";
+import {
+  getGuildConfig,
+  updateGuildConfigColumn,
+} from "../../db/GuildConfig/GuildConfig.repository";
 
 export enum MsgLogCommandName {
   SetChannel = "set_channel",
@@ -483,7 +487,7 @@ export default class SettingsCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
-    const config = await db.getGuildConfig(interaction.guildId);
+    const config = await getGuildConfig(db, interaction.guildId);
 
     if (!config) {
       throw new Error("No config found.");
@@ -574,7 +578,7 @@ export default class SettingsCommand extends SlashCommandHandler {
   ): Promise<void> {
     const message = interaction.options.getString("message", true);
 
-    await db.updateGuildConfig(interaction.guildId, {
+    await updateGuildConfigColumn(db, interaction.guildId, {
       join_msg: message,
     });
 
@@ -595,7 +599,7 @@ export default class SettingsCommand extends SlashCommandHandler {
   ): Promise<void> {
     const message = interaction.options.getString("message", true);
 
-    await db.updateGuildConfig(interaction.guildId, {
+    await updateGuildConfigColumn(db, interaction.guildId, {
       leave_msg: message,
     });
 
@@ -616,7 +620,7 @@ export default class SettingsCommand extends SlashCommandHandler {
   ): Promise<void> {
     const channel = interaction.options.getChannel("channel", true);
 
-    await db.updateGuildConfig(interaction.guildId, {
+    await updateGuildConfigColumn(db, interaction.guildId, {
       msg_channel: channel.id,
     });
 
@@ -669,7 +673,7 @@ export default class SettingsCommand extends SlashCommandHandler {
         throw new Error("Invalid subcommand.");
     }
 
-    await db.updateGuildConfig(interaction.guildId, patch);
+    await updateGuildConfigColumn(db, interaction.guildId, patch);
 
     await interaction.reply({
       embeds: [
@@ -754,7 +758,7 @@ export default class SettingsCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
-    let config = await db.getGuildConfig(interaction.guildId);
+    let config = await getGuildConfig(db, interaction.guildId);
     const embed = SettingsCommand.getLookupHandlerEmbed(config);
     const components = SettingsCommand.getLookupHandlerComponents(
       config.lookup_details_opt_in,
@@ -794,7 +798,7 @@ export default class SettingsCommand extends SlashCommandHandler {
 
         const newOptedInState = i.customId === "opt-in";
 
-        config = await db.updateGuildConfig(interaction.guildId, {
+        config = await updateGuildConfigColumn(db, interaction.guildId, {
           lookup_details_opt_in: newOptedInState,
         });
 
@@ -844,7 +848,7 @@ export default class SettingsCommand extends SlashCommandHandler {
       true,
     );
 
-    await db.updateGuildConfig(interaction.guildId, {
+    await updateGuildConfigColumn(db, interaction.guildId, {
       log_msg: channel.id,
     });
 

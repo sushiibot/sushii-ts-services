@@ -9,6 +9,7 @@ import Context from "../../model/context";
 import db from "../../model/db";
 import { SlashCommandHandler } from "../handlers";
 import buildUserLookupEmbed, { UserLookupBan } from "./formatters/lookup";
+import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
 
 export async function getUserLookupData(
   ctx: Context,
@@ -113,7 +114,7 @@ export default class LookupCommand extends SlashCommandHandler {
       throw new Error("no user provided");
     }
 
-    const currentGuildConfig = await db.getGuildConfig(interaction.guildId);
+    const currentGuildConfig = await getGuildConfig(db, interaction.guildId);
 
     const sushiiMember = interaction.guild.members.me;
     const hasPermission = sushiiMember?.permissions.has(
