@@ -282,7 +282,11 @@ export default class ModActionData {
           member: null,
         });
       } else {
-        logger.error(result.reason, "fetch user promise rejected");
+        // Usually just cause it's invalid
+        logger.debug(
+          result.reason,
+          "fetch user promise rejected, skipping user.",
+        );
       }
     }
 
