@@ -3,6 +3,7 @@
     "types": ["bun-types"],
     "target": "es2016",
     "module": "commonjs",
+    "noEmit": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
