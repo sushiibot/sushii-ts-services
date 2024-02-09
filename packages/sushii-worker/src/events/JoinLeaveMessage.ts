@@ -5,7 +5,7 @@ import db from "../model/db";
 import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
 import logger from "../logger";
 
-const log = logger.child({ handler: "joinLeaveMessageHandler" });
+const log = logger.child({ module: "joinLeaveMessageHandler" });
 
 export const memberJoinMessageHandler: EventHandlerFn<
   Events.GuildMemberAdd

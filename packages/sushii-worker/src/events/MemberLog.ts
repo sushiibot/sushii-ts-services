@@ -19,7 +19,7 @@ import Color from "../utils/colors";
 import toTimestamp from "../utils/toTimestamp";
 import logger from "../logger";
 
-const log = logger.child({ handler: "MemberLog" });
+const log = logger.child({ module: "MemberLog" });
 
 async function logMember(
   member: GuildMember | PartialGuildMember,

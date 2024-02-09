@@ -1,7 +1,6 @@
 import { register } from "prom-client";
 import { Hono, MiddlewareHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { logger as honoLogger } from "hono/logger";
 import { Server } from "bun";
 import { Client, RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
 import logger from "./logger";
@@ -20,7 +19,7 @@ export const ShardStatusToName = {
   8: "Resuming",
 };
 
-const httpLogger = logger.child({ name: "http" });
+const httpLogger = logger.child({ module: "http" });
 
 const pinoLoggerMiddleware: MiddlewareHandler = async (c, next) => {
   const start = Date.now();

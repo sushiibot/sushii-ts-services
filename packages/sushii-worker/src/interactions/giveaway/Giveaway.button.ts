@@ -24,7 +24,7 @@ import {
 } from "./Giveaway.components";
 import logger from "../../logger";
 
-const log = logger.child({ handler: "GiveawayButtonHandler" });
+const log = logger.child({ module: "GiveawayButtonHandler" });
 
 // giveawayId -> userId[]
 type GiveawayCacheEntry = {

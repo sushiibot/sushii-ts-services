@@ -14,7 +14,7 @@ import { EventHandlerFn } from "./EventHandler";
 import { startCaughtActiveSpan } from "../tracing";
 
 const tracer = opentelemetry.trace.getTracer("level-handler");
-const log = logger.child({ handler: "levelHandler" });
+const log = logger.child({ module: "levelHandler" });
 
 // Must match sql response, snake case
 const UpdateUserXpResultSchema = z.object({
