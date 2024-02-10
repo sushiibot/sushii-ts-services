@@ -308,18 +308,7 @@ export default class ModActionData {
   }
 
   durationEnd(): dayjs.Dayjs | null {
-    if (![ActionType.TempBan, ActionType.Timeout].includes(this.actionType)) {
-      return null;
-    }
-
     if (!this.durationStr) {
-      log.error(
-        {
-          actionType: this.actionType,
-        },
-        "durationEnd called but durationStr is not set.",
-      );
-
       return null;
     }
 
