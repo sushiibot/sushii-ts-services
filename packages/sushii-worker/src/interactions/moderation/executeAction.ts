@@ -189,10 +189,15 @@ async function execActionUser(
           break;
         }
         case ActionType.TempBan: {
+          const endDate = data.durationEnd()?.toDate();
+          if (!endDate) {
+            throw new Error("durationEnd is null");
+          }
+
           await upsertTempBan(db, {
             guild_id: interaction.guildId,
             user_id: target.user.id,
-            expires_at: data.durationEnd().toDate(),
+            expires_at: endDate,
           });
 
           await interaction.guild.members.ban(target.user.id, {
@@ -220,9 +225,14 @@ async function execActionUser(
             });
           }
 
+          const endDate = data.durationEnd()?.toDate();
+          if (!endDate) {
+            throw new Error(`durationEnd is null for action ${actionType}`);
+          }
+
           // Timeout and adjust are both same, just update timeout end time
           await interaction.guild.members.edit(target.user.id, {
-            communicationDisabledUntil: data.durationEnd().toISOString(),
+            communicationDisabledUntil: endDate,
             reason: auditLogReason,
           });
 

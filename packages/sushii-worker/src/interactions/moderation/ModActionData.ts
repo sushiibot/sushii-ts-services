@@ -307,15 +307,20 @@ export default class ModActionData {
     return Ok.EMPTY;
   }
 
-  durationEnd(): dayjs.Dayjs {
+  durationEnd(): dayjs.Dayjs | null {
     if (![ActionType.TempBan, ActionType.Timeout].includes(this.actionType)) {
-      throw new Error(
-        `durationEnd can only be called for TempBan and Timeout actions, not ${this.actionType}`,
-      );
+      return null;
     }
 
     if (!this.durationStr) {
-      throw new Error("durationEnd called but durationStr is not set.");
+      log.error(
+        {
+          actionType: this.actionType,
+        },
+        "durationEnd called but durationStr is not set.",
+      );
+
+      return null;
     }
 
     // This is **required** to exist if it's a timeout command, so it will
