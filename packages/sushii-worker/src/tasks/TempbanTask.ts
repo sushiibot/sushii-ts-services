@@ -3,8 +3,10 @@ import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import { getAndDeleteExpiredTempBans } from "../db/TempBan/TempBan.repository";
 import db from "../model/db";
-import logger from "../logger";
+import { newModuleLogger } from "../logger";
 import toTimestamp from "../utils/toTimestamp";
+
+const logger = newModuleLogger("TempbansTask");
 
 const task: BackgroundTask = {
   name: "Unban expired tempbans",

@@ -74,3 +74,15 @@ export function getAndDeleteExpiredReminders(
     .where("expire_at", "<=", new Date())
     .execute();
 }
+
+export async function countAllPendingReminders(
+  db: Kysely<DB>,
+): Promise<number> {
+  const { count } = await db
+    .selectFrom("app_public.reminders")
+    .select((eb) => eb.fn.countAll().as("count"))
+    .where("expire_at", ">", new Date())
+    .executeTakeFirstOrThrow();
+
+  return Number(count);
+}

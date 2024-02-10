@@ -1,9 +1,11 @@
 import dayjs from "dayjs";
-import logger from "../logger";
+import { newModuleLogger } from "../logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import db from "../model/db";
 import { UserEmojiRateLimitDuration } from "../events/EmojiStatsHandler";
+
+const logger = newModuleLogger("DeleteStaleEmojiStatsTask");
 
 const task: BackgroundTask = {
   name: "Delete stale emoji stats rate limits",

@@ -3,8 +3,9 @@ import { Hono, MiddlewareHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { Server } from "bun";
 import { Client, RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
-import logger from "./logger";
+import { newModuleLogger } from "./logger";
 import config from "./model/config";
+import { updateShardMetrics } from "./metrics/gatewayMetrics";
 
 // Reverse mapping of the Status enum to get the name
 export const ShardStatusToName = {
@@ -19,26 +20,26 @@ export const ShardStatusToName = {
   8: "Resuming",
 };
 
-const httpLogger = logger.child({ module: "http" });
+const logger = newModuleLogger("http");
 
 const pinoLoggerMiddleware: MiddlewareHandler = async (c, next) => {
   const start = Date.now();
   await next();
-  const elapsed = Date.now() - start;
+  const elapsedMs = Date.now() - start;
 
   const log = {
     method: c.req.method,
     path: c.req.routePath,
     status: c.res.status,
-    elapsed,
+    elapsedMs,
   };
 
-  const message = `${c.req.method} ${c.req.path} ${c.res.status} ${elapsed} ms`;
+  const message = `${c.req.method} ${c.req.path} ${c.res.status} ${elapsedMs} ms`;
 
   if (c.res.status >= 400) {
-    httpLogger.error(log, message);
+    logger.error(log, message);
   } else {
-    httpLogger.debug(log, message);
+    logger.debug(log, message);
   }
 };
 
@@ -54,7 +55,7 @@ export default function server(
   // Handlers
   app.notFound((c) => c.json({ message: "Not Found", ok: false }, 404));
   app.onError((err, c) => {
-    httpLogger.error(`${err}`);
+    logger.error(`${err}`);
     return c.text("Error", 500);
   });
 
@@ -89,6 +90,9 @@ export default function server(
   // Prometheus metrics
   app.get("/metrics", async (c) => {
     try {
+      // Update shard metrics on demand
+      updateShardMetrics(client);
+
       const metrics = await register.metrics();
 
       c.header("Content-Type", register.contentType);

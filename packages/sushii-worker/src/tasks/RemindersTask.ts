@@ -1,13 +1,21 @@
 import { EmbedBuilder } from "discord.js";
 import dayjs from "dayjs";
-import logger from "../logger";
+import { newModuleLogger } from "../logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
-import { getAndDeleteExpiredReminders } from "../db/Reminder/Reminder.repository";
+import {
+  countAllPendingReminders,
+  getAndDeleteExpiredReminders,
+} from "../db/Reminder/Reminder.repository";
 import db from "../model/db";
 import Color from "../utils/colors";
 import toTimestamp from "../utils/toTimestamp";
-import { sentRemindersCounter } from "../metrics/metrics";
+import {
+  pendingRemindersGauge,
+  sentRemindersCounter,
+} from "../metrics/metrics";
+
+const logger = newModuleLogger("RemindersTask");
 
 const task: BackgroundTask = {
   name: "Check for expired reminders",
@@ -67,6 +75,9 @@ const task: BackgroundTask = {
       },
       numFailed,
     );
+
+    const pendingReminderCount = await countAllPendingReminders(db);
+    pendingRemindersGauge.set(pendingReminderCount);
   },
 };
 

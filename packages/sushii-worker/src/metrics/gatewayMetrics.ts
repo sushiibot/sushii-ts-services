@@ -26,7 +26,7 @@ const shardStatusGauge = new Gauge({
 });
 
 const shardLatencyGauge = new Gauge({
-  name: prefixedName("shard_latency"),
+  name: prefixedName("shard_latency_ms"),
   help: "Discord shard latency",
   labelNames: ["shard_id"],
 });
@@ -37,7 +37,7 @@ const shardLastPingTimestampGauge = new Gauge({
   labelNames: ["shard_id"],
 });
 
-export function updateShardMetrics(client: Client<true>): void {
+export function updateShardMetrics(client: Client<boolean>): void {
   for (const shard of client.ws.shards.values()) {
     const labels = {
       shard_id: shard.id,

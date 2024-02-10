@@ -1,5 +1,5 @@
 import { ChannelType } from "discord.js";
-import logger from "../logger";
+import { newModuleLogger } from "../logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import db from "../model/db";
@@ -15,6 +15,8 @@ import {
   activeGiveawaysGauge,
   endedGiveawaysCounter,
 } from "../metrics/metrics";
+
+const logger = newModuleLogger("GiveawayTask");
 
 const task: BackgroundTask = {
   name: "Check for expired giveaways",
