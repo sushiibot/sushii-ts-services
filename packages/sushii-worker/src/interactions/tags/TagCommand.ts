@@ -15,10 +15,15 @@ import {
 import { t } from "i18next";
 import fetch from "node-fetch";
 import { Err, Ok, Result } from "ts-results";
+import { z } from "zod";
+import { fromZodError } from "zod-validation-error";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
-import { interactionReplyErrorMessage } from "../responses/error";
+import {
+  interactionReplyError,
+  interactionReplyErrorMessage,
+} from "../responses/error";
 import Paginator from "../../utils/Paginator";
 import db from "../../model/db";
 import {
@@ -42,20 +47,32 @@ interface TagUpdateData {
   files: AttachmentBuilder[];
 }
 
+const tagNameSchema = z
+  .string()
+  .trim()
+  .min(1, {
+    message: "Tag name is too short. Tag names must be 1 character or more.",
+  })
+  .max(32, {
+    message: "Tag name is too long. Tag names must be 32 characters or less.",
+  })
+  .regex(VALID_TAG_NAME_REGEX, {
+    message:
+      "Tag name contains invalid characters. Only lowercase letters, numbers, and symbols _ and -",
+  });
+
 function verifyTagName(tagName: string): Result<string, string> {
-  const trimmedTagName = tagName.trim();
+  const res = tagNameSchema.safeParse(tagName);
 
-  if (trimmedTagName.length > 32) {
-    return Err(
-      "Tag name is too long. Tag names must be 32 characters or less.",
-    );
+  if (!res.success) {
+    const err = fromZodError(res.error, {
+      prefix: null,
+    });
+
+    return Err(err.message);
   }
 
-  if (!VALID_TAG_NAME_REGEX.test(trimmedTagName)) {
-    return Err("Tag name contains invalid characters. Only a-z, 0-9, _ and -.");
-  }
-
-  return Ok(trimmedTagName);
+  return Ok(res.data);
 }
 
 async function getFieldsAndFiles(
@@ -145,7 +162,7 @@ export default class TagCommand extends SlashCommandHandler {
             .setDescription("The tag name.")
             .setRequired(true)
             .setMinLength(1)
-            .setMaxLength(100),
+            .setMaxLength(32),
         )
         // Content / attachment optional, but requires at least one
         .addStringOption((o) =>
@@ -343,7 +360,12 @@ export default class TagCommand extends SlashCommandHandler {
     // Verify format and length
     const tagNameRes = verifyTagName(tagNameRaw);
     if (tagNameRes.err) {
-      await interactionReplyErrorMessage(ctx, interaction, tagNameRes.val);
+      await interactionReplyError(
+        ctx,
+        interaction,
+        "Invalid tag name",
+        tagNameRes.val,
+      );
 
       return;
     }
@@ -917,7 +939,12 @@ export default class TagCommand extends SlashCommandHandler {
     // Verify format and length
     const newNameRes = verifyTagName(newNameRaw);
     if (newNameRes.err) {
-      await interactionReplyErrorMessage(ctx, interaction, newNameRes.val);
+      await interactionReplyError(
+        ctx,
+        interaction,
+        "Invalid tag name",
+        newNameRes.val,
+      );
 
       return;
     }
