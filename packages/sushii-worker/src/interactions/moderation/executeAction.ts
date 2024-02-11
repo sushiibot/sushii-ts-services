@@ -375,7 +375,9 @@ async function executeActionUser(
     );
     // This is the current timeout **before** applying the new one
     // If there is a timeout that hasn't expired yet, then this is an adjustment
+    // Always false if not a timeout action
     const isTimeoutAdjust =
+      incomingActionType === ActionType.Timeout &&
       communicationDisabledUntil.isValid() &&
       communicationDisabledUntil.isAfter(dayjs.utc());
 
