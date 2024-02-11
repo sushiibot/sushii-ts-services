@@ -90,12 +90,16 @@ export default class NotificationCommand extends SlashCommandHandler {
       keyword,
     );
 
-    if (res.numInsertedOrUpdatedRows === BigInt(0)) {
+    if (Number(res.numInsertedOrUpdatedRows) === 0) {
+      const embed = new EmbedBuilder()
+        .setTitle("Failed to add notification")
+        .setDescription(
+          `You already have a notification set for \`${keyword}\``,
+        )
+        .setColor(Color.Error);
+
       await interaction.reply({
-        content: t("notification.add.error.duplicate", {
-          ns: "commands",
-          keyword,
-        }),
+        embeds: [embed],
         flags: MessageFlags.Ephemeral,
       });
 

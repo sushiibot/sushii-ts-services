@@ -37,6 +37,9 @@ export function insertNotification(
       user_id: userId,
       keyword: cleanKeyword(keyword),
     })
+    .onConflict((oc) =>
+      oc.columns(["guild_id", "user_id", "keyword"]).doNothing(),
+    )
     .executeTakeFirst();
 }
 
