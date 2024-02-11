@@ -140,7 +140,12 @@ export default class TagCommand extends SlashCommandHandler {
         .setName("add")
         .setDescription("Create a new tag.")
         .addStringOption((o) =>
-          o.setName("name").setDescription("The tag name.").setRequired(true),
+          o
+            .setName("name")
+            .setDescription("The tag name.")
+            .setRequired(true)
+            .setMinLength(1)
+            .setMaxLength(100),
         )
         // Content / attachment optional, but requires at least one
         .addStringOption((o) =>
