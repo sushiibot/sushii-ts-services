@@ -260,10 +260,23 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
     throw new Error("Mod log channel is not text based");
   }
 
-  const sentMsg = await channel.send({
-    embeds: [embed.toJSON()],
-    components,
-  });
+  let sentMsg;
+  try {
+    sentMsg = await channel.send({
+      embeds: [embed.toJSON()],
+      components,
+    });
+  } catch (err) {
+    log.debug(
+      {
+        actionType,
+        eventTarget: event.target,
+        err,
+      },
+      "Failed to send mod log message",
+    );
+    return;
+  }
 
   // Update message ID in db
   await db
@@ -303,7 +316,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
         embeds: [dmEmbed],
       });
     } catch (err) {
-      log.warn(
+      log.debug(
         {
           actionType,
           timeoutChange,
