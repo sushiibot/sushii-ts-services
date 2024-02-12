@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeEach, afterEach } from "bun:test";
+import { expect, describe, it, beforeEach, afterEach, test } from "bun:test";
 // Need this to not fail on utc
 import "../../../dayjs";
 import db from "../../../model/db";
