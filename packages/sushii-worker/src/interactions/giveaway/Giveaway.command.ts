@@ -5,6 +5,8 @@ import {
   EmbedBuilder,
   messageLink,
   MessageFlags,
+  DiscordAPIError,
+  RESTJSONErrorCodes,
 } from "discord.js";
 import dayjs from "dayjs";
 import Context from "../../model/context";
@@ -263,10 +265,28 @@ export default class GiveawayCommand extends SlashCommandHandler {
     const embed = getGiveawayEmbed(giveaway, []);
     const components = getGiveawayComponents(0, false);
 
-    const giveawayMsg = await interaction.channel.send({
-      embeds: [embed],
-      components,
-    });
+    let giveawayMsg;
+    try {
+      giveawayMsg = await interaction.channel.send({
+        embeds: [embed],
+        components,
+      });
+    } catch (err) {
+      if (err instanceof DiscordAPIError) {
+        if (err.code === RESTJSONErrorCodes.MissingAccess) {
+          await interaction.reply(
+            getErrorMessage(
+              "Failed to send giveaway",
+              "I don't have permission to send the giveaway message, please make sure I can view and send messages to the channel.",
+            ),
+          );
+
+          return;
+        }
+      }
+
+      throw err;
+    }
 
     try {
       await createGiveaway(db, {
