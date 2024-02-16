@@ -416,83 +416,120 @@ async function executeActionUser(
     );
 
     // Only DM if (dm_reason true or has dm_message) AND if target is in the server.
-    const shouldDM = data.shouldDM(actionType) && target.member !== null;
+    const shouldDM = data.shouldDMReason(actionType) && target.member !== null;
 
     const triedDMNonMember =
-      data.shouldDM(actionType) && target.member === null;
+      data.shouldDMReason(actionType) && target.member === null;
+
+    log.debug({
+      shouldDM,
+      triedDMNonMember,
+    });
 
     let dmRes: Result<Message, string> | null = null;
-    // DM before for ban and send dm
-    if (actionType === ActionType.Ban && shouldDM) {
-      dmRes = await sendModActionDM(
-        ctx,
-        interaction,
-        data,
-        target.user,
-        actionType,
-      );
-    }
 
-    // Only throw if we do NOT want a mod log case, e.g. fail to kick/ban/mute
-    // REST methods will throw if it is not a successful request
-    const res = await execActionUser(
-      ctx,
-      interaction,
-      data,
-      target,
-      actionType,
-      modLog,
-    );
+    await db.transaction().execute(async (tx) => {
+      // Lock the row for mod log
+      // If there isn't a lock, the mod log handler will already be done by the
+      // time the dm is sent.
+      await tx
+        .selectFrom("app_public.mod_logs")
+        .forUpdate()
+        .selectAll()
+        .where("guild_id", "=", modLog.guild_id)
+        .where("case_id", "=", modLog.case_id)
+        .execute();
 
-    // DM after for non-ban and send dm
-    if (actionType !== ActionType.Ban && shouldDM) {
-      dmRes = await sendModActionDM(
-        ctx,
-        interaction,
-        data,
-        target.user,
-        actionType,
-      );
-    }
-
-    // Revert stuff if failed to execute action
-    if (res.err) {
-      // Delete DM reason if it was sent
-      let deleteDMPromise;
-      if (dmRes && dmRes.ok) {
-        // No need to catch err here, not awaited
-        deleteDMPromise = dmRes.val.delete();
-      }
-
-      log.debug(
-        {
+      // DM before for ban and send dm
+      if (actionType === ActionType.Ban && shouldDM) {
+        dmRes = await sendModActionDM(
+          ctx,
+          interaction,
+          data,
+          target.user,
           actionType,
-          guildId: interaction.guildId,
-          caseId: modLog.case_id,
-        },
-        "Failed to execute action, deleting mod log and dm",
+        );
+      }
+
+      // Only throw if we do NOT want a mod log case, e.g. fail to kick/ban/mute
+      // REST methods will throw if it is not a successful request
+      const res = await execActionUser(
+        ctx,
+        interaction,
+        data,
+        target,
+        actionType,
+        modLog,
       );
 
-      const [resDeleteModLog, resDeleteDM] = await Promise.allSettled([
-        deleteModLog(db, interaction.guildId, nextCaseId.toString()),
-        deleteDMPromise,
-      ]);
-
-      if (resDeleteModLog.status === "rejected") {
-        logger.error(resDeleteModLog.reason, "failed to delete mod log");
+      // DM after for non-ban and send dm
+      if (actionType !== ActionType.Ban && shouldDM) {
+        dmRes = await sendModActionDM(
+          ctx,
+          interaction,
+          data,
+          target.user,
+          actionType,
+        );
       }
 
-      if (resDeleteDM.status === "rejected") {
-        logger.error(resDeleteDM.reason, "failed to delete mod log DM");
+      // Revert stuff if failed to execute action
+      if (res.err) {
+        // Delete DM reason if it was sent
+        let deleteDMPromise;
+        if (dmRes && dmRes.ok) {
+          // No need to catch err here, not awaited
+          deleteDMPromise = dmRes.val.delete();
+        }
+
+        log.debug(
+          {
+            actionType,
+            guildId: interaction.guildId,
+            caseId: modLog.case_id,
+          },
+          "Failed to execute action, deleting mod log and dm",
+        );
+
+        const [resDeleteModLog, resDeleteDM] = await Promise.allSettled([
+          deleteModLog(tx, interaction.guildId, nextCaseId.toString()),
+          deleteDMPromise,
+        ]);
+
+        if (resDeleteModLog.status === "rejected") {
+          logger.error(resDeleteModLog.reason, "failed to delete mod log");
+        }
+
+        if (resDeleteDM.status === "rejected") {
+          logger.error(resDeleteDM.reason, "failed to delete mod log DM");
+        }
+
+        return res;
       }
 
-      return res;
-    }
+      if (dmRes !== null) {
+        // If DM was attempted AND if it success - set channel & ID
+        if (dmRes.ok) {
+          modLog.dm_channel_id = dmRes.val.channelId;
+          modLog.dm_message_id = dmRes.val.id;
+        } else {
+          // Otherwise, set the error
+          modLog.dm_message_error = dmRes.val;
+        }
+
+        // Update mod log again with DM details
+        logger.debug("Upserting mod log with DM details");
+        await upsertModLog(tx, modLog);
+        logger.debug("Updated mod log with DM details");
+      } else {
+        logger.debug("No DM result");
+      }
+    });
 
     return Ok({
       user: target.user,
       shouldDM,
-      failedDM: dmRes?.err || false,
+      failedDM: !!modLog.dm_message_error,
       triedDMNonMember,
     });
   });

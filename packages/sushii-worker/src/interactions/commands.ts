@@ -48,6 +48,7 @@ import GiveawayButtonHandler from "./giveaway/Giveaway.button";
 import GiveawayAutocomplete from "./giveaway/Giveaway.autocomplete";
 import TempbanCommand from "./moderation/TempbanCommand";
 import TempbanListCommand from "./moderation/TempbanListCommand";
+import DeleteModLogDMButtonHandler from "./moderation/reason/DMButton";
 
 export default function registerInteractionHandlers(
   interactionClient: InteractionClient,
@@ -124,6 +125,7 @@ export default function registerInteractionHandlers(
     new ContextLookUpButtonHandler(),
     new RoleMenuButtonHandler(),
     new ModLogReasonButtonHandler(),
+    new DeleteModLogDMButtonHandler(),
     new ReasonConfirmButtonHandler(),
     new GiveawayButtonHandler(),
   );

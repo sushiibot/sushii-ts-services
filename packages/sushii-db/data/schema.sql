@@ -741,7 +741,10 @@ CREATE TABLE app_public.mod_logs (
     executor_id bigint,
     reason text,
     msg_id bigint,
-    attachments text[] DEFAULT '{}'::text[] NOT NULL
+    attachments text[] DEFAULT '{}'::text[] NOT NULL,
+    dm_channel_id bigint,
+    dm_message_id bigint,
+    dm_message_error text
 );
 
 

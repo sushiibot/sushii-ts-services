@@ -94,12 +94,14 @@ export default class ModActionData {
    * @param actionType
    * @returns
    */
-  shouldDM(actionType: ActionType): boolean {
-    return this.shouldDMReason(actionType);
-  }
-
   shouldDMReason(actionType: ActionType): boolean {
-    // Don't DM if no reason provided
+    // Warn always DMs, even if no reason provided
+    if (actionType === ActionType.Warn) {
+      return true;
+    }
+
+    // Don't DM if no reason provided - no point DMing a timeout if no reason
+    // since the duration is shown in the server
     if (!this.reason) {
       return false;
     }
@@ -107,11 +109,6 @@ export default class ModActionData {
     // Unban never sends DM - user can never receive it
     if (actionType === ActionType.BanRemove) {
       return false;
-    }
-
-    // Warn always DMs
-    if (actionType === ActionType.Warn) {
-      return true;
     }
 
     // Timeout DMs by default (DMReason undefined), but follows DMReason if provided

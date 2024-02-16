@@ -552,6 +552,9 @@ export interface AppPublicModLogs {
   action_time: Timestamp;
   attachments: Generated<string[]>;
   case_id: Int8;
+  dm_channel_id: Int8 | null;
+  dm_message_error: string | null;
+  dm_message_id: Int8 | null;
   executor_id: Int8 | null;
   guild_id: Int8;
   msg_id: Int8 | null;

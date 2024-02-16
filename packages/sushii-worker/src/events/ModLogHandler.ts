@@ -1,12 +1,8 @@
-import {
-  APIActionRowComponent,
-  APIMessageActionRowComponent,
-  ButtonStyle,
-  AuditLogEvent,
-} from "discord-api-types/v10";
+import { ButtonStyle, AuditLogEvent } from "discord-api-types/v10";
 import {
   ActionRowBuilder,
   ButtonBuilder,
+  DiscordAPIError,
   Events,
   Guild,
   GuildAuditLogsEntry,
@@ -21,7 +17,7 @@ import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
 import buildModLogEmbed from "../builders/buildModLogEmbed";
 import { buildDMEmbed } from "../interactions/moderation/sendDm";
 import db from "../model/db";
-import { getNextCaseId } from "../db/ModLog/ModLog.repository";
+import { getNextCaseId, upsertModLog } from "../db/ModLog/ModLog.repository";
 import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
 
 const log = newModuleLogger("ModLogHandler");
@@ -90,23 +86,107 @@ function getActionTypeFromEvent(
 interface ModLogComponents {
   reason: string | null;
   case_id: string;
+  dm_channel_id: string | null;
+  dm_message_id: string | null;
+  dm_message_error: string | null;
 }
 
 export function buildModLogComponents(
   actionType: ActionType,
   modCase: ModLogComponents,
-): APIActionRowComponent<APIMessageActionRowComponent>[] {
-  // Currently only add button for ban and timeout
-  if (actionType !== ActionType.Ban && actionType !== ActionType.Timeout) {
-    return [];
+  dmDeleted: boolean = false,
+): ActionRowBuilder<ButtonBuilder>[] {
+  const row = new ActionRowBuilder<ButtonBuilder>();
+
+  log.debug(
+    {
+      actionType,
+      modCase,
+    },
+    "Building mod log components",
+  );
+
+  if (modCase.dm_channel_id && modCase.dm_message_id) {
+    const statusEmoji = dmDeleted ? "🗑️" : "📬";
+    const statusLabel = dmDeleted ? "Reason DM deleted" : "Reason DM sent";
+
+    const dmSentButton = new ButtonBuilder()
+      .setEmoji({
+        name: statusEmoji,
+      })
+      .setStyle(ButtonStyle.Secondary)
+      .setLabel(statusLabel)
+      .setCustomId("noop")
+      .setDisabled(true);
+
+    row.addComponents(dmSentButton);
+
+    // Only add delete button if the DM is not already deleted
+    if (!dmDeleted) {
+      const deleteDMButton = new ButtonBuilder()
+        .setEmoji({
+          name: "🗑️",
+        })
+        .setStyle(ButtonStyle.Danger)
+        .setLabel("Delete reason DM")
+        .setDisabled(dmDeleted)
+        .setCustomId(
+          customIds.modLogDeleteReasonDM.compile({
+            caseId: modCase.case_id,
+            channelId: modCase.dm_channel_id,
+            messageId: modCase.dm_message_id,
+          }),
+        );
+
+      row.addComponents(deleteDMButton);
+    }
   }
 
-  // TODO: Add buttons for DM sent, DM delete
-  // This requires the dm status to be set in database as it is sent async
-  // in a command vs this is the detached event handler
+  if (modCase.dm_message_error) {
+    const dmFailedButton = new ButtonBuilder()
+      .setEmoji({
+        name: "❌",
+      })
+      .setStyle(ButtonStyle.Secondary)
+      .setLabel("Reason DM failed")
+      .setCustomId("noop")
+      .setDisabled(true);
 
+    row.addComponents(dmFailedButton);
+  }
+
+  // If not ban and timeout, return without adding reason button
+  if (actionType !== ActionType.Ban && actionType !== ActionType.Timeout) {
+    if (row.components.length === 0) {
+      log.debug(
+        {
+          actionType,
+          modCase,
+        },
+        "No mod log components built",
+      );
+      return [];
+    }
+
+    log.debug(
+      {
+        actionType,
+        modCase,
+        row,
+      },
+      "mod log components built",
+    );
+    return [row];
+  }
+
+  // Already has reason, no need to add reason button, but still want to keep
+  // the DM buttons
+  if (modCase.reason && row.components.length > 0) {
+    return [row];
+  }
+
+  // Has reason, but no DM buttons, return empty components
   if (modCase.reason) {
-    // Already has reason, no need to add button
     return [];
   }
 
@@ -122,9 +202,9 @@ export function buildModLogComponents(
       }),
     );
 
-  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
+  row.addComponents(button);
 
-  return [row.toJSON()];
+  return [row];
 }
 
 const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
@@ -169,41 +249,66 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   // event.target is null, only event.targetId exists
   const targetUser = await guild.client.users.fetch(event.targetId);
 
-  let matchingCase = await db
-    .selectFrom("app_public.mod_logs")
-    .selectAll()
-    .where("guild_id", "=", guild.id)
-    .where("user_id", "=", event.targetId)
-    .where("action", "=", actionType)
-    .where("pending", "=", true)
-    .orderBy("action_time", "desc")
-    .executeTakeFirst();
-
-  if (matchingCase) {
-    // Now - 1 minute
-    const minimumTime = dayjs.utc().subtract(1, "minute");
-    const actionTime = dayjs.utc(matchingCase.action_time);
-
-    // If action time is older than 1 minute
-    if (actionTime.isBefore(minimumTime)) {
-      // Ignore if the action is more than 1 minute old
-      matchingCase = undefined;
-    }
-  }
-
-  // If there is a matching case AND if it was created in the last minute
-  if (matchingCase) {
-    // Mark case as not pending
-    await db
-      .updateTable("app_public.mod_logs")
+  let matchingCase;
+  await db.transaction().execute(async (tx) => {
+    matchingCase = await tx
+      .selectFrom("app_public.mod_logs")
+      // Make sure to wait for the executeAction to finish before selecting
+      // Or the DM columns will be stale
+      .forUpdate()
+      .selectAll()
       .where("guild_id", "=", guild.id)
-      .where("case_id", "=", matchingCase.case_id)
-      // There is already executor ID if this was found
-      .set({
-        pending: false,
-      })
-      .execute();
-  }
+      .where("user_id", "=", event.targetId)
+      .where("action", "=", actionType)
+      .where("pending", "=", true)
+      .orderBy("action_time", "desc")
+      .executeTakeFirst();
+
+    if (matchingCase) {
+      log.debug(
+        matchingCase,
+        "Found pending case, checking if it is older than 1 minute",
+      );
+    }
+
+    if (matchingCase) {
+      // Now - 1 minute
+      const minimumTime = dayjs.utc().subtract(1, "minute");
+      const actionTime = dayjs.utc(matchingCase.action_time);
+
+      // If action time is older than 1 minute
+      if (actionTime.isBefore(minimumTime)) {
+        log.debug(
+          {
+            guildId: guild.id,
+            caseId: matchingCase.case_id,
+          },
+          "Found pending case, but it is older than 1 minute, ignoring",
+        );
+        // Ignore if the action is more than 1 minute old
+        matchingCase = undefined;
+      }
+    }
+
+    // If there is a matching case AND if it was created in the last minute
+    if (matchingCase) {
+      // Mark case as not pending
+      const res = await tx
+        .updateTable("app_public.mod_logs")
+        .where("guild_id", "=", guild.id)
+        .where("case_id", "=", matchingCase.case_id)
+        // There is already executor ID if this was found
+        .set({
+          pending: false,
+        })
+        .executeTakeFirst();
+
+      log.debug(
+        { pendingUpdateResult: res },
+        "Marked pending case as not pending",
+      );
+    }
+  });
 
   // If this is a native manual timeout, we want to DM the user the reason.
   // ONLY DM if it is a **timeout,** ban reasons cannot be DM'd here
@@ -222,74 +327,36 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
 
     const nextCaseId = await getNextCaseId(db, guild.id);
 
-    const newModLog = await db
-      .insertInto("app_public.mod_logs")
-      .values({
-        guild_id: guild.id,
-        case_id: nextCaseId,
-        action: actionType,
-        pending: false,
-        user_id: event.targetId,
-        user_tag: targetUser.tag,
-        executor_id: executorId,
-        action_time: dayjs().utc().toISOString(),
-        reason,
-        // This is set in the mod logger
-        msg_id: undefined,
-      })
-      .returningAll()
-      .executeTakeFirstOrThrow();
+    const newModLog = await upsertModLog(db, {
+      guild_id: guild.id,
+      case_id: nextCaseId,
+      action: actionType,
+      pending: false,
+      user_id: event.targetId,
+      user_tag: targetUser.tag,
+      executor_id: executorId,
+      action_time: dayjs().utc().toISOString(),
+      reason,
+      // This is set in the mod logger
+      msg_id: undefined,
+    });
+
+    if (!newModLog) {
+      throw new Error("Failed to create new mod log case");
+    }
 
     log.debug({ newModLog }, "Created new mod log case");
 
     matchingCase = newModLog;
   }
 
-  const embed = await buildModLogEmbed(
-    ctx,
-    actionType,
-    targetUser,
-    matchingCase,
-    timeoutChange,
-  );
-  const components = buildModLogComponents(actionType, matchingCase);
+  log.debug(matchingCase, "Matching mod log case");
 
-  const channel = await guild.channels.fetch(conf.log_mod);
-
-  if (!channel?.isTextBased()) {
-    throw new Error("Mod log channel is not text based");
-  }
-
-  let sentMsg;
-  try {
-    sentMsg = await channel.send({
-      embeds: [embed.toJSON()],
-      components,
-    });
-  } catch (err) {
-    log.debug(
-      {
-        actionType,
-        eventTarget: event.target,
-        err,
-      },
-      "Failed to send mod log message",
-    );
-    return;
-  }
-
-  // Update message ID in db
-  await db
-    .updateTable("app_public.mod_logs")
-    .where("guild_id", "=", guild.id)
-    .where("case_id", "=", matchingCase.case_id)
-    // There is already executor ID if this was found
-    .set({
-      msg_id: sentMsg.id,
-    })
-    .execute();
+  let shouldSaveModLog = false;
 
   if (shouldDMReason && timeoutChange) {
+    shouldSaveModLog = true;
+
     // DM the user the reason if it is a timeout
     // Ignore cases where timeout is adjusted, since that can only done through a bot command.
     // Users can only add or remove timeouts.
@@ -312,10 +379,19 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
     );
 
     try {
-      await targetUser.send({
+      const dmMsg = await targetUser.send({
         embeds: [dmEmbed],
       });
+
+      // modlog will be updated with the message ID later when saving message id
+      // of mod log
+      matchingCase.dm_channel_id = dmMsg.channel.id;
+      matchingCase.dm_message_id = dmMsg.id;
     } catch (err) {
+      if (err instanceof DiscordAPIError) {
+        matchingCase.dm_message_error = err.message;
+      }
+
       log.debug(
         {
           actionType,
@@ -326,15 +402,50 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
         "Failed to send timeout DM to user",
       );
     }
-  } else {
+  }
+
+  const embed = await buildModLogEmbed(
+    ctx,
+    actionType,
+    targetUser,
+    matchingCase,
+    timeoutChange,
+  );
+  const components = buildModLogComponents(actionType, matchingCase);
+
+  const channel = await guild.channels.fetch(conf.log_mod);
+
+  if (!channel?.isTextBased()) {
+    throw new Error("Mod log channel is not text based");
+  }
+
+  let sentMsg;
+  try {
+    shouldSaveModLog = true;
+
+    sentMsg = await channel.send({
+      embeds: [embed.toJSON()],
+      components,
+    });
+  } catch (err) {
     log.debug(
       {
         actionType,
-        shouldDMReason,
-        timeoutChange,
+        eventTarget: event.target,
+        err,
       },
-      "Not timeout / do not want DM: skipping timeout reason DM",
+      "Failed to send mod log message",
     );
+  }
+
+  if (sentMsg) {
+    // Update message ID in db
+    matchingCase.msg_id = sentMsg.id;
+  }
+
+  // Save mod log if it was updated
+  if (shouldSaveModLog) {
+    await upsertModLog(db, matchingCase);
   }
 };
 

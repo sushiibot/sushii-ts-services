@@ -13,6 +13,7 @@ enum Paths {
   RoleMenuAddRolesSelect = "/rolemenu/addRoles/select",
   ModerationAction = "/moderation/action/:actionType/:targetId",
   ModLogReason = "/modlog/reason/:caseId",
+  ModLogDeleteReasonDM = "/modlog/rmDM/:caseId/:channelId/:messageId",
   ReasonConfirmButton = "reason_confirm/:userId/:buttonId/:action",
   SettingsToggleButton = "settings/toggle/:field/:newState",
   GiveawayEnterButton = "giveaway/enter",
@@ -30,38 +31,44 @@ type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
       roleId: string;
     }
   : T extends Paths.RoleMenuSelect
-  ? {
-      // No params
-    }
-  : T extends Paths.RoleMenuAddRolesSelect
-  ? {
-      // /rolemenu addroles - No params since it is select menu
-    }
-  : T extends Paths.ModerationAction
-  ? {
-      actionType: ActionType;
-      targetId: string;
-    }
-  : T extends Paths.ModLogReason
-  ? {
-      caseId: string;
-    }
-  : T extends Paths.ReasonConfirmButton
-  ? {
-      userId: string;
-      buttonId: string;
-      action: "override" | "empty" | "cancel";
-    }
-  : T extends Paths.SettingsToggleButton
-  ? {
-      field: SettingsToggleOptions;
-      newState: string;
-    }
-  : T extends Paths.GiveawayEnterButton
-  ? {
-      // No params, uses guild ID and message ID from interaction
-    }
-  : never;
+    ? {
+        // No params
+      }
+    : T extends Paths.RoleMenuAddRolesSelect
+      ? {
+          // /rolemenu addroles - No params since it is select menu
+        }
+      : T extends Paths.ModerationAction
+        ? {
+            actionType: ActionType;
+            targetId: string;
+          }
+        : T extends Paths.ModLogReason
+          ? {
+              caseId: string;
+            }
+          : T extends Paths.ModLogDeleteReasonDM
+            ? {
+                caseId: string;
+                channelId: string;
+                messageId: string;
+              }
+            : T extends Paths.ReasonConfirmButton
+              ? {
+                  userId: string;
+                  buttonId: string;
+                  action: "override" | "empty" | "cancel";
+                }
+              : T extends Paths.SettingsToggleButton
+                ? {
+                    field: SettingsToggleOptions;
+                    newState: string;
+                  }
+                : T extends Paths.GiveawayEnterButton
+                  ? {
+                      // No params, uses guild ID and message ID from interaction
+                    }
+                  : never;
 
 /**
  * Returns a function that returns null if the match fails or the params.
@@ -107,6 +114,7 @@ const customIds = {
   roleMenuAddRolesSelect: createCustomID(Paths.RoleMenuAddRolesSelect),
   lookupButton: createCustomID(Paths.ModerationAction),
   modLogReason: createCustomID(Paths.ModLogReason),
+  modLogDeleteReasonDM: createCustomID(Paths.ModLogDeleteReasonDM),
   reasonConfirmButton: createCustomID(Paths.ReasonConfirmButton),
   settingsToggleButton: createCustomID(Paths.SettingsToggleButton),
   giveawayEnterButton: createCustomID(Paths.GiveawayEnterButton),
