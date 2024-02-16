@@ -33,10 +33,16 @@ export default class NotificationListAutocomplete extends AutocompleteHandler {
       option.value,
     );
 
-    const choices = matching.slice(0, 25).map((row) => ({
-      name: row.keyword,
-      value: row.keyword,
-    }));
+    const choices = matching
+      // Remove any notifications that are too long, new notification should
+      // have a limit of 100 characters, but old ones will not be able to be
+      // listed
+      .filter((n) => n.keyword.length <= 100)
+      .slice(0, 25)
+      .map((row) => ({
+        name: row.keyword,
+        value: row.keyword,
+      }));
 
     await interaction.respond(choices || []);
   }
