@@ -12,6 +12,9 @@ describe("ModLog.repository", () => {
       const expectedMogLog: InsertableModLogRow = {
         guild_id: "123",
         case_id: "2",
+        dm_channel_id: null,
+        dm_message_error: null,
+        dm_message_id: null,
         user_id: "123",
         action: "kick",
         reason: "reason",
