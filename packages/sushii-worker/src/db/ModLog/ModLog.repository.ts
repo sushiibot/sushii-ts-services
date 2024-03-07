@@ -2,6 +2,26 @@ import { DeleteResult, Kysely, sql } from "kysely";
 import { DB } from "../../model/dbTypes";
 import { InsertableModLogRow, ModLogRow } from "./ModLog.table";
 
+export function insertModLog(
+  db: Kysely<DB>,
+  modLog: Omit<InsertableModLogRow, "case_id">,
+): Promise<ModLogRow> {
+  return db
+    .insertInto("app_public.mod_logs")
+    .values(({ fn, selectFrom, eb }) => ({
+      ...modLog,
+      case_id: selectFrom("app_public.mod_logs")
+        .select(
+          eb(fn.coalesce(fn.max("case_id"), sql<string>`'0'`), "+", "1").as(
+            "case_id",
+          ),
+        )
+        .where("guild_id", "=", modLog.guild_id.toString()),
+    }))
+    .returningAll()
+    .executeTakeFirstOrThrow();
+}
+
 export function upsertModLog(
   db: Kysely<DB>,
   modLog: InsertableModLogRow,

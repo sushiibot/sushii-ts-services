@@ -17,7 +17,11 @@ import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
 import buildModLogEmbed from "../builders/buildModLogEmbed";
 import { buildDMEmbed } from "../interactions/moderation/sendDm";
 import db from "../model/db";
-import { getNextCaseId, upsertModLog } from "../db/ModLog/ModLog.repository";
+import {
+  getNextCaseId,
+  insertModLog,
+  upsertModLog,
+} from "../db/ModLog/ModLog.repository";
 import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
 
 const log = newModuleLogger("ModLogHandler");
@@ -325,11 +329,10 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   if (!matchingCase) {
     log.debug("No pending case found, creating new case");
 
-    const nextCaseId = await getNextCaseId(db, guild.id);
-
-    const newModLog = await upsertModLog(db, {
+    // insertModLog will increment the case ID, may prevent race conditions
+    // with conflicting case IDs
+    const newModLog = await insertModLog(db, {
       guild_id: guild.id,
-      case_id: nextCaseId,
       action: actionType,
       pending: false,
       user_id: event.targetId,

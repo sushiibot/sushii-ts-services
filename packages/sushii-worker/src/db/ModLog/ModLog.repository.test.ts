@@ -3,10 +3,39 @@ import { expect, describe, it } from "bun:test";
 import "../../dayjs";
 
 import db from "../../model/db";
-import { deleteModLogsRange, upsertModLog } from "./ModLog.repository";
+import {
+  deleteModLogsRange,
+  insertModLog,
+  upsertModLog,
+} from "./ModLog.repository";
 import { InsertableModLogRow } from "./ModLog.table";
 
 describe("ModLog.repository", () => {
+  describe("insertModLog", () => {
+    it("should increment case_id", async () => {
+      const caseNoId = {
+        guild_id: "123",
+        user_id: "123",
+        action: "kick",
+        reason: "reason",
+        action_time: new Date(),
+        pending: false,
+        user_tag: "user#1234",
+        attachments: [],
+      };
+
+      const case1 = await insertModLog(db, caseNoId);
+      const case2 = await insertModLog(db, caseNoId);
+      const case3 = await insertModLog(db, caseNoId);
+
+      const startId = Number(case1.case_id);
+
+      expect(Number(case1.case_id)).toEqual(startId);
+      expect(Number(case2.case_id)).toEqual(startId + 1);
+      expect(Number(case3.case_id)).toEqual(startId + 2);
+    });
+  });
+
   describe("upsertModLog", () => {
     it("should create a new mod log", async () => {
       const expectedMogLog: InsertableModLogRow = {
