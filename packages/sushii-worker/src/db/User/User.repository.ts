@@ -1,6 +1,6 @@
-import { Kysely } from "kysely";
+import { Kysely, RawBuilder } from "kysely";
 import { DB } from "../../model/dbTypes";
-import { UserRow } from "./User.table";
+import { UserRow, profileDataSchema } from "./User.table";
 import { json } from "../json";
 
 const defaultUser: UserRow = {
@@ -14,6 +14,17 @@ const defaultUser: UserRow = {
   patron_emoji: null,
   profile_data: {},
 };
+
+export function insertableProfileData(
+  profileData: UserRow["profile_data"],
+): RawBuilder<string> {
+  const res = profileDataSchema.safeParse(profileData);
+  if (res.success) {
+    return json(res.data);
+  }
+
+  return json({});
+}
 
 /**
  * Upsert a user into the database
