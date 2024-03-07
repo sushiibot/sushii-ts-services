@@ -3,6 +3,7 @@ enum Color {
   Success = 0xabe9b3,
   Info = 0x96cdfb,
   Warning = 0xf9e2af,
+  Purple = 0xcba6f7,
   DiscordGrey = 0x8d9196,
   DiscordEmbedGrey = 0x2f3136,
   DiscordGreen = 0x3b9f5c,

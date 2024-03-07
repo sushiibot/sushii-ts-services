@@ -162,14 +162,19 @@ export namespace ActionType {
   export function toColor(actionType: ActionType): Color | null {
     switch (actionType) {
       case ActionType.Ban:
-      case ActionType.TempBan:
-      case ActionType.Kick:
         return Color.Error;
+
+      case ActionType.TempBan:
+        return Color.Purple;
+
       case ActionType.BanRemove:
         return Color.Success;
+
+      case ActionType.Kick:
       case ActionType.Warn:
       case ActionType.Timeout:
         return Color.Warning;
+
       case ActionType.TimeoutAdjust:
       case ActionType.TimeoutRemove:
       case ActionType.Note:
