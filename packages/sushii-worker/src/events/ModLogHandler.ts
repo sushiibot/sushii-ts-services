@@ -17,11 +17,7 @@ import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
 import buildModLogEmbed from "../builders/buildModLogEmbed";
 import { buildDMEmbed } from "../interactions/moderation/sendDm";
 import db from "../model/db";
-import {
-  getNextCaseId,
-  insertModLog,
-  upsertModLog,
-} from "../db/ModLog/ModLog.repository";
+import { insertModLog, upsertModLog } from "../db/ModLog/ModLog.repository";
 import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
 
 const log = newModuleLogger("ModLogHandler");
@@ -110,7 +106,7 @@ export function buildModLogComponents(
     "Building mod log components",
   );
 
-  if (modCase.dm_channel_id && modCase.dm_message_id) {
+  if (modCase.dm_channel_id && modCase.dm_message_id && modCase.reason) {
     const statusEmoji = dmDeleted ? "🗑️" : "📬";
     const statusLabel = dmDeleted ? "Reason DM deleted" : "Reason DM sent";
 
