@@ -153,7 +153,6 @@ async function execActionUser(
   data: ModActionData,
   target: ModActionTarget,
   actionType: ActionType,
-  modCase: AllSelection<DB, "app_public.mod_logs">,
 ): Promise<Result<ModActionTarget, ActionError>> {
   if (!interaction.inCachedGuild()) {
     throw new Error("Interaction is not in guild");
@@ -162,8 +161,6 @@ async function execActionUser(
   return tracer.startActiveSpan("execActionUser", async (span) => {
     // Audit log header max 512 characters
     const auditLogReason = data.reason?.slice(0, 512);
-
-    const guildConfig = await getGuildConfig(db, interaction.guildId);
 
     try {
       switch (actionType) {
@@ -262,29 +259,14 @@ async function execActionUser(
             });
           }
 
-          await sendModLog(
-            ctx,
-            interaction,
-            guildConfig,
-            actionType,
-            target,
-            modCase,
-          );
+          // Send to mod log only -- done after this function
 
           break;
         }
         case ActionType.Note: {
           // Allow for non-members, send no DM
 
-          // Send to mod log only
-          await sendModLog(
-            ctx,
-            interaction,
-            guildConfig,
-            actionType,
-            target,
-            modCase,
-          );
+          // Send to mod log only -- done after this function
 
           break;
         }
@@ -459,7 +441,6 @@ async function executeActionUser(
         data,
         target,
         actionType,
-        modLog,
       );
 
       // DM after for non-ban and send dm
@@ -525,6 +506,21 @@ async function executeActionUser(
         logger.debug("No DM result");
       }
     });
+
+    // Send mod log if needed - warn / note
+    // AFTER: DM was sent (warn) so the components are created properly
+    if (actionType === ActionType.Warn || actionType === ActionType.Note) {
+      const guildConfig = await getGuildConfig(db, interaction.guildId);
+
+      await sendModLog(
+        ctx,
+        interaction,
+        guildConfig,
+        actionType,
+        target,
+        modLog,
+      );
+    }
 
     return Ok({
       user: target.user,
