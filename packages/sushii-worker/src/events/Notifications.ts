@@ -48,6 +48,7 @@ export const notificationHandler: EventHandlerFn<Events.MessageCreate> = async (
       const matched = await getMatchingNotifications(
         db,
         msg.guildId,
+        msg.channelId,
         msg.author.id,
         msg.content,
       );

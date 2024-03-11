@@ -275,6 +275,16 @@ CREATE TYPE app_public.msg_log_block_type AS ENUM (
 
 
 --
+-- Name: notification_block_type; Type: TYPE; Schema: app_public; Owner: -
+--
+
+CREATE TYPE app_public.notification_block_type AS ENUM (
+    'user',
+    'channel'
+);
+
+
+--
 -- Name: user_guild_rank_result; Type: TYPE; Schema: app_public; Owner: -
 --
 
@@ -1915,6 +1925,17 @@ CREATE TABLE app_public.mutes (
 
 
 --
+-- Name: notification_blocks; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.notification_blocks (
+    user_id bigint NOT NULL,
+    block_id bigint NOT NULL,
+    block_type app_public.notification_block_type NOT NULL
+);
+
+
+--
 -- Name: notifications; Type: TABLE; Schema: app_public; Owner: -
 --
 
@@ -2353,6 +2374,14 @@ ALTER TABLE ONLY app_public.msg_log_blocks
 
 ALTER TABLE ONLY app_public.mutes
     ADD CONSTRAINT mutes_pkey PRIMARY KEY (guild_id, user_id);
+
+
+--
+-- Name: notification_blocks notification_blocks_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.notification_blocks
+    ADD CONSTRAINT notification_blocks_pkey PRIMARY KEY (user_id, block_id);
 
 
 --
@@ -3590,6 +3619,13 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.msg_log_blocks TO sushii_a
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.mutes TO sushii_admin;
+
+
+--
+-- Name: TABLE notification_blocks; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.notification_blocks TO sushii_admin;
 
 
 --

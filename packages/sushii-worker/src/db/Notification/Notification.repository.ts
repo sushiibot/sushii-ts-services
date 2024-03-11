@@ -102,6 +102,7 @@ export function stringToKeywords(str: string): string[] {
 export function getMatchingNotifications(
   db: Kysely<DB>,
   guildId: string,
+  channelId: string,
   authorId: string,
   messageContent: string,
 ): Promise<NotificationRow[]> {
@@ -116,12 +117,36 @@ export function getMatchingNotifications(
       db
         .selectFrom("app_public.notifications")
         .selectAll()
-        // Limit to currenct guild
+        // Limit to current guild
         .where("guild_id", "=", guildId)
         // Exclude author keywords
         .where("user_id", "!=", authorId)
         // Any that has words in the message content
         .where("keyword", "in", words)
+        // Not blocked
+        .where(({ not, exists, selectFrom }) =>
+          // Exclude keywords that are blocked for this channelId + authorId
+          not(
+            exists(
+              selectFrom("app_public.notification_blocks")
+                // Matching block for this user keyword
+                .whereRef(
+                  "app_public.notifications.user_id",
+                  "=",
+                  "app_public.notification_blocks.user_id",
+                )
+                // Either block_id is the user_id or the channel_id
+                .where((eb) =>
+                  eb.or([
+                    // user_id blocked author
+                    eb("block_id", "=", authorId),
+                    // or user_id blocked channel
+                    eb("block_id", "=", channelId),
+                  ]),
+                ),
+            ),
+          ),
+        )
         .execute()
     );
   } catch (err) {

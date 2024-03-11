@@ -25,6 +25,8 @@ export type AppPublicLevelRoleOverrideType = "block" | "grant";
 
 export type AppPublicMsgLogBlockType = "all" | "deletes" | "edits";
 
+export type AppPublicNotificationBlockType = "channel" | "user";
+
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
@@ -579,6 +581,12 @@ export interface AppPublicMutes {
   user_id: Int8;
 }
 
+export interface AppPublicNotificationBlocks {
+  block_id: Int8;
+  block_type: AppPublicNotificationBlockType;
+  user_id: Int8;
+}
+
 export interface AppPublicNotifications {
   guild_id: Int8;
   keyword: string;
@@ -861,6 +869,7 @@ export interface DB {
   "app_public.mod_logs": AppPublicModLogs;
   "app_public.msg_log_blocks": AppPublicMsgLogBlocks;
   "app_public.mutes": AppPublicMutes;
+  "app_public.notification_blocks": AppPublicNotificationBlocks;
   "app_public.notifications": AppPublicNotifications;
   "app_public.reminders": AppPublicReminders;
   "app_public.role_menu_roles": AppPublicRoleMenuRoles;
