@@ -102,6 +102,7 @@ export function stringToKeywords(str: string): string[] {
 export function getMatchingNotifications(
   db: Kysely<DB>,
   guildId: string,
+  channelCategoryId: string | null,
   channelId: string,
   authorId: string,
   messageContent: string,
@@ -142,6 +143,8 @@ export function getMatchingNotifications(
                     eb("block_id", "=", authorId),
                     // or user_id blocked channel
                     eb("block_id", "=", channelId),
+                    // or user_id blocked category
+                    eb("block_id", "=", channelCategoryId),
                   ]),
                 ),
             ),

@@ -25,7 +25,7 @@ export type AppPublicLevelRoleOverrideType = "block" | "grant";
 
 export type AppPublicMsgLogBlockType = "all" | "deletes" | "edits";
 
-export type AppPublicNotificationBlockType = "channel" | "user";
+export type AppPublicNotificationBlockType = "category" | "channel" | "user";
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>

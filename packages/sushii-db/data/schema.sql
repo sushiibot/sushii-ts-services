@@ -52,13 +52,6 @@ CREATE SCHEMA app_public;
 
 
 --
--- Name: postgraphile_watch; Type: SCHEMA; Schema: -; Owner: -
---
-
-CREATE SCHEMA postgraphile_watch;
-
-
---
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -84,20 +77,6 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 --
 
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
-
-
---
--- Name: tsm_system_rows; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS tsm_system_rows WITH SCHEMA public;
-
-
---
--- Name: EXTENSION tsm_system_rows; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION tsm_system_rows IS 'TABLESAMPLE method which accepts number of rows as a limit';
 
 
 --
@@ -137,79 +116,12 @@ CREATE TYPE app_private.deployment_name AS ENUM (
 
 
 --
--- Name: ban_pool_add_action; Type: TYPE; Schema: app_public; Owner: -
---
-
-CREATE TYPE app_public.ban_pool_add_action AS ENUM (
-    'ban',
-    'timeout_and_ask',
-    'ask',
-    'nothing'
-);
-
-
---
--- Name: ban_pool_add_mode; Type: TYPE; Schema: app_public; Owner: -
---
-
-CREATE TYPE app_public.ban_pool_add_mode AS ENUM (
-    'all_bans',
-    'manual',
-    'nothing'
-);
-
-
---
--- Name: ban_pool_permission; Type: TYPE; Schema: app_public; Owner: -
---
-
-CREATE TYPE app_public.ban_pool_permission AS ENUM (
-    'owner',
-    'edit',
-    'view',
-    'blocked'
-);
-
-
---
--- Name: ban_pool_remove_action; Type: TYPE; Schema: app_public; Owner: -
---
-
-CREATE TYPE app_public.ban_pool_remove_action AS ENUM (
-    'unban',
-    'ask',
-    'nothing'
-);
-
-
---
--- Name: ban_pool_remove_mode; Type: TYPE; Schema: app_public; Owner: -
---
-
-CREATE TYPE app_public.ban_pool_remove_mode AS ENUM (
-    'all_unbans',
-    'manual',
-    'nothing'
-);
-
-
---
 -- Name: block_type; Type: TYPE; Schema: app_public; Owner: -
 --
 
 CREATE TYPE app_public.block_type AS ENUM (
     'channel',
     'role'
-);
-
-
---
--- Name: eligible_level_role; Type: TYPE; Schema: app_public; Owner: -
---
-
-CREATE TYPE app_public.eligible_level_role AS (
-	user_id bigint,
-	role_ids bigint[]
 );
 
 
@@ -254,16 +166,6 @@ CREATE TYPE app_public.giveaway_nitro_type AS ENUM (
 
 
 --
--- Name: level_role_override_type; Type: TYPE; Schema: app_public; Owner: -
---
-
-CREATE TYPE app_public.level_role_override_type AS ENUM (
-    'grant',
-    'block'
-);
-
-
---
 -- Name: msg_log_block_type; Type: TYPE; Schema: app_public; Owner: -
 --
 
@@ -280,7 +182,8 @@ CREATE TYPE app_public.msg_log_block_type AS ENUM (
 
 CREATE TYPE app_public.notification_block_type AS ENUM (
     'user',
-    'channel'
+    'channel',
+    'category'
 );
 
 
@@ -835,19 +738,6 @@ COMMENT ON FUNCTION app_public."current_user"() IS 'The currently logged in user
 
 
 --
--- Name: current_user_discord_id(); Type: FUNCTION; Schema: app_public; Owner: -
---
-
-CREATE FUNCTION app_public.current_user_discord_id() RETURNS bigint
-    LANGUAGE sql STABLE SECURITY DEFINER
-    SET search_path TO 'pg_catalog', 'public', 'pg_temp'
-    AS $$
-    -- PostgREST format
-    select nullif(pg_catalog.current_setting('request.jwt.claim.discord_user_id', true), '')::bigint;
-$$;
-
-
---
 -- Name: current_user_id(); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
@@ -914,52 +804,6 @@ CREATE FUNCTION app_public.delete_role_menu_roles(guild_id bigint, menu_name tex
         and role_id = any($3)
   returning *;
 $_$;
-
-
---
--- Name: get_eligible_level_roles(bigint, bigint[]); Type: FUNCTION; Schema: app_public; Owner: -
---
-
-CREATE FUNCTION app_public.get_eligible_level_roles(guild_id bigint, user_ids bigint[]) RETURNS SETOF app_public.eligible_level_role
-    LANGUAGE sql STABLE
-    AS $_$
-  select user_id, array_agg(role_id) as role_ids
-    from app_public.user_levels
-    join app_public.level_roles
-      on app_public.user_levels.guild_id = app_public.level_roles.guild_id
-    where app_public.user_levels.guild_id = $1
-      -- Only find roles that are eligible to be added
-      and app_public.user_levels.level >= app_public.level_roles.add_level
-      and (
-        -- remove_level is optional
-        app_public.level_roles.remove_level is null
-        or
-        app_public.user_levels.level <  app_public.level_roles.remove_level
-      )
-      and (
-        -- user_ids is optional
-        $2 is null
-        or
-        app_public.user_levels.user_id = any($2)
-      )
-    group by user_id;
-$_$;
-
-
---
--- Name: graphql(text, text, jsonb, jsonb); Type: FUNCTION; Schema: app_public; Owner: -
---
-
-CREATE FUNCTION app_public.graphql("operationName" text DEFAULT NULL::text, query text DEFAULT NULL::text, variables jsonb DEFAULT NULL::jsonb, extensions jsonb DEFAULT NULL::jsonb) RETURNS jsonb
-    LANGUAGE sql
-    AS $$
-    select graphql.resolve(
-        query := query,
-        variables := coalesce(variables, '{}'),
-        "operationName" := "operationName",
-        extensions := extensions
-    );
-$$;
 
 
 --
@@ -1357,64 +1201,6 @@ $$;
 
 
 --
--- Name: notify_watchers_ddl(); Type: FUNCTION; Schema: postgraphile_watch; Owner: -
---
-
-CREATE FUNCTION postgraphile_watch.notify_watchers_ddl() RETURNS event_trigger
-    LANGUAGE plpgsql
-    AS $$
-begin
-  perform pg_notify(
-    'postgraphile_watch',
-    json_build_object(
-      'type',
-      'ddl',
-      'payload',
-      (select json_agg(json_build_object('schema', schema_name, 'command', command_tag)) from pg_event_trigger_ddl_commands() as x)
-    )::text
-  );
-end;
-$$;
-
-
---
--- Name: notify_watchers_drop(); Type: FUNCTION; Schema: postgraphile_watch; Owner: -
---
-
-CREATE FUNCTION postgraphile_watch.notify_watchers_drop() RETURNS event_trigger
-    LANGUAGE plpgsql
-    AS $$
-begin
-  perform pg_notify(
-    'postgraphile_watch',
-    json_build_object(
-      'type',
-      'drop',
-      'payload',
-      (select json_agg(distinct x.schema_name) from pg_event_trigger_dropped_objects() as x)
-    )::text
-  );
-end;
-$$;
-
-
---
--- Name: graphql(text, text, jsonb, jsonb); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION public.graphql("operationName" text DEFAULT NULL::text, query text DEFAULT NULL::text, variables jsonb DEFAULT NULL::jsonb, extensions jsonb DEFAULT NULL::jsonb) RETURNS jsonb
-    LANGUAGE sql
-    AS $$
-    select graphql.resolve(
-        query := query,
-        variables := coalesce(variables, '{}'),
-        "operationName" := "operationName",
-        extensions := extensions
-    );
-$$;
-
-
---
 -- Name: snowflake_now(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1453,7 +1239,7 @@ CREATE TABLE app_private.active_deployment (
 --
 
 CREATE TABLE app_private.sessions (
-    uuid uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    uuid uuid DEFAULT gen_random_uuid() NOT NULL,
     user_id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     last_active timestamp with time zone DEFAULT now() NOT NULL
@@ -1468,94 +1254,6 @@ CREATE TABLE app_private.user_authentication_secrets (
     user_id bigint NOT NULL,
     details jsonb DEFAULT '{}'::jsonb NOT NULL
 );
-
-
---
--- Name: ban_pool_entries; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.ban_pool_entries (
-    owner_guild_id bigint NOT NULL,
-    pool_name text NOT NULL,
-    source_guild_id bigint NOT NULL,
-    user_id bigint NOT NULL,
-    reason text
-);
-
-
---
--- Name: ban_pool_guild_settings; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.ban_pool_guild_settings (
-    guild_id bigint NOT NULL,
-    alert_channel_id bigint
-);
-
-
---
--- Name: ban_pool_invites; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.ban_pool_invites (
-    owner_guild_id bigint NOT NULL,
-    pool_name text NOT NULL,
-    invite_code text NOT NULL,
-    expires_at timestamp with time zone,
-    max_uses integer,
-    uses integer DEFAULT 0 NOT NULL
-);
-
-
---
--- Name: ban_pool_members; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.ban_pool_members (
-    owner_guild_id bigint NOT NULL,
-    pool_name text NOT NULL,
-    member_guild_id bigint NOT NULL,
-    permission app_public.ban_pool_permission DEFAULT 'view'::app_public.ban_pool_permission NOT NULL,
-    add_mode app_public.ban_pool_add_mode DEFAULT 'all_bans'::app_public.ban_pool_add_mode NOT NULL,
-    remove_mode app_public.ban_pool_remove_mode DEFAULT 'all_unbans'::app_public.ban_pool_remove_mode NOT NULL,
-    add_action app_public.ban_pool_add_action DEFAULT 'ban'::app_public.ban_pool_add_action NOT NULL,
-    remove_action app_public.ban_pool_remove_action DEFAULT 'unban'::app_public.ban_pool_remove_action NOT NULL
-);
-
-
---
--- Name: ban_pools; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.ban_pools (
-    id integer NOT NULL,
-    guild_id bigint NOT NULL,
-    pool_name text NOT NULL,
-    description text,
-    creator_id bigint NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
-);
-
-
---
--- Name: ban_pools_id_seq; Type: SEQUENCE; Schema: app_public; Owner: -
---
-
-CREATE SEQUENCE app_public.ban_pools_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: ban_pools_id_seq; Type: SEQUENCE OWNED BY; Schema: app_public; Owner: -
---
-
-ALTER SEQUENCE app_public.ban_pools_id_seq OWNED BY app_public.ban_pools.id;
 
 
 --
@@ -1770,40 +1468,6 @@ CREATE TABLE app_public.guild_emojis_and_stickers (
 
 
 --
--- Name: level_role_apply_jobs; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.level_role_apply_jobs (
-    guild_id bigint NOT NULL,
-    interaction_id bigint NOT NULL,
-    notify_user_id bigint NOT NULL,
-    channel_id bigint NOT NULL,
-    message_id bigint NOT NULL,
-    requests_total bigint,
-    requests_processed bigint DEFAULT 0 NOT NULL,
-    members_total bigint NOT NULL,
-    members_skipped bigint DEFAULT 0 NOT NULL,
-    members_applied bigint DEFAULT 0 NOT NULL,
-    members_not_found bigint DEFAULT 0 NOT NULL,
-    members_total_processed bigint GENERATED ALWAYS AS (((members_skipped + members_applied) + members_not_found)) STORED NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
-);
-
-
---
--- Name: level_role_overrides; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.level_role_overrides (
-    guild_id bigint NOT NULL,
-    role_id bigint NOT NULL,
-    user_id bigint NOT NULL,
-    type app_public.level_role_override_type NOT NULL
-);
-
-
---
 -- Name: level_roles; Type: TABLE; Schema: app_public; Owner: -
 --
 
@@ -1815,62 +1479,6 @@ CREATE TABLE app_public.level_roles (
     CONSTRAINT chk_add_before_remove CHECK ((add_level < remove_level)),
     CONSTRAINT chk_at_least_one_level CHECK ((num_nonnulls(add_level, remove_level) >= 1))
 );
-
-
---
--- Name: lookup_group_invites; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.lookup_group_invites (
-    owner_guild_id bigint NOT NULL,
-    name text NOT NULL,
-    invite_code text NOT NULL,
-    expires_at timestamp with time zone
-);
-
-
---
--- Name: lookup_group_members; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.lookup_group_members (
-    owner_guild_id bigint NOT NULL,
-    name text NOT NULL,
-    member_guild_id bigint NOT NULL
-);
-
-
---
--- Name: lookup_groups; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.lookup_groups (
-    id integer NOT NULL,
-    guild_id bigint NOT NULL,
-    name text NOT NULL,
-    creator_id bigint NOT NULL,
-    description text
-);
-
-
---
--- Name: lookup_groups_id_seq; Type: SEQUENCE; Schema: app_public; Owner: -
---
-
-CREATE SEQUENCE app_public.lookup_groups_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: lookup_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: app_public; Owner: -
---
-
-ALTER SEQUENCE app_public.lookup_groups_id_seq OWNED BY app_public.lookup_groups.id;
 
 
 --
@@ -2050,37 +1658,6 @@ CREATE TABLE app_public.xp_blocks (
 
 
 --
--- Name: testmatview; Type: MATERIALIZED VIEW; Schema: public; Owner: -
---
-
-CREATE MATERIALIZED VIEW public.testmatview AS
- SELECT user_levels.user_id,
-    user_levels.guild_id,
-    user_levels.msg_all_time,
-    user_levels.msg_month,
-    user_levels.msg_week,
-    user_levels.msg_day,
-    user_levels.last_msg,
-    user_levels.level
-   FROM app_public.user_levels
-  WITH NO DATA;
-
-
---
--- Name: ban_pools id; Type: DEFAULT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.ban_pools ALTER COLUMN id SET DEFAULT nextval('app_public.ban_pools_id_seq'::regclass);
-
-
---
--- Name: lookup_groups id; Type: DEFAULT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.lookup_groups ALTER COLUMN id SET DEFAULT nextval('app_public.lookup_groups_id_seq'::regclass);
-
-
---
 -- Name: failures failures_pkey; Type: CONSTRAINT; Schema: app_hidden; Owner: -
 --
 
@@ -2110,54 +1687,6 @@ ALTER TABLE ONLY app_private.sessions
 
 ALTER TABLE ONLY app_private.user_authentication_secrets
     ADD CONSTRAINT user_authentication_secrets_pkey PRIMARY KEY (user_id);
-
-
---
--- Name: ban_pool_entries ban_pool_entries_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.ban_pool_entries
-    ADD CONSTRAINT ban_pool_entries_pkey PRIMARY KEY (owner_guild_id, pool_name, user_id);
-
-
---
--- Name: ban_pool_invites ban_pool_invites_invite_code_key; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.ban_pool_invites
-    ADD CONSTRAINT ban_pool_invites_invite_code_key UNIQUE (invite_code);
-
-
---
--- Name: ban_pool_invites ban_pool_invites_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.ban_pool_invites
-    ADD CONSTRAINT ban_pool_invites_pkey PRIMARY KEY (owner_guild_id, pool_name, invite_code);
-
-
---
--- Name: ban_pool_members ban_pool_members_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.ban_pool_members
-    ADD CONSTRAINT ban_pool_members_pkey PRIMARY KEY (owner_guild_id, pool_name, member_guild_id);
-
-
---
--- Name: ban_pools ban_pools_id_key; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.ban_pools
-    ADD CONSTRAINT ban_pools_id_key UNIQUE (id);
-
-
---
--- Name: ban_pools ban_pools_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.ban_pools
-    ADD CONSTRAINT ban_pools_pkey PRIMARY KEY (guild_id, pool_name);
 
 
 --
@@ -2265,75 +1794,11 @@ ALTER TABLE ONLY app_public.guild_emojis_and_stickers
 
 
 --
--- Name: level_role_apply_jobs level_role_apply_jobs_interaction_id_key; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.level_role_apply_jobs
-    ADD CONSTRAINT level_role_apply_jobs_interaction_id_key UNIQUE (interaction_id);
-
-
---
--- Name: level_role_apply_jobs level_role_apply_jobs_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.level_role_apply_jobs
-    ADD CONSTRAINT level_role_apply_jobs_pkey PRIMARY KEY (guild_id);
-
-
---
--- Name: level_role_overrides level_role_overrides_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.level_role_overrides
-    ADD CONSTRAINT level_role_overrides_pkey PRIMARY KEY (guild_id, role_id, user_id);
-
-
---
 -- Name: level_roles level_roles_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
 --
 
 ALTER TABLE ONLY app_public.level_roles
     ADD CONSTRAINT level_roles_pkey PRIMARY KEY (guild_id, role_id);
-
-
---
--- Name: lookup_group_invites lookup_group_invites_invite_code_key; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.lookup_group_invites
-    ADD CONSTRAINT lookup_group_invites_invite_code_key UNIQUE (invite_code);
-
-
---
--- Name: lookup_group_invites lookup_group_invites_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.lookup_group_invites
-    ADD CONSTRAINT lookup_group_invites_pkey PRIMARY KEY (owner_guild_id, name);
-
-
---
--- Name: lookup_group_members lookup_group_members_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.lookup_group_members
-    ADD CONSTRAINT lookup_group_members_pkey PRIMARY KEY (owner_guild_id, name);
-
-
---
--- Name: lookup_groups lookup_groups_id_key; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.lookup_groups
-    ADD CONSTRAINT lookup_groups_id_key UNIQUE (id);
-
-
---
--- Name: lookup_groups lookup_groups_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.lookup_groups
-    ADD CONSTRAINT lookup_groups_pkey PRIMARY KEY (guild_id, name);
 
 
 --
@@ -2592,13 +2057,6 @@ CREATE INDEX web_user_guilds_user_id_idx ON app_public.web_user_guilds USING btr
 
 
 --
--- Name: ban_pools _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
---
-
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.ban_pools FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
-
-
---
 -- Name: bot_stats _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
@@ -2610,13 +2068,6 @@ CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.bot_stats F
 --
 
 CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.cached_guilds FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
-
-
---
--- Name: level_role_apply_jobs _100_timestamps; Type: TRIGGER; Schema: app_public; Owner: -
---
-
-CREATE TRIGGER _100_timestamps BEFORE INSERT OR UPDATE ON app_public.level_role_apply_jobs FOR EACH ROW EXECUTE FUNCTION app_private.tg__timestamps();
 
 
 --
@@ -2643,30 +2094,6 @@ ALTER TABLE ONLY app_private.user_authentication_secrets
 
 
 --
--- Name: ban_pool_entries ban_pool_entries_owner_guild_id_pool_name_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.ban_pool_entries
-    ADD CONSTRAINT ban_pool_entries_owner_guild_id_pool_name_fkey FOREIGN KEY (owner_guild_id, pool_name) REFERENCES app_public.ban_pools(guild_id, pool_name) ON DELETE CASCADE;
-
-
---
--- Name: ban_pool_invites ban_pool_invites_owner_guild_id_pool_name_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.ban_pool_invites
-    ADD CONSTRAINT ban_pool_invites_owner_guild_id_pool_name_fkey FOREIGN KEY (owner_guild_id, pool_name) REFERENCES app_public.ban_pools(guild_id, pool_name) ON DELETE CASCADE;
-
-
---
--- Name: ban_pool_members ban_pool_members_owner_guild_id_pool_name_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.ban_pool_members
-    ADD CONSTRAINT ban_pool_members_owner_guild_id_pool_name_fkey FOREIGN KEY (owner_guild_id, pool_name) REFERENCES app_public.ban_pools(guild_id, pool_name) ON DELETE CASCADE;
-
-
---
 -- Name: feed_subscriptions fk_feed_subscription_feed_id; Type: FK CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -2688,22 +2115,6 @@ ALTER TABLE ONLY app_public.mutes
 
 ALTER TABLE ONLY app_public.giveaway_entries
     ADD CONSTRAINT giveaway_entries_giveaway_id_fkey FOREIGN KEY (giveaway_id) REFERENCES app_public.giveaways(id) ON DELETE CASCADE;
-
-
---
--- Name: lookup_group_invites lookup_group_invites_owner_guild_id_name_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.lookup_group_invites
-    ADD CONSTRAINT lookup_group_invites_owner_guild_id_name_fkey FOREIGN KEY (owner_guild_id, name) REFERENCES app_public.lookup_groups(guild_id, name) ON DELETE CASCADE;
-
-
---
--- Name: lookup_group_members lookup_group_members_owner_guild_id_name_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.lookup_group_members
-    ADD CONSTRAINT lookup_group_members_owner_guild_id_name_fkey FOREIGN KEY (owner_guild_id, name) REFERENCES app_public.lookup_groups(guild_id, name) ON DELETE CASCADE;
 
 
 --
@@ -2947,12 +2358,6 @@ CREATE POLICY update_self ON app_public.web_users FOR UPDATE USING ((id = app_pu
 ALTER TABLE app_public.user_levels ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: users; Type: ROW SECURITY; Schema: app_public; Owner: -
---
-
-ALTER TABLE app_public.users ENABLE ROW LEVEL SECURITY;
-
---
 -- Name: web_user_guilds; Type: ROW SECURITY; Schema: app_public; Owner: -
 --
 
@@ -3105,14 +2510,6 @@ GRANT ALL ON FUNCTION app_public."current_user"() TO sushii_visitor;
 
 
 --
--- Name: FUNCTION current_user_discord_id(); Type: ACL; Schema: app_public; Owner: -
---
-
-REVOKE ALL ON FUNCTION app_public.current_user_discord_id() FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.current_user_discord_id() TO sushii_visitor;
-
-
---
 -- Name: FUNCTION current_user_id(); Type: ACL; Schema: app_public; Owner: -
 --
 
@@ -3144,23 +2541,6 @@ GRANT ALL ON FUNCTION app_public.delete_messages_before(before timestamp without
 REVOKE ALL ON FUNCTION app_public.delete_role_menu_roles(guild_id bigint, menu_name text, role_ids bigint[]) FROM PUBLIC;
 GRANT ALL ON FUNCTION app_public.delete_role_menu_roles(guild_id bigint, menu_name text, role_ids bigint[]) TO sushii_visitor;
 GRANT ALL ON FUNCTION app_public.delete_role_menu_roles(guild_id bigint, menu_name text, role_ids bigint[]) TO sushii_admin;
-
-
---
--- Name: FUNCTION get_eligible_level_roles(guild_id bigint, user_ids bigint[]); Type: ACL; Schema: app_public; Owner: -
---
-
-REVOKE ALL ON FUNCTION app_public.get_eligible_level_roles(guild_id bigint, user_ids bigint[]) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.get_eligible_level_roles(guild_id bigint, user_ids bigint[]) TO sushii_visitor;
-GRANT ALL ON FUNCTION app_public.get_eligible_level_roles(guild_id bigint, user_ids bigint[]) TO sushii_admin;
-
-
---
--- Name: FUNCTION graphql("operationName" text, query text, variables jsonb, extensions jsonb); Type: ACL; Schema: app_public; Owner: -
---
-
-REVOKE ALL ON FUNCTION app_public.graphql("operationName" text, query text, variables jsonb, extensions jsonb) FROM PUBLIC;
-GRANT ALL ON FUNCTION app_public.graphql("operationName" text, query text, variables jsonb, extensions jsonb) TO sushii_visitor;
 
 
 --
@@ -3233,6 +2613,15 @@ GRANT ALL ON FUNCTION app_public.timeframe_user_levels(timeframe app_hidden.leve
 
 
 --
+-- Name: FUNCTION update_user_xp(guild_id bigint, channel_id bigint, user_id bigint, role_ids bigint[]); Type: ACL; Schema: app_public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION app_public.update_user_xp(guild_id bigint, channel_id bigint, user_id bigint, role_ids bigint[]) FROM PUBLIC;
+GRANT ALL ON FUNCTION app_public.update_user_xp(guild_id bigint, channel_id bigint, user_id bigint, role_ids bigint[]) TO sushii_visitor;
+GRANT ALL ON FUNCTION app_public.update_user_xp(guild_id bigint, channel_id bigint, user_id bigint, role_ids bigint[]) TO sushii_admin;
+
+
+--
 -- Name: FUNCTION user_guild_rank(guild_id bigint, user_id bigint); Type: ACL; Schema: app_public; Owner: -
 --
 
@@ -3242,62 +2631,11 @@ GRANT ALL ON FUNCTION app_public.user_guild_rank(guild_id bigint, user_id bigint
 
 
 --
--- Name: FUNCTION graphql("operationName" text, query text, variables jsonb, extensions jsonb); Type: ACL; Schema: public; Owner: -
---
-
-REVOKE ALL ON FUNCTION public.graphql("operationName" text, query text, variables jsonb, extensions jsonb) FROM PUBLIC;
-GRANT ALL ON FUNCTION public.graphql("operationName" text, query text, variables jsonb, extensions jsonb) TO sushii_visitor;
-
-
---
 -- Name: FUNCTION snowflake_now(); Type: ACL; Schema: public; Owner: -
 --
 
 REVOKE ALL ON FUNCTION public.snowflake_now() FROM PUBLIC;
 GRANT ALL ON FUNCTION public.snowflake_now() TO sushii_visitor;
-
-
---
--- Name: TABLE ban_pool_entries; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.ban_pool_entries TO sushii_admin;
-
-
---
--- Name: TABLE ban_pool_guild_settings; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.ban_pool_guild_settings TO sushii_admin;
-
-
---
--- Name: TABLE ban_pool_invites; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.ban_pool_invites TO sushii_admin;
-
-
---
--- Name: TABLE ban_pool_members; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.ban_pool_members TO sushii_admin;
-
-
---
--- Name: TABLE ban_pools; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.ban_pools TO sushii_admin;
-
-
---
--- Name: SEQUENCE ban_pools_id_seq; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,USAGE ON SEQUENCE app_public.ban_pools_id_seq TO sushii_visitor;
-GRANT SELECT,USAGE ON SEQUENCE app_public.ban_pools_id_seq TO sushii_admin;
 
 
 --
@@ -3543,54 +2881,11 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.guild_emojis_and_stickers 
 
 
 --
--- Name: TABLE level_role_apply_jobs; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.level_role_apply_jobs TO sushii_admin;
-
-
---
--- Name: TABLE level_role_overrides; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.level_role_overrides TO sushii_admin;
-
-
---
 -- Name: TABLE level_roles; Type: ACL; Schema: app_public; Owner: -
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.level_roles TO sushii_admin;
 GRANT SELECT ON TABLE app_public.level_roles TO sushii_visitor;
-
-
---
--- Name: TABLE lookup_group_invites; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.lookup_group_invites TO sushii_admin;
-
-
---
--- Name: TABLE lookup_group_members; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.lookup_group_members TO sushii_admin;
-
-
---
--- Name: TABLE lookup_groups; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE app_public.lookup_groups TO sushii_admin;
-
-
---
--- Name: SEQUENCE lookup_groups_id_seq; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT SELECT,USAGE ON SEQUENCE app_public.lookup_groups_id_seq TO sushii_visitor;
-GRANT SELECT,USAGE ON SEQUENCE app_public.lookup_groups_id_seq TO sushii_admin;
 
 
 --
@@ -3761,23 +3056,6 @@ ALTER DEFAULT PRIVILEGES FOR ROLE sushii IN SCHEMA public GRANT SELECT,INSERT,DE
 --
 
 ALTER DEFAULT PRIVILEGES FOR ROLE sushii REVOKE ALL ON FUNCTIONS  FROM PUBLIC;
-
-
---
--- Name: postgraphile_watch_ddl; Type: EVENT TRIGGER; Schema: -; Owner: -
---
-
-CREATE EVENT TRIGGER postgraphile_watch_ddl ON ddl_command_end
-         WHEN TAG IN ('ALTER AGGREGATE', 'ALTER DOMAIN', 'ALTER EXTENSION', 'ALTER FOREIGN TABLE', 'ALTER FUNCTION', 'ALTER POLICY', 'ALTER SCHEMA', 'ALTER TABLE', 'ALTER TYPE', 'ALTER VIEW', 'COMMENT', 'CREATE AGGREGATE', 'CREATE DOMAIN', 'CREATE EXTENSION', 'CREATE FOREIGN TABLE', 'CREATE FUNCTION', 'CREATE INDEX', 'CREATE POLICY', 'CREATE RULE', 'CREATE SCHEMA', 'CREATE TABLE', 'CREATE TABLE AS', 'CREATE VIEW', 'DROP AGGREGATE', 'DROP DOMAIN', 'DROP EXTENSION', 'DROP FOREIGN TABLE', 'DROP FUNCTION', 'DROP INDEX', 'DROP OWNED', 'DROP POLICY', 'DROP RULE', 'DROP SCHEMA', 'DROP TABLE', 'DROP TYPE', 'DROP VIEW', 'GRANT', 'REVOKE', 'SELECT INTO')
-   EXECUTE FUNCTION postgraphile_watch.notify_watchers_ddl();
-
-
---
--- Name: postgraphile_watch_drop; Type: EVENT TRIGGER; Schema: -; Owner: -
---
-
-CREATE EVENT TRIGGER postgraphile_watch_drop ON sql_drop
-   EXECUTE FUNCTION postgraphile_watch.notify_watchers_drop();
 
 
 --
