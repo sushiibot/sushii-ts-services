@@ -21,6 +21,7 @@ import db from "../../model/db";
 import { EventHandlerFn } from "../EventHandler";
 import { getAPIUserTag } from "../../utils/APIUser";
 import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
+import { webhookErr } from "../../webhookLogger";
 
 const log = newModuleLogger("MsgLogHandler");
 
@@ -381,6 +382,11 @@ export async function msgLogHandler(
     if (err instanceof Error) {
       if (err.message.includes("Was there a typo in the url or port?")) {
         log.fatal("FailedToOpenSocket error, exiting sushii...");
+
+        await webhookErr(
+          "FailedToOpenSocket",
+          "Failed to open socket, exiting sushii...",
+        );
         process.exit(1);
       }
     }
