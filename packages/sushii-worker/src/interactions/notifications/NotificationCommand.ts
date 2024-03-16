@@ -6,7 +6,6 @@ import {
   ChannelType,
 } from "discord.js";
 import { t } from "i18next";
-import { z } from "zod";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
@@ -143,7 +142,7 @@ export default class NotificationCommand extends SlashCommandHandler {
             throw new Error("Invalid subcommand.");
         }
       default:
-      // Do nothing and fallbaack to base commands below
+      // No group - base commands below
     }
 
     switch (subcommand) {
