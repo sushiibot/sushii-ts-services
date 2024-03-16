@@ -1,4 +1,4 @@
-FROM oven/bun:1.0.26-debian
+FROM oven/bun:1.0.31-debian
 
 # Install curl
 RUN apt-get update && apt-get install -y \
