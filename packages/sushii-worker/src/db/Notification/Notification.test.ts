@@ -11,6 +11,7 @@ import { AppPublicNotificationBlockType } from "../../model/dbTypes";
 interface MatchingNotificationTest {
   name: string;
   authorId: string;
+  channelCategoryId: string;
   channelId: string;
   guildId: string;
   messageContent: string;
@@ -37,6 +38,7 @@ describe("Notification.repository", () => {
     {
       name: "found - no blocks",
       authorId: "2",
+      channelCategoryId: "1000",
       channelId: "200",
       guildId: "300",
       messageContent: "hello world",
@@ -49,6 +51,7 @@ describe("Notification.repository", () => {
     {
       name: "found - different block owner",
       authorId: "2",
+      channelCategoryId: "1000",
       channelId: "200",
       guildId: "300",
       messageContent: "hello world",
@@ -62,6 +65,7 @@ describe("Notification.repository", () => {
     {
       name: "skipped - author same as owner",
       authorId: "1",
+      channelCategoryId: "1000",
       channelId: "200",
       guildId: "300",
       messageContent: "hello world",
@@ -72,6 +76,7 @@ describe("Notification.repository", () => {
     {
       name: "blocked - user",
       authorId: "2",
+      channelCategoryId: "1000",
       channelId: "200",
       guildId: "300",
       messageContent: "hello world",
@@ -82,11 +87,23 @@ describe("Notification.repository", () => {
     {
       name: "blocked - channel",
       authorId: "2",
+      channelCategoryId: "1000",
       channelId: "200",
       guildId: "300",
       messageContent: "hello world",
       notifications: [{ user_id: "1", guild_id: "300", keyword: "hello" }],
       blocks: [{ user_id: "1", block_id: "200", block_type: "channel" }],
+      expectedNotifications: [],
+    },
+    {
+      name: "blocked - channel category",
+      authorId: "2",
+      channelCategoryId: "1000",
+      channelId: "200",
+      guildId: "300",
+      messageContent: "hello world",
+      notifications: [{ user_id: "1", guild_id: "300", keyword: "hello" }],
+      blocks: [{ user_id: "1", block_id: "1000", block_type: "category" }],
       expectedNotifications: [],
     },
   ];
@@ -123,6 +140,7 @@ describe("Notification.repository", () => {
           const notifications = await getMatchingNotifications(
             tx,
             tt.guildId,
+            tt.channelCategoryId,
             tt.channelId,
             tt.authorId,
             tt.messageContent,
