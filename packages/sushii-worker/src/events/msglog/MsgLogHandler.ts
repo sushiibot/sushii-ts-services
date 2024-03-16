@@ -377,6 +377,13 @@ export async function msgLogHandler(
       },
       "Failed to send message log",
     );
+
+    if (err instanceof Error) {
+      if (err.message.includes("Was there a typo in the url or port?")) {
+        log.fatal("FailedToOpenSocket error, exiting sushii...");
+        process.exit(1);
+      }
+    }
   }
 }
 
