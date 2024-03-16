@@ -36,9 +36,11 @@ export async function getUserLookupData(
       eb.and([
         // User ID
         eb("app_public.guild_bans.user_id", "=", user.id),
-        // Ignore missing or pending cases
-        eb.or([eb("logs.pending", "is", null), eb("logs.pending", "=", false)]),
-        // Bans only
+        // Allow missing or pending cases
+        // Skipping pending would skip all cases from guilds without mod log
+        // enabled as all cases will be pending
+        // eb.or([eb("logs.pending", "is", null), eb("logs.pending", "=", false)]),
+        // Bans only, allow null if not mod case wasn't found
         eb.or([eb("action", "is", null), eb("action", "=", "ban")]),
       ]),
     )
