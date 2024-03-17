@@ -255,7 +255,7 @@ export default function registerEventHandlers(
 
     await webhookLog(
       "Joined guild",
-      `${guild.name} (${guild.id}) - ${guild.memberCount} members\n${guild.client.guilds.cache.size} guilds total`,
+      `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
       Color.Info,
     );
 
@@ -314,7 +314,7 @@ export default function registerEventHandlers(
 
     await webhookLog(
       "Left guild",
-      `${guild.name} (${guild.id}) - ${guild.memberCount} members\n${guild.client.guilds.cache.size} guilds total`,
+      `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
       Color.Error,
     );
   });

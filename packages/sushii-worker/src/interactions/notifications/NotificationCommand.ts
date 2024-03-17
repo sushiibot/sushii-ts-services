@@ -20,6 +20,7 @@ import {
   getNotificationBlocks,
   insertNotificationBlock,
 } from "../../db/Notification/NotificationBlock.repository";
+import { NotificationBlockRow } from "../../db/Notification/NotificationBlock.table";
 
 const ID_REGEX = /\d{17,20}/g;
 
@@ -111,10 +112,11 @@ export default class NotificationCommand extends SlashCommandHandler {
         .setDescription("Unblock a channel or user from sending notifications.")
         .addStringOption((o) =>
           o
-            .setName("block_name")
-            .setDescription("Block to remove.")
-            .setRequired(true)
-            .setAutocomplete(true),
+            .setName("block_id")
+            .setDescription(
+              "Block ID to remove, copied from /notification blocklist",
+            )
+            .setRequired(true),
         ),
     )
     .toJSON();
@@ -388,17 +390,17 @@ export default class NotificationCommand extends SlashCommandHandler {
     const blockedChannels = blocksGrouped.get("channel");
     const blockedCategories = blocksGrouped.get("category");
 
-    const blockedUsersStr = blockedUsers?.map(
-      (block) => `<@${block.block_id}>`,
-    );
+    const fmtBlock = (block: NotificationBlockRow): string => {
+      if (block.block_type === "user") {
+        return `ID: \`${block.block_id}\` - <@${block.block_id}>`;
+      }
 
-    const blockedChannelsStr = blockedChannels?.map(
-      (block) => `<#${block.block_id}>`,
-    );
+      return `ID: \`${block.block_id}\` - <#${block.block_id}>`;
+    };
 
-    let blockedCategoriesStr = blockedCategories?.map(
-      (block) => `<#${block.block_id}>`,
-    );
+    const blockedUsersStr = blockedUsers?.map(fmtBlock);
+    const blockedChannelsStr = blockedChannels?.map(fmtBlock);
+    let blockedCategoriesStr = blockedCategories?.map(fmtBlock);
 
     if (blockedCategoriesStr) {
       blockedCategoriesStr.push(
@@ -440,14 +442,14 @@ export default class NotificationCommand extends SlashCommandHandler {
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
-    const blockStr = interaction.options.getString("block_name", true);
+    const blockStr = interaction.options.getString("block_id", true);
     const match = blockStr.match(ID_REGEX);
 
     if (!match) {
       const embed = new EmbedBuilder()
         .setTitle("Failed to unblock")
         .setDescription(
-          "Invalid block. Please pick from the autocomplete list, or mention a user or channel.",
+          "Invalid block. Please paste the block ID from /notification blocklist, or mention a user or channel.",
         )
         .setColor(Color.Error);
 
@@ -471,7 +473,7 @@ export default class NotificationCommand extends SlashCommandHandler {
       const embed = new EmbedBuilder()
         .setTitle("Failed to unblock")
         .setDescription(
-          "You don't have this channel or user blocked. Please pick from the autocomplete list.",
+          "You don't have this channel or user blocked. Please paste the block ID from /notification blocklist.",
         )
         .setColor(Color.Error);
 
