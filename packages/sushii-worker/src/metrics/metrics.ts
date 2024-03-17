@@ -41,6 +41,20 @@ export const sentRemindersCounter = new Counter({
 });
 
 // -----------------------------------------------------------------------------
+// Keyword notifications
+
+export const activeNotificationsGauge = new Gauge({
+  name: prefixedName("notifications_pending"),
+  help: "Active keyword notifications",
+});
+
+export const sentNotificationsCounter = new Counter({
+  name: prefixedName("notifications_sent_count"),
+  help: "Sent keyword notifications",
+  labelNames: ["status"],
+});
+
+// -----------------------------------------------------------------------------
 // Tempbans
 
 export const pendingTempBansGauge = new Gauge({

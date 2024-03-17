@@ -91,6 +91,17 @@ export function deleteNotification(
     .executeTakeFirst();
 }
 
+export async function getTotalNotificationCount(
+  db: Kysely<DB>,
+): Promise<number> {
+  const { count } = await db
+    .selectFrom("app_public.notifications")
+    .select((eb) => eb.fn.countAll().as("count"))
+    .executeTakeFirstOrThrow();
+
+  return Number(count);
+}
+
 export function stringToKeywords(str: string): string[] {
   return str
     .toLowerCase()

@@ -12,6 +12,7 @@ import Context from "../model/context";
 import {
   deleteNotification,
   getMatchingNotifications,
+  getTotalNotificationCount,
 } from "../db/Notification/Notification.repository";
 import db from "../model/db";
 import Color from "../utils/colors";
@@ -19,6 +20,10 @@ import SushiiEmoji from "../constants/SushiiEmoji";
 import { quoteMarkdownString } from "../utils/markdown";
 import { getUserString } from "../utils/userString";
 import { newModuleLogger } from "../logger";
+import {
+  activeNotificationsGauge,
+  sentNotificationsCounter,
+} from "../metrics/metrics";
 
 const log = newModuleLogger("NotificationsHandler");
 
@@ -124,7 +129,13 @@ export const notificationHandler: EventHandlerFn<Events.MessageCreate> = async (
 
         try {
           await member.send({ embeds: [embed] });
+          sentNotificationsCounter.inc({
+            status: "success",
+          });
         } catch (err) {
+          sentNotificationsCounter.inc({
+            status: "failed",
+          });
           // Ignore if member has DMs disabled
           continue;
         }
@@ -133,5 +144,8 @@ export const notificationHandler: EventHandlerFn<Events.MessageCreate> = async (
     } finally {
       span.end();
     }
+
+    const totalActiveKeywords = await getTotalNotificationCount(db);
+    activeNotificationsGauge.set(totalActiveKeywords);
   });
 };
