@@ -31,7 +31,11 @@ export async function getUserLookupData(
       "action_time",
       "lookup_details_opt_in",
     ])
-    .distinctOn("app_public.guild_bans.guild_id")
+    // Only include the first row for each guild
+    .distinctOn([
+      "app_public.guild_bans.guild_id",
+      "app_public.guild_bans.user_id",
+    ])
     .where((eb) =>
       eb.and([
         // User ID
