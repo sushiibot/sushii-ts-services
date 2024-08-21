@@ -38,12 +38,12 @@ export function upsertUser(db: Kysely<DB>, user: UserRow): Promise<UserRow> {
     .insertInto("app_public.users")
     .values({
       ...user,
-      profile_data: json(user.profile_data),
+      profile_data: insertableProfileData(user.profile_data),
     })
     .onConflict((oc) =>
       oc.column("id").doUpdateSet({
         ...user,
-        profile_data: json(user.profile_data),
+        profile_data: insertableProfileData(user.profile_data),
       }),
     )
     .returningAll()
