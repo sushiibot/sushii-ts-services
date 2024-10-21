@@ -306,6 +306,8 @@ export default class NotificationCommand extends SlashCommandHandler {
         embeds: [embed],
         flags: MessageFlags.Ephemeral,
       });
+
+      return;
     }
 
     let desc = `You will no longer receive notifications from ${channel.toString()}`;
@@ -349,6 +351,8 @@ export default class NotificationCommand extends SlashCommandHandler {
         embeds: [embed],
         flags: MessageFlags.Ephemeral,
       });
+
+      return;
     }
 
     const embed = new EmbedBuilder()
