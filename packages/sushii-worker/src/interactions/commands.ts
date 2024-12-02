@@ -49,6 +49,7 @@ import GiveawayAutocomplete from "./giveaway/Giveaway.autocomplete";
 import TempbanCommand from "./moderation/TempbanCommand";
 import TempbanListCommand from "./moderation/TempbanListCommand";
 import DeleteModLogDMButtonHandler from "./moderation/reason/DMButton";
+import LeaderboardCommand from "./xp/Leaderboard";
 
 export default function registerInteractionHandlers(
   interactionClient: InteractionClient,
@@ -89,6 +90,8 @@ export default function registerInteractionHandlers(
 
     new NotificationCommand(),
     new ReminderCommand(),
+
+    // new LeaderboardCommand(),
 
     // Tags
     new TagCommand(),

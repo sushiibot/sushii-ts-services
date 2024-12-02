@@ -1,9 +1,25 @@
 import { Kysely, QueryCreator, SelectQueryBuilder, sql } from "kysely";
 import dayjs from "dayjs";
 import { DB } from "../../model/dbTypes";
-import { UserLevelRow } from "./UserLevel.table";
+import { UserLevelRow, UserLevelRowWithRank } from "./UserLevel.table";
+import { z } from "zod";
 
-type TimeFrame = "day" | "week" | "month" | "all_time";
+export const TimeFrame = z.enum(["day", "week", "month", "all_time"]);
+
+export type TimeFrame = z.infer<typeof TimeFrame>;
+
+export function timeframeToString(timeframe: TimeFrame): string {
+  switch (timeframe) {
+    case "day":
+      return "Day";
+    case "week":
+      return "Week";
+    case "month":
+      return "Month";
+    case "all_time":
+      return "All Time";
+  }
+}
 
 interface UserRank {
   rank: number;
@@ -190,7 +206,7 @@ function allRanksQuery(
  * @param timeframe
  * @returns
  */
-async function guildUserCountInTimeFrame(
+export async function guildUserCountInTimeFrame(
   db: QueryCreator<DB>,
   guildId: string,
   timeframe: TimeFrame,
@@ -356,4 +372,60 @@ export async function getUserGlobalAllMessages(
     .executeTakeFirst();
 
   return res?.msg_all_time ?? 0;
+}
+
+// ----------------------------
+// Leaderboard
+export async function getGuildLeaderboardPage(
+  db: Kysely<DB>,
+  guildId: string,
+  timeframe: TimeFrame,
+  pageIndex: number,
+  pageSize: number,
+): Promise<UserLevelRowWithRank[]> {
+  let query = db
+    .selectFrom("app_public.user_levels")
+    // Add row number for rank
+    .select(({ fn }) => [
+      fn
+        .agg<number>("row_number")
+        .over((ob) => {
+          switch (timeframe) {
+            case "day":
+              return ob.orderBy("msg_day", "desc");
+            case "week":
+              return ob.orderBy("msg_week", "desc");
+            case "month":
+              return ob.orderBy("msg_month", "desc");
+            case "all_time":
+              return ob.orderBy("msg_all_time", "desc");
+          }
+        })
+        .as("rank"),
+    ])
+    .selectAll();
+
+  switch (timeframe) {
+    case "day":
+      query = query.orderBy("msg_day", "desc");
+      break;
+
+    case "week":
+      query = query.orderBy("msg_week", "desc");
+      break;
+
+    case "month":
+      query = query.orderBy("msg_month", "desc");
+      break;
+
+    case "all_time":
+      query = query.orderBy("msg_all_time", "desc");
+      break;
+  }
+
+  return query
+    .where("guild_id", "=", guildId)
+    .limit(pageSize)
+    .offset(pageIndex * pageSize)
+    .execute();
 }
