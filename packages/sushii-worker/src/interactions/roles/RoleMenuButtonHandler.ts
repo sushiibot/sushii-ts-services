@@ -30,10 +30,29 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
     }
 
     // -------------------------------------------------------------------------
-    // Check if member has required role
+    // Check if removing or adding role
+
+    const customIDMatch = customIds.roleMenuButton.match(interaction.customId);
+    if (!customIDMatch) {
+      throw new Error("No role to add or remove");
+    }
+
+    const roleToAddOrRemove = customIDMatch.params.roleId;
+
+    // If user already has role -> remove it
+    // If user doesn't have role -> add it
+    const isRemovingRole =
+      interaction.member.roles.cache.has(roleToAddOrRemove);
+
+    // -------------------------------------------------------------------------
+    // Check if member has required role, but allow them to remove roles
 
     const requiredRole = getRoleMenuRequiredRole(interaction.message);
-    if (requiredRole && !interaction.member.roles.cache.has(requiredRole)) {
+    if (
+      requiredRole &&
+      !interaction.member.roles.cache.has(requiredRole) &&
+      !isRemovingRole // Allow removing roles without required role
+    ) {
       await interaction.reply({
         embeds: [
           new EmbedBuilder()
@@ -49,21 +68,6 @@ export default class RoleMenuButtonHandler extends ButtonHandler {
 
       return;
     }
-
-    // -------------------------------------------------------------------------
-    // Check if removing or adding role
-
-    const customIDMatch = customIds.roleMenuButton.match(interaction.customId);
-    if (!customIDMatch) {
-      throw new Error("No role to add or remove");
-    }
-
-    const roleToAddOrRemove = customIDMatch.params.roleId;
-
-    // If user already has role -> remove it
-    // If user doesn't have role -> add it
-    const isRemovingRole =
-      interaction.member.roles.cache.has(roleToAddOrRemove);
 
     // -------------------------------------------------------------------------
     // Check max roles
