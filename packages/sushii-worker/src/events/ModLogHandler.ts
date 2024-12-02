@@ -412,7 +412,21 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   );
   const components = buildModLogComponents(actionType, matchingCase);
 
-  const channel = await guild.channels.fetch(conf.log_mod);
+  let channel;
+  try {
+    channel = await guild.channels.fetch(conf.log_mod);
+  } catch (err) {
+    log.error(
+      {
+        guildId: guild.id,
+        modLogChannelId: conf.log_mod,
+        err,
+      },
+      "Failed to fetch mod log channel",
+    );
+
+    return;
+  }
 
   if (!channel?.isTextBased()) {
     throw new Error("Mod log channel is not text based");
