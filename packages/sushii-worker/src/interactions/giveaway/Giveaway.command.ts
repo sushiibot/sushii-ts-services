@@ -306,6 +306,7 @@ export default class GiveawayCommand extends SlashCommandHandler {
 
     await interaction.reply({
       embeds: [responseEmbed],
+      flags: MessageFlags.Ephemeral,
     });
   }
 
