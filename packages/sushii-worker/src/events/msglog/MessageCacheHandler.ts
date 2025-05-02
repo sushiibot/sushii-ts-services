@@ -23,6 +23,10 @@ export default async function msgLogCacheHandler(
     return;
   }
 
+  // TODO: Log external Apps
+  if (event.author?.bot && !event.member) {
+  }
+
   // Ignore bots
   if (event.author?.bot || event.member?.user?.bot) {
     return;
