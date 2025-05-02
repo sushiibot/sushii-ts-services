@@ -467,6 +467,7 @@ export interface AppPublicGuildConfigs {
   mute_dm_enabled: Generated<boolean>;
   mute_dm_text: string | null;
   prefix: string | null;
+  reaction_logs_channel: Int8 | null;
   role_channel: Int8 | null;
   role_config: Json | null;
   role_enabled: Generated<boolean>;

@@ -32,6 +32,7 @@ const defaultGuildConfig: GuildConfigRow = {
   disabled_channels: null,
   lookup_prompted: false,
   lookup_details_opt_in: false,
+  reaction_logs_channel: null,
   data: {},
 };
 

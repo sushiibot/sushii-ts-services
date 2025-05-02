@@ -9,13 +9,13 @@ import {
 import logger from "../logger";
 
 // Function to get the actual page content
-type GetPageFn = (pageNum: number, pageSize: number) => Promise<string>;
+export type GetPageFn = (pageNum: number, pageSize: number) => Promise<string>;
 
 // Function get the total number of items
-type GetTotalEntriesFn = () => Promise<number>;
+export type GetTotalEntriesFn = () => Promise<number>;
 
 // Embed modifier function, for adding title, color, fields, etc
-type EmbedModifierFn = (embed: EmbedBuilder) => EmbedBuilder;
+export type EmbedModifierFn = (embed: EmbedBuilder) => EmbedBuilder;
 
 enum ButtonId {
   Back5 = "back5",
