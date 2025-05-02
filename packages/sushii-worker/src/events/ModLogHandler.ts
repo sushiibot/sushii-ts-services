@@ -127,7 +127,7 @@ export function buildModLogComponents(
         .setEmoji({
           name: "🗑️",
         })
-        .setStyle(ButtonStyle.Danger)
+        .setStyle(ButtonStyle.Secondary)
         .setLabel("Delete reason DM")
         .setDisabled(dmDeleted)
         .setCustomId(
