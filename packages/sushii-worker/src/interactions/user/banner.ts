@@ -29,6 +29,9 @@ export default class BannerCommand extends SlashCommandHandler {
     const target =
       interaction.options.getUser("user", false) || interaction.user;
 
+    // TODO: Member banners in Discord.js v15
+    // https://github.com/discordjs/discord.js/pull/10384
+
     const userBannerURL = target.bannerURL({
       size: 4096,
     });
@@ -36,9 +39,7 @@ export default class BannerCommand extends SlashCommandHandler {
     if (!userBannerURL) {
       const embed = new EmbedBuilder()
         .setColor(Color.Error)
-        .setDescription(
-          `${target.toString()} doesn't have a banner set. Please note bots cannot view server banners.`,
-        );
+        .setDescription(`${target.toString()} doesn't have a banner set.`);
 
       await interaction.reply({
         embeds: [embed],
