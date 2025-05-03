@@ -4,6 +4,7 @@ import {
   ChatInputCommandInteraction,
   InteractionReplyOptions,
   ModalSubmitInteraction,
+  InteractionEditReplyOptions,
 } from "discord.js";
 import { MessageFlags } from "discord-api-types/v10";
 import { t } from "i18next";
@@ -29,6 +30,16 @@ export function getErrorMessage(
     ],
     flags: ephemeral ? MessageFlags.Ephemeral : undefined,
   };
+}
+
+export function getErrorMessageEdit(
+  title: string,
+  description: string,
+  ephemeral: boolean = false,
+): InteractionEditReplyOptions {
+  const { flags, ...msg } = getErrorMessage(title, description, ephemeral);
+
+  return msg;
 }
 
 export async function interactionReplyError(

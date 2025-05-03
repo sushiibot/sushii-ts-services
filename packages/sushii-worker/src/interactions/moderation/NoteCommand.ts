@@ -1,12 +1,16 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
+import {
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  InteractionContextType,
+} from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
-import { getErrorMessage } from "../responses/error";
+import { getErrorMessage, getErrorMessageEdit } from "../responses/error";
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
-import { noteOption, usersOption } from "./options";
+import { attachmentOption, noteOption, usersOption } from "./options";
 
 export default class NoteCommand extends SlashCommandHandler {
   serverOnly = true;
@@ -15,10 +19,10 @@ export default class NoteCommand extends SlashCommandHandler {
     .setName("note")
     .setDescription("Add a note to members.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption(usersOption(ActionType.Note))
     .addStringOption(noteOption)
-    // .addAttachmentOption(attachmentOption)
+    .addAttachmentOption(attachmentOption)
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
@@ -42,16 +46,16 @@ export default class NoteCommand extends SlashCommandHandler {
 
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
-      await interaction.editReply(
-        getErrorMessage("Error", fetchTargetsRes.val),
-      );
+      const msg = getErrorMessageEdit("Error", fetchTargetsRes.val);
+      await interaction.editReply(msg);
 
       return;
     }
 
     const res = await executeAction(ctx, interaction, data, ActionType.Note);
     if (res.err) {
-      await interaction.editReply(getErrorMessage("Error", res.val.message));
+      const msg = getErrorMessageEdit("Error", res.val.message);
+      await interaction.editReply(msg);
 
       return;
     }
