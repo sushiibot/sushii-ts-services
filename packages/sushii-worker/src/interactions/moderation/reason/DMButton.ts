@@ -6,6 +6,7 @@ import {
   ComponentType,
   EmbedBuilder,
 } from "discord.js";
+import { sleep } from "bun";
 import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";
@@ -15,7 +16,6 @@ import db from "../../../model/db";
 import { newModuleLogger } from "../../../logger";
 import { buildModLogComponents } from "../../../events/ModLogHandler";
 import { ActionType } from "../ActionType";
-import { sleep } from "bun";
 
 const logger = newModuleLogger("ModLog-DeleteDM-Button");
 
@@ -91,15 +91,15 @@ export default class DeleteModLogDMButtonHandler extends ButtonHandler {
         });
 
         // Wait for 5 seconds before deleting the message
-        await sleep(5 * 1000);
+        await sleep(2 * 1000);
 
         await confirmButtonInteraction.deleteReply();
 
         return;
-      } else {
-        await confirmButtonInteraction.deferUpdate();
-        await confirmReplyMsg.delete();
       }
+
+      await confirmButtonInteraction.deferUpdate();
+      await confirmReplyMsg.delete();
     } catch (err) {
       // Timed out
       await confirmReplyMsg.delete();
