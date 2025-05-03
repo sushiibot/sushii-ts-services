@@ -58,6 +58,9 @@ const prefixSpanName = (name: string): string => `${tracerName}.${name}`;
 let lastLogTime = 0;
 
 async function isActive(): Promise<boolean> {
+  // TODO: No-op for now until it's actually used
+  return true;
+
   const active = await isCurrentDeploymentActive();
   if (!active) {
     const currentTime = Date.now();
