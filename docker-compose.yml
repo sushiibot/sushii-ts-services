@@ -1,6 +1,7 @@
 version: "3.8"
+
 services:
-  sushii_worker:
+  sushii_worker: &sushii_worker_base
     build:
       dockerfile: ./dockerfiles/sushii-worker/Dockerfile
       context: .
@@ -14,6 +15,7 @@ services:
     environment:
       # blue is default, and for now just 1 deployment green later
       - DEPLOYMENT_NAME=blue
+
       - LOG_LEVEL=debug
       - NODE_ENV=production
       - DISCORD_TOKEN=$DISCORD_TOKEN
@@ -46,6 +48,28 @@ services:
 
       - "prometheus.scrape.enable=true"
       - "prometheus.scrape.port=9090"
+  sushii_worker_green:
+    <<: *sushii_worker_base
+    environment:
+      - DEPLOYMENT_NAME=green
+
+      - LOG_LEVEL=debug
+      - NODE_ENV=production
+      - DISCORD_TOKEN=$DISCORD_TOKEN
+      - APPLICATION_ID=193163942502072320
+      - DATABASE_URL=$DATABASE_URL
+      - SENTRY_DSN=$SENTRY_DSN
+      - DISCORD_API_PROXY_URL=http://discord_api_proxy:8080/api
+      - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
+      # Tracing
+      - TRACING_EXPORTER_URL=http://jaeger:4318/v1/traces
+      - TRACING_SAMPLE_PERCENTAGE=0.01
+      # Notifications
+      - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
+      - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
+      # Increase max memory usage - should use approx 1100 MB on start
+      - NODE_OPTIONS=--max-old-space-size=4096
+
   discord_api_proxy:
     image: discordjs/proxy
     container_name: discord_api_proxy
