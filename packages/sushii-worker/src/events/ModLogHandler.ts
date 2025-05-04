@@ -22,6 +22,11 @@ import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
 
 const log = newModuleLogger("ModLogHandler");
 
+type AttachmentResultType = PromiseFulfilledResult<{
+  attachment: Buffer;
+  name: string;
+} | null>;
+
 interface ActionTypeEventData {
   actionType: ActionType;
   targetId: string;
@@ -432,13 +437,57 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
     throw new Error("Mod log channel is not text based");
   }
 
+  // Download and prepare attachments in parallel if present
+  let files: Array<{ attachment: Buffer; name: string }> = [];
+  if (
+    Array.isArray(matchingCase.attachments) &&
+    matchingCase.attachments.length > 0
+  ) {
+    const downloadPromises = matchingCase.attachments.map(async (url) => {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          log.warn(
+            { url, status: response.status },
+            "Failed to fetch attachment for mod log",
+          );
+          return null;
+        }
+
+        const buffer = await response.arrayBuffer();
+        // Try to extract filename from URL, fallback to generic name
+        const urlObj = new URL(url);
+        const { pathname } = urlObj;
+        const filename =
+          pathname.substring(pathname.lastIndexOf("/") + 1) || "attachment";
+
+        return {
+          attachment: Buffer.from(buffer),
+          name: filename,
+        };
+      } catch (err) {
+        log.warn({ url, err }, "Error downloading attachment for mod log");
+        return null;
+      }
+    });
+
+    const results = await Promise.allSettled(downloadPromises);
+    files = results
+      .filter(
+        (res): res is AttachmentResultType =>
+          res.status === "fulfilled" && !!res.value,
+      )
+      .map((res) => res.value as { attachment: Buffer; name: string });
+  }
+
   let sentMsg;
   try {
     shouldSaveModLog = true;
 
     sentMsg = await channel.send({
-      embeds: [embed.toJSON()],
+      embeds: [embed],
       components,
+      files,
     });
   } catch (err) {
     log.debug(
