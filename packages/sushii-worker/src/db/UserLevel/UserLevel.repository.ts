@@ -1,12 +1,12 @@
 import { Kysely, QueryCreator, SelectQueryBuilder, sql } from "kysely";
 import dayjs from "dayjs";
+import { z } from "zod";
 import { DB } from "../../model/dbTypes";
 import { UserLevelRow, UserLevelRowWithRank } from "./UserLevel.table";
-import { z } from "zod";
 
-export const TimeFrame = z.enum(["day", "week", "month", "all_time"]);
+export const TimeFrameSchema = z.enum(["day", "week", "month", "all_time"]);
 
-export type TimeFrame = z.infer<typeof TimeFrame>;
+export type TimeFrame = z.infer<typeof TimeFrameSchema>;
 
 export function timeframeToString(timeframe: TimeFrame): string {
   switch (timeframe) {
@@ -79,22 +79,46 @@ export async function totalUsersInTimeFrame(
   switch (timeframe) {
     case "day": {
       query = query
-        .where(sql`extract(doy from last_msg) = extract(doy from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`);
+        .where(
+          sql`extract(doy from last_msg)`,
+          "=",
+          sql`extract(doy from now())`,
+        )
+        .where(
+          sql`extract(year from last_msg)`,
+          "=",
+          sql`extract(year from now())`,
+        );
 
       break;
     }
     case "week": {
       query = query
-        .where(sql`extract(week from last_msg) = extract(week from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`);
+        .where(
+          sql`extract(week from last_msg)`,
+          "=",
+          sql`extract(week from now())`,
+        )
+        .where(
+          sql`extract(year from last_msg)`,
+          "=",
+          sql`extract(year from now())`,
+        );
 
       break;
     }
     case "month": {
       query = query
-        .where(sql`extract(month from last_msg) = extract(month from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`);
+        .where(
+          sql`extract(month from last_msg)`,
+          "=",
+          sql`extract(month from now())`,
+        )
+        .where(
+          sql`extract(year from last_msg) `,
+          "=",
+          sql`extract(year from now())`,
+        );
 
       break;
     }
@@ -220,22 +244,46 @@ export async function guildUserCountInTimeFrame(
   switch (timeframe) {
     case "day": {
       query = query
-        .where(sql`extract(doy from last_msg) = extract(doy from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`);
+        .where(
+          sql`extract(doy from last_msg)`,
+          "=",
+          sql`extract(doy from now())`,
+        )
+        .where(
+          sql`extract(year from last_msg)`,
+          "=",
+          sql`extract(year from now())`,
+        );
 
       break;
     }
     case "week": {
       query = query
-        .where(sql`extract(week from last_msg) = extract(week from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`);
+        .where(
+          sql`extract(week from last_msg)`,
+          "=",
+          sql`extract(week from now())`,
+        )
+        .where(
+          sql`extract(year from last_msg)`,
+          "=",
+          sql`extract(year from now())`,
+        );
 
       break;
     }
     case "month": {
       query = query
-        .where(sql`extract(month from last_msg) = extract(month from now())`)
-        .where(sql`extract(year from last_msg) = extract(year from now())`);
+        .where(
+          sql`extract(month from last_msg)`,
+          "=",
+          sql`extract(month from now())`,
+        )
+        .where(
+          sql`extract(year from last_msg)`,
+          "=",
+          sql`extract(year from now())`,
+        );
 
       break;
     }
