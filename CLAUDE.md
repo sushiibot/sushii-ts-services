@@ -8,27 +8,25 @@ This is a Discord bot called sushii, built with Discord.js and Bun. It's a TypeS
 
 ## Workspace Structure
 
-This is a yarn workspaces monorepo with the following packages:
+This is a bun workspaces monorepo with the following packages:
 
 - `sushii-worker` - Main Discord bot application
 - `sushii-data` - GraphQL API server with PostGraphile 
 - `sushii-db` - Database migrations and schema
-- `sushii-status` - Status page service (Cloudflare Workers)
-- `html2image` - HTML to image conversion utility
 
 ## Development Commands
 
 ### Root Level Commands
 ```bash
 # Start both data and worker services in development
-yarn dev
+bun dev
 
 # Start individual services
-yarn dev:data
-yarn dev:worker
+bun dev:data
+bun dev:worker
 
 # Run tests for worker package
-yarn test:worker
+bun test:worker
 ```
 
 ### Package-Specific Commands
@@ -38,36 +36,39 @@ yarn test:worker
 cd packages/sushii-worker
 
 # Development with pretty logging
-bun src/index.ts | pino-pretty -c -t
+bun dev
 
 # Run tests
 bun test
 
 # Type checking
-tsc --skipLibCheck
+bun typecheck
 
 # Generate database types from schema
-yarn codegen:pg
+bun codegen:pg
+
+# Linting (when available)
+bun lint
 ```
 
 #### sushii-data (GraphQL API)
 ```bash
 cd packages/sushii-data
 
-# Development
-ts-node ./src/index.ts | pino-pretty -c -t
+# Development with pretty logging
+bun dev
 
 # Build
-tsc
+bun build
 
 # Testing
-jest
-jest --watch
-jest --coverage
+bun test
+bun test:watch
+bun test:cov
 
 # Linting and formatting
-eslint "{src,apps,libs,test}/**/*.ts" --fix
-prettier --write "src/**/*.ts" "test/**/*.ts"
+bun lint
+bun format
 ```
 
 ## Architecture
