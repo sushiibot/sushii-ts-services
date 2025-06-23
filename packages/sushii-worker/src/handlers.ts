@@ -478,7 +478,7 @@ export default function registerEventHandlers(
     );
   });
 
-  client.on(Events.MessageReactionAdd, async (reaction, user) => {
+  client.on(Events.MessageReactionAdd, async (reaction, user, details) => {
     if (!(await isActive())) {
       return;
     }
@@ -492,6 +492,7 @@ export default function registerEventHandlers(
           { emojiStatsReact: emojiStatsReactHandler },
           reaction,
           user,
+          details,
         );
 
         span.end();
