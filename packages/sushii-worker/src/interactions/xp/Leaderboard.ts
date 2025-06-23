@@ -1,19 +1,7 @@
-import {
-  SlashCommandBuilder,
-  EmbedBuilder,
-  ChatInputCommandInteraction,
-} from "discord.js";
-import { PermissionFlagsBits } from "discord-api-types/v10";
+import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
-import { interactionReplyErrorPlainMessage } from "../responses/error";
-import canAddRole from "../../utils/canAddRole";
-import {
-  deleteLevelRole,
-  getAllLevelRoles,
-  upsertLevelRole,
-} from "../../db/LevelRole/LevelRole.repository";
 import db from "../../model/db";
 import Paginator, {
   EmbedModifierFn,
@@ -120,9 +108,8 @@ export default class LeaderboardCommand extends SlashCommandHandler {
       return desc;
     };
 
-    const getTotalEntriesFn: GetTotalEntriesFn = () => {
-      return guildUserCountInTimeFrame(db, interaction.guildId, timeframe.data);
-    };
+    const getTotalEntriesFn: GetTotalEntriesFn = () =>
+      guildUserCountInTimeFrame(db, interaction.guildId, timeframe.data);
 
     const embedModifierFn: EmbedModifierFn = (embed) =>
       embed
