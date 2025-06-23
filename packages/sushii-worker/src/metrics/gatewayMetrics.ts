@@ -1,4 +1,4 @@
-import { Client, GatewayDispatchEvents } from "discord.js";
+import { GatewayDispatchEvents, ShardingManager } from "discord.js";
 import { Counter, Gauge } from "prom-client";
 import { prefixedName } from "./metrics";
 
@@ -37,8 +37,25 @@ const shardLastPingTimestampGauge = new Gauge({
   labelNames: ["shard_id"],
 });
 
-export function updateShardMetrics(client: Client<boolean>): void {
-  for (const shard of client.ws.shards.values()) {
+export async function updateShardMetrics(
+  shardManager: ShardingManager,
+): Promise<void> {
+  const statuses = await shardManager.broadcastEval((client) =>
+    client.ws.shards.map((shard) => {
+      const shardId = shard.id;
+      const { status, ping } = client.ws;
+      const lastPingTimestamp = Date.now();
+
+      return {
+        id: shardId,
+        status,
+        ping,
+        lastPingTimestamp,
+      };
+    }),
+  );
+
+  for (const shard of statuses.flat()) {
     const labels = {
       shard_id: shard.id,
     };

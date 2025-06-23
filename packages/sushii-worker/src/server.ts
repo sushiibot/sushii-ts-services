@@ -2,7 +2,10 @@ import { register } from "prom-client";
 import { Hono, MiddlewareHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { Server } from "bun";
-import { Client, RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
+import {
+  ShardingManager,
+  RESTPostAPIApplicationCommandsJSONBody,
+} from "discord.js";
 import { newModuleLogger } from "./logger";
 import config from "./model/config";
 import { updateShardMetrics } from "./metrics/gatewayMetrics";
@@ -44,7 +47,7 @@ const pinoLoggerMiddleware: MiddlewareHandler = async (c, next) => {
 };
 
 export default function server(
-  client: Client<boolean>,
+  manager: ShardingManager,
   commands: RESTPostAPIApplicationCommandsJSONBody[],
 ): Server {
   const app = new Hono();
@@ -62,8 +65,20 @@ export default function server(
   // Routes
   app.get("/", (c) => c.text("ok"));
   app.get("/commands", (c) => c.json(commands));
-  app.get("/status", (c) =>
-    c.json({
+  app.get("/status", (c) => {
+    const shardInfo = {
+      count: manager.totalShards,
+      status: Array.from(manager.shards.values()).map((s) => ({
+        id: s.id,
+        ready: s.ready,
+        process: {
+          pid: s.process?.pid,
+          connected: s.process?.connected,
+        },
+      })),
+    };
+
+    return c.json({
       config: {
         deployment: config.DEPLOYMENT_NAME,
         owner: {
@@ -74,24 +89,15 @@ export default function server(
         disableBanFetchOnReady: config.DISABLE_BAN_FETCH_ON_READY,
         banPoolEnabled: config.BAN_POOL_ENABLED,
       },
-      client: {
-        readyAt: client.readyTimestamp,
-        uptimeMs: client.uptime,
-        shardCount: client.ws.shards.size,
-        shardStatus: client.ws.shards.map((s) => ({
-          id: s.id,
-          status: ShardStatusToName[s.status],
-          statusCode: s.status,
-        })),
-      },
-    }),
-  );
+      shards: shardInfo,
+    });
+  });
 
   // Prometheus metrics
   app.get("/metrics", async (c) => {
     try {
-      // Update shard metrics on demand
-      updateShardMetrics(client);
+      // Update shard metrics
+      await updateShardMetrics(manager);
 
       const metrics = await register.metrics();
 

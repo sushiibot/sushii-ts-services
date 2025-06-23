@@ -1,15 +1,12 @@
 import "./dayjs";
 import * as Sentry from "@sentry/node";
-import { Client, GatewayIntentBits, Options, Partials } from "discord.js";
+import { ShardingManager } from "discord.js";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 import log from "./logger";
-import InteractionClient from "./client";
-import initI18next from "./i18next";
-import registerInteractionHandlers from "./interactions/commands";
 import server from "./server";
 import sdk from "./tracing";
-import Context from "./model/context";
 import config from "./model/config";
-import registerEventHandlers from "./handlers";
 import { registerShutdownSignals } from "./signals";
 
 Error.stackTraceLimit = 50;
@@ -19,69 +16,30 @@ async function main(): Promise<void> {
     dsn: config.SENTRY_DSN,
     environment:
       process.env.NODE_ENV === "production" ? "production" : "development",
-
-    // Set tracesSampleRate to 1.0 to capture 100%
-    // of transactions for performance monitoring.
-    // We recommend adjusting this value in production
     tracesSampleRate: 1.0,
   });
 
-  await initI18next();
+  // Get the shard file path
+  const fileName = fileURLToPath(import.meta.url);
+  const dirName = dirname(fileName);
+  const shardFile = join(dirName, "shard.ts");
 
-  // Create a new client instance
-  const djsClient = new Client({
-    // Internal sharding, single process.
-    // ShardingManager uses child processes, metrics server needs to be updated
-    // to not run into port conflicts. Should be fine for a while.
-    shards: "auto",
-    intents: [
-      GatewayIntentBits.Guilds,
-      GatewayIntentBits.GuildMembers,
-      GatewayIntentBits.GuildModeration, // old GuildBans
-      GatewayIntentBits.GuildMessages,
-      GatewayIntentBits.GuildMessageReactions,
-      GatewayIntentBits.DirectMessages,
-      GatewayIntentBits.MessageContent,
-      GatewayIntentBits.GuildEmojisAndStickers,
-    ],
-    // Required to receive reaction events on uncached messages, leave events
-    // on uncached members, etc
-    partials: [Partials.Message, Partials.Reaction, Partials.GuildMember],
-    rest: {
-      version: "10",
-      // Ensure we are using the proxy api url
-      api: config.DISCORD_API_PROXY_URL,
-    },
-    makeCache: Options.cacheWithLimits({
-      // Do not cache messages
-      MessageManager: 0,
-      // Do not cache users
-      UserManager: 0,
-    }),
+  // Create ShardingManager
+  const manager = new ShardingManager(shardFile, {
+    token: config.DISCORD_TOKEN,
+    totalShards: "auto",
+    mode: "process",
   });
 
-  // Set token for rest client early for command registration
-  djsClient.rest.setToken(config.DISCORD_TOKEN);
-
-  const ctx = new Context(djsClient);
-  const client = new InteractionClient(ctx);
-  registerInteractionHandlers(client);
-
-  // Register commands to Discord API
-  await client.register();
-
-  // Register node.js event handlers on the Discord.js client
-  registerEventHandlers(ctx, djsClient, client);
-
-  // ---------------------------------------------------------------------------
-  // Metrics and healthcheck
-
-  const s = server(djsClient, client.getCommandsArray());
+  // Start metrics and healthcheck server (runs only in main process)
+  const s = server(manager, []);
 
   registerShutdownSignals(async () => {
-    log.info("closing Discord client");
+    log.info("shutting down ShardingManager");
+
     try {
-      await djsClient.destroy();
+      manager.shards.forEach((shard) => shard.kill());
+
       log.info("closing sentry");
       await Sentry.close(2000);
 
@@ -100,10 +58,17 @@ async function main(): Promise<void> {
     process.exit(0);
   });
 
-  log.info("starting Discord client");
+  manager.on("shardCreate", (shard) => {
+    log.info(
+      {
+        shardId: shard.id,
+      },
+      "Launched shard",
+    );
+  });
 
-  // Start client
-  await djsClient.login(config.DISCORD_TOKEN);
+  log.info("Spawning shards");
+  await manager.spawn();
 }
 
 main().catch((e) => {
