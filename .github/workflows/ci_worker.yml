@@ -40,20 +40,10 @@ jobs:
       - name: Typecheck sushii-worker
         run: cd packages/sushii-worker && bun run typecheck
 
-      - name: Install sushii-db dependencies
-        working-directory: ./packages/sushii-db
-        run: bun install
-
       - name: Initialize database
-        working-directory: ./packages/sushii-db
+        working-directory: ./packages/sushii-worker
         run: |
-          cp .env.ci .env
-          bun gm compile ./init.sql | psql postgresql://postgres:postgres@localhost:5432/postgres
-          bun gm compile ./migrations/afterReset.sql | psql postgresql://postgres:postgres@localhost:5432/postgres
-
-      - name: Run sushii-db migrations
-        working-directory: ./packages/sushii-db
-        run: bun migrate
+          bun run drizzle-kit migrate
 
       - name: Test sushii-worker
         run: |
