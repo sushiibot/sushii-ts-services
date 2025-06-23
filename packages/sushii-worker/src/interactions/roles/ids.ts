@@ -73,8 +73,12 @@ export function getRoleMenuMessageButtonRoles(
   }
 
   return msg.components
-    .map((row) =>
-      row.components
+    .map((row) => {
+      if (row.type !== ComponentType.ActionRow) {
+        return [];
+      }
+
+      return row.components
         .filter(
           (component): component is ButtonComponent =>
             component.type === ComponentType.Button,
@@ -94,8 +98,8 @@ export function getRoleMenuMessageButtonRoles(
             label: button.label!,
           };
         })
-        .filter((button): button is MenuRoleData => !!button.roleId),
-    )
+        .filter((button): button is MenuRoleData => !!button.roleId);
+    })
     .flat();
 }
 
@@ -107,8 +111,12 @@ export function getRoleMenuMessageSelectRoles(
   }
 
   return msg.components
-    .map((row) =>
-      row.components
+    .map((row) => {
+      if (row.type !== ComponentType.ActionRow) {
+        return [];
+      }
+
+      return row.components
         .filter(
           (component): component is StringSelectMenuComponent =>
             component.type === ComponentType.StringSelect,
@@ -119,7 +127,7 @@ export function getRoleMenuMessageSelectRoles(
             label: option.label,
           })),
         )
-        .filter((option): option is MenuRoleData => !!option.roleId),
-    )
+        .filter((option): option is MenuRoleData => !!option.roleId);
+    })
     .flat();
 }
