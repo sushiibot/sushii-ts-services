@@ -345,7 +345,7 @@ export async function msgLogHandler(
   }
 
   const channel = ctx.client.channels.cache.get(guildConfig.log_msg);
-  if (!channel || !channel.isTextBased()) {
+  if (!channel || !channel.isSendable()) {
     log.warn(
       {
         guildId: payload.guild_id,
@@ -353,6 +353,7 @@ export async function msgLogHandler(
       },
       "Log msg channel not found or not text based",
     );
+
     return;
   }
 
