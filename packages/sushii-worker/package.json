@@ -4,8 +4,7 @@
   "main": "index.js",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "test": "bun test",
-    "typecheck": "tsc --skipLibCheck",
+    "typecheck": "tsc --skipLibCheck --noEmit",
     "start": "bun run ./src/index.ts",
     "codegen:pg": "kysely-codegen --out-file ./src/model/dbTypes.ts",
     "dev": "bun src/index.ts | pino-pretty -c -t"
