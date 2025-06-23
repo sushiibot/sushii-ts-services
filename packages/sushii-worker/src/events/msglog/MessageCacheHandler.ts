@@ -24,11 +24,9 @@ export default async function msgLogCacheHandler(
   }
 
   // TODO: Log external Apps
-  if (event.author?.bot && !event.member) {
-  }
 
   // Ignore bots
-  if (event.author?.bot || event.member?.user?.bot) {
+  if (event.author.bot) {
     return;
   }
 
@@ -61,11 +59,6 @@ export default async function msgLogCacheHandler(
     return;
   }
 
-  const authorId = event.author?.id || event.member?.user?.id;
-  if (!authorId) {
-    return;
-  }
-
   const obj = {
     // Only add the properties we need
     author: event.author,
@@ -86,7 +79,7 @@ export default async function msgLogCacheHandler(
       message_id: BigInt(event.id),
       channel_id: BigInt(event.channel_id),
       guild_id: BigInt(event.guild_id),
-      author_id: BigInt(authorId),
+      author_id: BigInt(event.author.id),
       content: event.content || "",
       created: event.timestamp!,
       msg: sql`${eventStr}`,
