@@ -12,7 +12,7 @@ import {
   getGuildLeaderboardPage,
   getUserGuildLevel,
   guildUserCountInTimeFrame,
-  TimeFrame,
+  TimeFrameSchema,
   timeframeToString,
   userGuildTimeframeRank,
 } from "../../db/UserLevel/UserLevel.repository";
@@ -59,7 +59,7 @@ export default class LeaderboardCommand extends SlashCommandHandler {
 
     const timeframeRaw =
       interaction.options.getString("timeframe") ?? "all_time";
-    const timeframe = TimeFrame.safeParse(timeframeRaw);
+    const timeframe = TimeFrameSchema.safeParse(timeframeRaw);
     if (!timeframe.success) {
       throw new Error("Invalid timeframe");
     }

@@ -96,9 +96,11 @@ async function getFieldsAndFiles(
 
     try {
       const file = await fetch(newAttachment.url);
-      const buf = await file.buffer();
+      const buf = await file.arrayBuffer();
 
-      const attachment = new AttachmentBuilder(buf).setName(newAttachment.name);
+      const attachment = new AttachmentBuilder(Buffer.from(buf)).setName(
+        newAttachment.name,
+      );
 
       files.push(attachment);
     } catch (err) {
