@@ -10,7 +10,8 @@ const dbLogger = logger.child({ module: "db" });
 
 const pool = new Pool({
   connectionString: config.DATABASE_URL,
-  max: 20,
+  // PER shard, as each shard has its own process
+  max: 3,
 });
 
 pool.on("error", (err) => {

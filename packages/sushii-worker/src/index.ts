@@ -27,7 +27,7 @@ async function main(): Promise<void> {
   // Create ShardingManager
   const manager = new ShardingManager(shardFile, {
     token: config.DISCORD_TOKEN,
-    totalShards: "auto",
+    totalShards: config.MANUAL_SHARD_COUNT || "auto",
     mode: "process",
   });
 

@@ -48,6 +48,9 @@ const schema = z.object({
     .preprocess((x) => x === "true", z.boolean())
     .optional()
     .default(false),
+
+  // Testing flags
+  MANUAL_SHARD_COUNT: z.number().optional(),
 });
 
 const parsed = schema.safeParse(process.env);
