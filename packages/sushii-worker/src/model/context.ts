@@ -54,4 +54,13 @@ export default class Context {
     // No validation on subcommand name
     return `</${commandName}:${command.id}>`;
   }
+
+  getShardId(): number | null {
+    const shard = this.client.ws.shards.first();
+    return shard?.id ?? null;
+  }
+
+  isMainShard(): boolean {
+    return this.getShardId() === 0;
+  }
 }
