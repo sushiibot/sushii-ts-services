@@ -13,7 +13,6 @@ import {
   PermissionFlagsBits,
 } from "discord-api-types/v10";
 import { t } from "i18next";
-import fetch from "node-fetch";
 import { Err, Ok, Result } from "ts-results";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
