@@ -43,6 +43,7 @@ jobs:
       - name: Initialize database
         working-directory: ./packages/sushii-worker
         run: |
+          cp .env.ci .env
           bun run drizzle-kit migrate
 
       - name: Test sushii-worker
