@@ -20,7 +20,10 @@ import db from "../../../model/db";
  * @returns randomized clean base64 string
  */
 export function generateInvite(): string {
-  return base32.encode(randomBytes(6)).toLowerCase().replace(/=/g, "");
+  return base32
+    .encode(new Uint8Array(randomBytes(6)))
+    .toLowerCase()
+    .replace(/=/g, "");
 }
 
 export async function createInvite(

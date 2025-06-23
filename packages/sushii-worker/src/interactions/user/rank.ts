@@ -41,9 +41,12 @@ export default class RankCommand extends SlashCommandHandler {
 
     if (res.err) {
       logger.error({ err: res.val }, "Failed to get user rank");
-      await interaction.editReply(
-        getErrorMessage("Failed to get user rank", res.val),
+
+      const { flags, ...editMsg } = getErrorMessage(
+        "Failed to get user rank",
+        res.val,
       );
+      await interaction.editReply(editMsg);
 
       return;
     }
