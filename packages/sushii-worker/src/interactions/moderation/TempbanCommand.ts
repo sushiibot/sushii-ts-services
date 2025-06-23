@@ -6,10 +6,7 @@ import {
 } from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
-import {
-  getErrorMessage,
-  interactionReplyErrorMessage,
-} from "../responses/error";
+import { getErrorMessage } from "../responses/error";
 import { ActionType } from "./ActionType";
 import executeAction from "./executeAction";
 import ModActionData from "./ModActionData";
@@ -54,7 +51,8 @@ export default class TempbanCommand extends SlashCommandHandler {
     const data = new ModActionData(interaction, ActionType.TempBan);
     const validateRes = data.validate();
     if (validateRes.err) {
-      await interaction.reply(getErrorMessage("Error", validateRes.val));
+      const { flags, ...editMsg } = getErrorMessage("Error", validateRes.val);
+      await interaction.reply(editMsg);
 
       return;
     }
@@ -63,16 +61,19 @@ export default class TempbanCommand extends SlashCommandHandler {
 
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
-      await interaction.editReply(
-        getErrorMessage("Error", fetchTargetsRes.val),
+      const { flags, ...editMsg } = getErrorMessage(
+        "Error",
+        fetchTargetsRes.val,
       );
+      await interaction.editReply(editMsg);
 
       return;
     }
 
     const res = await executeAction(ctx, interaction, data, ActionType.TempBan);
     if (res.err) {
-      await interaction.editReply(getErrorMessage("Error", res.val.message));
+      const { flags, ...editMsg } = getErrorMessage("Error", res.val.message);
+      await interaction.editReply(editMsg);
 
       return;
     }

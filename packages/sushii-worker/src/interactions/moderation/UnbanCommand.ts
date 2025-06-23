@@ -53,9 +53,11 @@ export default class UnbanCommand extends SlashCommandHandler {
       true, // skipMember fetch
     );
     if (fetchTargetsRes.err) {
-      await interaction.editReply(
-        getErrorMessage("Error", fetchTargetsRes.val),
+      const { flags, ...editMsg } = getErrorMessage(
+        "Error",
+        fetchTargetsRes.val,
       );
+      await interaction.editReply(editMsg);
 
       return;
     }
@@ -64,15 +66,18 @@ export default class UnbanCommand extends SlashCommandHandler {
     try {
       res = await executeAction(ctx, interaction, data, ActionType.BanRemove);
     } catch (err) {
-      await interaction.editReply(
-        getErrorMessage("Error", "hmm something failed"),
+      const { flags, ...editMsg } = getErrorMessage(
+        "Error",
+        "An unexpected error occurred while processing the unban.",
       );
+      await interaction.editReply(editMsg);
 
       return;
     }
 
     if (res.err) {
-      await interaction.editReply(getErrorMessage("Error", res.val.message));
+      const { flags, ...editMsg } = getErrorMessage("Error", res.val.message);
+      await interaction.editReply(editMsg);
 
       return;
     }

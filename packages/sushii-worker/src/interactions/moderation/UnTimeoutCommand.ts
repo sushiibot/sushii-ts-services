@@ -48,9 +48,11 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
 
     const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
     if (fetchTargetsRes.err) {
-      await interaction.editReply(
-        getErrorMessage("Error", fetchTargetsRes.val),
+      const { flags, ...editMsg } = getErrorMessage(
+        "Error",
+        fetchTargetsRes.val,
       );
+      await interaction.editReply(editMsg);
 
       return;
     }
@@ -62,7 +64,8 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
       ActionType.TimeoutRemove,
     );
     if (res.err) {
-      await interaction.editReply(getErrorMessage("Error", res.val.message));
+      const { flags, ...editMsg } = getErrorMessage("Error", res.val.message);
+      await interaction.editReply(editMsg);
 
       return;
     }
