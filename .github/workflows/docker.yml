@@ -3,7 +3,7 @@ name: docker
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   docker:
@@ -15,7 +15,7 @@ jobs:
           - sushii-worker
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Docker meta
         id: meta
