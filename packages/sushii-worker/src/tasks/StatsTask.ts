@@ -64,13 +64,21 @@ const task: BackgroundTask = {
   cronTime: "*/10 * * * *",
 
   async onTick(ctx: Context): Promise<void> {
-    await updateStat(StatName.GuildCount, ctx.client.guilds.cache.size, "set");
+    // Get all shard data
+    const shardData = await ctx.client.shard?.broadcastEval((client) => ({
+      guildCount: client.guilds.cache.size,
+      memberCount: client.guilds.cache.reduce(
+        (acc, guild) => acc + guild.memberCount,
+        0,
+      ),
+    }));
 
-    const totalMembers = ctx.client.guilds.cache.reduce(
-      (acc, guild) => acc + guild.memberCount,
-      0,
-    );
+    const totalGuilds =
+      shardData?.reduce((acc, data) => acc + (data.guildCount ?? 0), 0) ?? 0;
+    const totalMembers =
+      shardData?.reduce((acc, data) => acc + (data.memberCount ?? 0), 0) ?? 0;
 
+    await updateStat(StatName.GuildCount, totalGuilds, "set");
     await updateStat(StatName.MemberCount, totalMembers, "set");
 
     // Set prometheus metrics
