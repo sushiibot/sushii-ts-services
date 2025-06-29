@@ -1,0 +1,1 @@
+ALTER TABLE "app_public"."user_levels" DROP COLUMN "level";

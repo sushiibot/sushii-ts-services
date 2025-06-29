@@ -29,6 +29,13 @@
       "when": 1751129224525,
       "tag": "0003_emoji_sticker_stats-default-bigint",
       "breakpoints": false
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1751221765546,
+      "tag": "0004_drop-levels-column",
+      "breakpoints": false
     }
   ]
 }
