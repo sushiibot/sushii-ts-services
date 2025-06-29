@@ -16,9 +16,9 @@ import customIds from "../interactions/customIds";
 import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
 import buildModLogEmbed from "../builders/buildModLogEmbed";
 import { buildDMEmbed } from "../interactions/moderation/sendDm";
-import db from "../infrastructure/database/config/db";
-import { insertModLog, upsertModLog } from "../infrastructure/database/repositories/ModLog.repository";
-import { getGuildConfig } from "../infrastructure/database/repositories/GuildConfig.repository";
+import db from "../model/db";
+import { insertModLog, upsertModLog } from "../db/ModLog/ModLog.repository";
+import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
 
 const log = newModuleLogger("ModLogHandler");
 

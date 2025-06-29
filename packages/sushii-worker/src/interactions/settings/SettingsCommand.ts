@@ -13,16 +13,16 @@ import {
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
-import db from "../../infrastructure/database/config/db";
+import db from "../../model/db";
 import SushiiEmoji from "../../constants/SushiiEmoji";
-import { DB, AppPublicMsgLogBlockType } from "../../infrastructure/database/config/dbTypes";
+import { DB, AppPublicMsgLogBlockType } from "../../model/dbTypes";
 import Color from "../../utils/colors";
 import customIds, { SettingsToggleOptions } from "../customIds";
 import logger from "../../logger";
 import {
   getGuildConfig,
   updateGuildConfigColumn,
-} from "../../infrastructure/database/repositories/GuildConfig.repository";
+} from "../../db/GuildConfig/GuildConfig.repository";
 
 export enum MsgLogCommandName {
   SetChannel = "set_channel",

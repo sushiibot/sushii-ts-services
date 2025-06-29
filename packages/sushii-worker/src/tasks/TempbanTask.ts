@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
-import { getAndDeleteExpiredTempBans } from "../infrastructure/database/repositories/TempBan.repository";
-import db from "../infrastructure/database/config/db";
+import { getAndDeleteExpiredTempBans } from "../db/TempBan/TempBan.repository";
+import db from "../model/db";
 import { newModuleLogger } from "../logger";
 import toTimestamp from "../utils/toTimestamp";
 

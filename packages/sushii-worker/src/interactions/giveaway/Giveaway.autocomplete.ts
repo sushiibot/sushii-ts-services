@@ -8,12 +8,12 @@ import {
 import Context from "../../model/context";
 import { getDurationFromNow } from "../../utils/getDuration";
 import { AutocompleteHandler } from "../handlers";
-import db from "../../infrastructure/database/config/db";
+import db from "../../model/db";
 import { GiveawaySubcommand } from "./Giveaway.command";
 import {
   getAllActiveGiveaways,
   getAllCompletedGiveaways,
-} from "../../infrastructure/database/repositories/Giveaway.repository";
+} from "../../db/Giveaway/Giveaway.repository";
 
 export default class GiveawayAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [

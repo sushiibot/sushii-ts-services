@@ -6,7 +6,7 @@ import config from "../model/config";
 import {
   getActiveDeployment,
   toggleActiveDeployment,
-} from "../infrastructure/database/repositories/Deployment.repository";
+} from "../db/Deployment/Deployment.repository";
 import toTimestamp from "../utils/toTimestamp";
 
 export const deployToggleHandler: EventHandlerFn<Events.MessageCreate> = async (

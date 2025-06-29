@@ -7,13 +7,13 @@ import logger from "../../../logger";
 import Context from "../../../model/context";
 import { AutocompleteHandler } from "../../handlers";
 import { parseCaseId } from "./caseId";
-import db from "../../../infrastructure/database/config/db";
+import db from "../../../model/db";
 import {
   getNextCaseId,
   getRecentModLogs,
   searchModLogsByIDPrefix,
-} from "../../../infrastructure/database/repositories/ModLog.repository";
-import { ModLogRow } from "../../../infrastructure/database/schemas/ModLog.table";
+} from "../../../db/ModLog/ModLog.repository";
+import { ModLogRow } from "../../../db/ModLog/ModLog.table";
 
 const MAX_CHOICE_NAME_LEN = 100;
 

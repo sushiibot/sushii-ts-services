@@ -3,7 +3,7 @@ import {
   BanPoolGuildSettingsRow,
   InsertableBanPoolGuildSettings,
 } from "./GuildSettings.table";
-import { DB } from "../../../infrastructure/database/config/dbTypes";
+import { DB } from "../../../model/dbTypes";
 
 export async function getGuildSettings(
   db: Kysely<DB>,

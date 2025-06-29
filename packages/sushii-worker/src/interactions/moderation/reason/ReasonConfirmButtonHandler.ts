@@ -4,8 +4,8 @@ import Color from "../../../utils/colors";
 import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";
 import { updateModLogReasons } from "./ReasonCommand";
-import db from "../../../infrastructure/database/config/db";
-import { getGuildConfig } from "../../../infrastructure/database/repositories/GuildConfig.repository";
+import db from "../../../model/db";
+import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
 
 // Button on mod log opens a modal
 export default class ReasonConfirmButtonHandler extends ButtonHandler {

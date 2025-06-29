@@ -9,11 +9,11 @@ import {
 } from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
-import db from "../../infrastructure/database/config/db";
+import db from "../../model/db";
 import Color from "../../utils/colors";
 import Paginator from "../../utils/Paginator";
 import logger from "../../logger";
-import { AppPublicGuildAssetType } from "../../infrastructure/database/config/dbTypes";
+import { AppPublicGuildAssetType } from "../../model/dbTypes";
 
 enum CommandOption {
   Type = "type",

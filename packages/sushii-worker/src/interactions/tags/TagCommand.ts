@@ -25,7 +25,7 @@ import {
   interactionReplyErrorMessage,
 } from "../responses/error";
 import Paginator from "../../utils/Paginator";
-import db from "../../infrastructure/database/config/db";
+import db from "../../model/db";
 import {
   deleteTag,
   getRandomTag,
@@ -34,8 +34,8 @@ import {
   listTags,
   searchTags,
   upsertTag,
-} from "../../infrastructure/database/repositories/Tab.repository";
-import { TagRow } from "../../infrastructure/database/schemas/Tag.table";
+} from "../../db/Tag/Tab.repository";
+import { TagRow } from "../../db/Tag/Tag.table";
 
 const NAME_STARTS_WITH = "name_starts_with";
 const NAME_CONTAINS = "name_contains";

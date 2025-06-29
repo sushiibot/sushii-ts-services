@@ -7,9 +7,9 @@ import {
 } from "discord.js";
 import { SlashCommandHandler } from "../handlers";
 import Context from "../../model/context";
-import db from "../../infrastructure/database/config/db";
+import db from "../../model/db";
 import Color from "../../utils/colors";
-import { deleteOwnerTags, deleteTag } from "../../infrastructure/database/repositories/Tab.repository";
+import { deleteOwnerTags, deleteTag } from "../../db/Tag/Tab.repository";
 
 enum TagAdminSubcommand {
   Delete = "delete",

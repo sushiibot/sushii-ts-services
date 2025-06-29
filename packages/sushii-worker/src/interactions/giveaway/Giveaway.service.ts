@@ -10,10 +10,10 @@ import {
   getGiveawayEntryCount,
   getRandomGiveawayEntries,
   markGiveawayEntriesAsPicked,
-} from "../../infrastructure/database/repositories/Giveaway.repository";
-import { GiveawayRow } from "../../infrastructure/database/schemas/Giveaway.table";
-import db from "../../infrastructure/database/config/db";
-import { getUserGuildLevel } from "../../infrastructure/database/repositories/UserLevel.repository";
+} from "../../db/Giveaway/Giveaway.repository";
+import { GiveawayRow } from "../../db/Giveaway/Giveaway.table";
+import db from "../../model/db";
+import { getUserGuildLevel } from "../../db/UserLevel/UserLevel.repository";
 import { levelFromXp } from "../../services/XpService";
 import { GiveawayOption } from "./Giveaway.options";
 import Color from "../../utils/colors";

@@ -2,8 +2,8 @@ import { Events, Message } from "discord.js";
 import opentelemetry from "@opentelemetry/api";
 import Context from "../../model/context";
 import { EventHandlerFn } from "../EventHandler";
-import { upsertCachedUser } from "../../infrastructure/database/repositories/CachedUser.repository";
-import db from "../../infrastructure/database/config/db";
+import { upsertCachedUser } from "../../db/CachedUser/CachedUser.repository";
+import db from "../../model/db";
 
 const tracer = opentelemetry.trace.getTracer("cache-user-handler");
 

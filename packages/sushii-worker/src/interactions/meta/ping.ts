@@ -6,7 +6,7 @@ import {
 import { t } from "i18next";
 import { sql } from "kysely";
 import Context from "../../model/context";
-import db from "../../infrastructure/database/config/db";
+import db from "../../model/db";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
 

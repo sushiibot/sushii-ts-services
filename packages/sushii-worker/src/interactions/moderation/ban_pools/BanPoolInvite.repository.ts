@@ -4,7 +4,7 @@ import {
   BanPoolInviteRow,
   InsertableBanPoolInviteRow,
 } from "./BanPoolInvite.table";
-import { DB } from "../../../infrastructure/database/config/dbTypes";
+import { DB } from "../../../model/dbTypes";
 
 export function insertBanPoolInvite(
   db: Kysely<DB>,

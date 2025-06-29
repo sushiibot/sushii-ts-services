@@ -11,16 +11,16 @@ import {
 } from "discord.js";
 import { None, Option, Some } from "ts-results";
 import { Selectable } from "kysely";
-import { AppPublicMessages, AppPublicMsgLogBlocks } from "../../infrastructure/database/config/dbTypes";
+import { AppPublicMessages, AppPublicMsgLogBlocks } from "../../model/dbTypes";
 import SushiiEmoji from "../../constants/SushiiEmoji";
 import Context from "../../model/context";
 import buildChunks from "../../utils/buildChunks";
 import Color from "../../utils/colors";
 import { newModuleLogger } from "../../logger";
-import db from "../../infrastructure/database/config/db";
+import db from "../../model/db";
 import { EventHandlerFn } from "../EventHandler";
 import { getAPIUserTag } from "../../utils/APIUser";
-import { getGuildConfig } from "../../infrastructure/database/repositories/GuildConfig.repository";
+import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
 import { webhookErr } from "../../webhookLogger";
 
 const log = newModuleLogger("MsgLogHandler");

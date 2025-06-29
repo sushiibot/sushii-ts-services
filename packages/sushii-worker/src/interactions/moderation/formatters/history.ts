@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { t } from "i18next";
 import Color from "../../../utils/colors";
 import { ActionType } from "../ActionType";
-import { ModLogRow } from "../../../infrastructure/database/schemas/ModLog.table";
+import { ModLogRow } from "../../../db/ModLog/ModLog.table";
 import buildChunks from "../../../utils/buildChunks";
 
 export default function buildUserHistoryEmbeds(

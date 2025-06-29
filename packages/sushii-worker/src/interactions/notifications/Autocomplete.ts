@@ -4,9 +4,9 @@ import {
   AutocompleteInteraction,
 } from "discord.js";
 import Context from "../../model/context";
-import db from "../../infrastructure/database/config/db";
+import db from "../../model/db";
 import { AutocompleteHandler } from "../handlers";
-import { searchNotifications } from "../../infrastructure/database/repositories/Notification.repository";
+import { searchNotifications } from "../../db/Notification/Notification.repository";
 
 export default class NotificationListAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = "notification.delete";

@@ -7,11 +7,11 @@ import {
 } from "discord.js";
 import dayjs from "dayjs";
 import { getPoolByNameAndGuildId } from "../../interactions/moderation/ban_pools/BanPool.repository";
-import db from "../../infrastructure/database/config/db";
+import db from "../../model/db";
 import { getBanPoolAllMembers } from "../../interactions/moderation/ban_pools/BanPoolMember.repository";
 import { banPoolEmitter } from "./BanPoolEmitter";
 import logger from "../../logger";
-import { AppPublicBanPoolAddAction } from "../../infrastructure/database/config/dbTypes";
+import { AppPublicBanPoolAddAction } from "../../model/dbTypes";
 import { getGuildSettings } from "../../interactions/moderation/ban_pools/GuildSettings.repository";
 
 const log = logger.child({ module: "BanPoolHandler" });

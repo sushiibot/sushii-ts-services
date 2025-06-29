@@ -13,8 +13,8 @@ import {
   deleteXpBlock,
   getXpBlocks,
   upsertXpBlock,
-} from "../../infrastructure/database/repositories/XpBlock.repository";
-import db from "../../infrastructure/database/config/db";
+} from "../../db/XpBlock/XpBlock.repository";
+import db from "../../model/db";
 
 enum XpGroupName {
   Block = "block",

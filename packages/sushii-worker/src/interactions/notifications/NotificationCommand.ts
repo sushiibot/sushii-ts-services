@@ -10,12 +10,12 @@ import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
-import db from "../../infrastructure/database/config/db";
+import db from "../../model/db";
 import {
   deleteNotification,
   insertNotification,
   listNotifications,
-} from "../../infrastructure/database/repositories/Notification.repository";
+} from "../../db/Notification/Notification.repository";
 import {
   deleteNotificationBlock,
   getNotificationBlocks,

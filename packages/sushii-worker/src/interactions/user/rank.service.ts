@@ -2,13 +2,13 @@ import { User } from "discord.js";
 import { Ok, Result } from "ts-results";
 import Context from "../../model/context";
 import { calculateLevelProgress } from "../../services/XpService";
-import { getUserOrDefault } from "../../infrastructure/database/repositories/User.repository";
-import db from "../../infrastructure/database/config/db";
+import { getUserOrDefault } from "../../db/User/User.repository";
+import db from "../../model/db";
 import {
   getUserGlobalAllMessages,
   getUserGuildAllRanks,
   getUserGuildLevel,
-} from "../../infrastructure/database/repositories/UserLevel.repository";
+} from "../../db/UserLevel/UserLevel.repository";
 import logger from "../../logger";
 
 const log = logger.child({ module: "rank" });

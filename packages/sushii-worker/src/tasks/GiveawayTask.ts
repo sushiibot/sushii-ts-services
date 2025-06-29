@@ -2,11 +2,11 @@ import { ChannelType } from "discord.js";
 import { newModuleLogger } from "../logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
-import db from "../infrastructure/database/config/db";
+import db from "../model/db";
 import {
   countAllActiveGiveaways,
   getAndEndPendingGiveaways,
-} from "../infrastructure/database/repositories/Giveaway.repository";
+} from "../db/Giveaway/Giveaway.repository";
 import {
   endGiveaway,
   updateGiveawayMessage,

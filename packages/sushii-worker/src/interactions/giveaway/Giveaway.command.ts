@@ -19,8 +19,8 @@ import {
   getAllActiveGiveaways,
   getGiveaway,
   markGiveawayAsEnded,
-} from "../../infrastructure/database/repositories/Giveaway.repository";
-import db from "../../infrastructure/database/config/db";
+} from "../../db/Giveaway/Giveaway.repository";
+import db from "../../model/db";
 import parseDuration from "../../utils/parseDuration";
 import Color from "../../utils/colors";
 import {
@@ -30,7 +30,7 @@ import {
 } from "./Giveaway.service";
 import { getGiveawayComponents } from "./Giveaway.components";
 import { getGiveawayEmbed } from "./Giveaway.embed";
-import { InsertableGiveawayRow } from "../../infrastructure/database/schemas/Giveaway.table";
+import { InsertableGiveawayRow } from "../../db/Giveaway/Giveaway.table";
 import toTimestamp from "../../utils/toTimestamp";
 import { GiveawayOption } from "./Giveaway.options";
 

@@ -14,7 +14,7 @@ import { InsertObject } from "kysely/dist/cjs/parser/insert-values-parser";
 import opentelemetry from "@opentelemetry/api";
 import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
-import db from "../infrastructure/database/config/db";
+import db from "../model/db";
 import {
   AppPublicEmojiStickerActionType,
   AppPublicGuildAssetType,

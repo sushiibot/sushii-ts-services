@@ -12,7 +12,7 @@ import {
   getBanPoolInviteCount,
   insertBanPoolInvite,
 } from "./BanPoolInvite.repository";
-import db from "../../../infrastructure/database/config/db";
+import db from "../../../model/db";
 
 /**
  *  Create a randomized base64 string without special characters

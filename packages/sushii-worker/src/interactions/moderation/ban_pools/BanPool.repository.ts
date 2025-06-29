@@ -4,7 +4,7 @@ import {
   InsertableBanPoolRow,
   UpdateableBanPoolRow,
 } from "./BanPool.table";
-import { DB } from "../../../infrastructure/database/config/dbTypes";
+import { DB } from "../../../model/dbTypes";
 
 /**
  * Get a ban pool by pool name and guild ID

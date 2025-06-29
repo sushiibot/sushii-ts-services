@@ -21,12 +21,12 @@ import { ActionType } from "../ActionType";
 import customIds from "../../customIds";
 import sleep from "../../../utils/sleep";
 import logger from "../../../logger";
-import db from "../../../infrastructure/database/config/db";
-import { getGuildConfig } from "../../../infrastructure/database/repositories/GuildConfig.repository";
+import db from "../../../model/db";
+import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
 import {
   getModLogsRange,
   updateModLogReasonRange,
-} from "../../../infrastructure/database/repositories/ModLog.repository";
+} from "../../../db/ModLog/ModLog.repository";
 
 enum ReasonError {
   UserFetch,

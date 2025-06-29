@@ -5,7 +5,7 @@ import {
   AppPublicBanPoolRemoveAction,
   AppPublicBanPoolRemoveMode,
   AppPublicBanPools,
-} from "../../../infrastructure/database/config/dbTypes";
+} from "../../../model/dbTypes";
 
 export type BanPoolRow = Selectable<AppPublicBanPools>;
 export type InsertableBanPoolRow = Insertable<AppPublicBanPools>;

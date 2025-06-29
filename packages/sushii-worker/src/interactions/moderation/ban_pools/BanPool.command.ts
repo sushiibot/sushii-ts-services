@@ -21,7 +21,7 @@ import {
 } from "./BanPoolInvite.service";
 import { getAllGuildBanPools } from "./BanPool.repository";
 import { getAllBanPoolMemberships } from "./BanPoolMember.repository";
-import db from "../../../infrastructure/database/config/db";
+import db from "../../../model/db";
 import { getShowComponentsMain } from "./BanPool.component";
 import { getShowEmbed } from "./BanPool.embed";
 import { handleShowMsgInteractions } from "./BanPool.button";

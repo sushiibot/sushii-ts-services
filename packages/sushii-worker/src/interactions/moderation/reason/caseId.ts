@@ -1,6 +1,6 @@
-import { getModLog, getNextCaseId } from "../../../infrastructure/database/repositories/ModLog.repository";
+import { getModLog, getNextCaseId } from "../../../db/ModLog/ModLog.repository";
 import Context from "../../../model/context";
-import db from "../../../infrastructure/database/config/db";
+import db from "../../../model/db";
 
 type CaseRange = {
   type: "range";

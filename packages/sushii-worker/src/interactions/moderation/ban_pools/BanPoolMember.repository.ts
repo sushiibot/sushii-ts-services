@@ -6,7 +6,7 @@ import {
   InsertableBanPoolMemberRow,
   UpdateableBanPoolMemberRow,
 } from "./BanPoolMember.table";
-import { DB } from "../../../infrastructure/database/config/dbTypes";
+import { DB } from "../../../model/dbTypes";
 
 export function getBanPoolMember(
   db: Kysely<DB>,

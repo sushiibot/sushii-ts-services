@@ -9,8 +9,8 @@ import {
 import dayjs from "dayjs";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
-import { getGuildTempBans } from "../../infrastructure/database/repositories/TempBan.repository";
-import db from "../../infrastructure/database/config/db";
+import { getGuildTempBans } from "../../db/TempBan/TempBan.repository";
+import db from "../../model/db";
 import Color from "../../utils/colors";
 import toTimestamp from "../../utils/toTimestamp";
 

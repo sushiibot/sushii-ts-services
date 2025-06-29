@@ -6,8 +6,8 @@ import BackgroundTask from "./BackgroundTask";
 import {
   countAllPendingReminders,
   getAndDeleteExpiredReminders,
-} from "../infrastructure/database/repositories/Reminder.repository";
-import db from "../infrastructure/database/config/db";
+} from "../db/Reminder/Reminder.repository";
+import db from "../model/db";
 import Color from "../utils/colors";
 import toTimestamp from "../utils/toTimestamp";
 import {
