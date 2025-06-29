@@ -1,0 +1,1 @@
+ALTER TABLE "app_public"."emoji_sticker_stats" ALTER COLUMN "count_external" SET DEFAULT 0::bigint;

@@ -2,6 +2,7 @@ import { Pool } from "pg";
 // or `import * as Cursor from 'pg-cursor'` depending on your tsconfig
 import Cursor from "pg-cursor";
 import { Kysely, PostgresDialect } from "kysely";
+import { drizzle } from "drizzle-orm/node-postgres";
 import logger from "../logger";
 import config from "./config";
 import { DB } from "./dbTypes";
@@ -25,6 +26,9 @@ const db = new Kysely<DB>({
     cursor: Cursor,
   }),
 });
+
+// For new drizzle ORM to replace Kysely
+export const drizzleDb = drizzle({ client: pool });
 
 dbLogger.info("pg connected");
 

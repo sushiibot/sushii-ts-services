@@ -5,9 +5,30 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1750636162143,
-      "tag": "0000_fuzzy_may_parker",
+      "when": 1751085422925,
+      "tag": "0000_initial",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1751085792034,
+      "tag": "0001_drop-web-tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1751129203301,
+      "tag": "0002_drop-feeds",
+      "breakpoints": false
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1751129224525,
+      "tag": "0003_emoji_sticker_stats-default-bigint",
+      "breakpoints": false
     }
   ]
 }

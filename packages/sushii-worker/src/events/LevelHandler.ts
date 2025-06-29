@@ -4,27 +4,24 @@ import {
   Message,
   RESTJSONErrorCodes,
 } from "discord.js";
-import { sql } from "kysely";
 import { z } from "zod";
 import opentelemetry, { Span } from "@opentelemetry/api";
 import { newModuleLogger } from "../logger";
 import Context from "../model/context";
-import db from "../model/db";
 import { EventHandlerFn } from "./EventHandler";
 import { startCaughtActiveSpan } from "../tracing";
+import { updateUserXp, UpdateUserXpResult } from "../services/XpService";
 
 const tracer = opentelemetry.trace.getTracer("level-handler");
 const log = newModuleLogger("levelHandler");
 
-// Must match sql response, snake case
+// Must match service response, snake case
 const UpdateUserXpResultSchema = z.object({
   old_level: z.string().optional().nullable(),
   new_level: z.string().optional().nullable(),
   add_role_ids: z.array(z.string()).optional().nullable(),
   remove_role_ids: z.array(z.string()).optional().nullable(),
 });
-
-type UpdateUserXpResult = z.infer<typeof UpdateUserXpResultSchema>;
 
 const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
   ctx: Context,
@@ -47,27 +44,17 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
       return;
     }
 
-    // TODO: Convert the update_user_xp postgres function to kysely
-
-    // guild_id   bigint,
-    // channel_id bigint,
-    // user_id    bigint,
-    // role_ids   bigint[]
+    // Updated to use TypeScript implementation instead of PostgreSQL function
     const res = await tracer.startActiveSpan(
-      "app_public.update_user_xp",
-      (span: Span) => {
+      "updateUserXp",
+      async (span: Span) => {
         try {
-          return db
-            .selectFrom(
-              sql<UpdateUserXpResult>`app_public.update_user_xp(
-          ${msg.guildId},
-          ${msg.channelId},
-          ${msg.author.id},
-          ${msg.member?.roles.cache.map((r) => r.id)}
-        )`.as("q"),
-            )
-            .selectAll()
-            .executeTakeFirst();
+          return await updateUserXp(
+            msg.guildId,
+            msg.channelId,
+            msg.author.id,
+            msg.member?.roles.cache.map((r) => r.id) || []
+          );
         } finally {
           span.end();
         }

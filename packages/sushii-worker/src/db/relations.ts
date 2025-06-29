@@ -1,10 +1,5 @@
 import { relations } from "drizzle-orm/relations";
 import {
-  webUsersInAppPublic,
-  sessionsInAppPrivate,
-  userAuthenticationSecretsInAppPrivate,
-  feedsInAppPublic,
-  feedSubscriptionsInAppPublic,
   giveawaysInAppPublic,
   giveawayEntriesInAppPublic,
   modLogsInAppPublic,
@@ -12,53 +7,6 @@ import {
   roleMenusInAppPublic,
   roleMenuRolesInAppPublic,
 } from "./schema";
-
-export const sessionsInAppPrivateRelations = relations(
-  sessionsInAppPrivate,
-  ({ one }) => ({
-    webUsersInAppPublic: one(webUsersInAppPublic, {
-      fields: [sessionsInAppPrivate.userId],
-      references: [webUsersInAppPublic.id],
-    }),
-  }),
-);
-
-export const webUsersInAppPublicRelations = relations(
-  webUsersInAppPublic,
-  ({ many }) => ({
-    sessionsInAppPrivates: many(sessionsInAppPrivate),
-    userAuthenticationSecretsInAppPrivates: many(
-      userAuthenticationSecretsInAppPrivate,
-    ),
-  }),
-);
-
-export const userAuthenticationSecretsInAppPrivateRelations = relations(
-  userAuthenticationSecretsInAppPrivate,
-  ({ one }) => ({
-    webUsersInAppPublic: one(webUsersInAppPublic, {
-      fields: [userAuthenticationSecretsInAppPrivate.userId],
-      references: [webUsersInAppPublic.id],
-    }),
-  }),
-);
-
-export const feedSubscriptionsInAppPublicRelations = relations(
-  feedSubscriptionsInAppPublic,
-  ({ one }) => ({
-    feedsInAppPublic: one(feedsInAppPublic, {
-      fields: [feedSubscriptionsInAppPublic.feedId],
-      references: [feedsInAppPublic.feedId],
-    }),
-  }),
-);
-
-export const feedsInAppPublicRelations = relations(
-  feedsInAppPublic,
-  ({ many }) => ({
-    feedSubscriptionsInAppPublics: many(feedSubscriptionsInAppPublic),
-  }),
-);
 
 export const giveawayEntriesInAppPublicRelations = relations(
   giveawayEntriesInAppPublic,
