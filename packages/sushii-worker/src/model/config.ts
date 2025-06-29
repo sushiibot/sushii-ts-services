@@ -50,7 +50,7 @@ const schema = z.object({
     .default(false),
 
   // Testing flags
-  MANUAL_SHARD_COUNT: z.number().optional(),
+  MANUAL_SHARD_COUNT: z.coerce.number().optional(),
 });
 
 const parsed = schema.safeParse(process.env);
