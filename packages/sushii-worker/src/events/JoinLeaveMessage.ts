@@ -1,7 +1,7 @@
 import { Events, GuildMember, PartialGuildMember } from "discord.js";
 import { EventHandlerFn } from "./EventHandler";
 import Context from "../model/context";
-import db from "../model/db";
+import db from "../infrastructure/database/db";
 import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
 import { newModuleLogger } from "../logger";
 

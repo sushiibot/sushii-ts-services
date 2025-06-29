@@ -16,7 +16,7 @@ import buildUserHistoryEmbeds from "../formatters/history";
 import buildUserLookupEmbed from "../formatters/lookup";
 import { getUserLookupData } from "../LookupCommand";
 import { getUserModLogHistory } from "../../../db/ModLog/ModLog.repository";
-import db from "../../../model/db";
+import db from "../../../infrastructure/database/db";
 
 export const lookupButtonCustomIDPrefix = "lookup:button:";
 

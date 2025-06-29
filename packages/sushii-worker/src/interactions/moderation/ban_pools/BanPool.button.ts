@@ -27,14 +27,14 @@ import {
   getBanPoolAllMembers,
   updateBanPoolMember,
 } from "./BanPoolMember.repository";
-import db from "../../../model/db";
+import db from "../../../infrastructure/database/db";
 import { getAllBanPoolInvites } from "./BanPoolInvite.repository";
 import {
   AppPublicBanPoolAddAction,
   AppPublicBanPoolAddMode,
   AppPublicBanPoolRemoveAction,
   AppPublicBanPoolRemoveMode,
-} from "../../../model/dbTypes";
+} from "../../../infrastructure/database/dbTypes";
 import { updatePool } from "./BanPool.repository";
 import { getGuildSettings } from "./GuildSettings.repository";
 

@@ -1,5 +1,5 @@
 import { Insertable, Selectable, Updateable } from "kysely";
-import { AppPublicUserLevels } from "../../model/dbTypes";
+import { AppPublicUserLevels } from "../../infrastructure/database/dbTypes";
 
 export type UserLevelRow = Selectable<AppPublicUserLevels>;
 export type InsertableUserLevelRow = Insertable<AppPublicUserLevels>;

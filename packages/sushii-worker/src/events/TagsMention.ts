@@ -2,7 +2,7 @@ import { Events, Message } from "discord.js";
 import { EventHandlerFn } from "./EventHandler";
 import Context from "../model/context";
 import { getTag } from "../db/Tag/Tab.repository";
-import db from "../model/db";
+import db from "../infrastructure/database/db";
 
 export const mentionTagHandler: EventHandlerFn<Events.MessageCreate> = async (
   ctx: Context,

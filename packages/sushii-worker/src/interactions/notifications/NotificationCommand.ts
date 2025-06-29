@@ -10,7 +10,7 @@ import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import {
   deleteNotification,
   insertNotification,

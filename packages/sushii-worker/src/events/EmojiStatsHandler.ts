@@ -14,12 +14,12 @@ import { InsertObject } from "kysely/dist/cjs/parser/insert-values-parser";
 import opentelemetry from "@opentelemetry/api";
 import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
-import db from "../model/db";
+import db from "../infrastructure/database/db";
 import {
   AppPublicEmojiStickerActionType,
   AppPublicGuildAssetType,
   DB,
-} from "../model/dbTypes";
+} from "../infrastructure/database/dbTypes";
 import { newModuleLogger } from "../logger";
 import { startCaughtActiveSpan } from "../tracing";
 

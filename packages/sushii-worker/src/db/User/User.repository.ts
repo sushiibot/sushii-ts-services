@@ -1,7 +1,7 @@
 import { Kysely, RawBuilder } from "kysely";
-import { DB } from "../../model/dbTypes";
+import { DB } from "../../infrastructure/database/dbTypes";
 import { UserRow, profileDataSchema } from "./User.table";
-import { json } from "../json";
+import { json } from "../../infrastructure/database/json";
 
 const defaultUser: UserRow = {
   id: "0",

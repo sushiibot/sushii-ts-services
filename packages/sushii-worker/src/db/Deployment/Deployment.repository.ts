@@ -1,7 +1,7 @@
 import opentelemetry from "@opentelemetry/api";
 import config from "../../model/config";
-import db from "../../model/db";
-import { AppPrivateDeploymentName } from "../../model/dbTypes";
+import db from "../../infrastructure/database/db";
+import { AppPrivateDeploymentName } from "../../infrastructure/database/dbTypes";
 import { DeploymentRow } from "./Deployment.table";
 
 // Deployment is set to this value when no deployment is active.

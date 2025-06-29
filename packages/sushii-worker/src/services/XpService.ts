@@ -1,10 +1,10 @@
 import { eq, and, inArray, or } from "drizzle-orm";
-import { drizzleDb } from "../model/db";
+import { drizzleDb } from "../infrastructure/database/db";
 import {
   userLevelsInAppPublic,
   xpBlocksInAppPublic,
   levelRolesInAppPublic,
-} from "../db/schema";
+} from "../infrastructure/database/schema";
 
 export interface UpdateUserXpResult {
   old_level: string | null;
@@ -31,15 +31,16 @@ export interface LevelProgress {
 }
 
 export function calculateLevelProgress(xp: number | bigint): LevelProgress {
-  const numXp = typeof xp === 'bigint' ? Number(xp) : xp;
+  const numXp = typeof xp === "bigint" ? Number(xp) : xp;
   const level = Number(levelFromXp(BigInt(numXp)));
-  
+
   const currLevelTotalXp = 50 * level ** 2 - 50 * level;
   const nextLevelTotalXp = 50 * (level + 1) ** 2 - 50 * (level + 1);
   const nextLevelXpRequired = nextLevelTotalXp - currLevelTotalXp;
   const nextLevelXpRemaining = nextLevelTotalXp - numXp;
   const nextLevelXpProgress = nextLevelXpRequired - nextLevelXpRemaining;
-  const nextLevelXpPercentage = (nextLevelXpProgress / nextLevelXpRequired) * 100.0;
+  const nextLevelXpPercentage =
+    (nextLevelXpProgress / nextLevelXpRequired) * 100.0;
 
   return {
     level,

@@ -14,7 +14,7 @@ import {
   getXpBlocks,
   upsertXpBlock,
 } from "../../db/XpBlock/XpBlock.repository";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 
 enum XpGroupName {
   Block = "block",

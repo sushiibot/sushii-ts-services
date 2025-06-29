@@ -1,5 +1,5 @@
 import { Insertable, Selectable, Updateable } from "kysely";
-import { AppPublicTags } from "../../model/dbTypes";
+import { AppPublicTags } from "../../infrastructure/database/dbTypes";
 
 export type TagRow = Selectable<AppPublicTags>;
 export type InsertableTagRow = Insertable<AppPublicTags>;

@@ -1,5 +1,5 @@
 import { Insertable, Selectable, Updateable } from "kysely";
-import { AppPublicBanPoolGuildSettings } from "../../../model/dbTypes";
+import { AppPublicBanPoolGuildSettings } from "../../../infrastructure/database/dbTypes";
 
 export type BanPoolGuildSettingsRow = Selectable<AppPublicBanPoolGuildSettings>;
 export type InsertableBanPoolGuildSettings =

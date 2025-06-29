@@ -1,5 +1,5 @@
 import { Insertable, Selectable, Updateable } from "kysely";
-import { AppPublicNotificationBlocks } from "../../model/dbTypes";
+import { AppPublicNotificationBlocks } from "../../infrastructure/database/dbTypes";
 
 export type NotificationBlockRow = Selectable<AppPublicNotificationBlocks>;
 export type InsertableNotificationBlockRow =

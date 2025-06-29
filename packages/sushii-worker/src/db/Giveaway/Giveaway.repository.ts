@@ -1,6 +1,6 @@
 import { DeleteResult, InsertResult, Kysely, UpdateResult, sql } from "kysely";
 import dayjs from "dayjs";
-import { DB } from "../../model/dbTypes";
+import { DB } from "../../infrastructure/database/dbTypes";
 import {
   GiveawayEntryRow,
   GiveawayRow,

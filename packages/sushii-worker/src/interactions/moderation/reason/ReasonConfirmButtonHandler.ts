@@ -4,7 +4,7 @@ import Color from "../../../utils/colors";
 import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";
 import { updateModLogReasons } from "./ReasonCommand";
-import db from "../../../model/db";
+import db from "../../../infrastructure/database/db";
 import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
 
 // Button on mod log opens a modal

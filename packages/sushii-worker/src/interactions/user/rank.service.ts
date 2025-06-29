@@ -3,7 +3,7 @@ import { Ok, Result } from "ts-results";
 import Context from "../../model/context";
 import { calculateLevelProgress } from "../../services/XpService";
 import { getUserOrDefault } from "../../db/User/User.repository";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import {
   getUserGlobalAllMessages,
   getUserGuildAllRanks,

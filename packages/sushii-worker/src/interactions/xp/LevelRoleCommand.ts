@@ -15,7 +15,7 @@ import {
   getAllLevelRoles,
   upsertLevelRole,
 } from "../../db/LevelRole/LevelRole.repository";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 
 enum CommandName {
   LevelRoleNew = "new",

@@ -16,7 +16,7 @@ import customIds from "../interactions/customIds";
 import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
 import buildModLogEmbed from "../builders/buildModLogEmbed";
 import { buildDMEmbed } from "../interactions/moderation/sendDm";
-import db from "../model/db";
+import db from "../infrastructure/database/db";
 import { insertModLog, upsertModLog } from "../db/ModLog/ModLog.repository";
 import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
 

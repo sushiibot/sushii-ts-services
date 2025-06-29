@@ -1,5 +1,5 @@
 import { Insertable, Selectable, Updateable } from "kysely";
-import { AppPublicGuildConfigs } from "../../model/dbTypes";
+import { AppPublicGuildConfigs } from "../../infrastructure/database/dbTypes";
 
 export type GuildConfigRow = Selectable<AppPublicGuildConfigs>;
 export type InsertableGuildConfigRow = Insertable<AppPublicGuildConfigs>;

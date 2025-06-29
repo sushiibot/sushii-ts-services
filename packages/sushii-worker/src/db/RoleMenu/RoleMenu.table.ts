@@ -2,7 +2,7 @@ import { Insertable, Selectable, Updateable } from "kysely";
 import {
   AppPublicRoleMenuRoles,
   AppPublicRoleMenus,
-} from "../../model/dbTypes";
+} from "../../infrastructure/database/dbTypes";
 
 export type RoleMenuRow = Selectable<AppPublicRoleMenus>;
 export type InsertableRoleMenuRow = Insertable<AppPublicRoleMenus>;

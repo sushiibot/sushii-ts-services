@@ -1,6 +1,6 @@
 import { Kysely } from "kysely";
 import dayjs from "dayjs";
-import { DB } from "../../model/dbTypes";
+import { DB } from "../../infrastructure/database/dbTypes";
 import { InsertableTempBanRow, TempBanRow } from "./TempBan.table";
 
 export async function upsertTempBan(

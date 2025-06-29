@@ -14,7 +14,7 @@ import {
   getMatchingNotifications,
   getTotalNotificationCount,
 } from "../db/Notification/Notification.repository";
-import db from "../model/db";
+import db from "../infrastructure/database/db";
 import Color from "../utils/colors";
 import SushiiEmoji from "../constants/SushiiEmoji";
 import { quoteMarkdownString } from "../utils/markdown";

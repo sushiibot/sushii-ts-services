@@ -1,5 +1,5 @@
 import { Kysely, sql } from "kysely";
-import { DB } from "../../model/dbTypes";
+import { DB } from "../../infrastructure/database/dbTypes";
 import { ReminderRow } from "./Reminder.table";
 
 export function insertReminder(

@@ -1,5 +1,5 @@
 import { Insertable, Selectable, Updateable } from "kysely";
-import { AppPublicModLogs } from "../../model/dbTypes";
+import { AppPublicModLogs } from "../../infrastructure/database/dbTypes";
 
 export type ModLogRow = Selectable<AppPublicModLogs>;
 export type InsertableModLogRow = Insertable<AppPublicModLogs>;

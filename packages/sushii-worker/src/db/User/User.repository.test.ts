@@ -1,8 +1,8 @@
 import { describe, test, expect } from "bun:test";
 import { CompiledQuery, RawBuilder } from "kysely";
-import { json } from "../json";
+import { json } from "../../infrastructure/database/json";
 import { insertableProfileData } from "./User.repository";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 
 function compile<T>(builder: RawBuilder<T>): CompiledQuery<T> {
   return builder.compile(db);

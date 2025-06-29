@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { getGuildTempBans } from "../../db/TempBan/TempBan.repository";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import Color from "../../utils/colors";
 import toTimestamp from "../../utils/toTimestamp";
 

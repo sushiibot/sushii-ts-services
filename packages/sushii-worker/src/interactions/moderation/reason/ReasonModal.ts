@@ -7,7 +7,7 @@ import { interactionReplyErrorPlainMessage } from "../../responses/error";
 import buildModLogEmbed from "../../../builders/buildModLogEmbed";
 import { ActionType } from "../ActionType";
 import sleep from "../../../utils/sleep";
-import db from "../../../model/db";
+import db from "../../../infrastructure/database/db";
 import { getModLog, upsertModLog } from "../../../db/ModLog/ModLog.repository";
 
 // When modal submitted, update mod log message and save the reason

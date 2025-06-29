@@ -4,9 +4,9 @@ import {
   insertNotification,
   stringToKeywords,
 } from "./Notification.repository";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import { insertNotificationBlock } from "./NotificationBlock.repository";
-import { AppPublicNotificationBlockType } from "../../model/dbTypes";
+import { AppPublicNotificationBlockType } from "../../infrastructure/database/dbTypes";
 
 interface MatchingNotificationTest {
   name: string;
@@ -111,7 +111,6 @@ describe("Notification.repository", () => {
   tests.forEach((tt) => {
     test(`getMatchingNotifications-${tt.name}`, async () => {
       try {
-        /* eslint-disable no-await-in-loop */
         await db.transaction().execute(async (tx) => {
           // Insert notifications
           for (const noti of tt.notifications) {
@@ -160,7 +159,6 @@ describe("Notification.repository", () => {
         // Any other error is unexpected so rethrow it
         throw err;
       }
-      /* eslint-enable no-await-in-loop */
     });
   });
 });

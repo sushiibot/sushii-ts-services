@@ -10,7 +10,7 @@ import Color from "../../../utils/colors";
 import { SlashCommandHandler } from "../../handlers";
 import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
 import { invalidCaseRangeEmbed } from "./Messages";
-import db from "../../../model/db";
+import db from "../../../infrastructure/database/db";
 import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
 import { deleteModLogsRange } from "../../../db/ModLog/ModLog.repository";
 

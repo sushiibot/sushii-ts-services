@@ -1,5 +1,5 @@
 import { Insertable, Selectable, Updateable } from "kysely";
-import { AppPublicXpBlocks } from "../../model/dbTypes";
+import { AppPublicXpBlocks } from "../../infrastructure/database/dbTypes";
 
 export type XpBlockRow = Selectable<AppPublicXpBlocks>;
 export type InsertableXpBlockRow = Insertable<AppPublicXpBlocks>;

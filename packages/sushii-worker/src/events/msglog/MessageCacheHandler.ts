@@ -5,7 +5,7 @@ import {
 } from "discord.js";
 import { sql } from "kysely";
 import Context from "../../model/context";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 
 type EventData =
   | GatewayMessageCreateDispatchData

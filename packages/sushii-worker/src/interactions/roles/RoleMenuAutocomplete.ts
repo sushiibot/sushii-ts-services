@@ -3,7 +3,7 @@ import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import Context from "../../model/context";
 import { AutocompleteHandler } from "../handlers";
 import { searchRoleMenus } from "../../db/RoleMenu/ModLog.repository";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 
 export default class RoleMenuAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [

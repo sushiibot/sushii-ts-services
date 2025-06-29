@@ -1,5 +1,5 @@
 import { DeleteResult, Kysely } from "kysely";
-import { DB } from "../../model/dbTypes";
+import { DB } from "../../infrastructure/database/dbTypes";
 
 export function deleteMessagesBefore(
   db: Kysely<DB>,

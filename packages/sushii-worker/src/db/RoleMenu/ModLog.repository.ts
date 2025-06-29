@@ -1,5 +1,5 @@
 import { Kysely } from "kysely";
-import { DB } from "../../model/dbTypes";
+import { DB } from "../../infrastructure/database/dbTypes";
 import {
   InsertableRoleMenuRoleRow,
   InsertableRoleMenuRow,

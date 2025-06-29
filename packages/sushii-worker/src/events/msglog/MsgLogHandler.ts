@@ -11,13 +11,16 @@ import {
 } from "discord.js";
 import { None, Option, Some } from "ts-results";
 import { Selectable } from "kysely";
-import { AppPublicMessages, AppPublicMsgLogBlocks } from "../../model/dbTypes";
+import {
+  AppPublicMessages,
+  AppPublicMsgLogBlocks,
+} from "../../infrastructure/database/dbTypes";
 import SushiiEmoji from "../../constants/SushiiEmoji";
 import Context from "../../model/context";
 import buildChunks from "../../utils/buildChunks";
 import Color from "../../utils/colors";
 import { newModuleLogger } from "../../logger";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import { EventHandlerFn } from "../EventHandler";
 import { getAPIUserTag } from "../../utils/APIUser";
 import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
@@ -365,7 +368,6 @@ export async function msgLogHandler(
     for (let i = 0; i < embeds.val.length; i += chunkSize) {
       const chunk = embeds.val.slice(i, i + chunkSize).map((e) => e.toJSON());
 
-      // eslint-disable-next-line no-await-in-loop
       await channel.send({
         embeds: chunk,
       });

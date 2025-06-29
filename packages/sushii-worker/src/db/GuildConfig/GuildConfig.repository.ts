@@ -2,8 +2,8 @@ import { Kysely } from "kysely";
 import opentelemetry from "@opentelemetry/api";
 import { UpdateObjectExpression } from "kysely/dist/cjs/parser/update-set-parser";
 import { GuildConfigRow } from "./GuildConfig.table";
-import { DB } from "../../model/dbTypes";
-import { json } from "../json";
+import { DB } from "../../infrastructure/database/dbTypes";
+import { json } from "../../infrastructure/database/json";
 
 const tracer = opentelemetry.trace.getTracer("GuildConfig.repository");
 

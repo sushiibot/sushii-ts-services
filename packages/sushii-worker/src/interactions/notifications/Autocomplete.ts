@@ -4,7 +4,7 @@ import {
   AutocompleteInteraction,
 } from "discord.js";
 import Context from "../../model/context";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import { AutocompleteHandler } from "../handlers";
 import { searchNotifications } from "../../db/Notification/Notification.repository";
 

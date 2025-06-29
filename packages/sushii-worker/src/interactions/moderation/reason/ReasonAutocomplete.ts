@@ -7,7 +7,7 @@ import logger from "../../../logger";
 import Context from "../../../model/context";
 import { AutocompleteHandler } from "../../handlers";
 import { parseCaseId } from "./caseId";
-import db from "../../../model/db";
+import db from "../../../infrastructure/database/db";
 import {
   getNextCaseId,
   getRecentModLogs,

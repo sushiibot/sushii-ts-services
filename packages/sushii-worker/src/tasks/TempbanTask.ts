@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import { getAndDeleteExpiredTempBans } from "../db/TempBan/TempBan.repository";
-import db from "../model/db";
+import db from "../infrastructure/database/db";
 import { newModuleLogger } from "../logger";
 import toTimestamp from "../utils/toTimestamp";
 

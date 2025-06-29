@@ -12,7 +12,7 @@ import {
   markGiveawayEntriesAsPicked,
 } from "../../db/Giveaway/Giveaway.repository";
 import { GiveawayRow } from "../../db/Giveaway/Giveaway.table";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import { getUserGuildLevel } from "../../db/UserLevel/UserLevel.repository";
 import { levelFromXp } from "../../services/XpService";
 import { GiveawayOption } from "./Giveaway.options";

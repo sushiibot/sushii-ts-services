@@ -1,6 +1,6 @@
 import { Insertable, Selectable, Updateable } from "kysely";
 import { z } from "zod";
-import { AppPublicUsers } from "../../model/dbTypes";
+import { AppPublicUsers } from "../../infrastructure/database/dbTypes";
 
 export const profileDataSchema = z.object({
   patron_cents: z.number().optional(),

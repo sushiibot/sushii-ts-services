@@ -20,7 +20,7 @@ import {
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
 } from "discord.js";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import { getAllBanPoolMemberships } from "../../interactions/moderation/ban_pools/BanPoolMember.repository";
 import { BanPoolMemberRow } from "../../interactions/moderation/ban_pools/BanPoolMember.table";
 import logger from "../../logger";
@@ -33,11 +33,11 @@ import Context from "../../model/context";
 
 const log = logger.child({ module: "BanPoolDiscordEventHandler" });
 
-type SeparatePoolActions<T> = {
+interface SeparatePoolActions<T> {
   add: T[];
   manual: T[];
   nothing: T[];
-};
+}
 
 function categorizePoolDataActions(
   pool: BanPoolMemberRow[],
@@ -128,7 +128,6 @@ export const banPoolOnBanHandler: EventHandlerFn<Events.GuildBanAdd> = async (
       "Inserted ban pool entries",
     );
 
-    /* eslint-disable no-await-in-loop */
     log.debug(
       {
         poolEntriesCount: poolEntries.length,
@@ -145,7 +144,6 @@ export const banPoolOnBanHandler: EventHandlerFn<Events.GuildBanAdd> = async (
         user: ban.user,
       });
     }
-    /* eslint-enable */
   }
 
   if (!settings?.alert_channel_id) {

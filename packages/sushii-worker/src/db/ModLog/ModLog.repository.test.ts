@@ -2,7 +2,7 @@ import { expect, describe, it } from "bun:test";
 // Need this to not fail on utc
 import "../../dayjs";
 
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import {
   deleteModLogsRange,
   insertModLog,

@@ -1,4 +1,4 @@
-import db from "../../../model/db";
+import db from "../../../infrastructure/database/db";
 import { upsertGuildSettings } from "./GuildSettings.repository";
 
 export async function settingsSetAlertsChannel(

@@ -1,5 +1,5 @@
 import { Insertable, Selectable, Updateable } from "kysely";
-import { AppPublicReminders } from "../../model/dbTypes";
+import { AppPublicReminders } from "../../infrastructure/database/dbTypes";
 
 export type ReminderRow = Selectable<AppPublicReminders>;
 export type InsertableReminderRow = Insertable<AppPublicReminders>;

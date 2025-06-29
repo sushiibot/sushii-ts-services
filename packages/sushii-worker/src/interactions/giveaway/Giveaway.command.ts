@@ -20,7 +20,7 @@ import {
   getGiveaway,
   markGiveawayAsEnded,
 } from "../../db/Giveaway/Giveaway.repository";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import parseDuration from "../../utils/parseDuration";
 import Color from "../../utils/colors";
 import {

@@ -13,9 +13,12 @@ import {
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import SushiiEmoji from "../../constants/SushiiEmoji";
-import { DB, AppPublicMsgLogBlockType } from "../../model/dbTypes";
+import {
+  DB,
+  AppPublicMsgLogBlockType,
+} from "../../infrastructure/database/dbTypes";
 import Color from "../../utils/colors";
 import customIds, { SettingsToggleOptions } from "../customIds";
 import logger from "../../logger";

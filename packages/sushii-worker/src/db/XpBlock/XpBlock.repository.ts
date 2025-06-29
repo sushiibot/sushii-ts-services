@@ -1,5 +1,5 @@
 import { Kysely } from "kysely";
-import { AppPublicBlockType, DB } from "../../model/dbTypes";
+import { AppPublicBlockType, DB } from "../../infrastructure/database/dbTypes";
 import { XpBlockRow } from "./XpBlock.table";
 
 export function upsertXpBlock(

@@ -7,7 +7,7 @@ import {
   countAllPendingReminders,
   getAndDeleteExpiredReminders,
 } from "../db/Reminder/Reminder.repository";
-import db from "../model/db";
+import db from "../infrastructure/database/db";
 import Color from "../utils/colors";
 import toTimestamp from "../utils/toTimestamp";
 import {

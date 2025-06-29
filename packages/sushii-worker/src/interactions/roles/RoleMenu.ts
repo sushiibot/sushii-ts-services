@@ -39,7 +39,7 @@ import {
   upsertRoleMenu,
   upsertRoleMenuRole,
 } from "../../db/RoleMenu/ModLog.repository";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import { RoleMenuRow } from "../../db/RoleMenu/RoleMenu.table";
 
 const RE_ROLE = /(?:<@&)?(\d{17,20})>?/g;

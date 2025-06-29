@@ -7,11 +7,11 @@ import {
 } from "discord.js";
 import dayjs from "dayjs";
 import { getPoolByNameAndGuildId } from "../../interactions/moderation/ban_pools/BanPool.repository";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import { getBanPoolAllMembers } from "../../interactions/moderation/ban_pools/BanPoolMember.repository";
 import { banPoolEmitter } from "./BanPoolEmitter";
 import logger from "../../logger";
-import { AppPublicBanPoolAddAction } from "../../model/dbTypes";
+import { AppPublicBanPoolAddAction } from "../../infrastructure/database/dbTypes";
 import { getGuildSettings } from "../../interactions/moderation/ban_pools/GuildSettings.repository";
 
 const log = logger.child({ module: "BanPoolHandler" });
@@ -145,7 +145,7 @@ banPoolEmitter.on(
     );
 
     // Run actions in all member servers
-    /* eslint-disable no-await-in-loop */
+
     for (const member of poolMembers) {
       // Skip the current guild -- no need to run actions on the same guild
       if (sourceGuildId === member.member_guild_id) {
@@ -174,6 +174,5 @@ banPoolEmitter.on(
         member.add_action,
       );
     }
-    /* eslint-enable */
   },
 );

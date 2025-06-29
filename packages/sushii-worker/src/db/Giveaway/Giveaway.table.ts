@@ -2,7 +2,7 @@ import { Insertable, Selectable, Updateable } from "kysely";
 import {
   AppPublicGiveawayEntries,
   AppPublicGiveaways,
-} from "../../model/dbTypes";
+} from "../../infrastructure/database/dbTypes";
 
 export type GiveawayRow = Selectable<AppPublicGiveaways>;
 export type InsertableGiveawayRow = Insertable<AppPublicGiveaways>;

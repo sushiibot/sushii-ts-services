@@ -25,7 +25,7 @@ import {
   interactionReplyErrorMessage,
 } from "../responses/error";
 import Paginator from "../../utils/Paginator";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import {
   deleteTag,
   getRandomTag,

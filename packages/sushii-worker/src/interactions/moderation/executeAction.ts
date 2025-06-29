@@ -19,9 +19,9 @@ import hasPermissionTargetingMember from "../../utils/hasPermission";
 import ModActionData, { ModActionTarget } from "./ModActionData";
 import sendModActionDM from "./sendDm";
 import buildModLogEmbed from "../../builders/buildModLogEmbed";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import { buildModLogComponents } from "../../events/ModLogHandler";
-import { DB } from "../../model/dbTypes";
+import { DB } from "../../infrastructure/database/dbTypes";
 import {
   deleteModLog,
   getNextCaseId,
@@ -559,7 +559,7 @@ export default async function executeAction(
 
     for (const [, target] of data.targets) {
       // Should be synchronous so we don't reuse the same case ID
-      // eslint-disable-next-line no-await-in-loop
+
       const res = await executeActionUser(
         ctx,
         interaction,

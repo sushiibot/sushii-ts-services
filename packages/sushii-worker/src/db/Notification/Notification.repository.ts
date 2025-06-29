@@ -1,6 +1,6 @@
 import { DeleteResult, InsertResult, Kysely } from "kysely";
 import opentelemetry, { SpanStatusCode } from "@opentelemetry/api";
-import { DB } from "../../model/dbTypes";
+import { DB } from "../../infrastructure/database/dbTypes";
 import { NotificationRow } from "./Notification.table";
 
 const tracer = opentelemetry.trace.getTracer("notification-repository");

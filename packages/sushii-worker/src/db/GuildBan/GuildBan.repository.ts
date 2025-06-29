@@ -1,6 +1,6 @@
 import { DeleteResult, Kysely } from "kysely";
 import opentelemetry from "@opentelemetry/api";
-import { DB } from "../../model/dbTypes";
+import { DB } from "../../infrastructure/database/dbTypes";
 
 const tracer = opentelemetry.trace.getTracer("event-handler");
 

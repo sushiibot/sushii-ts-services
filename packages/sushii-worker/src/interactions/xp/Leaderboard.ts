@@ -1,8 +1,12 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, InteractionContextType } from "discord.js";
+import {
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  InteractionContextType,
+} from "discord.js";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import Paginator, {
   EmbedModifierFn,
   GetPageFn,
@@ -49,7 +53,6 @@ export default class LeaderboardCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,
@@ -92,13 +95,13 @@ export default class LeaderboardCommand extends SlashCommandHandler {
       for (const row of pageData) {
         const level = levelFromXp(BigInt(row.msg_all_time));
 
-        const levelProgress = calculateLevelProgress(BigInt(row.msg_all_time))
+        const levelProgress = calculateLevelProgress(BigInt(row.msg_all_time));
 
         desc += `\`${row.rank}.\` <@${row.user_id}>`;
         desc += "\n";
         desc += `┣ Level ${level}`;
         desc += "\n";
-        desc += `┗ ${levelProgress.nextLevelXpProgress} / ${levelProgress.nextLevelXpRequired} XP to level ${level + 1n}`
+        desc += `┗ ${levelProgress.nextLevelXpProgress} / ${levelProgress.nextLevelXpRequired} XP to level ${level + 1n}`;
         desc += "\n";
 
         if (row.user_id === interaction.user.id) {

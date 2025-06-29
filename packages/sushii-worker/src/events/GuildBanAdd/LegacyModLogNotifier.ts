@@ -3,7 +3,7 @@ import logger from "../../logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { EventHandlerFn } from "../EventHandler";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
 
 const notifiedCache = new Set<string>();

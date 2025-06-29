@@ -1,5 +1,8 @@
 import { InsertResult, Kysely } from "kysely";
-import { AppPublicNotificationBlockType, DB } from "../../model/dbTypes";
+import {
+  AppPublicNotificationBlockType,
+  DB,
+} from "../../infrastructure/database/dbTypes";
 import { NotificationBlockRow } from "./NotificationBlock.table";
 
 export function insertNotificationBlock(

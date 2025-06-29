@@ -12,7 +12,7 @@ import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";
 import Color from "../../../utils/colors";
 import { getModLog } from "../../../db/ModLog/ModLog.repository";
-import db from "../../../model/db";
+import db from "../../../infrastructure/database/db";
 import { newModuleLogger } from "../../../logger";
 import { buildModLogComponents } from "../../../events/ModLogHandler";
 import { ActionType } from "../ActionType";

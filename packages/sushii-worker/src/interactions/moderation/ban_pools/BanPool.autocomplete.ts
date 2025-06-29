@@ -7,13 +7,11 @@ import dayjs from "dayjs";
 import Context from "../../../model/context";
 import { AutocompleteHandler } from "../../handlers";
 import { BanPoolOption, BanPoolOptionCommand } from "./BanPool.command";
-import {
-  searchGuildBanPools,
-} from "./BanPool.repository";
+import { searchGuildBanPools } from "./BanPool.repository";
 import { searchBanPoolMemberships } from "./BanPoolMember.repository";
 import { getAllBanPoolInvites } from "./BanPoolInvite.repository";
 import toTimestamp from "../../../utils/toTimestamp";
-import db from "../../../model/db";
+import db from "../../../infrastructure/database/db";
 
 export default class BanPoolAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [

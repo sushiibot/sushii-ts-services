@@ -15,7 +15,7 @@ import {
   getGiveawayEntry,
   getGiveawayEntryCount,
 } from "../../db/Giveaway/Giveaway.repository";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 import { isEligibleForGiveaway } from "./Giveaway.service";
 import Color from "../../utils/colors";
 import {

@@ -3,7 +3,7 @@ import opentelemetry from "@opentelemetry/api";
 import Context from "../../model/context";
 import { EventHandlerFn } from "../EventHandler";
 import { upsertCachedUser } from "../../db/CachedUser/CachedUser.repository";
-import db from "../../model/db";
+import db from "../../infrastructure/database/db";
 
 const tracer = opentelemetry.trace.getTracer("cache-user-handler");
 

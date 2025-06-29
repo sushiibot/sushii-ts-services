@@ -1,5 +1,5 @@
 import { Insertable, Selectable, Updateable } from "kysely";
-import { AppPrivateActiveDeployment } from "../../model/dbTypes";
+import { AppPrivateActiveDeployment } from "../../infrastructure/database/dbTypes";
 
 export type DeploymentRow = Selectable<AppPrivateActiveDeployment>;
 export type InsertableDeploymentRow = Insertable<AppPrivateActiveDeployment>;

@@ -1,7 +1,7 @@
 import { Kysely, QueryCreator, SelectQueryBuilder, sql } from "kysely";
 import dayjs from "dayjs";
 import { z } from "zod";
-import { DB } from "../../model/dbTypes";
+import { DB } from "../../infrastructure/database/dbTypes";
 import { UserLevelRow, UserLevelRowWithRank } from "./UserLevel.table";
 
 export const TimeFrameSchema = z.enum(["day", "week", "month", "all_time"]);

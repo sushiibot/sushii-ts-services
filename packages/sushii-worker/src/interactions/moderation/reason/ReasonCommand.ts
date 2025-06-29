@@ -21,7 +21,7 @@ import { ActionType } from "../ActionType";
 import customIds from "../../customIds";
 import sleep from "../../../utils/sleep";
 import logger from "../../../logger";
-import db from "../../../model/db";
+import db from "../../../infrastructure/database/db";
 import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
 import {
   getModLogsRange,

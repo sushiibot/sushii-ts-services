@@ -1,5 +1,5 @@
 import { Insertable, Selectable, Updateable } from "kysely";
-import { AppPublicCachedGuilds } from "../../model/dbTypes";
+import { AppPublicCachedGuilds } from "../../infrastructure/database/dbTypes";
 
 export type CachedGuildRow = Selectable<AppPublicCachedGuilds>;
 export type InsertableCachedGuildRow = Insertable<AppPublicCachedGuilds>;
