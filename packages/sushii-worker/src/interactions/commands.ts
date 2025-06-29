@@ -91,7 +91,7 @@ export default function registerInteractionHandlers(
     new NotificationCommand(),
     new ReminderCommand(),
 
-    // new LeaderboardCommand(),
+    new LeaderboardCommand(),
 
     // Tags
     new TagCommand(),
