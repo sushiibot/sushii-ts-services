@@ -24,6 +24,13 @@ async function main(): Promise<void> {
   const dirName = dirname(fileName);
   const shardFile = join(dirName, "shard.ts");
 
+  if (config.MANUAL_SHARD_COUNT) {
+    log.info(
+      { shardCount: config.MANUAL_SHARD_COUNT },
+      "Using manual shard count",
+    );
+  }
+
   // Create ShardingManager
   const manager = new ShardingManager(shardFile, {
     token: config.DISCORD_TOKEN,
