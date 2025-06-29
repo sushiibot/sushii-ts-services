@@ -1,9 +1,8 @@
 import { User } from "discord.js";
 import { Ok, Result } from "ts-results";
 import Context from "../../model/context";
-import UserLevelProgress from "./rank.entity";
+import { calculateLevelProgress } from "../../services/XpService";
 import { getUserOrDefault } from "../../db/User/User.repository";
-import { levelFromXp } from "../../services/XpService";
 import db from "../../model/db";
 import {
   getUserGlobalAllMessages,
@@ -28,20 +27,20 @@ export async function getUserRank(
   const guildRanks = await getUserGuildAllRanks(db, guildId, user.id);
   const guildLevel = await getUserGuildLevel(db, guildId, user.id);
 
-  const allTimeXP = guildLevel?.msg_all_time ?? 0n;
-  const userLevel = new UserLevelProgress(Number(allTimeXP));
+  const allTimeXP = BigInt(guildLevel?.msg_all_time ?? 0n);
+  const guildLevelProgress = calculateLevelProgress(allTimeXP);
 
   const globalXP = await getUserGlobalAllMessages(db, user.id);
-  const globalLevel = new UserLevelProgress(globalXP);
+  const globalLevelProgress = calculateLevelProgress(globalXP);
 
   log.debug({
     guildId,
     userId: user.id,
     guildRanks,
     guildLevel,
-    userLevel,
+    guildLevelProgress,
     globalXP,
-    globalLevel,
+    globalLevelProgress,
   });
 
   const repInt = parseInt(userData.rep, 10);
@@ -85,15 +84,15 @@ export async function getUserRank(
     // Emojis
     IS_PATRON: userData.is_patron,
     PATRON_EMOJI_URL: patronEmojiURL,
-    LEVEL: userLevel.level,
-    CURR_XP: userLevel.nextLevelXpProgress,
-    REQ_XP: userLevel.nextLevelXpRequired,
-    XP_PROGRESS: userLevel.nextLevelXpPercentage,
+    LEVEL: guildLevelProgress.level,
+    CURR_XP: guildLevelProgress.nextLevelXpProgress,
+    REQ_XP: guildLevelProgress.nextLevelXpRequired,
+    XP_PROGRESS: guildLevelProgress.nextLevelXpPercentage,
     // global
-    GLOBAL_LEVEL: globalLevel.level,
-    GLOBAL_CURR_XP: globalLevel.nextLevelXpProgress,
-    GLOBAL_REQ_XP: globalLevel.nextLevelXpRequired,
-    GLOBAL_XP_PROGRESS: globalLevel.nextLevelXpPercentage,
+    GLOBAL_LEVEL: globalLevelProgress.level,
+    GLOBAL_CURR_XP: globalLevelProgress.nextLevelXpProgress,
+    GLOBAL_REQ_XP: globalLevelProgress.nextLevelXpRequired,
+    GLOBAL_XP_PROGRESS: globalLevelProgress.nextLevelXpPercentage,
     // ranks
     RANK_ALL: guildRanks.all_time.rank || "-",
     RANK_ALL_TOTAL: guildRanks.all_time.total_count || "-",

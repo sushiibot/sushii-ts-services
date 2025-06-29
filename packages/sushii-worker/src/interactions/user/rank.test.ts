@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import UserLevelProgress from "./rank.entity";
+import { levelFromXp, calculateLevelProgress } from "../../services/XpService";
 
-describe("UserLevelProgress", () => {
+describe("Level calculations", () => {
   describe.each([
     {
       xp: 0,
@@ -40,12 +40,12 @@ describe("UserLevelProgress", () => {
       wantNextLevelXpRequired: 1000,
     },
   ])(
-    "UserLevelProgress($xp XP)",
+    "Level calculations($xp XP)",
     ({ xp, wantLevel, wantNextLevelXpProgress, wantNextLevelXpRequired }) => {
-      const levelProg = new UserLevelProgress(xp);
+      const levelProg = calculateLevelProgress(xp);
 
       test("getLevel", () => {
-        const level = UserLevelProgress.getLevel(xp);
+        const level = Number(levelFromXp(BigInt(xp)));
 
         expect(level).toEqual(wantLevel);
         expect(levelProg.level).toEqual(level);

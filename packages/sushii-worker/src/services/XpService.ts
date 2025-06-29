@@ -23,6 +23,32 @@ export function levelFromXp(xp: bigint): bigint {
   return BigInt(level);
 }
 
+export interface LevelProgress {
+  level: number;
+  nextLevelXpProgress: number;
+  nextLevelXpRequired: number;
+  nextLevelXpPercentage: number;
+}
+
+export function calculateLevelProgress(xp: number | bigint): LevelProgress {
+  const numXp = typeof xp === 'bigint' ? Number(xp) : xp;
+  const level = Number(levelFromXp(BigInt(numXp)));
+  
+  const currLevelTotalXp = 50 * level ** 2 - 50 * level;
+  const nextLevelTotalXp = 50 * (level + 1) ** 2 - 50 * (level + 1);
+  const nextLevelXpRequired = nextLevelTotalXp - currLevelTotalXp;
+  const nextLevelXpRemaining = nextLevelTotalXp - numXp;
+  const nextLevelXpProgress = nextLevelXpRequired - nextLevelXpRemaining;
+  const nextLevelXpPercentage = (nextLevelXpProgress / nextLevelXpRequired) * 100.0;
+
+  return {
+    level,
+    nextLevelXpProgress,
+    nextLevelXpRequired,
+    nextLevelXpPercentage,
+  };
+}
+
 // Week calculation based on ISO week (Monday start)
 function getWeek(date: Date): { week: number; year: number } {
   const d = new Date(date);
