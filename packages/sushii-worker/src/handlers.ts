@@ -220,7 +220,7 @@ export default function registerEventHandlers(
       "Shard disconnected",
     );
 
-    await webhookLog(`[Shard ${shardId}] Disconnected`, "", Color.Warning);
+    await webhookLog(`[${shardId}] Shard Disconnected`, "", Color.Warning);
   });
 
   client.on(Events.ShardError, async (error, shardId) => {
@@ -232,7 +232,7 @@ export default function registerEventHandlers(
       "Shard error",
     );
 
-    await webhookLog(`[Shard ${shardId}] Error`, error.message, Color.Error);
+    await webhookLog(`[${shardId}] Shard Error`, error.message, Color.Error);
   });
 
   client.on(Events.ShardReconnecting, async (shardId) => {
