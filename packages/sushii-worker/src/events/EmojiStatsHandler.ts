@@ -29,11 +29,11 @@ const tracer = opentelemetry.trace.getTracer("emoji-stats-handler");
 export const EMOJI_RE = /<(?<animated>a)?:(?<name>\w+):(?<id>\d{16,21})>/g;
 export const UserEmojiRateLimitDuration = dayjs.duration({ hours: 1 });
 
-type NewExpressionStat = {
+interface NewExpressionStat {
   guild_id: string;
   asset_id: string;
   count: number;
-};
+}
 
 type NewExpressionStatWithGuild = NewExpressionStat & {
   count_external: number;
@@ -292,7 +292,6 @@ export const emojiAndStickerStatsReadyHandler: EventHandlerFn<
       continue;
     }
 
-    // eslint-disable-next-line no-await-in-loop
     await db
       .insertInto("app_public.guild_emojis_and_stickers")
       .values(values)

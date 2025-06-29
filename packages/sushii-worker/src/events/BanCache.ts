@@ -20,7 +20,6 @@ async function getGuildBans(guild: Guild): Promise<string[]> {
   while (true) {
     let page;
     try {
-      // eslint-disable-next-line no-await-in-loop
       page = await guild.bans.fetch({
         limit: 1000,
         after,
@@ -58,7 +57,6 @@ async function getGuildBans(guild: Guild): Promise<string[]> {
     }
 
     // Wait for a second for next page
-    // eslint-disable-next-line no-await-in-loop
     await new Promise((resolve) => {
       setTimeout(resolve, 1 * 1000);
     });
@@ -82,7 +80,6 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
       continue;
     }
 
-    // eslint-disable-next-line no-await-in-loop
     const guildBans = await getGuildBans(guild);
 
     // -------------------------------------------------------------------------
@@ -98,7 +95,6 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
     );
 
     // First clear the bans for this guild, so we can remove bans that were removed
-    // eslint-disable-next-line no-await-in-loop
     await clearGuildBans(db, guild.id);
 
     if (guildBans.length === 0) {
@@ -114,12 +110,9 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
       continue;
     }
 
-    // eslint-disable-next-line no-await-in-loop
     await insertGuildBans(db, guild.id, guildBans);
 
     // Sleep for 5 seconds
-
-    // eslint-disable-next-line no-await-in-loop
     await new Promise((resolve) => {
       setTimeout(resolve, 5 * 1000);
     });
