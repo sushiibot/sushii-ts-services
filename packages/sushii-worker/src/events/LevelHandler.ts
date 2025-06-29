@@ -53,7 +53,7 @@ const levelHandler: EventHandlerFn<Events.MessageCreate> = async (
             msg.guildId,
             msg.channelId,
             msg.author.id,
-            msg.member?.roles.cache.map((r) => r.id) || []
+            msg.member?.roles.cache.map((r) => r.id) || [],
           );
         } finally {
           span.end();

@@ -16,6 +16,7 @@ import {
   timeframeToString,
   userGuildTimeframeRank,
 } from "../../db/UserLevel/UserLevel.repository";
+import { levelFromXp } from "../../services/XpService";
 
 export default class LeaderboardCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
@@ -89,9 +90,10 @@ export default class LeaderboardCommand extends SlashCommandHandler {
 
       let foundUser = false;
       for (const row of pageData) {
+        const level = levelFromXp(BigInt(row.msg_all_time));
         desc += `\`${row.rank}.\` <@${row.user_id}>`;
         desc += "\n";
-        desc += `\u200B\u2003╰ Level ${row.level}`;
+        desc += `\u200B\u2003╰ Level ${level}`;
         desc += "\n";
 
         if (row.user_id === interaction.user.id) {
@@ -100,8 +102,9 @@ export default class LeaderboardCommand extends SlashCommandHandler {
       }
 
       if (!foundUser && userGuildRank && userGuildLevel) {
+        const userLevel = levelFromXp(BigInt(userGuildLevel.msg_all_time));
         desc += "~~---~~\n";
-        desc += `\`${userGuildRank.rank}.\` <@${userGuildLevel.user_id}>: Level ${userGuildLevel.level}`;
+        desc += `\`${userGuildRank.rank}.\` <@${userGuildLevel.user_id}>: Level ${userLevel}`;
         desc += "\n";
       }
 

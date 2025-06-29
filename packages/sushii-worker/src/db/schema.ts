@@ -626,9 +626,6 @@ export const userLevelsInAppPublic = appPublic.table(
     msgWeek: bigint("msg_week", { mode: "bigint" }).notNull(),
     msgDay: bigint("msg_day", { mode: "bigint" }).notNull(),
     lastMsg: timestamp("last_msg", { mode: "string" }).notNull(),
-    level: bigint({ mode: "bigint" })
-      .notNull()
-      .generatedAlwaysAs(sql`floor((sqrt(100 * (2 * msg_all_time + 25)) + 50) / 100)`),
   },
   (table) => [
     primaryKey({

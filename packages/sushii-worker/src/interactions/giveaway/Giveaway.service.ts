@@ -14,7 +14,7 @@ import {
 import { GiveawayRow } from "../../db/Giveaway/Giveaway.table";
 import db from "../../model/db";
 import { getUserGuildLevel } from "../../db/UserLevel/UserLevel.repository";
-import UserLevelProgress from "../user/rank.entity";
+import { levelFromXp } from "../../services/XpService";
 import { GiveawayOption } from "./Giveaway.options";
 import Color from "../../utils/colors";
 import { getGiveawayEmbed } from "./Giveaway.embed";
@@ -48,7 +48,7 @@ export async function getGiveawayChannelFromInteraction(
 export async function rollGiveaway(
   giveawayId: string,
   allowRepeatWinners: boolean,
-  winnerCount: number = 1,
+  winnerCount = 1,
 ): Promise<string[]> {
   const winners = await getRandomGiveawayEntries(
     db,
@@ -173,13 +173,11 @@ export async function isEligibleForGiveaway(
 ): Promise<GiveawayEligibility> {
   const guildLevel = await getUserGuildLevel(db, giveaway.guild_id, member.id);
 
-  const allTimeXP = guildLevel?.msg_all_time
-    ? parseInt(guildLevel.msg_all_time, 10)
-    : 0;
-  const userLevel = new UserLevelProgress(allTimeXP);
+  const allTimeXP = guildLevel ? BigInt(guildLevel.msg_all_time) : 0n;
+  const userLevel = levelFromXp(allTimeXP);
 
   if (giveaway.required_min_level !== null) {
-    if (userLevel.level < giveaway.required_min_level) {
+    if (userLevel < giveaway.required_min_level) {
       return {
         eligible: false,
         reason: `You need to be at least level ${giveaway.required_min_level}`,
@@ -188,7 +186,7 @@ export async function isEligibleForGiveaway(
   }
 
   if (giveaway.required_max_level !== null) {
-    if (userLevel.level > giveaway.required_max_level) {
+    if (userLevel > giveaway.required_max_level) {
       return {
         eligible: false,
         reason: `You need to be at most level ${giveaway.required_max_level}`,

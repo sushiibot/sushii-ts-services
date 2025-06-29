@@ -3,6 +3,7 @@ import { Ok, Result } from "ts-results";
 import Context from "../../model/context";
 import UserLevelProgress from "./rank.entity";
 import { getUserOrDefault } from "../../db/User/User.repository";
+import { levelFromXp } from "../../services/XpService";
 import db from "../../model/db";
 import {
   getUserGlobalAllMessages,
@@ -27,10 +28,8 @@ export async function getUserRank(
   const guildRanks = await getUserGuildAllRanks(db, guildId, user.id);
   const guildLevel = await getUserGuildLevel(db, guildId, user.id);
 
-  const allTimeXP = guildLevel?.msg_all_time
-    ? parseInt(guildLevel.msg_all_time, 10)
-    : 0;
-  const userLevel = new UserLevelProgress(allTimeXP);
+  const allTimeXP = guildLevel?.msg_all_time ?? 0n;
+  const userLevel = new UserLevelProgress(Number(allTimeXP));
 
   const globalXP = await getUserGlobalAllMessages(db, user.id);
   const globalLevel = new UserLevelProgress(globalXP);

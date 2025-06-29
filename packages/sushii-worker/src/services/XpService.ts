@@ -17,7 +17,7 @@ export interface UpdateUserXpResult {
  * Calculate level from XP using the same formula as the PostgreSQL function
  * Formula: floor((sqrt(100 * (2 * xp + 25)) + 50) / 100)
  */
-function levelFromXp(xp: bigint): bigint {
+export function levelFromXp(xp: bigint): bigint {
   const xpNum = Number(xp);
   const level = Math.floor((Math.sqrt(100 * (2 * xpNum + 25)) + 50) / 100);
   return BigInt(level);
@@ -26,11 +26,13 @@ function levelFromXp(xp: bigint): bigint {
 // Week calculation based on ISO week (Monday start)
 function getWeek(date: Date): { week: number; year: number } {
   const d = new Date(date);
+
   d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
   const weekNo = Math.ceil(
     ((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7,
   );
+
   return { week: weekNo, year: d.getUTCFullYear() };
 }
 
