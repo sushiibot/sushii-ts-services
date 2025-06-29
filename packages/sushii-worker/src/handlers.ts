@@ -31,7 +31,7 @@ import {
 } from "./events/EmojiStatsHandler";
 import { banPoolOnBanHandler } from "./events/ban_pool/BanPoolHandler";
 import config from "./model/config";
-import { isCurrentDeploymentActive } from "./db/Deployment/Deployment.repository";
+import { isCurrentDeploymentActive } from "./infrastructure/database/repositories/Deployment.repository";
 import {
   memberLogJoinHandler,
   memberLogLeaveHandler,

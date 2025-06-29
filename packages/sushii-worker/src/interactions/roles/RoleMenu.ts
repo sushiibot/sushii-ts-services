@@ -38,9 +38,9 @@ import {
   reorderRoleMenuRoles,
   upsertRoleMenu,
   upsertRoleMenuRole,
-} from "../../db/RoleMenu/ModLog.repository";
-import db from "../../model/db";
-import { RoleMenuRow } from "../../db/RoleMenu/RoleMenu.table";
+} from "../../infrastructure/database/repositories/ModLog.repository";
+import db from "../../infrastructure/database/config/db";
+import { RoleMenuRow } from "../../infrastructure/database/schemas/RoleMenu.table";
 
 const RE_ROLE = /(?:<@&)?(\d{17,20})>?/g;
 

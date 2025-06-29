@@ -9,8 +9,8 @@ import Context from "../../model/context";
 import timestampToUnixTime from "../../utils/timestampToUnixTime";
 import { SlashCommandHandler } from "../handlers";
 import buildUserHistoryEmbeds from "./formatters/history";
-import { getUserModLogHistory } from "../../db/ModLog/ModLog.repository";
-import db from "../../model/db";
+import { getUserModLogHistory } from "../../infrastructure/database/repositories/ModLog.repository";
+import db from "../../infrastructure/database/config/db";
 import { getUserString } from "../../utils/userString";
 
 export default class HistoryCommand extends SlashCommandHandler {

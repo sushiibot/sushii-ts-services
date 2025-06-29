@@ -1,6 +1,6 @@
 import { EmbedBuilder, Guild } from "discord.js";
 import dayjs from "dayjs";
-import db from "../../../model/db";
+import db from "../../../infrastructure/database/config/db";
 import Color from "../../../utils/colors";
 import {
   BanPoolError,

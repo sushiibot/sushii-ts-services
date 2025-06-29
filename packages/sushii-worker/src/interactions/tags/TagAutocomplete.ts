@@ -2,8 +2,8 @@ import { ApplicationCommandOptionType } from "discord-api-types/v10";
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import Context from "../../model/context";
 import { AutocompleteHandler } from "../handlers";
-import db from "../../model/db";
-import { searchTagsStartsWith } from "../../db/Tag/Tab.repository";
+import db from "../../infrastructure/database/config/db";
+import { searchTagsStartsWith } from "../../infrastructure/database/repositories/Tab.repository";
 
 export default class TagGetAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [

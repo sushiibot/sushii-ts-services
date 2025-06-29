@@ -2,7 +2,7 @@ import { SlashCommandBuilder, ChatInputCommandInteraction, InteractionContextTyp
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
-import db from "../../model/db";
+import db from "../../infrastructure/database/config/db";
 import Paginator, {
   EmbedModifierFn,
   GetPageFn,
@@ -15,7 +15,7 @@ import {
   TimeFrameSchema,
   timeframeToString,
   userGuildTimeframeRank,
-} from "../../db/UserLevel/UserLevel.repository";
+} from "../../infrastructure/database/repositories/UserLevel.repository";
 import { calculateLevelProgress, levelFromXp } from "../../services/XpService";
 
 export default class LeaderboardCommand extends SlashCommandHandler {

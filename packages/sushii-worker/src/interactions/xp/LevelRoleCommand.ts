@@ -14,8 +14,8 @@ import {
   deleteLevelRole,
   getAllLevelRoles,
   upsertLevelRole,
-} from "../../db/LevelRole/LevelRole.repository";
-import db from "../../model/db";
+} from "../../infrastructure/database/repositories/LevelRole.repository";
+import db from "../../infrastructure/database/config/db";
 
 enum CommandName {
   LevelRoleNew = "new",

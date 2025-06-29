@@ -19,20 +19,20 @@ import hasPermissionTargetingMember from "../../utils/hasPermission";
 import ModActionData, { ModActionTarget } from "./ModActionData";
 import sendModActionDM from "./sendDm";
 import buildModLogEmbed from "../../builders/buildModLogEmbed";
-import db from "../../model/db";
+import db from "../../infrastructure/database/config/db";
 import { buildModLogComponents } from "../../events/ModLogHandler";
-import { DB } from "../../model/dbTypes";
+import { DB } from "../../infrastructure/database/config/dbTypes";
 import {
   deleteModLog,
   getNextCaseId,
   upsertModLog,
-} from "../../db/ModLog/ModLog.repository";
-import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
+} from "../../infrastructure/database/repositories/ModLog.repository";
+import { getGuildConfig } from "../../infrastructure/database/repositories/GuildConfig.repository";
 import { startCaughtActiveSpan } from "../../tracing";
 import {
   deleteTempBan,
   upsertTempBan,
-} from "../../db/TempBan/TempBan.repository";
+} from "../../infrastructure/database/repositories/TempBan.repository";
 
 const log = logger.child({ module: "executeAction" });
 const tracer = opentelemetry.trace.getTracer("sushii-worker");

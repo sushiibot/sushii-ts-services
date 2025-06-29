@@ -10,9 +10,9 @@ import Color from "../../../utils/colors";
 import { SlashCommandHandler } from "../../handlers";
 import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
 import { invalidCaseRangeEmbed } from "./Messages";
-import db from "../../../model/db";
-import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
-import { deleteModLogsRange } from "../../../db/ModLog/ModLog.repository";
+import db from "../../../infrastructure/database/config/db";
+import { getGuildConfig } from "../../../infrastructure/database/repositories/GuildConfig.repository";
+import { deleteModLogsRange } from "../../../infrastructure/database/repositories/ModLog.repository";
 
 export default class UncaseCommand extends SlashCommandHandler {
   serverOnly = true;

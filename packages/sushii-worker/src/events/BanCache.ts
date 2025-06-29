@@ -1,13 +1,13 @@
 import { Events, Guild, GuildBan } from "discord.js";
 import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
-import db from "../model/db";
+import db from "../infrastructure/database/config/db";
 import { newModuleLogger } from "../logger";
 import config from "../model/config";
 import {
   clearGuildBans,
   insertGuildBans,
-} from "../db/GuildBan/GuildBan.repository";
+} from "../infrastructure/database/repositories/GuildBan.repository";
 
 const log = newModuleLogger("BanCacheHandler");
 

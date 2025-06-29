@@ -7,10 +7,10 @@ import {
   InteractionContextType,
 } from "discord.js";
 import Context from "../../model/context";
-import db from "../../model/db";
+import db from "../../infrastructure/database/config/db";
 import { SlashCommandHandler } from "../handlers";
 import buildUserLookupEmbed, { UserLookupBan } from "./formatters/lookup";
-import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
+import { getGuildConfig } from "../../infrastructure/database/repositories/GuildConfig.repository";
 
 export async function getUserLookupData(
   ctx: Context,

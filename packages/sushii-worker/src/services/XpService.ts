@@ -1,10 +1,10 @@
 import { eq, and, inArray, or } from "drizzle-orm";
-import { drizzleDb } from "../model/db";
+import { drizzleDb } from "../infrastructure/database/config/db";
 import {
   userLevelsInAppPublic,
   xpBlocksInAppPublic,
   levelRolesInAppPublic,
-} from "../db/schema";
+} from "../infrastructure/database/schemas/schema";
 
 export interface UpdateUserXpResult {
   old_level: string | null;

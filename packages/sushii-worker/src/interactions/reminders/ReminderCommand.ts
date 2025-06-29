@@ -13,8 +13,8 @@ import {
   deleteReminder,
   insertReminder,
   listReminders,
-} from "../../db/Reminder/Reminder.repository";
-import db from "../../model/db";
+} from "../../infrastructure/database/repositories/Reminder.repository";
+import db from "../../infrastructure/database/config/db";
 import parseDurationOrTimestamp from "../../utils/parseDurationOrTimestamp";
 
 export default class ReminderCommand extends SlashCommandHandler {

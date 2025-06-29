@@ -10,11 +10,11 @@ import {
 import dayjs from "dayjs";
 import { EventHandlerFn } from "./EventHandler";
 import Context from "../model/context";
-import db from "../model/db";
+import db from "../infrastructure/database/config/db";
 import {
   getGuildConfig,
   upsertGuildConfig,
-} from "../db/GuildConfig/GuildConfig.repository";
+} from "../infrastructure/database/repositories/GuildConfig.repository";
 import Color from "../utils/colors";
 import toTimestamp from "../utils/toTimestamp";
 import { newModuleLogger } from "../logger";

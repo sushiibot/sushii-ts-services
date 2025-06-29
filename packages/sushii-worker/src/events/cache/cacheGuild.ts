@@ -2,8 +2,8 @@ import { Events, Guild } from "discord.js";
 import opentelemetry from "@opentelemetry/api";
 import Context from "../../model/context";
 import { EventHandlerFn } from "../EventHandler";
-import db from "../../model/db";
-import { upsertCachedGuild } from "../../db/CachedGuild/CachedGuild.repository";
+import db from "../../infrastructure/database/config/db";
+import { upsertCachedGuild } from "../../infrastructure/database/repositories/CachedGuild.repository";
 
 const tracer = opentelemetry.trace.getTracer("cache-guild-handler");
 

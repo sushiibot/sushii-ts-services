@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import { User } from "discord.js";
 import Context from "../../model/context";
-import { getUserOrDefault, upsertUser } from "../../db/User/User.repository";
-import db from "../../model/db";
+import { getUserOrDefault, upsertUser } from "../../infrastructure/database/repositories/User.repository";
+import db from "../../infrastructure/database/config/db";
 
 /**
  * Response value of caught fishy

@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { newModuleLogger } from "../logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
-import db from "../model/db";
+import db from "../infrastructure/database/config/db";
 import { UserEmojiRateLimitDuration } from "../events/EmojiStatsHandler";
 
 const logger = newModuleLogger("DeleteStaleEmojiStatsTask");

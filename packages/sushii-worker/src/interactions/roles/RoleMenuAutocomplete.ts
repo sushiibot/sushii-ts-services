@@ -2,8 +2,8 @@ import { ApplicationCommandOptionType } from "discord-api-types/v10";
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import Context from "../../model/context";
 import { AutocompleteHandler } from "../handlers";
-import { searchRoleMenus } from "../../db/RoleMenu/ModLog.repository";
-import db from "../../model/db";
+import { searchRoleMenus } from "../../infrastructure/database/repositories/ModLog.repository";
+import db from "../../infrastructure/database/config/db";
 
 export default class RoleMenuAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [

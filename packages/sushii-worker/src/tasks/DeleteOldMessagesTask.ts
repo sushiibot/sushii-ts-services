@@ -2,8 +2,8 @@ import dayjs from "dayjs";
 import { newModuleLogger } from "../logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
-import { deleteMessagesBefore } from "../db/Message/Message.repository";
-import db from "../model/db";
+import { deleteMessagesBefore } from "../infrastructure/database/repositories/Message.repository";
+import db from "../infrastructure/database/config/db";
 
 const logger = newModuleLogger("DeleteOldMessagesTask");
 

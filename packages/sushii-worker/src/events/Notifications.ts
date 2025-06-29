@@ -13,8 +13,8 @@ import {
   deleteNotification,
   getMatchingNotifications,
   getTotalNotificationCount,
-} from "../db/Notification/Notification.repository";
-import db from "../model/db";
+} from "../infrastructure/database/repositories/Notification.repository";
+import db from "../infrastructure/database/config/db";
 import Color from "../utils/colors";
 import SushiiEmoji from "../constants/SushiiEmoji";
 import { quoteMarkdownString } from "../utils/markdown";

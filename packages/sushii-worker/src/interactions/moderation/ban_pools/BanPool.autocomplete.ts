@@ -13,7 +13,7 @@ import {
 import { searchBanPoolMemberships } from "./BanPoolMember.repository";
 import { getAllBanPoolInvites } from "./BanPoolInvite.repository";
 import toTimestamp from "../../../utils/toTimestamp";
-import db from "../../../model/db";
+import db from "../../../infrastructure/database/config/db";
 
 export default class BanPoolAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [

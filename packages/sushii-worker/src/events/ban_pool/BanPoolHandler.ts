@@ -20,7 +20,7 @@ import {
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
 } from "discord.js";
-import db from "../../model/db";
+import db from "../../infrastructure/database/config/db";
 import { getAllBanPoolMemberships } from "../../interactions/moderation/ban_pools/BanPoolMember.repository";
 import { BanPoolMemberRow } from "../../interactions/moderation/ban_pools/BanPoolMember.table";
 import logger from "../../logger";

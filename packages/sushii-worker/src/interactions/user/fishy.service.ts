@@ -3,9 +3,9 @@ import { User } from "discord.js";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import Context from "../../model/context";
 import logger from "../../logger";
-import db from "../../model/db";
-import { DB } from "../../model/dbTypes";
-import { getUserOrDefault, upsertUser } from "../../db/User/User.repository";
+import db from "../../infrastructure/database/config/db";
+import { DB } from "../../infrastructure/database/config/dbTypes";
+import { getUserOrDefault, upsertUser } from "../../infrastructure/database/repositories/User.repository";
 
 /**
  * Get inclusive random number between min and max

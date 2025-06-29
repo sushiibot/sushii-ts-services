@@ -19,7 +19,7 @@ import {
   AppPublicBanPoolAddMode,
   AppPublicBanPoolRemoveAction,
   AppPublicBanPoolRemoveMode,
-} from "../../../model/dbTypes";
+} from "../../../infrastructure/database/config/dbTypes";
 import logger from "../../../logger";
 
 export enum BanPoolShowPage {

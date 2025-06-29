@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "discord.js";
 import dayjs from "dayjs";
-import { InsertableGiveawayRow } from "../../db/Giveaway/Giveaway.table";
+import { InsertableGiveawayRow } from "../../infrastructure/database/schemas/Giveaway.table";
 import toTimestamp from "../../utils/toTimestamp";
 import Color from "../../utils/colors";
 

@@ -8,8 +8,8 @@ import {
 import Context from "../../model/context";
 import { getDurationFromNow } from "../../utils/getDuration";
 import { AutocompleteHandler } from "../handlers";
-import { listReminders } from "../../db/Reminder/Reminder.repository";
-import db from "../../model/db";
+import { listReminders } from "../../infrastructure/database/repositories/Reminder.repository";
+import db from "../../infrastructure/database/config/db";
 
 export default class ReminderDeleteAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = "reminder.delete";
