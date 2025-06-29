@@ -8,6 +8,7 @@ import {
   ButtonStyle,
   PermissionFlagsBits,
   DiscordAPIError,
+  InteractionContextType,
 } from "discord.js";
 import dayjs from "dayjs";
 import Context from "../../../model/context";
@@ -261,7 +262,7 @@ export default class ReasonCommand extends SlashCommandHandler {
     .setName("reason")
     .setDescription("Set the reason for mod cases.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((o) =>
       o
         .setName("case")

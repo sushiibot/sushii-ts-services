@@ -2,6 +2,7 @@ import {
   SlashCommandBuilder,
   EmbedBuilder,
   ChatInputCommandInteraction,
+  InteractionContextType,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
@@ -36,7 +37,7 @@ export default class LevelRoleCommand extends SlashCommandHandler {
     .setName("levelrole")
     .setDescription("Configure level roles.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addSubcommand((c) =>
       c
         .setName(CommandName.LevelRoleNew)

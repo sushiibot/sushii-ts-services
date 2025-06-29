@@ -4,6 +4,7 @@ import {
   MessageFlags,
   ChatInputCommandInteraction,
   ChannelType,
+  InteractionContextType,
 } from "discord.js";
 import { t } from "i18next";
 import Context from "../../model/context";
@@ -41,7 +42,7 @@ export default class NotificationCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("notification")
     .setDescription("Get notifications when someone says something.")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addSubcommand((c) =>
       c
         .setName(NotificationCommandName.Add)

@@ -2,6 +2,7 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
   ChatInputCommandInteraction,
+  InteractionContextType,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../../model/context";
@@ -20,7 +21,7 @@ export default class UncaseCommand extends SlashCommandHandler {
     .setName("uncase")
     .setDescription("Delete mod cases.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((o) =>
       o
         .setName("case")
@@ -38,7 +39,6 @@ export default class UncaseCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

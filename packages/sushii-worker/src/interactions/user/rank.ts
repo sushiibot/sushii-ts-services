@@ -2,6 +2,7 @@ import {
   SlashCommandBuilder,
   AttachmentBuilder,
   ChatInputCommandInteraction,
+  InteractionContextType,
 } from "discord.js";
 import logger from "../../logger";
 import Context from "../../model/context";
@@ -15,7 +16,7 @@ export default class RankCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("rank")
     .setDescription("View your or another user's rank.")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addUserOption((o) =>
       o
         .setName("user")
@@ -24,7 +25,6 @@ export default class RankCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

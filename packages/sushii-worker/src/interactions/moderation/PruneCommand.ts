@@ -5,6 +5,7 @@ import {
   DiscordAPIError,
   Message,
   User,
+  InteractionContextType,
 } from "discord.js";
 import { MessageFlags, PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
@@ -162,7 +163,7 @@ export default class PruneCommand extends SlashCommandHandler {
     .setName("prune")
     .setDescription("Bulk delete messages with optional filters.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addIntegerOption((o) =>
       o
         .setName(PruneOption.MaxDeleteCount)

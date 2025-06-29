@@ -2,6 +2,7 @@ import {
   SlashCommandBuilder,
   PermissionFlagsBits,
   ChatInputCommandInteraction,
+  InteractionContextType,
 } from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
@@ -18,13 +19,12 @@ export default class WarnCommand extends SlashCommandHandler {
     .setName("warn")
     .setDescription("Warn members.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption(usersOption(ActionType.Warn))
     .addStringOption(reasonOption(ActionType.Warn, true))
     // .addAttachmentOption(attachmentOption)
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

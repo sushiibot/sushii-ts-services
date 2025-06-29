@@ -3,6 +3,7 @@ import {
   PermissionFlagsBits,
   ChatInputCommandInteraction,
   PermissionsBitField,
+  InteractionContextType,
 } from "discord.js";
 
 import Context from "../../model/context";
@@ -22,13 +23,12 @@ export default class UnbanCommand extends SlashCommandHandler {
     .setName("unban")
     .setDescription("Unban users.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption(usersOption(ActionType.BanRemove))
     .addStringOption(reasonOption(ActionType.BanRemove))
     // .addAttachmentOption(attachmentOption)
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

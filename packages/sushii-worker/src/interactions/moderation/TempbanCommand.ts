@@ -3,6 +3,7 @@ import {
   PermissionFlagsBits,
   ChatInputCommandInteraction,
   PermissionsBitField,
+  InteractionContextType,
 } from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
@@ -26,7 +27,7 @@ export default class TempbanCommand extends SlashCommandHandler {
       "Temporarily ban members. Run this again to change existing tempban durations.",
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption(usersOption(ActionType.TempBan))
     .addStringOption((o) =>
       o
@@ -39,7 +40,6 @@ export default class TempbanCommand extends SlashCommandHandler {
     .addStringOption(sendDMReasonOption)
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

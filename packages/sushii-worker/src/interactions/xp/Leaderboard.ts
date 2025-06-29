@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
+import { SlashCommandBuilder, ChatInputCommandInteraction, InteractionContextType } from "discord.js";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
@@ -22,7 +22,7 @@ export default class LeaderboardCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("leaderboard")
     .setDescription("Show the leaderboard for the server.")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((o) =>
       o
         .setName("timeframe")

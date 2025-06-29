@@ -3,6 +3,7 @@ import {
   ChatInputCommandInteraction,
   PermissionsBitField,
   PermissionFlagsBits,
+  InteractionContextType,
 } from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
@@ -21,13 +22,12 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
     .setName("untimeout")
     .setDescription("Remove the timeout for members.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption(usersOption(ActionType.TimeoutRemove))
     .addStringOption(reasonOption(ActionType.TimeoutRemove))
     .addStringOption(sendDMReasonOption)
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

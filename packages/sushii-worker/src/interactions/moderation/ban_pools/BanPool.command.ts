@@ -5,6 +5,7 @@ import {
   PermissionsBitField,
   EmbedBuilder,
   ChannelType,
+  InteractionContextType,
 } from "discord.js";
 import dayjs from "dayjs";
 import Context from "../../../model/context";
@@ -64,7 +65,7 @@ export default class BanPoolCommand extends SlashCommandHandler {
     .setName("banpool")
     .setDescription("Manage ban pool settings, sync bans or share ban reasons.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addSubcommand((c) =>
       c
         .setName(BanPoolOptionCommand.Create)

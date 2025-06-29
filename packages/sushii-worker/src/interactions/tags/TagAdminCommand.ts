@@ -1,6 +1,7 @@
 import {
   ChatInputCommandInteraction,
   EmbedBuilder,
+  InteractionContextType,
   PermissionFlagsBits,
   SlashCommandBuilder,
 } from "discord.js";
@@ -19,7 +20,7 @@ export default class TagAdminCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("tagadmin")
     .setDescription("Modify server tags.")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .addSubcommand((c) =>
       c

@@ -32,7 +32,7 @@ async function initializeShard(): Promise<void> {
       GatewayIntentBits.GuildMessageReactions,
       GatewayIntentBits.DirectMessages,
       GatewayIntentBits.MessageContent,
-      GatewayIntentBits.GuildEmojisAndStickers,
+      GatewayIntentBits.GuildExpressions,
     ],
     partials: [Partials.Message, Partials.Reaction, Partials.GuildMember],
     rest: {

@@ -2,6 +2,7 @@ import {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   PermissionsBitField,
+  InteractionContextType,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
@@ -26,7 +27,7 @@ export default class BanCommand extends SlashCommandHandler {
     .setName("ban")
     .setDescription("Ban users.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption(usersOption(ActionType.Ban))
     .addIntegerOption(daysToDeleteOption)
     .addStringOption(reasonOption(ActionType.Ban))
@@ -34,7 +35,6 @@ export default class BanCommand extends SlashCommandHandler {
     .addStringOption(sendDMReasonOption)
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

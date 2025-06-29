@@ -3,6 +3,7 @@ import {
   PermissionFlagsBits,
   ChatInputCommandInteraction,
   PermissionsBitField,
+  InteractionContextType,
 } from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
@@ -26,7 +27,7 @@ export default class TimeoutCommand extends SlashCommandHandler {
     .setName("timeout")
     .setDescription("Timeout members.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption(usersOption(ActionType.Timeout))
     .addStringOption((o) =>
       o
@@ -39,7 +40,6 @@ export default class TimeoutCommand extends SlashCommandHandler {
     .addStringOption(sendDMReasonOption)
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

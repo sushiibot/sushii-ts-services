@@ -5,6 +5,7 @@ import {
   GuildEmoji,
   Sticker,
   Collection,
+  InteractionContextType,
 } from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
@@ -322,7 +323,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("emojistats")
     .setDescription("Get stats for server emoji use.")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((o) =>
       o
         .setName(CommandOption.Group)

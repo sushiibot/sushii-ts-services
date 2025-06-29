@@ -2,6 +2,7 @@ import {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   PermissionsBitField,
+  InteractionContextType,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
@@ -21,14 +22,13 @@ export default class KickCommand extends SlashCommandHandler {
     .setName("kick")
     .setDescription("Kick members.")
     .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption(usersOption(ActionType.Kick))
     .addStringOption(reasonOption(ActionType.Kick))
     // .addAttachmentOption(attachmentOption)
     .addStringOption(sendDMReasonOption)
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

@@ -4,6 +4,7 @@ import {
   ChatInputCommandInteraction,
   PermissionsBitField,
   EmbedBuilder,
+  InteractionContextType,
 } from "discord.js";
 import dayjs from "dayjs";
 import Context from "../../model/context";
@@ -20,10 +21,9 @@ export default class TempbanListCommand extends SlashCommandHandler {
     .setName("tempban-list")
     .setDescription("List all active temporary bans in the server.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

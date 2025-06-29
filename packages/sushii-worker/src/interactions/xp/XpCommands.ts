@@ -2,6 +2,7 @@ import {
   SlashCommandBuilder,
   EmbedBuilder,
   ChatInputCommandInteraction,
+  InteractionContextType,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
 import Context from "../../model/context";
@@ -43,7 +44,7 @@ export default class XpCommand extends SlashCommandHandler {
     .setName("xp")
     .setDescription("Configure xp options and level roles.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addSubcommandGroup((g) =>
       g
         .setName(XpGroupName.Block)

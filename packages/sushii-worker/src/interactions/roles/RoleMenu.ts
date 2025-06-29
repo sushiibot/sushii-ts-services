@@ -13,6 +13,7 @@ import {
   StringSelectMenuOptionBuilder,
   DiscordAPIError,
   Role,
+  InteractionContextType,
 } from "discord.js";
 import { t } from "i18next";
 import { None, Option, Some } from "ts-results";
@@ -73,7 +74,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("rolemenu")
     .setDescription("Create a role menu.")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
     .addSubcommand((c) =>
       c

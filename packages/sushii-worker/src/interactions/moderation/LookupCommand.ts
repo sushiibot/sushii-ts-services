@@ -4,6 +4,7 @@ import {
   ChatInputCommandInteraction,
   PermissionsBitField,
   User,
+  InteractionContextType,
 } from "discord.js";
 import Context from "../../model/context";
 import db from "../../model/db";
@@ -93,7 +94,7 @@ export default class LookupCommand extends SlashCommandHandler {
     .setName("lookup")
     .setDescription("Look up cross-server bans for a user.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addUserOption((o) =>
       o
         .setName("user")
@@ -102,7 +103,6 @@ export default class LookupCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

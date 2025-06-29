@@ -7,6 +7,7 @@ import {
   MessageFlags,
   DiscordAPIError,
   RESTJSONErrorCodes,
+  InteractionContextType,
 } from "discord.js";
 import dayjs from "dayjs";
 import Context from "../../model/context";
@@ -46,7 +47,7 @@ export default class GiveawayCommand extends SlashCommandHandler {
     .setName("giveaway")
     .setDescription("Host giveaways in your server.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addSubcommand((c) =>
       c
         .setName(GiveawaySubcommand.Create)

@@ -6,6 +6,7 @@ import {
   ChatInputCommandInteraction,
   ChannelType,
   DiscordAPIError,
+  InteractionContextType,
 } from "discord.js";
 import dayjs from "dayjs";
 import plugin from "dayjs/plugin/duration";
@@ -32,7 +33,7 @@ export default class SlowmodeCommand extends SlashCommandHandler {
     .setName("slowmode")
     .setDescription("Adjust slowmode for channels.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addStringOption((o) =>
       o
         .setName(SlowmodeOption.Duration)

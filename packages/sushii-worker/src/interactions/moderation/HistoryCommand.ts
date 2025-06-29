@@ -3,6 +3,7 @@ import {
   PermissionFlagsBits,
   ChatInputCommandInteraction,
   PermissionsBitField,
+  InteractionContextType,
 } from "discord.js";
 import Context from "../../model/context";
 import timestampToUnixTime from "../../utils/timestampToUnixTime";
@@ -21,7 +22,7 @@ export default class HistoryCommand extends SlashCommandHandler {
     .setName("history")
     .setDescription("Show the moderation case history for a user.")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addUserOption((o) =>
       o
         .setName("user")
@@ -30,7 +31,6 @@ export default class HistoryCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

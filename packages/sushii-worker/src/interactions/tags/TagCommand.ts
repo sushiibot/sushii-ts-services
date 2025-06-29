@@ -5,6 +5,7 @@ import {
   AttachmentBuilder,
   ChatInputCommandInteraction,
   GuildMember,
+  InteractionContextType,
 } from "discord.js";
 import dayjs from "dayjs";
 import {
@@ -152,7 +153,7 @@ export default class TagCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
     .setName("tag")
     .setDescription("Create and use custom commands with custom responses.")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addSubcommand((c) =>
       c
         .setName("add")
@@ -310,7 +311,6 @@ export default class TagCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,

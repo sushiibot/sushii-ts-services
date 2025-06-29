@@ -8,6 +8,7 @@ import {
   ButtonStyle,
   ComponentType,
   ChannelType,
+  InteractionContextType,
 } from "discord.js";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import Context from "../../model/context";
@@ -279,7 +280,7 @@ export default class SettingsCommand extends SlashCommandHandler {
     .setName("settings")
     .setDescription("Configure sushii server settings.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addSubcommand((c) =>
       c.setName("list").setDescription("Show the current server settings."),
     )
