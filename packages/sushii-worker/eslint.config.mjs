@@ -9,6 +9,7 @@ export default tseslint.config(
   tseslint.configs.strict,
   tseslint.configs.stylistic,
   eslintConfigPrettier,
+
   // tseslint.configs.strictTypeChecked,
   // {
   //   languageOptions: {
@@ -18,4 +19,9 @@ export default tseslint.config(
   //     },
   //   },
   // },
+  {
+    rules: {
+      "@typescript-eslint/no-inferrable-types": "off"
+    }
+  }
 );

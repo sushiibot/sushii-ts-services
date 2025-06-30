@@ -15,7 +15,6 @@ import legacyModLogNotifierHandler from "./events/GuildBanAdd/LegacyModLogNotifi
 import modLogHandler from "./events/ModLogHandler";
 import { msgLogHandler } from "./events/msglog/MsgLogHandler";
 import msgLogCacheHandler from "./events/msglog/MessageCacheHandler";
-import levelHandler from "./events/LevelHandler";
 import webhookLog from "./webhookLogger";
 import Color from "./utils/colors";
 import { StatName, updateStat } from "./tasks/StatsTask";
@@ -49,6 +48,7 @@ import {
   cacheGuildUpdateHandler,
 } from "./events/cache/cacheGuild";
 import startTasks from "./tasks/startTasks";
+import messageLevelHandler from "./features/leveling/presentation/MessageLevelHandler";
 // import { mentionTagHandler } from "./events/TagsMention";
 
 const tracerName = "event-handler";
@@ -469,7 +469,7 @@ export default function registerEventHandlers(
           ctx,
           Events.MessageCreate,
           {
-            level: levelHandler,
+            level: messageLevelHandler,
             emojiStats: emojiStatsMsgHandler,
             notification: notificationHandler,
             deployToggle: deployToggleHandler,
