@@ -119,6 +119,48 @@ Presentation → Application → Domain ← Infrastructure
   Commands      Orchestration  Logic    Adapters
 ```
 
+### Example Directory Structure
+
+```
+src/
+├── core/                          # Framework-agnostic bootstrapping
+│   ├── config/                    # env loading, constants
+│   ├── di/                        # dependency-injection container setup
+│   ├── events/                    # event bus abstraction (publish/subscribe)
+│   └── index.ts                   # application entry point
+│
+├── shared/                        # Cross-cutting utilities
+│   ├── errors/                    # custom error types
+│   ├── logger/                    # pino config
+│   └── types/                     # global TS types/interfaces
+│
+├── infrastructure/                # External adapters & frameworks
+│   ├── discord/                   # Discord.js client provider
+│   ├── database/                  # DB client setup (e.g. Prisma, TypeORM)
+│   └── analytics/                 # metrics, telemetry adapters
+│
+└── features/                      # Vertical slices (per feature)
+    ├── moderation/
+    │   ├── domain/                # business entities & repository interfaces
+    │   │   ├── entities/
+    │   │   └── repositories/
+    │   │
+    │   ├── application/           # use-cases / interactors
+    │   │   └── banUserUseCase.ts
+    │   │
+    │   ├── infrastructure/        # concrete implementations
+    │   │   ├── DiscordBanService.ts
+    │   │   └── BanRepositoryPostgres.ts
+    │   │
+    │   └── presentation/          # Discord commands, event handlers, views
+    │       ├── commands/
+    │       ├── events/
+    │       └── views/
+    │
+    ├── leveling/                  # same structure as moderation
+    └── giveaways/                 # same structure as moderation
+```
+
 ### Layer Responsibilities
 
 #### 1. Domain Layer (Core Business Logic)
