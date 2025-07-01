@@ -3,7 +3,7 @@ version: "3.8"
 services:
   sushii_worker: &sushii_worker_base
     build:
-      dockerfile: ./dockerfiles/sushii-worker/Dockerfile
+      dockerfile: ./packages/sushii-worker/Dockerfile
       context: .
     logging:
       driver: "json-file"

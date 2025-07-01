@@ -7,22 +7,19 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /config
 
+# Root package.json and lockfile
 COPY ./package.json ./bun.lockb ./
 
-# Copy all packages.jsons to cache dependencies and so lockfile matches
+# Project specific package.json - required to copy all package.json files to
+# ensure the lockfile doesn't change
 COPY ./packages/sushii-worker/package.json ./packages/sushii-worker/
-COPY ./packages/sushii-data/package.json ./packages/sushii-data/
 COPY ./packages/sushii-db/package.json ./packages/sushii-db/
 
-# Install dependencies, this is gonna be more than needed but lockfile idk
-# TODO: Prevent need of copying all package.jsons
-RUN bun install --frozen-lockfile
+# Install only the sushii-worker dependencies
+RUN bun install --filter=sushii-worker --frozen-lockfile
 
 COPY . ./
 
-# Not yet used
 EXPOSE 8080
-
 WORKDIR /config/packages/sushii-worker
-
 ENTRYPOINT [ "bun", "run", "./src/index.ts" ]
