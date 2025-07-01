@@ -21,7 +21,8 @@ export default tseslint.config(
   // },
   {
     rules: {
-      "@typescript-eslint/no-inferrable-types": "off"
+      "@typescript-eslint/no-inferrable-types": "off",
+      "@typescript-eslint/no-non-null-assertion": "warn",
     }
   }
 );
