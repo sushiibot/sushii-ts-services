@@ -14,7 +14,7 @@ import {
 import { GiveawayRow } from "../../db/Giveaway/Giveaway.table";
 import db from "../../infrastructure/database/db";
 import { getUserGuildLevel } from "../../db/UserLevel/UserLevel.repository";
-import { levelFromXp } from "../../services/XpService";
+import { calculateLevel } from "../../features/leveling/domain/utils/LevelCalculations";
 import { GiveawayOption } from "./Giveaway.options";
 import Color from "../../utils/colors";
 import { getGiveawayEmbed } from "./Giveaway.embed";
@@ -174,7 +174,7 @@ export async function isEligibleForGiveaway(
   const guildLevel = await getUserGuildLevel(db, giveaway.guild_id, member.id);
 
   const allTimeXP = guildLevel ? BigInt(guildLevel.msg_all_time) : 0n;
-  const userLevel = levelFromXp(allTimeXP);
+  const userLevel = calculateLevel(allTimeXP);
 
   if (giveaway.required_min_level !== null) {
     if (userLevel < giveaway.required_min_level) {

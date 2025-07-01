@@ -1,3 +1,9 @@
+import {
+  calculateLevel,
+  calculateLevelProgress,
+  LevelProgress,
+} from "../utils/LevelCalculations";
+
 export class UserLevel {
   constructor(
     private readonly userId: string,
@@ -38,7 +44,7 @@ export class UserLevel {
   }
 
   getCurrentLevel(): number {
-    return this.levelFromXp(this.xpAllTime);
+    return calculateLevel(this.xpAllTime);
   }
 
   canGainXp(): boolean {
@@ -115,8 +121,8 @@ export class UserLevel {
     return { week: weekNo, year: d.getUTCFullYear() };
   }
 
-  private levelFromXp(xp: number): number {
-    return Math.floor((Math.sqrt(100 * (2 * xp + 25)) + 50) / 100);
+  getLevelProgress(): LevelProgress {
+    return calculateLevelProgress(this.xpAllTime);
   }
 
   static create(

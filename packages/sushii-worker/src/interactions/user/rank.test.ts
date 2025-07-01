@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { levelFromXp, calculateLevelProgress } from "../../services/XpService";
+import { calculateLevel, calculateLevelProgress } from "../../features/leveling/domain/utils/LevelCalculations";
 
 describe("Level calculations", () => {
   describe.each([
@@ -45,7 +45,7 @@ describe("Level calculations", () => {
       const levelProg = calculateLevelProgress(xp);
 
       test("getLevel", () => {
-        const level = Number(levelFromXp(BigInt(xp)));
+        const level = Number(calculateLevel(BigInt(xp)));
 
         expect(level).toEqual(wantLevel);
         expect(levelProg.level).toEqual(level);

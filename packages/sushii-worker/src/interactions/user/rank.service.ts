@@ -1,7 +1,7 @@
 import { User } from "discord.js";
 import { Ok, Result } from "ts-results";
 import Context from "../../model/context";
-import { calculateLevelProgress } from "../../services/XpService";
+import { calculateLevelProgress } from "../../features/leveling/domain/utils/LevelCalculations";
 import { getUserOrDefault } from "../../db/User/User.repository";
 import db from "../../infrastructure/database/db";
 import {

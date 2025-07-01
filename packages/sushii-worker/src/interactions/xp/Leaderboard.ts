@@ -20,7 +20,7 @@ import {
   timeframeToString,
   userGuildTimeframeRank,
 } from "../../db/UserLevel/UserLevel.repository";
-import { calculateLevelProgress, levelFromXp } from "../../services/XpService";
+import { calculateLevel, calculateLevelProgress } from "../../features/leveling/domain/utils/LevelCalculations";
 
 export default class LeaderboardCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
@@ -93,7 +93,7 @@ export default class LeaderboardCommand extends SlashCommandHandler {
 
       let userInTopList = false;
       for (const row of pageData) {
-        const level = levelFromXp(BigInt(row.msg_all_time));
+        const level = calculateLevel(BigInt(row.msg_all_time));
 
         const levelProgress = calculateLevelProgress(BigInt(row.msg_all_time));
 
@@ -101,7 +101,7 @@ export default class LeaderboardCommand extends SlashCommandHandler {
         desc += "\n";
         desc += `┣ Level ${level}`;
         desc += "\n";
-        desc += `┗ ${levelProgress.nextLevelXpProgress} / ${levelProgress.nextLevelXpRequired} XP to level ${level + 1n}`;
+        desc += `┗ ${levelProgress.nextLevelXpProgress} / ${levelProgress.nextLevelXpRequired} XP to level ${level + 1}`;
         desc += "\n";
 
         if (row.user_id === interaction.user.id) {
@@ -110,7 +110,7 @@ export default class LeaderboardCommand extends SlashCommandHandler {
       }
 
       if (!userInTopList && userGuildRank && userGuildLevel) {
-        const userLevel = levelFromXp(BigInt(userGuildLevel.msg_all_time));
+        const userLevel = calculateLevel(BigInt(userGuildLevel.msg_all_time));
         desc += "~~---~~\n";
         desc += `\`${userGuildRank.rank}.\` <@${userGuildLevel.user_id}>: Level ${userLevel}`;
         desc += "\n";
