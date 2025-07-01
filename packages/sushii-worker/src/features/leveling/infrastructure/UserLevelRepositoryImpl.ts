@@ -1,15 +1,16 @@
 import { eq, and } from "drizzle-orm";
-import { drizzleDb } from "src/infrastructure/database/db";
 import { userLevelsInAppPublic } from "src/infrastructure/database/schema";
 import { UserLevel } from "../domain/entities/UserLevel";
 import { UserLevelRepository } from "../domain/repositories/UserLevelRepository";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 export class UserLevelRepositoryImpl implements UserLevelRepository {
+  constructor(private readonly db: NodePgDatabase) {}
   async findByUserAndGuild(
     userId: string,
     guildId: string,
   ): Promise<UserLevel | null> {
-    const result = await drizzleDb
+    const result = await this.db
       .select()
       .from(userLevelsInAppPublic)
       .where(
@@ -37,7 +38,7 @@ export class UserLevelRepositoryImpl implements UserLevelRepository {
   }
 
   async save(userLevel: UserLevel): Promise<void> {
-    await drizzleDb
+    await this.db
       .update(userLevelsInAppPublic)
       .set({
         msgAllTime: BigInt(userLevel.getAllTimeXp()),
@@ -55,7 +56,7 @@ export class UserLevelRepositoryImpl implements UserLevelRepository {
   }
 
   async create(userLevel: UserLevel): Promise<void> {
-    await drizzleDb.insert(userLevelsInAppPublic).values({
+    await this.db.insert(userLevelsInAppPublic).values({
       userId: BigInt(userLevel.getUserId()),
       guildId: BigInt(userLevel.getGuildId()),
       msgAllTime: BigInt(userLevel.getAllTimeXp()),

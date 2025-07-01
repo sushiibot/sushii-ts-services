@@ -1,10 +1,11 @@
 import { eq, and, inArray, or } from "drizzle-orm";
-import { drizzleDb } from "src/infrastructure/database/db";
 import { xpBlocksInAppPublic } from "src/infrastructure/database/schema";
 import { XpBlock } from "../domain/entities/XpBlock";
 import { XpBlockRepository } from "../domain/repositories/XpBlockRepository";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 export class XpBlockRepositoryImpl implements XpBlockRepository {
+  constructor(private readonly db: NodePgDatabase) {}
   async findActiveBlocks(
     guildId: string,
     channelId: string,
@@ -30,7 +31,7 @@ export class XpBlockRepositoryImpl implements XpBlockRepository {
       );
     }
 
-    const result = await drizzleDb
+    const result = await this.db
       .select()
       .from(xpBlocksInAppPublic)
       .where(

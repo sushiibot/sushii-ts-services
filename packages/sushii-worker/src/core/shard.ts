@@ -1,14 +1,15 @@
-import "./dayjs";
+import "../dayjs";
 import * as Sentry from "@sentry/node";
 import { Client, GatewayIntentBits, Options, Partials } from "discord.js";
-import log from "./logger";
-import InteractionClient from "./client";
-import initI18next from "./i18next";
-import registerInteractionHandlers from "./interactions/commands";
-import sdk from "./tracing";
-import Context from "./model/context";
-import config from "./model/config";
-import registerEventHandlers from "./handlers";
+import log from "../logger";
+import InteractionRouter from "./infrastructure/discord/InteractionRouter";
+import initI18next from "../i18next";
+import registerInteractionHandlers from "../interactions/commands";
+import sdk from "../tracing";
+import Context from "../model/context";
+import config from "../model/config";
+import registerEventHandlers from "./infrastructure/discord/handlers";
+import { initCore, registerFeatures } from "./bootstrap";
 
 Error.stackTraceLimit = 50;
 
@@ -48,11 +49,19 @@ async function initializeShard(): Promise<void> {
   djsClient.rest.setToken(config.DISCORD_TOKEN);
 
   const ctx = new Context(djsClient);
-  const client = new InteractionClient(ctx);
-  registerInteractionHandlers(client);
+  const interactionRouter = new InteractionRouter(ctx);
+  registerInteractionHandlers(interactionRouter);
 
-  await client.register();
-  registerEventHandlers(ctx, djsClient, client);
+  await interactionRouter.register();
+
+  // START NEW REGISTRATION
+  const { db } = initCore();
+
+  // New registration of features
+  registerFeatures(db, djsClient);
+
+  // Legacy registration of event handlers
+  registerEventHandlers(ctx, djsClient, interactionRouter);
 
   process.on("SIGTERM", async () => {
     log.info("SIGTERM received, shutting down shard gracefully");

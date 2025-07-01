@@ -19,26 +19,26 @@ import {
 import * as Sentry from "@sentry/node";
 import { t } from "i18next";
 import opentelemetry from "@opentelemetry/api";
-import Context from "./model/context";
-import log from "./logger";
+import Context from "../../../model/context";
+import log from "../../../logger";
 import {
   SlashCommandHandler,
   ModalHandler,
   ButtonHandler,
   SelectMenuHandler,
   AutocompleteHandler,
-} from "./interactions/handlers";
-import ContextMenuHandler from "./interactions/handlers/ContextMenuHandler";
-import getFullCommandName from "./utils/getFullCommandName";
-import validationErrorToString from "./utils/validationErrorToString";
-import config from "./model/config";
-import { isCurrentDeploymentActive } from "./db/Deployment/Deployment.repository";
-import { updateInteractionMetrics } from "./metrics/interactionMetrics";
+} from "../../../interactions/handlers";
+import ContextMenuHandler from "../../../interactions/handlers/ContextMenuHandler";
+import getFullCommandName from "../../../utils/getFullCommandName";
+import validationErrorToString from "../../../utils/validationErrorToString";
+import config from "../../../model/config";
+import { isCurrentDeploymentActive } from "../../../db/Deployment/Deployment.repository";
+import { updateInteractionMetrics } from "../../../metrics/interactionMetrics";
 
 const tracer = opentelemetry.trace.getTracer("interaction-client");
 
 // For JSON.stringify()
-// eslint-disable-next-line no-extend-native, func-names
+
 (BigInt.prototype as any).toJSON = function (): string {
   return this.toString();
 };
@@ -74,11 +74,10 @@ function findFocusedOptionRecur(
 function findFocusedOption(
   interaction: AutocompleteInteraction,
 ): FocusedOption | undefined {
-  // eslint-disable-next-line no-restricted-syntax
   return findFocusedOptionRecur(interaction.options, [interaction.commandName]);
 }
 
-export default class Client {
+export default class InteractionRouter {
   /**
    * Command context for shared stuff like database connections, API clients, etc.
    */

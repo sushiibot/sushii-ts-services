@@ -1,4 +1,4 @@
-import InteractionClient from "../client";
+import InteractionClient from "../core/infrastructure/discord/InteractionRouter";
 import UserInfoCommand from "./user/userinfo";
 import FishyCommand from "./user/fishy";
 import RepCommand from "./user/rep";

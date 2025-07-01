@@ -7,48 +7,47 @@ import {
 } from "discord.js";
 import * as Sentry from "@sentry/node";
 import opentelemetry, { Span } from "@opentelemetry/api";
-import logger from "./logger";
-import InteractionClient from "./client";
-import { EventHandlerFn } from "./events/EventHandler";
-import Context from "./model/context";
-import legacyModLogNotifierHandler from "./events/GuildBanAdd/LegacyModLogNotifier";
-import modLogHandler from "./events/ModLogHandler";
-import { msgLogHandler } from "./events/msglog/MsgLogHandler";
-import msgLogCacheHandler from "./events/msglog/MessageCacheHandler";
-import webhookLog from "./webhookLogger";
-import Color from "./utils/colors";
-import { StatName, updateStat } from "./tasks/StatsTask";
+import logger from "../../../logger";
+import InteractionClient from "./InteractionRouter";
+import { EventHandlerFn } from "../../../events/EventHandler";
+import Context from "../../../model/context";
+import legacyModLogNotifierHandler from "../../../events/GuildBanAdd/LegacyModLogNotifier";
+import modLogHandler from "../../../events/ModLogHandler";
+import { msgLogHandler } from "../../../events/msglog/MsgLogHandler";
+import msgLogCacheHandler from "../../../events/msglog/MessageCacheHandler";
+import webhookLog from "../../../webhookLogger";
+import Color from "../../../utils/colors";
+import { StatName, updateStat } from "../../../tasks/StatsTask";
 import {
   banCacheBanHandler,
   banCacheUnbanHandler,
   banReadyHandler,
-} from "./events/BanCache";
+} from "../../../events/BanCache";
 import {
   emojiStatsMsgHandler,
   emojiStatsReactHandler,
   emojiAndStickerStatsReadyHandler,
-} from "./events/EmojiStatsHandler";
-import { banPoolOnBanHandler } from "./events/ban_pool/BanPoolHandler";
-import config from "./model/config";
-import { isCurrentDeploymentActive } from "./db/Deployment/Deployment.repository";
+} from "../../../events/EmojiStatsHandler";
+import { banPoolOnBanHandler } from "../../../events/ban_pool/BanPoolHandler";
+import config from "../../../model/config";
+import { isCurrentDeploymentActive } from "../../../db/Deployment/Deployment.repository";
 import {
   memberLogJoinHandler,
   memberLogLeaveHandler,
-} from "./events/MemberLog";
-import { notificationHandler } from "./events/Notifications";
+} from "../../../events/MemberLog";
+import { notificationHandler } from "../../../events/Notifications";
 import {
   memberJoinMessageHandler,
   memberLeaveMessageHandler,
-} from "./events/JoinLeaveMessage";
-import { deployToggleHandler } from "./events/Deployment";
-import { updateGatewayDispatchEventMetrics } from "./metrics/gatewayMetrics";
-import { cacheUserHandler } from "./events/cache/cacheUser";
+} from "../../../events/JoinLeaveMessage";
+import { deployToggleHandler } from "../../../events/Deployment";
+import { updateGatewayDispatchEventMetrics } from "../../../metrics/gatewayMetrics";
+import { cacheUserHandler } from "../../../events/cache/cacheUser";
 import {
   cacheGuildCreateHandler,
   cacheGuildUpdateHandler,
-} from "./events/cache/cacheGuild";
-import startTasks from "./tasks/startTasks";
-import messageLevelHandler from "./features/leveling/presentation/MessageLevelHandler";
+} from "../../../events/cache/cacheGuild";
+import startTasks from "../../../tasks/startTasks";
 // import { mentionTagHandler } from "./events/TagsMention";
 
 const tracerName = "event-handler";
@@ -469,7 +468,6 @@ export default function registerEventHandlers(
           ctx,
           Events.MessageCreate,
           {
-            level: messageLevelHandler,
             emojiStats: emojiStatsMsgHandler,
             notification: notificationHandler,
             deployToggle: deployToggleHandler,
