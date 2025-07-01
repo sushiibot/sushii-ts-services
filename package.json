@@ -5,10 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "test:worker": "bun --filter @sushiibot/sushii-worker test",
-    "dev:data": "bun --filter @sushiibot/sushii-data dev",
-    "dev:worker": "bun --filter @sushiibot/sushii-worker dev",
-    "dev": "concurrently -c auto --kill-others \"bun dev:data\" \"bun dev:worker\""
+    "test:worker": "bun run --filter ./packages/sushii-worker test",
+    "dev:worker": "bun run --filter ./packages/sushii-worker dev"
   },
   "overrides": {
     "form-data": "4.0.0"
