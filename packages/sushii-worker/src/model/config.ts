@@ -20,6 +20,7 @@ const schema = z.object({
   LOG_LEVEL: z.string().optional().default("info"),
   APPLICATION_ID: z.string(),
   SENTRY_DSN: z.string().optional(),
+  SENTRY_ENVIRONMENT: z.string().optional(),
   SUSHII_IMAGE_SERVER_URL: z.string(),
 
   METRICS_PORT: z.string().optional().default("9090"),
