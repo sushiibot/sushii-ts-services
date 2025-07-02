@@ -135,7 +135,7 @@ jobs:
             playbooks/deploy.yml \
             -e "target_host=sushii" \
             -e "service=sushii-staging" \
-            -e "docker_image_check_version=${{ needs.docker-build.outputs.sha_short }}" \
+            -e "image_version=${{ needs.docker-build.outputs.sha_short }}" \
             -e "docker_registry_password=${{ secrets.GITHUB_TOKEN }}" \
             -e "docker_registry_user=${{ github.repository_owner }}" \
             -t deploy
