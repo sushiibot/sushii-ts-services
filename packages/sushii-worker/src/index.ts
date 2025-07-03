@@ -39,7 +39,7 @@ async function main(): Promise<void> {
   });
 
   // Start metrics and healthcheck server (runs only in main process)
-  const s = server(manager, []);
+  const servers = server(manager, []);
 
   registerShutdownSignals(async () => {
     log.info("shutting down ShardingManager");
@@ -53,8 +53,8 @@ async function main(): Promise<void> {
       log.info("closing tracing");
       await sdk.shutdown();
 
-      log.info("closing metrics server");
-      s.stop();
+      log.info("closing servers");
+      servers.forEach((s) => s.stop());
 
       log.flush();
     } catch (err) {

@@ -24,6 +24,7 @@ const schema = z.object({
   SUSHII_IMAGE_SERVER_URL: z.string(),
 
   METRICS_PORT: z.string().optional().default("9090"),
+  HEALTH_PORT: z.string().optional().default("8080"),
 
   // Example: 'https://discord.com/api'
   DISCORD_API_PROXY_URL: z.string(),

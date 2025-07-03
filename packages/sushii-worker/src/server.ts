@@ -46,7 +46,43 @@ const pinoLoggerMiddleware: MiddlewareHandler = async (c, next) => {
   }
 };
 
-export default function server(
+function createHealthServer(manager: ShardingManager): Server {
+  const app = new Hono();
+
+  // Middleware
+  app.use("*", pinoLoggerMiddleware);
+
+  // Routes
+  app.get("/health", (c) => {
+    const shardStatuses = Array.from(manager.shards.values()).map(
+      (s) => s.ready,
+    );
+    const readyCount = shardStatuses.filter(Boolean).length;
+
+    const totalShards = manager.totalShards;
+    const fullyReady = readyCount === totalShards;
+    const statusCode = fullyReady ? 200 : 503;
+
+    return c.json(
+      {
+        status: fullyReady ? "healthy" : "unhealthy",
+        deployment: config.DEPLOYMENT_NAME,
+        shards: {
+          total: totalShards,
+          ready: readyCount,
+        },
+      },
+      statusCode,
+    );
+  });
+
+  return Bun.serve({
+    port: config.HEALTH_PORT,
+    fetch: app.fetch,
+  });
+}
+
+function createMonitoringServer(
   manager: ShardingManager,
   commands: RESTPostAPIApplicationCommandsJSONBody[],
 ): Server {
@@ -55,15 +91,7 @@ export default function server(
   // Middleware
   app.use("*", pinoLoggerMiddleware);
 
-  // Handlers
-  app.notFound((c) => c.json({ message: "Not Found", ok: false }, 404));
-  app.onError((err, c) => {
-    logger.error(`${err}`);
-    return c.text("Error", 500);
-  });
-
   // Routes
-  app.get("/", (c) => c.text("ok"));
   app.get("/commands", (c) => c.json(commands));
   app.get("/status", (c) => {
     const shardInfo = {
@@ -78,7 +106,10 @@ export default function server(
       })),
     };
 
+    const fullyReady = shardInfo.status.every((s) => s.ready);
+
     return c.json({
+      status: fullyReady ? "healthy" : "unhealthy",
       config: {
         deployment: config.DEPLOYMENT_NAME,
         owner: {
@@ -103,24 +134,37 @@ export default function server(
 
       c.header("Content-Type", register.contentType);
       return c.text(metrics);
-    } catch (ex) {
+    } catch (err) {
+      logger.error({ err }, "Error generating metrics");
+
       throw new HTTPException(500, {
         message: "Error generating metrics",
       });
     }
   });
 
-  const s = Bun.serve({
+  return Bun.serve({
     port: config.METRICS_PORT,
     fetch: app.fetch,
   });
+}
+
+export default function server(
+  manager: ShardingManager,
+  commands: RESTPostAPIApplicationCommandsJSONBody[],
+): Server[] {
+  const healthServer = createHealthServer(manager);
+  const monitoringServer = createMonitoringServer(manager, commands);
 
   logger.info(
-    `metrics listening on http://localhost:${config.METRICS_PORT}/metrics`,
+    `health endpoint listening on http://localhost:${config.HEALTH_PORT}/health`,
   );
   logger.info(
-    `healthcheck listening on http://localhost:${config.METRICS_PORT}/healthcheck`,
+    `metrics endpoint listening on http://localhost:${config.METRICS_PORT}/metrics`,
+  );
+  logger.info(
+    `status endpoint listening on http://localhost:${config.METRICS_PORT}/status`,
   );
 
-  return s;
+  return [healthServer, monitoringServer];
 }

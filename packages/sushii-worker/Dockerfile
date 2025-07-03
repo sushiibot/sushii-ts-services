@@ -35,6 +35,12 @@ ENV BUILD_DATE=${BUILD_DATE}
 LABEL org.opencontainers.image.revision=${GIT_HASH}
 LABEL org.opencontainers.image.created=${BUILD_DATE}
 
+# 8080 - Healthcheck
+# 9090 - Metrics
 EXPOSE 8080
-WORKDIR /config/packages/sushii-worker
-ENTRYPOINT [ "bun", "run", "./src/index.ts" ]
+EXPOSE 9090
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:8080/health || exit 1
+
+ENTRYPOINT [ "bun", "run", "/config/packages/sushii-worker/src/index.ts" ]
