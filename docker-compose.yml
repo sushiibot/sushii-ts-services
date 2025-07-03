@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   sushii_worker: &sushii_worker_base
     build:
@@ -12,6 +10,8 @@ services:
         max-file: "3"
         labels: "production_status,service_name"
     restart: unless-stopped
+    depends_on:
+      - discord_api_proxy
     environment:
       # blue is default, and for now just 1 deployment green later
       - DEPLOYMENT_NAME=blue
@@ -19,8 +19,8 @@ services:
       - LOG_LEVEL=debug
       - NODE_ENV=production
       - DISCORD_TOKEN=$DISCORD_TOKEN
-      - APPLICATION_ID=193163942502072320
-      - DATABASE_URL=$DATABASE_URL
+      - APPLICATION_ID=$APPLICATION_ID
+      - DATABASE_URL=postgres://sushii:sushii@sushii_db:5432/sushii
       - SENTRY_DSN=$SENTRY_DSN
       - DISCORD_API_PROXY_URL=http://discord_api_proxy:8080/api
       - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
@@ -30,13 +30,12 @@ services:
       # Notifications
       - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
       - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
-      # Increase max memory usage - should use approx 1100 MB on start
-      - NODE_OPTIONS=--max-old-space-size=4096
     expose:
-      - "9090"
+      - "8080" # Status
+      - "9090" # Metrics
     networks:
       - sushii_net
-      - metrics
+      # - metrics
     extra_hosts:
       - "host.docker.internal:host-gateway"
     labels:
@@ -70,8 +69,23 @@ services:
       # Increase max memory usage - should use approx 1100 MB on start
       - NODE_OPTIONS=--max-old-space-size=4096
 
+  sushii_db:
+    image: postgres:17-bookworm
+    container_name: sushii_db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=sushii
+      - POSTGRES_PASSWORD=sushii
+      - POSTGRES_DB=sushii
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+    networks:
+      - sushii_net
+
   discord_api_proxy:
-    image: discordjs/proxy
+    build:
+      dockerfile: Dockerfile
+      context: ./packages/api-proxy
     container_name: discord_api_proxy
     restart: unless-stopped
     expose:
@@ -80,6 +94,7 @@ services:
       - sushii_net
     labels:
       - "traefik.enable=false"
+
   jaeger:
     image: jaegertracing/all-in-one
     restart: unless-stopped
