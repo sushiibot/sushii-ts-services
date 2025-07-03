@@ -23,7 +23,7 @@ import {
 import db from "../../infrastructure/database/db";
 import { getAllBanPoolMemberships } from "../../interactions/moderation/ban_pools/BanPoolMember.repository";
 import { BanPoolMemberRow } from "../../interactions/moderation/ban_pools/BanPoolMember.table";
-import logger from "../../logger";
+import logger from "../../core/logger";
 import { banPoolEmitter } from "./BanPoolEmitter";
 import { getGuildSettings } from "../../interactions/moderation/ban_pools/GuildSettings.repository";
 import { insertBanPoolEntry } from "../../db/BanPool/BanPoolEntry.repository";

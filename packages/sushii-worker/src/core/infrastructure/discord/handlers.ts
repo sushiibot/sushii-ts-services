@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import * as Sentry from "@sentry/node";
 import opentelemetry, { Span } from "@opentelemetry/api";
-import logger from "../../../logger";
+import logger from "../../logger";
 import InteractionClient from "./InteractionRouter";
 import { EventHandlerFn } from "../../../events/EventHandler";
 import Context from "../../../model/context";
@@ -15,7 +15,7 @@ import legacyModLogNotifierHandler from "../../../events/GuildBanAdd/LegacyModLo
 import modLogHandler from "../../../events/ModLogHandler";
 import { msgLogHandler } from "../../../events/msglog/MsgLogHandler";
 import msgLogCacheHandler from "../../../events/msglog/MessageCacheHandler";
-import webhookLog from "../../../webhookLogger";
+import webhookLog from "../../webhookLogger";
 import Color from "../../../utils/colors";
 import { StatName, updateStat } from "../../../tasks/StatsTask";
 import {

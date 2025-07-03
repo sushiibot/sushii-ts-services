@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "discord.js";
 import dayjs from "dayjs";
-import { newModuleLogger } from "../logger";
+import { newModuleLogger } from "../core/logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import {

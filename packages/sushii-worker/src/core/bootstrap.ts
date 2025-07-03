@@ -7,7 +7,7 @@ import { drizzleDb } from "@/infrastructure/database/db";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Client } from "discord.js";
 import { EventHandler } from "./presentation/EventHandler";
-import logger from "@/logger";
+import logger from "@/core/logger";
 
 export function initCore() {
   // This just returns the global existing database for now, until we fully

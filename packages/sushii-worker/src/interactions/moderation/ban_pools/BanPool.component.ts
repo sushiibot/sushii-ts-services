@@ -20,7 +20,7 @@ import {
   AppPublicBanPoolRemoveAction,
   AppPublicBanPoolRemoveMode,
 } from "../../../infrastructure/database/dbTypes";
-import logger from "../../../logger";
+import logger from "../../../core/logger";
 
 export enum BanPoolShowPage {
   Home = "home",

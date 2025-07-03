@@ -12,7 +12,7 @@ import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorMessage } from "../responses/error";
 import Color from "../../utils/colors";
-import logger from "../../logger";
+import logger from "../../core/logger";
 
 const RE_MESSAGE_ID = /^\d{17,21}$/;
 const RE_MESSAGE_ID_FROM_URL = /channels\/\d{17,21}\/\d{17,21}\/(\d{17,21})$/;

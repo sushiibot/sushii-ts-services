@@ -3,7 +3,7 @@ import {
   ApplicationCommandOptionType,
 } from "discord-api-types/v10";
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
-import logger from "../../../logger";
+import logger from "../../../core/logger";
 import Context from "../../../model/context";
 import { AutocompleteHandler } from "../../handlers";
 import { parseCaseId } from "./caseId";

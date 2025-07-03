@@ -8,7 +8,7 @@ import {
   User,
 } from "discord.js";
 import { Err, Ok, Result } from "ts-results";
-import logger from "../../logger";
+import logger from "../../core/logger";
 import Context from "../../model/context";
 import isGuildMember from "../../utils/isGuildMember";
 import parseDuration from "../../utils/parseDuration";

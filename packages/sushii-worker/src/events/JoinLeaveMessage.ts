@@ -3,7 +3,7 @@ import { EventHandlerFn } from "./EventHandler";
 import Context from "../model/context";
 import db from "../infrastructure/database/db";
 import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
-import { newModuleLogger } from "../logger";
+import { newModuleLogger } from "../core/logger";
 
 const log = newModuleLogger("joinLeaveMessageHandler");
 

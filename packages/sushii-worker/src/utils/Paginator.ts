@@ -6,7 +6,7 @@ import {
   ComponentType,
   EmbedBuilder,
 } from "discord.js";
-import logger from "../logger";
+import logger from "../core/logger";
 
 // Function to get the actual page content
 export type GetPageFn = (pageNum: number, pageSize: number) => Promise<string>;

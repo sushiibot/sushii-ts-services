@@ -17,7 +17,7 @@ import {
 } from "discord.js";
 import { t } from "i18next";
 import { None, Option, Some } from "ts-results";
-import logger from "../../logger";
+import logger from "../../core/logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import parseEmoji from "../../utils/parseEmoji";

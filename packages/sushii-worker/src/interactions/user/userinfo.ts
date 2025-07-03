@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import Context from "../../model/context";
-import logger from "../../logger";
+import logger from "../../core/logger";
 import { SlashCommandHandler } from "../handlers";
 import getUserinfoEmbed from "./userinfo.service";
 

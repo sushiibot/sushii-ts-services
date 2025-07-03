@@ -1,5 +1,5 @@
 import { Interaction, InteractionResponse } from "discord.js";
-import logger from "../../../logger";
+import logger from "../../../core/logger";
 import {
   BanPoolShowMainCustomId,
   BanPoolShowPage,

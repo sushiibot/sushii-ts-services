@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { User } from "discord.js";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import Context from "../../model/context";
-import logger from "../../logger";
+import logger from "../../core/logger";
 import db from "../../infrastructure/database/db";
 import { DB } from "../../infrastructure/database/dbTypes";
 import { getUserOrDefault, upsertUser } from "../../db/User/User.repository";

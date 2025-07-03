@@ -1,15 +1,15 @@
 {
   "name": "@sushiibot/sushii-worker",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./core/index.js",
   "license": "AGPL-3.0-or-later",
   "scripts": {
+    "start": "bun run ./src/core/index.ts",
+    "dev": "bun src/core/index.ts | pino-pretty -c -t",
+    "codegen:pg": "kysely-codegen --out-file ./src/model/dbTypes.ts",
     "typecheck": "tsc --skipLibCheck --noEmit",
     "lint": "eslint ./src",
-    "prettier": "prettier --write ./src/**/*.ts",
-    "start": "bun run ./src/index.ts",
-    "codegen:pg": "kysely-codegen --out-file ./src/model/dbTypes.ts",
-    "dev": "bun src/index.ts | pino-pretty -c -t"
+    "prettier": "prettier --write ./src/**/*.ts"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",

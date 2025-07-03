@@ -1,4 +1,4 @@
-import "../dayjs";
+import "../core/dayjs";
 
 import dayjs from "dayjs";
 import { describe, expect, test } from "bun:test";

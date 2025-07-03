@@ -7,8 +7,8 @@ import {
   RESTPostAPIApplicationCommandsJSONBody,
 } from "discord.js";
 import { newModuleLogger } from "./logger";
-import config from "./model/config";
-import { updateShardMetrics } from "./metrics/gatewayMetrics";
+import config from "../model/config";
+import { updateShardMetrics } from "../metrics/gatewayMetrics";
 
 // Reverse mapping of the Status enum to get the name
 export const ShardStatusToName = {

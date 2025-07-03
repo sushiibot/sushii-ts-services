@@ -1,6 +1,6 @@
 import { CronJob } from "cron";
 import * as Sentry from "@sentry/node";
-import logger from "../logger";
+import logger from "../core/logger";
 import Context from "../model/context";
 import deleteOldMessages from "./DeleteOldMessagesTask";
 import updateStats from "./StatsTask";

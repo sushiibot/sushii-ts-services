@@ -2,12 +2,14 @@ import "./dayjs";
 import * as Sentry from "@sentry/node";
 import { ShardingManager } from "discord.js";
 import { fileURLToPath } from "url";
-import { dirname, join } from "path";
 import log from "./logger";
 import server from "./server";
 import sdk from "./tracing";
-import config from "./model/config";
+import config from "../model/config";
 import { registerShutdownSignals } from "./signals";
+
+// Type-safe reference to ensure shard.ts exists
+void import("./shard");
 
 Error.stackTraceLimit = 50;
 
@@ -20,9 +22,7 @@ async function main(): Promise<void> {
   });
 
   // Get the shard file path
-  const fileName = fileURLToPath(import.meta.url);
-  const dirName = dirname(fileName);
-  const shardFile = join(dirName, "./core/shard.ts");
+  const shardFile = fileURLToPath(import.meta.resolve("./shard.ts"));
 
   if (config.MANUAL_SHARD_COUNT) {
     log.info(

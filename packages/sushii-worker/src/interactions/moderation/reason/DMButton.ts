@@ -13,7 +13,7 @@ import { ButtonHandler } from "../../handlers";
 import Color from "../../../utils/colors";
 import { getModLog } from "../../../db/ModLog/ModLog.repository";
 import db from "../../../infrastructure/database/db";
-import { newModuleLogger } from "../../../logger";
+import { newModuleLogger } from "../../../core/logger";
 import { buildModLogComponents } from "../../../events/ModLogHandler";
 import { ActionType } from "../ActionType";
 

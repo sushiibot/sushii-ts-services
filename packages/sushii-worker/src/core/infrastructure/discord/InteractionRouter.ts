@@ -20,7 +20,7 @@ import * as Sentry from "@sentry/node";
 import { t } from "i18next";
 import opentelemetry from "@opentelemetry/api";
 import Context from "../../../model/context";
-import log from "../../../logger";
+import log from "../../logger";
 import {
   SlashCommandHandler,
   ModalHandler,

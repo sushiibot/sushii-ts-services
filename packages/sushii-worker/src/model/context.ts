@@ -2,7 +2,7 @@ import { APIApplicationCommand } from "discord-api-types/v10";
 import { Client, CDN } from "discord.js";
 import SushiiImageServerClient from "./image_server";
 import MemoryStore from "./MemoryStore";
-import logger from "../logger";
+import logger from "../core/logger";
 
 export default class Context {
   public readonly sushiiImageServer: SushiiImageServerClient;

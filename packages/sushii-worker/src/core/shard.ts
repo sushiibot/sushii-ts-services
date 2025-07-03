@@ -1,11 +1,11 @@
-import "../dayjs";
+import "./dayjs";
 import * as Sentry from "@sentry/node";
 import { Client, GatewayIntentBits, Options, Partials } from "discord.js";
-import log from "../logger";
+import log from "./logger";
 import InteractionRouter from "./infrastructure/discord/InteractionRouter";
-import initI18next from "../i18next";
+import initI18next from "./i18next";
 import registerInteractionHandlers from "../interactions/commands";
-import sdk from "../tracing";
+import sdk from "./tracing";
 import Context from "../model/context";
 import config from "../model/config";
 import registerEventHandlers from "./infrastructure/discord/handlers";
