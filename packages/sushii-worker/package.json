@@ -35,7 +35,7 @@
     "i18next-fs-backend": "^2.6.0",
     "kysely": "^0.28.2",
     "parse-duration": "^1.1.2",
-    "path-to-regexp": "^6.3.0",
+    "path-to-regexp": "^8.2.0",
     "pg": "^8.16.2",
     "pg-cursor": "^2.15.2",
     "pino": "^9.7.0",
