@@ -47,7 +47,7 @@ async function main(): Promise<void> {
       });
 
       // Not found, etc. is fine, just not a server error
-      if (!response.ok || response.status < 500) {
+      if (response.status >= 500) {
         throw new Error(
           `API proxy URL returned ${response.status} ${response.statusText}`,
         );
@@ -130,6 +130,8 @@ main().catch((e) => {
   });
 
   log.error(e, "fatal error rip");
+  log.flush();
+
   process.exit(1);
 });
 
