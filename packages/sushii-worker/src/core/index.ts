@@ -8,12 +8,12 @@ import sdk from "./tracing";
 import config from "../model/config";
 import { registerShutdownSignals } from "./signals";
 import { drizzleDb } from "@/infrastructure/database/db";
-import { MigrationRepository } from "@/infrastructure/database/MigrationRepository";
 
 // Type-safe reference to ensure shard.ts exists WITHOUT importing and running
 // the file. If it's imported, it will cause process.send not defined errors as
 // it wasn't spawned by the ShardingManager
 import type {} from "./shard";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
 
 Error.stackTraceLimit = 50;
 
@@ -26,9 +26,11 @@ async function main(): Promise<void> {
     tracesSampleRate: 1.0,
   });
 
+  // Initial migration skipped manually for graphile-migrate -> drizzle migration
   // Run database migrations
-  const migrationRepository = new MigrationRepository();
-  await migrationRepository.runMigrations();
+  await migrate(drizzleDb, {
+    migrationsFolder: "./drizzle",
+  });
 
   // Close the database connection, as we don't need it in the main process
   // anymore
@@ -56,6 +58,7 @@ async function main(): Promise<void> {
         { err },
         "Failed to reach API proxy URL, please check your configuration",
       );
+
       process.exit(1);
     }
   }
