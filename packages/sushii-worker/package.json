@@ -22,7 +22,7 @@
     "@sapphire/shapeshift": "^3.9.7",
     "@sapphire/snowflake": "^3.5.5",
     "@sentry/node": "^9.34.0",
-    "cron": "^3.5.0",
+    "cron": "^4.3.1",
     "dayjs": "^1.11.13",
     "discord-api-types": "next",
     "discord.js": "^14.20.0",
