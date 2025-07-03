@@ -10,9 +10,6 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@discordjs/proxy": "^2.1.1",
-    "@discordjs/rest": "^2.5.1",
-    "zlib-sync": "^0.1.9",
-    "bufferutil": "^4.0.8"
+    "@discordjs/rest": "^2.5.1"
   }
 }
