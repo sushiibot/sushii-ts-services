@@ -11,8 +11,6 @@ export function proxyRequests(rest: REST) {
   return async (request: Request): Promise<Response> => {
     const { method, url } = request;
 
-    console.log(`Received request: ${method} ${url}`);
-
     // The 2nd parameter is here so the URL constructor doesn't complain about an "invalid url" when the origin is missing
     // we don't actually care about the origin and the value passed is irrelevant
     const parsedUrl = new URL(url, "http://noop");
