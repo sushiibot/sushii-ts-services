@@ -23,7 +23,8 @@ COPY ./packages/sushii-worker/package.json ./packages/sushii-worker/
 # Install dependencies
 RUN bun install --frozen-lockfile
 
-COPY . ./
+# Copy source code and stuff
+COPY ./packages/sushii-worker/ ./packages/sushii-worker/
 
 # Build info, args at end to minimize cache invalidation
 ARG GIT_HASH
