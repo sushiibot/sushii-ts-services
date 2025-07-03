@@ -1,17 +1,16 @@
-name: Build and Push API Proxy Docker Image
+name: Build API Proxy
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Docker image tag (leave empty for SHA)'
-        required: false
-        default: ''
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/api-proxy/**"
+      - ".github/workflows/api-proxy-docker.yml"
 
 jobs:
   docker-build:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,15 +33,6 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Set image tag
-        id: tag
-        run: |
-          if [ -n "${{ github.event.inputs.tag }}" ]; then
-            echo "image_tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
-          else
-            echo "image_tag=${{ steps.sha.outputs.sha_short }}" >> $GITHUB_OUTPUT
-          fi
-
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -52,11 +42,11 @@ jobs:
           file: ./packages/api-proxy/Dockerfile
           tags: |
             ghcr.io/sushiibot/api-proxy:latest
-            ghcr.io/sushiibot/api-proxy:${{ steps.tag.outputs.image_tag }}
+            ghcr.io/sushiibot/api-proxy:${{ steps.sha.outputs.sha_short }}
           cache-from: type=registry,ref=ghcr.io/sushiibot/api-proxy:buildcache
           cache-to: type=registry,ref=ghcr.io/sushiibot/api-proxy:buildcache,mode=max
 
       - name: Output image info
         run: |
-          echo "Built and pushed image: ghcr.io/sushiibot/api-proxy:${{ steps.tag.outputs.image_tag }}"
+          echo "Built and pushed image: ghcr.io/sushiibot/api-proxy:${{ steps.sha.outputs.sha_short }}"
           echo "Also tagged as: ghcr.io/sushiibot/api-proxy:latest"
