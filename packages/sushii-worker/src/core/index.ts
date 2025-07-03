@@ -7,6 +7,8 @@ import server from "./server";
 import sdk from "./tracing";
 import config from "../model/config";
 import { registerShutdownSignals } from "./signals";
+import { drizzleDb } from "@/infrastructure/database/db";
+import { MigrationRepository } from "@/infrastructure/database/MigrationRepository";
 
 // Type-safe reference to ensure shard.ts exists WITHOUT importing and running
 // the file. If it's imported, it will cause process.send not defined errors as
@@ -23,6 +25,43 @@ async function main(): Promise<void> {
       (process.env.NODE_ENV === "production" ? "production" : "development"),
     tracesSampleRate: 1.0,
   });
+
+  // Run database migrations
+  const migrationRepository = new MigrationRepository();
+  await migrationRepository.runMigrations();
+
+  // Close the database connection, as we don't need it in the main process
+  // anymore
+  await drizzleDb.$client.end();
+
+  // ---------------------------------------------------------------------------
+  // Checks
+
+  // Ensure API proxy URL is valid and reachable
+  if (config.DISCORD_API_PROXY_URL) {
+    try {
+      const response = await fetch(config.DISCORD_API_PROXY_URL, {
+        method: "GET",
+      });
+
+      // Not found, etc. is fine, just not a server error
+      if (!response.ok || response.status < 500) {
+        throw new Error(
+          `API proxy URL returned ${response.status} ${response.statusText}`,
+        );
+      }
+    } catch (err) {
+      // Connection error, server isn't even up or not reachable
+      log.error(
+        { err },
+        "Failed to reach API proxy URL, please check your configuration",
+      );
+      process.exit(1);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // ShardManager Initialization
 
   // Get the shard file path
   const shardFile = fileURLToPath(import.meta.resolve("./shard.ts"));
