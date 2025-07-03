@@ -19,7 +19,8 @@ async function main(): Promise<void> {
   Sentry.init({
     dsn: config.SENTRY_DSN,
     environment:
-      process.env.NODE_ENV === "production" ? "production" : "development",
+      config.SENTRY_ENVIRONMENT ||
+      (process.env.NODE_ENV === "production" ? "production" : "development"),
     tracesSampleRate: 1.0,
   });
 
