@@ -14,13 +14,11 @@ WORKDIR /config
 # Root package.json and lockfile
 COPY ./package.json ./bun.lockb ./
 
-# Project specific package.json - required to copy all package.json files to
-# ensure the lockfile doesn't change
+# Project specific package.json - only the workspace packages required
 COPY ./packages/sushii-worker/package.json ./packages/sushii-worker/
-COPY ./packages/sushii-db/package.json ./packages/sushii-db/
 
-# Install only the sushii-worker dependencies
-RUN bun install --filter=sushii-worker --frozen-lockfile
+# Install dependencies
+RUN bun install --frozen-lockfile
 
 COPY . ./
 
@@ -43,4 +41,6 @@ EXPOSE 9090
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD curl -f http://localhost:8080/health || exit 1
 
-ENTRYPOINT [ "bun", "run", "/config/packages/sushii-worker/src/core/index.ts" ]
+# For i18next to load relative files correctly
+WORKDIR /config/packages/sushii-worker
+ENTRYPOINT [ "bun", "run", "./src/core/index.ts" ]

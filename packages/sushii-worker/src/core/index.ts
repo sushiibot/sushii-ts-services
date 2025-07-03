@@ -1,5 +1,5 @@
 import "./dayjs";
-import * as Sentry from "@sentry/node";
+import * as Sentry from "@sentry/bun";
 import { ShardingManager } from "discord.js";
 import { fileURLToPath } from "url";
 import log from "./logger";
