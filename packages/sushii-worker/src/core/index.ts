@@ -8,8 +8,10 @@ import sdk from "./tracing";
 import config from "../model/config";
 import { registerShutdownSignals } from "./signals";
 
-// Type-safe reference to ensure shard.ts exists
-void import("./shard");
+// Type-safe reference to ensure shard.ts exists WITHOUT importing and running
+// the file. If it's imported, it will cause process.send not defined errors as
+// it wasn't spawned by the ShardingManager
+import type {} from "./shard";
 
 Error.stackTraceLimit = 50;
 
@@ -36,6 +38,7 @@ async function main(): Promise<void> {
     token: config.DISCORD_TOKEN,
     totalShards: config.MANUAL_SHARD_COUNT || "auto",
     mode: "process",
+    respawn: true,
   });
 
   // Start metrics and healthcheck server (runs only in main process)

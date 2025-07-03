@@ -39,7 +39,7 @@ async function initializeShard(): Promise<void> {
     partials: [Partials.Message, Partials.Reaction, Partials.GuildMember],
     rest: {
       version: "10",
-      api: config.DISCORD_API_PROXY_URL,
+      // api: config.DISCORD_API_PROXY_URL,
     },
     makeCache: Options.cacheWithLimits({
       MessageManager: 0,
@@ -53,7 +53,12 @@ async function initializeShard(): Promise<void> {
   const interactionRouter = new InteractionRouter(ctx);
   registerInteractionHandlers(interactionRouter);
 
-  await interactionRouter.register();
+  // Only register on shard 0
+  if (djsClient.shard?.ids[0] === 0) {
+    log.info("registering interaction handlers on shard 0");
+
+    await interactionRouter.register();
+  }
 
   // START NEW REGISTRATION
   const { db } = initCore();
@@ -76,7 +81,13 @@ async function initializeShard(): Promise<void> {
     process.exit(0);
   });
 
-  log.info("starting Discord client shard");
+  log.info(
+    {
+      shards: djsClient.shard?.ids,
+      mode: djsClient.shard?.mode,
+    },
+    "starting Discord client shard",
+  );
   await djsClient.login(config.DISCORD_TOKEN);
 }
 

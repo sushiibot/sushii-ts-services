@@ -1,5 +1,6 @@
 import { register } from "prom-client";
 import { Hono, MiddlewareHandler } from "hono";
+import { routePath } from "hono/route";
 import { HTTPException } from "hono/http-exception";
 import { Server } from "bun";
 import {
@@ -32,18 +33,13 @@ const pinoLoggerMiddleware: MiddlewareHandler = async (c, next) => {
 
   const log = {
     method: c.req.method,
-    path: c.req.routePath,
+    path: routePath(c),
     status: c.res.status,
     elapsedMs,
   };
 
   const message = `${c.req.method} ${c.req.path} ${c.res.status} ${elapsedMs} ms`;
-
-  if (c.res.status >= 400) {
-    logger.error(log, message);
-  } else {
-    logger.debug(log, message);
-  }
+  logger.debug(log, message);
 };
 
 function createHealthServer(manager: ShardingManager): Server {
