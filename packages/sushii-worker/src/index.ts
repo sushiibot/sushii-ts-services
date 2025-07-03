@@ -22,7 +22,7 @@ async function main(): Promise<void> {
   // Get the shard file path
   const fileName = fileURLToPath(import.meta.url);
   const dirName = dirname(fileName);
-  const shardFile = join(dirName, "shard.ts");
+  const shardFile = join(dirName, "./core/shard.ts");
 
   if (config.MANUAL_SHARD_COUNT) {
     log.info(
