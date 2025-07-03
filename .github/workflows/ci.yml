@@ -87,6 +87,8 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           push: true
+          context: .
+          file: ./packages/sushii-worker/Dockerfile
           build-args: |
             GIT_HASH=${{ steps.sha.outputs.sha_short }}
             BUILD_DATE=${{ github.event.head_commit.timestamp }}
