@@ -2,7 +2,7 @@
   "name": "sushiibot",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/sushii-worker"
   ],
   "scripts": {
     "test:worker": "bun run --filter ./packages/sushii-worker test",

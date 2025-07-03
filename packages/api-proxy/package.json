@@ -1,0 +1,15 @@
+{
+  "name": "api-proxy",
+  "module": "./src/index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@discordjs/proxy": "^2.1.1"
+  }
+}
