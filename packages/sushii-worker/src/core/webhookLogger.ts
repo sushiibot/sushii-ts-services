@@ -1,17 +1,17 @@
 import { EmbedBuilder, WebhookClient } from "discord.js";
 import logger from "./logger";
-import config from "../model/config";
+import { config } from "./config";
 import Color from "../utils/colors";
 
-const webhookClientLog = config.NOTIFY_WEBHOOK_URL
+const webhookClientLog = config.notifications.webhookUrl
   ? new WebhookClient({
-      url: config.NOTIFY_WEBHOOK_URL,
+      url: config.notifications.webhookUrl,
     })
   : null;
 
-const webhookClientErr = config.NOTIFY_WEBHOOK_ERR_URL
+const webhookClientErr = config.notifications.errorWebhookUrl
   ? new WebhookClient({
-      url: config.NOTIFY_WEBHOOK_ERR_URL,
+      url: config.notifications.errorWebhookUrl,
     })
   : null;
 
@@ -33,7 +33,7 @@ export default async function webhookLog(
 
   try {
     await webhookClientLog.send({
-      username: config.NOTIFY_WEBHOOK_USERNAME || "sushii",
+      username: config.notifications.webhookUsername || "sushii",
       embeds: [embed],
     });
 
@@ -60,7 +60,7 @@ export async function webhookErr(
 
   try {
     await webhookClientErr.send({
-      username: config.NOTIFY_WEBHOOK_USERNAME || "sushii",
+      username: config.notifications.webhookUsername || "sushii",
       embeds: [embed],
     });
 

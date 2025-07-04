@@ -7,7 +7,7 @@ import initI18next from "./i18next";
 import registerInteractionHandlers from "../interactions/commands";
 import sdk from "./tracing";
 import Context from "../model/context";
-import config from "../model/config";
+import { config } from "./config";
 import registerEventHandlers from "./infrastructure/discord/handlers";
 import { initCore, registerFeatures } from "./bootstrap";
 
@@ -15,9 +15,9 @@ Error.stackTraceLimit = 50;
 
 async function initializeShard(): Promise<void> {
   Sentry.init({
-    dsn: config.SENTRY_DSN,
+    dsn: config.sentry.dsn,
     environment:
-      config.SENTRY_ENVIRONMENT ||
+      config.sentry.environment ||
       (process.env.NODE_ENV === "production" ? "production" : "development"),
     tracesSampleRate: 1.0,
   });
@@ -40,9 +40,9 @@ async function initializeShard(): Promise<void> {
     rest: {
       version: "10",
       // Optional proxy URL
-      ...(config.DISCORD_API_PROXY_URL
+      ...(config.discord.proxyUrl
         ? {
-            api: config.DISCORD_API_PROXY_URL,
+            api: config.discord.proxyUrl,
           }
         : {}),
     },
@@ -52,7 +52,7 @@ async function initializeShard(): Promise<void> {
     }),
   });
 
-  djsClient.rest.setToken(config.DISCORD_TOKEN);
+  djsClient.rest.setToken(config.discord.token);
 
   const ctx = new Context(djsClient);
   const interactionRouter = new InteractionRouter(ctx);
@@ -93,7 +93,7 @@ async function initializeShard(): Promise<void> {
     },
     "starting Discord client shard",
   );
-  await djsClient.login(config.DISCORD_TOKEN);
+  await djsClient.login(config.discord.token);
 }
 
 initializeShard().catch((e) => {

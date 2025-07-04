@@ -4,13 +4,13 @@ import Cursor from "pg-cursor";
 import { Kysely, PostgresDialect } from "kysely";
 import { drizzle } from "drizzle-orm/node-postgres";
 import logger from "../../core/logger";
-import config from "../../model/config";
+import { config } from "../../core/config";
 import { DB } from "./dbTypes";
 
 const dbLogger = logger.child({ module: "db" });
 
 const pool = new Pool({
-  connectionString: config.DATABASE_URL,
+  connectionString: config.database.url,
   // PER shard, as each shard has its own process
   max: 3,
 });

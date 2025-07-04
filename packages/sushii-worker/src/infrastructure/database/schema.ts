@@ -625,7 +625,7 @@ export const userLevelsInAppPublic = appPublic.table(
     msgMonth: bigint("msg_month", { mode: "bigint" }).notNull(),
     msgWeek: bigint("msg_week", { mode: "bigint" }).notNull(),
     msgDay: bigint("msg_day", { mode: "bigint" }).notNull(),
-    lastMsg: timestamp("last_msg", { mode: "string" }).notNull(),
+    lastMsg: timestamp("last_msg", { mode: "date" }).notNull(),
   },
   (table) => [
     primaryKey({

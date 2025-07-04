@@ -2,7 +2,7 @@ import { Events, Message } from "discord.js";
 import dayjs from "dayjs";
 import { EventHandlerFn } from "./EventHandler";
 import Context from "../model/context";
-import config from "../model/config";
+import { config } from "../core/config";
 import {
   getActiveDeployment,
   toggleActiveDeployment,
@@ -14,15 +14,15 @@ export const deployToggleHandler: EventHandlerFn<Events.MessageCreate> = async (
   msg: Message,
 ): Promise<void> => {
   // Optional values, require both to be set.
-  if (!config.OWNER_USER_ID || !config.OWNER_CHANNEL_ID) {
+  if (!config.deployment.ownerUserId || !config.deployment.ownerChannelId) {
     return;
   }
 
-  if (msg.author.id !== config.OWNER_USER_ID) {
+  if (msg.author.id !== config.deployment.ownerUserId) {
     return;
   }
 
-  if (msg.channelId !== config.OWNER_CHANNEL_ID) {
+  if (msg.channelId !== config.deployment.ownerChannelId) {
     return;
   }
 

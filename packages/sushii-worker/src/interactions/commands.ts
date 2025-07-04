@@ -40,7 +40,7 @@ import LookupCommand from "./moderation/LookupCommand";
 import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
 import TagAdminCommand from "./tags/TagAdminCommand";
 import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
-import config from "../model/config";
+import { config } from "../core/config";
 import BanPoolCommand from "./moderation/ban_pools/BanPool.command";
 import BannerCommand from "./user/banner";
 import GiveawayCommand from "./giveaway/Giveaway.command";
@@ -144,7 +144,7 @@ export default function registerInteractionHandlers(
   // ----------------------------------------
   // Feature flagged commands
 
-  if (config.BAN_POOL_ENABLED) {
+  if (config.features.banPoolEnabled) {
     interactionClient.addCommand(new BanPoolCommand());
     interactionClient.addAutocompleteHandlers(new BanPoolAutocomplete());
   }

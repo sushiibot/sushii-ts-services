@@ -29,7 +29,7 @@ import {
   emojiAndStickerStatsReadyHandler,
 } from "../../../events/EmojiStatsHandler";
 import { banPoolOnBanHandler } from "../../../events/ban_pool/BanPoolHandler";
-import config from "../../../model/config";
+import { config } from "../../config";
 import { isCurrentDeploymentActive } from "../../../db/Deployment/Deployment.repository";
 import {
   memberLogJoinHandler,
@@ -68,7 +68,7 @@ async function isActive(): Promise<boolean> {
     if (currentTime - lastLogTime >= 10000) {
       logger.info(
         {
-          processDeploymentName: config.DEPLOYMENT_NAME,
+          processDeploymentName: config.deployment.name,
         },
         "Not active deployment, ignoring events",
       );
@@ -155,7 +155,7 @@ export default function registerEventHandlers(
       {
         shardId,
         botUser: c.user.tag,
-        deployment: config.DEPLOYMENT_NAME,
+        deployment: config.deployment.name,
       },
       "Shard client ready!",
     );
@@ -425,7 +425,7 @@ export default function registerEventHandlers(
         };
 
         // Only handle ban pool events if the flag is enabled
-        if (config.BAN_POOL_ENABLED) {
+        if (config.features.banPoolEnabled) {
           handlers.banPoolOnBan = banPoolOnBanHandler;
         }
 

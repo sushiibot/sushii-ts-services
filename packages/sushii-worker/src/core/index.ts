@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import log from "./logger";
 import server from "./server";
 import sdk from "./tracing";
-import config from "../model/config";
+import { config } from "./config";
 import { registerShutdownSignals } from "./signals";
 import { drizzleDb } from "@/infrastructure/database/db";
 
@@ -19,9 +19,9 @@ Error.stackTraceLimit = 50;
 
 async function main(): Promise<void> {
   Sentry.init({
-    dsn: config.SENTRY_DSN,
+    dsn: config.sentry.dsn,
     environment:
-      config.SENTRY_ENVIRONMENT ||
+      config.sentry.environment ||
       (process.env.NODE_ENV === "production" ? "production" : "development"),
     tracesSampleRate: 1.0,
   });
@@ -40,9 +40,9 @@ async function main(): Promise<void> {
   // Checks
 
   // Ensure API proxy URL is valid and reachable
-  if (config.DISCORD_API_PROXY_URL) {
+  if (config.discord.proxyUrl) {
     try {
-      const response = await fetch(config.DISCORD_API_PROXY_URL, {
+      const response = await fetch(config.discord.proxyUrl, {
         method: "GET",
       });
 
@@ -69,17 +69,17 @@ async function main(): Promise<void> {
   // Get the shard file path
   const shardFile = fileURLToPath(import.meta.resolve("./shard.ts"));
 
-  if (config.MANUAL_SHARD_COUNT) {
+  if (config.manualShardCount) {
     log.info(
-      { shardCount: config.MANUAL_SHARD_COUNT },
+      { shardCount: config.manualShardCount },
       "Using manual shard count",
     );
   }
 
   // Create ShardingManager
   const manager = new ShardingManager(shardFile, {
-    token: config.DISCORD_TOKEN,
-    totalShards: config.MANUAL_SHARD_COUNT || "auto",
+    token: config.discord.token,
+    totalShards: config.manualShardCount || "auto",
     mode: "process",
     respawn: true,
   });

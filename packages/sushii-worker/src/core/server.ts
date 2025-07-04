@@ -8,7 +8,7 @@ import {
   RESTPostAPIApplicationCommandsJSONBody,
 } from "discord.js";
 import { newModuleLogger } from "./logger";
-import config from "../model/config";
+import { config } from "./config";
 import { updateShardMetrics } from "../metrics/gatewayMetrics";
 
 // Reverse mapping of the Status enum to get the name
@@ -62,7 +62,7 @@ function createHealthServer(manager: ShardingManager): Server {
     return c.json(
       {
         status: fullyReady ? "healthy" : "unhealthy",
-        deployment: config.DEPLOYMENT_NAME,
+        deployment: config.deployment.name,
         shards: {
           total: totalShards,
           ready: readyCount,
@@ -73,7 +73,7 @@ function createHealthServer(manager: ShardingManager): Server {
   });
 
   return Bun.serve({
-    port: config.HEALTH_PORT,
+    port: config.metrics.healthPort,
     fetch: app.fetch,
   });
 }
@@ -107,14 +107,14 @@ function createMonitoringServer(
     return c.json({
       status: fullyReady ? "healthy" : "unhealthy",
       config: {
-        deployment: config.DEPLOYMENT_NAME,
+        deployment: config.deployment.name,
         owner: {
-          userID: config.OWNER_USER_ID,
-          channelID: config.OWNER_CHANNEL_ID,
+          userID: config.deployment.ownerUserId,
+          channelID: config.deployment.ownerChannelId,
         },
-        tracingSamplePercentage: config.TRACING_SAMPLE_PERCENTAGE,
-        disableBanFetchOnReady: config.DISABLE_BAN_FETCH_ON_READY,
-        banPoolEnabled: config.BAN_POOL_ENABLED,
+        tracingSamplePercentage: config.tracing.samplePercentage,
+        disableBanFetchOnReady: config.features.disableBanFetchOnReady,
+        banPoolEnabled: config.features.banPoolEnabled,
       },
       shards: shardInfo,
     });
@@ -140,7 +140,7 @@ function createMonitoringServer(
   });
 
   return Bun.serve({
-    port: config.METRICS_PORT,
+    port: config.metrics.port,
     fetch: app.fetch,
   });
 }
@@ -153,13 +153,13 @@ export default function server(
   const monitoringServer = createMonitoringServer(manager, commands);
 
   logger.info(
-    `health endpoint listening on http://localhost:${config.HEALTH_PORT}/health`,
+    `health endpoint listening on http://localhost:${config.metrics.healthPort}/health`,
   );
   logger.info(
-    `metrics endpoint listening on http://localhost:${config.METRICS_PORT}/metrics`,
+    `metrics endpoint listening on http://localhost:${config.metrics.port}/metrics`,
   );
   logger.info(
-    `status endpoint listening on http://localhost:${config.METRICS_PORT}/status`,
+    `status endpoint listening on http://localhost:${config.metrics.port}/status`,
   );
 
   return [healthServer, monitoringServer];

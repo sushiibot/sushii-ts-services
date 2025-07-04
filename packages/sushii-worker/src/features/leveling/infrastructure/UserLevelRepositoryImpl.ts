@@ -6,6 +6,7 @@ import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 export class UserLevelRepositoryImpl implements UserLevelRepository {
   constructor(private readonly db: NodePgDatabase) {}
+
   async findByUserAndGuild(
     userId: string,
     guildId: string,
@@ -45,7 +46,7 @@ export class UserLevelRepositoryImpl implements UserLevelRepository {
         msgMonth: BigInt(userLevel.getMonthXp()),
         msgWeek: BigInt(userLevel.getWeekXp()),
         msgDay: BigInt(userLevel.getDayXp()),
-        lastMsg: userLevel.getLastMessageTime().toISOString(),
+        lastMsg: userLevel.getLastMessageTime(),
       })
       .where(
         and(
@@ -63,7 +64,7 @@ export class UserLevelRepositoryImpl implements UserLevelRepository {
       msgMonth: BigInt(userLevel.getMonthXp()),
       msgWeek: BigInt(userLevel.getWeekXp()),
       msgDay: BigInt(userLevel.getDayXp()),
-      lastMsg: userLevel.getLastMessageTime().toISOString(),
+      lastMsg: userLevel.getLastMessageTime(),
     });
   }
 }

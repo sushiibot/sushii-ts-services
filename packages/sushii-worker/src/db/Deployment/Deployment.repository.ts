@@ -1,5 +1,5 @@
 import opentelemetry from "@opentelemetry/api";
-import config from "../../model/config";
+import { config } from "../../core/config";
 import db from "../../infrastructure/database/db";
 import { AppPrivateDeploymentName } from "../../infrastructure/database/dbTypes";
 import { DeploymentRow } from "./Deployment.table";
@@ -35,7 +35,7 @@ export async function isCurrentDeploymentActive(): Promise<boolean> {
   return tracer.startActiveSpan("isCurrentDeploymentActive", async (span) => {
     try {
       const activeName = await getActiveDeployment();
-      return activeName === config.DEPLOYMENT_NAME;
+      return activeName === config.deployment.name;
     } finally {
       span.end();
     }

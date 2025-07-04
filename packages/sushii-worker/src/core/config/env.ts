@@ -6,7 +6,7 @@ dotenv.config();
 
 const deploymentNameSchema = z.enum(["blue", "green"]);
 
-const schema = z.object({
+const envSchema = z.object({
   // Name of the deployment of the current running process. This is used to
   // switch handling of events/interactions between multiple running processes.
   // Default is "blue"
@@ -55,7 +55,7 @@ const schema = z.object({
   MANUAL_SHARD_COUNT: z.coerce.number().optional(),
 });
 
-const parsed = schema.safeParse(process.env);
+const parsed = envSchema.safeParse(process.env);
 
 if (!parsed.success) {
   // Temporary logger since we need the config to setup the real one
@@ -71,6 +71,5 @@ if (!parsed.success) {
   process.exit(1);
 }
 
-export type ConfigType = z.infer<typeof schema>;
-
-export default parsed.data;
+export type Env = z.infer<typeof envSchema>;
+export const env = parsed.data;

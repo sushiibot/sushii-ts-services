@@ -6,11 +6,11 @@ import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions"
 import { TraceIdRatioBasedSampler } from "@opentelemetry/sdk-trace-node";
 import { Tracer, Span, SpanStatusCode } from "@opentelemetry/api";
 import logger from "./logger";
-import config from "../model/config";
+import { config } from "./config";
 
 const exporterOptions = {
   // Default URL
-  url: config.TRACING_EXPORTER_URL || "http://localhost:4318/v1/traces",
+  url: config.tracing.exporterUrl || "http://localhost:4318/v1/traces",
 };
 
 const traceExporter = new OTLPTraceExporter(exporterOptions);
@@ -21,7 +21,7 @@ const sdk = new NodeSDK({
   resource: new Resource({
     [SemanticResourceAttributes.SERVICE_NAME]: "sushii_worker",
   }),
-  sampler: new TraceIdRatioBasedSampler(config.TRACING_SAMPLE_PERCENTAGE),
+  sampler: new TraceIdRatioBasedSampler(config.tracing.samplePercentage),
 });
 
 // initialize the SDK and register with the OpenTelemetry API

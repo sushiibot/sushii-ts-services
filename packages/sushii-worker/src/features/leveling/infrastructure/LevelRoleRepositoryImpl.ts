@@ -6,6 +6,7 @@ import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 export class LevelRoleRepositoryImpl implements LevelRoleRepository {
   constructor(private readonly db: NodePgDatabase) {}
+
   async findByGuild(guildId: string): Promise<LevelRole[]> {
     const result = await this.db
       .select()

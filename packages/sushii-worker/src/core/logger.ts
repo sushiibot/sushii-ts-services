@@ -1,8 +1,8 @@
 import pino from "pino";
-import config from "../model/config";
+import { config } from "./config";
 
 const logger = pino({
-  level: config.LOG_LEVEL,
+  level: config.logging.level,
   formatters: {
     level(label) {
       return { level: label };

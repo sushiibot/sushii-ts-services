@@ -1,11 +1,11 @@
-import config from "./config";
+import { config } from "../core/config";
 
 export default class SushiiImageServerClient {
   public readonly endpoint: string;
 
   constructor() {
     // Remove trailing slash
-    this.endpoint = config.SUSHII_IMAGE_SERVER_URL.replace(/\/$/, "");
+    this.endpoint = config.imageServerUrl.replace(/\/$/, "");
   }
 
   public async getUserRank(

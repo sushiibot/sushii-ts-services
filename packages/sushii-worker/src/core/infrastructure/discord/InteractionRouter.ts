@@ -31,7 +31,7 @@ import {
 import ContextMenuHandler from "../../../interactions/handlers/ContextMenuHandler";
 import getFullCommandName from "../../../utils/getFullCommandName";
 import validationErrorToString from "../../../utils/validationErrorToString";
-import config from "../../../model/config";
+import { config } from "../../config";
 import { isCurrentDeploymentActive } from "../../../db/Deployment/Deployment.repository";
 import { updateInteractionMetrics } from "../../../metrics/interactionMetrics";
 
@@ -219,7 +219,7 @@ export default class InteractionRouter {
 
     try {
       const res = await this.context.client.rest.put(
-        Routes.applicationCommands(config.APPLICATION_ID),
+        Routes.applicationCommands(config.discord.applicationId),
         { body: this.getCommandsArray() },
       );
 
@@ -548,7 +548,7 @@ export default class InteractionRouter {
     if (!active) {
       log.info(
         {
-          processDeploymentName: config.DEPLOYMENT_NAME,
+          processDeploymentName: config.deployment.name,
           interactionId: interaction.id,
         },
         "Not active deployment, ignoring interaction",

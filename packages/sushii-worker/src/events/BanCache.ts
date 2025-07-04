@@ -3,7 +3,7 @@ import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
 import db from "../infrastructure/database/db";
 import { newModuleLogger } from "../core/logger";
-import config from "../model/config";
+import { config } from "../core/config";
 import {
   clearGuildBans,
   insertGuildBans,
@@ -68,7 +68,7 @@ async function getGuildBans(guild: Guild): Promise<string[]> {
 export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
   ctx: Context,
 ): Promise<void> => {
-  if (config.DISABLE_BAN_FETCH_ON_READY) {
+  if (config.features.disableBanFetchOnReady) {
     log.info("Skipping ban fetch on ready");
     return;
   }

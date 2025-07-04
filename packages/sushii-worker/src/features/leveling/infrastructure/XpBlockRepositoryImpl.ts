@@ -6,6 +6,7 @@ import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 export class XpBlockRepositoryImpl implements XpBlockRepository {
   constructor(private readonly db: NodePgDatabase) {}
+
   async findActiveBlocks(
     guildId: string,
     channelId: string,
