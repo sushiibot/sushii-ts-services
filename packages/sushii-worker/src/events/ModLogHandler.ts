@@ -14,7 +14,7 @@ import { EventHandlerFn } from "./EventHandler";
 import { ActionType } from "../interactions/moderation/ActionType";
 import customIds from "../interactions/customIds";
 import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
-import buildModLogEmbed from "../builders/buildModLogEmbed";
+import buildModLogEmbed from "../features/moderation/presentation/buildModLogEmbed";
 import { buildDMEmbed } from "../interactions/moderation/sendDm";
 import db from "../infrastructure/database/db";
 import { insertModLog, upsertModLog } from "../db/ModLog/ModLog.repository";

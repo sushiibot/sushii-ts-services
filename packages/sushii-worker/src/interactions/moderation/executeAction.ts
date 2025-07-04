@@ -18,7 +18,7 @@ import { ActionType } from "./ActionType";
 import hasPermissionTargetingMember from "../../utils/hasPermission";
 import ModActionData, { ModActionTarget } from "./ModActionData";
 import sendModActionDM from "./sendDm";
-import buildModLogEmbed from "../../builders/buildModLogEmbed";
+import buildModLogEmbed from "../../features/moderation/presentation/buildModLogEmbed";
 import db from "../../infrastructure/database/db";
 import { buildModLogComponents } from "../../events/ModLogHandler";
 import { DB } from "../../infrastructure/database/dbTypes";

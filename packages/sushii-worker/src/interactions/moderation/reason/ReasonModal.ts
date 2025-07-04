@@ -3,7 +3,7 @@ import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ModalHandler } from "../../handlers";
 import { interactionReplyErrorPlainMessage } from "../../responses/error";
-import buildModLogEmbed from "../../../builders/buildModLogEmbed";
+import buildModLogEmbed from "../../../features/moderation/presentation/buildModLogEmbed";
 import { ActionType } from "../ActionType";
 import db from "../../../infrastructure/database/db";
 import { getModLog, upsertModLog } from "../../../db/ModLog/ModLog.repository";
