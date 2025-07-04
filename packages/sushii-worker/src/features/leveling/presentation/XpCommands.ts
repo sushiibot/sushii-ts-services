@@ -5,16 +5,16 @@ import {
   InteractionContextType,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
-import Context from "../../model/context";
-import Color from "../../utils/colors";
-import { SlashCommandHandler } from "../handlers";
-import { interactionReplyErrorPlainMessage } from "../responses/error";
+import Context from "../../../model/context";
+import Color from "../../../utils/colors";
+import { SlashCommandHandler } from "../../../interactions/handlers";
+import { interactionReplyErrorPlainMessage } from "../../../interactions/responses/error";
 import {
   deleteXpBlock,
   getXpBlocks,
   upsertXpBlock,
-} from "../../db/XpBlock/XpBlock.repository";
-import db from "../../infrastructure/database/db";
+} from "../../../db/XpBlock/XpBlock.repository";
+import db from "../../../infrastructure/database/db";
 
 enum XpGroupName {
   Block = "block",

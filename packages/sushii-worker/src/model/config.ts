@@ -27,7 +27,7 @@ const schema = z.object({
   HEALTH_PORT: z.string().optional().default("8080"),
 
   // Example: 'https://discord.com/api'
-  DISCORD_API_PROXY_URL: z.string(),
+  DISCORD_API_PROXY_URL: z.string().optional(),
 
   NOTIFY_WEBHOOK_URL: z.string().optional(),
   NOTIFY_WEBHOOK_USERNAME: z.string().optional(),

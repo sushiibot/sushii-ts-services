@@ -5,17 +5,17 @@ import {
   InteractionContextType,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord-api-types/v10";
-import Context from "../../model/context";
-import Color from "../../utils/colors";
-import { SlashCommandHandler } from "../handlers";
-import { interactionReplyErrorPlainMessage } from "../responses/error";
-import canAddRole from "../../utils/canAddRole";
+import Context from "../../../model/context";
+import Color from "../../../utils/colors";
+import { SlashCommandHandler } from "../../../interactions/handlers";
+import { interactionReplyErrorPlainMessage } from "../../../interactions/responses/error";
+import canAddRole from "../../../utils/canAddRole";
 import {
   deleteLevelRole,
   getAllLevelRoles,
   upsertLevelRole,
-} from "../../db/LevelRole/LevelRole.repository";
-import db from "../../infrastructure/database/db";
+} from "../../../db/LevelRole/LevelRole.repository";
+import db from "../../../infrastructure/database/db";
 
 enum CommandName {
   LevelRoleNew = "new",

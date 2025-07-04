@@ -11,9 +11,9 @@ import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import db from "../../infrastructure/database/db";
 import Color from "../../utils/colors";
-import Paginator from "../../utils/Paginator";
 import logger from "../../core/logger";
 import { AppPublicGuildAssetType } from "../../infrastructure/database/dbTypes";
+import Paginator from "@/shared/presentation/Paginator";
 
 enum CommandOption {
   Type = "type",

@@ -25,8 +25,8 @@ import UnbanCommand from "./moderation/UnbanCommand";
 import PruneCommand from "./moderation/PruneCommand";
 import SlowmodeCommand from "./moderation/SlowmodeCommand";
 import NoteCommand from "./moderation/NoteCommand";
-import XpCommand from "./xp/XpCommands";
-import LevelRoleCommand from "./xp/LevelRoleCommand";
+import XpCommand from "../features/leveling/presentation/XpCommands";
+import LevelRoleCommand from "../features/leveling/presentation/LevelRoleCommand";
 import RankCommand from "./user/rank";
 import ModLogReasonButtonHandler from "./moderation/reason/ReasonButton";
 import ModLogReasonModalHandler from "./moderation/reason/ReasonModal";
@@ -49,7 +49,7 @@ import GiveawayAutocomplete from "./giveaway/Giveaway.autocomplete";
 import TempbanCommand from "./moderation/TempbanCommand";
 import TempbanListCommand from "./moderation/TempbanListCommand";
 import DeleteModLogDMButtonHandler from "./moderation/reason/DMButton";
-import LeaderboardCommand from "./xp/Leaderboard";
+import LeaderboardCommand from "../features/leveling/presentation/LeaderboardCommand";
 
 export default function registerInteractionHandlers(
   interactionClient: InteractionClient,
