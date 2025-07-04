@@ -91,6 +91,7 @@ async function main(): Promise<void> {
     log.info("shutting down ShardingManager");
 
     try {
+      log.info("shutting down shards");
       manager.shards.forEach((shard) => shard.kill());
 
       log.info("closing sentry");

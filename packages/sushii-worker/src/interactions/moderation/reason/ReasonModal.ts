@@ -1,12 +1,10 @@
-import { MessageFlags, ModalSubmitInteraction, EmbedBuilder } from "discord.js";
+import { ModalSubmitInteraction } from "discord.js";
 import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ModalHandler } from "../../handlers";
-import Color from "../../../utils/colors";
 import { interactionReplyErrorPlainMessage } from "../../responses/error";
 import buildModLogEmbed from "../../../builders/buildModLogEmbed";
 import { ActionType } from "../ActionType";
-import sleep from "../../../utils/sleep";
 import db from "../../../infrastructure/database/db";
 import { getModLog, upsertModLog } from "../../../db/ModLog/ModLog.repository";
 
@@ -14,7 +12,6 @@ import { getModLog, upsertModLog } from "../../../db/ModLog/ModLog.repository";
 export default class ModLogReasonModalHandler extends ModalHandler {
   customIDMatch = customIds.modLogReason.match;
 
-  // eslint-disable-next-line class-methods-use-this
   async handleModalSubmit(
     ctx: Context,
     interaction: ModalSubmitInteraction,

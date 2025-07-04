@@ -15,12 +15,11 @@ import {
   getRoleMenuMessageButtonRoles,
   getRoleMenuRequiredRole,
 } from "./ids";
-import sleep from "../../utils/sleep";
+import { sleep } from "bun";
 
 export default class RoleMenuButtonHandler extends ButtonHandler {
   customIDMatch = customIds.roleMenuButton.match;
 
-  // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
     ctx: Context,
     interaction: ButtonInteraction,

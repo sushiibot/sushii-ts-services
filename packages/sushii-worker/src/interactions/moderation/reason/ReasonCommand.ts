@@ -19,7 +19,6 @@ import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
 import { invalidCaseRangeEmbed } from "./Messages";
 import { ActionType } from "../ActionType";
 import customIds from "../../customIds";
-import sleep from "../../../utils/sleep";
 import logger from "../../../core/logger";
 import db from "../../../infrastructure/database/db";
 import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
@@ -27,6 +26,7 @@ import {
   getModLogsRange,
   updateModLogReasonRange,
 } from "../../../db/ModLog/ModLog.repository";
+import { sleep } from "bun";
 
 enum ReasonError {
   UserFetch,
