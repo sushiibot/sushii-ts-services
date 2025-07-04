@@ -39,7 +39,12 @@ async function initializeShard(): Promise<void> {
     partials: [Partials.Message, Partials.Reaction, Partials.GuildMember],
     rest: {
       version: "10",
-      api: config.DISCORD_API_PROXY_URL,
+      // Optional proxy URL
+      ...(config.DISCORD_API_PROXY_URL
+        ? {
+            api: config.DISCORD_API_PROXY_URL,
+          }
+        : {}),
     },
     makeCache: Options.cacheWithLimits({
       MessageManager: 0,
