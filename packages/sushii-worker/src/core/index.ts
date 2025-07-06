@@ -13,7 +13,11 @@ import { drizzleDb } from "@/infrastructure/database/db";
 // it wasn't spawned by the ShardingManager
 import type {} from "./shard";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { ClusterManager, HeartbeatManager } from "discord-hybrid-sharding";
+import {
+  Child,
+  ClusterManager,
+  HeartbeatManager,
+} from "discord-hybrid-sharding";
 
 Error.stackTraceLimit = 50;
 
