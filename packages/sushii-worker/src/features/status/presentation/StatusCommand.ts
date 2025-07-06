@@ -5,20 +5,19 @@ import {
 } from "discord.js";
 import { t } from "i18next";
 import { sql } from "kysely";
-import Context from "../../model/context";
-import db from "../../infrastructure/database/db";
-import Color from "../../utils/colors";
-import { SlashCommandHandler } from "../handlers";
+import Context from "../../../model/context";
+import db from "../../../infrastructure/database/db";
+import Color from "../../../utils/colors";
+import { SlashCommandHandler } from "../../../interactions/handlers";
 
 export default class PingCommand extends SlashCommandHandler {
   serverOnly = false;
 
   command = new SlashCommandBuilder()
-    .setName("ping")
-    .setDescription("Check sushii's ping.")
+    .setName("status")
+    .setDescription("View sushii's status")
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,
@@ -38,6 +37,9 @@ export default class PingCommand extends SlashCommandHandler {
 
     const sushiiDbEnd = process.hrtime.bigint();
 
+    const shardId = interaction.client.shard?.ids[0] ?? 0;
+    const shardLatency = interaction.client.ws.ping;
+
     const embed = new EmbedBuilder()
       .setTitle(t("ping.title"))
       .setDescription(
@@ -54,7 +56,7 @@ export default class PingCommand extends SlashCommandHandler {
 
     await interaction.editReply({
       content: "",
-      embeds: [embed.toJSON()],
+      embeds: [embed],
     });
   }
 }

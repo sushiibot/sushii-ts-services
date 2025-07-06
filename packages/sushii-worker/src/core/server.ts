@@ -8,7 +8,7 @@ import {
   RESTPostAPIApplicationCommandsJSONBody,
 } from "discord.js";
 import { newModuleLogger } from "./logger";
-import { config } from "./config";
+import { config } from "@/core/config";
 import { updateShardMetrics } from "../metrics/gatewayMetrics";
 
 // Reverse mapping of the Status enum to get the name

@@ -3,7 +3,7 @@ import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
 import db from "../infrastructure/database/db";
 import { newModuleLogger } from "../core/logger";
-import { config } from "../core/config";
+import { config } from "@/core/config";
 import {
   clearGuildBans,
   insertGuildBans,

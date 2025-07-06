@@ -1,5 +1,5 @@
 import opentelemetry from "@opentelemetry/api";
-import { config } from "../../core/config";
+import { config } from "@/core/config";
 import db from "../../infrastructure/database/db";
 import { AppPrivateDeploymentName } from "../../infrastructure/database/dbTypes";
 import { DeploymentRow } from "./Deployment.table";

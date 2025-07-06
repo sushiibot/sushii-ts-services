@@ -31,7 +31,7 @@ import {
 import ContextMenuHandler from "../../../interactions/handlers/ContextMenuHandler";
 import getFullCommandName from "../../../utils/getFullCommandName";
 import validationErrorToString from "../../../utils/validationErrorToString";
-import { config } from "../../config";
+import { config } from "@/core/config";
 import { isCurrentDeploymentActive } from "../../../db/Deployment/Deployment.repository";
 import { updateInteractionMetrics } from "../../../metrics/interactionMetrics";
 

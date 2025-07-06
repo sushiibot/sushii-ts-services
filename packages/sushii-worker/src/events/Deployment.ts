@@ -2,7 +2,7 @@ import { Events, Message } from "discord.js";
 import dayjs from "dayjs";
 import { EventHandlerFn } from "./EventHandler";
 import Context from "../model/context";
-import { config } from "../core/config";
+import { config } from "@/core/config";
 import {
   getActiveDeployment,
   toggleActiveDeployment,

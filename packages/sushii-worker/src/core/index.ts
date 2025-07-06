@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import log from "./logger";
 import server from "./server";
 import sdk from "./tracing";
-import { config } from "./config";
+import { config } from "@/core/config";
 import { registerShutdownSignals } from "./signals";
 import { drizzleDb } from "@/infrastructure/database/db";
 

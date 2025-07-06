@@ -4,7 +4,7 @@ import FishyCommand from "./user/fishy";
 import RepCommand from "./user/rep";
 import AvatarCommand from "./user/avatar";
 import UserInfoHandler from "./moderation/context_lookup/LookupContextMenuHandler";
-import PingCommand from "./meta/ping";
+import StatusCommand from "../features/status/presentation/StatusCommand";
 import BanCommand from "./moderation/BanCommand";
 import KickCommand from "./moderation/KickCommand";
 import NotificationCommand from "./notifications/NotificationCommand";
@@ -40,7 +40,7 @@ import LookupCommand from "./moderation/LookupCommand";
 import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
 import TagAdminCommand from "./tags/TagAdminCommand";
 import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
-import { config } from "../core/config";
+import { config } from "@/core/config";
 import BanPoolCommand from "./moderation/ban_pools/BanPool.command";
 import BannerCommand from "./user/banner";
 import GiveawayCommand from "./giveaway/Giveaway.command";
@@ -64,7 +64,7 @@ export default function registerInteractionHandlers(
     new RankCommand(),
 
     // Meta
-    new PingCommand(),
+    new StatusCommand(),
 
     // Moderation
     new BanCommand(),

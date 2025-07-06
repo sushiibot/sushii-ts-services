@@ -29,7 +29,7 @@ import {
   emojiAndStickerStatsReadyHandler,
 } from "../../../events/EmojiStatsHandler";
 import { banPoolOnBanHandler } from "../../../events/ban_pool/BanPoolHandler";
-import { config } from "../../config";
+import { config } from "@/core/config";
 import { isCurrentDeploymentActive } from "../../../db/Deployment/Deployment.repository";
 import {
   memberLogJoinHandler,

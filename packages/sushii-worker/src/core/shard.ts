@@ -7,7 +7,7 @@ import initI18next from "./i18next";
 import registerInteractionHandlers from "../interactions/commands";
 import sdk from "./tracing";
 import Context from "../model/context";
-import { config } from "./config";
+import { config } from "@/core/config";
 import registerEventHandlers from "./infrastructure/discord/handlers";
 import { initCore, registerFeatures } from "./bootstrap";
 
