@@ -149,20 +149,25 @@ export default function registerEventHandlers(
   interactionHandler: InteractionClient,
 ): void {
   client.once(Events.ClientReady, async (c) => {
-    const shardId = c.shard?.ids?.[0] ?? null;
-
     logger.info(
       {
-        shardId,
+        clusterId: c.cluster.id,
+        shardIds: c.cluster.shardList,
         botUser: c.user.tag,
         deployment: config.deployment.name,
       },
-      "Shard client ready!",
+      "Cluster client ready!",
     );
 
+    const content =
+      `Logged in as ${c.user.tag}` +
+      `\nShard IDs: ${c.cluster.shardList.join(", ")}` +
+      `\nGuilds: ${c.guilds.cache.size}` +
+      `\nDeployment: ${config.deployment.name}`;
+
     await webhookLog(
-      `[${shardId}] Shard Ready`,
-      `Logged in as ${c.user.tag} - ${c.guilds.cache.size} guilds`,
+      `[Cluster #${c.cluster.id}] Cluster ClientReady`,
+      content,
       Color.Success,
     );
 
@@ -204,7 +209,7 @@ export default function registerEventHandlers(
     );
 
     await webhookLog(
-      `[${shardId}] Ready`,
+      `[Shard #${shardId}] ShardReady`,
       `unavailable guilds: \`${unavailableGuilds || "none"}\``,
       Color.Success,
     );

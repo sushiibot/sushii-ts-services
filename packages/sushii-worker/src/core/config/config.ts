@@ -101,8 +101,9 @@ export class Config {
   readonly imageServerUrl: string;
   readonly sentry: {
     dsn?: string;
-    environment?: string;
+    environment: string;
   };
+
   readonly manualShardCount?: number;
   readonly shardsPerCluster?: number;
 
@@ -139,8 +140,13 @@ export class Config {
     this.imageServerUrl = env.SUSHII_IMAGE_SERVER_URL;
     this.sentry = {
       dsn: env.SENTRY_DSN,
-      environment: env.SENTRY_ENVIRONMENT,
+      // Prioritize custom environment variable, then fall back toNODE_ENV
+      environment:
+        env.SENTRY_ENVIRONMENT || process.env.NODE_ENV === "production"
+          ? "production"
+          : "development",
     };
+
     this.manualShardCount = env.MANUAL_SHARD_COUNT;
     this.shardsPerCluster = env.SHARDS_PER_CLUSTER ?? 2;
   }

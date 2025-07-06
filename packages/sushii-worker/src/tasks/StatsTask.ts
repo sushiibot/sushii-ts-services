@@ -65,7 +65,7 @@ const task: BackgroundTask = {
 
   async onTick(ctx: Context): Promise<void> {
     // Get all shard data
-    const shardData = await ctx.client.shard?.broadcastEval((client) => ({
+    const shardData = await ctx.client.cluster.broadcastEval((client) => ({
       guildCount: client.guilds.cache.size,
       memberCount: client.guilds.cache.reduce(
         (acc, guild) => acc + guild.memberCount,

@@ -20,9 +20,7 @@ Error.stackTraceLimit = 50;
 async function main(): Promise<void> {
   Sentry.init({
     dsn: config.sentry.dsn,
-    environment:
-      config.sentry.environment ||
-      (process.env.NODE_ENV === "production" ? "production" : "development"),
+    environment: config.sentry.environment,
     tracesSampleRate: 1.0,
   });
 
@@ -71,7 +69,9 @@ async function main(): Promise<void> {
 
   if (config.manualShardCount) {
     log.info(
-      { shardCount: config.manualShardCount },
+      {
+        shardCount: config.manualShardCount,
+      },
       "Using manual shard count",
     );
   }
@@ -125,16 +125,36 @@ async function main(): Promise<void> {
     process.exit(0);
   });
 
-  manager.on("shardCreate", (shard) => {
+  manager.on("clusterReady", (cluster) => {
     log.info(
       {
-        shardId: shard.id,
+        clusterId: cluster.id,
+        shards: cluster.shardList,
       },
-      "Launched shard",
+      "Cluster is ready",
     );
   });
 
-  log.info("Spawning shards");
+  manager.on("clusterCreate", (cluster) =>
+    log.info(
+      {
+        clusterId: cluster.id,
+        shards: cluster.shardList,
+        pid: (cluster.thread as Child)?.process?.pid,
+        connected: (cluster.thread as Child)?.process?.connected,
+      },
+      `Launched Cluster $`,
+    ),
+  );
+
+  log.info(
+    {
+      totalShards: manager.totalShards,
+      manualShardCount: config.manualShardCount,
+      shardsPerCluster: config.shardsPerCluster,
+    },
+    "Spawning shards",
+  );
   await manager.spawn();
 }
 

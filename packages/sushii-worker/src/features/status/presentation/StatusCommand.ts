@@ -30,28 +30,25 @@ export default class PingCommand extends SlashCommandHandler {
     );
     const discordRestEnd = process.hrtime.bigint();
 
-    const sushiiDbStart = process.hrtime.bigint();
-
     // Just just to check latency
+    const sushiiDbStart = process.hrtime.bigint();
     await sql`select 1 + 1`.execute(db);
-
     const sushiiDbEnd = process.hrtime.bigint();
 
-    const shardId = interaction.client.shard?.ids[0] ?? 0;
-    const shardLatency = interaction.client.ws.ping;
+    const currentShardId = interaction.guild?.shardId ?? 0;
+    // Not just ws.ping since that's averaged of all shards
+    const shardLatency =
+      interaction.client.ws.shards.get(currentShardId)?.ping ?? 0;
+
+    const content =
+      `Server Shard ID: \`${currentShardId}\`` +
+      `\nShard Latency: \`${shardLatency}ms\`` +
+      `\nDiscord REST Latency: \`${(discordRestEnd - discordRestStart) / BigInt(1e6)}ms\`` +
+      `\nDatabase Latency: \`${(sushiiDbEnd - sushiiDbStart) / BigInt(1000000)}ms\``;
 
     const embed = new EmbedBuilder()
       .setTitle(t("ping.title"))
-      .setDescription(
-        t("ping.description", {
-          ns: "commands",
-          restMs: (
-            (discordRestEnd - discordRestStart) /
-            BigInt(1e6)
-          ).toString(),
-          sushiiDbMs: ((sushiiDbEnd - sushiiDbStart) / BigInt(1000)).toString(),
-        }),
-      )
+      .setDescription(content)
       .setColor(Color.Success);
 
     await interaction.editReply({

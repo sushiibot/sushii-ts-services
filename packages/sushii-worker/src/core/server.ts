@@ -61,6 +61,7 @@ function createHealthServer(manager: ClusterManager): Server {
         deployment: config.deployment.name,
         clusters: manager.clusters.values().map((cluster) => ({
           id: cluster.id,
+          shards: cluster.shardList,
           ready: cluster.ready,
           restarts: {
             current: cluster.restarts.current,
