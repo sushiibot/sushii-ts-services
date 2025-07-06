@@ -10,6 +10,7 @@ import Context from "../model/context";
 import { config } from "@/core/config";
 import registerEventHandlers from "./infrastructure/discord/handlers";
 import { initCore, registerFeatures } from "./bootstrap";
+import { getInfo } from "discord-hybrid-sharding";
 
 Error.stackTraceLimit = 50;
 
@@ -26,6 +27,11 @@ async function initializeShard(): Promise<void> {
 
   // Create a new client instance
   const djsClient = new Client({
+    // Hybrid sharding options
+    shards: getInfo().SHARD_LIST, // Array of shards that will be spawned
+    shardCount: getInfo().TOTAL_SHARDS, // Total number of shards
+
+    // Base options
     intents: [
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMembers,

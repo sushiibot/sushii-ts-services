@@ -1,6 +1,7 @@
-import { GatewayDispatchEvents, ShardingManager } from "discord.js";
+import { GatewayDispatchEvents } from "discord.js";
 import { Counter, Gauge } from "prom-client";
 import { prefixedName } from "./metrics";
+import { ClusterManager } from "discord-hybrid-sharding";
 
 // -----------------------------------------------------------------------------
 // Events
@@ -38,7 +39,7 @@ const shardLastPingTimestampGauge = new Gauge({
 });
 
 export async function updateShardMetrics(
-  shardManager: ShardingManager,
+  shardManager: ClusterManager,
 ): Promise<void> {
   const statuses = await shardManager.broadcastEval((client) =>
     client.ws.shards.map((shard) => {

@@ -15,6 +15,8 @@ const envSchema = z.object({
   OWNER_USER_ID: z.string().optional(),
   OWNER_CHANNEL_ID: z.string().optional(),
 
+  SHARDS_PER_CLUSTER: z.coerce.number().optional(),
+
   DATABASE_URL: z.string(),
   DISCORD_TOKEN: z.string(),
   LOG_LEVEL: z.string().optional().default("info"),

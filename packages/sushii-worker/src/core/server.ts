@@ -3,13 +3,11 @@ import { Hono, MiddlewareHandler } from "hono";
 import { routePath } from "hono/route";
 import { HTTPException } from "hono/http-exception";
 import { Server } from "bun";
-import {
-  ShardingManager,
-  RESTPostAPIApplicationCommandsJSONBody,
-} from "discord.js";
+import { RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
 import { newModuleLogger } from "./logger";
 import { config } from "@/core/config";
 import { updateShardMetrics } from "../metrics/gatewayMetrics";
+import { Child, ClusterManager } from "discord-hybrid-sharding";
 
 // Reverse mapping of the Status enum to get the name
 export const ShardStatusToName = {
@@ -42,7 +40,7 @@ const pinoLoggerMiddleware: MiddlewareHandler = async (c, next) => {
   logger.debug(log, message);
 };
 
-function createHealthServer(manager: ShardingManager): Server {
+function createHealthServer(manager: ClusterManager): Server {
   const app = new Hono();
 
   // Middleware
@@ -50,22 +48,32 @@ function createHealthServer(manager: ShardingManager): Server {
 
   // Routes
   app.get("/health", (c) => {
-    const shardStatuses = Array.from(manager.shards.values()).map(
-      (s) => s.ready,
-    );
-    const readyCount = shardStatuses.filter(Boolean).length;
+    // All clients are ready (1 client -> multiple shards)
+    const allReady = Array.from(manager.clusters.values())
+      .map((s) => s.ready)
+      .every(Boolean);
 
-    const totalShards = manager.totalShards;
-    const fullyReady = readyCount === totalShards;
-    const statusCode = fullyReady ? 200 : 503;
+    const statusCode = allReady ? 200 : 503;
 
     return c.json(
       {
-        status: fullyReady ? "healthy" : "unhealthy",
+        status: allReady ? "healthy" : "unhealthy",
         deployment: config.deployment.name,
+        clusters: manager.clusters.values().map((cluster) => ({
+          id: cluster.id,
+          ready: cluster.ready,
+          restarts: {
+            current: cluster.restarts.current,
+            max: cluster.restarts.max,
+            interval: cluster.restarts.interval,
+          },
+          process: {
+            pid: (cluster.thread as Child)?.process?.pid,
+            connected: (cluster.thread as Child)?.process?.connected,
+          },
+        })),
         shards: {
-          total: totalShards,
-          ready: readyCount,
+          total: manager.totalShards,
         },
       },
       statusCode,
@@ -79,7 +87,7 @@ function createHealthServer(manager: ShardingManager): Server {
 }
 
 function createMonitoringServer(
-  manager: ShardingManager,
+  manager: ClusterManager,
   commands: RESTPostAPIApplicationCommandsJSONBody[],
 ): Server {
   const app = new Hono();
@@ -90,22 +98,12 @@ function createMonitoringServer(
   // Routes
   app.get("/commands", (c) => c.json(commands));
   app.get("/status", (c) => {
-    const shardInfo = {
-      count: manager.totalShards,
-      status: Array.from(manager.shards.values()).map((s) => ({
-        id: s.id,
-        ready: s.ready,
-        process: {
-          pid: s.process?.pid,
-          connected: s.process?.connected,
-        },
-      })),
-    };
-
-    const fullyReady = shardInfo.status.every((s) => s.ready);
+    const allReady = Array.from(manager.clusters.values())
+      .map((s) => s.ready)
+      .every(Boolean);
 
     return c.json({
-      status: fullyReady ? "healthy" : "unhealthy",
+      status: allReady ? "healthy" : "unhealthy",
       config: {
         deployment: config.deployment.name,
         owner: {
@@ -116,7 +114,20 @@ function createMonitoringServer(
         disableBanFetchOnReady: config.features.disableBanFetchOnReady,
         banPoolEnabled: config.features.banPoolEnabled,
       },
-      shards: shardInfo,
+      clusters: manager.clusters.values().map((cluster) => ({
+        id: cluster.id,
+        ready: cluster.ready,
+        restarts: {
+          current: cluster.restarts.current,
+          max: cluster.restarts.max,
+          interval: cluster.restarts.interval,
+        },
+        process: {
+          pid: (cluster.thread as Child)?.process?.pid,
+          connected: (cluster.thread as Child)?.process?.connected,
+        },
+      })),
+      totalShards: manager.totalShards,
     });
   });
 
@@ -146,7 +157,7 @@ function createMonitoringServer(
 }
 
 export default function server(
-  manager: ShardingManager,
+  manager: ClusterManager,
   commands: RESTPostAPIApplicationCommandsJSONBody[],
 ): Server[] {
   const healthServer = createHealthServer(manager);

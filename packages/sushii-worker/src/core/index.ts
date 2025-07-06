@@ -1,6 +1,5 @@
 import "./dayjs";
 import * as Sentry from "@sentry/bun";
-import { ShardingManager } from "discord.js";
 import { fileURLToPath } from "url";
 import log from "./logger";
 import server from "./server";
@@ -14,6 +13,7 @@ import { drizzleDb } from "@/infrastructure/database/db";
 // it wasn't spawned by the ShardingManager
 import type {} from "./shard";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
+import { ClusterManager, HeartbeatManager } from "discord-hybrid-sharding";
 
 Error.stackTraceLimit = 50;
 
@@ -77,12 +77,21 @@ async function main(): Promise<void> {
   }
 
   // Create ShardingManager
-  const manager = new ShardingManager(shardFile, {
+  const manager = new ClusterManager(shardFile, {
     token: config.discord.token,
     totalShards: config.manualShardCount || "auto",
+    shardsPerClusters: config.shardsPerCluster,
     mode: "process",
-    respawn: true,
   });
+
+  manager.extend(
+    new HeartbeatManager({
+      // Interval to send a heartbeat
+      interval: 2000,
+      // Maximum amount of missed Heartbeats until Cluster will get respawned
+      maxMissedHeartbeats: 5,
+    }),
+  );
 
   // Start metrics and healthcheck server (runs only in main process)
   const servers = server(manager, []);
@@ -92,7 +101,11 @@ async function main(): Promise<void> {
 
     try {
       log.info("shutting down shards");
-      manager.shards.forEach((shard) => shard.kill());
+      manager.clusters.values().forEach((shard) =>
+        shard.kill({
+          force: false,
+        }),
+      );
 
       log.info("closing sentry");
       await Sentry.close(2000);

@@ -104,6 +104,7 @@ export class Config {
     environment?: string;
   };
   readonly manualShardCount?: number;
+  readonly shardsPerCluster?: number;
 
   constructor(env: Env) {
     this.database = new DatabaseConfig(env.DATABASE_URL);
@@ -141,6 +142,7 @@ export class Config {
       environment: env.SENTRY_ENVIRONMENT,
     };
     this.manualShardCount = env.MANUAL_SHARD_COUNT;
+    this.shardsPerCluster = env.SHARDS_PER_CLUSTER ?? 2;
   }
 }
 
