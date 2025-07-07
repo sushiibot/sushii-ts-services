@@ -283,3 +283,166 @@ await levelingService.resetUserXp(user.id);
 3. **Maintainability**: Clear separation of concerns and explicit dependencies
 4. **Scalability**: Independent feature development and deployment
 5. **Team Development**: Multiple developers can work on different bounded contexts
+
+## Dependency Injection Best Practices
+
+### Avoid Factory Functions
+**❌ Don't use factory functions that hide dependencies:**
+```typescript
+// Bad: Factory function hides dependencies
+export function createDeploymentService() {
+  const repository = new DrizzleDeploymentRepository();
+  const notifier = new PostgreSQLDeploymentNotifier();
+  return new CachedDeploymentService(repository, notifier);
+}
+
+// Usage hides what dependencies are needed
+const service = createDeploymentService();
+```
+
+**✅ Use explicit constructor injection instead:**
+```typescript
+// Good: Explicit dependency construction
+const deploymentRepository = new DrizzleDeploymentRepository();
+const deploymentNotifier = new PostgreSQLDeploymentNotifier();
+const deploymentService = new CachedDeploymentService(
+  deploymentRepository,
+  deploymentNotifier
+);
+```
+
+### Benefits of Explicit Constructor Injection
+
+1. **Explicit Dependencies** - Clear what dependencies a service requires
+2. **Better Testability** - Easy to inject mocks and stubs for unit testing
+3. **Improved Flexibility** - Can easily swap implementations for different environments
+4. **Enhanced Clarity** - Dependencies and their relationships are visible in the code
+5. **Consistency** - Matches existing patterns used throughout the codebase
+6. **Maintainability** - Clear ownership and lifecycle management
+
+### When to Use Different Patterns
+
+- **Manual Wiring** (Current approach): For simple applications with few dependencies
+- **Dependency Injection Container**: For larger applications with complex dependency graphs
+- **Builder Pattern**: When services need multiple optional configuration parameters
+- **Module Pattern**: For organizing related service factories together
+
+### Example: Bootstrap Service Construction
+```typescript
+// In bootstrap.ts - explicit dependency wiring
+export async function initCore() {
+  const db = drizzleDb;
+
+  // Explicit dependency construction - dependencies are clear
+  const deploymentRepository = new DrizzleDeploymentRepository();
+  const deploymentNotifier = new PostgreSQLDeploymentNotifier();
+  const deploymentService = new CachedDeploymentService(
+    deploymentRepository,
+    deploymentNotifier
+  );
+  
+  await deploymentService.start();
+
+  return { db, deploymentService };
+}
+```
+
+This approach ensures dependencies are visible, testable, and maintainable while keeping the codebase simple and consistent.
+
+## Logging Best Practices
+
+### Use Pino Directly, Avoid Adapters
+
+**❌ Don't create unnecessary adapter layers:**
+```typescript
+// Bad: Adapter reduces functionality
+interface Logger {
+  info(message: string, context?: Record<string, unknown>): void;
+  error(message: string, context?: Record<string, unknown>): void;
+}
+
+class PinoLoggerAdapter implements Logger {
+  constructor(private pinoLogger: pino.Logger) {}
+  info(message: string, context?: Record<string, unknown>): void {
+    this.pinoLogger.info(context, message);
+  }
+}
+```
+
+**✅ Use the logging library directly:**
+```typescript
+// Good: Direct pino usage preserves full API
+import { Logger } from "pino";
+
+class DeploymentService {
+  constructor(private readonly logger: Logger) {}
+}
+```
+
+### Benefits of Direct Library Usage
+
+1. **Preserves Full API** - Access to child loggers, all log levels, performance optimizations
+2. **Better Performance** - No adapter overhead or extra function calls
+3. **Natural Syntax** - Use the library's intended structured logging format
+4. **Industry Standard** - Most frameworks (NestJS, Fastify) inject the library directly
+5. **Developer Experience** - Full IDE support and documentation access
+
+### Structured Logging Format
+
+**✅ Use Pino's natural structured logging syntax:**
+```typescript
+// Good: Context object first, message second
+logger.info(
+  {
+    userId: 123,
+    action: 'login',
+    ip: '192.168.1.1'
+  },
+  'User authenticated successfully'
+);
+
+// Good: Error objects with context
+logger.error({ error, requestId: 'abc123' }, 'Failed to process request');
+```
+
+**❌ Avoid message-first patterns:**
+```typescript
+// Bad: Loses Pino's performance optimizations
+logger.info('User authenticated', { userId: 123, action: 'login' });
+```
+
+### Advanced Pino Features to Leverage
+
+```typescript
+// Child loggers with bound context
+const requestLogger = logger.child({ requestId: 'abc123' });
+requestLogger.info('Processing request'); // Automatically includes requestId
+
+// Conditional logging for performance
+if (logger.isLevelEnabled('debug')) {
+  const expensiveData = computeExpensiveDebugInfo();
+  logger.debug({ data: expensiveData }, 'Debug information');
+}
+
+// All available log levels
+logger.trace({ details }, 'Very detailed tracing');
+logger.debug({ state }, 'Debug information');
+logger.info({ event }, 'General information');
+logger.warn({ issue }, 'Warning condition');
+logger.error({ error }, 'Error occurred');
+logger.fatal({ error }, 'Fatal error');
+```
+
+### When to Abstract vs. Use Directly
+
+**Abstract When:**
+- Supporting multiple logging backends (rare)
+- Domain layer needs to be completely framework-agnostic
+- Legacy system migration requirements
+
+**Use Directly When:**
+- Already committed to a specific logging library (most cases)
+- Need full feature access (performance, child loggers, etc.)
+- Following industry best practices (recommended approach)
+
+This approach maximizes the value of your chosen logging library while maintaining clean, maintainable code.
