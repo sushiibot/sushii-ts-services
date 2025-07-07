@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "discord.js";
-import SushiiEmoji from "../../../constants/SushiiEmoji";
+import SushiiEmoji from "../../../shared/presentation/SushiiEmoji";
 import Color from "../../../utils/colors";
 
 // eslint-disable-next-line import/prefer-default-export

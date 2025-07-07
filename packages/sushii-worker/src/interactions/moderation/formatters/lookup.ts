@@ -2,7 +2,7 @@ import { EmbedBuilder, GuildFeature, GuildMember, User } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
 import { getCreatedTimestampSeconds } from "../../../utils/snowflake";
 import timestampToUnixTime from "../../../utils/timestampToUnixTime";
-import SushiiEmoji from "../../../constants/SushiiEmoji";
+import SushiiEmoji from "../../../shared/presentation/SushiiEmoji";
 import Color from "../../../utils/colors";
 
 export interface UserLookupBan {

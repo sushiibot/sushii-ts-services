@@ -1,6 +1,6 @@
 import { expect, describe, it } from "bun:test";
 
-import SushiiEmoji from "../../../constants/SushiiEmoji";
+import SushiiEmoji from "../../../shared/presentation/SushiiEmoji";
 import { getRadioButton } from "./settings";
 
 type TestSelection = "option1" | "option2" | "option3";

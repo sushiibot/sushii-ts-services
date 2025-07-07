@@ -15,7 +15,7 @@ import {
   AppPublicMessages,
   AppPublicMsgLogBlocks,
 } from "../../infrastructure/database/dbTypes";
-import SushiiEmoji from "../../constants/SushiiEmoji";
+import SushiiEmoji from "../../shared/presentation/SushiiEmoji";
 import Context from "../../model/context";
 import buildChunks from "../../utils/buildChunks";
 import Color from "../../utils/colors";

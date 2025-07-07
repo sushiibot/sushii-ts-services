@@ -1,4 +1,4 @@
-import SushiiEmoji from "../../../constants/SushiiEmoji";
+import SushiiEmoji from "../../../shared/presentation/SushiiEmoji";
 import { BanPoolMemberRow } from "./BanPoolMember.table";
 import { BanPoolGuildSettingsRow } from "./GuildSettings.table";
 

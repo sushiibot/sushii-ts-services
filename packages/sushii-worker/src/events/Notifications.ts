@@ -16,7 +16,7 @@ import {
 } from "../db/Notification/Notification.repository";
 import db from "../infrastructure/database/db";
 import Color from "../utils/colors";
-import SushiiEmoji from "../constants/SushiiEmoji";
+import SushiiEmoji from "../shared/presentation/SushiiEmoji";
 import { quoteMarkdownString } from "../utils/markdown";
 import { getUserString } from "../utils/userString";
 import { newModuleLogger } from "@/shared/infrastructure/logger";

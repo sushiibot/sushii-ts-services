@@ -69,7 +69,7 @@ async function main(): Promise<void> {
   await deploymentService.start();
 
   // ---------------------------------------------------------------------------
-  // Checks
+  // Pre-start Checks
 
   // Ensure API proxy URL is valid and reachable
   if (config.discord.proxyUrl) {
@@ -96,9 +96,9 @@ async function main(): Promise<void> {
   }
 
   // ---------------------------------------------------------------------------
-  // ShardManager Initialization
+  // ClusterManager Initialization
 
-  // Get the shard file path
+  // Get the shard cluster file path
   const shardFile = fileURLToPath(
     import.meta.resolve("./core/cluster/shard.ts"),
   );
@@ -112,7 +112,8 @@ async function main(): Promise<void> {
     );
   }
 
-  // Create ShardingManager
+  // Create ClusterManager
+  // 1 process -> 1 cluster -> multiple shards
   const manager = new ClusterManager(shardFile, {
     token: config.discord.token,
     totalShards: config.manualShardCount || "auto",
