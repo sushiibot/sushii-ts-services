@@ -47,4 +47,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 
 # For i18next to load relative files correctly
 WORKDIR /config/packages/sushii-worker
-ENTRYPOINT [ "bun", "run", "./src/core/index.ts" ]
+ENTRYPOINT [ "bun", "run", "./src/index.ts" ]
