@@ -14,7 +14,7 @@ import {
 import {
   activeGiveawaysGauge,
   endedGiveawaysCounter,
-} from "../metrics/metrics";
+} from "@/infrastructure/metrics/metrics";
 
 const logger = newModuleLogger("GiveawayTask");
 
@@ -34,7 +34,6 @@ const task: BackgroundTask = {
       "completing all ended giveaways",
     );
 
-    /* eslint-disable no-await-in-loop */
     for (const giveaway of expiredGiveaways) {
       const giveawayChannel = ctx.client.channels.cache.get(
         giveaway.channel_id,
@@ -85,7 +84,6 @@ const task: BackgroundTask = {
         );
       }
     }
-    /* eslint-enable no-await-in-loop */
 
     // Increment ended metric
     endedGiveawaysCounter.inc(expiredGiveaways.length);

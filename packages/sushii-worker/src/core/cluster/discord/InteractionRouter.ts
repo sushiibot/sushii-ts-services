@@ -32,7 +32,7 @@ import ContextMenuHandler from "@/interactions/handlers/ContextMenuHandler";
 import getFullCommandName from "@/utils/getFullCommandName";
 import validationErrorToString from "@/utils/validationErrorToString";
 import { config } from "@/shared/infrastructure/config";
-import { updateInteractionMetrics } from "@/metrics/interactionMetrics";
+import { updateInteractionMetrics } from "@/infrastructure/metrics/interactionMetrics";
 
 const tracer = opentelemetry.trace.getTracer("interaction-client");
 

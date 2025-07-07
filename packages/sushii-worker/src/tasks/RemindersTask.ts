@@ -13,7 +13,7 @@ import toTimestamp from "../utils/toTimestamp";
 import {
   pendingRemindersGauge,
   sentRemindersCounter,
-} from "../metrics/metrics";
+} from "@/infrastructure/metrics/metrics";
 
 const logger = newModuleLogger("RemindersTask");
 
@@ -36,7 +36,6 @@ const task: BackgroundTask = {
     let numSuccess = 0;
     let numFailed = 0;
 
-    /* eslint-disable no-await-in-loop */
     for (const reminder of expiredReminders) {
       let user;
       try {
@@ -60,7 +59,6 @@ const task: BackgroundTask = {
         continue;
       }
     }
-    /* eslint-enable no-await-in-loop */
 
     sentRemindersCounter.inc(
       {

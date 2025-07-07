@@ -7,7 +7,7 @@ import { RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
 import { config } from "@/shared/infrastructure/config";
 import { Child, ClusterManager } from "discord-hybrid-sharding";
-import { updateShardMetrics } from "@/metrics/gatewayMetrics";
+import { updateShardMetrics } from "@/infrastructure/metrics/gatewayMetrics";
 
 // Reverse mapping of the Status enum to get the name
 export const ShardStatusToName = {

@@ -39,7 +39,7 @@ import {
   memberLeaveMessageHandler,
 } from "@/events/JoinLeaveMessage";
 import { deployToggleHandler } from "@/events/Deployment";
-import { updateGatewayDispatchEventMetrics } from "@/metrics/gatewayMetrics";
+import { updateGatewayDispatchEventMetrics } from "@/infrastructure/metrics/gatewayMetrics";
 import { cacheUserHandler } from "@/events/cache/cacheUser";
 import {
   cacheGuildCreateHandler,

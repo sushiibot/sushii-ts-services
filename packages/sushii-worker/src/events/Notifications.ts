@@ -23,7 +23,7 @@ import { newModuleLogger } from "@/shared/infrastructure/logger";
 import {
   activeNotificationsGauge,
   sentNotificationsCounter,
-} from "../metrics/metrics";
+} from "@/infrastructure/metrics/metrics";
 
 const log = newModuleLogger("NotificationsHandler");
 
@@ -74,7 +74,6 @@ export const notificationHandler: EventHandlerFn<Events.MessageCreate> = async (
         return true;
       });
 
-      /* eslint-disable no-await-in-loop */
       for (const notification of uniqueNotifications) {
         let member;
         try {
@@ -140,7 +139,6 @@ export const notificationHandler: EventHandlerFn<Events.MessageCreate> = async (
           continue;
         }
       }
-      /* eslint-enable */
     } finally {
       span.end();
     }
