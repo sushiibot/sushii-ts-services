@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import * as Sentry from "@sentry/node";
 import opentelemetry, { Span } from "@opentelemetry/api";
-import logger from "@/core/shared/logger";
+import logger from "@/shared/infrastructure/logger";
 import InteractionClient from "./InteractionRouter";
 import { EventHandlerFn } from "@/events/EventHandler";
 import Context from "@/model/context";
@@ -28,7 +28,7 @@ import {
   emojiAndStickerStatsReadyHandler,
 } from "@/events/EmojiStatsHandler";
 import { banPoolOnBanHandler } from "@/events/ban_pool/BanPoolHandler";
-import { config } from "@/core/shared/config";
+import { config } from "@/shared/infrastructure/config";
 import {
   memberLogJoinHandler,
   memberLogLeaveHandler,

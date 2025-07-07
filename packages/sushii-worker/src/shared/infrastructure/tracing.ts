@@ -5,8 +5,8 @@ import { Resource } from "@opentelemetry/resources";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 import { TraceIdRatioBasedSampler } from "@opentelemetry/sdk-trace-node";
 import { Tracer, Span, SpanStatusCode } from "@opentelemetry/api";
-import logger from "./logger";
-import { config } from "@/core/shared/config";
+import logger from "../../shared/infrastructure/logger";
+import { config } from "@/shared/infrastructure/config";
 
 const exporterOptions = {
   // Default URL

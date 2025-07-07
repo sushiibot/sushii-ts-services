@@ -1,5 +1,5 @@
 import { EmbedBuilder, GuildFeature, GuildMember, User } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { getCreatedTimestampSeconds } from "../../../utils/snowflake";
 import timestampToUnixTime from "../../../utils/timestampToUnixTime";
 import SushiiEmoji from "../../../constants/SushiiEmoji";

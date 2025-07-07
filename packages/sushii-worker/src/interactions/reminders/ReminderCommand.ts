@@ -4,7 +4,7 @@ import {
   MessageFlags,
   ChatInputCommandInteraction,
 } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { t } from "i18next";
 import Context from "../../model/context";
 import Color from "../../utils/colors";

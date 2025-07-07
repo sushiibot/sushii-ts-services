@@ -1,5 +1,5 @@
 import { DeleteResult, Kysely, UpdateResult } from "kysely";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import {
   BanPoolInviteRow,
   InsertableBanPoolInviteRow,

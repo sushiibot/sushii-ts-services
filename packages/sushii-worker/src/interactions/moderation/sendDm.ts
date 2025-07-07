@@ -8,7 +8,7 @@ import {
   Guild,
   DiscordAPIError,
 } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { Err, Ok, Result } from "ts-results";
 import Context from "../../model/context";
 import Color from "../../utils/colors";

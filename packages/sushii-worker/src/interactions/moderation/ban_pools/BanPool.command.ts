@@ -7,7 +7,7 @@ import {
   ChannelType,
   InteractionContextType,
 } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import Context from "../../../model/context";
 import { SlashCommandHandler } from "../../handlers";
 import Color from "../../../utils/colors";

@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { randomBytes } from "crypto";
 import base32 from "hi-base32";
 import Color from "../../../utils/colors";

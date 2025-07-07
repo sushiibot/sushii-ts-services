@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { Duration } from "dayjs/plugin/duration";
 
 export default function getDuration(a: dayjs.Dayjs, b: dayjs.Dayjs): Duration {

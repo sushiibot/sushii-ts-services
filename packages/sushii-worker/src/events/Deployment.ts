@@ -1,8 +1,8 @@
 import { Events, Message } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { EventHandlerFn } from "./EventHandler";
 import Context from "../model/context";
-import { config } from "@/core/shared/config";
+import { config } from "@/shared/infrastructure/config";
 import toTimestamp from "../utils/toTimestamp";
 
 export const deployToggleHandler: EventHandlerFn<Events.MessageCreate> = async (

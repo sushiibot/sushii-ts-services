@@ -2,8 +2,8 @@ import { Events, Guild, GuildBan } from "discord.js";
 import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
 import db from "../infrastructure/database/db";
-import { newModuleLogger } from "@/core/shared/logger";
-import { config } from "@/core/shared/config";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
+import { config } from "@/shared/infrastructure/config";
 import {
   clearGuildBans,
   insertGuildBans,

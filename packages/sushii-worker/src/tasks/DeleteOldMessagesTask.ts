@@ -1,5 +1,5 @@
-import dayjs from "dayjs";
-import { newModuleLogger } from "@/core/shared/logger";
+import dayjs from "@/shared/domain/dayjs";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import { deleteMessagesBefore } from "../db/Message/Message.repository";

@@ -4,8 +4,8 @@ import { routePath } from "hono/route";
 import { HTTPException } from "hono/http-exception";
 import { Server } from "bun";
 import { RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
-import { newModuleLogger } from "@/core/shared/logger";
-import { config } from "@/core/shared/config";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
+import { config } from "@/shared/infrastructure/config";
 import { Child, ClusterManager } from "discord-hybrid-sharding";
 import { updateShardMetrics } from "@/metrics/gatewayMetrics";
 

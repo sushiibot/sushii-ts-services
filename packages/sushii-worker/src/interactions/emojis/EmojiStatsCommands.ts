@@ -11,7 +11,7 @@ import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import db from "../../infrastructure/database/db";
 import Color from "../../utils/colors";
-import logger from "@/core/shared/logger";
+import logger from "@/shared/infrastructure/logger";
 import { AppPublicGuildAssetType } from "../../infrastructure/database/dbTypes";
 import Paginator from "@/shared/presentation/Paginator";
 

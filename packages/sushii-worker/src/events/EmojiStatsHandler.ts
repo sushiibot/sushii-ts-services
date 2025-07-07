@@ -9,7 +9,7 @@ import {
   Sticker,
   User,
 } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { InsertObject } from "kysely/dist/cjs/parser/insert-values-parser";
 import opentelemetry from "@opentelemetry/api";
 import Context from "../model/context";
@@ -20,8 +20,8 @@ import {
   AppPublicGuildAssetType,
   DB,
 } from "../infrastructure/database/dbTypes";
-import { newModuleLogger } from "@/core/shared/logger";
-import { startCaughtActiveSpan } from "@/core/shared/tracing";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
+import { startCaughtActiveSpan } from "@/shared/infrastructure/tracing";
 
 const logger = newModuleLogger("EmojiStatsHandler");
 

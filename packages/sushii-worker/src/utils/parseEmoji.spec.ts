@@ -1,4 +1,4 @@
-import "@/core/shared/dayjs";
+import "@/shared/domain/dayjs";
 import { describe, expect, test } from "bun:test";
 
 import parseEmoji from "./parseEmoji";

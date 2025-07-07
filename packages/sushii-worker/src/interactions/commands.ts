@@ -40,7 +40,7 @@ import LookupCommand from "./moderation/LookupCommand";
 import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
 import TagAdminCommand from "./tags/TagAdminCommand";
 import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
-import { config } from "@/core/shared/config";
+import { config } from "@/shared/infrastructure/config";
 import BanPoolCommand from "./moderation/ban_pools/BanPool.command";
 import BannerCommand from "./user/banner";
 import GiveawayCommand from "./giveaway/Giveaway.command";

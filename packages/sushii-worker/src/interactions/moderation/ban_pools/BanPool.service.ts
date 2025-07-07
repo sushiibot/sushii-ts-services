@@ -1,5 +1,5 @@
 import { EmbedBuilder, Guild } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import db from "../../../infrastructure/database/db";
 import Color from "../../../utils/colors";
 import {

@@ -19,7 +19,7 @@ import Color from "../utils/colors";
 import SushiiEmoji from "../constants/SushiiEmoji";
 import { quoteMarkdownString } from "../utils/markdown";
 import { getUserString } from "../utils/userString";
-import { newModuleLogger } from "@/core/shared/logger";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
 import {
   activeNotificationsGauge,
   sentNotificationsCounter,

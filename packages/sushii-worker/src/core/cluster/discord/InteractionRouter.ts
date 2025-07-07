@@ -20,7 +20,7 @@ import * as Sentry from "@sentry/node";
 import { t } from "i18next";
 import opentelemetry from "@opentelemetry/api";
 import Context from "@/model/context";
-import log from "@/core/shared/logger";
+import log from "@/shared/infrastructure/logger";
 import {
   SlashCommandHandler,
   ModalHandler,
@@ -31,7 +31,7 @@ import {
 import ContextMenuHandler from "@/interactions/handlers/ContextMenuHandler";
 import getFullCommandName from "@/utils/getFullCommandName";
 import validationErrorToString from "@/utils/validationErrorToString";
-import { config } from "@/core/shared/config";
+import { config } from "@/shared/infrastructure/config";
 import { updateInteractionMetrics } from "@/metrics/interactionMetrics";
 
 const tracer = opentelemetry.trace.getTracer("interaction-client");

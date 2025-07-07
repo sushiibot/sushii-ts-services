@@ -1,5 +1,5 @@
 import { DeleteResult, InsertResult, Kysely, UpdateResult, sql } from "kysely";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { DB } from "../../infrastructure/database/dbTypes";
 import {
   GiveawayEntryRow,

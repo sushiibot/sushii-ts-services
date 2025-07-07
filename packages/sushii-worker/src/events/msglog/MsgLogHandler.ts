@@ -19,7 +19,7 @@ import SushiiEmoji from "../../constants/SushiiEmoji";
 import Context from "../../model/context";
 import buildChunks from "../../utils/buildChunks";
 import Color from "../../utils/colors";
-import { newModuleLogger } from "@/core/shared/logger";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
 import db from "../../infrastructure/database/db";
 import { EventHandlerFn } from "../EventHandler";
 import { getAPIUserTag } from "../../utils/APIUser";

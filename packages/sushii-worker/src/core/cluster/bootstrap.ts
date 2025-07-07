@@ -10,9 +10,9 @@ import { SimpleEventBus } from "@/shared/infrastructure/SimpleEventBus";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Client } from "discord.js";
 import { EventHandler } from "./presentation/EventHandler";
-import { config } from "@/core/shared/config";
+import { config } from "@/shared/infrastructure/config";
 import { DeploymentChanged } from "@/features/deployment/domain/events/DeploymentChanged";
-import logger from "@/core/shared/logger";
+import logger from "@/shared/infrastructure/logger";
 
 export async function initCore() {
   // This just returns the global existing database for now, until we fully

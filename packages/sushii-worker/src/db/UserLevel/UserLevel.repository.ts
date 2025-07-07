@@ -1,5 +1,5 @@
 import { Kysely, QueryCreator, SelectQueryBuilder, sql } from "kysely";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { z } from "zod";
 import { DB } from "../../infrastructure/database/dbTypes";
 import { UserLevelRow, UserLevelRowWithRank } from "./UserLevel.table";

@@ -1,6 +1,4 @@
-import "@/core/shared/dayjs";
-
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { describe, expect, test } from "bun:test";
 import parseDurationOrTimestamp from "./parseDurationOrTimestamp";
 

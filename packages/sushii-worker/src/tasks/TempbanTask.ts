@@ -1,9 +1,9 @@
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import { getAndDeleteExpiredTempBans } from "../db/TempBan/TempBan.repository";
 import db from "../infrastructure/database/db";
-import { newModuleLogger } from "@/core/shared/logger";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
 import toTimestamp from "../utils/toTimestamp";
 
 const logger = newModuleLogger("TempbansTask");

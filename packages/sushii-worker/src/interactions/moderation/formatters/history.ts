@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { t } from "i18next";
 import Color from "../../../utils/colors";
 import { ActionType } from "../ActionType";

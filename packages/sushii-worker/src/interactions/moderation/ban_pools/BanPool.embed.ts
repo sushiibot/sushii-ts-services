@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { BanPoolRow } from "./BanPool.table";
 import { BanPoolMemberRow } from "./BanPoolMember.table";
 import { BanPoolInviteRow } from "./BanPoolInvite.table";

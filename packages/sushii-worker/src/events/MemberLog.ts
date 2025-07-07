@@ -7,7 +7,7 @@ import {
   RESTJSONErrorCodes,
   TimestampStyles,
 } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { EventHandlerFn } from "./EventHandler";
 import Context from "../model/context";
 import db from "../infrastructure/database/db";
@@ -17,7 +17,7 @@ import {
 } from "../db/GuildConfig/GuildConfig.repository";
 import Color from "../utils/colors";
 import toTimestamp from "../utils/toTimestamp";
-import { newModuleLogger } from "@/core/shared/logger";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
 
 const log = newModuleLogger("MemberLog");
 

@@ -6,11 +6,11 @@ import {
   User,
   DiscordAPIError,
 } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { Err, Ok, Result } from "ts-results";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import opentelemetry, { SpanStatusCode } from "@opentelemetry/api";
-import logger from "@/core/shared/logger";
+import logger from "@/shared/infrastructure/logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import toSentenceCase from "../../utils/toSentenceCase";
@@ -28,7 +28,7 @@ import {
   upsertModLog,
 } from "../../db/ModLog/ModLog.repository";
 import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
-import { startCaughtActiveSpan } from "@/core/shared/tracing";
+import { startCaughtActiveSpan } from "@/shared/infrastructure/tracing";
 import {
   deleteTempBan,
   upsertTempBan,

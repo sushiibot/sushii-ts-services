@@ -1,8 +1,8 @@
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { User } from "discord.js";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import Context from "../../model/context";
-import logger from "@/core/shared/logger";
+import logger from "@/shared/infrastructure/logger";
 import db from "../../infrastructure/database/db";
 import { DB } from "../../infrastructure/database/dbTypes";
 import { getUserOrDefault, upsertUser } from "../../db/User/User.repository";

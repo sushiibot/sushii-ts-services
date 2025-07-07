@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { User } from "discord.js";
 import Context from "../../model/context";
 import { getUserOrDefault, upsertUser } from "../../db/User/User.repository";

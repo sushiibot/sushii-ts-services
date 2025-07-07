@@ -8,7 +8,7 @@ import {
   DiscordAPIError,
   InteractionContextType,
 } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import plugin from "dayjs/plugin/duration";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";

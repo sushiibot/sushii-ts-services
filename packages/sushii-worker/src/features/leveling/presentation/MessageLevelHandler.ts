@@ -5,8 +5,8 @@ import {
   RESTJSONErrorCodes,
 } from "discord.js";
 import opentelemetry, { Span } from "@opentelemetry/api";
-import { newModuleLogger } from "@/core/shared/logger";
-import { startCaughtActiveSpan } from "@/core/shared/tracing";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
+import { startCaughtActiveSpan } from "@/shared/infrastructure/tracing";
 import { UpdateUserXpService } from "../application/UpdateUserXpService";
 import { EventHandler } from "@/core/cluster/presentation/EventHandler";
 

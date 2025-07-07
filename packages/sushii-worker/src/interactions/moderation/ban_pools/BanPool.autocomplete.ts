@@ -3,7 +3,7 @@ import {
   ApplicationCommandOptionType,
 } from "discord-api-types/v10";
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import Context from "../../../model/context";
 import { AutocompleteHandler } from "../../handlers";
 import { BanPoolOption, BanPoolOptionCommand } from "./BanPool.command";

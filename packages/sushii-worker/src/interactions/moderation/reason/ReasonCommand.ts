@@ -10,7 +10,7 @@ import {
   DiscordAPIError,
   InteractionContextType,
 } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import Context from "../../../model/context";
 import Color from "../../../utils/colors";
 import { SlashCommandHandler } from "../../handlers";
@@ -19,7 +19,7 @@ import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
 import { invalidCaseRangeEmbed } from "./Messages";
 import { ActionType } from "../ActionType";
 import customIds from "../../customIds";
-import logger from "@/core/shared/logger";
+import logger from "@/shared/infrastructure/logger";
 import db from "../../../infrastructure/database/db";
 import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
 import {

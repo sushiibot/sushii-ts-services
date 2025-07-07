@@ -5,12 +5,12 @@ import {
   RESTJSONErrorCodes,
   User,
 } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import { getPoolByNameAndGuildId } from "../../interactions/moderation/ban_pools/BanPool.repository";
 import db from "../../infrastructure/database/db";
 import { getBanPoolAllMembers } from "../../interactions/moderation/ban_pools/BanPoolMember.repository";
 import { banPoolEmitter } from "./BanPoolEmitter";
-import logger from "@/core/shared/logger";
+import logger from "@/shared/infrastructure/logger";
 import { AppPublicBanPoolAddAction } from "../../infrastructure/database/dbTypes";
 import { getGuildSettings } from "../../interactions/moderation/ban_pools/GuildSettings.repository";
 

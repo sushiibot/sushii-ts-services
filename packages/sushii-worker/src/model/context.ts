@@ -3,7 +3,7 @@ import { Client, CDN } from "discord.js";
 import SushiiImageServerClient from "./image_server";
 import MemoryStore from "./MemoryStore";
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
-import logger from "@/core/shared/logger";
+import logger from "@/shared/infrastructure/logger";
 
 export default class Context {
   public readonly sushiiImageServer: SushiiImageServerClient;

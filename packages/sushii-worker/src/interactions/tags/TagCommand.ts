@@ -7,7 +7,7 @@ import {
   GuildMember,
   InteractionContextType,
 } from "discord.js";
-import dayjs from "dayjs";
+import dayjs from "@/shared/domain/dayjs";
 import {
   APIEmbedField,
   MessageFlags,

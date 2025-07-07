@@ -1,10 +1,10 @@
-import "@/core/shared/dayjs";
+import "@/shared/domain/dayjs";
 import * as Sentry from "@sentry/bun";
 import { fileURLToPath } from "url";
-import log from "@/core/shared/logger";
+import log from "@/shared/infrastructure/logger";
 import server from "@/core/manager/server";
-import sdk from "@/core/shared/tracing";
-import { config } from "@/core/shared/config";
+import sdk from "@/shared/infrastructure/tracing";
+import { config } from "@/shared/infrastructure/config";
 import { registerShutdownSignals } from "@/core/manager/signals";
 import { drizzleDb } from "@/infrastructure/database/db";
 

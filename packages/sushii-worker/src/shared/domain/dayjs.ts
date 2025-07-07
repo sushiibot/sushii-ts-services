@@ -10,3 +10,5 @@ dayjs.extend(duration);
 dayjs.extend(relativeTime);
 dayjs.extend(dayOfYear);
 dayjs.extend(weekOfYear);
+
+export default dayjs;

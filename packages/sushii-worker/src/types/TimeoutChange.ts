@@ -2,7 +2,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { Duration } from "dayjs/plugin/duration";
 import { GuildAuditLogsEntry } from "discord.js";
 import { ActionType } from "../interactions/moderation/ActionType";
-import logger from "@/core/shared/logger";
+import logger from "@/shared/infrastructure/logger";
 import { findTimeoutChange } from "./ModLogEventData";
 
 export type TimeoutChange =
