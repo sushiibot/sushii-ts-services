@@ -37,7 +37,7 @@ import { updateInteractionMetrics } from "@/metrics/interactionMetrics";
 const tracer = opentelemetry.trace.getTracer("interaction-client");
 
 // For JSON.stringify()
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (BigInt.prototype as any).toJSON = function (): string {
   return this.toString();
 };
