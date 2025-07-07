@@ -9,7 +9,7 @@ import {
   getUserGuildAllRanks,
   getUserGuildLevel,
 } from "../../db/UserLevel/UserLevel.repository";
-import logger from "../../core/logger";
+import logger from "@/core/shared/logger";
 
 const log = logger.child({ module: "rank" });
 

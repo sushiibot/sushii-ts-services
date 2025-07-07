@@ -2,7 +2,7 @@ import { APIEmbedField, EmbedBuilder, TimestampStyles, User } from "discord.js";
 import path from "path";
 import { ActionType } from "../../../interactions/moderation/ActionType";
 import Context from "../../../model/context";
-import logger from "../../../core/logger";
+import logger from "@/core/shared/logger";
 import toTimestamp from "../../../utils/toTimestamp";
 import { TimeoutChange } from "../../../types/TimeoutChange";
 

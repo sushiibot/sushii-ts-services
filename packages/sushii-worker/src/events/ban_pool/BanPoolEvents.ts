@@ -10,7 +10,7 @@ import { getPoolByNameAndGuildId } from "../../interactions/moderation/ban_pools
 import db from "../../infrastructure/database/db";
 import { getBanPoolAllMembers } from "../../interactions/moderation/ban_pools/BanPoolMember.repository";
 import { banPoolEmitter } from "./BanPoolEmitter";
-import logger from "../../core/logger";
+import logger from "@/core/shared/logger";
 import { AppPublicBanPoolAddAction } from "../../infrastructure/database/dbTypes";
 import { getGuildSettings } from "../../interactions/moderation/ban_pools/GuildSettings.repository";
 

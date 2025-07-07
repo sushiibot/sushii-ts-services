@@ -4,7 +4,7 @@ import {
   ChatInputCommandInteraction,
   InteractionContextType,
 } from "discord.js";
-import logger from "../../core/logger";
+import logger from "@/core/shared/logger";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { getErrorMessage } from "../responses/error";

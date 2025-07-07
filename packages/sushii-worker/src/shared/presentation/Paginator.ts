@@ -9,7 +9,7 @@ import {
   ButtonInteraction,
 } from "discord.js";
 import type { Logger } from "pino";
-import logger from "@/core/logger";
+import logger from "@/core/shared/logger";
 
 // Interfaces for testability
 interface IDiscordMessage {

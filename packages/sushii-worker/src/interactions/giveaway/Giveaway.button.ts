@@ -22,7 +22,7 @@ import {
   getGiveawayComponents,
   getRemoveEntryComponents,
 } from "./Giveaway.components";
-import logger from "../../core/logger";
+import logger from "@/core/shared/logger";
 
 const log = logger.child({ module: "GiveawayButtonHandler" });
 

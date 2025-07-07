@@ -1,4 +1,4 @@
-import InteractionClient from "../core/infrastructure/discord/InteractionRouter";
+import InteractionClient from "@/core/cluster/discord/InteractionRouter";
 import UserInfoCommand from "./user/userinfo";
 import FishyCommand from "./user/fishy";
 import RepCommand from "./user/rep";
@@ -40,7 +40,7 @@ import LookupCommand from "./moderation/LookupCommand";
 import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
 import TagAdminCommand from "./tags/TagAdminCommand";
 import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
-import { config } from "@/core/config";
+import { config } from "@/core/shared/config";
 import BanPoolCommand from "./moderation/ban_pools/BanPool.command";
 import BannerCommand from "./user/banner";
 import GiveawayCommand from "./giveaway/Giveaway.command";

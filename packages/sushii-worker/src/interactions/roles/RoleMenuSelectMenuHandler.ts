@@ -9,7 +9,7 @@ import Color from "../../utils/colors";
 import customIds from "../customIds";
 import { SelectMenuHandler } from "../handlers";
 import { getRoleMenuMessageSelectRoles, getRoleMenuRequiredRole } from "./ids";
-import logger from "../../core/logger";
+import logger from "@/core/shared/logger";
 
 export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
   customIDMatch = customIds.roleMenuSelect.match;

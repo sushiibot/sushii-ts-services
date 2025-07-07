@@ -19,12 +19,12 @@ import SushiiEmoji from "../../constants/SushiiEmoji";
 import Context from "../../model/context";
 import buildChunks from "../../utils/buildChunks";
 import Color from "../../utils/colors";
-import { newModuleLogger } from "../../core/logger";
+import { newModuleLogger } from "@/core/shared/logger";
 import db from "../../infrastructure/database/db";
 import { EventHandlerFn } from "../EventHandler";
 import { getAPIUserTag } from "../../utils/APIUser";
 import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
-import { webhookErr } from "../../core/webhookLogger";
+import { webhookErr } from "@/core/cluster/webhookLogger";
 
 const log = newModuleLogger("MsgLogHandler");
 

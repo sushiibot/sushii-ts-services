@@ -1,7 +1,7 @@
 import { EmbedBuilder, WebhookClient } from "discord.js";
-import logger from "./logger";
-import { config } from "@/core/config";
-import Color from "../utils/colors";
+import logger from "@/core/shared/logger";
+import { config } from "@/core/shared/config";
+import Color from "@/utils/colors";
 
 const webhookClientLog = config.notifications.webhookUrl
   ? new WebhookClient({

@@ -20,8 +20,8 @@ import {
   AppPublicGuildAssetType,
   DB,
 } from "../infrastructure/database/dbTypes";
-import { newModuleLogger } from "../core/logger";
-import { startCaughtActiveSpan } from "../core/tracing";
+import { newModuleLogger } from "@/core/shared/logger";
+import { startCaughtActiveSpan } from "@/core/shared/tracing";
 
 const logger = newModuleLogger("EmojiStatsHandler");
 

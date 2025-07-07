@@ -21,7 +21,7 @@ import {
 } from "../../infrastructure/database/dbTypes";
 import Color from "../../utils/colors";
 import customIds, { SettingsToggleOptions } from "../customIds";
-import logger from "../../core/logger";
+import logger from "@/core/shared/logger";
 import {
   getGuildConfig,
   updateGuildConfigColumn,

@@ -1,5 +1,5 @@
 import { ChannelType } from "discord.js";
-import { newModuleLogger } from "../core/logger";
+import { newModuleLogger } from "@/core/shared/logger";
 import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import db from "../infrastructure/database/db";

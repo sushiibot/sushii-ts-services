@@ -17,7 +17,7 @@ import {
 } from "../db/GuildConfig/GuildConfig.repository";
 import Color from "../utils/colors";
 import toTimestamp from "../utils/toTimestamp";
-import { newModuleLogger } from "../core/logger";
+import { newModuleLogger } from "@/core/shared/logger";
 
 const log = newModuleLogger("MemberLog");
 

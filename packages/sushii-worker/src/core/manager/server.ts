@@ -4,10 +4,10 @@ import { routePath } from "hono/route";
 import { HTTPException } from "hono/http-exception";
 import { Server } from "bun";
 import { RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
-import { newModuleLogger } from "./logger";
-import { config } from "@/core/config";
-import { updateShardMetrics } from "../metrics/gatewayMetrics";
+import { newModuleLogger } from "@/core/shared/logger";
+import { config } from "@/core/shared/config";
 import { Child, ClusterManager } from "discord-hybrid-sharding";
+import { updateShardMetrics } from "@/metrics/gatewayMetrics";
 
 // Reverse mapping of the Status enum to get the name
 export const ShardStatusToName = {

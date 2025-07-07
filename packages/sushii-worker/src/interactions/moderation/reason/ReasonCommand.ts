@@ -19,7 +19,7 @@ import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
 import { invalidCaseRangeEmbed } from "./Messages";
 import { ActionType } from "../ActionType";
 import customIds from "../../customIds";
-import logger from "../../../core/logger";
+import logger from "@/core/shared/logger";
 import db from "../../../infrastructure/database/db";
 import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
 import {

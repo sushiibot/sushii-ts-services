@@ -1,17 +1,17 @@
-import "./dayjs";
+import "./shared/dayjs";
 import * as Sentry from "@sentry/bun";
 import { fileURLToPath } from "url";
-import log from "./logger";
-import server from "./server";
-import sdk from "./tracing";
-import { config } from "@/core/config";
-import { registerShutdownSignals } from "./signals";
+import log from "./shared/logger";
+import server from "./manager/server";
+import sdk from "./shared/tracing";
+import { config } from "@/core/shared/config";
+import { registerShutdownSignals } from "./manager/signals";
 import { drizzleDb } from "@/infrastructure/database/db";
 
 // Type-safe reference to ensure shard.ts exists WITHOUT importing and running
 // the file. If it's imported, it will cause process.send not defined errors as
 // it wasn't spawned by the ShardingManager
-import type {} from "./shard";
+import type {} from "./cluster/shard";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import {
   Child,
@@ -99,7 +99,7 @@ async function main(): Promise<void> {
   // ShardManager Initialization
 
   // Get the shard file path
-  const shardFile = fileURLToPath(import.meta.resolve("./shard.ts"));
+  const shardFile = fileURLToPath(import.meta.resolve("./cluster/shard.ts"));
 
   if (config.manualShardCount) {
     log.info(

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { getUserGuildAllRanks } from "./UserLevel.repository";
-import "../../core/dayjs";
+import "@/core/shared/dayjs";
 import db from "../../infrastructure/database/db";
 
 describe("UserLevel.repository", () => {

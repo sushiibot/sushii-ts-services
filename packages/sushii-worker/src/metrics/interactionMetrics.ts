@@ -1,7 +1,7 @@
 import { InteractionType } from "discord-api-types/v10";
 import { ApplicationCommandType, Interaction } from "discord.js";
 import { Counter } from "prom-client";
-import logger from "../core/logger";
+import logger from "@/core/shared/logger";
 import { prefixedName } from "./metrics";
 
 // -----------------------------------------------------------------------------

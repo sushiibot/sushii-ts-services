@@ -1,14 +1,14 @@
-import "./dayjs";
+import "../shared/dayjs";
 import * as Sentry from "@sentry/node";
 import { Client, GatewayIntentBits, Options, Partials } from "discord.js";
-import log from "./logger";
-import InteractionRouter from "./infrastructure/discord/InteractionRouter";
-import initI18next from "./i18next";
-import registerInteractionHandlers from "../interactions/commands";
-import sdk from "./tracing";
-import Context from "../model/context";
-import { config } from "@/core/config";
-import registerEventHandlers from "./infrastructure/discord/handlers";
+import log from "../shared/logger";
+import InteractionRouter from "@/core/cluster/discord/InteractionRouter";
+import initI18next from "../shared/i18next";
+import registerInteractionHandlers from "../../interactions/commands";
+import sdk from "../shared/tracing";
+import Context from "../../model/context";
+import { config } from "@/core/shared/config";
+import registerEventHandlers from "@/core/cluster/discord/handlers";
 import { initCore, registerFeatures } from "./bootstrap";
 import { ClusterClient, getInfo } from "discord-hybrid-sharding";
 

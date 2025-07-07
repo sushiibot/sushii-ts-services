@@ -1,7 +1,7 @@
 import { expect, describe, it, beforeEach, afterEach, test } from "bun:test";
 // Need this to not fail on utc
-import "../../../core/dayjs";
-import db from "../../../infrastructure/database/db";
+import "@/core/shared/dayjs";
+import db from "@/infrastructure/database/db";
 import {
   createPool,
   joinPool,

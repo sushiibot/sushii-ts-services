@@ -1,4 +1,4 @@
-import { config } from "@/core/config";
+import { config } from "@/core/shared/config";
 
 export default class SushiiImageServerClient {
   public readonly endpoint: string;

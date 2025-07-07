@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import { Err, Ok, Result } from "ts-results";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import opentelemetry, { SpanStatusCode } from "@opentelemetry/api";
-import logger from "../../core/logger";
+import logger from "@/core/shared/logger";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import toSentenceCase from "../../utils/toSentenceCase";
@@ -28,7 +28,7 @@ import {
   upsertModLog,
 } from "../../db/ModLog/ModLog.repository";
 import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
-import { startCaughtActiveSpan } from "../../core/tracing";
+import { startCaughtActiveSpan } from "@/core/shared/tracing";
 import {
   deleteTempBan,
   upsertTempBan,

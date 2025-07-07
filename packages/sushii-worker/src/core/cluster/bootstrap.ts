@@ -9,7 +9,7 @@ import { PostgreSQLDeploymentRepository } from "@/features/deployment/infrastruc
 import { SimpleEventBus } from "@/shared/infrastructure/SimpleEventBus";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Client } from "discord.js";
-import { EventHandler } from "./cluster/presentation/EventHandler";
+import { EventHandler } from "./presentation/EventHandler";
 import { config } from "@/core/shared/config";
 import { DeploymentChanged } from "@/features/deployment/domain/events/DeploymentChanged";
 import logger from "@/core/shared/logger";

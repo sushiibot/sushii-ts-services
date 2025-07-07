@@ -3,7 +3,7 @@ import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import { getAndDeleteExpiredTempBans } from "../db/TempBan/TempBan.repository";
 import db from "../infrastructure/database/db";
-import { newModuleLogger } from "../core/logger";
+import { newModuleLogger } from "@/core/shared/logger";
 import toTimestamp from "../utils/toTimestamp";
 
 const logger = newModuleLogger("TempbansTask");

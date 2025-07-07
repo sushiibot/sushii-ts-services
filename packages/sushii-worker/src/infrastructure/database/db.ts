@@ -3,9 +3,9 @@ import { Pool } from "pg";
 import Cursor from "pg-cursor";
 import { Kysely, PostgresDialect } from "kysely";
 import { drizzle } from "drizzle-orm/node-postgres";
-import logger from "../../core/logger";
+import logger from "@/core/shared/logger";
 import { DB } from "./dbTypes";
-import { config } from "@/core/config";
+import { config } from "@/core/shared/config";
 
 const dbLogger = logger.child({ module: "db" });
 

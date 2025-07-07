@@ -2,7 +2,7 @@ import { Events, Message } from "discord.js";
 import dayjs from "dayjs";
 import { EventHandlerFn } from "./EventHandler";
 import Context from "../model/context";
-import { config } from "@/core/config";
+import { config } from "@/core/shared/config";
 import toTimestamp from "../utils/toTimestamp";
 
 export const deployToggleHandler: EventHandlerFn<Events.MessageCreate> = async (
@@ -53,7 +53,9 @@ export const deployToggleHandler: EventHandlerFn<Events.MessageCreate> = async (
 
     try {
       const newDeployment = await deploymentService.toggleActiveDeployment();
-      const newStatus = deploymentService.isCurrentDeploymentActive() ? "🟢 ACTIVE" : "🔴 INACTIVE";
+      const newStatus = deploymentService.isCurrentDeploymentActive()
+        ? "🟢 ACTIVE"
+        : "🔴 INACTIVE";
       await msg.reply(
         `✅ Deployment toggled, new deployment is: \`${newDeployment}\` ${newStatus}`,
       );

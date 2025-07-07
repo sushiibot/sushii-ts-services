@@ -5,10 +5,10 @@ import {
   RESTJSONErrorCodes,
 } from "discord.js";
 import opentelemetry, { Span } from "@opentelemetry/api";
-import { newModuleLogger } from "../../../core/logger";
-import { startCaughtActiveSpan } from "../../../core/tracing";
+import { newModuleLogger } from "@/core/shared/logger";
+import { startCaughtActiveSpan } from "@/core/shared/tracing";
 import { UpdateUserXpService } from "../application/UpdateUserXpService";
-import { EventHandler } from "@/core/presentation/EventHandler";
+import { EventHandler } from "@/core/cluster/presentation/EventHandler";
 
 const tracer = opentelemetry.trace.getTracer("message-level-handler");
 const log = newModuleLogger("messageLevelHandler");
