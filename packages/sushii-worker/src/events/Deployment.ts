@@ -3,10 +3,6 @@ import dayjs from "dayjs";
 import { EventHandlerFn } from "./EventHandler";
 import Context from "../model/context";
 import { config } from "@/core/config";
-import {
-  getActiveDeployment,
-  toggleActiveDeployment,
-} from "../db/Deployment/Deployment.repository";
 import toTimestamp from "../utils/toTimestamp";
 
 export const deployToggleHandler: EventHandlerFn<Events.MessageCreate> = async (
@@ -26,6 +22,12 @@ export const deployToggleHandler: EventHandlerFn<Events.MessageCreate> = async (
     return;
   }
 
+  const deploymentService = ctx.deploymentService;
+  if (!deploymentService) {
+    await msg.reply("❌ Deployment service not available");
+    return;
+  }
+
   const uptime = process.uptime();
   const dur = dayjs.duration({
     seconds: uptime,
@@ -35,21 +37,28 @@ export const deployToggleHandler: EventHandlerFn<Events.MessageCreate> = async (
   const startTimestamp = toTimestamp(processStart, "f");
 
   if (msg.content === "!deployment") {
-    const deployment = await getActiveDeployment();
-    const content = `Deployment is currently set to: \`${deployment}\` (uptime: ${dur.humanize()} - started: ${startTimestamp})`;
+    const deployment = deploymentService.getCurrentDeployment();
+    const isActive = deploymentService.isCurrentDeploymentActive();
+    const status = isActive ? "🟢 ACTIVE" : "🔴 INACTIVE";
+    const content = `Deployment is currently set to: \`${deployment}\` ${status} (uptime: ${dur.humanize()} - started: ${startTimestamp})`;
     await msg.reply(content);
     return;
   }
 
   if (msg.content === "!toggle-deployment") {
-    const deployment = await getActiveDeployment();
+    const currentDeployment = deploymentService.getCurrentDeployment();
     await msg.reply(
-      `Toggling deployment from \`${deployment}\` (uptime: ${dur.humanize()} - started: ${startTimestamp})`,
+      `🔄 Toggling deployment from \`${currentDeployment}\` (uptime: ${dur.humanize()} - started: ${startTimestamp})`,
     );
 
-    const newDeployment = await toggleActiveDeployment();
-    await msg.reply(
-      `Deployment toggled, new deployment is: \`${newDeployment?.name}\``,
-    );
+    try {
+      const newDeployment = await deploymentService.toggleActiveDeployment();
+      const newStatus = deploymentService.isCurrentDeploymentActive() ? "🟢 ACTIVE" : "🔴 INACTIVE";
+      await msg.reply(
+        `✅ Deployment toggled, new deployment is: \`${newDeployment}\` ${newStatus}`,
+      );
+    } catch (error) {
+      await msg.reply(`❌ Failed to toggle deployment: ${error}`);
+    }
   }
 };

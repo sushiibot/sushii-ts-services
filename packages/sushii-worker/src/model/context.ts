@@ -2,6 +2,7 @@ import { APIApplicationCommand } from "discord-api-types/v10";
 import { Client, CDN } from "discord.js";
 import SushiiImageServerClient from "./image_server";
 import MemoryStore from "./MemoryStore";
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 import logger from "../core/logger";
 
 export default class Context {
@@ -13,6 +14,8 @@ export default class Context {
 
   public memoryStore: MemoryStore;
 
+  public deploymentService: DeploymentService | null = null;
+
   private commands: APIApplicationCommand[];
 
   constructor(client: Client) {
@@ -21,6 +24,10 @@ export default class Context {
     this.memoryStore = new MemoryStore();
 
     this.commands = [];
+  }
+
+  setDeploymentService(deploymentService: DeploymentService): void {
+    this.deploymentService = deploymentService;
   }
 
   setCommands(commands: APIApplicationCommand[]): void {

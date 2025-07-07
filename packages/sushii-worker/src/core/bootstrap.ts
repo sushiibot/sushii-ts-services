@@ -4,18 +4,48 @@ import { UserLevelRepositoryImpl } from "@/features/leveling/infrastructure/User
 import { XpBlockRepositoryImpl } from "@/features/leveling/infrastructure/XpBlockRepositoryImpl";
 import { MessageLevelHandler } from "@/features/leveling/presentation/MessageLevelHandler";
 import { drizzleDb } from "@/infrastructure/database/db";
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
+import { PostgreSQLDeploymentRepository } from "@/features/deployment/infrastructure/PostgreSQLDeploymentRepository";
+import { SimpleEventBus } from "@/shared/infrastructure/SimpleEventBus";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Client } from "discord.js";
 import { EventHandler } from "./presentation/EventHandler";
+import { config } from "@/core/config";
+import { DeploymentChanged } from "@/features/deployment/domain/events/DeploymentChanged";
 import logger from "@/core/logger";
 
-export function initCore() {
+export async function initCore() {
   // This just returns the global existing database for now, until we fully
   // integrate the database into the core
   const db = drizzleDb;
 
+  // Create shared infrastructure
+  const eventBus = new SimpleEventBus();
+
+  // Initialize deployment service with direct database connection
+  const deploymentRepository = new PostgreSQLDeploymentRepository(
+    config.database.url,
+    logger,
+    eventBus,
+    `sushii-deployment-${config.deployment.name}-shard-${process.env.SHARD_ID || "unknown"}`,
+  );
+
+  const deploymentService = new DeploymentService(
+    deploymentRepository,
+    logger,
+    config.deployment.name,
+  );
+
+  // Subscribe to deployment changes
+  eventBus.subscribe(DeploymentChanged, (event) => {
+    deploymentService.handleDeploymentChanged(event);
+  });
+
+  await deploymentService.start();
+
   return {
     db,
+    deploymentService,
   };
 }
 

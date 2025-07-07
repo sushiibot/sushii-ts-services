@@ -71,7 +71,10 @@ async function initializeShard(): Promise<void> {
   }
 
   // START NEW REGISTRATION
-  const { db } = initCore();
+  const { db, deploymentService } = await initCore();
+
+  // Set deployment service in context
+  ctx.setDeploymentService(deploymentService);
 
   // New registration of features
   registerFeatures(db, client);
@@ -82,6 +85,7 @@ async function initializeShard(): Promise<void> {
   process.on("SIGTERM", async () => {
     log.info("SIGTERM received, shutting down shard gracefully");
     try {
+      await deploymentService.stop();
       await client.destroy();
       await Sentry.close(2000);
       await sdk.shutdown();

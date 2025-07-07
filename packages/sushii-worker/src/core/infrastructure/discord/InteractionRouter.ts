@@ -32,7 +32,6 @@ import ContextMenuHandler from "../../../interactions/handlers/ContextMenuHandle
 import getFullCommandName from "../../../utils/getFullCommandName";
 import validationErrorToString from "../../../utils/validationErrorToString";
 import { config } from "@/core/config";
-import { isCurrentDeploymentActive } from "../../../db/Deployment/Deployment.repository";
 import { updateInteractionMetrics } from "../../../metrics/interactionMetrics";
 
 const tracer = opentelemetry.trace.getTracer("interaction-client");
@@ -544,11 +543,18 @@ export default class InteractionRouter {
 
   public async handleAPIInteraction(interaction: Interaction): Promise<void> {
     // Ignore all interactions that are not from the current deployment
-    const active = await isCurrentDeploymentActive();
+    const deploymentService = this.context.deploymentService;
+    if (!deploymentService) {
+      log.error("DeploymentService not available in context");
+      return;
+    }
+
+    const active = deploymentService.isCurrentDeploymentActive();
     if (!active) {
       log.info(
         {
           processDeploymentName: config.deployment.name,
+          activeDeployment: deploymentService.getCurrentDeployment(),
           interactionId: interaction.id,
         },
         "Not active deployment, ignoring interaction",

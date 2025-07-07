@@ -30,7 +30,6 @@ import {
 } from "../../../events/EmojiStatsHandler";
 import { banPoolOnBanHandler } from "../../../events/ban_pool/BanPoolHandler";
 import { config } from "@/core/config";
-import { isCurrentDeploymentActive } from "../../../db/Deployment/Deployment.repository";
 import {
   memberLogJoinHandler,
   memberLogLeaveHandler,
@@ -56,11 +55,14 @@ const prefixSpanName = (name: string): string => `${tracerName}.${name}`;
 
 let lastLogTime = 0;
 
-async function isActive(): Promise<boolean> {
-  // TODO: No-op for now until it's actually used
-  return true;
+function isActive(ctx: Context): boolean {
+  const deploymentService = ctx.deploymentService;
+  if (!deploymentService) {
+    logger.error("DeploymentService not available in context");
+    return false;
+  }
 
-  const active = await isCurrentDeploymentActive();
+  const active = deploymentService.isCurrentDeploymentActive();
   if (!active) {
     const currentTime = Date.now();
 
@@ -69,6 +71,7 @@ async function isActive(): Promise<boolean> {
       logger.info(
         {
           processDeploymentName: config.deployment.name,
+          activeDeployment: deploymentService.getCurrentDeployment(),
         },
         "Not active deployment, ignoring events",
       );
@@ -273,7 +276,7 @@ export default function registerEventHandlers(
       Color.Info,
     );
 
-    if (!(await isActive())) {
+    if (!isActive(ctx)) {
       return;
     }
 
@@ -295,7 +298,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildUpdate, async (oldGuild, newGuild) => {
-    if (!(await isActive())) {
+    if (!isActive(ctx)) {
       return;
     }
 
@@ -334,7 +337,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildMemberAdd, async (member) => {
-    if (!(await isActive())) {
+    if (!isActive(ctx)) {
       return;
     }
 
@@ -357,7 +360,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildMemberRemove, async (member) => {
-    if (!(await isActive())) {
+    if (!isActive(ctx)) {
       return;
     }
 
@@ -380,7 +383,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.InteractionCreate, async (interaction) => {
-    if (!(await isActive())) {
+    if (!isActive(ctx)) {
       return;
     }
 
@@ -396,7 +399,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildAuditLogEntryCreate, async (entry, guild) => {
-    if (!(await isActive())) {
+    if (!isActive(ctx)) {
       return;
     }
 
@@ -417,7 +420,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildBanAdd, async (guildBan) => {
-    if (!(await isActive())) {
+    if (!isActive(ctx)) {
       return;
     }
 
@@ -442,7 +445,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildBanRemove, async (guildBan) => {
-    if (!(await isActive())) {
+    if (!isActive(ctx)) {
       return;
     }
 
@@ -462,7 +465,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.MessageCreate, async (msg) => {
-    if (!(await isActive())) {
+    if (!isActive(ctx)) {
       return;
     }
 
@@ -489,7 +492,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.MessageReactionAdd, async (reaction, user, details) => {
-    if (!(await isActive())) {
+    if (!isActive(ctx)) {
       return;
     }
 
@@ -513,7 +516,7 @@ export default function registerEventHandlers(
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
     updateGatewayDispatchEventMetrics(event.t);
 
-    if (!(await isActive())) {
+    if (!isActive(ctx)) {
       return;
     }
 

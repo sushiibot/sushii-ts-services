@@ -18,6 +18,10 @@ import {
   ClusterManager,
   HeartbeatManager,
 } from "discord-hybrid-sharding";
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
+import { PostgreSQLDeploymentRepository } from "@/features/deployment/infrastructure/PostgreSQLDeploymentRepository";
+import { SimpleEventBus } from "@/shared/infrastructure/SimpleEventBus";
+import { DeploymentChanged } from "@/features/deployment/domain/events/DeploymentChanged";
 
 Error.stackTraceLimit = 50;
 
@@ -35,8 +39,34 @@ async function main(): Promise<void> {
   });
 
   // Close the database connection, as we don't need it in the main process
-  // anymore
+  // anymore (deployment service has its own connection)
   await drizzleDb.$client.end();
+
+  // ---------------------------------------------------------------------------
+  // Initialize main process core components
+
+  // Initialize deployment service in main process
+  const eventBus = new SimpleEventBus();
+
+  const deploymentRepository = new PostgreSQLDeploymentRepository(
+    config.database.url,
+    log,
+    eventBus,
+    `sushii-deployment-main-${config.deployment.name}`,
+  );
+
+  const deploymentService = new DeploymentService(
+    deploymentRepository,
+    log,
+    config.deployment.name,
+  );
+
+  // Subscribe to deployment changes
+  eventBus.subscribe(DeploymentChanged, (event) => {
+    deploymentService.handleDeploymentChanged(event);
+  });
+
+  await deploymentService.start();
 
   // ---------------------------------------------------------------------------
   // Checks
@@ -111,6 +141,9 @@ async function main(): Promise<void> {
         }),
       );
 
+      log.info("stopping deployment service");
+      await deploymentService.stop();
+
       log.info("closing sentry");
       await Sentry.close(2000);
 
@@ -139,7 +172,7 @@ async function main(): Promise<void> {
     );
   });
 
-  manager.on("clusterCreate", (cluster) =>
+  manager.on("clusterCreate", (cluster) => {
     log.info(
       {
         clusterId: cluster.id,
@@ -148,8 +181,8 @@ async function main(): Promise<void> {
         connected: (cluster.thread as Child)?.process?.connected,
       },
       `Launched Cluster $`,
-    ),
-  );
+    );
+  });
 
   log.info(
     {

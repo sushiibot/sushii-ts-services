@@ -1,0 +1,184 @@
+import { Client } from "pg";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { activeDeploymentInAppPrivate } from "../../../infrastructure/database/schema";
+import { Deployment, DeploymentName } from "../domain/entities/Deployment";
+import { DeploymentRepository } from "../domain/repositories/DeploymentRepository";
+import { DeploymentChanged } from "../domain/events/DeploymentChanged";
+import { Logger } from "pino";
+import { EventBus } from "../../../shared/interfaces";
+
+export class PostgreSQLDeploymentRepository implements DeploymentRepository {
+  private client: Client;
+  private db: NodePgDatabase;
+  private readonly channelName = "deployment_changed";
+  private isConnected = false;
+  private currentDeploymentName: DeploymentName = "blue";
+
+  constructor(
+    private readonly connectionString: string,
+    private readonly logger: Logger,
+    private readonly eventBus: EventBus,
+    private readonly applicationName: string,
+  ) {
+    this.client = new Client({
+      connectionString: this.connectionString,
+      application_name: this.applicationName,
+    });
+
+    // Create Drizzle instance using the same client
+    this.db = drizzle(this.client);
+  }
+
+  async start(): Promise<void> {
+    if (this.isConnected) {
+      this.logger.warn("PostgreSQL deployment repository already started");
+      return;
+    }
+
+    try {
+      this.client.on("error", (error) => {
+        this.logger.error({ error }, "PostgreSQL client error");
+        this.isConnected = false;
+      });
+
+      this.client.on("end", () => {
+        this.logger.info("PostgreSQL connection ended");
+        this.isConnected = false;
+      });
+
+      this.client.on("notification", (msg) => {
+        this.handleNotification(msg);
+      });
+
+      await this.client.connect();
+      await this.client.query(`LISTEN ${this.channelName}`);
+
+      this.isConnected = true;
+      this.logger.info(
+        { channel: this.channelName },
+        "PostgreSQL deployment repository started",
+      );
+    } catch (error) {
+      this.logger.error(
+        { error },
+        "Failed to start PostgreSQL deployment repository",
+      );
+      throw error;
+    }
+  }
+
+  async stop(): Promise<void> {
+    if (!this.isConnected) {
+      return;
+    }
+
+    try {
+      await this.client.query(`UNLISTEN ${this.channelName}`);
+      await this.client.end();
+
+      this.isConnected = false;
+      this.logger.info("PostgreSQL deployment repository stopped");
+    } catch (error) {
+      this.logger.error(
+        { error },
+        "Error stopping PostgreSQL deployment repository",
+      );
+    }
+  }
+
+  async getActive(): Promise<Deployment> {
+    try {
+      const result = await this.db
+        .select()
+        .from(activeDeploymentInAppPrivate)
+        .limit(1);
+
+      if (result.length === 0) {
+        this.currentDeploymentName = "blue";
+        return Deployment.create("blue"); // Default fallback
+      }
+
+      const deploymentName = result[0].name as DeploymentName;
+      this.currentDeploymentName = deploymentName;
+      return Deployment.fromPersistence(
+        deploymentName,
+        new Date(), // We don't store updatedAt in the current schema
+      );
+    } catch (error) {
+      this.logger.error({ error }, "Failed to get active deployment");
+      throw error;
+    }
+  }
+
+  private getCurrentActiveDeploymentName(): DeploymentName {
+    return this.currentDeploymentName;
+  }
+
+  async setActive(deployment: Deployment): Promise<void> {
+    try {
+      // Use Drizzle for the database operation
+      await this.db
+        .insert(activeDeploymentInAppPrivate)
+        .values({
+          name: deployment.name,
+        })
+        .onConflictDoUpdate({
+          target: activeDeploymentInAppPrivate.id,
+          set: {
+            name: deployment.name,
+          },
+        });
+
+      // Use raw client for PostgreSQL NOTIFY
+      await this.client.query(`NOTIFY ${this.channelName}, $1`, [
+        deployment.name,
+      ]);
+
+      this.currentDeploymentName = deployment.name;
+    } catch (error) {
+      this.logger.error({ error }, "Failed to set active deployment");
+      throw error;
+    }
+  }
+
+  private handleNotification(msg: { channel: string; payload?: string }): void {
+    try {
+      if (msg.channel !== this.channelName) {
+        this.logger.warn(
+          { channel: msg.channel },
+          "Received notification from unexpected channel",
+        );
+        return;
+      }
+
+      if (!msg.payload) {
+        this.logger.warn("Received notification without payload");
+        return;
+      }
+
+      const deploymentName = msg.payload as DeploymentName;
+      if (deploymentName !== "blue" && deploymentName !== "green") {
+        this.logger.error(
+          { payload: msg.payload },
+          "Invalid deployment name in notification",
+        );
+        return;
+      }
+
+      this.logger.info(
+        { deployment: deploymentName },
+        "Deployment change notification received",
+      );
+
+      // Publish event for application layer to handle
+      // We don't know the previous deployment from the notification, so use the current one
+      const currentDeployment = this.getCurrentActiveDeploymentName();
+      this.eventBus.publish(
+        new DeploymentChanged(currentDeployment, deploymentName),
+      );
+    } catch (error) {
+      this.logger.error({ error }, "Error handling notification");
+    }
+  }
+}
