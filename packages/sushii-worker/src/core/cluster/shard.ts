@@ -77,7 +77,7 @@ async function initializeShard(): Promise<void> {
   ctx.setDeploymentService(deploymentService);
 
   // New registration of features
-  registerFeatures(db, client);
+  registerFeatures(db, client, deploymentService);
 
   // Legacy registration of event handlers
   registerEventHandlers(ctx, client, interactionRouter);

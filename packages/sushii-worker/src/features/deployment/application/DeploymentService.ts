@@ -7,11 +7,12 @@ export class DeploymentService {
   private currentDeployment: Deployment | null = null;
   private readonly processName: DeploymentName;
   private isStarted = false;
+  private lastInactiveLogTime = 0;
 
   constructor(
     private readonly repository: DeploymentRepository,
     private readonly logger: Logger,
-    processName: DeploymentName
+    processName: DeploymentName,
   ) {
     this.processName = processName;
   }
@@ -72,13 +73,19 @@ export class DeploymentService {
     const isActive = this.currentDeployment.isActive(this.processName);
 
     if (!isActive) {
-      this.logger.warn(
-        {
-          activeDeployment: this.currentDeployment.name,
-          processDeployment: this.processName,
-        },
-        "Current process is not active deployment",
-      );
+      // Only log max once per 30 seconds to reduce noise
+      const now = Date.now();
+
+      if (now - this.lastInactiveLogTime > 30000) {
+        this.lastInactiveLogTime = now;
+        this.logger.warn(
+          {
+            activeDeployment: this.currentDeployment.name,
+            processDeployment: this.processName,
+          },
+          "Current process is NOT active deployment, will not process events",
+        );
+      }
     }
 
     return isActive;
@@ -133,11 +140,11 @@ export class DeploymentService {
 
     if (wasActive && !isNowActive) {
       this.logger.warn(
-        "This deployment is no longer active - will stop processing events"
+        "This deployment is no longer active - will stop processing events",
       );
     } else if (!wasActive && isNowActive) {
       this.logger.info(
-        "This deployment is now active - will start processing events"
+        "This deployment is now active - will start processing events",
       );
     }
   }

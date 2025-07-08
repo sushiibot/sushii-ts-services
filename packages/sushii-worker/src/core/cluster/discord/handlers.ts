@@ -38,7 +38,6 @@ import {
   memberJoinMessageHandler,
   memberLeaveMessageHandler,
 } from "@/events/JoinLeaveMessage";
-import { deployToggleHandler } from "@/events/Deployment";
 import { updateGatewayDispatchEventMetrics } from "@/infrastructure/metrics/gatewayMetrics";
 import { cacheUserHandler } from "@/events/cache/cacheUser";
 import {
@@ -478,7 +477,7 @@ export default function registerEventHandlers(
           {
             emojiStats: emojiStatsMsgHandler,
             notification: notificationHandler,
-            deployToggle: deployToggleHandler,
+            // deployToggle: deployToggleHandler, // Moved to new DDD structure
             cacheUser: cacheUserHandler,
             // TODO: Enable only after removed from sushii-2
             // mentionTag: mentionTagHandler,

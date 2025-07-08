@@ -6,6 +6,7 @@ import { MessageLevelHandler } from "@/features/leveling/presentation/MessageLev
 import { drizzleDb } from "@/infrastructure/database/db";
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 import { PostgreSQLDeploymentRepository } from "@/features/deployment/infrastructure/PostgreSQLDeploymentRepository";
+import { DeploymentEventHandler } from "@/features/deployment/presentation/DeploymentEventHandler";
 import { SimpleEventBus } from "@/shared/infrastructure/SimpleEventBus";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Client } from "discord.js";
@@ -46,10 +47,15 @@ export async function initCore() {
   return {
     db,
     deploymentService,
+    eventBus,
   };
 }
 
-export function registerFeatures(db: NodePgDatabase, client: Client): void {
+export function registerFeatures(
+  db: NodePgDatabase,
+  client: Client,
+  deploymentService: DeploymentService,
+): void {
   // ---------------------------------------------------------------------------
   // Feature bootstrapping
   const levelService = new UpdateUserXpService(
@@ -59,8 +65,12 @@ export function registerFeatures(db: NodePgDatabase, client: Client): void {
   );
 
   const levelHandler = new MessageLevelHandler(levelService);
+  const deploymentHandler = new DeploymentEventHandler(
+    deploymentService,
+    logger,
+  );
 
-  const handlers = [levelHandler];
+  const handlers = [levelHandler, deploymentHandler];
 
   // ---------------------------------------------------------------------------
   // Register event handlers
@@ -100,6 +110,7 @@ export function registerFeatures(db: NodePgDatabase, client: Client): void {
         const promises = [];
 
         for (const handler of group) {
+          // TODO: Add trace span here
           const p = handler.handle(...args);
           promises.push(p);
         }

@@ -1,6 +1,7 @@
 import { Client } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { sql } from "drizzle-orm";
 import { activeDeploymentInAppPrivate } from "../../../infrastructure/database/schema";
 import { Deployment, DeploymentName } from "../domain/entities/Deployment";
 import { DeploymentRepository } from "../domain/repositories/DeploymentRepository";
@@ -117,25 +118,29 @@ export class PostgreSQLDeploymentRepository implements DeploymentRepository {
 
   async setActive(deployment: Deployment): Promise<void> {
     try {
-      // Use Drizzle for the database operation
-      await this.db
-        .insert(activeDeploymentInAppPrivate)
-        .values({
-          name: deployment.name,
-        })
-        .onConflictDoUpdate({
-          target: activeDeploymentInAppPrivate.id,
-          set: {
+      await this.db.transaction(async (tx) => {
+        // Drizzle ORM upsert operation within transaction
+        await tx
+          .insert(activeDeploymentInAppPrivate)
+          .values({
             name: deployment.name,
-          },
-        });
+          })
+          .onConflictDoUpdate({
+            target: activeDeploymentInAppPrivate.id,
+            set: {
+              name: deployment.name,
+            },
+          });
 
-      // Use raw client for PostgreSQL NOTIFY
-      await this.client.query(`NOTIFY ${this.channelName}, $1`, [
-        deployment.name,
-      ]);
+        // Raw SQL NOTIFY within the same transaction
+        // Note: deployment.name is enum-constrained so this is safe
+        await tx.execute(
+          sql.raw(`NOTIFY ${this.channelName}, '${deployment.name}'`),
+        );
 
-      this.currentDeploymentName = deployment.name;
+        // Update local state only after both operations succeed
+        this.currentDeploymentName = deployment.name;
+      });
     } catch (error) {
       this.logger.error({ error }, "Failed to set active deployment");
       throw error;
@@ -163,6 +168,7 @@ export class PostgreSQLDeploymentRepository implements DeploymentRepository {
           { payload: msg.payload },
           "Invalid deployment name in notification",
         );
+
         return;
       }
 
