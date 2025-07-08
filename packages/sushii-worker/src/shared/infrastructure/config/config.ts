@@ -89,6 +89,21 @@ export class FeatureFlags {
   ) {}
 }
 
+export class BuildConfig {
+  constructor(
+    readonly gitHash?: string,
+    readonly buildDate?: string,
+  ) {}
+
+  get hasGitHash() {
+    return this.gitHash !== undefined;
+  }
+
+  get hasBuildDate() {
+    return this.buildDate !== undefined;
+  }
+}
+
 export class Config {
   readonly database: DatabaseConfig;
   readonly discord: DiscordConfig;
@@ -98,6 +113,7 @@ export class Config {
   readonly notifications: NotificationConfig;
   readonly deployment: DeploymentConfig;
   readonly features: FeatureFlags;
+  readonly build: BuildConfig;
   readonly imageServerUrl: string;
   readonly sentry: {
     dsn?: string;
@@ -137,6 +153,7 @@ export class Config {
       env.BAN_POOL_ENABLED,
       env.DISABLE_BAN_FETCH_ON_READY,
     );
+    this.build = new BuildConfig(env.GIT_HASH, env.BUILD_DATE);
     this.imageServerUrl = env.SUSHII_IMAGE_SERVER_URL;
     this.sentry = {
       dsn: env.SENTRY_DSN,

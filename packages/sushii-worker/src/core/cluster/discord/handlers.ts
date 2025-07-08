@@ -161,11 +161,19 @@ export default function registerEventHandlers(
       "Cluster client ready!",
     );
 
-    const content =
+    let content =
       `Logged in as ${c.user.tag}` +
       `\nShard IDs: ${c.cluster.shardList.join(", ")}` +
       `\nGuilds: ${c.guilds.cache.size}` +
       `\nDeployment: ${config.deployment.name}`;
+
+    if (config.build.hasGitHash) {
+      content += `\nGit Hash: ${config.build.gitHash}`;
+    }
+
+    if (config.build.hasBuildDate) {
+      content += `\nBuild Date: ${config.build.buildDate}`;
+    }
 
     await webhookLog(
       `[Cluster #${c.cluster.id}] Cluster ClientReady`,
@@ -210,9 +218,19 @@ export default function registerEventHandlers(
       "Shard ready",
     );
 
+    let content = `unavailable guilds: \`${unavailableGuilds || "none"}\``;
+
+    if (config.build.hasGitHash) {
+      content += `\nGit Hash: ${config.build.gitHash}`;
+    }
+
+    if (config.build.hasBuildDate) {
+      content += `\nBuild Date: ${config.build.buildDate}`;
+    }
+
     await webhookLog(
       `[Shard #${shardId}] ShardReady`,
-      `unavailable guilds: \`${unavailableGuilds || "none"}\``,
+      content,
       Color.Success,
     );
   });

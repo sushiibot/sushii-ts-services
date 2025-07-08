@@ -55,6 +55,10 @@ const envSchema = z.object({
 
   // Testing flags
   MANUAL_SHARD_COUNT: z.coerce.number().optional(),
+
+  // Build information
+  GIT_HASH: z.string().optional(),
+  BUILD_DATE: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
