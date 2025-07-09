@@ -11,7 +11,7 @@ import { drizzleDb } from "@/infrastructure/database/db";
 // Type-safe reference to ensure shard.ts exists WITHOUT importing and running
 // the file. If it's imported, it will cause process.send not defined errors as
 // it wasn't spawned by the ShardingManager
-import type {} from "@/core/cluster/shard";
+import type {} from "@/core/cluster/cluster";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import {
   Child,
@@ -100,7 +100,7 @@ async function main(): Promise<void> {
 
   // Get the shard cluster file path
   const shardFile = fileURLToPath(
-    import.meta.resolve("./core/cluster/shard.ts"),
+    import.meta.resolve("./core/cluster/cluster.ts"),
   );
 
   if (config.manualShardCount) {
