@@ -1,6 +1,5 @@
 import { ChannelType, Client } from "discord.js";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
-import BackgroundTask from "./BackgroundTask";
 import db from "../infrastructure/database/db";
 import {
   countAllActiveGiveaways,
@@ -14,19 +13,21 @@ import {
   activeGiveawaysGauge,
   endedGiveawaysCounter,
 } from "@/infrastructure/metrics/metrics";
+import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 
-const logger = newModuleLogger("GiveawayTask");
+export class GiveawayTask extends AbstractBackgroundTask {
+  readonly name = "Check for expired giveaways";
+  readonly cronTime = "*/30 * * * * *"; // Every 30 seconds
 
-const task: BackgroundTask = {
-  name: "Check for expired giveaways",
+  constructor(client: Client, deploymentService: DeploymentService) {
+    super(client, deploymentService, newModuleLogger("GiveawayTask"));
+  }
 
-  // Every 30 seconds
-  cronTime: "*/30 * * * * *",
-
-  async onTick(client: Client): Promise<void> {
+  protected async execute(): Promise<void> {
     const expiredGiveaways = await getAndEndPendingGiveaways(db);
 
-    logger.info(
+    this.logger.info(
       {
         expiredGiveaways: expiredGiveaways.length,
       },
@@ -34,11 +35,11 @@ const task: BackgroundTask = {
     );
 
     for (const giveaway of expiredGiveaways) {
-      const giveawayChannel = client.channels.cache.get(
+      const giveawayChannel = this.client.channels.cache.get(
         giveaway.channel_id,
       );
       if (!giveawayChannel || !giveawayChannel.isTextBased()) {
-        logger.info(
+        this.logger.info(
           {
             giveawayId: giveaway.id,
             giveawayChannelId: giveaway.channel_id,
@@ -50,7 +51,7 @@ const task: BackgroundTask = {
       }
 
       if (giveawayChannel.type !== ChannelType.GuildText) {
-        logger.info(
+        this.logger.info(
           {
             giveawayId: giveaway.id,
             giveawayChannelId: giveaway.channel_id,
@@ -74,7 +75,7 @@ const task: BackgroundTask = {
 
         await updateGiveawayMessage(giveawayChannel, giveaway, winnerIds);
       } catch (err) {
-        logger.error(
+        this.logger.error(
           {
             giveawayId: giveaway.id,
             error: err,
@@ -90,7 +91,5 @@ const task: BackgroundTask = {
     // Update total active metric
     const totalActive = await countAllActiveGiveaways(db);
     activeGiveawaysGauge.set(Number(totalActive));
-  },
-};
-
-export default task;
+  }
+}

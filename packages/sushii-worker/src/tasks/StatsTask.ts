@@ -1,8 +1,10 @@
 import logger from "@/shared/infrastructure/logger";
-import BackgroundTask from "./BackgroundTask";
 import { Client } from "discord.js";
 import db from "../infrastructure/database/db";
 import { guildGauge, membersGauge } from "@/infrastructure/metrics/metrics";
+import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
 
 export enum StatName {
   GuildCount = "guild_count",
@@ -57,15 +59,17 @@ export async function updateStat(
   }
 }
 
-const task: BackgroundTask = {
-  name: "Update bot stats in db",
+export class StatsTask extends AbstractBackgroundTask {
+  readonly name = "Update bot stats in db";
+  readonly cronTime = "*/10 * * * *"; // Cron every 10 minutes
 
-  // Cron every 10 minutes
-  cronTime: "*/10 * * * *",
+  constructor(client: Client, deploymentService: DeploymentService) {
+    super(client, deploymentService, newModuleLogger("StatsTask"));
+  }
 
-  async onTick(client: Client): Promise<void> {
+  protected async execute(): Promise<void> {
     // Get all shard data
-    const shardData = await client.cluster.broadcastEval((client) => ({
+    const shardData = await this.client.cluster.broadcastEval((client) => ({
       guildCount: client.guilds.cache.size,
       memberCount: client.guilds.cache.reduce(
         (acc, guild) => acc + guild.memberCount,
@@ -82,9 +86,7 @@ const task: BackgroundTask = {
     await updateStat(StatName.MemberCount, totalMembers, "set");
 
     // Set prometheus metrics
-    guildGauge.set(client.guilds.cache.size);
+    guildGauge.set(this.client.guilds.cache.size);
     membersGauge.set(totalMembers);
-  },
-};
-
-export default task;
+  }
+}

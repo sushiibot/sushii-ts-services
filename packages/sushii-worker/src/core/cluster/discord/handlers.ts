@@ -155,7 +155,7 @@ export default function registerEventHandlers(
     );
 
     // After after client is ready to ensure guilds are cached
-    await startTasks(c);
+    await startTasks(c, deploymentService);
 
     await tracer.startActiveSpan(
       prefixSpanName(Events.ClientReady),

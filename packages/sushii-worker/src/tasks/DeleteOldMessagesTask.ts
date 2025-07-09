@@ -1,36 +1,34 @@
 import dayjs from "@/shared/domain/dayjs";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
-import BackgroundTask from "./BackgroundTask";
 import { Client } from "discord.js";
 import { deleteMessagesBefore } from "../db/Message/Message.repository";
 import db from "../infrastructure/database/db";
-
-const logger = newModuleLogger("DeleteOldMessagesTask");
+import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 
 const RETAIN_DURATION = dayjs.duration({
   days: 7,
 });
 
-const task: BackgroundTask = {
-  name: "Delete messages older than 7 days",
+export class DeleteOldMessagesTask extends AbstractBackgroundTask {
+  readonly name = "Delete messages older than 7 days";
+  readonly cronTime = "0 0 * * *"; // Once a day
 
-  // Once a day
-  cronTime: "0 0 * * *",
+  constructor(client: Client, deploymentService: DeploymentService) {
+    super(client, deploymentService, newModuleLogger("DeleteOldMessagesTask"));
+  }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async onTick(_client: Client): Promise<void> {
+  protected async execute(): Promise<void> {
     const res = await deleteMessagesBefore(
       db,
       dayjs().utc().subtract(RETAIN_DURATION).toDate(),
     );
 
-    logger.info(
+    this.logger.info(
       {
         deleteCount: res.numDeletedRows,
       },
       "Deleted old messages",
     );
-  },
-};
-
-export default task;
+  }
+}

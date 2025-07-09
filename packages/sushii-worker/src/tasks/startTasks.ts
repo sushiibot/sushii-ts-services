@@ -2,24 +2,21 @@ import { CronJob } from "cron";
 import * as Sentry from "@sentry/node";
 import logger from "@/shared/infrastructure/logger";
 import { Client } from "discord.js";
-import deleteOldMessages from "./DeleteOldMessagesTask";
-import updateStats from "./StatsTask";
-import deleteStaleEmojiStatsRateLimit from "./DeleteStaleEmojiStatsRateLimit";
-import sendReminders from "./RemindersTask";
-import giveaways from "./GiveawayTask";
-import tempbans from "./TempbanTask";
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
+import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
+import { DeleteOldMessagesTask } from "./DeleteOldMessagesTask";
+import { StatsTask } from "./StatsTask";
+import { DeleteStaleEmojiStatsRateLimit } from "./DeleteStaleEmojiStatsRateLimit";
+import { RemindersTask } from "./RemindersTask";
+import { GiveawayTask } from "./GiveawayTask";
+import { TempbanTask } from "./TempbanTask";
 
-export default async function startTasks(client: Client): Promise<void> {
+export default async function startTasks(
+  client: Client,
+  deploymentService: DeploymentService,
+): Promise<void> {
   const shardId = client.ws.shards.first()?.id ?? null;
   const isMainShard = shardId === 0;
-
-  logger.info(
-    {
-      shardId,
-      isMainShard,
-    },
-    "Starting background tasks",
-  );
 
   // Only run background tasks on shard 0 to avoid duplication
   if (!isMainShard) {
@@ -29,34 +26,45 @@ export default async function startTasks(client: Client): Promise<void> {
       },
       "Skipping background tasks on non-main shard",
     );
+
     return;
   }
 
-  const jobs = [
-    deleteOldMessages,
-    updateStats,
-    deleteStaleEmojiStatsRateLimit,
-    sendReminders,
-    giveaways,
-    tempbans,
+  logger.info(
+    {
+      shardId,
+      isMainShard,
+    },
+    "Starting background tasks",
+  );
+
+  const tasks: AbstractBackgroundTask[] = [
+    new DeleteOldMessagesTask(client, deploymentService),
+    new StatsTask(client, deploymentService),
+    new DeleteStaleEmojiStatsRateLimit(client, deploymentService),
+    new RemindersTask(client, deploymentService),
+    new GiveawayTask(client, deploymentService),
+    new TempbanTask(client, deploymentService),
   ];
 
-  for (const job of jobs) {
-    const cron = new CronJob(job.cronTime, async () => {
+  for (const task of tasks) {
+    const cron = new CronJob(task.cronTime, async () => {
       try {
         logger.info(
           {
-            taskName: job.name,
+            taskName: task.name,
             shardId,
           },
           "Running background task",
         );
-        await job.onTick(client);
+
+        // onTick will check deployment status before executing the task
+        await task.onTick();
       } catch (err) {
         Sentry.captureException(err, {
           tags: {
-            type: "job",
-            name: job.name,
+            type: "task",
+            name: task.name,
             shardId: shardId?.toString(),
           },
         });
@@ -64,7 +72,7 @@ export default async function startTasks(client: Client): Promise<void> {
         logger.error(
           {
             err,
-            taskName: job.name,
+            taskName: task.name,
             shardId,
           },
           "Error running background task",
@@ -72,11 +80,12 @@ export default async function startTasks(client: Client): Promise<void> {
       }
     });
 
+    // Actually start the cron job
     cron.start();
 
     logger.info(
       {
-        taskName: job.name,
+        taskName: task.name,
         shardId,
       },
       "Started background task",

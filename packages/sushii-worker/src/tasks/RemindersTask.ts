@@ -1,7 +1,6 @@
 import { EmbedBuilder, Client } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
-import BackgroundTask from "./BackgroundTask";
 import {
   countAllPendingReminders,
   getAndDeleteExpiredReminders,
@@ -13,19 +12,21 @@ import {
   pendingRemindersGauge,
   sentRemindersCounter,
 } from "@/infrastructure/metrics/metrics";
+import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 
-const logger = newModuleLogger("RemindersTask");
+export class RemindersTask extends AbstractBackgroundTask {
+  readonly name = "Check for expired reminders";
+  readonly cronTime = "*/30 * * * * *"; // Every 30 seconds
 
-const task: BackgroundTask = {
-  name: "Check for expired reminders",
+  constructor(client: Client, deploymentService: DeploymentService) {
+    super(client, deploymentService, newModuleLogger("RemindersTask"));
+  }
 
-  // Every 30 seconds
-  cronTime: "*/30 * * * * *",
-
-  async onTick(client: Client): Promise<void> {
+  protected async execute(): Promise<void> {
     const expiredReminders = await getAndDeleteExpiredReminders(db);
 
-    logger.info(
+    this.logger.info(
       {
         expiredReminders: expiredReminders.length,
       },
@@ -36,9 +37,8 @@ const task: BackgroundTask = {
     let numFailed = 0;
 
     for (const reminder of expiredReminders) {
-      let user;
       try {
-        user = await client.users.fetch(reminder.user_id);
+        const user = await this.client.users.fetch(reminder.user_id);
 
         const embed = new EmbedBuilder()
           .setTitle(
@@ -52,8 +52,8 @@ const task: BackgroundTask = {
         });
 
         numSuccess += 1;
-      } catch (err) {
-        // Might fail if the user has DMs disabled
+      } catch {
+        // Might fail if the user has DMs disabled, no retries
         numFailed += 1;
         continue;
       }
@@ -75,7 +75,5 @@ const task: BackgroundTask = {
 
     const pendingReminderCount = await countAllPendingReminders(db);
     pendingRemindersGauge.set(pendingReminderCount);
-  },
-};
-
-export default task;
+  }
+}
