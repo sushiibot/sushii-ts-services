@@ -1,6 +1,5 @@
-import { ChannelType } from "discord.js";
+import { ChannelType, Client } from "discord.js";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
-import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import db from "../infrastructure/database/db";
 import {
@@ -24,7 +23,7 @@ const task: BackgroundTask = {
   // Every 30 seconds
   cronTime: "*/30 * * * * *",
 
-  async onTick(ctx: Context): Promise<void> {
+  async onTick(client: Client): Promise<void> {
     const expiredGiveaways = await getAndEndPendingGiveaways(db);
 
     logger.info(
@@ -35,7 +34,7 @@ const task: BackgroundTask = {
     );
 
     for (const giveaway of expiredGiveaways) {
-      const giveawayChannel = ctx.client.channels.cache.get(
+      const giveawayChannel = client.channels.cache.get(
         giveaway.channel_id,
       );
       if (!giveawayChannel || !giveawayChannel.isTextBased()) {

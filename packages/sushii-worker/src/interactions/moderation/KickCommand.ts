@@ -58,7 +58,7 @@ export default class KickCommand extends SlashCommandHandler {
       return;
     }
 
-    const res = await executeAction(ctx, interaction, data, ActionType.Kick);
+    const res = await executeAction(interaction, data, ActionType.Kick);
     if (res.err) {
       const { flags, ...editMsg } = getErrorMessage("Error", res.val.message);
       await interaction.editReply(editMsg);

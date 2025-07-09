@@ -65,7 +65,7 @@ export default class BanCommand extends SlashCommandHandler {
       return;
     }
 
-    const res = await executeAction(ctx, interaction, data, ActionType.Ban);
+    const res = await executeAction(interaction, data, ActionType.Ban);
     if (res.err) {
       const { flags, ...editMsg } = getErrorMessage("Error", res.val.message);
       await interaction.editReply(editMsg);

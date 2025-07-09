@@ -29,7 +29,6 @@ import { getGuildSettings } from "../../interactions/moderation/ban_pools/GuildS
 import { insertBanPoolEntry } from "../../db/BanPool/BanPoolEntry.repository";
 import { InsertableBanPoolEntryRow } from "../../db/BanPool/BanPoolEntry.table";
 import { EventHandlerFn } from "../EventHandler";
-import Context from "../../model/context";
 
 const log = logger.child({ module: "BanPoolDiscordEventHandler" });
 
@@ -76,7 +75,7 @@ function poolToSelectMenuOption(
 
 export const banPoolBanHandler: EventHandlerFn<
   Events.GuildAuditLogEntryCreate
-> = async (ctx: Context, event: GuildAuditLogsEntry, guild: Guild) => {
+> = async (event: GuildAuditLogsEntry, guild: Guild) => {
   // Not a ban, ignore
   if (event.action !== AuditLogEvent.MemberBanAdd) {
     return;
@@ -84,7 +83,7 @@ export const banPoolBanHandler: EventHandlerFn<
 
   // TODO: Ignore if sushii banned because of another pool, otherwise this leads
   // to a chain reaction of bans
-  if (event.executor?.id === ctx.client.user?.id) {
+  if (event.executor?.id === guild.client.user?.id) {
     log.debug("Ignoring ban event because it was done by sushii");
   }
 };
@@ -95,7 +94,6 @@ export const banPoolBanHandler: EventHandlerFn<
  * @param ban
  */
 export const banPoolOnBanHandler: EventHandlerFn<Events.GuildBanAdd> = async (
-  ctx: Context,
   ban: GuildBan,
 ): Promise<void> => {
   // TODO: Ignore if sushii banned because of another pool, otherwise this leads

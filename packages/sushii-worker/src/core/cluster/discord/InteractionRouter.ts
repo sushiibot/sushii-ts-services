@@ -21,6 +21,7 @@ import { t } from "i18next";
 import opentelemetry from "@opentelemetry/api";
 import Context from "@/model/context";
 import log from "@/shared/infrastructure/logger";
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 import {
   SlashCommandHandler,
   ModalHandler,
@@ -83,6 +84,11 @@ export default class InteractionRouter {
   private context: Context;
 
   /**
+   * Deployment service for checking if current deployment is active
+   */
+  private deploymentService: DeploymentService;
+
+  /**
    * Command handlers
    */
   private commands: Collection<string, SlashCommandHandler>;
@@ -114,8 +120,9 @@ export default class InteractionRouter {
    */
   private selectMenuHandlers: SelectMenuHandler[];
 
-  constructor(ctx: Context) {
+  constructor(ctx: Context, deploymentService: DeploymentService) {
     this.context = ctx;
+    this.deploymentService = deploymentService;
     this.commands = new Collection();
     this.autocompleteHandlers = new Collection();
     this.modalHandlers = [];
@@ -543,18 +550,12 @@ export default class InteractionRouter {
 
   public async handleAPIInteraction(interaction: Interaction): Promise<void> {
     // Ignore all interactions that are not from the current deployment
-    const deploymentService = this.context.deploymentService;
-    if (!deploymentService) {
-      log.error("DeploymentService not available in context");
-      return;
-    }
-
-    const active = deploymentService.isCurrentDeploymentActive();
+    const active = this.deploymentService.isCurrentDeploymentActive();
     if (!active) {
       log.info(
         {
           processDeploymentName: config.deployment.name,
-          activeDeployment: deploymentService.getCurrentDeployment(),
+          activeDeployment: this.deploymentService.getCurrentDeployment(),
           interactionId: interaction.id,
         },
         "Not active deployment, ignoring interaction",

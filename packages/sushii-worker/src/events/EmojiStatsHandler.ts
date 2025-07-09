@@ -12,7 +12,6 @@ import {
 import dayjs from "@/shared/domain/dayjs";
 import { InsertObject } from "kysely/dist/cjs/parser/insert-values-parser";
 import opentelemetry from "@opentelemetry/api";
-import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
 import db from "../infrastructure/database/db";
 import {
@@ -174,7 +173,7 @@ async function incrementEmojiCounts(
 
 export const emojiStatsMsgHandler: EventHandlerFn<
   Events.MessageCreate
-> = async (ctx: Context, msg: Message): Promise<void> => {
+> = async (msg: Message): Promise<void> => {
   if (!msg.inGuild()) {
     return;
   }
@@ -222,7 +221,6 @@ export const emojiStatsMsgHandler: EventHandlerFn<
 export const emojiStatsReactHandler: EventHandlerFn<
   Events.MessageReactionAdd
 > = async (
-  ctx: Context,
   reaction: MessageReaction | PartialMessageReaction,
   user: User | PartialUser,
 ): Promise<void> => {
@@ -247,7 +245,7 @@ export const emojiStatsReactHandler: EventHandlerFn<
 
 export const emojiAndStickerStatsReadyHandler: EventHandlerFn<
   Events.ClientReady
-> = async (ctx: Context, client: Client<true>): Promise<void> => {
+> = async (client: Client<true>): Promise<void> => {
   logger.info(
     {
       guildsCount: client.guilds.cache.size,
@@ -329,7 +327,6 @@ async function addGuildEmojiOrSticker(
 }
 
 export const emojiAddHandler: EventHandlerFn<Events.GuildEmojiCreate> = async (
-  ctx: Context,
   emoji: GuildEmoji,
 ) => {
   await addGuildEmojiOrSticker(
@@ -342,7 +339,7 @@ export const emojiAddHandler: EventHandlerFn<Events.GuildEmojiCreate> = async (
 
 export const emojiUpdateHandler: EventHandlerFn<
   Events.GuildEmojiUpdate
-> = async (ctx: Context, emoji: GuildEmoji) => {
+> = async (emoji: GuildEmoji) => {
   await addGuildEmojiOrSticker(
     emoji.guild.id,
     emoji.id,
@@ -353,7 +350,7 @@ export const emojiUpdateHandler: EventHandlerFn<
 
 export const stickerAddHandler: EventHandlerFn<
   Events.GuildStickerCreate
-> = async (ctx: Context, sticker: Sticker) => {
+> = async (sticker: Sticker) => {
   if (sticker.guildId === null) {
     return;
   }
@@ -368,7 +365,7 @@ export const stickerAddHandler: EventHandlerFn<
 
 export const stickerUpdateHandler: EventHandlerFn<
   Events.GuildStickerUpdate
-> = async (ctx: Context, sticker: Sticker) => {
+> = async (sticker: Sticker) => {
   if (sticker.guildId === null) {
     return;
   }

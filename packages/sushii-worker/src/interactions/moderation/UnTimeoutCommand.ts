@@ -58,7 +58,6 @@ export default class UnTimeoutCommand extends SlashCommandHandler {
     }
 
     const res = await executeAction(
-      ctx,
       interaction,
       data,
       ActionType.TimeoutRemove,

@@ -1,10 +1,10 @@
 import { APIEmbedField, EmbedBuilder, TimestampStyles, User } from "discord.js";
 import path from "path";
 import { ActionType } from "../../../interactions/moderation/ActionType";
-import Context from "../../../model/context";
 import logger from "@/shared/infrastructure/logger";
 import toTimestamp from "../../../utils/toTimestamp";
 import { TimeoutChange } from "../../../types/TimeoutChange";
+import { Client } from "discord.js";
 
 interface ModCase {
   case_id: string;
@@ -14,7 +14,7 @@ interface ModCase {
 }
 
 export default async function buildModLogEmbed(
-  ctx: Context,
+  client: Client,
   actionType: ActionType,
   targetUser: User,
   modCase: ModCase,
@@ -23,7 +23,7 @@ export default async function buildModLogEmbed(
   let executorUser;
   if (modCase.executor_id) {
     try {
-      executorUser = await ctx.client.users.fetch(modCase.executor_id);
+      executorUser = await client.users.fetch(modCase.executor_id);
     } catch (err) {
       logger.warn(err, "Failed to fetch mod log executor user");
     }
@@ -31,7 +31,7 @@ export default async function buildModLogEmbed(
 
   if (!executorUser) {
     // sushii as default, or if executor failed to fetch
-    executorUser = ctx.client.user;
+    executorUser = client.user;
   }
 
   if (!executorUser) {

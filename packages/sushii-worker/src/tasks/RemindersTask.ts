@@ -1,7 +1,6 @@
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Client } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
-import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
 import {
   countAllPendingReminders,
@@ -23,7 +22,7 @@ const task: BackgroundTask = {
   // Every 30 seconds
   cronTime: "*/30 * * * * *",
 
-  async onTick(ctx: Context): Promise<void> {
+  async onTick(client: Client): Promise<void> {
     const expiredReminders = await getAndDeleteExpiredReminders(db);
 
     logger.info(
@@ -39,7 +38,7 @@ const task: BackgroundTask = {
     for (const reminder of expiredReminders) {
       let user;
       try {
-        user = await ctx.client.users.fetch(reminder.user_id);
+        user = await client.users.fetch(reminder.user_id);
 
         const embed = new EmbedBuilder()
           .setTitle(

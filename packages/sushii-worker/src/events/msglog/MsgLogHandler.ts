@@ -16,7 +16,6 @@ import {
   AppPublicMsgLogBlocks,
 } from "../../infrastructure/database/dbTypes";
 import SushiiEmoji from "../../shared/presentation/SushiiEmoji";
-import Context from "../../model/context";
 import buildChunks from "../../utils/buildChunks";
 import Color from "../../utils/colors";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
@@ -25,6 +24,7 @@ import { EventHandlerFn } from "../EventHandler";
 import { getAPIUserTag } from "../../utils/APIUser";
 import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
 import { webhookErr } from "@/core/cluster/webhookLogger";
+import { Client } from "discord.js";
 
 const log = newModuleLogger("MsgLogHandler");
 
@@ -70,7 +70,7 @@ function getMessageIDs(event: EventData): string[] {
 }
 
 function buildDeleteEmbed(
-  ctx: Context,
+  client: Client,
   event: EventData,
   message: Selectable<AppPublicMessages>,
 ): EmbedBuilder {
@@ -88,7 +88,7 @@ function buildDeleteEmbed(
 
   if (msg.sticker_items && msg.sticker_items.length > 0) {
     const sticker = msg.sticker_items[0];
-    const stickerURL = ctx.CDN.sticker(sticker.id);
+    const stickerURL = client.rest.cdn.sticker(sticker.id);
 
     fields.push({
       name: "Stickers",
@@ -131,8 +131,8 @@ function buildDeleteEmbed(
   }
 
   const authorIcon = msg.author.avatar
-    ? ctx.CDN.avatar(msg.author.id, msg.author.avatar)
-    : ctx.CDN.defaultAvatar(parseInt(msg.author.discriminator, 10));
+    ? client.rest.cdn.avatar(msg.author.id, msg.author.avatar)
+    : client.rest.cdn.defaultAvatar(parseInt(msg.author.discriminator, 10));
 
   const authorTag = getAPIUserTag(msg.author);
 
@@ -151,7 +151,7 @@ function buildDeleteEmbed(
 }
 
 function buildEditEmbed(
-  ctx: Context,
+  client: Client,
   event: EventData,
   message: Selectable<AppPublicMessages>,
 ): Option<EmbedBuilder> {
@@ -180,8 +180,8 @@ function buildEditEmbed(
   description += quoteMarkdownString(updateEvent.content);
 
   const authorIcon = msg.author.avatar
-    ? ctx.CDN.avatar(msg.author.id, msg.author.avatar)
-    : ctx.CDN.defaultAvatar(parseInt(msg.author.discriminator, 10));
+    ? client.rest.cdn.avatar(msg.author.id, msg.author.avatar)
+    : client.rest.cdn.defaultAvatar(parseInt(msg.author.discriminator, 10));
 
   const embed = new EmbedBuilder()
     .setAuthor({
@@ -196,7 +196,7 @@ function buildEditEmbed(
 }
 
 function buildBulkDeleteEmbed(
-  ctx: Context,
+  client: Client,
   event: GatewayMessageDeleteBulkDispatchData,
   messages: Selectable<AppPublicMessages>[],
 ): EmbedBuilder[] {
@@ -215,7 +215,7 @@ function buildBulkDeleteEmbed(
 
     if (msg.sticker_items && msg.sticker_items.length > 0) {
       const sticker = msg.sticker_items[0];
-      const stickerURL = ctx.CDN.sticker(sticker.id);
+      const stickerURL = client.rest.cdn.sticker(sticker.id);
 
       // Can have both message and sticker
       // Technically can have multiple stickers but users can only send 1
@@ -256,20 +256,20 @@ function buildBulkDeleteEmbed(
 }
 
 function buildEmbeds(
-  ctx: Context,
+  client: Client,
   eventType: GatewayDispatchEvents,
   event: EventData,
   messages: Selectable<AppPublicMessages>[],
 ): Option<EmbedBuilder[]> {
   if (eventType === GatewayDispatchEvents.MessageDelete && event) {
-    const embed = buildDeleteEmbed(ctx, event, messages[0]);
+    const embed = buildDeleteEmbed(client, event, messages[0]);
 
     return Some([embed]);
   }
 
   if (eventType === GatewayDispatchEvents.MessageDeleteBulk) {
     const embeds = buildBulkDeleteEmbed(
-      ctx,
+      client,
       event as GatewayMessageDeleteBulkDispatchData,
       messages,
     );
@@ -278,14 +278,14 @@ function buildEmbeds(
   }
 
   if (eventType === GatewayDispatchEvents.MessageUpdate) {
-    return buildEditEmbed(ctx, event, messages[0]).map((e) => [e]);
+    return buildEditEmbed(client, event, messages[0]).map((e) => [e]);
   }
 
   throw new Error(`Invalid event type ${eventType}`);
 }
 
 export async function msgLogHandler(
-  ctx: Context,
+  client: Client,
   eventType:
     | GatewayDispatchEvents.MessageDelete
     | GatewayDispatchEvents.MessageDeleteBulk
@@ -336,7 +336,7 @@ export async function msgLogHandler(
     return;
   }
 
-  const embeds = buildEmbeds(ctx, eventType, payload, messages);
+  const embeds = buildEmbeds(client, eventType, payload, messages);
 
   if (embeds.none) {
     // No embed to send, could be just proxy url getting updated
@@ -347,7 +347,7 @@ export async function msgLogHandler(
     return;
   }
 
-  const channel = ctx.client.channels.cache.get(guildConfig.log_msg);
+  const channel = client.channels.cache.get(guildConfig.log_msg);
   if (!channel || !channel.isSendable()) {
     log.warn(
       {
@@ -397,7 +397,6 @@ export async function msgLogHandler(
 }
 
 export const threadDeleteHandler: EventHandlerFn<Events.ThreadDelete> = async (
-  ctx: Context,
   thread: AnyThreadChannel,
 ): Promise<void> => {
   const guildConfig = await getGuildConfig(db, thread.guildId);

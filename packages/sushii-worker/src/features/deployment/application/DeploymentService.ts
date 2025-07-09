@@ -62,6 +62,7 @@ export class DeploymentService {
       this.logger.warn("Deployment service not initialized, returning default");
       return "blue"; // Default fallback
     }
+
     return this.currentDeployment.name;
   }
 

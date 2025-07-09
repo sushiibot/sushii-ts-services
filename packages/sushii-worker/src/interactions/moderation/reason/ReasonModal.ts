@@ -85,7 +85,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
 
     // Rebuild embed with new mod case with included reason and executor
     const newEmbed = await buildModLogEmbed(
-      ctx,
+      interaction.client,
       ActionType.fromString(modCase.action),
       targetUser,
       updatedModCase,

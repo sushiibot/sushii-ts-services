@@ -132,15 +132,15 @@ export class PostgreSQLDeploymentRepository implements DeploymentRepository {
             },
           });
 
-        // Raw SQL NOTIFY within the same transaction
+        // Raw SQL NOTIFY within the same transaction, gets queued until commit
         // Note: deployment.name is enum-constrained so this is safe
         await tx.execute(
           sql.raw(`NOTIFY ${this.channelName}, '${deployment.name}'`),
         );
-
-        // Update local state only after both operations succeed
-        this.currentDeploymentName = deployment.name;
       });
+
+      // Update local state only after transaction succeeds
+      this.currentDeploymentName = deployment.name;
     } catch (error) {
       this.logger.error({ error }, "Failed to set active deployment");
       throw error;

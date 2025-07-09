@@ -70,7 +70,7 @@ export default class TempbanCommand extends SlashCommandHandler {
       return;
     }
 
-    const res = await executeAction(ctx, interaction, data, ActionType.TempBan);
+    const res = await executeAction(interaction, data, ActionType.TempBan);
     if (res.err) {
       const { flags, ...editMsg } = getErrorMessage("Error", res.val.message);
       await interaction.editReply(editMsg);

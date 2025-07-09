@@ -25,7 +25,6 @@ export default class NoteCommand extends SlashCommandHandler {
     .addAttachmentOption(attachmentOption)
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,
@@ -52,7 +51,7 @@ export default class NoteCommand extends SlashCommandHandler {
       return;
     }
 
-    const res = await executeAction(ctx, interaction, data, ActionType.Note);
+    const res = await executeAction(interaction, data, ActionType.Note);
     if (res.err) {
       const msg = getErrorMessageEdit("Error", res.val.message);
       await interaction.editReply(msg);

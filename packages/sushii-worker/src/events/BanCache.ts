@@ -1,5 +1,4 @@
 import { Events, Guild, GuildBan } from "discord.js";
-import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
 import db from "../infrastructure/database/db";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
@@ -66,7 +65,7 @@ async function getGuildBans(guild: Guild): Promise<string[]> {
 }
 
 export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
-  ctx: Context,
+  client,
 ): Promise<void> => {
   if (config.features.disableBanFetchOnReady) {
     log.info("Skipping ban fetch on ready");
@@ -74,7 +73,7 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
   }
 
   // Fetch all bans for all guilds the bot is in.
-  for (const [, guild] of ctx.client.guilds.cache) {
+  for (const [, guild] of client.guilds.cache) {
     // Ignore if guild is less than 10k members for now
     if (guild.memberCount < 10000) {
       continue;
@@ -120,7 +119,6 @@ export const banReadyHandler: EventHandlerFn<Events.ClientReady> = async (
 };
 
 export const banCacheBanHandler: EventHandlerFn<Events.GuildBanAdd> = async (
-  ctx: Context,
   ban: GuildBan,
 ): Promise<void> => {
   // Add the ban to the database
@@ -136,7 +134,7 @@ export const banCacheBanHandler: EventHandlerFn<Events.GuildBanAdd> = async (
 
 export const banCacheUnbanHandler: EventHandlerFn<
   Events.GuildBanRemove
-> = async (ctx: Context, ban: GuildBan): Promise<void> => {
+> = async (ban: GuildBan): Promise<void> => {
   // Remove the ban from the database
   await db
     .deleteFrom("app_public.guild_bans")
@@ -147,7 +145,7 @@ export const banCacheUnbanHandler: EventHandlerFn<
 
 export const banCacheGuildCreateHandler: EventHandlerFn<
   Events.GuildCreate
-> = async (ctx: Context, guild: Guild): Promise<void> => {
+> = async (guild: Guild): Promise<void> => {
   let guildBans;
   try {
     guildBans = await getGuildBans(guild);

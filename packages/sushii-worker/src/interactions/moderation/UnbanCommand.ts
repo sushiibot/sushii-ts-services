@@ -64,7 +64,7 @@ export default class UnbanCommand extends SlashCommandHandler {
 
     let res;
     try {
-      res = await executeAction(ctx, interaction, data, ActionType.BanRemove);
+      res = await executeAction(interaction, data, ActionType.BanRemove);
     } catch (err) {
       const { flags, ...editMsg } = getErrorMessage(
         "Error",

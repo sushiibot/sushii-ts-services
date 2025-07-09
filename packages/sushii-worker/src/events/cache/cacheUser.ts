@@ -8,7 +8,6 @@ import db from "../../infrastructure/database/db";
 const tracer = opentelemetry.trace.getTracer("cache-user-handler");
 
 export const cacheUserHandler: EventHandlerFn<Events.MessageCreate> = async (
-  ctx: Context,
   msg: Message,
 ): Promise<void> => {
   if (msg.author.bot) {

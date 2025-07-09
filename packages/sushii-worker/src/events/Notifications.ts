@@ -30,7 +30,6 @@ const log = newModuleLogger("NotificationsHandler");
 const tracer = opentelemetry.trace.getTracer("notification-handler");
 
 export const notificationHandler: EventHandlerFn<Events.MessageCreate> = async (
-  ctx: Context,
   msg: Message,
 ): Promise<void> => {
   // Ignore dms

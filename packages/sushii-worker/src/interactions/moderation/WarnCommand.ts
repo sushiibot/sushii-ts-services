@@ -54,7 +54,7 @@ export default class WarnCommand extends SlashCommandHandler {
       return;
     }
 
-    const res = await executeAction(ctx, interaction, data, ActionType.Warn);
+    const res = await executeAction(interaction, data, ActionType.Warn);
     if (res.err) {
       const { flags, ...editMsg } = getErrorMessage("Error", res.val.message);
       await interaction.editReply(editMsg);

@@ -1,6 +1,5 @@
 import { EmbedBuilder, Events, GuildBan } from "discord.js";
 import logger from "@/shared/infrastructure/logger";
-import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { EventHandlerFn } from "../EventHandler";
 import db from "../../infrastructure/database/db";
@@ -9,7 +8,6 @@ import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
 const notifiedCache = new Set<string>();
 
 const legacyModLogNotifierHandler: EventHandlerFn<Events.GuildBanAdd> = async (
-  ctx: Context,
   ban: GuildBan,
 ): Promise<void> => {
   // Ban event

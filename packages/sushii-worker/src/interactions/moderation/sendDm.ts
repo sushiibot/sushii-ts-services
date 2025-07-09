@@ -10,14 +10,12 @@ import {
 } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
 import { Err, Ok, Result } from "ts-results";
-import Context from "../../model/context";
 import Color from "../../utils/colors";
 import toTimestamp from "../../utils/toTimestamp";
 import { ActionType } from "./ActionType";
 import ModActionData from "./ModActionData";
 
 export async function buildDMEmbed(
-  ctx: Context,
   guild: Guild,
   action: ActionType,
   shouldDMReason: boolean,
@@ -60,14 +58,12 @@ export async function buildDMEmbed(
 }
 
 export default async function sendModActionDM(
-  ctx: Context,
   interaction: Interaction<"cached">,
   data: ModActionData,
   target: User,
   action: ActionType,
 ): Promise<Result<Message, string>> {
   const embed = await buildDMEmbed(
-    ctx,
     interaction.guild,
     action,
     data.shouldDMReason(action),

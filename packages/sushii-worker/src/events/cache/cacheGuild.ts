@@ -9,7 +9,7 @@ const tracer = opentelemetry.trace.getTracer("cache-guild-handler");
 
 export const cacheGuildCreateHandler: EventHandlerFn<
   Events.GuildCreate
-> = async (ctx: Context, guild: Guild): Promise<void> => {
+> = async (guild: Guild): Promise<void> => {
   const span = tracer.startSpan("guild create upsert");
 
   try {
@@ -28,7 +28,7 @@ export const cacheGuildCreateHandler: EventHandlerFn<
 
 export const cacheGuildUpdateHandler: EventHandlerFn<
   Events.GuildUpdate
-> = async (ctx: Context, oldGuild: Guild, newGuild: Guild): Promise<void> => {
+> = async (oldGuild: Guild, newGuild: Guild): Promise<void> => {
   const span = tracer.startSpan("guild update upsert");
 
   try {

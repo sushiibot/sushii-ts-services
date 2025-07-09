@@ -1,10 +1,10 @@
 import {
+  Client,
   GatewayDispatchEvents,
   GatewayMessageCreateDispatchData,
   GatewayMessageUpdateDispatchData,
 } from "discord.js";
 import { sql } from "kysely";
-import Context from "../../model/context";
 import db from "../../infrastructure/database/db";
 
 type EventData =
@@ -12,7 +12,7 @@ type EventData =
   | GatewayMessageUpdateDispatchData;
 
 export default async function msgLogCacheHandler(
-  ctx: Context,
+  client: Client,
   eventType:
     | GatewayDispatchEvents.MessageCreate
     | GatewayDispatchEvents.MessageUpdate,

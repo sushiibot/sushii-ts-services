@@ -1,7 +1,7 @@
 import dayjs from "@/shared/domain/dayjs";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
-import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
+import { Client } from "discord.js";
 import { deleteMessagesBefore } from "../db/Message/Message.repository";
 import db from "../infrastructure/database/db";
 
@@ -18,7 +18,7 @@ const task: BackgroundTask = {
   cronTime: "0 0 * * *",
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async onTick(_ctx: Context): Promise<void> {
+  async onTick(_client: Client): Promise<void> {
     const res = await deleteMessagesBefore(
       db,
       dayjs().utc().subtract(RETAIN_DURATION).toDate(),

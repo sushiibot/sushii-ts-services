@@ -59,8 +59,11 @@ async function initializeShard(): Promise<void> {
   client.cluster = new ClusterClient(client);
   client.rest.setToken(config.discord.token);
 
+  // START NEW REGISTRATION
+  const { db, deploymentService } = await initCore();
+
   const ctx = new Context(client);
-  const interactionRouter = new InteractionRouter(ctx);
+  const interactionRouter = new InteractionRouter(ctx, deploymentService);
   registerInteractionHandlers(interactionRouter);
 
   // Only register on client including shard 0
@@ -70,17 +73,11 @@ async function initializeShard(): Promise<void> {
     await interactionRouter.register();
   }
 
-  // START NEW REGISTRATION
-  const { db, deploymentService } = await initCore();
-
-  // Set deployment service in context
-  ctx.setDeploymentService(deploymentService);
-
   // New registration of features
   registerFeatures(db, client, deploymentService);
 
   // Legacy registration of event handlers
-  registerEventHandlers(ctx, client, interactionRouter);
+  registerEventHandlers(ctx, client, interactionRouter, deploymentService);
 
   process.on("SIGTERM", async () => {
     log.info("SIGTERM received, shutting down shard gracefully");

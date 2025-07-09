@@ -1,7 +1,7 @@
 import { CronJob } from "cron";
 import * as Sentry from "@sentry/node";
 import logger from "@/shared/infrastructure/logger";
-import Context from "../model/context";
+import { Client } from "discord.js";
 import deleteOldMessages from "./DeleteOldMessagesTask";
 import updateStats from "./StatsTask";
 import deleteStaleEmojiStatsRateLimit from "./DeleteStaleEmojiStatsRateLimit";
@@ -9,9 +9,9 @@ import sendReminders from "./RemindersTask";
 import giveaways from "./GiveawayTask";
 import tempbans from "./TempbanTask";
 
-export default async function startTasks(ctx: Context): Promise<void> {
-  const shardId = ctx.getShardId();
-  const isMainShard = ctx.isMainShard();
+export default async function startTasks(client: Client): Promise<void> {
+  const shardId = client.ws.shards.first()?.id ?? null;
+  const isMainShard = shardId === 0;
 
   logger.info(
     {
@@ -51,7 +51,7 @@ export default async function startTasks(ctx: Context): Promise<void> {
           },
           "Running background task",
         );
-        await job.onTick(ctx);
+        await job.onTick(client);
       } catch (err) {
         Sentry.captureException(err, {
           tags: {

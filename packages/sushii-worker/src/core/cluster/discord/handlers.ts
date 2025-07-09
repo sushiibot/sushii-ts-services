@@ -11,6 +11,7 @@ import logger from "@/shared/infrastructure/logger";
 import InteractionClient from "./InteractionRouter";
 import { EventHandlerFn } from "@/events/EventHandler";
 import Context from "@/model/context";
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 import legacyModLogNotifierHandler from "@/events/GuildBanAdd/LegacyModLogNotifier";
 import modLogHandler from "@/events/ModLogHandler";
 import { msgLogHandler } from "@/events/msglog/MsgLogHandler";
@@ -52,35 +53,6 @@ const tracerName = "event-handler";
 const tracer = opentelemetry.trace.getTracer(tracerName);
 const prefixSpanName = (name: string): string => `${tracerName}.${name}`;
 
-let lastLogTime = 0;
-
-function isActive(ctx: Context): boolean {
-  const deploymentService = ctx.deploymentService;
-  if (!deploymentService) {
-    logger.error("DeploymentService not available in context");
-    return false;
-  }
-
-  const active = deploymentService.isCurrentDeploymentActive();
-  if (!active) {
-    const currentTime = Date.now();
-
-    // Log max one time every 10 seconds
-    if (currentTime - lastLogTime >= 10000) {
-      logger.info(
-        {
-          processDeploymentName: config.deployment.name,
-          activeDeployment: deploymentService.getCurrentDeployment(),
-        },
-        "Not active deployment, ignoring events",
-      );
-      lastLogTime = currentTime;
-    }
-  }
-
-  return active;
-}
-
 async function handleEvent<K extends keyof ClientEvents>(
   ctx: Context,
   eventType: K,
@@ -92,7 +64,7 @@ async function handleEvent<K extends keyof ClientEvents>(
 
   // Same order as handlerNames
   const results = await Promise.allSettled(
-    handlerNames.map((name) => handlers[name](ctx, ...args)),
+    handlerNames.map((name) => handlers[name](...args)),
   );
 
   for (let i = 0; i < results.length; i += 1) {
@@ -149,6 +121,7 @@ export default function registerEventHandlers(
   ctx: Context,
   client: Client,
   interactionHandler: InteractionClient,
+  deploymentService: DeploymentService,
 ): void {
   client.once(Events.ClientReady, async (c) => {
     logger.info(
@@ -168,7 +141,7 @@ export default function registerEventHandlers(
       `\nDeployment: ${config.deployment.name}`;
 
     if (config.build.hasGitHash) {
-      content += `\nGit Hash: ${config.build.gitHash}`;
+      content += `\nBuild Git Hash: ${config.build.gitHash}`;
     }
 
     if (config.build.hasBuildDate) {
@@ -182,7 +155,7 @@ export default function registerEventHandlers(
     );
 
     // After after client is ready to ensure guilds are cached
-    await startTasks(ctx);
+    await startTasks(c);
 
     await tracer.startActiveSpan(
       prefixSpanName(Events.ClientReady),
@@ -228,11 +201,7 @@ export default function registerEventHandlers(
       content += `\nBuild Date: ${config.build.buildDate}`;
     }
 
-    await webhookLog(
-      `[Shard #${shardId}] ShardReady`,
-      content,
-      Color.Success,
-    );
+    await webhookLog(`[Shard #${shardId}] ShardReady`, content, Color.Success);
   });
 
   client.on(Events.ShardDisconnect, async (closeEvent, shardId) => {
@@ -293,7 +262,7 @@ export default function registerEventHandlers(
       Color.Info,
     );
 
-    if (!isActive(ctx)) {
+    if (!deploymentService.isCurrentDeploymentActive()) {
       return;
     }
 
@@ -315,7 +284,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildUpdate, async (oldGuild, newGuild) => {
-    if (!isActive(ctx)) {
+    if (!deploymentService.isCurrentDeploymentActive()) {
       return;
     }
 
@@ -354,7 +323,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildMemberAdd, async (member) => {
-    if (!isActive(ctx)) {
+    if (!deploymentService.isCurrentDeploymentActive()) {
       return;
     }
 
@@ -377,7 +346,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildMemberRemove, async (member) => {
-    if (!isActive(ctx)) {
+    if (!deploymentService.isCurrentDeploymentActive()) {
       return;
     }
 
@@ -400,7 +369,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.InteractionCreate, async (interaction) => {
-    if (!isActive(ctx)) {
+    if (!deploymentService.isCurrentDeploymentActive()) {
       return;
     }
 
@@ -416,7 +385,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildAuditLogEntryCreate, async (entry, guild) => {
-    if (!isActive(ctx)) {
+    if (!deploymentService.isCurrentDeploymentActive()) {
       return;
     }
 
@@ -437,7 +406,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildBanAdd, async (guildBan) => {
-    if (!isActive(ctx)) {
+    if (!deploymentService.isCurrentDeploymentActive()) {
       return;
     }
 
@@ -462,7 +431,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.GuildBanRemove, async (guildBan) => {
-    if (!isActive(ctx)) {
+    if (!deploymentService.isCurrentDeploymentActive()) {
       return;
     }
 
@@ -482,7 +451,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.MessageCreate, async (msg) => {
-    if (!isActive(ctx)) {
+    if (!deploymentService.isCurrentDeploymentActive()) {
       return;
     }
 
@@ -509,7 +478,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.MessageReactionAdd, async (reaction, user, details) => {
-    if (!isActive(ctx)) {
+    if (!deploymentService.isCurrentDeploymentActive()) {
       return;
     }
 
@@ -533,7 +502,7 @@ export default function registerEventHandlers(
   client.on(Events.Raw, async (event: GatewayDispatchPayload) => {
     updateGatewayDispatchEventMetrics(event.t);
 
-    if (!isActive(ctx)) {
+    if (!deploymentService.isCurrentDeploymentActive()) {
       return;
     }
 
@@ -541,11 +510,11 @@ export default function registerEventHandlers(
       prefixSpanName(Events.Raw),
       async (span: Span) => {
         if (event.t === GatewayDispatchEvents.MessageDelete) {
-          await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
+          await runParallel(event.t, [msgLogHandler(client, event.t, event.d)]);
         }
 
         if (event.t === GatewayDispatchEvents.MessageDeleteBulk) {
-          await runParallel(event.t, [msgLogHandler(ctx, event.t, event.d)]);
+          await runParallel(event.t, [msgLogHandler(client, event.t, event.d)]);
         }
 
         if (event.t === GatewayDispatchEvents.MessageUpdate) {
@@ -553,8 +522,8 @@ export default function registerEventHandlers(
             // Log first to keep old message, then cache after for new update.
             // Fine to await since each event is a specific type, no other types that
             // this blocks.
-            await msgLogHandler(ctx, event.t, event.d);
-            await msgLogCacheHandler(ctx, event.t, event.d);
+            await msgLogHandler(client, event.t, event.d);
+            await msgLogCacheHandler(client, event.t, event.d);
           } catch (err) {
             Sentry.captureException(err, {
               tags: {
@@ -575,7 +544,7 @@ export default function registerEventHandlers(
 
         if (event.t === GatewayDispatchEvents.MessageCreate) {
           await runParallel(event.t, [
-            msgLogCacheHandler(ctx, event.t, event.d),
+            msgLogCacheHandler(client, event.t, event.d),
           ]);
         }
 

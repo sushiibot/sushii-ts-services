@@ -1,14 +1,12 @@
 import { Events, Message } from "discord.js";
 import { EventHandlerFn } from "./EventHandler";
-import Context from "../model/context";
 import { getTag } from "../db/Tag/Tab.repository";
 import db from "../infrastructure/database/db";
 
 export const mentionTagHandler: EventHandlerFn<Events.MessageCreate> = async (
-  ctx: Context,
   msg: Message,
 ): Promise<void> => {
-  const botId = ctx.client.user?.id;
+  const botId = msg.client.user?.id;
   if (!botId) {
     return;
   }

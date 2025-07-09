@@ -69,7 +69,7 @@ export default class TimeoutCommand extends SlashCommandHandler {
       return;
     }
 
-    const res = await executeAction(ctx, interaction, data, ActionType.Timeout);
+    const res = await executeAction(interaction, data, ActionType.Timeout);
     if (res.err) {
       const { flags, ...editMsg } = getErrorMessage("Error", res.val.message);
       await interaction.editReply(editMsg);

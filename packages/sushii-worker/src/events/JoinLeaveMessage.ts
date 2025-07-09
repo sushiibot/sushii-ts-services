@@ -1,6 +1,5 @@
 import { Events, GuildMember, PartialGuildMember } from "discord.js";
 import { EventHandlerFn } from "./EventHandler";
-import Context from "../model/context";
 import db from "../infrastructure/database/db";
 import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
@@ -9,7 +8,7 @@ const log = newModuleLogger("joinLeaveMessageHandler");
 
 export const memberJoinMessageHandler: EventHandlerFn<
   Events.GuildMemberAdd
-> = async (ctx: Context, member: GuildMember): Promise<void> => {
+> = async (member: GuildMember): Promise<void> => {
   const conf = await getGuildConfig(db, member.guild.id);
 
   if (!conf.msg_channel) {
@@ -45,10 +44,7 @@ export const memberJoinMessageHandler: EventHandlerFn<
 
 export const memberLeaveMessageHandler: EventHandlerFn<
   Events.GuildMemberRemove
-> = async (
-  ctx: Context,
-  member: GuildMember | PartialGuildMember,
-): Promise<void> => {
+> = async (member: GuildMember | PartialGuildMember): Promise<void> => {
   const conf = await getGuildConfig(db, member.guild.id);
 
   if (!conf.msg_channel) {

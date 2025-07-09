@@ -1,6 +1,6 @@
 import dayjs from "@/shared/domain/dayjs";
-import Context from "../model/context";
 import BackgroundTask from "./BackgroundTask";
+import { Client } from "discord.js";
 import { getAndDeleteExpiredTempBans } from "../db/TempBan/TempBan.repository";
 import db from "../infrastructure/database/db";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
@@ -14,7 +14,7 @@ const task: BackgroundTask = {
   // Every 30 seconds
   cronTime: "*/30 * * * * *",
 
-  async onTick(ctx: Context): Promise<void> {
+  async onTick(client: Client): Promise<void> {
     const tempBans = await getAndDeleteExpiredTempBans(db);
 
     logger.debug(
@@ -25,7 +25,7 @@ const task: BackgroundTask = {
     );
 
     for (const tempBan of tempBans) {
-      const guild = ctx.client.guilds.cache.get(tempBan.guild_id);
+      const guild = client.guilds.cache.get(tempBan.guild_id);
       if (!guild) {
         // Might be a guild that the bot is no longer in
         continue;

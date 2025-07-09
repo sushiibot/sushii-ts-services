@@ -9,7 +9,6 @@ import {
 } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
-import Context from "../model/context";
 import { EventHandlerFn } from "./EventHandler";
 import { ActionType } from "../interactions/moderation/ActionType";
 import customIds from "../interactions/customIds";
@@ -208,7 +207,6 @@ export function buildModLogComponents(
 }
 
 const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
-  ctx: Context,
   event: GuildAuditLogsEntry,
   guild: Guild,
 ): Promise<void> => {
@@ -369,7 +367,6 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
     );
 
     const dmEmbed = await buildDMEmbed(
-      ctx,
       guild,
       actionType,
       true, // should dm reason
@@ -404,7 +401,7 @@ const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
   }
 
   const embed = await buildModLogEmbed(
-    ctx,
+    guild.client,
     actionType,
     targetUser,
     matchingCase,

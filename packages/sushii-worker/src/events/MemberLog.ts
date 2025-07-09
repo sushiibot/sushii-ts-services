@@ -9,7 +9,6 @@ import {
 } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
 import { EventHandlerFn } from "./EventHandler";
-import Context from "../model/context";
 import db from "../infrastructure/database/db";
 import {
   getGuildConfig,
@@ -130,15 +129,12 @@ async function logMember(
 
 export const memberLogJoinHandler: EventHandlerFn<
   Events.GuildMemberAdd
-> = async (ctx: Context, member: GuildMember): Promise<void> => {
+> = async (member: GuildMember): Promise<void> => {
   await logMember(member, "join");
 };
 
 export const memberLogLeaveHandler: EventHandlerFn<
   Events.GuildMemberRemove
-> = async (
-  ctx: Context,
-  member: GuildMember | PartialGuildMember,
-): Promise<void> => {
+> = async (member: GuildMember | PartialGuildMember): Promise<void> => {
   await logMember(member, "leave");
 };

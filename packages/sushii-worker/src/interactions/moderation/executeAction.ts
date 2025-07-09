@@ -11,7 +11,6 @@ import { Err, Ok, Result } from "ts-results";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import opentelemetry, { SpanStatusCode } from "@opentelemetry/api";
 import logger from "@/shared/infrastructure/logger";
-import Context from "../../model/context";
 import Color from "../../utils/colors";
 import toSentenceCase from "../../utils/toSentenceCase";
 import { ActionType } from "./ActionType";
@@ -43,7 +42,6 @@ interface ActionError {
 }
 
 function buildResponseEmbed(
-  ctx: Context,
   data: ModActionData,
   action: ActionType,
   content: string,
@@ -123,14 +121,18 @@ function buildResponseEmbed(
 }
 
 async function sendModLog(
-  ctx: Context,
   interaction: ChatInputCommandInteraction<"cached">,
   guildConfig: AllSelection<DB, "app_public.guild_configs">,
   actionType: ActionType,
   target: ModActionTarget,
   modCase: AllSelection<DB, "app_public.mod_logs">,
 ): Promise<void> {
-  const embed = await buildModLogEmbed(ctx, actionType, target.user, modCase);
+  const embed = await buildModLogEmbed(
+    interaction.client,
+    actionType,
+    target.user,
+    modCase,
+  );
   const components = buildModLogComponents(actionType, modCase);
 
   if (guildConfig.log_mod_enabled && guildConfig.log_mod) {
@@ -148,7 +150,6 @@ async function sendModLog(
 }
 
 async function execActionUser(
-  ctx: Context,
   interaction: ChatInputCommandInteraction,
   data: ModActionData,
   target: ModActionTarget,
@@ -313,7 +314,6 @@ interface ExecuteActionUserResult {
 }
 
 async function executeActionUser(
-  ctx: Context,
   interaction: ChatInputCommandInteraction<"cached">,
   data: ModActionData,
   target: ModActionTarget,
@@ -425,7 +425,6 @@ async function executeActionUser(
       // DM before for ban and send dm
       if (actionType === ActionType.Ban && shouldDM) {
         dmRes = await sendModActionDM(
-          ctx,
           interaction,
           data,
           target.user,
@@ -435,18 +434,11 @@ async function executeActionUser(
 
       // Only throw if we do NOT want a mod log case, e.g. fail to kick/ban/mute
       // REST methods will throw if it is not a successful request
-      const res = await execActionUser(
-        ctx,
-        interaction,
-        data,
-        target,
-        actionType,
-      );
+      const res = await execActionUser(interaction, data, target, actionType);
 
       // DM after for non-ban and send dm
       if (actionType !== ActionType.Ban && shouldDM) {
         dmRes = await sendModActionDM(
-          ctx,
           interaction,
           data,
           target.user,
@@ -512,14 +504,7 @@ async function executeActionUser(
     if (actionType === ActionType.Warn || actionType === ActionType.Note) {
       const guildConfig = await getGuildConfig(db, interaction.guildId);
 
-      await sendModLog(
-        ctx,
-        interaction,
-        guildConfig,
-        actionType,
-        target,
-        modLog,
-      );
+      await sendModLog(interaction, guildConfig, actionType, target, modLog);
     }
 
     return Ok({
@@ -532,7 +517,6 @@ async function executeActionUser(
 }
 
 export default async function executeAction(
-  ctx: Context,
   interaction: ChatInputCommandInteraction<"cached">,
   data: ModActionData,
   actionType: ActionType,
@@ -561,7 +545,6 @@ export default async function executeAction(
       // Should be synchronous so we don't reuse the same case ID
 
       const res = await executeActionUser(
-        ctx,
         interaction,
         data,
         target,
@@ -601,7 +584,6 @@ export default async function executeAction(
 
     return Ok(
       buildResponseEmbed(
-        ctx,
         data,
         actionType,
         msg,
