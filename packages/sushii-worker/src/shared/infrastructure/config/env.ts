@@ -14,6 +14,8 @@ const envSchema = z.object({
   // Only owner can modify deployment in the channel ID
   OWNER_USER_ID: z.string().optional(),
   OWNER_CHANNEL_ID: z.string().optional(),
+  // Comma-separated list of channel IDs that should bypass deployment checks
+  DEPLOYMENT_EXEMPT_CHANNEL_IDS: z.string().optional(),
 
   SHARDS_PER_CLUSTER: z.coerce.number().optional(),
 

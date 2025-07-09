@@ -75,10 +75,15 @@ export class DeploymentConfig {
     readonly name: "blue" | "green",
     readonly ownerUserId?: string,
     readonly ownerChannelId?: string,
+    readonly exemptChannelIds: Set<string> = new Set(),
   ) {}
 
   get hasOwner() {
     return this.ownerUserId !== undefined;
+  }
+
+  get hasExemptChannels() {
+    return this.exemptChannelIds.size > 0;
   }
 }
 
@@ -148,6 +153,13 @@ export class Config {
       env.DEPLOYMENT_NAME,
       env.OWNER_USER_ID,
       env.OWNER_CHANNEL_ID,
+      env.DEPLOYMENT_EXEMPT_CHANNEL_IDS
+        ? new Set(
+            env.DEPLOYMENT_EXEMPT_CHANNEL_IDS.split(",")
+              .map((id) => id.trim())
+              .filter((id) => id.length > 0),
+          )
+        : new Set(),
     );
     this.features = new FeatureFlags(
       env.BAN_POOL_ENABLED,

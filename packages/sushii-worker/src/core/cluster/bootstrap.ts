@@ -35,6 +35,7 @@ export async function initCore() {
     deploymentRepository,
     logger,
     config.deployment.name,
+    config.deployment,
   );
 
   // Subscribe to deployment changes

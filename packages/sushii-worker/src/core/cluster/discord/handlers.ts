@@ -369,7 +369,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.InteractionCreate, async (interaction) => {
-    if (!deploymentService.isCurrentDeploymentActive()) {
+    if (!deploymentService.isCurrentDeploymentActive(interaction.channelId)) {
       return;
     }
 
@@ -451,7 +451,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.MessageCreate, async (msg) => {
-    if (!deploymentService.isCurrentDeploymentActive()) {
+    if (!deploymentService.isCurrentDeploymentActive(msg.channelId)) {
       return;
     }
 
@@ -478,7 +478,7 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.MessageReactionAdd, async (reaction, user, details) => {
-    if (!deploymentService.isCurrentDeploymentActive()) {
+    if (!deploymentService.isCurrentDeploymentActive(reaction.message.channelId)) {
       return;
     }
 

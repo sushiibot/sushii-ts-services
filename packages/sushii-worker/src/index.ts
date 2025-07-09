@@ -59,6 +59,7 @@ async function main(): Promise<void> {
     deploymentRepository,
     log,
     config.deployment.name,
+    config.deployment,
   );
 
   // Subscribe to deployment changes

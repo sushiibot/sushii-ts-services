@@ -2,6 +2,7 @@ import { Deployment, DeploymentName } from "../domain/entities/Deployment";
 import { DeploymentRepository } from "../domain/repositories/DeploymentRepository";
 import { DeploymentChanged } from "../domain/events/DeploymentChanged";
 import { Logger } from "pino";
+import { DeploymentConfig } from "../../../shared/infrastructure/config/config";
 
 export class DeploymentService {
   private currentDeployment: Deployment | null = null;
@@ -13,6 +14,7 @@ export class DeploymentService {
     private readonly repository: DeploymentRepository,
     private readonly logger: Logger,
     processName: DeploymentName,
+    private readonly deploymentConfig: DeploymentConfig,
   ) {
     this.processName = processName;
   }
@@ -66,9 +68,33 @@ export class DeploymentService {
     return this.currentDeployment.name;
   }
 
-  isCurrentDeploymentActive(): boolean {
-    if (!this.currentDeployment) {
+  isChannelExemptFromDeploymentCheck(channelId?: string | null): boolean {
+    if (!channelId || !this.deploymentConfig.hasExemptChannels) {
       return false;
+    }
+
+    return this.deploymentConfig.exemptChannelIds.has(channelId);
+  }
+
+  isCurrentDeploymentActive(channelId?: string | null): boolean {
+    if (!this.currentDeployment) {
+      this.logger.warn("No active deployment found, cannot check if active");
+
+      return false;
+    }
+
+    // Check if channel is exempt from deployment checks
+    if (this.isChannelExemptFromDeploymentCheck(channelId)) {
+      this.logger.debug(
+        {
+          channelId,
+          processDeployment: this.processName,
+          activeDeployment: this.currentDeployment.name,
+        },
+        "Channel is exempt from deployment check, allowing processing",
+      );
+
+      return true;
     }
 
     const isActive = this.currentDeployment.isActive(this.processName);
@@ -83,6 +109,7 @@ export class DeploymentService {
           {
             activeDeployment: this.currentDeployment.name,
             processDeployment: this.processName,
+            channelId,
           },
           "Current process is NOT active deployment, will not process events",
         );

@@ -550,13 +550,14 @@ export default class InteractionRouter {
 
   public async handleAPIInteraction(interaction: Interaction): Promise<void> {
     // Ignore all interactions that are not from the current deployment
-    const active = this.deploymentService.isCurrentDeploymentActive();
+    const active = this.deploymentService.isCurrentDeploymentActive(interaction.channelId);
     if (!active) {
       log.info(
         {
           processDeploymentName: config.deployment.name,
           activeDeployment: this.deploymentService.getCurrentDeployment(),
           interactionId: interaction.id,
+          channelId: interaction.channelId,
         },
         "Not active deployment, ignoring interaction",
       );
