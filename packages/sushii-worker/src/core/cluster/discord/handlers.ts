@@ -497,6 +497,7 @@ export default function registerEventHandlers(
             notification: notificationHandler,
             // deployToggle: deployToggleHandler, // Moved to new DDD structure
             cacheUser: cacheUserHandler,
+            // textCommandDeprecation: moved to DDD structure
             // TODO: Enable only after removed from sushii-2
             // mentionTag: mentionTagHandler,
           },

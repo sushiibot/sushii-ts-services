@@ -14,6 +14,13 @@ import { EventHandler } from "./presentation/EventHandler";
 import { config } from "@/shared/infrastructure/config";
 import { DeploymentChanged } from "@/features/deployment/domain/events/DeploymentChanged";
 import logger from "@/shared/infrastructure/logger";
+import { ProcessLegacyCommandService } from "@/features/deprecation/application/ProcessLegacyCommandService";
+import { InMemoryDeprecationWarningRepository } from "@/features/deprecation/infrastructure/InMemoryDeprecationWarningRepository";
+import { DiscordNotificationService } from "@/features/deprecation/infrastructure/DiscordNotificationService";
+import { LegacyCommandDeprecationHandler } from "@/features/deprecation/presentation/LegacyCommandDeprecationHandler";
+import { BotResponseHandler } from "@/features/deprecation/presentation/BotResponseHandler";
+import { DrizzleGuildConfigRepository } from "@/features/deprecation/infrastructure/DrizzleGuildConfigRepository";
+import { InMemoryCommandTracker } from "@/features/deprecation/infrastructure/InMemoryCommandTracker";
 
 export async function initCore() {
   // This just returns the global existing database for now, until we fully
@@ -64,13 +71,36 @@ export function registerFeatures(
     new XpBlockRepositoryImpl(db),
   );
 
+  const commandTracker = new InMemoryCommandTracker();
+  
+  const deprecationService = new ProcessLegacyCommandService(
+    new InMemoryDeprecationWarningRepository(),
+    new DrizzleGuildConfigRepository(db),
+    commandTracker,
+    new DiscordNotificationService(client, logger),
+  );
+
+  const botUserId = client.user?.id;
+  if (!botUserId) {
+    throw new Error("Bot user ID not available during bootstrap");
+  }
+
   const levelHandler = new MessageLevelHandler(levelService);
   const deploymentHandler = new DeploymentEventHandler(
     deploymentService,
     logger,
   );
+  const deprecationHandler = new LegacyCommandDeprecationHandler(
+    deprecationService,
+    logger,
+  );
+  const botResponseHandler = new BotResponseHandler(
+    deprecationService,
+    logger,
+    botUserId,
+  );
 
-  const handlers = [levelHandler, deploymentHandler];
+  const handlers = [levelHandler, deploymentHandler, deprecationHandler, botResponseHandler];
 
   // ---------------------------------------------------------------------------
   // Register event handlers
