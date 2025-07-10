@@ -32,6 +32,8 @@ async function main(): Promise<void> {
     tracesSampleRate: 1.0,
   });
 
+  log.info("Running migrations");
+
   // Initial migration skipped manually for graphile-migrate -> drizzle migration
   // Run database migrations
   await migrate(drizzleDb, {

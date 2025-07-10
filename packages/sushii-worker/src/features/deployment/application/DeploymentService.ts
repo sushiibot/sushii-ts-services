@@ -119,13 +119,25 @@ export class DeploymentService {
     return isActive;
   }
 
-  async toggleActiveDeployment(): Promise<DeploymentName> {
+  async setActiveDeployment(
+    targetDeployment: DeploymentName,
+  ): Promise<{ changed: boolean; deployment: DeploymentName }> {
     if (!this.currentDeployment) {
       throw new Error("Deployment service not initialized");
     }
 
     const previousName = this.currentDeployment.name;
-    const newDeployment = this.currentDeployment.toggle();
+
+    // Check if already set to target
+    if (previousName === targetDeployment) {
+      this.logger.info(
+        { deployment: targetDeployment },
+        "Deployment already set to target, no change needed",
+      );
+      return { changed: false, deployment: targetDeployment };
+    }
+
+    const newDeployment = this.currentDeployment.setTo(targetDeployment);
 
     try {
       // Repository will handle database update and PostgreSQL NOTIFY
@@ -138,12 +150,12 @@ export class DeploymentService {
           to: newDeployment.name,
           isNowActive: this.isCurrentDeploymentActive(),
         },
-        "Deployment toggled successfully",
+        "Deployment set successfully",
       );
 
-      return newDeployment.name;
+      return { changed: true, deployment: newDeployment.name };
     } catch (error) {
-      this.logger.error({ error }, "Failed to toggle deployment");
+      this.logger.error({ error }, "Failed to set deployment");
       throw error;
     }
   }

@@ -23,7 +23,14 @@ export class DeploymentEventHandler extends EventHandler<Events.MessageCreate> {
       return;
     }
 
-    if (msg.author.id !== config.deployment.ownerUserId) {
+    // Check if this is an authorized message (either from owner or E2E webhook)
+    const isOwnerMessage = msg.author.id === config.deployment.ownerUserId;
+    const isE2EWebhookMessage =
+      msg.webhookId &&
+      config.deployment.e2eWebhookId &&
+      msg.webhookId === config.deployment.e2eWebhookId;
+
+    if (!isOwnerMessage && !isE2EWebhookMessage) {
       return;
     }
 
@@ -44,8 +51,8 @@ export class DeploymentEventHandler extends EventHandler<Events.MessageCreate> {
       return;
     }
 
-    if (msg.content === "!toggle-deployment") {
-      await this.handleToggleDeploymentCommand(msg, dur);
+    if (msg.content.startsWith("!set-deployment ")) {
+      await this.handleSetDeploymentCommand(msg, dur);
       return;
     }
   }
@@ -74,37 +81,55 @@ export class DeploymentEventHandler extends EventHandler<Events.MessageCreate> {
     }
   }
 
-  private async handleToggleDeploymentCommand(
+  private async handleSetDeploymentCommand(
     msg: Message,
     dur: Duration,
   ): Promise<void> {
     try {
+      // Parse deployment target from command
+      const parts = msg.content.split(" ");
+      if (parts.length !== 2) {
+        await msg.reply("❌ Usage: `!set-deployment <blue|green>`");
+        return;
+      }
+
+      const targetDeployment = parts[1].toLowerCase();
+      if (targetDeployment !== "blue" && targetDeployment !== "green") {
+        await msg.reply("❌ Invalid deployment. Use: `blue` or `green`");
+        return;
+      }
+
       const currentDeployment = this.deploymentService.getCurrentDeployment();
+      const result = await this.deploymentService.setActiveDeployment(
+        targetDeployment as "blue" | "green",
+      );
 
-      const content = `🔄 Toggling deployment from \`${currentDeployment}\``;
-      await msg.reply(content);
+      if (!result.changed) {
+        await msg.reply(`✅ Already set to \`${targetDeployment}\` deployment`);
+        return;
+      }
 
-      const newDeployment =
-        await this.deploymentService.toggleActiveDeployment();
-
-      await msg.reply(`✅ Deployment toggled to: \`${newDeployment}\``);
+      await msg.reply(
+        `🔄 Setting deployment from \`${currentDeployment}\` to \`${targetDeployment}\``,
+      );
+      await msg.reply(`✅ Deployment set to: \`${result.deployment}\``);
 
       this.logger.info(
         {
           userId: msg.author.id,
           channelId: msg.channelId,
           from: currentDeployment,
-          to: newDeployment,
+          to: result.deployment,
           uptime: dur.humanize(),
         },
-        "Deployment toggled successfully",
+        "Deployment set successfully",
       );
     } catch (error) {
       this.logger.error(
         { error, userId: msg.author.id },
-        "Failed to toggle deployment",
+        "Failed to set deployment",
       );
-      await msg.reply(`❌ Failed to toggle deployment: ${error}`);
+      await msg.reply(`❌ Failed to set deployment: ${error}`);
     }
   }
 }

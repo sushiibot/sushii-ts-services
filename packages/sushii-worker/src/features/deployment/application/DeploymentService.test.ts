@@ -125,30 +125,43 @@ describe("DeploymentService", () => {
     });
   });
 
-  describe("deployment toggling", () => {
-    test("should toggle deployment successfully", async () => {
+  describe("deployment setting", () => {
+    test("should set deployment to specific target", async () => {
       const blueDeployment = Deployment.create("blue");
       mockRepository.setActiveDeployment(blueDeployment);
 
       await deploymentService.start();
-      const result = await deploymentService.toggleActiveDeployment();
+      const result = await deploymentService.setActiveDeployment("green");
 
-      expect(result).toBe("green");
+      expect(result.changed).toBe(true);
+      expect(result.deployment).toBe("green");
       expect(deploymentService.getCurrentDeployment()).toBe("green");
     });
 
+    test("should return unchanged when setting to same deployment", async () => {
+      const blueDeployment = Deployment.create("blue");
+      mockRepository.setActiveDeployment(blueDeployment);
+
+      await deploymentService.start();
+      const result = await deploymentService.setActiveDeployment("blue");
+
+      expect(result.changed).toBe(false);
+      expect(result.deployment).toBe("blue");
+      expect(deploymentService.getCurrentDeployment()).toBe("blue");
+    });
+
     test("should throw when not initialized", async () => {
-      await expect(deploymentService.toggleActiveDeployment()).rejects.toThrow(
+      await expect(deploymentService.setActiveDeployment("blue")).rejects.toThrow(
         "Deployment service not initialized",
       );
     });
 
-    test("should handle repository errors during toggle", async () => {
+    test("should handle repository errors during set", async () => {
       await deploymentService.start();
       mockRepository.setShouldThrowOnSetActive(true);
 
       await expect(
-        deploymentService.toggleActiveDeployment(),
+        deploymentService.setActiveDeployment("green"),
       ).rejects.toThrow();
     });
   });

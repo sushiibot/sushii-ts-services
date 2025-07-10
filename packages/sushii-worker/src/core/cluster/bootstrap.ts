@@ -108,6 +108,11 @@ export function registerFeatures(
 
     client.on(eventType, async (...args) => {
       try {
+        // Check if deployment is active
+        if (!deploymentService.isCurrentDeploymentActive()) {
+          return;
+        }
+
         const promises = [];
 
         for (const handler of group) {

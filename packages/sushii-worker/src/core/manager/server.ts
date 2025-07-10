@@ -58,7 +58,6 @@ function createHealthServer(manager: ClusterManager): Server {
     return c.json(
       {
         status: allReady ? "healthy" : "unhealthy",
-        deployment: config.deployment.name,
         clusters: manager.clusters.values().map((cluster) => ({
           id: cluster.id,
           shards: cluster.shardList,

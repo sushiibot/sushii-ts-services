@@ -76,6 +76,7 @@ export class DeploymentConfig {
     readonly ownerUserId?: string,
     readonly ownerChannelId?: string,
     readonly exemptChannelIds: Set<string> = new Set(),
+    readonly e2eWebhookUrl?: string,
   ) {}
 
   get hasOwner() {
@@ -84,6 +85,15 @@ export class DeploymentConfig {
 
   get hasExemptChannels() {
     return this.exemptChannelIds.size > 0;
+  }
+
+  get e2eWebhookId(): string | undefined {
+    if (!this.e2eWebhookUrl) {
+      return undefined;
+    }
+
+    const match = this.e2eWebhookUrl.match(/\/webhooks\/(\d+)\//);
+    return match?.[1];
   }
 }
 
@@ -152,6 +162,7 @@ export class Config {
               .filter((id) => id.length > 0),
           )
         : new Set(),
+      env.E2E_WEBHOOK_URL,
     );
     this.features = new FeatureFlags(
       env.BAN_POOL_ENABLED,

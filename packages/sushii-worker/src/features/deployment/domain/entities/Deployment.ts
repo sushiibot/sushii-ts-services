@@ -3,7 +3,7 @@ export type DeploymentName = "blue" | "green";
 export class Deployment {
   private constructor(
     private readonly _name: DeploymentName,
-    private readonly _updatedAt: Date
+    private readonly _updatedAt: Date,
   ) {}
 
   static create(name: DeploymentName): Deployment {
@@ -22,9 +22,8 @@ export class Deployment {
     return this._updatedAt;
   }
 
-  toggle(): Deployment {
-    const newName: DeploymentName = this._name === "blue" ? "green" : "blue";
-    return new Deployment(newName, new Date());
+  setTo(targetName: DeploymentName): Deployment {
+    return new Deployment(targetName, new Date());
   }
 
   isActive(processName: DeploymentName): boolean {

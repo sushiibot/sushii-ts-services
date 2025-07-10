@@ -17,27 +17,35 @@ const envSchema = z.object({
   // Comma-separated list of channel IDs that should bypass deployment checks
   DEPLOYMENT_EXEMPT_CHANNEL_IDS: z.string().optional(),
 
+  // System configuration
+  LOG_LEVEL: z.string().optional().default("info"),
+
+  // Core Discord configuration
+  DISCORD_TOKEN: z.string(),
+  APPLICATION_ID: z.string(),
   SHARDS_PER_CLUSTER: z.coerce.number().optional(),
 
+  // External services
   DATABASE_URL: z.string(),
-  DISCORD_TOKEN: z.string(),
-  LOG_LEVEL: z.string().optional().default("info"),
-  APPLICATION_ID: z.string(),
-  SENTRY_DSN: z.string().optional(),
-  SENTRY_ENVIRONMENT: z.string().optional(),
   SUSHII_IMAGE_SERVER_URL: z.string(),
 
+  // Metrics and health check configuration
   METRICS_PORT: z.string().optional().default("9090"),
   HEALTH_PORT: z.string().optional().default("8080"),
 
   // Example: 'https://discord.com/api'
   DISCORD_API_PROXY_URL: z.string().optional(),
 
+  // Alerts
   NOTIFY_WEBHOOK_URL: z.string().optional(),
   NOTIFY_WEBHOOK_USERNAME: z.string().optional(),
-
   NOTIFY_WEBHOOK_ERR_URL: z.string().optional(),
 
+  // Sentry
+  SENTRY_DSN: z.string().optional(),
+  SENTRY_ENVIRONMENT: z.string().optional(),
+
+  // Tracing
   TRACING_EXPORTER_URL: z.string().optional(),
   TRACING_SAMPLE_PERCENTAGE: z
     .preprocess((val) => Number(val), z.number())
@@ -55,12 +63,15 @@ const envSchema = z.object({
     .optional()
     .default(false),
 
-  // Testing flags
-  MANUAL_SHARD_COUNT: z.coerce.number().optional(),
-
   // Build information
   GIT_HASH: z.string().optional(),
   BUILD_DATE: z.string().optional(),
+
+  // Development / test options
+  MANUAL_SHARD_COUNT: z.coerce.number().optional(),
+
+  // E2E testing webhook URL for deployment commands
+  E2E_WEBHOOK_URL: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
