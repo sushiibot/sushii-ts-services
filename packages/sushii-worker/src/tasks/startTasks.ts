@@ -15,16 +15,16 @@ export default async function startTasks(
   client: Client,
   deploymentService: DeploymentService,
 ): Promise<void> {
-  const shardId = client.ws.shards.first()?.id ?? null;
-  const isMainShard = shardId === 0;
+  const isCluster0 = client.cluster.shardList.includes(0);
 
   // Only run background tasks on shard 0 to avoid duplication
-  if (!isMainShard) {
+  if (!isCluster0) {
     logger.info(
       {
-        shardId,
+        clusterId: client.cluster.id,
+        shardIds: client.cluster.shardList,
       },
-      "Skipping background tasks on non-main shard",
+      "Skipping background tasks on non-main cluster",
     );
 
     return;
@@ -32,10 +32,11 @@ export default async function startTasks(
 
   logger.info(
     {
-      shardId,
-      isMainShard,
+      clusterId: client.cluster.id,
+      shardIds: client.cluster.shardList,
+      isCluster0,
     },
-    "Starting background tasks",
+    "Starting background tasks on cluster with shard 0",
   );
 
   const tasks: AbstractBackgroundTask[] = [
@@ -53,7 +54,7 @@ export default async function startTasks(
         logger.info(
           {
             taskName: task.name,
-            shardId,
+            clusterId: client.cluster.id,
           },
           "Running background task",
         );
@@ -65,7 +66,7 @@ export default async function startTasks(
           tags: {
             type: "task",
             name: task.name,
-            shardId: shardId?.toString(),
+            clusterId: client.cluster.id,
           },
         });
 
@@ -73,7 +74,7 @@ export default async function startTasks(
           {
             err,
             taskName: task.name,
-            shardId,
+            clusterId: client.cluster.id,
           },
           "Error running background task",
         );
@@ -86,7 +87,7 @@ export default async function startTasks(
     logger.info(
       {
         taskName: task.name,
-        shardId,
+        clusterId: client.cluster.id,
       },
       "Started background task",
     );
