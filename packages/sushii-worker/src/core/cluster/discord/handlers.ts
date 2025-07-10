@@ -135,17 +135,17 @@ export default function registerEventHandlers(
     );
 
     let content =
-      `Logged in as ${c.user.tag}` +
-      `\nShard IDs: ${c.cluster.shardList.join(", ")}` +
-      `\nGuilds: ${c.guilds.cache.size}` +
-      `\nDeployment: ${config.deployment.name}`;
+      `Bot User: \`${c.user.tag}\`` +
+      `\nShard IDs: \`${c.cluster.shardList.join(", ")}\`` +
+      `\nGuilds: \`${c.guilds.cache.size}\`` +
+      `\nDeployment: \`${config.deployment.name}\``;
 
-    if (config.build.hasGitHash) {
-      content += `\nBuild Git Hash: ${config.build.gitHash}`;
+    if (config.build.gitHash) {
+      content += `\nBuild Git Hash: \`${config.build.gitHash}\``;
     }
 
-    if (config.build.hasBuildDate) {
-      content += `\nBuild Date: ${config.build.buildDate}`;
+    if (config.build.buildDate) {
+      content += `\nBuild Date: <t:${config.build.buildDate.getTime() / 1000}>`;
     }
 
     await webhookLog(
@@ -191,16 +191,7 @@ export default function registerEventHandlers(
       "Shard ready",
     );
 
-    let content = `unavailable guilds: \`${unavailableGuilds || "none"}\``;
-
-    if (config.build.hasGitHash) {
-      content += `\nGit Hash: ${config.build.gitHash}`;
-    }
-
-    if (config.build.hasBuildDate) {
-      content += `\nBuild Date: ${config.build.buildDate}`;
-    }
-
+    const content = `unavailable guilds: \`${unavailableGuilds || "none"}\``;
     await webhookLog(`[Shard #${shardId}] ShardReady`, content, Color.Success);
   });
 
@@ -478,7 +469,9 @@ export default function registerEventHandlers(
   });
 
   client.on(Events.MessageReactionAdd, async (reaction, user, details) => {
-    if (!deploymentService.isCurrentDeploymentActive(reaction.message.channelId)) {
+    if (
+      !deploymentService.isCurrentDeploymentActive(reaction.message.channelId)
+    ) {
       return;
     }
 

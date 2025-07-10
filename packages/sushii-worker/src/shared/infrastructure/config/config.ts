@@ -97,16 +97,8 @@ export class FeatureFlags {
 export class BuildConfig {
   constructor(
     readonly gitHash?: string,
-    readonly buildDate?: string,
+    readonly buildDate?: Date,
   ) {}
-
-  get hasGitHash() {
-    return this.gitHash !== undefined;
-  }
-
-  get hasBuildDate() {
-    return this.buildDate !== undefined;
-  }
 }
 
 export class Config {
@@ -165,7 +157,10 @@ export class Config {
       env.BAN_POOL_ENABLED,
       env.DISABLE_BAN_FETCH_ON_READY,
     );
-    this.build = new BuildConfig(env.GIT_HASH, env.BUILD_DATE);
+    this.build = new BuildConfig(
+      env.GIT_HASH,
+      env.BUILD_DATE ? new Date(env.BUILD_DATE) : undefined,
+    );
     this.imageServerUrl = env.SUSHII_IMAGE_SERVER_URL;
     this.sentry = {
       dsn: env.SENTRY_DSN,
