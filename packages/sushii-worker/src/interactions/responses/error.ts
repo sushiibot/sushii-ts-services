@@ -16,18 +16,25 @@ type ReplyableInteraction =
   | ButtonInteraction
   | ModalSubmitInteraction;
 
+export function getErrorMessageEmbeds(
+  title: string,
+  description: string,
+): EmbedBuilder[] {
+  return [
+    new EmbedBuilder()
+      .setTitle(title)
+      .setDescription(description)
+      .setColor(Color.Error),
+  ];
+}
+
 export function getErrorMessage(
   title: string,
   description: string,
   ephemeral: boolean = false,
 ): InteractionReplyOptions {
   return {
-    embeds: [
-      new EmbedBuilder()
-        .setTitle(title)
-        .setDescription(description)
-        .setColor(Color.Error),
-    ],
+    embeds: getErrorMessageEmbeds(title, description),
     flags: ephemeral ? MessageFlags.Ephemeral : undefined,
   };
 }
@@ -35,11 +42,10 @@ export function getErrorMessage(
 export function getErrorMessageEdit(
   title: string,
   description: string,
-  ephemeral: boolean = false,
 ): InteractionEditReplyOptions {
-  const { flags, ...msg } = getErrorMessage(title, description, ephemeral);
-
-  return msg;
+  return {
+    embeds: getErrorMessageEmbeds(title, description),
+  };
 }
 
 export async function interactionReplyError(

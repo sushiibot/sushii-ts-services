@@ -74,7 +74,7 @@ async function initializeShard(): Promise<void> {
   }
 
   // New registration of features
-  registerFeatures(db, client, deploymentService);
+  registerFeatures(db, client, deploymentService, interactionRouter);
 
   // Legacy registration of event handlers
   registerEventHandlers(ctx, client, interactionRouter, deploymentService);

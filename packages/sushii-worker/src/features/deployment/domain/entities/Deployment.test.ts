@@ -22,24 +22,23 @@ describe("Deployment", () => {
     });
   });
 
-  describe("toggle behavior", () => {
-    test("should toggle between blue and green", () => {
+  describe("switchTo behavior", () => {
+    test("should switch from blue to green", () => {
       const blue = Deployment.create("blue");
-      const green = blue.toggle();
-      const backToBlue = green.toggle();
+      const green = blue.setTo("green");
 
       expect(blue.name).toBe("blue");
       expect(green.name).toBe("green");
-      expect(backToBlue.name).toBe("blue");
+      expect(blue.updatedAt).not.toBe(green.updatedAt);
     });
 
-    test("should create new instances when toggling", () => {
+    test("should create new instances when switching", () => {
       const original = Deployment.create("blue");
-      const toggled = original.toggle();
+      const switched = original.setTo("green");
 
-      expect(toggled).not.toBe(original);
+      expect(switched).not.toBe(original);
       expect(original.name).toBe("blue"); // Original unchanged
-      expect(toggled.name).toBe("green");
+      expect(switched.name).toBe("green");
     });
   });
 

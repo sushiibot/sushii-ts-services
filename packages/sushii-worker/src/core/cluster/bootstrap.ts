@@ -1,8 +1,10 @@
 import { UpdateUserXpService } from "@/features/leveling/application/UpdateUserXpService";
 import { LevelRoleRepositoryImpl } from "@/features/leveling/infrastructure/LevelRoleRepositoryImpl";
-import { UserLevelRepositoryImpl } from "@/features/leveling/infrastructure/UserLevelRepositoryImpl";
 import { XpBlockRepositoryImpl } from "@/features/leveling/infrastructure/XpBlockRepositoryImpl";
-import { MessageLevelHandler } from "@/features/leveling/presentation/MessageLevelHandler";
+import { MessageLevelHandler } from "@/features/leveling/presentation/commands/MessageLevelHandler";
+import { GetUserRankService } from "@/features/leveling/application/GetUserRankService";
+import { DrizzleUserProfileRepository } from "@/features/leveling/infrastructure/DrizzleUserProfileRepository";
+import RankCommand from "@/features/leveling/presentation/commands/RankCommand";
 import { drizzleDb } from "@/infrastructure/database/db";
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 import { PostgreSQLDeploymentRepository } from "@/features/deployment/infrastructure/PostgreSQLDeploymentRepository";
@@ -11,9 +13,12 @@ import { SimpleEventBus } from "@/shared/infrastructure/SimpleEventBus";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Client } from "discord.js";
 import { EventHandler } from "./presentation/EventHandler";
+import InteractionRouter from "./discord/InteractionRouter";
 import { config } from "@/shared/infrastructure/config";
 import { DeploymentChanged } from "@/features/deployment/domain/events/DeploymentChanged";
+import * as schema from "@/infrastructure/database/schema";
 import logger from "@/shared/infrastructure/logger";
+import { UserLevelRepository } from "@/features/leveling/infrastructure/UserLevelRepository";
 
 export async function initCore() {
   // This just returns the global existing database for now, until we fully
@@ -53,19 +58,41 @@ export async function initCore() {
 }
 
 export function registerFeatures(
-  db: NodePgDatabase,
+  db: NodePgDatabase<typeof schema>,
   client: Client,
   deploymentService: DeploymentService,
-): void {
+  interactionRouter: InteractionRouter,
+) {
+  // --------------------------------------------------------------------------
+  // Build commands
+
+  const userProfileRepository = new DrizzleUserProfileRepository(db);
+  const userLevelRepository = new UserLevelRepository(db);
+
+  const getUserRankService = new GetUserRankService(
+    userProfileRepository,
+    userLevelRepository,
+  );
+
+  const rankCommand = new RankCommand(
+    getUserRankService,
+    logger.child({ module: "rank" }),
+  );
+
+  // Register commands directly on interaction router
+  interactionRouter.addCommand(rankCommand);
+
   // ---------------------------------------------------------------------------
-  // Feature bootstrapping
+  // Build event handlers
+
+  // Leveling handler
   const levelService = new UpdateUserXpService(
-    new UserLevelRepositoryImpl(db),
+    userLevelRepository,
     new LevelRoleRepositoryImpl(db),
     new XpBlockRepositoryImpl(db),
   );
-
   const levelHandler = new MessageLevelHandler(levelService);
+
   const deploymentHandler = new DeploymentEventHandler(
     deploymentService,
     logger,

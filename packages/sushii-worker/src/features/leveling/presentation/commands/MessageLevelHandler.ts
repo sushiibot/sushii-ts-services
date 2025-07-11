@@ -7,7 +7,7 @@ import {
 import opentelemetry, { Span } from "@opentelemetry/api";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
 import { startCaughtActiveSpan } from "@/shared/infrastructure/tracing";
-import { UpdateUserXpService } from "../application/UpdateUserXpService";
+import { UpdateUserXpService } from "../../application/UpdateUserXpService";
 import { EventHandler } from "@/core/cluster/presentation/EventHandler";
 
 const tracer = opentelemetry.trace.getTracer("message-level-handler");

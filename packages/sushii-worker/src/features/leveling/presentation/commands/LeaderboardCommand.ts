@@ -3,15 +3,15 @@ import {
   ChatInputCommandInteraction,
   InteractionContextType,
 } from "discord.js";
-import Context from "../../../model/context";
-import Color from "../../../utils/colors";
-import { SlashCommandHandler } from "../../../interactions/handlers";
-import db from "../../../infrastructure/database/db";
+import Context from "../../../../model/context";
+import Color from "../../../../utils/colors";
+import { SlashCommandHandler } from "../../../../interactions/handlers";
+import db from "../../../../infrastructure/database/db";
 import Paginator, {
   EmbedModifierFn,
   GetPageFn,
   GetTotalEntriesFn,
-} from "../../../shared/presentation/Paginator";
+} from "../../../../shared/presentation/Paginator";
 import {
   getGuildLeaderboardPage,
   getUserGuildLevel,
@@ -19,11 +19,11 @@ import {
   TimeFrameSchema,
   timeframeToString,
   userGuildTimeframeRank,
-} from "../../../db/UserLevel/UserLevel.repository";
+} from "../../../../db/UserLevel/UserLevel.repository";
 import {
   calculateLevel,
   calculateLevelProgress,
-} from "../domain/utils/LevelCalculations";
+} from "../../domain/utils/LevelCalculations";
 
 export default class LeaderboardCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()

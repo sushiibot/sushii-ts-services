@@ -6,6 +6,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import logger from "@/shared/infrastructure/logger";
 import { DB } from "./dbTypes";
 import { config } from "@/shared/infrastructure/config";
+import * as schema from "./schema";
 
 const dbLogger = logger.child({ module: "db" });
 
@@ -29,7 +30,7 @@ export function initDatabase(url: string, maxConnections: number) {
   });
 
   // For new drizzle ORM to replace Kysely
-  const drizzleDb = drizzle({ client: pool });
+  const drizzleDb = drizzle({ client: pool, schema });
 
   dbLogger.info("pg connected");
 

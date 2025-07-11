@@ -3,6 +3,7 @@ import {
   calculateLevelProgress,
   LevelProgress,
 } from "../utils/LevelCalculations";
+import { ProgressBar } from "../value-objects/ProgressBar";
 
 export class UserLevel {
   constructor(
@@ -125,6 +126,21 @@ export class UserLevel {
     return calculateLevelProgress(this.xpAllTime);
   }
 
+  getProgressBar(): ProgressBar {
+    const progress = this.getLevelProgress();
+    return ProgressBar.fromPercentage(progress.nextLevelXpPercentage);
+  }
+
+  getXpDisplayText(): string {
+    const progress = this.getLevelProgress();
+    return `${progress.nextLevelXpProgress}/${progress.nextLevelXpRequired} XP`;
+  }
+
+  getLevelDisplayText(): string {
+    const progress = this.getLevelProgress();
+    return `Level ${progress.level} (${this.getXpDisplayText()})`;
+  }
+
   static create(
     userId: string,
     guildId: string,
@@ -139,6 +155,26 @@ export class UserLevel {
       initialXp,
       initialXp,
       currentTime,
+    );
+  }
+
+  static fromData(data: {
+    userId: string;
+    guildId: string;
+    msgAllTime: bigint | number;
+    msgMonth: bigint | number;
+    msgWeek: bigint | number;
+    msgDay: bigint | number;
+    lastMsg: Date;
+  }): UserLevel {
+    return new UserLevel(
+      data.userId,
+      data.guildId,
+      Number(data.msgAllTime),
+      Number(data.msgMonth),
+      Number(data.msgWeek),
+      Number(data.msgDay),
+      data.lastMsg,
     );
   }
 }

@@ -3,9 +3,10 @@ import { xpBlocksInAppPublic } from "src/infrastructure/database/schema";
 import { XpBlock } from "../domain/entities/XpBlock";
 import { XpBlockRepository } from "../domain/repositories/XpBlockRepository";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import * as schema from "@/infrastructure/database/schema";
 
 export class XpBlockRepositoryImpl implements XpBlockRepository {
-  constructor(private readonly db: NodePgDatabase) {}
+  constructor(private readonly db: NodePgDatabase<typeof schema>) {}
 
   async findActiveBlocks(
     guildId: string,

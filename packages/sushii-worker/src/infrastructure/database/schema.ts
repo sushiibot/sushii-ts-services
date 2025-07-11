@@ -74,6 +74,29 @@ export const cachedUsersInAppPublic = appPublic.table(
   ],
 );
 
+export const usersInAppPublic = appPublic.table(
+  "users",
+  {
+    id: bigint({ mode: "bigint" }).primaryKey().notNull(),
+    rep: bigint({ mode: "bigint" }).default(sql`'0'::bigint`).notNull(),
+    fishies: bigint({ mode: "bigint" }).default(sql`'0'::bigint`).notNull(),
+    isPatron: boolean("is_patron").default(false).notNull(),
+    lastFishies: timestamp("last_fishies", { mode: "date" }),
+    lastRep: timestamp("last_rep", { mode: "date" }),
+    lastfmUsername: text("lastfm_username"),
+    patronEmoji: text("patron_emoji"),
+    profileData: jsonb("profile_data"),
+  },
+  () => [
+    pgPolicy("admin_access", {
+      as: "permissive",
+      for: "all",
+      to: ["sushii_admin"],
+      using: sql`true`,
+    }),
+  ],
+);
+
 export const failuresInAppHidden = appHidden.table("failures", {
   failureId: text("failure_id").primaryKey().notNull(),
   maxAttempts: integer("max_attempts").default(25).notNull(),
