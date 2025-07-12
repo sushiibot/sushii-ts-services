@@ -38,10 +38,7 @@ export function initDatabase(url: string, maxConnections: number) {
 }
 
 // Initialize globally for backwards compatibility
-const { db: globalDb, drizzleDb: globalDrizzleDb } = initDatabase(
-  config.database.url,
-  3,
-);
+const { db: globalDb, drizzleDb } = initDatabase(config.database.url, 3);
 
-export { globalDrizzleDb as drizzleDb };
+export { drizzleDb };
 export default globalDb;

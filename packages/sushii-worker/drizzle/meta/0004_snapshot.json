@@ -1903,6 +1903,73 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "app_public.users": {
+      "name": "users",
+      "schema": "app_public",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "is_patron": {
+          "name": "is_patron",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patron_emoji": {
+          "name": "patron_emoji",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rep": {
+          "name": "rep",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fishies": {
+          "name": "fishies",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_rep": {
+          "name": "last_rep",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_fishies": {
+          "name": "last_fishies",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lastfm_username": {
+          "name": "lastfm_username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "profile_data": {
+          "name": "profile_data",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
     "app_public.user_levels": {
       "name": "user_levels",
       "schema": "app_public",

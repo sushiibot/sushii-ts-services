@@ -33,9 +33,7 @@
         "active_deployment_id_key": {
           "name": "active_deployment_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "policies": {},
@@ -101,10 +99,7 @@
       "compositePrimaryKeys": {
         "bot_stats_pkey": {
           "name": "bot_stats_pkey",
-          "columns": [
-            "name",
-            "category"
-          ]
+          "columns": ["name", "category"]
         }
       },
       "uniqueConstraints": {},
@@ -113,9 +108,7 @@
           "name": "select_stats",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "true"
         }
       },
@@ -187,9 +180,7 @@
           "name": "select_all",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "true"
         }
       },
@@ -240,9 +231,7 @@
           "name": "select_all",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ],
+          "to": ["public"],
           "using": "true"
         }
       },
@@ -338,11 +327,7 @@
       "compositePrimaryKeys": {
         "emoji_sticker_stats_pkey": {
           "name": "emoji_sticker_stats_pkey",
-          "columns": [
-            "time",
-            "asset_id",
-            "action_type"
-          ]
+          "columns": ["time", "asset_id", "action_type"]
         }
       },
       "uniqueConstraints": {},
@@ -408,11 +393,7 @@
       "compositePrimaryKeys": {
         "emoji_sticker_stats_rate_limits_pkey": {
           "name": "emoji_sticker_stats_rate_limits_pkey",
-          "columns": [
-            "user_id",
-            "asset_id",
-            "action_type"
-          ]
+          "columns": ["user_id", "asset_id", "action_type"]
         }
       },
       "uniqueConstraints": {},
@@ -468,6 +449,73 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "app_public.users": {
+      "name": "users",
+      "schema": "app_public",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "is_patron": {
+          "name": "is_patron",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patron_emoji": {
+          "name": "patron_emoji",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rep": {
+          "name": "rep",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fishies": {
+          "name": "fishies",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_rep": {
+          "name": "last_rep",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_fishies": {
+          "name": "last_fishies",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lastfm_username": {
+          "name": "lastfm_username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "profile_data": {
+          "name": "profile_data",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
     "app_public.feed_items": {
       "name": "feed_items",
       "schema": "app_public",
@@ -490,10 +538,7 @@
       "compositePrimaryKeys": {
         "feed_items_pkey": {
           "name": "feed_items_pkey",
-          "columns": [
-            "feed_id",
-            "item_id"
-          ]
+          "columns": ["feed_id", "item_id"]
         }
       },
       "uniqueConstraints": {},
@@ -537,12 +582,8 @@
           "tableFrom": "feed_subscriptions",
           "tableTo": "feeds",
           "schemaTo": "app_public",
-          "columnsFrom": [
-            "feed_id"
-          ],
-          "columnsTo": [
-            "feed_id"
-          ],
+          "columnsFrom": ["feed_id"],
+          "columnsTo": ["feed_id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -550,10 +591,7 @@
       "compositePrimaryKeys": {
         "feed_subscriptions_pkey": {
           "name": "feed_subscriptions_pkey",
-          "columns": [
-            "feed_id",
-            "channel_id"
-          ]
+          "columns": ["feed_id", "channel_id"]
         }
       },
       "uniqueConstraints": {},
@@ -624,12 +662,8 @@
           "tableFrom": "giveaway_entries",
           "tableTo": "giveaways",
           "schemaTo": "app_public",
-          "columnsFrom": [
-            "giveaway_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["giveaway_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -637,10 +671,7 @@
       "compositePrimaryKeys": {
         "giveaway_entries_pkey": {
           "name": "giveaway_entries_pkey",
-          "columns": [
-            "giveaway_id",
-            "user_id"
-          ]
+          "columns": ["giveaway_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -786,10 +817,7 @@
       "compositePrimaryKeys": {
         "guild_bans_pkey": {
           "name": "guild_bans_pkey",
-          "columns": [
-            "guild_id",
-            "user_id"
-          ]
+          "columns": ["guild_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -972,26 +1000,20 @@
           "name": "admin_access",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "sushii_admin"
-          ],
+          "to": ["sushii_admin"],
           "using": "true"
         },
         "update_managed_guild": {
           "name": "update_managed_guild",
           "as": "PERMISSIVE",
           "for": "UPDATE",
-          "to": [
-            "public"
-          ]
+          "to": ["public"]
         },
         "select_managed_guild": {
           "name": "select_managed_guild",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ]
+          "to": ["public"]
         }
       },
       "checkConstraints": {},
@@ -1116,10 +1138,7 @@
       "compositePrimaryKeys": {
         "level_roles_pkey": {
           "name": "level_roles_pkey",
-          "columns": [
-            "guild_id",
-            "role_id"
-          ]
+          "columns": ["guild_id", "role_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1128,9 +1147,7 @@
           "name": "admin_access",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "sushii_admin"
-          ],
+          "to": ["sushii_admin"],
           "using": "true"
         }
       },
@@ -1174,10 +1191,7 @@
       "compositePrimaryKeys": {
         "members_pkey": {
           "name": "members_pkey",
-          "columns": [
-            "guild_id",
-            "user_id"
-          ]
+          "columns": ["guild_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1352,10 +1366,7 @@
       "compositePrimaryKeys": {
         "mod_logs_pkey": {
           "name": "mod_logs_pkey",
-          "columns": [
-            "guild_id",
-            "case_id"
-          ]
+          "columns": ["guild_id", "case_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1364,9 +1375,7 @@
           "name": "admin_access",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "sushii_admin"
-          ],
+          "to": ["sushii_admin"],
           "using": "true"
         }
       },
@@ -1402,10 +1411,7 @@
       "compositePrimaryKeys": {
         "msg_log_blocks_pkey": {
           "name": "msg_log_blocks_pkey",
-          "columns": [
-            "guild_id",
-            "channel_id"
-          ]
+          "columns": ["guild_id", "channel_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1462,14 +1468,8 @@
           "tableFrom": "mutes",
           "tableTo": "mod_logs",
           "schemaTo": "app_public",
-          "columnsFrom": [
-            "guild_id",
-            "case_id"
-          ],
-          "columnsTo": [
-            "guild_id",
-            "case_id"
-          ],
+          "columnsFrom": ["guild_id", "case_id"],
+          "columnsTo": ["guild_id", "case_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1477,10 +1477,7 @@
       "compositePrimaryKeys": {
         "mutes_pkey": {
           "name": "mutes_pkey",
-          "columns": [
-            "guild_id",
-            "user_id"
-          ]
+          "columns": ["guild_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1489,9 +1486,7 @@
           "name": "admin_access",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "sushii_admin"
-          ],
+          "to": ["sushii_admin"],
           "using": "true"
         }
       },
@@ -1527,10 +1522,7 @@
       "compositePrimaryKeys": {
         "notification_blocks_pkey": {
           "name": "notification_blocks_pkey",
-          "columns": [
-            "user_id",
-            "block_id"
-          ]
+          "columns": ["user_id", "block_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1615,11 +1607,7 @@
       "compositePrimaryKeys": {
         "notifications_pkey": {
           "name": "notifications_pkey",
-          "columns": [
-            "user_id",
-            "guild_id",
-            "keyword"
-          ]
+          "columns": ["user_id", "guild_id", "keyword"]
         }
       },
       "uniqueConstraints": {},
@@ -1628,9 +1616,7 @@
           "name": "admin_access",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "sushii_admin"
-          ],
+          "to": ["sushii_admin"],
           "using": "true"
         }
       },
@@ -1677,10 +1663,7 @@
       "compositePrimaryKeys": {
         "reminders_pkey": {
           "name": "reminders_pkey",
-          "columns": [
-            "user_id",
-            "id"
-          ]
+          "columns": ["user_id", "id"]
         }
       },
       "uniqueConstraints": {},
@@ -1689,9 +1672,7 @@
           "name": "admin_access",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "sushii_admin"
-          ],
+          "to": ["sushii_admin"],
           "using": "true"
         }
       },
@@ -1746,14 +1727,8 @@
           "tableFrom": "role_menu_roles",
           "tableTo": "role_menus",
           "schemaTo": "app_public",
-          "columnsFrom": [
-            "guild_id",
-            "menu_name"
-          ],
-          "columnsTo": [
-            "guild_id",
-            "menu_name"
-          ],
+          "columnsFrom": ["guild_id", "menu_name"],
+          "columnsTo": ["guild_id", "menu_name"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1761,11 +1736,7 @@
       "compositePrimaryKeys": {
         "role_menu_roles_pkey": {
           "name": "role_menu_roles_pkey",
-          "columns": [
-            "guild_id",
-            "menu_name",
-            "role_id"
-          ]
+          "columns": ["guild_id", "menu_name", "role_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1774,9 +1745,7 @@
           "name": "admin_access",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "sushii_admin"
-          ],
+          "to": ["sushii_admin"],
           "using": "true"
         }
       },
@@ -1856,10 +1825,7 @@
       "compositePrimaryKeys": {
         "role_menus_pkey": {
           "name": "role_menus_pkey",
-          "columns": [
-            "guild_id",
-            "menu_name"
-          ]
+          "columns": ["guild_id", "menu_name"]
         }
       },
       "uniqueConstraints": {},
@@ -1868,9 +1834,7 @@
           "name": "admin_access",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "sushii_admin"
-          ],
+          "to": ["sushii_admin"],
           "using": "true"
         }
       },
@@ -1946,10 +1910,7 @@
       "compositePrimaryKeys": {
         "tags_pkey": {
           "name": "tags_pkey",
-          "columns": [
-            "guild_id",
-            "tag_name"
-          ]
+          "columns": ["guild_id", "tag_name"]
         }
       },
       "uniqueConstraints": {},
@@ -1958,18 +1919,14 @@
           "name": "admin_access",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "sushii_admin"
-          ],
+          "to": ["sushii_admin"],
           "using": "true"
         },
         "select_all": {
           "name": "select_all",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ]
+          "to": ["public"]
         }
       },
       "checkConstraints": {},
@@ -2010,10 +1967,7 @@
       "compositePrimaryKeys": {
         "temp_bans_pkey": {
           "name": "temp_bans_pkey",
-          "columns": [
-            "user_id",
-            "guild_id"
-          ]
+          "columns": ["user_id", "guild_id"]
         }
       },
       "uniqueConstraints": {},
@@ -2083,10 +2037,7 @@
       "compositePrimaryKeys": {
         "user_levels_pkey": {
           "name": "user_levels_pkey",
-          "columns": [
-            "user_id",
-            "guild_id"
-          ]
+          "columns": ["user_id", "guild_id"]
         }
       },
       "uniqueConstraints": {},
@@ -2095,18 +2046,14 @@
           "name": "admin_access",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "sushii_admin"
-          ],
+          "to": ["sushii_admin"],
           "using": "true"
         },
         "select_all": {
           "name": "select_all",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": [
-            "public"
-          ]
+          "to": ["public"]
         }
       },
       "checkConstraints": {},
@@ -2141,10 +2088,7 @@
       "compositePrimaryKeys": {
         "xp_blocks_pkey": {
           "name": "xp_blocks_pkey",
-          "columns": [
-            "guild_id",
-            "block_id"
-          ]
+          "columns": ["guild_id", "block_id"]
         }
       },
       "uniqueConstraints": {},
@@ -2153,9 +2097,7 @@
           "name": "admin_access",
           "as": "PERMISSIVE",
           "for": "ALL",
-          "to": [
-            "sushii_admin"
-          ],
+          "to": ["sushii_admin"],
           "using": "true"
         }
       },
@@ -2167,70 +2109,42 @@
     "app_public.block_type": {
       "name": "block_type",
       "schema": "app_public",
-      "values": [
-        "channel",
-        "role"
-      ]
+      "values": ["channel", "role"]
     },
     "app_private.deployment_name": {
       "name": "deployment_name",
       "schema": "app_private",
-      "values": [
-        "blue",
-        "green"
-      ]
+      "values": ["blue", "green"]
     },
     "app_public.emoji_sticker_action_type": {
       "name": "emoji_sticker_action_type",
       "schema": "app_public",
-      "values": [
-        "message",
-        "reaction"
-      ]
+      "values": ["message", "reaction"]
     },
     "app_public.giveaway_nitro_type": {
       "name": "giveaway_nitro_type",
       "schema": "app_public",
-      "values": [
-        "none",
-        "nitro"
-      ]
+      "values": ["none", "nitro"]
     },
     "app_public.guild_asset_type": {
       "name": "guild_asset_type",
       "schema": "app_public",
-      "values": [
-        "emoji",
-        "sticker"
-      ]
+      "values": ["emoji", "sticker"]
     },
     "app_hidden.level_timeframe": {
       "name": "level_timeframe",
       "schema": "app_hidden",
-      "values": [
-        "ALL_TIME",
-        "DAY",
-        "WEEK",
-        "MONTH"
-      ]
+      "values": ["ALL_TIME", "DAY", "WEEK", "MONTH"]
     },
     "app_public.msg_log_block_type": {
       "name": "msg_log_block_type",
       "schema": "app_public",
-      "values": [
-        "edits",
-        "deletes",
-        "all"
-      ]
+      "values": ["edits", "deletes", "all"]
     },
     "app_public.notification_block_type": {
       "name": "notification_block_type",
       "schema": "app_public",
-      "values": [
-        "user",
-        "channel",
-        "category"
-      ]
+      "values": ["user", "channel", "category"]
     }
   },
   "schemas": {
