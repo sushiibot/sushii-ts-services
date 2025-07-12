@@ -55,7 +55,12 @@ export default class RankCommand extends SlashCommandHandler {
       return;
     }
 
-    const msg = formatRankCard(result.safeUnwrap());
+    // Need to force fetch the user in order to get the avatar URL
+    const avatarURL = await interaction.member.displayAvatarURL({
+      size: 512,
+    });
+
+    const msg = formatRankCard(result.safeUnwrap(), avatarURL);
 
     await interaction.reply(msg);
   }

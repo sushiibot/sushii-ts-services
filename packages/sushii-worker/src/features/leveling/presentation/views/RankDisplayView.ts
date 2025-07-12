@@ -1,8 +1,16 @@
-import { ContainerBuilder, MessageFlags, TextDisplayBuilder } from "discord.js";
+import {
+  ContainerBuilder,
+  MessageFlags,
+  SectionBuilder,
+  TextDisplayBuilder,
+} from "discord.js";
 import { UserRankData } from "../../application/GetUserRankService";
 import { InteractionReplyOptions } from "discord.js";
 
-export function formatRankCard(data: UserRankData): InteractionReplyOptions {
+export function formatRankCard(
+  data: UserRankData,
+  avatarURL: string,
+): InteractionReplyOptions {
   const { user, profile, guildLevel, globalLevel, rankings } = data;
 
   const guildProgressBar = guildLevel.getProgressBar().render();
@@ -17,23 +25,29 @@ ${guildProgressBar}
 
 🏆 **Server Rankings**
 > **All Time**: 
-> \` ${rankings.getAllTimeRank().getFormattedPosition()}\`
+> \`${rankings.getAllTimeRank().getFormattedPosition()}\`
 > **Day**: 
-> \` ${rankings.getDayRank().getFormattedPosition()}\`
+> \`${rankings.getDayRank().getFormattedPosition()}\`
 > **Week**: 
-> \` ${rankings.getWeekRank().getFormattedPosition()}\`
+> \`${rankings.getWeekRank().getFormattedPosition()}\`
 > **Month**: 
-> \` ${rankings.getMonthRank().getFormattedPosition()}\`
+> \`${rankings.getMonthRank().getFormattedPosition()}\`
 
 **🌏 Global Level ${globalLevel.getCurrentLevel()}**  
 ${globalProgressBar}
 -# ${globalLevel.getXpDisplayText()}
 `;
 
+  // ---------------------------------------------------------------------------
+  // Build section with both the avatar and the content
   const textContent = new TextDisplayBuilder().setContent(content);
 
-  const container = new ContainerBuilder();
-  container.addTextDisplayComponents(textContent);
+  const section = new SectionBuilder()
+    .setThumbnailAccessory((b) => b.setURL(avatarURL))
+    .addTextDisplayComponents(textContent);
+
+  // Build container with section
+  const container = new ContainerBuilder().addSectionComponents(section);
 
   return {
     components: [container],
