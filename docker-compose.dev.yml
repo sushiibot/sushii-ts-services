@@ -3,3 +3,6 @@ services:
   discord_api_proxy:
     ports:
       - "3001:8080"
+  sushii_db:
+    ports:
+      - "5432:5432"

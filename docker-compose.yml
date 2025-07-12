@@ -12,21 +12,34 @@ services:
     restart: unless-stopped
     depends_on:
       - discord_api_proxy
+      - sushii_db
     environment:
+      # Deployment
       # blue is default, and for now just 1 deployment green later
       - DEPLOYMENT_NAME=blue
+      - OWNER_USER_ID=$OWNER_USER_ID
+      - OWNER_CHANNEL_ID=$OWNER_CHANNEL_ID
+      - DEPLOYMENT_EXEMPT_CHANNEL_IDS=167058919611564043
+
+      # Base
+      - NODE_ENV=development
 
       - LOG_LEVEL=debug
-      - NODE_ENV=production
       - DISCORD_TOKEN=$DISCORD_TOKEN
       - APPLICATION_ID=$APPLICATION_ID
+
+      # External dependencies
       - DATABASE_URL=postgres://sushii:sushii@sushii_db:5432/sushii
-      - SENTRY_DSN=$SENTRY_DSN
       - DISCORD_API_PROXY_URL=http://discord_api_proxy:8080/api
       - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
+
+      # Sentry
+      - SENTRY_DSN=$SENTRY_DSN
+
       # Tracing
       - TRACING_EXPORTER_URL=http://jaeger:4318/v1/traces
       - TRACING_SAMPLE_PERCENTAGE=0.01
+
       # Notifications
       - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
       - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
@@ -51,23 +64,28 @@ services:
     <<: *sushii_worker_base
     environment:
       - DEPLOYMENT_NAME=green
+      - NODE_ENV=development
 
       - LOG_LEVEL=debug
-      - NODE_ENV=production
       - DISCORD_TOKEN=$DISCORD_TOKEN
       - APPLICATION_ID=193163942502072320
+      - DEPLOYMENT_EXEMPT_CHANNEL_IDS=435581617088626709
+
+      # External dependencies
       - DATABASE_URL=$DATABASE_URL
-      - SENTRY_DSN=$SENTRY_DSN
       - DISCORD_API_PROXY_URL=http://discord_api_proxy:8080/api
       - SUSHII_IMAGE_SERVER_URL=http://sushii-image-server:3000
+
+      # Sentry
+      - SENTRY_DSN=$SENTRY_DSN
+
       # Tracing
       - TRACING_EXPORTER_URL=http://jaeger:4318/v1/traces
       - TRACING_SAMPLE_PERCENTAGE=0.01
+
       # Notifications
       - NOTIFY_WEBHOOK_URL=$NOTIFY_WEBHOOK_URL
       - NOTIFY_WEBHOOK_USERNAME=$NOTIFY_WEBHOOK_USERNAME
-      # Increase max memory usage - should use approx 1100 MB on start
-      - NODE_OPTIONS=--max-old-space-size=4096
 
   sushii_db:
     image: postgres:17-bookworm
@@ -78,7 +96,9 @@ services:
       - POSTGRES_PASSWORD=sushii
       - POSTGRES_DB=sushii
     volumes:
-      - ./db/data:/var/lib/postgresql/data
+      - ./db:/var/lib/postgresql/data
+      # Seed script
+      - ./packages/sushii-worker/drizzle/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - sushii_net
 
