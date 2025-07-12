@@ -135,8 +135,8 @@ jobs:
             -i inventory/hosts.yml \
             --vault-password-file ./vault-env \
             playbooks/deploy.yml \
-            -e "target_host=staging" \
-            -e "service=sushii-bot-staging" \
+            -e "target_host=apps" \
+            -e "service=sushii-bot/sushii-bot-staging" \
             -e "image_version=${{ needs.docker-build.outputs.sha_short }}" \
             -e "docker_registry_password=${{ secrets.GITHUB_TOKEN }}" \
             -e "docker_registry_user=${{ github.repository_owner }}" \
