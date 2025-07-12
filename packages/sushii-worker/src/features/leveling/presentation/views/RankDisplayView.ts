@@ -5,27 +5,30 @@ import { InteractionReplyOptions } from "discord.js";
 export function formatRankCard(data: UserRankData): InteractionReplyOptions {
   const { user, profile, guildLevel, globalLevel, rankings } = data;
 
-  const username =
-    user.discriminator === "0"
-      ? user.username
-      : `${user.username}#${user.discriminator.padStart(4, "0")}`;
-
   const guildProgressBar = guildLevel.getProgressBar().render();
   const globalProgressBar = globalLevel.getProgressBar().render();
 
-  const allTimeRank = rankings.getAllTimeRank();
+  const content = `**${user.username}**
+💗 **Rep**: ${profile.getReputation().toLocaleString()}   🐟 **Fishies**: ${profile.getFishies().toLocaleString()}  
 
-  const content = `**${username}**  
-🦾 **Rep**: ${profile.getReputation()} 🐟 **Fishies**: ${profile.getFishies()}  
+**🌟 Server Level ${guildLevel.getCurrentLevel()}**
+${guildProgressBar}
+-# ${guildLevel.getXpDisplayText()}
 
-**Server ${guildLevel.getLevelDisplayText()}**  
-${guildProgressBar}  
+🏆 **Server Rankings**
+> **All Time**: 
+> \` ${rankings.getAllTimeRank().getFormattedPosition()}\`
+> **Day**: 
+> \` ${rankings.getDayRank().getFormattedPosition()}\`
+> **Week**: 
+> \` ${rankings.getWeekRank().getFormattedPosition()}\`
+> **Month**: 
+> \` ${rankings.getMonthRank().getFormattedPosition()}\`
 
-**Global ${globalLevel.getLevelDisplayText()}**  
-${globalProgressBar}  
-
-🏆 **Rank**: #${allTimeRank.getDisplayRank()}  
-📅 **Day**: ${rankings.getDayRank().getFormattedPosition()}   **Week**: ${rankings.getWeekRank().getFormattedPosition()}   **Month**: ${rankings.getMonthRank().getFormattedPosition()}`;
+**🌏 Global Level ${globalLevel.getCurrentLevel()}**  
+${globalProgressBar}
+-# ${globalLevel.getXpDisplayText()}
+`;
 
   const textContent = new TextDisplayBuilder().setContent(content);
 

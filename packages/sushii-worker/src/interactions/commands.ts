@@ -51,9 +51,9 @@ import DeleteModLogDMButtonHandler from "./moderation/reason/DMButton";
 import LeaderboardCommand from "../features/leveling/presentation/commands/LeaderboardCommand";
 
 export default function registerInteractionHandlers(
-  interactionClient: InteractionClient,
+  interactionRouter: InteractionClient,
 ): void {
-  interactionClient.addCommands(
+  interactionRouter.addCommands(
     // User
     new UserInfoCommand(),
     new FishyCommand(),
@@ -107,7 +107,7 @@ export default function registerInteractionHandlers(
 
   // ----------------------------------------
   // Autocomplete
-  interactionClient.addAutocompleteHandlers(
+  interactionRouter.addAutocompleteHandlers(
     new NotificationListAutocomplete(),
     new TagGetAutocomplete(),
     new ReminderDeleteAutocomplete(),
@@ -118,11 +118,11 @@ export default function registerInteractionHandlers(
 
   // ----------------------------------------
   // Context menus
-  interactionClient.addContextMenu(new UserInfoHandler());
+  interactionRouter.addContextMenu(new UserInfoHandler());
 
   // ----------------------------------------
   // Buttons
-  interactionClient.addButtons(
+  interactionRouter.addButtons(
     new ContextLookUpButtonHandler(),
     new RoleMenuButtonHandler(),
     new ModLogReasonButtonHandler(),
@@ -133,17 +133,17 @@ export default function registerInteractionHandlers(
 
   // ----------------------------------------
   // Select menus
-  interactionClient.addSelectMenus(new RoleMenuSelectMenuHandler());
+  interactionRouter.addSelectMenus(new RoleMenuSelectMenuHandler());
 
   // ----------------------------------------
   // Modals
-  interactionClient.addModalHandlers(new ModLogReasonModalHandler());
+  interactionRouter.addModalHandlers(new ModLogReasonModalHandler());
 
   // ----------------------------------------
   // Feature flagged commands
 
   if (config.features.banPoolEnabled) {
-    interactionClient.addCommand(new BanPoolCommand());
-    interactionClient.addAutocompleteHandlers(new BanPoolAutocomplete());
+    interactionRouter.addCommand(new BanPoolCommand());
+    interactionRouter.addAutocompleteHandlers(new BanPoolAutocomplete());
   }
 }

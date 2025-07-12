@@ -19,7 +19,11 @@ export class ProgressBar {
     return new ProgressBar(percentage, length);
   }
 
-  static fromProgress(current: number, total: number, length?: number): ProgressBar {
+  static fromProgress(
+    current: number,
+    total: number,
+    length?: number,
+  ): ProgressBar {
     if (total === 0) return new ProgressBar(0, length);
     const percentage = (current / total) * 100;
     return new ProgressBar(percentage, length);
@@ -28,8 +32,11 @@ export class ProgressBar {
   render(): string {
     const filled = Math.floor((this.percentage / 100) * this.length);
     const empty = this.length - filled;
-    
-    return ProgressBar.FILLED_CHAR.repeat(filled) + ProgressBar.EMPTY_CHAR.repeat(empty);
+
+    return (
+      ProgressBar.FILLED_CHAR.repeat(filled) +
+      ProgressBar.EMPTY_CHAR.repeat(empty)
+    );
   }
 
   getPercentage(): number {

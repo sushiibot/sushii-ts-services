@@ -1,5 +1,5 @@
-import { eq, and, sum, sql } from "drizzle-orm";
-import { userLevelsInAppPublic } from "src/infrastructure/database/schema";
+import { eq, and, sum, sql, count } from "drizzle-orm";
+import { userLevelsInAppPublic } from "@/infrastructure/database/schema";
 import { UserLevel } from "../domain/entities/UserLevel";
 import { GlobalUserLevel } from "../domain/entities/GlobalUserLevel";
 import { UserRank } from "../domain/entities/UserRank";
@@ -27,31 +27,37 @@ export class UserLevelRepository implements IUserLevelRepository {
     userId: string,
     guildId: string,
   ): Promise<UserLevel | null> {
-    const result = await this.db
-      .select()
-      .from(userLevelsInAppPublic)
-      .where(
-        and(
-          eq(userLevelsInAppPublic.userId, BigInt(userId)),
-          eq(userLevelsInAppPublic.guildId, BigInt(guildId)),
-        ),
-      )
-      .limit(1);
+    try {
+      const result = await this.db
+        .select()
+        .from(userLevelsInAppPublic)
+        .where(
+          and(
+            eq(userLevelsInAppPublic.userId, BigInt(userId)),
+            eq(userLevelsInAppPublic.guildId, BigInt(guildId)),
+          ),
+        )
+        .limit(1);
 
-    if (result.length === 0) {
-      return null;
+      if (result.length === 0) {
+        return null;
+      }
+
+      const record = result[0];
+      return new UserLevel(
+        userId,
+        guildId,
+        Number(record.msgAllTime),
+        Number(record.msgMonth),
+        Number(record.msgWeek),
+        Number(record.msgDay),
+        new Date(record.lastMsg),
+      );
+    } catch (error) {
+      throw new Error(
+        `Failed to find user level for userId ${userId}, guildId ${guildId}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
-
-    const record = result[0];
-    return new UserLevel(
-      userId,
-      guildId,
-      Number(record.msgAllTime),
-      Number(record.msgMonth),
-      Number(record.msgWeek),
-      Number(record.msgDay),
-      new Date(record.lastMsg),
-    );
   }
 
   async save(userLevel: UserLevel): Promise<void> {
@@ -84,17 +90,24 @@ export class UserLevelRepository implements IUserLevelRepository {
     });
   }
 
-  // GlobalUserLevelRepository methods
+  // ---------------------------------------------------------------------------
+  // Global levels
   private async getUserGlobalAllMessages(userId: string): Promise<bigint> {
-    const result = await this.db
-      .select({
-        totalXp: sum(userLevelsInAppPublic.msgAllTime),
-      })
-      .from(userLevelsInAppPublic)
-      .where(eq(userLevelsInAppPublic.userId, BigInt(userId)))
-      .groupBy(userLevelsInAppPublic.userId);
+    try {
+      const result = await this.db
+        .select({
+          totalXp: sum(userLevelsInAppPublic.msgAllTime),
+        })
+        .from(userLevelsInAppPublic)
+        .where(eq(userLevelsInAppPublic.userId, BigInt(userId)))
+        .groupBy(userLevelsInAppPublic.userId);
 
-    return BigInt(result[0]?.totalXp ?? 0);
+      return BigInt(result[0]?.totalXp ?? 0);
+    } catch (error) {
+      throw new Error(
+        `Failed to get global messages for userId ${userId}: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
   }
 
   async getUserGlobalLevel(userId: string): Promise<GlobalUserLevel> {
@@ -102,7 +115,8 @@ export class UserLevelRepository implements IUserLevelRepository {
     return GlobalUserLevel.create(userId, globalXp);
   }
 
-  // UserRankRepository methods
+  // ---------------------------------------------------------------------------
+  // user ranks
   private getOrderByColumn(timeframe: TimeFrame) {
     switch (timeframe) {
       case TimeFrame.DAY:
@@ -147,7 +161,9 @@ export class UserLevelRepository implements IUserLevelRepository {
     }
 
     const result = await this.db
-      .select({ count: sql<number>`count(*)`.as("count") })
+      // count() automatically maps to Number! If doing a raw sql for COUNT(),
+      // it will return string and require manual .mapWith(Number)
+      .select({ count: count() })
       .from(userLevelsInAppPublic)
       .where(and(...conditions));
 
@@ -158,82 +174,102 @@ export class UserLevelRepository implements IUserLevelRepository {
     guildId: string,
     userId: string,
     timeframe: TimeFrame,
-  ): Promise<UserRankData | undefined> {
-    // First check if user has activity in this timeframe
-    const user = await this.db
-      .select({ lastMsg: userLevelsInAppPublic.lastMsg })
-      .from(userLevelsInAppPublic)
-      .where(
-        and(
-          eq(userLevelsInAppPublic.guildId, BigInt(guildId)),
-          eq(userLevelsInAppPublic.userId, BigInt(userId)),
-        ),
-      )
-      .limit(1);
+  ): Promise<UserRankData> {
+    try {
+      // First get total count as it's always returned
+      const totalCount = await this.getUserCountInTimeframe(guildId, timeframe);
 
-    if (!user[0]) {
-      return undefined;
-    }
+      // Basic check if user has any activity at all
+      const user = await this.db
+        .select({ lastMsg: userLevelsInAppPublic.lastMsg })
+        .from(userLevelsInAppPublic)
+        .where(
+          and(
+            eq(userLevelsInAppPublic.guildId, BigInt(guildId)),
+            eq(userLevelsInAppPublic.userId, BigInt(userId)),
+          ),
+        )
+        .limit(1);
 
-    // Get user's rank by counting users with higher XP
-    const conditions = [eq(userLevelsInAppPublic.guildId, BigInt(guildId))];
-    const orderColumn = this.getOrderByColumn(timeframe);
-
-    // Add timeframe conditions
-    switch (timeframe) {
-      case TimeFrame.DAY:
-        conditions.push(
-          sql`extract(doy from ${userLevelsInAppPublic.lastMsg}) = extract(doy from now())`,
-          sql`extract(year from ${userLevelsInAppPublic.lastMsg}) = extract(year from now())`,
+      if (!user[0]) {
+        // Still want to return the total
+        const totalCount = await this.getUserCountInTimeframe(
+          guildId,
+          timeframe,
         );
-        break;
-      case TimeFrame.WEEK:
-        conditions.push(
-          sql`extract(week from ${userLevelsInAppPublic.lastMsg}) = extract(week from now())`,
-          sql`extract(year from ${userLevelsInAppPublic.lastMsg}) = extract(year from now())`,
-        );
-        break;
-      case TimeFrame.MONTH:
-        conditions.push(
-          sql`extract(month from ${userLevelsInAppPublic.lastMsg}) = extract(month from now())`,
-          sql`extract(year from ${userLevelsInAppPublic.lastMsg}) = extract(year from now())`,
-        );
-        break;
-      case TimeFrame.ALL_TIME:
-        // No additional conditions
-        break;
+
+        return {
+          rank: null,
+          total_count: totalCount,
+        };
+      }
+
+      // Get user's rank by counting users with higher XP
+      const conditions = [eq(userLevelsInAppPublic.guildId, BigInt(guildId))];
+      const orderColumn = this.getOrderByColumn(timeframe);
+
+      // Add timeframe conditions
+      switch (timeframe) {
+        case TimeFrame.DAY:
+          conditions.push(
+            sql`extract(doy from ${userLevelsInAppPublic.lastMsg}) = extract(doy from now())`,
+            sql`extract(year from ${userLevelsInAppPublic.lastMsg}) = extract(year from now())`,
+          );
+          break;
+        case TimeFrame.WEEK:
+          conditions.push(
+            sql`extract(week from ${userLevelsInAppPublic.lastMsg}) = extract(week from now())`,
+            sql`extract(year from ${userLevelsInAppPublic.lastMsg}) = extract(year from now())`,
+          );
+          break;
+        case TimeFrame.MONTH:
+          conditions.push(
+            sql`extract(month from ${userLevelsInAppPublic.lastMsg}) = extract(month from now())`,
+            sql`extract(year from ${userLevelsInAppPublic.lastMsg}) = extract(year from now())`,
+          );
+          break;
+        case TimeFrame.ALL_TIME:
+          // No additional conditions
+          break;
+      }
+
+      // Get the user's XP for this timeframe
+      const userXpResult = await this.db
+        .select({ xp: orderColumn })
+        .from(userLevelsInAppPublic)
+        .where(
+          and(...conditions, eq(userLevelsInAppPublic.userId, BigInt(userId))),
+        )
+        .limit(1);
+
+      if (!userXpResult[0]) {
+        return {
+          rank: null,
+          total_count: totalCount,
+        };
+      }
+
+      const userXp = userXpResult[0].xp;
+
+      // Count users with higher XP (rank = count + 1)
+      const rankResult = await this.db
+        // count() automatically maps to Number! If doing a raw sql for COUNT(),
+        // it will return string and require manual .mapWith(Number)
+        .select({ count: count() })
+        .from(userLevelsInAppPublic)
+        .where(and(...conditions, sql`${orderColumn} > ${userXp}`));
+
+      const rank = (rankResult[0]?.count ?? 0) + 1;
+
+      return {
+        rank,
+        total_count: totalCount,
+      };
+    } catch (error) {
+      throw new Error(
+        `Failed to get guild timeframe rank for userId ${userId}, guildId ${guildId}, timeframe ${timeframe}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
-
-    // Get the user's XP for this timeframe
-    const userXpResult = await this.db
-      .select({ xp: orderColumn })
-      .from(userLevelsInAppPublic)
-      .where(
-        and(...conditions, eq(userLevelsInAppPublic.userId, BigInt(userId))),
-      )
-      .limit(1);
-
-    if (!userXpResult[0]) {
-      return undefined;
-    }
-
-    const userXp = userXpResult[0].xp;
-
-    // Count users with higher XP (rank = count + 1)
-    const rankResult = await this.db
-      .select({ count: sql<number>`count(*)`.as("count") })
-      .from(userLevelsInAppPublic)
-      .where(and(...conditions, sql`${orderColumn} > ${userXp}`));
-
-    const rank = (rankResult[0]?.count ?? 0) + 1;
-
-    // Get total count
-    const totalCount = await this.getUserCountInTimeframe(guildId, timeframe);
-
-    return {
-      rank,
-      total_count: totalCount,
-    };
   }
 
   private async getUserGuildAllRanks(
@@ -254,7 +290,8 @@ export class UserLevelRepository implements IUserLevelRepository {
           userId,
           timeframe,
         );
-        return rank || { rank: null, total_count: 0 };
+
+        return rank;
       }),
     );
 

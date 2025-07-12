@@ -3,7 +3,7 @@ import { LevelRoleRepositoryImpl } from "@/features/leveling/infrastructure/Leve
 import { XpBlockRepositoryImpl } from "@/features/leveling/infrastructure/XpBlockRepositoryImpl";
 import { MessageLevelHandler } from "@/features/leveling/presentation/commands/MessageLevelHandler";
 import { GetUserRankService } from "@/features/leveling/application/GetUserRankService";
-import { DrizzleUserProfileRepository } from "@/features/leveling/infrastructure/DrizzleUserProfileRepository";
+import { UserProfileRepository } from "@/features/leveling/infrastructure/UserProfileRepository";
 import RankCommand from "@/features/leveling/presentation/commands/RankCommand";
 import { drizzleDb } from "@/infrastructure/database/db";
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
@@ -66,7 +66,7 @@ export function registerFeatures(
   // --------------------------------------------------------------------------
   // Build commands
 
-  const userProfileRepository = new DrizzleUserProfileRepository(db);
+  const userProfileRepository = new UserProfileRepository(db);
   const userLevelRepository = new UserLevelRepository(db);
 
   const getUserRankService = new GetUserRankService(

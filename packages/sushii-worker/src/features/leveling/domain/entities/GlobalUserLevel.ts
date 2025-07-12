@@ -35,12 +35,7 @@ export class GlobalUserLevel {
 
   getXpDisplayText(): string {
     const progress = this.getLevelProgress();
-    return `${progress.nextLevelXpProgress}/${progress.nextLevelXpRequired} XP`;
-  }
-
-  getLevelDisplayText(): string {
-    const progress = this.getLevelProgress();
-    return `Level ${progress.level} (${this.getXpDisplayText()})`;
+    return `${progress.nextLevelXpProgress} / ${progress.nextLevelXpRequired} XP`;
   }
 
   static create(userId: string, totalXp: bigint | number): GlobalUserLevel {

@@ -66,15 +66,16 @@ async function initializeShard(): Promise<void> {
   const interactionRouter = new InteractionRouter(ctx, deploymentService);
   registerInteractionHandlers(interactionRouter);
 
+  // New registration of features -- also adds commands to the router
+  registerFeatures(db, client, deploymentService, interactionRouter);
+
+  // AFTER features are registered (includes registering commands)
+
   // Only register on client including shard 0
   if (client.cluster.shardList.includes(0)) {
     log.info("registering interaction handlers on shard 0");
-
     await interactionRouter.register();
   }
-
-  // New registration of features
-  registerFeatures(db, client, deploymentService, interactionRouter);
 
   // Legacy registration of event handlers
   registerEventHandlers(ctx, client, interactionRouter, deploymentService);

@@ -31,7 +31,10 @@ export class UserProfile {
   }
 
   getPatronEmojiUrl(): string {
-    return this.patronEmojiUrl ?? "https://cdn.discordapp.com/emojis/830976556976963644.png";
+    return (
+      this.patronEmojiUrl ??
+      "https://cdn.discordapp.com/emojis/830976556976963644.png"
+    );
   }
 
   getReputationLevel(): number {
@@ -55,13 +58,15 @@ export class UserProfile {
       profileData?: { patronEmojiURL?: string } | null;
     },
   ): UserProfile {
-    const reputation = typeof profileData.rep === "string" 
-      ? parseInt(profileData.rep, 10) 
-      : profileData.rep;
-    
-    const fishies = typeof profileData.fishies === "string"
-      ? parseInt(profileData.fishies, 10)
-      : profileData.fishies;
+    const reputation =
+      typeof profileData.rep === "string"
+        ? parseInt(profileData.rep, 10)
+        : profileData.rep;
+
+    const fishies =
+      typeof profileData.fishies === "string"
+        ? parseInt(profileData.fishies, 10)
+        : profileData.fishies;
 
     let patronEmojiUrl: string | undefined;
     if (

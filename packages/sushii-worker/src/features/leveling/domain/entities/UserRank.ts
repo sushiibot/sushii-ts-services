@@ -70,7 +70,10 @@ export class UserRank {
       day: new RankPosition(rankings.day.rank, rankings.day.totalCount),
       week: new RankPosition(rankings.week.rank, rankings.week.totalCount),
       month: new RankPosition(rankings.month.rank, rankings.month.totalCount),
-      allTime: new RankPosition(rankings.allTime.rank, rankings.allTime.totalCount),
+      allTime: new RankPosition(
+        rankings.allTime.rank,
+        rankings.allTime.totalCount,
+      ),
     });
   }
 }

@@ -32,7 +32,7 @@ export class RankPosition {
   }
 
   getFormattedPosition(): string {
-    return `${this.getDisplayRank()}/${this.getDisplayTotal()}`;
+    return `${this.getDisplayRank()} / ${this.getDisplayTotal()}`;
   }
 
   static unranked(totalCount: number): RankPosition {

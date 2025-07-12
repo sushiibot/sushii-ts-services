@@ -1,6 +1,6 @@
 export enum TimeFrame {
   DAY = "day",
-  WEEK = "week", 
+  WEEK = "week",
   MONTH = "month",
   ALL_TIME = "all_time",
 }
