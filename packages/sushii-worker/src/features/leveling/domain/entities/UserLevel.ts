@@ -1,23 +1,17 @@
-import {
-  calculateLevel,
-  calculateLevelProgress,
-  LevelProgress,
-} from "../utils/LevelCalculations";
-import { ProgressBar } from "../value-objects/ProgressBar";
+import { BaseUserLevel } from "./BaseUserLevel";
+import { XpAmount } from "../value-objects/XpAmount";
 
-export class UserLevel {
+export class UserLevel extends BaseUserLevel {
   constructor(
-    private readonly userId: string,
+    userId: string,
     private readonly guildId: string,
     private xpAllTime: number,
     private xpMonth: number,
     private xpWeek: number,
     private xpDay: number,
     private lastMessageTime: Date,
-  ) {}
-
-  getUserId(): string {
-    return this.userId;
+  ) {
+    super(userId, XpAmount.from(xpAllTime));
   }
 
   getGuildId(): string {
@@ -42,10 +36,6 @@ export class UserLevel {
 
   getLastMessageTime(): Date {
     return this.lastMessageTime;
-  }
-
-  getCurrentLevel(): number {
-    return calculateLevel(this.xpAllTime);
   }
 
   canGainXp(): boolean {
@@ -120,20 +110,6 @@ export class UserLevel {
     );
 
     return { week: weekNo, year: d.getUTCFullYear() };
-  }
-
-  getLevelProgress(): LevelProgress {
-    return calculateLevelProgress(this.xpAllTime);
-  }
-
-  getProgressBar(): ProgressBar {
-    const progress = this.getLevelProgress();
-    return ProgressBar.fromPercentage(progress.nextLevelXpPercentage);
-  }
-
-  getXpDisplayText(): string {
-    const progress = this.getLevelProgress();
-    return `${progress.nextLevelXpProgress} / ${progress.nextLevelXpRequired} XP`;
   }
 
   static create(

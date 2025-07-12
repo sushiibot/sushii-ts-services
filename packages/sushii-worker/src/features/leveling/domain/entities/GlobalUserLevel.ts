@@ -1,43 +1,7 @@
-import {
-  calculateLevel,
-  calculateLevelProgress,
-  LevelProgress,
-} from "../utils/LevelCalculations";
-import { ProgressBar } from "../value-objects/ProgressBar";
+import { BaseUserLevel } from "./BaseUserLevel";
 import { XpAmount } from "../value-objects/XpAmount";
 
-export class GlobalUserLevel {
-  constructor(
-    private readonly userId: string,
-    private readonly totalXp: XpAmount,
-  ) {}
-
-  getUserId(): string {
-    return this.userId;
-  }
-
-  getTotalXp(): XpAmount {
-    return this.totalXp;
-  }
-
-  getCurrentLevel(): number {
-    return calculateLevel(this.totalXp.getValue());
-  }
-
-  getLevelProgress(): LevelProgress {
-    return calculateLevelProgress(this.totalXp.getValue());
-  }
-
-  getProgressBar(): ProgressBar {
-    const progress = this.getLevelProgress();
-    return ProgressBar.fromPercentage(progress.nextLevelXpPercentage);
-  }
-
-  getXpDisplayText(): string {
-    const progress = this.getLevelProgress();
-    return `${progress.nextLevelXpProgress} / ${progress.nextLevelXpRequired} XP`;
-  }
-
+export class GlobalUserLevel extends BaseUserLevel {
   static create(userId: string, totalXp: bigint | number): GlobalUserLevel {
     return new GlobalUserLevel(userId, XpAmount.from(totalXp));
   }
