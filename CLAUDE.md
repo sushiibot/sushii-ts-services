@@ -104,6 +104,9 @@ Run tests with workspace-specific commands or use the root level `bun test:worke
 - Uses Docker for containerization with multi-stage builds
 - Three-schema PostgreSQL design: app_public (user data), app_private (internal), app_hidden (background processing)
 
+## Development Memories
+- When sleeping, always use the built in sleep function from "bun"
+
 ## Target Architecture (Migration in Progress)
 
 **Status**: Currently migrating from the existing structure to Domain-Driven Design (DDD) with Clean Architecture principles.
@@ -245,7 +248,7 @@ src/shared/
 // ✅ Good: New feature following DDD structure
 src/features/polls/
 ├── domain/entities/Poll.ts
-├── application/use-cases/CreatePollUseCase.ts
+├── application/CreatePollService.ts
 ├── infrastructure/repositories/PostgresPollRepository.ts
 └── presentation/commands/PollCommand.ts
 
@@ -348,6 +351,50 @@ export async function initCore() {
 ```
 
 This approach ensures dependencies are visible, testable, and maintainable while keeping the codebase simple and consistent.
+
+### Bootstrap Pattern for Features
+
+**✅ Explicitly bootstrap features in main bootstrap file:**
+```typescript
+// In packages/sushii-worker/src/core/cluster/bootstrap.ts
+export function registerFeatures(db: DrizzleDB, client: Client, deploymentService: DeploymentService) {
+  // Rank command (DDD style)
+  const userRankRepository = new DrizzleUserRankRepository(db);
+  const userProfileRepository = new DrizzleUserProfileRepository(db);
+  const userLevelRepository = new DrizzleUserLevelRepository(db);
+  const globalUserLevelRepository = new DrizzleGlobalUserLevelRepository(db);
+  
+  const getUserRankService = new GetUserRankService(
+    userRankRepository,
+    userProfileRepository,
+    userLevelRepository,
+    globalUserLevelRepository,
+  );
+  
+  const rankCommand = new RankCommand(
+    getUserRankService,
+    logger.child({ module: "rank" }),
+  );
+  
+  return { commands: [rankCommand] };
+}
+```
+
+**❌ Don't create feature-specific bootstrap files:**
+```typescript
+// Bad: src/features/leveling/bootstrap.ts
+export function createLevelingServices(db: DrizzleDB, logger: Logger) {
+  // Feature initialization here - harder to track dependencies
+}
+```
+
+### Benefits of Centralized Bootstrap
+
+1. **Explicit Dependencies** - All feature dependencies visible in one place
+2. **Clear Registration** - Commands and handlers registered explicitly
+3. **Better Testing** - Can easily mock individual services for integration tests
+4. **Dependency Tracking** - Clear view of what each feature requires
+5. **Consistent Patterns** - All features follow the same initialization approach
 
 ## Logging Best Practices
 
