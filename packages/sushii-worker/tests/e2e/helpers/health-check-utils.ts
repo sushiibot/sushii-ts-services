@@ -38,6 +38,15 @@ export class HealthCheckUtils {
 
       const data = await response.json();
 
+      if (!data || typeof data !== "object") {
+        this.logger.error({ port, data }, "Invalid health response format");
+
+        return {
+          status: "unknown",
+          timestamp: new Date().toISOString(),
+        };
+      }
+
       return {
         status: "healthy",
         timestamp: data.timestamp || new Date().toISOString(),
