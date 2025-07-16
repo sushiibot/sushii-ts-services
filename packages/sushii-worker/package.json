@@ -33,7 +33,7 @@
     "drizzle-kit": "^0.31.4",
     "drizzle-orm": "^0.44.2",
     "hi-base32": "^0.5.1",
-    "hono": "^4.8.2",
+    "hono": "^4.8.5",
     "i18next": "^23.16.8",
     "i18next-fs-backend": "^2.6.0",
     "kysely": "^0.28.2",
