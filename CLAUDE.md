@@ -63,10 +63,10 @@ bunx drizzle-kit studio    # Database browser
 ### Database Layer
 - **Dual ORM Strategy**: Currently migrating from Kysely to Drizzle ORM
   - Kysely: Legacy type-safe SQL queries (packages/sushii-worker/src/db/)
-  - Drizzle: New ORM with schema in src/db/schema.ts and drizzle.config.ts
+  - Drizzle: New ORM with schema in packages/sushii-worker/src/infrastructure/database/schema.ts and drizzle.config.ts
 - Repository pattern for data access with three PostgreSQL schemas: `app_public`, `app_private`, `app_hidden`
 - Database types auto-generated with kysely-codegen (legacy) and Drizzle Kit (new)
-- Migrations managed by Graphile Migrate (sushii-db package) and Drizzle Kit
+- Migrations: Graphile Migrate (sushii-db package, legacy) and Drizzle Kit (new)
 
 ### Bot Architecture (sushii-worker)
 - **Core Files**: client.ts (interaction client), index.ts (entry point with sharding), shard.ts (individual shard logic)
@@ -77,10 +77,10 @@ bunx drizzle-kit studio    # Database browser
 - Modular design with repositories for each database entity
 - **Observability**: OpenTelemetry tracing, Sentry error tracking, structured logging with pino
 
-### Key Directories
+### Current Directory Structure (Legacy - Being Migrated)
 - `src/interactions/` - Discord slash commands, buttons, modals
 - `src/events/` - Discord event handlers (message, member join/leave, etc.)
-- `src/db/` - Database repositories and table definitions
+- `src/db/` - Database repositories and table definitions (Kysely legacy)
 - `src/tasks/` - Background scheduled tasks
 - `src/utils/` - Shared utility functions
 - `src/metrics/` - Prometheus metrics collection
@@ -99,7 +99,7 @@ Run tests with workspace-specific commands or use the root level `bun test:worke
 - Development logging uses pino with pretty formatting via `pino-pretty -c -t`
 - **Database Migration Strategy**: Currently transitioning from Kysely to Drizzle ORM
   - Legacy: Database schema changes require running `bun codegen:pg` to update types
-  - New: Use Drizzle Kit for schema management and migrations
+  - New: Use Drizzle Kit for schema management and migrations (see Target Architecture section)
 - The bot supports Discord.js sharding for horizontal scaling
 - Uses Docker for containerization with multi-stage builds
 - Three-schema PostgreSQL design: app_public (user data), app_private (internal), app_hidden (background processing)
@@ -118,11 +118,11 @@ The target architecture follows a 4-layer Clean Architecture pattern with Domain
 ```
 Presentation → Application → Domain ← Infrastructure
     ↓              ↓           ↑           ↑
-  Discord I/O   Use Cases   Business    External
-  Commands      Orchestration  Logic    Adapters
+  Discord I/O   Application Business    External
+  Commands      Services     Logic      Adapters
 ```
 
-### Example Directory Structure
+### Target Directory Structure (Clean Architecture)
 
 ```
 src/
@@ -139,7 +139,7 @@ src/
 │
 ├── infrastructure/                # External adapters & frameworks
 │   ├── discord/                   # Discord.js client provider
-│   ├── database/                  # DB client setup (e.g. Prisma, TypeORM)
+│   ├── database/                  # DB client setup, Drizzle schema.ts
 │   └── analytics/                 # metrics, telemetry adapters
 │
 └── features/                      # Vertical slices (per feature)
@@ -148,8 +148,8 @@ src/
     │   │   ├── entities/
     │   │   └── repositories/
     │   │
-    │   ├── application/           # use-cases / interactors
-    │   │   └── banUserUseCase.ts
+    │   ├── application/           # application services
+    │   │   └── BanUserService.ts
     │   │
     │   ├── infrastructure/        # concrete implementations
     │   │   ├── DiscordBanService.ts
@@ -172,11 +172,11 @@ src/
 - **Rules**: No external dependencies, pure TypeScript business logic
 - **Examples**: `User.ts`, `BanPolicy.ts`, `Duration.ts`
 
-#### 2. Application Layer (Use Case Orchestration)
+#### 2. Application Layer (Service Orchestration)
 - **Location**: `src/features/{feature}/application/`
-- **Contains**: Use cases, application services, command/query handlers
+- **Contains**: Application services, command/query handlers
 - **Rules**: Orchestrates domain logic, calls infrastructure through interfaces
-- **Examples**: `BanUserUseCase.ts`, `ModerationApplicationService.ts`
+- **Examples**: `BanUserService.ts`, `ModerationApplicationService.ts`
 
 #### 3. Infrastructure Layer (External Adapters)
 - **Location**: `src/features/{feature}/infrastructure/`
@@ -209,7 +209,7 @@ src/features/
 ```
 src/shared/
 ├── domain/              # Base classes (Entity, ValueObject, DomainEvent)
-├── application/         # Common interfaces (UseCase, EventBus, UnitOfWork)
+├── application/         # Common interfaces (ApplicationService, EventBus, UnitOfWork)
 ├── infrastructure/      # Shared adapters (DatabaseConnection, Logger)
 └── presentation/        # Common utilities (BaseCommand, ErrorHandler)
 ```
@@ -236,7 +236,7 @@ src/shared/
 
 **For Existing Features**: Migrate incrementally without breaking existing functionality:
 1. Create new domain layer alongside existing code
-2. Implement application layer use cases
+2. Implement application layer services
 3. Add infrastructure adapters
 4. Create new presentation layer
 5. Switch over and remove old implementation
@@ -275,7 +275,7 @@ await levelingService.resetUserXp(user.id);
 ### Testing Strategy
 
 - **Domain Layer**: Pure unit tests, no mocks needed
-- **Application Layer**: Use case tests with mocked dependencies
+- **Application Layer**: Service tests with mocked dependencies
 - **Infrastructure Layer**: Integration tests with real external services
 - **Presentation Layer**: Command/event handler tests with mocked application services
 
@@ -288,6 +288,8 @@ await levelingService.resetUserXp(user.id);
 5. **Team Development**: Multiple developers can work on different bounded contexts
 
 ## Dependency Injection Best Practices
+
+**Location**: All dependency injection and service construction is done in `packages/sushii-worker/src/core/cluster/bootstrap.ts`.
 
 ### Avoid Factory Functions
 **❌ Don't use factory functions that hide dependencies:**
@@ -313,88 +315,6 @@ const deploymentService = new CachedDeploymentService(
   deploymentNotifier
 );
 ```
-
-### Benefits of Explicit Constructor Injection
-
-1. **Explicit Dependencies** - Clear what dependencies a service requires
-2. **Better Testability** - Easy to inject mocks and stubs for unit testing
-3. **Improved Flexibility** - Can easily swap implementations for different environments
-4. **Enhanced Clarity** - Dependencies and their relationships are visible in the code
-5. **Consistency** - Matches existing patterns used throughout the codebase
-6. **Maintainability** - Clear ownership and lifecycle management
-
-### When to Use Different Patterns
-
-- **Manual Wiring** (Current approach): For simple applications with few dependencies
-- **Dependency Injection Container**: For larger applications with complex dependency graphs
-- **Builder Pattern**: When services need multiple optional configuration parameters
-- **Module Pattern**: For organizing related service factories together
-
-### Example: Bootstrap Service Construction
-```typescript
-// In bootstrap.ts - explicit dependency wiring
-export async function initCore() {
-  const db = drizzleDb;
-
-  // Explicit dependency construction - dependencies are clear
-  const deploymentRepository = new DrizzleDeploymentRepository();
-  const deploymentNotifier = new PostgreSQLDeploymentNotifier();
-  const deploymentService = new CachedDeploymentService(
-    deploymentRepository,
-    deploymentNotifier
-  );
-  
-  await deploymentService.start();
-
-  return { db, deploymentService };
-}
-```
-
-This approach ensures dependencies are visible, testable, and maintainable while keeping the codebase simple and consistent.
-
-### Bootstrap Pattern for Features
-
-**✅ Explicitly bootstrap features in main bootstrap file:**
-```typescript
-// In packages/sushii-worker/src/core/cluster/bootstrap.ts
-export function registerFeatures(db: DrizzleDB, client: Client, deploymentService: DeploymentService) {
-  // Rank command (DDD style)
-  const userRankRepository = new DrizzleUserRankRepository(db);
-  const userProfileRepository = new DrizzleUserProfileRepository(db);
-  const userLevelRepository = new DrizzleUserLevelRepository(db);
-  const globalUserLevelRepository = new DrizzleGlobalUserLevelRepository(db);
-  
-  const getUserRankService = new GetUserRankService(
-    userRankRepository,
-    userProfileRepository,
-    userLevelRepository,
-    globalUserLevelRepository,
-  );
-  
-  const rankCommand = new RankCommand(
-    getUserRankService,
-    logger.child({ module: "rank" }),
-  );
-  
-  return { commands: [rankCommand] };
-}
-```
-
-**❌ Don't create feature-specific bootstrap files:**
-```typescript
-// Bad: src/features/leveling/bootstrap.ts
-export function createLevelingServices(db: DrizzleDB, logger: Logger) {
-  // Feature initialization here - harder to track dependencies
-}
-```
-
-### Benefits of Centralized Bootstrap
-
-1. **Explicit Dependencies** - All feature dependencies visible in one place
-2. **Clear Registration** - Commands and handlers registered explicitly
-3. **Better Testing** - Can easily mock individual services for integration tests
-4. **Dependency Tracking** - Clear view of what each feature requires
-5. **Consistent Patterns** - All features follow the same initialization approach
 
 ## Logging Best Practices
 
