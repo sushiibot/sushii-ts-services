@@ -132,10 +132,9 @@ jobs:
           rm ./inventory/group_vars/all/vault.yml
 
           ansible-playbook \
-            -i inventory/hosts.yml \
             --vault-password-file ./vault-env \
+            -l apps \
             playbooks/deploy.yml \
-            -e "target_host=apps" \
             -e "service=sushii-bot/sushii-bot-staging" \
             -e "image_version=${{ needs.docker-build.outputs.sha_short }}" \
             -e "docker_registry_password=${{ secrets.GITHUB_TOKEN }}" \
