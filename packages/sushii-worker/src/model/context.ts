@@ -1,6 +1,5 @@
 import { APIApplicationCommand } from "discord.js";
 import { Client, CDN } from "discord.js";
-import SushiiImageServerClient from "./image_server";
 import MemoryStore from "./MemoryStore";
 import logger from "@/shared/infrastructure/logger";
 
@@ -18,8 +17,6 @@ import logger from "@/shared/infrastructure/logger";
  * See the new DDD architecture in /features for examples of proper dependency injection.
  */
 export default class Context {
-  public readonly sushiiImageServer: SushiiImageServerClient;
-
   public readonly client: Client;
 
   public readonly CDN = new CDN();
@@ -29,7 +26,6 @@ export default class Context {
   private commands: APIApplicationCommand[];
 
   constructor(client: Client) {
-    this.sushiiImageServer = new SushiiImageServerClient();
     this.client = client;
     this.memoryStore = new MemoryStore();
 

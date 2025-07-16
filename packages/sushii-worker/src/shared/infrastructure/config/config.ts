@@ -122,7 +122,6 @@ export class Config {
   readonly deployment: DeploymentConfig;
   readonly features: FeatureFlags;
   readonly build: BuildConfig;
-  readonly imageServerUrl: string;
   readonly sentry: {
     dsn?: string;
     environment: string;
