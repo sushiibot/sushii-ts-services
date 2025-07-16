@@ -31,11 +31,13 @@ type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
       roleId: string;
     }
   : T extends Paths.RoleMenuSelect
-    ? {
+    ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      {
         // No params
       }
     : T extends Paths.RoleMenuAddRolesSelect
-      ? {
+      ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+        {
           // /rolemenu addroles - No params since it is select menu
         }
       : T extends Paths.ModerationAction
@@ -65,7 +67,8 @@ type PathParams<T extends Paths> = T extends Paths.RoleMenuButton
                     newState: string;
                   }
                 : T extends Paths.GiveawayEnterButton
-                  ? {
+                  ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+                    {
                       // No params, uses guild ID and message ID from interaction
                     }
                   : never;

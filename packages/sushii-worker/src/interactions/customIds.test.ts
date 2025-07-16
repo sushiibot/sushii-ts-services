@@ -11,7 +11,6 @@ describe("customIds", () => {
       {
         customID: "/rolemenu/button/123",
         wantMatch: {
-          index: 0,
           params: {
             roleId: "123",
           },
@@ -21,7 +20,6 @@ describe("customIds", () => {
       {
         customID: "/rolemenu/button/12345",
         wantMatch: {
-          index: 0,
           params: {
             roleId: "12345",
           },
@@ -58,7 +56,6 @@ describe("customIds", () => {
       {
         customID: "/rolemenu/select",
         wantMatch: {
-          index: 0,
           params: {},
           path: "/rolemenu/select",
         },
