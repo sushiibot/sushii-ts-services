@@ -1,7 +1,7 @@
 import {
   APIApplicationCommandOptionChoice,
   ApplicationCommandOptionType,
-} from "discord-api-types/v10";
+} from "discord.js";
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import logger from "@/shared/infrastructure/logger";
 import Context from "../../../model/context";

@@ -2,7 +2,7 @@ import dayjs from "@/shared/domain/dayjs";
 import {
   APIGuildMember,
   APIInteractionDataResolvedGuildMember,
-} from "discord-api-types/v10";
+} from "discord.js";
 
 export default function memberIsTimedOut(
   member: APIGuildMember | APIInteractionDataResolvedGuildMember | undefined,

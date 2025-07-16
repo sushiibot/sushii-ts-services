@@ -7,7 +7,7 @@ import {
   User,
   InteractionContextType,
 } from "discord.js";
-import { MessageFlags, PermissionFlagsBits } from "discord-api-types/v10";
+import { MessageFlags, PermissionFlagsBits } from "discord.js";
 import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorMessage } from "../responses/error";

@@ -4,7 +4,7 @@ import {
   ChatInputCommandInteraction,
   InteractionContextType,
 } from "discord.js";
-import { PermissionFlagsBits } from "discord-api-types/v10";
+import { PermissionFlagsBits } from "discord.js";
 import Context from "../../../../model/context";
 import Color from "../../../../utils/colors";
 import { SlashCommandHandler } from "../../../../interactions/handlers";

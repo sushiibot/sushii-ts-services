@@ -10,11 +10,11 @@ import {
   MessageFlags,
   ModalSubmitInteraction,
   Routes,
-  RESTPutAPIApplicationCommandsResult,
   RESTPostAPIApplicationCommandsJSONBody,
   InteractionType,
   ApplicationCommandType,
   ComponentType,
+  APIApplicationCommand,
 } from "discord.js";
 import * as Sentry from "@sentry/node";
 import { t } from "i18next";
@@ -229,7 +229,7 @@ export default class InteractionRouter {
         { body: this.getCommandsArray() },
       );
 
-      this.context.setCommands(res as RESTPutAPIApplicationCommandsResult);
+      this.context.setCommands(res as APIApplicationCommand[]);
 
       log.info("commands registered!");
     } catch (err) {
@@ -550,7 +550,9 @@ export default class InteractionRouter {
 
   public async handleAPIInteraction(interaction: Interaction): Promise<void> {
     // Ignore all interactions that are not from the current deployment
-    const active = this.deploymentService.isCurrentDeploymentActive(interaction.channelId);
+    const active = this.deploymentService.isCurrentDeploymentActive(
+      interaction.channelId,
+    );
     if (!active) {
       log.info(
         {

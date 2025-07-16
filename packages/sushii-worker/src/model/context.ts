@@ -1,4 +1,4 @@
-import { APIApplicationCommand } from "discord-api-types/v10";
+import { APIApplicationCommand } from "discord.js";
 import { Client, CDN } from "discord.js";
 import SushiiImageServerClient from "./image_server";
 import MemoryStore from "./MemoryStore";

@@ -3,7 +3,7 @@ import {
   AnySelectMenuInteraction,
   DiscordAPIError,
 } from "discord.js";
-import { MessageFlags } from "discord-api-types/v10";
+import { MessageFlags } from "discord.js";
 import Context from "../../model/context";
 import Color from "../../utils/colors";
 import customIds from "../customIds";

@@ -2,7 +2,7 @@ import {
   isDMInteraction,
   isGuildInteraction,
 } from "discord-api-types/utils/v10";
-import { APIInteraction, APIUser } from "discord-api-types/v10";
+import { APIInteraction, APIUser } from "discord.js";
 
 export default function getInvokerUser(interaction: APIInteraction): APIUser {
   if (isGuildInteraction(interaction)) {

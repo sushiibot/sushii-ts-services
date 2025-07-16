@@ -1,4 +1,4 @@
-import { ButtonStyle, AuditLogEvent } from "discord-api-types/v10";
+import { ButtonStyle, AuditLogEvent } from "discord.js";
 import {
   ActionRowBuilder,
   ButtonBuilder,

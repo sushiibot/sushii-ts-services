@@ -4,7 +4,7 @@ import {
   DiscordAPIError,
   RESTJSONErrorCodes,
 } from "discord.js";
-import { MessageFlags } from "discord-api-types/v10";
+import { MessageFlags } from "discord.js";
 import * as Sentry from "@sentry/node";
 import Context from "../../model/context";
 import Color from "../../utils/colors";

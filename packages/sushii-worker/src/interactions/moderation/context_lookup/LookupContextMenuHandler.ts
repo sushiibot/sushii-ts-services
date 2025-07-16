@@ -9,7 +9,7 @@ import {
   ButtonStyle,
   MessageFlags,
   PermissionFlagsBits,
-} from "discord-api-types/v10";
+} from "discord.js";
 import Context from "../../../model/context";
 import customIds from "../../customIds";
 import ContextMenuHandler from "../../handlers/ContextMenuHandler";

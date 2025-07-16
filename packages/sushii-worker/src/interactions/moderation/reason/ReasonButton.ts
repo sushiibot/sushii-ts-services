@@ -3,7 +3,7 @@ import {
   TextInputBuilder,
   ButtonInteraction,
 } from "discord.js";
-import { TextInputStyle } from "discord-api-types/v10";
+import { TextInputStyle } from "discord.js";
 import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";

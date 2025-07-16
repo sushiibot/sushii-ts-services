@@ -8,11 +8,7 @@ import {
   InteractionContextType,
 } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
-import {
-  APIEmbedField,
-  MessageFlags,
-  PermissionFlagsBits,
-} from "discord-api-types/v10";
+import { APIEmbedField, MessageFlags, PermissionFlagsBits } from "discord.js";
 import { t } from "i18next";
 import { Err, Ok, Result } from "ts-results";
 import { z } from "zod";

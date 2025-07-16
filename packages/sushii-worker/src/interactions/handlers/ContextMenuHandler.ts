@@ -1,7 +1,7 @@
 import {
   RESTPostAPIChatInputApplicationCommandsJSONBody,
   RESTPostAPIApplicationCommandsJSONBody,
-} from "discord-api-types/v10";
+} from "discord.js";
 import { ContextMenuCommandInteraction } from "discord.js";
 import Context from "../../model/context";
 import InteractionHandler from "./InteractionHandler";

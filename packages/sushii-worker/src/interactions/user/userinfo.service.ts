@@ -1,5 +1,5 @@
 import { EmbedBuilder, GuildMember, User } from "discord.js";
-import { APIEmbed } from "discord-api-types/v10";
+import { APIEmbed } from "discord.js";
 import Color from "../../utils/colors";
 import { getCreatedTimestampSeconds } from "../../utils/snowflake";
 import timestampToUnixTime from "../../utils/timestampToUnixTime";
