@@ -50,6 +50,8 @@ services:
     image: discordjs/proxy
     container_name: discord_api_proxy
     restart: unless-stopped
+    ports:
+      - "10.0.0.2:8080:8080"
     expose:
       - "8080"
     networks:
