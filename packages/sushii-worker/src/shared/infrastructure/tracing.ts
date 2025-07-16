@@ -1,8 +1,8 @@
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { NodeSDK } from "@opentelemetry/sdk-node";
-import { Resource } from "@opentelemetry/resources";
-import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
+import { resourceFromAttributes } from "@opentelemetry/resources";
+import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions";
 import { TraceIdRatioBasedSampler } from "@opentelemetry/sdk-trace-node";
 import { Tracer, Span, SpanStatusCode } from "@opentelemetry/api";
 import logger from "../../shared/infrastructure/logger";
@@ -18,8 +18,10 @@ const traceExporter = new OTLPTraceExporter(exporterOptions);
 const sdk = new NodeSDK({
   traceExporter,
   instrumentations: [getNodeAutoInstrumentations()],
-  resource: new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: "sushii_worker",
+  resource: resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: "sushii_worker",
+    // No version yet
+    // [ATTR_SERVICE_VERSION]: "v1.0.0"
   }),
   sampler: new TraceIdRatioBasedSampler(config.tracing.samplePercentage),
 });
