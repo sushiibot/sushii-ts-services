@@ -174,7 +174,6 @@ export class Config {
       env.GIT_HASH,
       env.BUILD_DATE ? new Date(env.BUILD_DATE) : undefined,
     );
-    this.imageServerUrl = env.SUSHII_IMAGE_SERVER_URL;
     this.sentry = {
       dsn: env.SENTRY_DSN,
       // Prioritize custom environment variable, then fall back toNODE_ENV

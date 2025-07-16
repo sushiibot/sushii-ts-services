@@ -27,7 +27,6 @@ const envSchema = z.object({
 
   // External services
   DATABASE_URL: z.string(),
-  SUSHII_IMAGE_SERVER_URL: z.string(),
 
   // Metrics and health check configuration
   METRICS_PORT: z.string().optional().default("9090"),
