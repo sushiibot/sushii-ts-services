@@ -13,10 +13,8 @@ const exporterOptions = {
   url: config.tracing.exporterUrl || "http://localhost:4318/v1/traces",
 };
 
-const traceExporter = new OTLPTraceExporter(exporterOptions);
-
 const sdk = new NodeSDK({
-  traceExporter,
+  traceExporter: new OTLPTraceExporter(exporterOptions),
   instrumentations: [getNodeAutoInstrumentations()],
   resource: resourceFromAttributes({
     [ATTR_SERVICE_NAME]: "sushii_worker",
