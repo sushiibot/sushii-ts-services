@@ -72,9 +72,20 @@ async function initializeShard(): Promise<void> {
   // AFTER features are registered (includes registering commands)
 
   // Only register on client including shard 0
-  if (client.cluster.shardList.includes(0)) {
+  if (
+    !config.features.skipCommandRegistration &&
+    client.cluster.shardList.includes(0)
+  ) {
     log.info("registering interaction handlers on shard 0");
     await interactionRouter.register();
+  } else {
+    log.info(
+      {
+        skip: config.features.skipCommandRegistration,
+        shardList: client.cluster.shardList,
+      },
+      "skipping interaction handler registration on cluster",
+    );
   }
 
   // Legacy registration of event handlers

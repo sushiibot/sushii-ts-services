@@ -101,6 +101,7 @@ export class FeatureFlags {
   constructor(
     readonly banPoolEnabled: boolean,
     readonly disableBanFetchOnReady: boolean,
+    readonly skipCommandRegistration: boolean,
   ) {}
 }
 
@@ -167,6 +168,7 @@ export class Config {
     this.features = new FeatureFlags(
       env.BAN_POOL_ENABLED,
       env.DISABLE_BAN_FETCH_ON_READY,
+      env.SKIP_COMMAND_REGISTRATION,
     );
     this.build = new BuildConfig(
       env.GIT_HASH,
