@@ -1,0 +1,41 @@
+---
+title: sushii
+description: Discord Moderation Bot
+template: splash
+hero:
+  tagline: Discord Moderation Bot
+  image:
+    file: ../../assets/sushii_chopstick.svg
+  actions:
+    - text: Add to Discord
+      link: https://discord.com/api/oauth2/authorize?client_id=193163942502072320&permissions=268823622&scope=applications.commands%20bot
+      icon: discord
+    - text: Read the guide
+      link: /guides/getting-started
+      icon: open-book
+      variant: minimal
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+import Default from "@astrojs/starlight/components/Footer.astro";
+
+## why sushii?
+
+<CardGrid>
+  <Card title="Moderation Logs" icon="document">
+    Intuitive logging for moderation actions without needing to always use
+    commands, sushii tracks audit logs and provides a easy way to handle cases
+    how you want to, whether you want to manually ban users and set a reason
+    afterwards, or use commands.
+  </Card>
+  <Card title="XP and Levels" icon="add-document">
+    Encourage your members to chat with activity rankings and leaderboard.
+    Reward active users with roles given at certain levels.
+  </Card>
+  <Card title="Configure your site" icon="setting">
+    Edit your `sidebar` and other config in `astro.config.mjs`.
+  </Card>
+  <Card title="Read the docs" icon="open-book">
+    Learn more in [the Starlight Docs](https://starlight.astro.build/).
+  </Card>
+</CardGrid>

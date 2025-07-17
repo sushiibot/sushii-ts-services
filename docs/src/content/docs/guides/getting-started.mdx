@@ -1,0 +1,42 @@
+---
+title: Getting Started
+description: Start using sushii!
+---
+
+import { LinkButton } from "@astrojs/starlight/components";
+
+Add sushii to your server by clicking below:
+
+<LinkButton
+  href="https://discord.com/api/oauth2/authorize?client_id=193163942502072320&permissions=268823622&scope=applications.commands%20bot"
+  icon="discord"
+  target="_blank"
+>
+  Add to Discord
+</LinkButton>
+
+Next, we'll go through some of the basic set-up for sushii.
+
+## Logging
+
+### Moderation Logs
+
+sushii provides a logging system that allows you to track moderation actions
+like bans, kicks, and mutes - even if you don't use any sushii commands.
+
+1. Create a channel for logging.
+2. Use the `/setlog` command to set the logging channel.
+
+### Message Logs
+
+Keep track of messages that were deleted or edited in your server.
+
+1. Create a channel for message logs.
+2. Use the `/setmessagelog` command to set the message logging channel.
+
+### Member Logs
+
+Track when members join and leave your server.
+
+1. Create a channel for member logs.
+2. Use the `/setmemberlog` command to set the member logging channel.
