@@ -10,7 +10,7 @@ on:
       - "docs/**"
 
 jobs:
-  build_docs:
+  build:
     name: Build Docs
     runs-on: ubuntu-latest
     steps:
@@ -25,5 +25,32 @@ jobs:
         working-directory: ./docs
 
       - name: Test sushii-worker
-        run: bun build
+        run: bun run build
         working-directory: ./docs
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: github-pages
+          path: ./docs/dist/
+
+  deploy:
+    name: Deploy Docs
+    needs: build
+    permissions:
+      # to deploy to Pages
+      pages: write
+      # to verify the deployment originates from an appropriate source
+      id-token: write
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
