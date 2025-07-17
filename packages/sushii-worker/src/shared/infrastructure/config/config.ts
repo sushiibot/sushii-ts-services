@@ -56,9 +56,10 @@ export class TracingConfig {
 
 export class NotificationConfig {
   constructor(
-    readonly webhookUrl?: string,
     readonly webhookUsername?: string,
+    readonly webhookUrl?: string,
     readonly errorWebhookUrl?: string,
+    readonly activityWebhookUrl?: string,
   ) {}
 
   get hasWebhook() {
@@ -67,6 +68,10 @@ export class NotificationConfig {
 
   get hasErrorWebhook() {
     return this.errorWebhookUrl !== undefined;
+  }
+
+  get hasActivityWebhook() {
+    return this.activityWebhookUrl !== undefined;
   }
 }
 
@@ -147,9 +152,10 @@ export class Config {
       env.TRACING_SAMPLE_PERCENTAGE,
     );
     this.notifications = new NotificationConfig(
-      env.NOTIFY_WEBHOOK_URL,
       env.NOTIFY_WEBHOOK_USERNAME,
+      env.NOTIFY_WEBHOOK_URL,
       env.NOTIFY_WEBHOOK_ERR_URL,
+      env.ACTIVITY_WEBHOOK_URL,
     );
     this.deployment = new DeploymentConfig(
       env.DEPLOYMENT_NAME,

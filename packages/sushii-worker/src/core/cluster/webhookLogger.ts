@@ -15,6 +15,12 @@ const webhookClientErr = config.notifications.errorWebhookUrl
     })
   : null;
 
+const webhookClientActivity = config.notifications.activityWebhookUrl
+  ? new WebhookClient({
+      url: config.notifications.activityWebhookUrl,
+    })
+  : null;
+
 export default async function webhookLog(
   title: string,
   message: string,
@@ -67,5 +73,33 @@ export async function webhookErr(
     logger.debug({ title, message }, "Sent webhook log");
   } catch (err) {
     logger.error({ err }, "Failed to send webhook log");
+  }
+}
+
+export async function webhookActivity(
+  title: string,
+  message: string,
+  color?: number,
+): Promise<void> {
+  if (!webhookClientActivity) {
+    logger.warn("No activity webhook client, skipping activity webhook log");
+    return;
+  }
+
+  const embed = new EmbedBuilder()
+    .setTitle(title)
+    .setDescription(message || "No message")
+    .setColor(color || null)
+    .setTimestamp(new Date());
+
+  try {
+    await webhookClientActivity.send({
+      username: config.notifications.webhookUsername || "sushii",
+      embeds: [embed],
+    });
+
+    logger.debug({ title, message }, "Sent activity webhook log");
+  } catch (err) {
+    logger.error({ err }, "Failed to send activity webhook log");
   }
 }

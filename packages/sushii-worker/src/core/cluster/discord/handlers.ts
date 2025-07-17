@@ -46,7 +46,7 @@ import {
   cacheGuildUpdateHandler,
 } from "@/events/cache/cacheGuild";
 import startTasks from "@/tasks/startTasks";
-import webhookLog from "@/core/cluster/webhookLogger";
+import webhookLog, { webhookActivity } from "@/core/cluster/webhookLogger";
 // import { mentionTagHandler } from "./events/TagsMention";
 
 const tracerName = "event-handler";
@@ -226,6 +226,8 @@ export default function registerEventHandlers(
       },
       "Shard reconnecting",
     );
+
+    await webhookLog(`[${shardId}] Shard Reconnecting`, "", Color.Warning);
   });
 
   client.on(Events.ShardResume, async (shardId, replayedEvents) => {
@@ -236,6 +238,8 @@ export default function registerEventHandlers(
       },
       "Shard resumed",
     );
+
+    await webhookLog(`[${shardId}] Shard Resumed`, "", Color.Warning);
   });
 
   client.on(Events.GuildCreate, async (guild) => {
@@ -247,7 +251,7 @@ export default function registerEventHandlers(
       guild.name,
     );
 
-    await webhookLog(
+    await webhookActivity(
       "Joined guild",
       `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
       Color.Info,
@@ -306,7 +310,7 @@ export default function registerEventHandlers(
       guild.name,
     );
 
-    await webhookLog(
+    await webhookActivity(
       "Left guild",
       `${guild.name} (${guild.id}) - ${guild.memberCount} members`,
       Color.Error,

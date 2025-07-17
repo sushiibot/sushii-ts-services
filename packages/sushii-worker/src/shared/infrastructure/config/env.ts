@@ -36,9 +36,10 @@ const envSchema = z.object({
   DISCORD_API_PROXY_URL: z.string().optional(),
 
   // Alerts
-  NOTIFY_WEBHOOK_URL: z.string().optional(),
   NOTIFY_WEBHOOK_USERNAME: z.string().optional(),
+  NOTIFY_WEBHOOK_URL: z.string().optional(),
   NOTIFY_WEBHOOK_ERR_URL: z.string().optional(),
+  ACTIVITY_WEBHOOK_URL: z.string().optional(),
 
   // Sentry
   SENTRY_DSN: z.string().optional(),
