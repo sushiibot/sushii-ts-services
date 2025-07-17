@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "docs/**"
+      - ".github/workflows/docs.yml"
   pull_request:
     branches: [main]
     paths:
@@ -20,15 +21,17 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Install sushii-worker dependencies
+      - name: Install dependencies
         run: bun install --immutable
         working-directory: ./docs
 
-      - name: Test sushii-worker
+      - name: Build Docs
         run: bun run build
         working-directory: ./docs
 
       - uses: actions/upload-artifact@v4
+        # Only on main push
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           name: github-pages
           path: ./docs/dist/
@@ -36,6 +39,8 @@ jobs:
   deploy:
     name: Deploy Docs
     needs: build
+    # Only on pushes to the main branch
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       # to deploy to Pages
       pages: write
