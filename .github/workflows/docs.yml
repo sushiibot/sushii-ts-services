@@ -29,7 +29,9 @@ jobs:
         run: bun run build
         working-directory: ./docs
 
-      - uses: actions/upload-artifact@v4
+      # actions/upload-artifact@v4 has error:
+      # https://github.com/actions/deploy-pages/issues/389
+      - uses: actions/upload-pages-artifact@v3
         # Only on main push
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
