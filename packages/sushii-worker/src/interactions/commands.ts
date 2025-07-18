@@ -9,8 +9,6 @@ import BanCommand from "./moderation/BanCommand";
 import KickCommand from "./moderation/KickCommand";
 import NotificationCommand from "./notifications/NotificationCommand";
 import NotificationListAutocomplete from "./notifications/Autocomplete";
-import TagCommand from "./tags/TagCommand";
-import TagGetAutocomplete from "./tags/TagAutocomplete";
 import ContextLookUpButtonHandler from "./moderation/context_lookup/LookupComponentHandler";
 import TimeoutCommand from "./moderation/TimeoutCommand";
 import ReminderDeleteAutocomplete from "./reminders/ReminderAutocomplete";
@@ -37,7 +35,6 @@ import ReasonConfirmButtonHandler from "./moderation/reason/ReasonConfirmButtonH
 import SettingsCommand from "./settings/SettingsCommand";
 import LookupCommand from "./moderation/LookupCommand";
 import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
-import TagAdminCommand from "./tags/TagAdminCommand";
 import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
 import { config } from "@/shared/infrastructure/config";
 import BanPoolCommand from "./moderation/ban_pools/BanPool.command";
@@ -82,7 +79,6 @@ export default function registerInteractionHandlers(
     new LookupCommand(),
 
     // Guild
-    new TagAdminCommand(),
     new EmojiStatsCommand(),
     new GiveawayCommand(),
 
@@ -90,9 +86,6 @@ export default function registerInteractionHandlers(
     new ReminderCommand(),
 
     new LeaderboardCommand(),
-
-    // Tags
-    new TagCommand(),
 
     // Roles
     new RoleMenuCommand(),
@@ -109,7 +102,6 @@ export default function registerInteractionHandlers(
   // Autocomplete
   interactionRouter.addAutocompleteHandlers(
     new NotificationListAutocomplete(),
-    new TagGetAutocomplete(),
     new ReminderDeleteAutocomplete(),
     new RoleMenuAutocomplete(),
     new ReasonAutocomplete(),

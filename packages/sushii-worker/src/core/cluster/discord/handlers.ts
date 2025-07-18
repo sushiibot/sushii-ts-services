@@ -226,8 +226,6 @@ export default function registerEventHandlers(
       },
       "Shard reconnecting",
     );
-
-    await webhookLog(`[${shardId}] Shard Reconnecting`, "", Color.Warning);
   });
 
   client.on(Events.ShardResume, async (shardId, replayedEvents) => {
@@ -238,8 +236,6 @@ export default function registerEventHandlers(
       },
       "Shard resumed",
     );
-
-    await webhookLog(`[${shardId}] Shard Resumed`, "", Color.Warning);
   });
 
   client.on(Events.GuildCreate, async (guild) => {
@@ -459,10 +455,7 @@ export default function registerEventHandlers(
           {
             emojiStats: emojiStatsMsgHandler,
             notification: notificationHandler,
-            // deployToggle: deployToggleHandler, // Moved to new DDD structure
             cacheUser: cacheUserHandler,
-            // TODO: Enable only after removed from sushii-2
-            // mentionTag: mentionTagHandler,
           },
           msg,
         );

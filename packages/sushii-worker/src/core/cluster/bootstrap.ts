@@ -19,6 +19,17 @@ import { DeploymentChanged } from "@/features/deployment/domain/events/Deploymen
 import * as schema from "@/infrastructure/database/schema";
 import logger from "@/shared/infrastructure/logger";
 import { UserLevelRepository } from "@/features/leveling/infrastructure/UserLevelRepository";
+import {
+  TagService,
+  TagSearchService,
+  TagAdminService,
+} from "@/features/tags/application";
+import { DrizzleTagRepository } from "@/features/tags/infrastructure";
+import {
+  TagCommand,
+  TagAdminCommand,
+  TagAutocomplete,
+} from "@/features/tags/presentation";
 
 export async function initCore() {
   // This just returns the global existing database for now, until we fully
@@ -66,6 +77,7 @@ export function registerFeatures(
   // --------------------------------------------------------------------------
   // Build commands
 
+  // Leveling feature
   const userProfileRepository = new UserProfileRepository(db);
   const userLevelRepository = new UserLevelRepository(db);
 
@@ -79,8 +91,43 @@ export function registerFeatures(
     logger.child({ module: "rank" }),
   );
 
-  // Register commands directly on interaction router
-  interactionRouter.addCommand(rankCommand);
+  // Tags feature
+  const tagRepository = new DrizzleTagRepository(
+    db,
+    logger.child({ module: "tags" }),
+  );
+  const tagService = new TagService(
+    tagRepository,
+    logger.child({ module: "tagService" }),
+  );
+  const tagSearchService = new TagSearchService(
+    tagRepository,
+    logger.child({ module: "tagSearchService" }),
+  );
+  const tagAdminService = new TagAdminService(
+    tagRepository,
+    logger.child({ module: "tagAdminService" }),
+  );
+
+  const tagCommand = new TagCommand(
+    tagService,
+    tagSearchService,
+    logger.child({ module: "tagCommand" }),
+  );
+
+  const tagAdminCommand = new TagAdminCommand(
+    tagAdminService,
+    logger.child({ module: "tagAdminCommand" }),
+  );
+
+  const tagAutocomplete = new TagAutocomplete(
+    tagSearchService,
+    logger.child({ module: "tagAutocomplete" }),
+  );
+
+  // Register commands and handlers on interaction router
+  interactionRouter.addCommands(rankCommand, tagCommand, tagAdminCommand);
+  interactionRouter.addAutocompleteHandlers(tagAutocomplete);
 
   // ---------------------------------------------------------------------------
   // Build event handlers
@@ -93,6 +140,7 @@ export function registerFeatures(
   );
   const levelHandler = new MessageLevelHandler(levelService);
 
+  // Deployment handler
   const deploymentHandler = new DeploymentEventHandler(
     deploymentService,
     logger,

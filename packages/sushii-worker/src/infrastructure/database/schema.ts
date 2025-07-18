@@ -613,7 +613,7 @@ export const tagsInAppPublic = appPublic.table(
     tagName: text("tag_name").notNull(),
     content: text().notNull(),
     useCount: bigint("use_count", { mode: "bigint" }).notNull(),
-    created: timestamp({ mode: "string" }).notNull(),
+    created: timestamp({ mode: "date" }).notNull(),
     attachment: text(),
   },
   (table) => [

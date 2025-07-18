@@ -8,7 +8,6 @@ import {
 } from "discord.js";
 import { MessageFlags } from "discord.js";
 import { t } from "i18next";
-import Context from "../../model/context";
 import Color from "../../utils/colors";
 
 type ReplyableInteraction =
@@ -49,7 +48,6 @@ export function getErrorMessageEdit(
 }
 
 export async function interactionReplyError(
-  ctx: Context,
   interaction: ReplyableInteraction,
   title: string,
   description: string,
@@ -59,12 +57,10 @@ export async function interactionReplyError(
 }
 
 export async function interactionReplyErrorPermission(
-  ctx: Context,
   interaction: ReplyableInteraction,
   permission: string,
 ): Promise<void> {
   return interactionReplyError(
-    ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
     t("generic.error.no_permission", { ns: "commands", permission }),
@@ -72,12 +68,10 @@ export async function interactionReplyErrorPermission(
 }
 
 export async function interactionReplyErrorUnauthorized(
-  ctx: Context,
   interaction: ReplyableInteraction,
   message: string,
 ): Promise<void> {
   return interactionReplyError(
-    ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
     t("generic.error.unauthorized_target", { ns: "commands", message }),
@@ -85,13 +79,11 @@ export async function interactionReplyErrorUnauthorized(
 }
 
 export async function interactionReplyErrorMessage(
-  ctx: Context,
   interaction: ReplyableInteraction,
   message: string,
   ephemeral: boolean = false,
 ): Promise<void> {
   return interactionReplyError(
-    ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
     t("generic.error.message", { ns: "commands", message }),
@@ -100,13 +92,11 @@ export async function interactionReplyErrorMessage(
 }
 
 export async function interactionReplyErrorPlainMessage(
-  ctx: Context,
   interaction: ReplyableInteraction,
   message: string,
   ephemeral: boolean = false,
 ): Promise<void> {
   return interactionReplyError(
-    ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
     message,
@@ -115,11 +105,9 @@ export async function interactionReplyErrorPlainMessage(
 }
 
 export async function interactionReplyErrorInternal(
-  ctx: Context,
   interaction: ReplyableInteraction,
 ): Promise<void> {
   return interactionReplyError(
-    ctx,
     interaction,
     t("generic.error.error", { ns: "commands" }),
     t("generic.error.internal", { ns: "commands" }),
