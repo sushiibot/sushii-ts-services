@@ -82,8 +82,6 @@ export async function getUserLookupData(user: User): Promise<UserLookupBan[]> {
 }
 
 export default class LookupCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   requiredBotPermissions = new PermissionsBitField();
 
   command = new SlashCommandBuilder()

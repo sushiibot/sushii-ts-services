@@ -12,8 +12,6 @@ import ModActionData from "./ModActionData";
 import { attachmentOption, noteOption, usersOption } from "./options";
 
 export default class NoteCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("note")
     .setDescription("Add a note to members.")

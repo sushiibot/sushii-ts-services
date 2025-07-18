@@ -16,8 +16,6 @@ import getUserinfoEmbed from "../../user/userinfo.service";
 import { ActionType } from "../ActionType";
 
 export default class UserInfoHandler extends ContextMenuHandler {
-  serverOnly = true;
-
   command = new ContextMenuCommandBuilder()
     .setName("User Info")
     .setType(ApplicationCommandType.User)

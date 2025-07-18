@@ -18,8 +18,6 @@ import {
 } from "./options";
 
 export default class BanCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   requiredBotPermissions = new PermissionsBitField().add("BanMembers");
 
   command = new SlashCommandBuilder()

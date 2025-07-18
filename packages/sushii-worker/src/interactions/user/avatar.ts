@@ -8,8 +8,6 @@ import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
 
 export default class AvatarCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("avatar")
     .setDescription("View someone's avatar.")

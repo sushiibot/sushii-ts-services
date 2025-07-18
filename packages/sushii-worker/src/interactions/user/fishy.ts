@@ -10,8 +10,6 @@ import { SlashCommandHandler } from "../handlers";
 import { fishyForUser } from "./fishy.service";
 
 export default class FishyCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("fishy")
     .setDescription("Catch some fish!")

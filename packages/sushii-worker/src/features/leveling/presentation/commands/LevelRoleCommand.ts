@@ -30,8 +30,6 @@ enum LevelRoleOption {
 }
 
 export default class LevelRoleCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("levelrole")
     .setDescription("Configure level roles.")

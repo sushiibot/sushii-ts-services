@@ -9,8 +9,6 @@ import { SlashCommandHandler } from "../handlers";
 import { getUserString } from "../../utils/userString";
 
 export default class BannerCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("banner")
     .setDescription("View someone's banner.")

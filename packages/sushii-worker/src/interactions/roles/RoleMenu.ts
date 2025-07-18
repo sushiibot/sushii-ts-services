@@ -62,8 +62,6 @@ enum RoleMenuType {
 }
 
 export default class RoleMenuCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   /**
    * /rolemenu new [title] (description) (max roles) (required_role)
    * /rolemenu edit [message id] (title) (description) (max roles) (required_role)

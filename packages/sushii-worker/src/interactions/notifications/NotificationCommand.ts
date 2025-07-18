@@ -36,8 +36,6 @@ enum NotificationCommandName {
 }
 
 export default class NotificationCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("notification")
     .setDescription("Get notifications when someone says something.")

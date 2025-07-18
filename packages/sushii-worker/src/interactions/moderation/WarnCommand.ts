@@ -13,8 +13,6 @@ import ModActionData from "./ModActionData";
 import { reasonOption, usersOption } from "./options";
 
 export default class WarnCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("warn")
     .setDescription("Warn members.")

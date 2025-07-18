@@ -13,7 +13,7 @@ import db from "../../infrastructure/database/db";
 export default class ReminderDeleteAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = "reminder.delete";
 
-  async handler(
+  async handleAutocomplete(
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {

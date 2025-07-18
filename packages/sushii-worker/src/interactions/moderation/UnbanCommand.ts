@@ -13,8 +13,6 @@ import ModActionData from "./ModActionData";
 import { reasonOption, usersOption } from "./options";
 
 export default class UnbanCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   requiredBotPermissions = new PermissionsBitField().add("BanMembers");
 
   command = new SlashCommandBuilder()

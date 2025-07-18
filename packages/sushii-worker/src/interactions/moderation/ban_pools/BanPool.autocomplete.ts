@@ -21,7 +21,7 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
     BanPoolOptionCommand.ClearInvites,
   ].map((subcommand) => `banpool.${subcommand}`);
 
-  async handler(
+  async handleAutocomplete(
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {

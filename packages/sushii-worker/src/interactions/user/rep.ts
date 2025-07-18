@@ -10,8 +10,6 @@ import { SlashCommandHandler } from "../handlers";
 import repForUser from "./rep.service";
 
 export default class RepCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("rep")
     .setDescription("Give someone some reputation")

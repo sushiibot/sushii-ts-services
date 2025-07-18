@@ -156,8 +156,6 @@ export function filterMessages(
 }
 
 export default class PruneCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("prune")
     .setDescription("Bulk delete messages with optional filters.")

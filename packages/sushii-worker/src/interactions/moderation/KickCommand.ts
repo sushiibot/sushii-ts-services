@@ -14,8 +14,6 @@ import ModActionData from "./ModActionData";
 import { reasonOption, sendDMReasonOption, usersOption } from "./options";
 
 export default class KickCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   requiredBotPermissions = new PermissionsBitField().add("KickMembers");
 
   command = new SlashCommandBuilder()

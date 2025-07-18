@@ -56,8 +56,6 @@ export enum BanPoolOption {
 }
 
 export default class BanPoolCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   requiredBotPermissions = new PermissionsBitField();
 
   command = new SlashCommandBuilder()

@@ -16,7 +16,7 @@ export default class RoleMenuAutocomplete extends AutocompleteHandler {
     "rolemenu.roleoptions",
   ];
 
-  async handler(
+  async handleAutocomplete(
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {

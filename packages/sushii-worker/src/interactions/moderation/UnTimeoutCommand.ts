@@ -14,8 +14,6 @@ import ModActionData from "./ModActionData";
 import { reasonOption, sendDMReasonOption, usersOption } from "./options";
 
 export default class UnTimeoutCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   requiredBotPermissions = new PermissionsBitField().add("ModerateMembers");
 
   command = new SlashCommandBuilder()

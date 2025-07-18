@@ -10,7 +10,7 @@ import { searchNotifications } from "../../db/Notification/Notification.reposito
 export default class NotificationListAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = "notification.delete";
 
-  async handler(
+  async handleAutocomplete(
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {

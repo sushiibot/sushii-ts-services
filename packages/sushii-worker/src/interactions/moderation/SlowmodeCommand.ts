@@ -26,8 +26,6 @@ enum SlowmodeOption {
 }
 
 export default class SlowmodeCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("slowmode")
     .setDescription("Adjust slowmode for channels.")

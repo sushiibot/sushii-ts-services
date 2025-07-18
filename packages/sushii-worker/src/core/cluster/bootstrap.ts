@@ -27,6 +27,7 @@ import {
 import { DrizzleTagRepository } from "@/features/tags/infrastructure";
 import {
   TagCommand,
+  TagAddCommand,
   TagGetCommand,
   TagAdminCommand,
   TagAutocomplete,
@@ -116,6 +117,10 @@ export function registerFeatures(
     tagSearchService,
     logger.child({ module: "tagCommand" }),
   );
+  const tagAddCommand = new TagAddCommand(
+    tagService,
+    logger.child({ module: "tagAddCommand" }),
+  );
   const tagGetCommand = new TagGetCommand(
     tagService,
     logger.child({ module: "tagGetCommand" }),
@@ -136,7 +141,7 @@ export function registerFeatures(
   );
 
   // Register commands and handlers on interaction router
-  interactionRouter.addCommands(rankCommand, tagCommand, tagGetCommand, tagAdminCommand);
+  interactionRouter.addCommands(rankCommand, tagCommand, tagAddCommand, tagGetCommand, tagAdminCommand);
   interactionRouter.addAutocompleteHandlers(tagAutocomplete, tagGetAutocomplete);
 
   // ---------------------------------------------------------------------------

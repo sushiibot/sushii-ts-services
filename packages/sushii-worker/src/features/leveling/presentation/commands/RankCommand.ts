@@ -10,8 +10,6 @@ import { GetUserRankService } from "../../application/GetUserRankService";
 import { formatRankCard } from "../views/RankDisplayView";
 
 export default class RankCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("rank")
     .setDescription("View your or another user's rank.")

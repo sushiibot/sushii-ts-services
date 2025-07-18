@@ -249,8 +249,6 @@ the mod log channel (<#${modLogChannelId}>).`;
 }
 
 export default class ReasonCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("reason")
     .setDescription("Set the reason for mod cases.")

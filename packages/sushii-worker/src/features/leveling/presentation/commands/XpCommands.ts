@@ -37,8 +37,6 @@ enum XpOption {
 }
 
 export default class XpCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("xp")
     .setDescription("Configure xp options and level roles.")

@@ -42,38 +42,51 @@ const tracer = opentelemetry.trace.getTracer("interaction-client");
   return this.toString();
 };
 
-interface FocusedOption {
+/**
+ * Represents a focused option in an autocomplete interaction with its command path
+ */
+export interface FocusedOption {
+  /** The full command path (e.g., "command.subgroup.subcommand") */
   path: string;
+  /** The Discord.js focused option data */
   option: AutocompleteFocusedOption;
 }
 
-function findFocusedOptionRecur(
-  options: AutocompleteInteraction["options"],
-  parents: string[],
+/**
+ * Finds the focused option in an autocomplete interaction and builds its command path.
+ * Handles nested command structures like command > subcommand group > subcommand.
+ *
+ * @param interaction - The Discord autocomplete interaction
+ * @returns Object containing the command path and focused option, or undefined if none found
+ *
+ * @example
+ * For "/tag get" command with focused "name" option:
+ * Returns: { path: "tag.get", option: { name: "name", value: "user_input" } }
+ *
+ * For "/notification delete" command with focused "type" option:
+ * Returns: { path: "notification.delete", option: { name: "type", value: "user_input" } }
+ */
+export function findFocusedOption(
+  interaction: AutocompleteInteraction,
 ): FocusedOption | undefined {
-  const subGroup = options.getSubcommandGroup();
+  const parents = [interaction.commandName];
 
+  const subGroup = interaction.options.getSubcommandGroup();
   if (subGroup) {
     parents.push(subGroup);
   }
 
-  const subCommand = options.getSubcommand(false);
+  const subCommand = interaction.options.getSubcommand(false);
   if (subCommand) {
     parents.push(subCommand);
   }
 
-  const focusedOption = options.getFocused(true);
+  const focusedOption = interaction.options.getFocused(true);
 
   return {
     path: parents.join("."),
     option: focusedOption,
   };
-}
-
-function findFocusedOption(
-  interaction: AutocompleteInteraction,
-): FocusedOption | undefined {
-  return findFocusedOptionRecur(interaction.options, [interaction.commandName]);
 }
 
 export default class InteractionRouter {
@@ -149,18 +162,41 @@ export default class InteractionRouter {
   }
 
   /**
-   * Add a new autocomplete to register and handle
+   * Add autocomplete handlers with conflict detection
    *
-   * @param handler autocomplete to add
+   * @param handlers AutocompleteHandlers to add
    */
   public addAutocompleteHandlers(...handlers: AutocompleteHandler[]): void {
     handlers.forEach((handler) => {
-      if (Array.isArray(handler.fullCommandNamePath)) {
-        handler.fullCommandNamePath.forEach((path) =>
-          this.autocompleteHandlers.set(path, handler),
+      const paths = handler.getPaths();
+
+      for (const path of paths) {
+        const existingHandler = this.autocompleteHandlers.get(path);
+
+        if (existingHandler) {
+          // Allow same handler instance to register multiple times (idempotent)
+          if (existingHandler === handler) {
+            continue;
+          }
+
+          // Prevent different handlers from claiming the same path
+          throw new Error(
+            `Autocomplete path conflict: '${path}' is already registered by ` +
+              `${existingHandler.constructor.name}, cannot register ${handler.constructor.name}. ` +
+              `Each autocomplete path must be handled by exactly one handler instance.`,
+          );
+        }
+
+        this.autocompleteHandlers.set(path, handler);
+
+        log.debug(
+          {
+            path,
+            handlerClass: handler.constructor.name,
+            totalPaths: paths.length,
+          },
+          "Registered autocomplete handler",
         );
-      } else {
-        this.autocompleteHandlers.set(handler.fullCommandNamePath, handler);
       }
     });
   }
@@ -215,11 +251,48 @@ export default class InteractionRouter {
   }
 
   /**
+   * Validate autocomplete handler registrations
+   */
+  private validateAutocompleteHandlers(): void {
+    const registrationMap = new Map<string, string[]>();
+
+    // Group paths by handler class for reporting
+    for (const [path, handler] of this.autocompleteHandlers.entries()) {
+      const className = handler.constructor.name;
+      const existing = registrationMap.get(className) || [];
+      existing.push(path);
+      registrationMap.set(className, existing);
+    }
+
+    log.info(
+      {
+        totalHandlers: registrationMap.size,
+        totalPaths: this.autocompleteHandlers.size,
+        registrations: Object.fromEntries(registrationMap),
+      },
+      "Autocomplete handler validation complete",
+    );
+
+    // Validate that each handler has at least one path
+    for (const [className, paths] of registrationMap.entries()) {
+      if (paths.length === 0) {
+        log.warn(
+          { className },
+          "Autocomplete handler registered with no paths",
+        );
+      }
+    }
+  }
+
+  /**
    * Register all slash commands via REST api
    *
    * @returns
    */
   public async register(): Promise<void> {
+    // Validate autocomplete handlers before registering commands
+    this.validateAutocompleteHandlers();
+
     log.info("registering %s global commands...", this.commands.size);
 
     try {
@@ -335,7 +408,12 @@ export default class InteractionRouter {
 
     if (!focusedOption) {
       log.error(
-        `no focused option found for autocomplete ${interaction.commandName}`,
+        {
+          commandName: interaction.commandName,
+          guildId: interaction.guildId,
+          userId: interaction.user.id,
+        },
+        "No focused option found for autocomplete",
       );
 
       return false;
@@ -344,35 +422,77 @@ export default class InteractionRouter {
     const autocomplete = this.autocompleteHandlers.get(focusedOption.path);
 
     if (!autocomplete) {
-      log.error(`received unknown autocomplete: ${focusedOption.path}`);
+      log.error(
+        {
+          path: focusedOption.path,
+          commandName: interaction.commandName,
+          guildId: interaction.guildId,
+          userId: interaction.user.id,
+          availablePaths: Array.from(this.autocompleteHandlers.keys()),
+        },
+        "Unknown autocomplete path",
+      );
+
+      // Provide empty response to prevent Discord timeout
+      try {
+        await interaction.respond([]);
+      } catch (responseError) {
+        log.warn(
+          { err: responseError },
+          "Failed to send empty autocomplete response",
+        );
+      }
+
       return false;
     }
 
-    log.info(
+    log.debug(
       {
         path: focusedOption.path,
         option: focusedOption.option,
         guildId: interaction.guildId,
         userId: interaction.user.id,
+        handlerClass: autocomplete.constructor.name,
       },
-      "received autocomplete",
+      "Processing autocomplete",
     );
 
     try {
       await autocomplete.handler(interaction, focusedOption.option);
-    } catch (e) {
-      Sentry.captureException(e, {
+      return true;
+    } catch (err) {
+      Sentry.captureException(err, {
         tags: {
           type: "autocomplete",
-          custom_id: interaction.commandName,
+          path: focusedOption.path,
+          handler: autocomplete.constructor.name,
+        },
+        user: {
+          id: interaction.user.id,
+          username: interaction.user.username,
+        },
+        extra: {
+          guildId: interaction.guildId,
+          optionName: focusedOption.option.name,
+          optionValue: focusedOption.option.value,
         },
       });
 
-      log.error(e, "error running autocomplete %s", interaction.commandName);
+      log.error(
+        {
+          err: err,
+          path: focusedOption.path,
+          handlerClass: autocomplete.constructor.name,
+          guildId: interaction.guildId,
+          userId: interaction.user.id,
+          optionName: focusedOption.option.name,
+          optionValue: focusedOption.option.value,
+        },
+        "Error in autocomplete handler",
+      );
+
       return false;
     }
-
-    return true;
   }
 
   /**

@@ -14,8 +14,6 @@ import db from "../../infrastructure/database/db";
 import { getUserString } from "../../utils/userString";
 
 export default class HistoryCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   requiredBotPermissions = new PermissionsBitField();
 
   command = new SlashCommandBuilder()

@@ -16,12 +16,12 @@ import {
 
 export default class GiveawayAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = [
-    GiveawaySubcommand.Delete,
-    GiveawaySubcommand.End,
-    GiveawaySubcommand.Reroll,
-  ].map((subCommand) => `giveaway.${subCommand}`);
+    `giveaway.${GiveawaySubcommand.Delete}`,
+    `giveaway.${GiveawaySubcommand.End}`,
+    `giveaway.${GiveawaySubcommand.Reroll}`,
+  ];
 
-  async handler(
+  async handleAutocomplete(
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {

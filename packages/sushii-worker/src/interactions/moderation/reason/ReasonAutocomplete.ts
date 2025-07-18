@@ -1,7 +1,4 @@
-import {
-  APIApplicationCommandOptionChoice,
-  ApplicationCommandOptionType,
-} from "discord.js";
+import { APIApplicationCommandOptionChoice } from "discord.js";
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import logger from "@/shared/infrastructure/logger";
 import { AutocompleteHandler } from "../../handlers";
@@ -27,7 +24,7 @@ function truncateWithEllipsis(str: string, len: number): string {
 export default class ReasonAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = ["reason", "uncase"];
 
-  async handler(
+  protected async handleAutocomplete(
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {
@@ -35,7 +32,7 @@ export default class ReasonAutocomplete extends AutocompleteHandler {
       throw new Error("Must be in guild.");
     }
 
-    if (option.type !== ApplicationCommandOptionType.String) {
+    if (!this.validateStringOption(option)) {
       throw new Error("Option type must be a string.");
     }
 

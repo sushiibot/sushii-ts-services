@@ -19,8 +19,6 @@ import {
 } from "./options";
 
 export default class TimeoutCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   requiredBotPermissions = new PermissionsBitField().add("ModerateMembers");
 
   command = new SlashCommandBuilder()

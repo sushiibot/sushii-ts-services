@@ -14,8 +14,6 @@ import { getGuildConfig } from "../../../db/GuildConfig/GuildConfig.repository";
 import { deleteModLogsRange } from "../../../db/ModLog/ModLog.repository";
 
 export default class UncaseCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("uncase")
     .setDescription("Delete mod cases.")
