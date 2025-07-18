@@ -166,7 +166,6 @@ export default class XpCommand extends SlashCommandHandler {
 
     if (!newBlock) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         `Channel <#${channel.id}> is already blocked`,
         true,
@@ -209,7 +208,6 @@ export default class XpCommand extends SlashCommandHandler {
 
     if (!newBlock) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         `Role <@&${role.id}> is already blocked`,
         true,
@@ -297,7 +295,6 @@ export default class XpCommand extends SlashCommandHandler {
 
     if (!res) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         `No XP block was found for <#${channel.id}>`,
         true,
@@ -335,7 +332,6 @@ export default class XpCommand extends SlashCommandHandler {
 
     if (!res) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         `No XP block was found for <@&${role.id}>`,
         true,

@@ -59,7 +59,7 @@ enum PruneBotsOrUsersOption {
   UsersOnly = "users_only",
 }
 
-type FilterOptions = {
+interface FilterOptions {
   beforeMessageID: string | null;
   afterMessageID: string | null;
   user: User | null;
@@ -67,12 +67,12 @@ type FilterOptions = {
   skipPinned: boolean | null;
   attachments: string | null;
   botsOrUsers: string | null;
-};
+}
 
-type FilterResponse = {
+interface FilterResponse {
   filteredMessages: Message[];
   userDeletedSummary: Record<string, number>;
-};
+}
 
 export function filterMessages(
   msgs: Message[],
@@ -234,7 +234,6 @@ export default class PruneCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,
@@ -274,7 +273,6 @@ export default class PruneCommand extends SlashCommandHandler {
     if (afterMessageID && beforeMessageID) {
       if (BigInt(afterMessageID) > BigInt(beforeMessageID)) {
         await interactionReplyErrorMessage(
-          ctx,
           interaction,
           "After message ID must be older than before message ID.",
           true,
@@ -303,7 +301,6 @@ export default class PruneCommand extends SlashCommandHandler {
     } catch (err) {
       if (err instanceof DiscordAPIError) {
         await interactionReplyErrorMessage(
-          ctx,
           interaction,
           `Failed to fetch messages: ${err.message}`,
           true,
@@ -353,7 +350,6 @@ export default class PruneCommand extends SlashCommandHandler {
     } catch (err) {
       if (err instanceof DiscordAPIError) {
         await interactionReplyErrorMessage(
-          ctx,
           interaction,
           `Failed to delete messages: ${err.message}`,
           true,

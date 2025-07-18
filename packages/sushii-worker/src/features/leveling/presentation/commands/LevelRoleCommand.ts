@@ -5,17 +5,17 @@ import {
   InteractionContextType,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord.js";
-import Context from "../../../../model/context";
-import Color from "../../../../utils/colors";
-import { SlashCommandHandler } from "../../../../interactions/handlers";
-import { interactionReplyErrorPlainMessage } from "../../../../interactions/responses/error";
-import canAddRole from "../../../../utils/canAddRole";
+import Context from "@/model/context";
+import Color from "@/utils/colors";
+import { SlashCommandHandler } from "@/interactions/handlers";
+import { interactionReplyErrorPlainMessage } from "@/interactions/responses/error";
+import canAddRole from "@/utils/canAddRole";
 import {
   deleteLevelRole,
   getAllLevelRoles,
   upsertLevelRole,
-} from "../../../../db/LevelRole/LevelRole.repository";
-import db from "../../../../infrastructure/database/db";
+} from "@/db/LevelRole/LevelRole.repository";
+import db from "@/infrastructure/database/db";
 
 enum CommandName {
   LevelRoleNew = "new",
@@ -83,7 +83,6 @@ export default class LevelRoleCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,
@@ -121,19 +120,13 @@ export default class LevelRoleCommand extends SlashCommandHandler {
 
     const canAddRes = await canAddRole(interaction, role);
     if (canAddRes.err) {
-      await interactionReplyErrorPlainMessage(
-        ctx,
-        interaction,
-        canAddRes.val,
-        true,
-      );
+      await interactionReplyErrorPlainMessage(interaction, canAddRes.val, true);
 
       return;
     }
 
     if (removeLevel && removeLevel <= addLevel) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         "remove_level must be higher than add_level",
         true,
@@ -190,7 +183,6 @@ export default class LevelRoleCommand extends SlashCommandHandler {
 
     if (deletedCount.numDeletedRows === BigInt(0)) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         `No level role was found for <@&${role.id}>`,
         true,

@@ -309,7 +309,6 @@ export default class ReasonCommand extends SlashCommandHandler {
     const affectedCaseCount = caseSpecCount(caseSpec);
     if (affectedCaseCount && affectedCaseCount > 25) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         `You can only modify up to 25 cases at a time (${affectedCaseCount} > 25)`,
       );

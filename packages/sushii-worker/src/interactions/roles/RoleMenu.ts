@@ -651,7 +651,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       !currentRoleIDs.every((id) => newOrderRoleIDsSet.has(id))
     ) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         t("rolemenu.editorder.error.mismatched_roles", {
           name: menuName,
@@ -787,7 +786,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
         // If trying to add a role that is higher than the user's current highest
         // role.
         if (role && highestRole && role.position > highestRole.position) {
-          // eslint-disable-next-line no-await-in-loop
           await interaction.reply({
             content: t("rolemenu.addroles.error.higher_role_given"),
           });
@@ -836,7 +834,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private async removeRolesHandler(
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
@@ -954,7 +951,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     if (!emojiStr && !description) {
       await interactionReplyErrorMessage(
-        ctx,
         interaction,
         t("rolemenu.roleoptions.error.no_option_provided"),
       );
@@ -970,7 +966,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       // Error only sent when emojiStr is provided
       if (!parsedEmoji) {
         await interactionReplyErrorMessage(
-          ctx,
           interaction,
           t("rolemenu.roleoptions.error.invalid_emoji"),
         );
@@ -985,7 +980,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       // First check if description is too long
       if (description.length > 100) {
         await interactionReplyErrorMessage(
-          ctx,
           interaction,
           t("rolemenu.roleoptions.error.description_too_long"),
         );
@@ -1099,7 +1093,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     if (roles.length === 0) {
       await interactionReplyErrorMessage(
-        ctx,
         interaction,
         t("rolemenu.send.error.menu_has_no_roles"),
       );
@@ -1109,7 +1102,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     if (roleMenuData.max_count && roles.length < roleMenuData.max_count) {
       await interactionReplyErrorMessage(
-        ctx,
         interaction,
         t("rolemenu.send.error.menu_has_less_roles_than_max"),
       );
@@ -1154,7 +1146,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     if (type === RoleMenuType.Buttons) {
       let row = new ActionRowBuilder<ButtonBuilder>();
 
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       for (const { role_id, emoji } of roles) {
         let button = new ButtonBuilder()
           .setCustomId(customIds.roleMenuButton.compile({ roleId: role_id }))
@@ -1195,7 +1186,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     if (type === RoleMenuType.SelectMenu) {
       const selectOptions = [];
 
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       for (const { role_id, emoji, description } of roles) {
         let option = new StringSelectMenuOptionBuilder()
           .setValue(role_id)
@@ -1266,7 +1256,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private async getMenu(
     ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,

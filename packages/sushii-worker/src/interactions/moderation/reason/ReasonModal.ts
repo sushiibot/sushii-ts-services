@@ -37,7 +37,6 @@ export default class ModLogReasonModalHandler extends ModalHandler {
 
     if (!modCase) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         `Case #${caseId} was not found, it may have been deleted.`,
       );
@@ -54,7 +53,6 @@ export default class ModLogReasonModalHandler extends ModalHandler {
 
     if (!updatedModCase) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         `Failed to update case #${caseId}`,
       );
@@ -75,7 +73,6 @@ export default class ModLogReasonModalHandler extends ModalHandler {
       targetUser = await interaction.client.users.fetch(modCase.user_id);
     } catch (err) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         "Failed to get user",
       );

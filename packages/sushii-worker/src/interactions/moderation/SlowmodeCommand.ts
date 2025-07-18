@@ -52,7 +52,6 @@ export default class SlowmodeCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
     ctx: Context,
     interaction: ChatInputCommandInteraction,
@@ -91,7 +90,6 @@ export default class SlowmodeCommand extends SlashCommandHandler {
 
     if (!duration) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         "Invalid duration, please use a valid duration like 5s or 1m.",
         true,
@@ -102,7 +100,6 @@ export default class SlowmodeCommand extends SlashCommandHandler {
 
     if (duration.asSeconds() > 21600) {
       await interactionReplyErrorPlainMessage(
-        ctx,
         interaction,
         "Slowmode must be less than 6 hours.",
         true,
@@ -118,7 +115,6 @@ export default class SlowmodeCommand extends SlashCommandHandler {
     } catch (err) {
       if (err instanceof DiscordAPIError) {
         await interactionReplyErrorMessage(
-          ctx,
           interaction,
           `Failed to update slowmode: ${err.message}`,
           true,
