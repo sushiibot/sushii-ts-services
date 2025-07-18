@@ -28,7 +28,7 @@ class MockTagRepository implements TagRepository {
     return this.tags.get(key) || null;
   }
 
-  async findByFilters(filters: TagFilters): Promise<Tag[]> {
+  async findByFilters(filters: TagFilters, limit: number): Promise<Tag[]> {
     return Array.from(this.tags.values());
   }
 
@@ -177,9 +177,7 @@ describe("TagService", () => {
       expect(result.ok).toBe(true);
       const tag = result.val as Tag;
       expect(tag.getContent()).toBe(null);
-      expect(tag.getAttachment()).toBe(
-        "https://example.com/image.png",
-      );
+      expect(tag.getAttachment()).toBe("https://example.com/image.png");
     });
 
     it("should fail to create tag with invalid name", async () => {

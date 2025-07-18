@@ -14,8 +14,15 @@ export class TagSearchService {
     return this.tagRepository.findAllByGuild(guildId);
   }
 
-  async getPaginatedTags(guildId: string, page: number, pageSize: number): Promise<string[]> {
-    this.logger.debug({ guildId, page, pageSize }, "Getting paginated tags for guild");
+  async getPaginatedTags(
+    guildId: string,
+    page: number,
+    pageSize: number,
+  ): Promise<string[]> {
+    this.logger.debug(
+      { guildId, page, pageSize },
+      "Getting paginated tags for guild",
+    );
     const offset = page * pageSize;
     return this.tagRepository.findPaginatedByGuild(guildId, offset, pageSize);
   }
@@ -28,7 +35,13 @@ export class TagSearchService {
   async searchTags(params: TagFiltersData): Promise<Tag[]> {
     this.logger.debug({ params }, "Searching tags with filters");
 
-    if (!params.startsWith && !params.contains && !params.ownerId) {
+    // Allow EMPTY strings, but not undefined - empty strings just means
+    // no filter and returning all tags
+    if (
+      params.startsWith === undefined &&
+      !params.contains &&
+      !params.ownerId
+    ) {
       throw new Error("At least one search parameter must be provided");
     }
 
@@ -43,7 +56,7 @@ export class TagSearchService {
       ownerId: params.ownerId,
     });
 
-    return this.tagRepository.findByFilters(filters);
+    return this.tagRepository.findByFilters(filters, 25);
   }
 
   async getRandomTag(params: TagFiltersData): Promise<Tag | null> {

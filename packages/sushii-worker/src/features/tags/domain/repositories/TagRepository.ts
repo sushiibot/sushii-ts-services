@@ -5,7 +5,7 @@ import { TagFilters } from "../value-objects/TagFilters";
 export interface TagRepository {
   save(tag: Tag): Promise<void>;
   findByNameAndGuild(name: TagName, guildId: string): Promise<Tag | null>;
-  findByFilters(filters: TagFilters): Promise<Tag[]>;
+  findByFilters(filters: TagFilters, limit: number): Promise<Tag[]>;
   findRandomByFilters(filters: TagFilters): Promise<Tag | null>;
   findAllByGuild(guildId: string): Promise<Tag[]>;
   findPaginatedByGuild(

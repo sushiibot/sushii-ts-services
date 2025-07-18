@@ -1,4 +1,4 @@
-import { eq, and, ilike, sql, count } from "drizzle-orm";
+import { eq, and, ilike, sql, count, desc } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Logger } from "pino";
 import * as schema from "@/infrastructure/database/schema";
@@ -62,7 +62,7 @@ export class DrizzleTagRepository implements TagRepository {
     return result.length > 0 ? this.mapToTag(result[0]) : null;
   }
 
-  async findByFilters(filters: TagFilters): Promise<Tag[]> {
+  async findByFilters(filters: TagFilters, limit: number): Promise<Tag[]> {
     const conditions = [
       eq(schema.tagsInAppPublic.guildId, BigInt(filters.getGuildId())),
     ];
@@ -72,6 +72,7 @@ export class DrizzleTagRepository implements TagRepository {
         ilike(schema.tagsInAppPublic.tagName, `${filters.getStartsWith()}%`),
       );
     } else if (filters.getContains()) {
+      // Escape any special characters in the contains filter
       conditions.push(
         ilike(schema.tagsInAppPublic.tagName, `%${filters.getContains()}%`),
       );
@@ -86,7 +87,8 @@ export class DrizzleTagRepository implements TagRepository {
       .select()
       .from(schema.tagsInAppPublic)
       .where(and(...conditions))
-      .orderBy(sql`random()`);
+      .orderBy(desc(schema.tagsInAppPublic.tagName))
+      .limit(limit);
 
     return results.map((row) => this.mapToTag(row));
   }

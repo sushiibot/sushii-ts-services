@@ -26,14 +26,13 @@ export class TagGetAutocomplete extends AutocompleteHandler {
       return;
     }
 
-    const query = option.value;
-
     try {
       const tags = await this.tagSearchService.searchTags({
         guildId: interaction.guildId,
-        startsWith: query || undefined,
+        startsWith: option.value,
       });
 
+      // searchTag already limits to 25, but just to be safe
       const choices = tags.slice(0, 25).map((tag) => ({
         name: tag.getName().getValue(),
         value: tag.getName().getValue(),
