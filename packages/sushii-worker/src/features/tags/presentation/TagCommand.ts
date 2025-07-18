@@ -3,7 +3,6 @@ import {
   EmbedBuilder,
   ChatInputCommandInteraction,
   InteractionContextType,
-  MessageFlags,
   PermissionFlagsBits,
 } from "discord.js";
 import { Logger } from "pino";
@@ -57,18 +56,6 @@ export class TagCommand extends SlashCommandHandler {
             .setName("attachment")
             .setDescription("Optional tag attachment.")
             .setRequired(false),
-        ),
-    )
-    .addSubcommand((c) =>
-      c
-        .setName("get")
-        .setDescription("Use a tag.")
-        .addStringOption((o) =>
-          o
-            .setName("name")
-            .setDescription("The tag name.")
-            .setRequired(true)
-            .setAutocomplete(true),
         ),
     )
     .addSubcommand((c) =>
@@ -208,8 +195,6 @@ export class TagCommand extends SlashCommandHandler {
     switch (subcommand) {
       case "add":
         return this.addHandler(interaction);
-      case "get":
-        return this.getHandler(interaction);
       case "random":
         return this.randomHandler(interaction);
       case "info":
@@ -314,32 +299,6 @@ export class TagCommand extends SlashCommandHandler {
     }
   }
 
-  private async getHandler(
-    interaction: ChatInputCommandInteraction<"cached">,
-  ): Promise<void> {
-    const tagName = interaction.options.getString("name");
-    if (!tagName) {
-      throw new Error("Missing tag name");
-    }
-
-    const result = await this.tagService.useTag(tagName, interaction.guildId);
-
-    if (result.err) {
-      await interaction.reply({
-        embeds: [createTagNotFoundEmbed(tagName).toJSON()],
-        flags: MessageFlags.Ephemeral,
-      });
-      return;
-    }
-
-    const tag = result.val;
-    await interaction.reply({
-      content: tag.getDisplayContent(),
-      allowedMentions: {
-        parse: [],
-      },
-    });
-  }
 
   private async randomHandler(
     interaction: ChatInputCommandInteraction<"cached">,
