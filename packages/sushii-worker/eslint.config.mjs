@@ -23,6 +23,17 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/no-inferrable-types": "off",
       "@typescript-eslint/no-non-null-assertion": "warn",
+      "no-restricted-imports": [
+        "warn",
+        {
+          "patterns": [
+            {
+              "group": ["../../../*", "../../../../*", "../../../../../*"],
+              "message": "Use absolute imports (@/) for deeply nested imports instead of excessive relative paths"
+            }
+          ]
+        }
+      ]
     }
   }
 );
