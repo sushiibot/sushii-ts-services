@@ -14,7 +14,7 @@ export class TagGetCommand extends SlashCommandHandler {
 
   command = new SlashCommandBuilder()
     .setName("t")
-    .setDescription("Use a tag by name.")
+    .setDescription("Use a tag.")
     .setContexts(InteractionContextType.Guild)
     .addStringOption((o) =>
       o

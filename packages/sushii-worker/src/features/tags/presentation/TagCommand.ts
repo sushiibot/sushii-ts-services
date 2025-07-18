@@ -341,8 +341,8 @@ export class TagCommand extends SlashCommandHandler {
           parse: [],
         },
       });
-    } catch (error) {
-      this.logger.error({ error }, "Error in random tag handler");
+    } catch (err) {
+      this.logger.error({ err }, "Error in random tag handler");
       await interactionReplyErrorMessage(
         interaction,
         "Failed to get random tag",
@@ -500,8 +500,8 @@ export class TagCommand extends SlashCommandHandler {
       });
 
       await paginator.paginate();
-    } catch (error) {
-      this.logger.error({ error }, "Error in search tag handler");
+    } catch (err) {
+      this.logger.error({ err }, "Error in search tag handler");
       await interactionReplyErrorMessage(interaction, "Failed to search tags");
     }
   }

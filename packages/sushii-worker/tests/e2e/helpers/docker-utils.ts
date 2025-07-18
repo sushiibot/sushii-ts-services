@@ -33,9 +33,9 @@ export class DockerUtils {
       });
 
       this.logger.info("Test environment started successfully");
-    } catch (error) {
-      this.logger.error({ error }, "Failed to start test environment");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err }, "Failed to start test environment");
+      throw err;
     }
   }
 
@@ -54,9 +54,9 @@ export class DockerUtils {
       });
 
       this.logger.info("Test environment stopped successfully");
-    } catch (error) {
-      this.logger.error({ error }, "Failed to stop test environment");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err }, "Failed to stop test environment");
+      throw err;
     }
   }
 

@@ -53,8 +53,9 @@ export class HealthCheckUtils {
         deployment: data.deployment,
         uptime: data.uptime,
       };
-    } catch (error) {
-      this.logger.error({ error, port }, "Failed to check bot health");
+    } catch (err) {
+      this.logger.error({ err, port }, "Failed to check bot health");
+
       return {
         status: "unknown",
         timestamp: new Date().toISOString(),
@@ -131,9 +132,9 @@ export class HealthCheckUtils {
 
       const metricsText = await response.text();
       return this.parsePrometheusMetrics(metricsText);
-    } catch (error) {
-      this.logger.error({ error, port }, "Failed to get bot metrics");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err, port }, "Failed to get bot metrics");
+      throw err;
     }
   }
 

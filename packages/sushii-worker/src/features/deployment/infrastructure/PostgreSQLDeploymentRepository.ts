@@ -38,8 +38,8 @@ export class PostgreSQLDeploymentRepository implements DeploymentRepository {
     }
 
     try {
-      this.client.on("error", (error) => {
-        this.logger.error({ error }, "PostgreSQL client error");
+      this.client.on("error", (err) => {
+        this.logger.error({ err }, "PostgreSQL client error");
         this.isConnected = false;
       });
 
@@ -106,9 +106,9 @@ export class PostgreSQLDeploymentRepository implements DeploymentRepository {
         deploymentName,
         new Date(), // We don't store updatedAt in the current schema
       );
-    } catch (error) {
-      this.logger.error({ error }, "Failed to get active deployment");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err }, "Failed to get active deployment");
+      throw err;
     }
   }
 
@@ -141,9 +141,9 @@ export class PostgreSQLDeploymentRepository implements DeploymentRepository {
 
       // Update local state only after transaction succeeds
       this.currentDeploymentName = deployment.name;
-    } catch (error) {
-      this.logger.error({ error }, "Failed to set active deployment");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err }, "Failed to set active deployment");
+      throw err;
     }
   }
 
@@ -183,8 +183,8 @@ export class PostgreSQLDeploymentRepository implements DeploymentRepository {
       this.eventBus.publish(
         new DeploymentChanged(currentDeployment, deploymentName),
       );
-    } catch (error) {
-      this.logger.error({ error }, "Error handling notification");
+    } catch (err) {
+      this.logger.error({ err }, "Error handling notification");
     }
   }
 }

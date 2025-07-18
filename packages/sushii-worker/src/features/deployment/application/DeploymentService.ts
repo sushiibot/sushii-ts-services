@@ -38,9 +38,9 @@ export class DeploymentService {
         },
         "Deployment service started",
       );
-    } catch (error) {
-      this.logger.error({ error }, "Failed to start deployment service");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err }, "Failed to start deployment service");
+      throw err;
     }
   }
 
@@ -54,8 +54,8 @@ export class DeploymentService {
       this.isStarted = false;
       this.currentDeployment = null;
       this.logger.info("Deployment service stopped");
-    } catch (error) {
-      this.logger.error({ error }, "Error stopping deployment service");
+    } catch (err) {
+      this.logger.error({ err }, "Error stopping deployment service");
     }
   }
 
@@ -154,9 +154,9 @@ export class DeploymentService {
       );
 
       return { changed: true, deployment: newDeployment.name };
-    } catch (error) {
-      this.logger.error({ error }, "Failed to set deployment");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err }, "Failed to set deployment");
+      throw err;
     }
   }
 

@@ -40,8 +40,8 @@ export class TagGetAutocomplete extends AutocompleteHandler {
       }));
 
       await interaction.respond(choices);
-    } catch (error) {
-      this.logger.error({ error }, "Error in tag get autocomplete");
+    } catch (err) {
+      this.logger.error({ err }, "Error in tag get autocomplete");
       await interaction.respond([]);
     }
   }

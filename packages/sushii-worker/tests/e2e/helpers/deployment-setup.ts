@@ -105,9 +105,9 @@ export class DeploymentSetup {
       await this.databaseUtils.close();
 
       this.logger.info("E2E test environment cleanup complete");
-    } catch (error) {
-      this.logger.error({ error }, "Failed to cleanup test environment");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err }, "Failed to cleanup test environment");
+      throw err;
     }
   }
 

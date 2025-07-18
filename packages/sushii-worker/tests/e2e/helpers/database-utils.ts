@@ -31,9 +31,9 @@ export class DatabaseUtils {
     try {
       await this.db.execute(sql`SELECT 1`);
       this.logger.info("Database connection test successful");
-    } catch (error) {
-      this.logger.error({ error }, "Database connection test failed");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err }, "Database connection test failed");
+      throw err;
     }
   }
 
@@ -55,9 +55,9 @@ export class DatabaseUtils {
         name: row.name as string,
         updated_at: new Date(row.updated_at as string),
       };
-    } catch (error) {
-      this.logger.error({ error }, "Failed to get active deployment");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err }, "Failed to get active deployment");
+      throw err;
     }
   }
 
@@ -79,12 +79,12 @@ export class DatabaseUtils {
       });
 
       this.logger.info({ deploymentName }, "Set active deployment in database");
-    } catch (error) {
+    } catch (err) {
       this.logger.error(
-        { error, deploymentName },
+        { err, deploymentName },
         "Failed to set active deployment",
       );
-      throw error;
+      throw err;
     }
   }
 
@@ -101,9 +101,9 @@ export class DatabaseUtils {
         name: row.name as string,
         updated_at: new Date(row.updated_at as string),
       }));
-    } catch (error) {
-      this.logger.error({ error }, "Failed to get all deployments");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err }, "Failed to get all deployments");
+      throw err;
     }
   }
 
@@ -114,9 +114,9 @@ export class DatabaseUtils {
     try {
       await this.db.execute(sql`DELETE FROM app_private.active_deployment`);
       this.logger.info("Cleared deployment table");
-    } catch (error) {
-      this.logger.error({ error }, "Failed to clear deployment table");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err }, "Failed to clear deployment table");
+      throw err;
     }
   }
 
@@ -184,8 +184,8 @@ export class DatabaseUtils {
       }
 
       return true;
-    } catch (error) {
-      this.logger.error({ error }, "Failed to check deployment table schema");
+    } catch (err) {
+      this.logger.error({ err }, "Failed to check deployment table schema");
       return false;
     }
   }
@@ -197,9 +197,9 @@ export class DatabaseUtils {
     try {
       await this.pool.end();
       this.logger.info("Database connection closed");
-    } catch (error) {
-      this.logger.error({ error }, "Failed to close database connection");
-      throw error;
+    } catch (err) {
+      this.logger.error({ err }, "Failed to close database connection");
+      throw err;
     }
   }
 
