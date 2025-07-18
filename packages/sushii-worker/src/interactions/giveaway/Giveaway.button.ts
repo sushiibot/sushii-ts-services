@@ -6,7 +6,6 @@ import {
   InteractionResponse,
 } from "discord.js";
 import { ButtonHandler } from "../handlers";
-import Context from "../../model/context";
 import customIds from "../customIds";
 import {
   createGiveawayEntries,
@@ -27,10 +26,10 @@ import logger from "@/shared/infrastructure/logger";
 const log = logger.child({ module: "GiveawayButtonHandler" });
 
 // giveawayId -> userId[]
-type GiveawayCacheEntry = {
+interface GiveawayCacheEntry {
   users: string[];
   message: Message<true>;
-};
+}
 
 const entryCache = new Map<string, GiveawayCacheEntry>();
 let insertTimer: NodeJS.Timeout;
@@ -61,7 +60,6 @@ async function flushCacheToDb(): Promise<void> {
 
   // Update all giveaways with new entry count
 
-  /* eslint-disable no-await-in-loop */
   for (const giveaway of uniqueGiveaways) {
     const totalEntries = await getGiveawayEntryCount(db, giveaway.id);
     const components = getGiveawayComponents(totalEntries, false);
@@ -71,7 +69,6 @@ async function flushCacheToDb(): Promise<void> {
       components,
     });
   }
-  /* eslint-enable no-await-in-loop */
 }
 
 async function addEntry(
@@ -188,11 +185,7 @@ async function awaitRemoveEntryButton(
 export default class GiveawayButtonHandler extends ButtonHandler {
   customIDMatch = customIds.giveawayEnterButton.match;
 
-  // eslint-disable-next-line class-methods-use-this
-  async handleInteraction(
-    ctx: Context,
-    interaction: ButtonInteraction,
-  ): Promise<void> {
+  async handleInteraction(interaction: ButtonInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }

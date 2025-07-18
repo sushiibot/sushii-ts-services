@@ -1,5 +1,4 @@
 import { ModalSubmitInteraction } from "discord.js";
-import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ModalHandler } from "../../handlers";
 import { interactionReplyErrorPlainMessage } from "../../responses/error";
@@ -12,10 +11,7 @@ import { getModLog, upsertModLog } from "../../../db/ModLog/ModLog.repository";
 export default class ModLogReasonModalHandler extends ModalHandler {
   customIDMatch = customIds.modLogReason.match;
 
-  async handleModalSubmit(
-    ctx: Context,
-    interaction: ModalSubmitInteraction,
-  ): Promise<void> {
+  async handleModalSubmit(interaction: ModalSubmitInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }

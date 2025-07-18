@@ -1,6 +1,5 @@
 import { ApplicationCommandOptionType } from "discord.js";
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
-import Context from "../../model/context";
 import { AutocompleteHandler } from "../handlers";
 import { searchRoleMenus } from "../../db/RoleMenu/ModLog.repository";
 import db from "../../infrastructure/database/db";
@@ -17,9 +16,7 @@ export default class RoleMenuAutocomplete extends AutocompleteHandler {
     "rolemenu.roleoptions",
   ];
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
-    ctx: Context,
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {

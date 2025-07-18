@@ -7,7 +7,6 @@ import {
   InteractionContextType,
 } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
-import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { getGuildTempBans } from "../../db/TempBan/TempBan.repository";
 import db from "../../infrastructure/database/db";
@@ -24,10 +23,7 @@ export default class TempbanListCommand extends SlashCommandHandler {
     .setContexts(InteractionContextType.Guild)
     .toJSON();
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not in cached guild");
     }

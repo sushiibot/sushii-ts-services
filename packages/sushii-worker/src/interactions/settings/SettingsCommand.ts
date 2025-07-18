@@ -11,7 +11,6 @@ import {
   InteractionContextType,
 } from "discord.js";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
-import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import db from "../../infrastructure/database/db";
 import SushiiEmoji from "../../shared/presentation/SushiiEmoji";
@@ -98,7 +97,6 @@ function formatChannelOption(
 }
 
 function getGuildConfigEmbed(
-  ctx: Context,
   config: AllSelection<DB, "app_public.guild_configs">,
 ): EmbedBuilder {
   let embed = new EmbedBuilder()
@@ -128,18 +126,14 @@ function getGuildConfigEmbed(
   joinLeave += formatTextOption(
     "Join Message",
     config.join_msg,
-    `No join message set, use ${ctx.getCommandMention(
-      "settings joinmsg",
-    )} to set one.`,
+    `No join message set, use \`/settings joinmsg\` to set one.`,
     config.join_msg_enabled,
   );
 
   joinLeave += formatTextOption(
     "Leave Message",
     config.leave_msg,
-    `No leave message set, use ${ctx.getCommandMention(
-      "settings leavemsg",
-    )} to set one.`,
+    `No leave message set, use \`/settings leavemsg\` to set one.`,
     config.leave_msg_enabled,
   );
   joinLeave += "\n";
@@ -147,9 +141,7 @@ function getGuildConfigEmbed(
   if (config.msg_channel) {
     joinLeave += `Join/Leave messages will be sent to <#${config.msg_channel}>`;
   } else {
-    joinLeave += `⚠️ Join/Leave message channel needs to be set with ${ctx.getCommandMention(
-      "settings joinleavechannel",
-    )}`;
+    joinLeave += `⚠️ Join/Leave message channel needs to be set with \`/settings joinleavechannel\``;
   }
 
   embed = embed.addFields([
@@ -168,7 +160,7 @@ function getGuildConfigEmbed(
   logging += formatChannelOption(
     "Mod logs",
     config.log_mod,
-    `No mod log channel set, use ${ctx.getCommandMention("settings modlog")}`,
+    `No mod log channel set, use \`/settings modlog\``,
     config.log_mod_enabled,
   );
   logging += "\n";
@@ -176,9 +168,7 @@ function getGuildConfigEmbed(
   logging += formatChannelOption(
     "Member join/leave logs",
     config.log_member,
-    `No member log channel set, use ${ctx.getCommandMention(
-      "settings memberlog",
-    )}`,
+    `No member log channel set, use \`/settings memberlog\``,
     config.log_member_enabled,
   );
   logging += "\n";
@@ -186,9 +176,7 @@ function getGuildConfigEmbed(
   logging += formatChannelOption(
     "Message logs",
     config.log_msg,
-    `No message log channel set, use ${ctx.getCommandMention(
-      "settings msglog set_channel",
-    )}`,
+    `No message log channel set, use \`/settings msglog set_channel\``,
     config.log_msg_enabled,
   );
   logging += "\n";
@@ -210,9 +198,7 @@ function getGuildConfigEmbed(
 
   const stateText = config.lookup_details_opt_in ? "opted-in" : "opted-out";
 
-  lookup += ` Lookup details currently ${stateText}, use ${ctx.getCommandMention(
-    "settings lookup",
-  )} to see additional details and modify this setting.`;
+  lookup += ` Lookup details currently ${stateText}, use \`/settings lookup\` to see additional details and modify this setting.`;
 
   embed = embed.addFields([
     {
@@ -434,11 +420,7 @@ export default class SettingsCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached.");
     }
@@ -450,13 +432,13 @@ export default class SettingsCommand extends SlashCommandHandler {
       case "msglog": {
         switch (subcommand) {
           case MsgLogCommandName.SetChannel:
-            return this.msgLogSetHandler(ctx, interaction);
+            return this.msgLogSetHandler(interaction);
           case MsgLogCommandName.Ignore:
-            return this.msgLogIgnoreHandler(ctx, interaction);
+            return this.msgLogIgnoreHandler(interaction);
           case MsgLogCommandName.IgnoreList:
-            return this.msgLogIgnoreListHandler(ctx, interaction);
+            return this.msgLogIgnoreListHandler(interaction);
           case MsgLogCommandName.Unignore:
-            return this.msgLogUnignoreHandler(ctx, interaction);
+            return this.msgLogUnignoreHandler(interaction);
           default:
             throw new Error("Invalid subcommand.");
         }
@@ -465,19 +447,19 @@ export default class SettingsCommand extends SlashCommandHandler {
       case null: {
         switch (subcommand) {
           case "list":
-            return SettingsCommand.listHandler(ctx, interaction);
+            return SettingsCommand.listHandler(interaction);
           case "joinmsg":
-            return SettingsCommand.joinMsgHandler(ctx, interaction);
+            return SettingsCommand.joinMsgHandler(interaction);
           case "leavemsg":
-            return SettingsCommand.leaveMsgHandler(ctx, interaction);
+            return SettingsCommand.leaveMsgHandler(interaction);
           case "joinleavechannel":
-            return SettingsCommand.joinLeaveChannelHandler(ctx, interaction);
+            return SettingsCommand.joinLeaveChannelHandler(interaction);
           case "modlog":
           case "memberlog":
           case "messagelog":
-            return SettingsCommand.logChannelHandler(ctx, interaction);
+            return SettingsCommand.logChannelHandler(interaction);
           case "lookup":
-            return SettingsCommand.lookupHandler(ctx, interaction);
+            return SettingsCommand.lookupHandler(interaction);
           default:
             throw new Error("Invalid subcommand.");
         }
@@ -488,7 +470,6 @@ export default class SettingsCommand extends SlashCommandHandler {
   }
 
   static async listHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const config = await getGuildConfig(db, interaction.guildId);
@@ -497,7 +478,7 @@ export default class SettingsCommand extends SlashCommandHandler {
       throw new Error("No config found.");
     }
 
-    const embed = getGuildConfigEmbed(ctx, config);
+    const embed = getGuildConfigEmbed(config);
     const components = getSettingsComponents(config);
 
     const msg = await interaction.reply({
@@ -550,7 +531,7 @@ export default class SettingsCommand extends SlashCommandHandler {
 
         logger.debug(newConfig, "compiled query");
 
-        const newEmbed = getGuildConfigEmbed(ctx, newConfig);
+        const newEmbed = getGuildConfigEmbed(newConfig);
         const newComponents = getSettingsComponents(newConfig);
 
         await i.update({
@@ -577,7 +558,6 @@ export default class SettingsCommand extends SlashCommandHandler {
   }
 
   static async joinMsgHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const message = interaction.options.getString("message", true);
@@ -598,7 +578,6 @@ export default class SettingsCommand extends SlashCommandHandler {
   }
 
   static async leaveMsgHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const message = interaction.options.getString("message", true);
@@ -619,7 +598,6 @@ export default class SettingsCommand extends SlashCommandHandler {
   }
 
   static async joinLeaveChannelHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel("channel", true);
@@ -642,7 +620,6 @@ export default class SettingsCommand extends SlashCommandHandler {
   }
 
   static async logChannelHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const subcommand = interaction.options.getSubcommand();
@@ -759,7 +736,6 @@ export default class SettingsCommand extends SlashCommandHandler {
   }
 
   static async lookupHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     let config = await getGuildConfig(db, interaction.guildId);
@@ -844,7 +820,6 @@ export default class SettingsCommand extends SlashCommandHandler {
   // Message logs
 
   async msgLogSetHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel(
@@ -868,7 +843,6 @@ export default class SettingsCommand extends SlashCommandHandler {
   }
 
   async msgLogIgnoreHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel(
@@ -916,7 +890,6 @@ export default class SettingsCommand extends SlashCommandHandler {
   }
 
   async msgLogIgnoreListHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const ignoredChannels = await db
@@ -945,7 +918,6 @@ export default class SettingsCommand extends SlashCommandHandler {
   }
 
   async msgLogUnignoreHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel(

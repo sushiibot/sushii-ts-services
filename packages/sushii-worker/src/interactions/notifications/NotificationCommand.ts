@@ -7,7 +7,6 @@ import {
   InteractionContextType,
 } from "discord.js";
 import { t } from "i18next";
-import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
 import db from "../../infrastructure/database/db";
@@ -122,11 +121,7 @@ export default class NotificationCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
     }
@@ -138,9 +133,9 @@ export default class NotificationCommand extends SlashCommandHandler {
       case NotificationCommandName.Block:
         switch (subcommand) {
           case NotificationCommandName.BlockChannel:
-            return NotificationCommand.blockChannelHandler(ctx, interaction);
+            return NotificationCommand.blockChannelHandler(interaction);
           case NotificationCommandName.BlockUser:
-            return NotificationCommand.blockUserHandler(ctx, interaction);
+            return NotificationCommand.blockUserHandler(interaction);
           default:
             throw new Error("Invalid subcommand.");
         }
@@ -150,17 +145,17 @@ export default class NotificationCommand extends SlashCommandHandler {
 
     switch (subcommand) {
       case NotificationCommandName.Add:
-        return NotificationCommand.addHandler(ctx, interaction);
+        return NotificationCommand.addHandler(interaction);
       case NotificationCommandName.List:
-        return NotificationCommand.listHandler(ctx, interaction);
+        return NotificationCommand.listHandler(interaction);
       case NotificationCommandName.Delete:
-        return NotificationCommand.deleteHandler(ctx, interaction);
+        return NotificationCommand.deleteHandler(interaction);
 
       // Blocks
       case NotificationCommandName.Blocklist:
-        return NotificationCommand.blocklistHandler(ctx, interaction);
+        return NotificationCommand.blocklistHandler(interaction);
       case NotificationCommandName.Unblock:
-        return NotificationCommand.unblockHandler(ctx, interaction);
+        return NotificationCommand.unblockHandler(interaction);
 
       default:
         throw new Error("Invalid subcommand.");
@@ -168,7 +163,6 @@ export default class NotificationCommand extends SlashCommandHandler {
   }
 
   static async addHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const keyword = interaction.options.getString("keyword", true);
@@ -208,7 +202,6 @@ export default class NotificationCommand extends SlashCommandHandler {
   }
 
   static async listHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const notifications = await listNotifications(
@@ -242,7 +235,6 @@ export default class NotificationCommand extends SlashCommandHandler {
   }
 
   static async deleteHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const keyword = interaction.options.getString("keyword", true);
@@ -283,7 +275,6 @@ export default class NotificationCommand extends SlashCommandHandler {
   }
 
   static async blockChannelHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel("channel", true);
@@ -330,7 +321,6 @@ export default class NotificationCommand extends SlashCommandHandler {
   }
 
   static async blockUserHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const user = interaction.options.getUser("user", true);
@@ -370,7 +360,6 @@ export default class NotificationCommand extends SlashCommandHandler {
   }
 
   static async blocklistHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const blocks = await getNotificationBlocks(db, interaction.user.id);
@@ -444,7 +433,6 @@ export default class NotificationCommand extends SlashCommandHandler {
   }
 
   static async unblockHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const blockStr = interaction.options.getString("block_id", true);

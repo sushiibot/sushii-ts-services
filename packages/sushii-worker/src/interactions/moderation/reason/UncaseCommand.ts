@@ -5,7 +5,6 @@ import {
   InteractionContextType,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord.js";
-import Context from "../../../model/context";
 import Color from "../../../utils/colors";
 import { SlashCommandHandler } from "../../handlers";
 import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
@@ -39,10 +38,7 @@ export default class UncaseCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
     }
@@ -104,7 +100,7 @@ export default class UncaseCommand extends SlashCommandHandler {
       });
     }
 
-    const caseRange = await getCaseRange(ctx, interaction.guildId, caseSpec);
+    const caseRange = await getCaseRange(interaction.guildId, caseSpec);
 
     if (!caseRange) {
       await interaction.reply({

@@ -5,7 +5,6 @@ import {
 } from "discord.js";
 import { isDayjs } from "dayjs";
 import i18next from "i18next";
-import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
 import { fishyForUser } from "./fishy.service";
@@ -24,14 +23,10 @@ export default class FishyCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     const target = interaction.options.getUser("user", true);
 
-    const res = await fishyForUser(ctx, interaction.user, target);
+    const res = await fishyForUser(interaction.user, target);
 
     let embed = new EmbedBuilder();
     if (isDayjs(res)) {

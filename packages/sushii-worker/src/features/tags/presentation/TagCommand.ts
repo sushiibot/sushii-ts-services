@@ -7,7 +7,6 @@ import {
 } from "discord.js";
 import { Logger } from "pino";
 import { t } from "i18next";
-import Context from "@/model/context";
 import Color from "@/utils/colors";
 import { SlashCommandHandler } from "@/interactions/handlers";
 import { TagService } from "../application/TagService";
@@ -183,10 +182,7 @@ export class TagCommand extends SlashCommandHandler {
     super();
   }
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("This command can only be used in a guild.");
     }
@@ -298,7 +294,6 @@ export class TagCommand extends SlashCommandHandler {
       });
     }
   }
-
 
   private async randomHandler(
     interaction: ChatInputCommandInteraction<"cached">,

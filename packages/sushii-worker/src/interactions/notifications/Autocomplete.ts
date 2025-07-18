@@ -3,7 +3,6 @@ import {
   AutocompleteFocusedOption,
   AutocompleteInteraction,
 } from "discord.js";
-import Context from "../../model/context";
 import db from "../../infrastructure/database/db";
 import { AutocompleteHandler } from "../handlers";
 import { searchNotifications } from "../../db/Notification/Notification.repository";
@@ -11,9 +10,7 @@ import { searchNotifications } from "../../db/Notification/Notification.reposito
 export default class NotificationListAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = "notification.delete";
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
-    ctx: Context,
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {

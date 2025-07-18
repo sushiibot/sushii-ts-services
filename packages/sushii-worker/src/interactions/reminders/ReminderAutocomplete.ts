@@ -5,7 +5,6 @@ import {
   APIApplicationCommandOptionChoice,
   ApplicationCommandOptionType,
 } from "discord.js";
-import Context from "../../model/context";
 import { getDurationFromNow } from "../../utils/getDuration";
 import { AutocompleteHandler } from "../handlers";
 import { listReminders } from "../../db/Reminder/Reminder.repository";
@@ -14,9 +13,7 @@ import db from "../../infrastructure/database/db";
 export default class ReminderDeleteAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = "reminder.delete";
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
-    ctx: Context,
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {

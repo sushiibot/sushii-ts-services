@@ -6,7 +6,6 @@ import InteractionRouter from "@/core/cluster/discord/InteractionRouter";
 import initI18next from "../../shared/infrastructure/i18next";
 import registerInteractionHandlers from "../../interactions/commands";
 import sdk from "@/shared/infrastructure/tracing";
-import Context from "../../model/context";
 import { config } from "@/shared/infrastructure/config";
 import registerEventHandlers from "@/core/cluster/discord/handlers";
 import { initCore, registerFeatures } from "./bootstrap";
@@ -62,8 +61,7 @@ async function initializeShard(): Promise<void> {
   // START NEW REGISTRATION
   const { db, deploymentService } = await initCore();
 
-  const ctx = new Context(client);
-  const interactionRouter = new InteractionRouter(ctx, deploymentService);
+  const interactionRouter = new InteractionRouter(client, deploymentService);
   registerInteractionHandlers(interactionRouter);
 
   // New registration of features -- also adds commands to the router
@@ -89,7 +87,7 @@ async function initializeShard(): Promise<void> {
   }
 
   // Legacy registration of event handlers
-  registerEventHandlers(ctx, client, interactionRouter, deploymentService);
+  registerEventHandlers(client, interactionRouter, deploymentService);
 
   process.on("SIGTERM", async () => {
     log.info("SIGTERM received, shutting down shard gracefully");

@@ -4,7 +4,6 @@ import {
 } from "discord.js";
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import logger from "@/shared/infrastructure/logger";
-import Context from "../../../model/context";
 import { AutocompleteHandler } from "../../handlers";
 import { parseCaseId } from "./caseId";
 import db from "../../../infrastructure/database/db";
@@ -28,9 +27,7 @@ function truncateWithEllipsis(str: string, len: number): string {
 export default class ReasonAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = ["reason", "uncase"];
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
-    ctx: Context,
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {

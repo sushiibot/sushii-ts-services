@@ -8,7 +8,6 @@ import {
   InteractionContextType,
 } from "discord.js";
 import { MessageFlags, PermissionFlagsBits } from "discord.js";
-import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { interactionReplyErrorMessage } from "../responses/error";
 import Color from "../../utils/colors";
@@ -234,10 +233,7 @@ export default class PruneCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       return;
     }

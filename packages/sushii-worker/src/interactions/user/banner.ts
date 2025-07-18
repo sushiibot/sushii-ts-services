@@ -3,7 +3,7 @@ import {
   EmbedBuilder,
   ChatInputCommandInteraction,
 } from "discord.js";
-import Context from "../../model/context";
+
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
 import { getUserString } from "../../utils/userString";
@@ -22,10 +22,7 @@ export default class BannerCommand extends SlashCommandHandler {
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     const target =
       interaction.options.getUser("user", false) || interaction.user;
 

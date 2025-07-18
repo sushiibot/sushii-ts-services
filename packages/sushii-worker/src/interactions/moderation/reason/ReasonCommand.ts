@@ -9,9 +9,9 @@ import {
   PermissionFlagsBits,
   DiscordAPIError,
   InteractionContextType,
+  ComponentType,
+  MessageFlags,
 } from "discord.js";
-import dayjs from "@/shared/domain/dayjs";
-import Context from "../../../model/context";
 import Color from "../../../utils/colors";
 import { SlashCommandHandler } from "../../handlers";
 import { interactionReplyErrorPlainMessage } from "../../responses/error";
@@ -26,7 +26,6 @@ import {
   getModLogsRange,
   updateModLogReasonRange,
 } from "../../../db/ModLog/ModLog.repository";
-import { sleep } from "bun";
 
 enum ReasonError {
   UserFetch,
@@ -35,8 +34,6 @@ enum ReasonError {
 }
 
 function getReasonConfirmComponents(
-  userId: string,
-  interactionId: string,
   hidePartialUpdateButton: boolean,
 ): ActionRowBuilder<ButtonBuilder> {
   const buttons = [
@@ -45,9 +42,8 @@ function getReasonConfirmComponents(
       .setLabel("Overwrite all")
       .setCustomId(
         customIds.reasonConfirmButton.compile({
-          userId,
-          // Tie the buttons to this specific interaction
-          buttonId: interactionId,
+          userId: "0", // Placeholder - we check user in collector
+          buttonId: "0", // Placeholder - we use collector instead
           action: "override",
         }),
       ),
@@ -59,8 +55,8 @@ function getReasonConfirmComponents(
       .setLabel("Set reasons for cases without reason")
       .setCustomId(
         customIds.reasonConfirmButton.compile({
-          userId,
-          buttonId: interactionId,
+          userId: "0", // Placeholder - we check user in collector
+          buttonId: "0", // Placeholder - we use collector instead
           action: "empty",
         }),
       );
@@ -73,8 +69,8 @@ function getReasonConfirmComponents(
     .setLabel("Cancel")
     .setCustomId(
       customIds.reasonConfirmButton.compile({
-        userId,
-        buttonId: interactionId,
+        userId: "0", // Placeholder - we check user in collector
+        buttonId: "0", // Placeholder - we use collector instead
         action: "cancel",
       }),
     );
@@ -84,7 +80,6 @@ function getReasonConfirmComponents(
 }
 
 export async function updateModLogReasons(
-  ctx: Context,
   interaction:
     | ChatInputCommandInteraction<"cached">
     | ButtonInteraction<"cached">,
@@ -164,7 +159,6 @@ export async function updateModLogReasons(
     // Fetch the target user
 
     try {
-      // eslint-disable-next-line no-await-in-loop
       await interaction.client.users.fetch(modCase.user_id);
     } catch (err) {
       if (err instanceof DiscordAPIError) {
@@ -190,9 +184,8 @@ export async function updateModLogReasons(
     // Fetch the message so we can selectively edit the embed
     let modLogMsg;
     try {
-      // eslint-disable-next-line no-await-in-loop
       modLogMsg = await modLogchannel.messages.fetch(modCase.msg_id);
-    } catch (err) {
+    } catch {
       const arr = errs.get(ReasonError.MsgLogFetch) || [];
       errs.set(ReasonError.MsgLogFetch, [...arr, modCase.case_id]);
 
@@ -215,7 +208,7 @@ export async function updateModLogReasons(
       });
 
     // Edit the original message to show the updated reason
-    // eslint-disable-next-line no-await-in-loop
+
     await modLogMsg.edit({
       embeds: [newEmbed.toJSON()],
       // Clear reason button
@@ -278,9 +271,7 @@ export default class ReasonCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const caseRangeStr = interaction.options.getString("case", true);
@@ -316,7 +307,7 @@ export default class ReasonCommand extends SlashCommandHandler {
       return;
     }
 
-    const caseRange = await getCaseRange(ctx, interaction.guildId, caseSpec);
+    const caseRange = await getCaseRange(interaction.guildId, caseSpec);
     if (!caseRange) {
       await interaction.reply({
         embeds: [invalidCaseRangeEmbed],
@@ -377,56 +368,128 @@ export default class ReasonCommand extends SlashCommandHandler {
         .setColor(Color.Warning);
 
       const components = getReasonConfirmComponents(
-        interaction.member.user.id,
-        interaction.id,
         // All cases have reasons set, so it's either override all or cancel.
         // No option to set for empty reasons only
         casesWithReason.length === cases.length,
       );
 
-      await interaction.reply({
+      const interactionResponse = await interaction.reply({
         embeds: [embed.toJSON()],
         components: [components.toJSON()],
       });
 
-      ctx.memoryStore.pendingReasonConfirmations.set(interaction.id, {
-        caseEndId,
-        caseStartId,
-        reason,
-        setAt: dayjs.utc(),
+      const collector = interactionResponse.createMessageComponentCollector({
+        componentType: ComponentType.Button,
+        time: 2 * 60 * 1000, // 2 minutes
       });
 
-      // Wait 2 minutes
-      await sleep(2 * 60 * 1000);
+      collector.on("collect", async (buttonInteraction) => {
+        // Check if the button was clicked by the same user who ran the command
+        if (buttonInteraction.user.id !== interaction.user.id) {
+          const embed = new EmbedBuilder()
+            .setTitle("Error")
+            .setDescription("You can only confirm your own reason command :(");
 
-      // Check if the confirmation in store still exists - not clicked yet
-      const pendingConf = ctx.memoryStore.pendingReasonConfirmations.get(
-        interaction.id,
-      );
+          await buttonInteraction.reply({
+            embeds: [embed.toJSON()],
+            flags: MessageFlags.Ephemeral,
+          });
+          return;
+        }
 
-      // Still pending, update message and delete
-      if (pendingConf) {
-        logger.debug(
-          {
-            interactionId: interaction.id,
-          },
-          "Confirmation message is still pending, deleting",
+        const customIDMatch = customIds.reasonConfirmButton.match(
+          buttonInteraction.customId,
+        );
+        if (!customIDMatch) {
+          return;
+        }
+
+        const { action } = customIDMatch.params;
+
+        if (action === "cancel") {
+          const embed = new EmbedBuilder()
+            .setTitle("Cancelled")
+            .setDescription("Cancelled reason update, no cases were modified.")
+            .setColor(Color.Success);
+
+          await buttonInteraction.update({
+            embeds: [embed.toJSON()],
+            components: [],
+          });
+
+          collector.stop();
+          return;
+        }
+
+        const config = await getGuildConfig(db, interaction.guildId);
+
+        if (!config?.log_mod) {
+          const embed = new EmbedBuilder()
+            .setTitle("Error")
+            .setDescription("Mod log channel not set")
+            .setColor(Color.Error);
+
+          await buttonInteraction.update({
+            embeds: [embed.toJSON()],
+            components: [],
+          });
+
+          collector.stop();
+          return;
+        }
+
+        const responseEmbed = await updateModLogReasons(
+          buttonInteraction,
+          interaction.guildId,
+          config.log_mod,
+          buttonInteraction.user.id,
+          [caseStartId, caseEndId],
+          reason,
+          // onlyEmptyReason
+          action === "empty",
         );
 
-        ctx.memoryStore.pendingReasonConfirmations.delete(interaction.id);
+        if (!responseEmbed) {
+          collector.stop();
+          return;
+        }
 
-        const expiredEmbed = new EmbedBuilder()
-          .setTitle("Confirmation Expired")
-          .setDescription(
-            "Reason confirmation expired. Run the `/reason` command again if you still want to update the cases.",
-          )
-          .setColor(Color.Error);
-
-        await interaction.editReply({
-          embeds: [expiredEmbed.toJSON()],
+        // Edit the message the button is attached to with the update result
+        await buttonInteraction.update({
+          embeds: [responseEmbed.toJSON()],
           components: [],
         });
-      }
+
+        collector.stop();
+      });
+
+      // Wait until the collector ends
+      await new Promise<void>((resolve) => {
+        collector.on("end", async (collected, endReason) => {
+          if (endReason === "time" && collected.size === 0) {
+            logger.debug(
+              {
+                interactionId: interaction.id,
+              },
+              "Confirmation message is still pending, deleting",
+            );
+
+            const expiredEmbed = new EmbedBuilder()
+              .setTitle("Confirmation Expired")
+              .setDescription(
+                "Reason confirmation expired. Run the `/reason` command again if you still want to update the cases.",
+              )
+              .setColor(Color.Error);
+
+            await interaction.editReply({
+              embeds: [expiredEmbed.toJSON()],
+              components: [],
+            });
+          }
+
+          resolve();
+        });
+      });
 
       return;
     }
@@ -435,7 +498,6 @@ export default class ReasonCommand extends SlashCommandHandler {
     await interaction.deferReply();
 
     const responseEmbed = await updateModLogReasons(
-      ctx,
       interaction,
       interaction.guildId,
       config.log_mod,

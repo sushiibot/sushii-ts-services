@@ -10,7 +10,6 @@ import opentelemetry, { Span } from "@opentelemetry/api";
 import logger from "@/shared/infrastructure/logger";
 import InteractionClient from "./InteractionRouter";
 import { EventHandlerFn } from "@/events/EventHandler";
-import Context from "@/model/context";
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 import legacyModLogNotifierHandler from "@/events/GuildBanAdd/LegacyModLogNotifier";
 import modLogHandler from "@/events/ModLogHandler";
@@ -54,7 +53,6 @@ const tracer = opentelemetry.trace.getTracer(tracerName);
 const prefixSpanName = (name: string): string => `${tracerName}.${name}`;
 
 async function handleEvent<K extends keyof ClientEvents>(
-  ctx: Context,
   eventType: K,
   handlers: Record<string, EventHandlerFn<K>>,
   ...args: ClientEvents[K]
@@ -118,7 +116,6 @@ async function runParallel(
 }
 
 export default function registerEventHandlers(
-  ctx: Context,
   client: Client,
   interactionHandler: InteractionClient,
   deploymentService: DeploymentService,
@@ -163,7 +160,6 @@ export default function registerEventHandlers(
         // Check to make Client<true> instead of Client<bool>
         if (client.isReady()) {
           await handleEvent(
-            ctx,
             Events.ClientReady,
             {
               banReady: banReadyHandler,
@@ -261,7 +257,6 @@ export default function registerEventHandlers(
       prefixSpanName(Events.GuildCreate),
       async (span: Span) => {
         await handleEvent(
-          ctx,
           Events.GuildCreate,
           {
             cacheGuildCreate: cacheGuildCreateHandler,
@@ -283,7 +278,6 @@ export default function registerEventHandlers(
       prefixSpanName(Events.GuildUpdate),
       async (span: Span) => {
         await handleEvent(
-          ctx,
           Events.GuildUpdate,
           {
             cacheGuildUpdate: cacheGuildUpdateHandler,
@@ -322,7 +316,6 @@ export default function registerEventHandlers(
       prefixSpanName(Events.GuildMemberAdd),
       async (span: Span) => {
         await handleEvent(
-          ctx,
           Events.GuildMemberAdd,
           {
             memberLogJoin: memberLogJoinHandler,
@@ -345,7 +338,6 @@ export default function registerEventHandlers(
       prefixSpanName(Events.GuildMemberRemove),
       async (span: Span) => {
         await handleEvent(
-          ctx,
           Events.GuildMemberRemove,
           {
             memberLogLeave: memberLogLeaveHandler,
@@ -384,7 +376,6 @@ export default function registerEventHandlers(
       prefixSpanName(Events.GuildAuditLogEntryCreate),
       async (span: Span) => {
         await handleEvent(
-          ctx,
           Events.GuildAuditLogEntryCreate,
           { modLog: modLogHandler },
           entry,
@@ -414,7 +405,7 @@ export default function registerEventHandlers(
           handlers.banPoolOnBan = banPoolOnBanHandler;
         }
 
-        await handleEvent(ctx, Events.GuildBanAdd, handlers, guildBan);
+        await handleEvent(Events.GuildBanAdd, handlers, guildBan);
 
         span.end();
       },
@@ -430,7 +421,6 @@ export default function registerEventHandlers(
       prefixSpanName(Events.GuildBanRemove),
       async (span: Span) => {
         await handleEvent(
-          ctx,
           Events.GuildBanRemove,
           { banCacheUnban: banCacheUnbanHandler },
           guildBan,
@@ -450,7 +440,6 @@ export default function registerEventHandlers(
       prefixSpanName(Events.MessageCreate),
       async (span: Span) => {
         await handleEvent(
-          ctx,
           Events.MessageCreate,
           {
             emojiStats: emojiStatsMsgHandler,
@@ -476,7 +465,6 @@ export default function registerEventHandlers(
       prefixSpanName(Events.MessageReactionAdd),
       async (span: Span) => {
         await handleEvent(
-          ctx,
           Events.MessageReactionAdd,
           { emojiStatsReact: emojiStatsReactHandler },
           reaction,

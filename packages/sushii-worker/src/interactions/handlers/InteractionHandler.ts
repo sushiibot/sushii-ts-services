@@ -1,5 +1,4 @@
 import { BaseInteraction, PermissionsBitField } from "discord.js";
-import Context from "../../model/context";
 
 /**
  * Response of a command check, a message will only exist on pass = false
@@ -23,7 +22,6 @@ export default abstract class InteractionHandler {
    * Interaction handler
    */
   abstract handler(
-    ctx: Context,
     interaction: BaseInteraction,
     data?: any, // Any additional data to pass
   ): Promise<void>;

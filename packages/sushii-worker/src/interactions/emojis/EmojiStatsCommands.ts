@@ -7,7 +7,7 @@ import {
   Collection,
   InteractionContextType,
 } from "discord.js";
-import Context from "../../model/context";
+
 import { SlashCommandHandler } from "../handlers";
 import db from "../../infrastructure/database/db";
 import Color from "../../utils/colors";
@@ -422,10 +422,7 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
     .toJSON();
 
   // eslint-disable-next-line class-methods-use-this
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not in cached guild");
     }

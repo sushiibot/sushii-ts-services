@@ -5,7 +5,6 @@ import {
   APIApplicationCommandOptionChoice,
   ApplicationCommandOptionType,
 } from "discord.js";
-import Context from "../../model/context";
 import { getDurationFromNow } from "../../utils/getDuration";
 import { AutocompleteHandler } from "../handlers";
 import db from "../../infrastructure/database/db";
@@ -22,9 +21,7 @@ export default class GiveawayAutocomplete extends AutocompleteHandler {
     GiveawaySubcommand.Reroll,
   ].map((subCommand) => `giveaway.${subCommand}`);
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
-    ctx: Context,
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {

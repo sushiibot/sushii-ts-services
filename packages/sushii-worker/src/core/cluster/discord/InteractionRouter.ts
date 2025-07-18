@@ -14,12 +14,11 @@ import {
   InteractionType,
   ApplicationCommandType,
   ComponentType,
-  APIApplicationCommand,
+  Client,
 } from "discord.js";
 import * as Sentry from "@sentry/node";
 import { t } from "i18next";
 import opentelemetry from "@opentelemetry/api";
-import Context from "@/model/context";
 import log from "@/shared/infrastructure/logger";
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 import {
@@ -79,9 +78,9 @@ function findFocusedOption(
 
 export default class InteractionRouter {
   /**
-   * Command context for shared stuff like database connections, API clients, etc.
+   * Discord client
    */
-  private context: Context;
+  private client: Client;
 
   /**
    * Deployment service for checking if current deployment is active
@@ -120,8 +119,8 @@ export default class InteractionRouter {
    */
   private selectMenuHandlers: SelectMenuHandler[];
 
-  constructor(ctx: Context, deploymentService: DeploymentService) {
-    this.context = ctx;
+  constructor(client: Client, deploymentService: DeploymentService) {
+    this.client = client;
     this.deploymentService = deploymentService;
     this.commands = new Collection();
     this.autocompleteHandlers = new Collection();
@@ -224,12 +223,10 @@ export default class InteractionRouter {
     log.info("registering %s global commands...", this.commands.size);
 
     try {
-      const res = await this.context.client.rest.put(
+      await this.client.rest.put(
         Routes.applicationCommands(config.discord.applicationId),
         { body: this.getCommandsArray() },
       );
-
-      this.context.setCommands(res as APIApplicationCommand[]);
 
       log.info("commands registered!");
     } catch (err) {
@@ -272,7 +269,7 @@ export default class InteractionRouter {
         "running command",
       );
 
-      await command.handler(this.context, interaction);
+      await command.handler(interaction);
     } catch (e) {
       const invoker = interaction.user;
       log.error(e, "error running command %s", interaction.commandName);
@@ -362,11 +359,7 @@ export default class InteractionRouter {
     );
 
     try {
-      await autocomplete.handler(
-        this.context,
-        interaction,
-        focusedOption.option,
-      );
+      await autocomplete.handler(interaction, focusedOption.option);
     } catch (e) {
       Sentry.captureException(e, {
         tags: {
@@ -401,7 +394,7 @@ export default class InteractionRouter {
     log.info("received %s command", interaction.commandName);
 
     try {
-      await command.handler(this.context, interaction);
+      await command.handler(interaction);
     } catch (e) {
       Sentry.captureException(e, {
         tags: {
@@ -451,7 +444,7 @@ export default class InteractionRouter {
     log.info("received %s modal submit", interaction.customId);
 
     try {
-      await modalHandler.handleModalSubmit(this.context, interaction);
+      await modalHandler.handleModalSubmit(interaction);
       return true;
     } catch (e) {
       Sentry.captureException(e, {
@@ -490,7 +483,7 @@ export default class InteractionRouter {
     log.info("received %s button", interaction.customId);
 
     try {
-      await buttonHandler.handleInteraction(this.context, interaction);
+      await buttonHandler.handleInteraction(interaction);
     } catch (err) {
       Sentry.captureException(err, {
         tags: {
@@ -539,7 +532,7 @@ export default class InteractionRouter {
     log.info("received %s select menu", interaction.customId);
 
     try {
-      await selectMenuHandler.handleInteraction(this.context, interaction);
+      await selectMenuHandler.handleInteraction(interaction);
       return true;
     } catch (e) {
       Sentry.captureException(e);

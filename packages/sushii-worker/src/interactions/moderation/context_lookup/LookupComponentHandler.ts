@@ -8,7 +8,6 @@ import {
   EmbedBuilder,
   PermissionFlagsBits,
 } from "discord.js";
-import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";
 import { ActionType } from "../ActionType";
@@ -23,11 +22,7 @@ export const lookupButtonCustomIDPrefix = "lookup:button:";
 export default class ContextLookUpButtonHandler extends ButtonHandler {
   customIDMatch = customIds.lookupButton.match;
 
-  // eslint-disable-next-line class-methods-use-this
-  async handleInteraction(
-    ctx: Context,
-    interaction: ButtonInteraction,
-  ): Promise<void> {
+  async handleInteraction(interaction: ButtonInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }
@@ -111,7 +106,7 @@ export default class ContextLookUpButtonHandler extends ButtonHandler {
           PermissionFlagsBits.BanMembers,
         );
 
-        const bans = await getUserLookupData(ctx, targetUser);
+        const bans = await getUserLookupData(targetUser);
 
         const embed = await buildUserLookupEmbed(
           targetUser,

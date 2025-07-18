@@ -31,10 +31,7 @@ export default class RankCommand extends SlashCommandHandler {
     super();
   }
 
-  async handler(
-    _ctx: unknown,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild missing");
     }

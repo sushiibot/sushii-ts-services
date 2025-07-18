@@ -5,7 +5,7 @@ import {
   InteractionContextType,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord.js";
-import Context from "../../model/context";
+
 import { SlashCommandHandler } from "../handlers";
 import { getErrorMessage } from "../responses/error";
 import { ActionType } from "./ActionType";
@@ -29,10 +29,7 @@ export default class KickCommand extends SlashCommandHandler {
     .addStringOption(sendDMReasonOption)
     .toJSON();
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not in cached guild");
     }
@@ -47,7 +44,7 @@ export default class KickCommand extends SlashCommandHandler {
 
     await interaction.deferReply();
 
-    const fetchTargetsRes = await data.fetchTargets(ctx, interaction);
+    const fetchTargetsRes = await data.fetchTargets(interaction);
     if (fetchTargetsRes.err) {
       const { flags, ...editMsg } = getErrorMessage(
         "Error",

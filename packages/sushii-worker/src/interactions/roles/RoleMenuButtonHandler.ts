@@ -6,7 +6,6 @@ import {
 } from "discord.js";
 import { MessageFlags } from "discord.js";
 import * as Sentry from "@sentry/node";
-import Context from "../../model/context";
 import Color from "../../utils/colors";
 import customIds from "../customIds";
 import { ButtonHandler } from "../handlers";
@@ -20,10 +19,7 @@ import { sleep } from "bun";
 export default class RoleMenuButtonHandler extends ButtonHandler {
   customIDMatch = customIds.roleMenuButton.match;
 
-  async handleInteraction(
-    ctx: Context,
-    interaction: ButtonInteraction,
-  ): Promise<void> {
+  async handleInteraction(interaction: ButtonInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }

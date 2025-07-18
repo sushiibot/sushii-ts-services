@@ -4,7 +4,6 @@ import {
   ButtonInteraction,
 } from "discord.js";
 import { TextInputStyle } from "discord.js";
-import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";
 
@@ -12,11 +11,7 @@ import { ButtonHandler } from "../../handlers";
 export default class ModLogReasonButtonHandler extends ButtonHandler {
   customIDMatch = customIds.modLogReason.match;
 
-  // eslint-disable-next-line class-methods-use-this
-  async handleInteraction(
-    ctx: Context,
-    interaction: ButtonInteraction,
-  ): Promise<void> {
+  async handleInteraction(interaction: ButtonInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }

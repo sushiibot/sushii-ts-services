@@ -4,7 +4,6 @@ import {
 } from "discord.js";
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
-import Context from "../../../model/context";
 import { AutocompleteHandler } from "../../handlers";
 import { BanPoolOption, BanPoolOptionCommand } from "./BanPool.command";
 import { searchGuildBanPools } from "./BanPool.repository";
@@ -22,9 +21,7 @@ export default class BanPoolAutocomplete extends AutocompleteHandler {
     BanPoolOptionCommand.ClearInvites,
   ].map((subcommand) => `banpool.${subcommand}`);
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(
-    ctx: Context,
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {

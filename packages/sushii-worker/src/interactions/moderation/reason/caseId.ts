@@ -1,24 +1,23 @@
 import { getModLog, getNextCaseId } from "../../../db/ModLog/ModLog.repository";
-import Context from "../../../model/context";
 import db from "../../../infrastructure/database/db";
 
-type CaseRange = {
+interface CaseRange {
   type: "range";
   startId: number;
   // This can be undefined when the user is still typing it in autocomplete.
   // It is useful to determine which cases to show in autocomplete.
   endId: number | undefined;
-};
+}
 
-type CaseSingle = {
+interface CaseSingle {
   type: "single";
   id: number;
-};
+}
 
-type CaseLatest = {
+interface CaseLatest {
   type: "latest";
   count: number;
-};
+}
 
 export type CaseSpec = CaseRange | CaseSingle | CaseLatest;
 
@@ -128,7 +127,6 @@ export function parseCaseId(
 }
 
 export async function getCaseRange(
-  ctx: Context,
   guildId: string,
   caseSpec: CaseSpec,
   validate: boolean = true,

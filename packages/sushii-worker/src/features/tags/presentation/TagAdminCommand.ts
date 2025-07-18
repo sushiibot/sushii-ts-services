@@ -7,7 +7,6 @@ import {
 } from "discord.js";
 import { Logger } from "pino";
 import { SlashCommandHandler } from "@/interactions/handlers";
-import Context from "@/model/context";
 import Color from "@/utils/colors";
 import { TagAdminService } from "../application/TagAdminService";
 
@@ -55,7 +54,6 @@ export class TagAdminCommand extends SlashCommandHandler {
   }
 
   async handler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
@@ -64,17 +62,16 @@ export class TagAdminCommand extends SlashCommandHandler {
 
     switch (interaction.options.getSubcommand()) {
       case TagAdminSubcommand.Delete:
-        return this.deleteHandler(ctx, interaction);
+        return this.deleteHandler(interaction);
 
       case TagAdminSubcommand.DeleteUserTags:
-        return this.deleteUserTagsHandler(ctx, interaction);
+        return this.deleteUserTagsHandler(interaction);
       default:
         throw new Error("Unknown subcommand.");
     }
   }
 
   private async deleteHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const tagName = interaction.options.getString("name", true);
@@ -107,7 +104,6 @@ export class TagAdminCommand extends SlashCommandHandler {
   }
 
   private async deleteUserTagsHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const user = interaction.options.getUser("user", true);

@@ -1,5 +1,4 @@
 import { expect, describe, it } from "bun:test";
-
 import SushiiEmoji from "../../../shared/presentation/SushiiEmoji";
 import { getRadioButton } from "./settings";
 

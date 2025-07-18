@@ -5,7 +5,6 @@ import {
   MessageFlags,
 } from "discord.js";
 import { Logger } from "pino";
-import Context from "@/model/context";
 import { SlashCommandHandler } from "@/interactions/handlers";
 import { TagService } from "../application/TagService";
 import { createTagNotFoundEmbed } from "./views/TagEmbedBuilder";
@@ -33,10 +32,7 @@ export class TagGetCommand extends SlashCommandHandler {
     super();
   }
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("This command can only be used in a guild.");
     }

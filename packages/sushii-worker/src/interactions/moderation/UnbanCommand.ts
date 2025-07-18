@@ -5,8 +5,6 @@ import {
   PermissionsBitField,
   InteractionContextType,
 } from "discord.js";
-
-import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { getErrorMessage } from "../responses/error";
 import { ActionType } from "./ActionType";
@@ -29,10 +27,7 @@ export default class UnbanCommand extends SlashCommandHandler {
     // .addAttachmentOption(attachmentOption)
     .toJSON();
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not in cached guild");
     }
@@ -48,7 +43,6 @@ export default class UnbanCommand extends SlashCommandHandler {
     await interaction.deferReply();
 
     const fetchTargetsRes = await data.fetchTargets(
-      ctx,
       interaction,
       true, // skipMember fetch
     );
@@ -65,7 +59,7 @@ export default class UnbanCommand extends SlashCommandHandler {
     let res;
     try {
       res = await executeAction(interaction, data, ActionType.BanRemove);
-    } catch (err) {
+    } catch {
       const { flags, ...editMsg } = getErrorMessage(
         "Error",
         "An unexpected error occurred while processing the unban.",

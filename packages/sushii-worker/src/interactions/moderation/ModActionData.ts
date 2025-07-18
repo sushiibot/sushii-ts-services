@@ -9,7 +9,6 @@ import {
 } from "discord.js";
 import { Err, Ok, Result } from "ts-results";
 import logger from "@/shared/infrastructure/logger";
-import Context from "../../model/context";
 import isGuildMember from "../../utils/isGuildMember";
 import parseDuration from "../../utils/parseDuration";
 import { ActionType } from "./ActionType";
@@ -121,7 +120,6 @@ export default class ModActionData {
   }
 
   async fetchTargets(
-    ctx: Context,
     interaction: ChatInputCommandInteraction,
     skipMembers?: boolean,
   ): Promise<Result<void, string>> {

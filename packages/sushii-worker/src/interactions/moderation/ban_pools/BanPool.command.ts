@@ -8,7 +8,6 @@ import {
   InteractionContextType,
 } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
-import Context from "../../../model/context";
 import { SlashCommandHandler } from "../../handlers";
 import Color from "../../../utils/colors";
 import { createPool, deletePool, joinPool, showPool } from "./BanPool.service";
@@ -217,11 +216,7 @@ export default class BanPoolCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
     }
@@ -233,7 +228,7 @@ export default class BanPoolCommand extends SlashCommandHandler {
       case BanPoolOptionCommand.ServerSettings:
         switch (subcommand) {
           case BanPoolSettingsSubCommand.AlertsChannel:
-            await this.handleSettingsAlertsChannel(ctx, interaction);
+            await this.handleSettingsAlertsChannel(interaction);
             break;
           default:
             throw new Error("Unknown subcommand");
@@ -246,28 +241,28 @@ export default class BanPoolCommand extends SlashCommandHandler {
 
     switch (subcommand) {
       case BanPoolOptionCommand.Create:
-        await this.handleCreate(ctx, interaction);
+        await this.handleCreate(interaction);
         break;
       case BanPoolOptionCommand.Join:
-        await this.handleJoin(ctx, interaction);
+        await this.handleJoin(interaction);
         break;
       case BanPoolOptionCommand.List:
-        await this.handleList(ctx, interaction);
+        await this.handleList(interaction);
         break;
       case BanPoolOptionCommand.Show:
-        await this.handleShow(ctx, interaction);
+        await this.handleShow(interaction);
         break;
       case BanPoolOptionCommand.Delete:
-        await this.handleDelete(ctx, interaction);
+        await this.handleDelete(interaction);
         break;
       case BanPoolOptionCommand.Invite:
-        await this.handleInvite(ctx, interaction);
+        await this.handleInvite(interaction);
         break;
       case BanPoolOptionCommand.DeleteInvite:
-        await this.handleDeleteInvite(ctx, interaction);
+        await this.handleDeleteInvite(interaction);
         break;
       case BanPoolOptionCommand.ClearInvites:
-        await this.handleClearInvites(ctx, interaction);
+        await this.handleClearInvites(interaction);
         break;
       default:
         throw new Error("Unknown subcommand");
@@ -275,7 +270,6 @@ export default class BanPoolCommand extends SlashCommandHandler {
   }
 
   async handleCreate(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const name = interaction.options.getString(BanPoolOption.PoolName, true);
@@ -340,7 +334,6 @@ If you want to make a new invite, use \`/banpool invite\``,
   }
 
   async handleJoin(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const inviteCode = interaction.options.getString(
@@ -394,7 +387,6 @@ If you want to make a new invite, use \`/banpool invite\``,
   }
 
   async handleList(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const ownedPools = await getAllGuildBanPools(db, interaction.guildId);
@@ -459,7 +451,6 @@ If you want to make a new invite, use \`/banpool invite\``,
   }
 
   async handleShow(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const nameOrID = interaction.options.getString(
@@ -553,7 +544,6 @@ If you want to make a new invite, use \`/banpool invite\``,
   }
 
   async handleDelete(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const name = interaction.options.getString(BanPoolOption.PoolName, true);
@@ -586,7 +576,6 @@ All members of this ban pool have also been removed and reasons will no longer b
   }
 
   async handleInvite(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const name = interaction.options.getString(BanPoolOption.PoolName, true);
@@ -636,7 +625,6 @@ If you want to make a new invite, use \`/banpool invite ${name} <invite_code>\``
   }
 
   async handleDeleteInvite(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const inviteCode = interaction.options.getString(
@@ -673,7 +661,6 @@ You can create a new invite with \`/banpool invite\``,
   }
 
   async handleClearInvites(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const poolName = interaction.options.getString(
@@ -709,7 +696,6 @@ You can create a new invite with \`/banpool invite\``,
   }
 
   async handleSettingsAlertsChannel(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel("channel", true);

@@ -5,10 +5,9 @@ import {
 } from "discord.js";
 import { t } from "i18next";
 import { sql } from "kysely";
-import Context from "../../../model/context";
-import db from "../../../infrastructure/database/db";
-import Color from "../../../utils/colors";
-import { SlashCommandHandler } from "../../../interactions/handlers";
+import db from "@/infrastructure/database/db";
+import Color from "@/utils/colors";
+import { SlashCommandHandler } from "@/interactions/handlers";
 
 export default class PingCommand extends SlashCommandHandler {
   serverOnly = false;
@@ -18,10 +17,7 @@ export default class PingCommand extends SlashCommandHandler {
     .setDescription("View sushii's status")
     .toJSON();
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     const discordRestStart = process.hrtime.bigint();
     await interaction.reply(
       t("ping.title", {

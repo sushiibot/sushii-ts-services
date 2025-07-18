@@ -31,7 +31,6 @@ import ReasonCommand from "./moderation/reason/ReasonCommand";
 import ReasonAutocomplete from "./moderation/reason/ReasonAutocomplete";
 import UnTimeoutCommand from "./moderation/UnTimeoutCommand";
 import UncaseCommand from "./moderation/reason/UncaseCommand";
-import ReasonConfirmButtonHandler from "./moderation/reason/ReasonConfirmButtonHandler";
 import SettingsCommand from "./settings/SettingsCommand";
 import LookupCommand from "./moderation/LookupCommand";
 import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
@@ -119,7 +118,6 @@ export default function registerInteractionHandlers(
     new RoleMenuButtonHandler(),
     new ModLogReasonButtonHandler(),
     new DeleteModLogDMButtonHandler(),
-    new ReasonConfirmButtonHandler(),
     new GiveawayButtonHandler(),
   );
 

@@ -5,16 +5,15 @@ import {
   InteractionContextType,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord.js";
-import Context from "../../../../model/context";
-import Color from "../../../../utils/colors";
-import { SlashCommandHandler } from "../../../../interactions/handlers";
-import { interactionReplyErrorPlainMessage } from "../../../../interactions/responses/error";
+import Color from "@/utils/colors";
+import { SlashCommandHandler } from "@/interactions/handlers";
+import { interactionReplyErrorPlainMessage } from "@/interactions/responses/error";
 import {
   deleteXpBlock,
   getXpBlocks,
   upsertXpBlock,
-} from "../../../../db/XpBlock/XpBlock.repository";
-import db from "../../../../infrastructure/database/db";
+} from "@//db/XpBlock/XpBlock.repository";
+import db from "@//infrastructure/database/db";
 
 enum XpGroupName {
   Block = "block",
@@ -106,11 +105,7 @@ export default class XpCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
     }
@@ -122,11 +117,11 @@ export default class XpCommand extends SlashCommandHandler {
       case XpGroupName.Block:
         switch (subcommand) {
           case XpCommandName.BlockChannel:
-            return this.blockChannelHandler(ctx, interaction);
+            return this.blockChannelHandler(interaction);
           case XpCommandName.BlockRole:
-            return this.blockRoleHandler(ctx, interaction);
+            return this.blockRoleHandler(interaction);
           case XpCommandName.BlockList:
-            return this.listBlocksHandler(ctx, interaction);
+            return this.listBlocksHandler(interaction);
           default:
             throw new Error(
               `Invalid subcommand for group ${subgroup}: ${subcommand}`,
@@ -135,9 +130,9 @@ export default class XpCommand extends SlashCommandHandler {
       case XpGroupName.Unblock:
         switch (subcommand) {
           case XpCommandName.UnblockChannel:
-            return this.unblockChannelHandler(ctx, interaction);
+            return this.unblockChannelHandler(interaction);
           case XpCommandName.UnblockRole:
-            return this.unblockRoleHandler(ctx, interaction);
+            return this.unblockRoleHandler(interaction);
           default:
             throw new Error(
               `Invalid subcommand for group ${subgroup}: ${subcommand}`,
@@ -149,7 +144,6 @@ export default class XpCommand extends SlashCommandHandler {
   }
 
   private async blockChannelHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel(XpOption.Channel);
@@ -191,7 +185,6 @@ export default class XpCommand extends SlashCommandHandler {
   }
 
   private async blockRoleHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const role = interaction.options.getRole(XpOption.Role);
@@ -233,7 +226,6 @@ export default class XpCommand extends SlashCommandHandler {
   }
 
   private async listBlocksHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const allBlocks = await getXpBlocks(db, interaction.guildId);
@@ -283,7 +275,6 @@ export default class XpCommand extends SlashCommandHandler {
   }
 
   private async unblockChannelHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const channel = interaction.options.getChannel(XpOption.Channel);
@@ -320,7 +311,6 @@ export default class XpCommand extends SlashCommandHandler {
   }
 
   private async unblockRoleHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const role = interaction.options.getRole(XpOption.Role);

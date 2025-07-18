@@ -8,7 +8,6 @@ import {
 } from "discord.js";
 import opentelemetry from "@opentelemetry/api";
 import { EventHandlerFn } from "./EventHandler";
-import Context from "../model/context";
 import {
   deleteNotification,
   getMatchingNotifications,

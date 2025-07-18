@@ -6,7 +6,6 @@ import {
 } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
 import { t } from "i18next";
-import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
 import {
@@ -59,19 +58,15 @@ export default class ReminderCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     const subcommand = interaction.options.getSubcommand();
     switch (subcommand) {
       case "add":
-        return ReminderCommand.addHandler(ctx, interaction);
+        return ReminderCommand.addHandler(interaction);
       case "list":
-        return ReminderCommand.listHandler(ctx, interaction);
+        return ReminderCommand.listHandler(interaction);
       case "delete":
-        return ReminderCommand.deleteHandler(ctx, interaction);
+        return ReminderCommand.deleteHandler(interaction);
 
       default:
         throw new Error("Invalid subcommand.");
@@ -79,7 +74,6 @@ export default class ReminderCommand extends SlashCommandHandler {
   }
 
   static async addHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const durationStr = interaction.options.getString("duration", true);
@@ -145,7 +139,6 @@ export default class ReminderCommand extends SlashCommandHandler {
   }
 
   static async listHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const reminders = await listReminders(db, interaction.user.id);
@@ -186,7 +179,6 @@ export default class ReminderCommand extends SlashCommandHandler {
   }
 
   static async deleteHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction,
   ): Promise<void> {
     const reminderId = interaction.options.getString("reminder_id", true);

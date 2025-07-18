@@ -3,7 +3,6 @@ import {
   ChatInputCommandInteraction,
   InteractionContextType,
 } from "discord.js";
-import Context from "@/model/context";
 import Color from "@/utils/colors";
 import { SlashCommandHandler } from "@/interactions/handlers";
 import db from "@/infrastructure/database/db";
@@ -56,10 +55,7 @@ export default class LeaderboardCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
     }

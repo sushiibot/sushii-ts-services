@@ -10,7 +10,6 @@ import {
   MessageFlags,
   PermissionFlagsBits,
 } from "discord.js";
-import Context from "../../../model/context";
 import customIds from "../../customIds";
 import ContextMenuHandler from "../../handlers/ContextMenuHandler";
 import getUserinfoEmbed from "../../user/userinfo.service";
@@ -24,11 +23,7 @@ export default class UserInfoHandler extends ContextMenuHandler {
     .setType(ApplicationCommandType.User)
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
-  async handler(
-    ctx: Context,
-    interaction: ContextMenuCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ContextMenuCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }

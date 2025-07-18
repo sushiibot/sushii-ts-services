@@ -1,5 +1,4 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
-import Context from "../../model/context";
 import logger from "@/shared/infrastructure/logger";
 import { SlashCommandHandler } from "../handlers";
 import getUserinfoEmbed from "./userinfo.service";
@@ -19,11 +18,7 @@ export default class UserinfoHandler extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     let target = interaction.options.getUser("user");
 
     if (!target) {

@@ -5,7 +5,6 @@ import {
   InteractionContextType,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord.js";
-import Context from "@/model/context";
 import Color from "@/utils/colors";
 import { SlashCommandHandler } from "@/interactions/handlers";
 import { interactionReplyErrorPlainMessage } from "@/interactions/responses/error";
@@ -83,10 +82,7 @@ export default class LevelRoleCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
     }
@@ -95,18 +91,17 @@ export default class LevelRoleCommand extends SlashCommandHandler {
 
     switch (subcommand) {
       case CommandName.LevelRoleNew:
-        return this.newLevelRoleHandler(ctx, interaction);
+        return this.newLevelRoleHandler(interaction);
       case CommandName.LevelRoleDelete:
-        return this.deleteLevelRoleHandler(ctx, interaction);
+        return this.deleteLevelRoleHandler(interaction);
       case CommandName.LevelRoleList:
-        return this.listLevelRoleHandler(ctx, interaction);
+        return this.listLevelRoleHandler(interaction);
       default:
         throw new Error(`Invalid command ${subcommand}`);
     }
   }
 
   private async newLevelRoleHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const role = interaction.options.getRole(LevelRoleOption.Role, true);
@@ -170,7 +165,6 @@ export default class LevelRoleCommand extends SlashCommandHandler {
   }
 
   private async deleteLevelRoleHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const role = interaction.options.getRole(LevelRoleOption.Role, true);
@@ -208,7 +202,6 @@ export default class LevelRoleCommand extends SlashCommandHandler {
   }
 
   private async listLevelRoleHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const allLevelRoles = await getAllLevelRoles(db, interaction.guildId);

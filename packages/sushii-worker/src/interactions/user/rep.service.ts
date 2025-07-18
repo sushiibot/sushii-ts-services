@@ -1,6 +1,5 @@
 import dayjs from "@/shared/domain/dayjs";
 import { User } from "discord.js";
-import Context from "../../model/context";
 import { getUserOrDefault, upsertUser } from "../../db/User/User.repository";
 import db from "../../infrastructure/database/db";
 
@@ -13,7 +12,6 @@ export interface RepResponse {
 }
 
 export default async function repForUser(
-  ctx: Context,
   invoker: User,
   target: User,
 ): Promise<RepResponse | dayjs.Dayjs> {

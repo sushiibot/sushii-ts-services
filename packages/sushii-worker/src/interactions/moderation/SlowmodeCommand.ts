@@ -10,7 +10,6 @@ import {
 } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
 import plugin from "dayjs/plugin/duration";
-import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import {
   interactionReplyErrorMessage,
@@ -52,10 +51,7 @@ export default class SlowmodeCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
     }

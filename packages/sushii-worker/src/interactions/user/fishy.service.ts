@@ -1,7 +1,6 @@
 import dayjs from "@/shared/domain/dayjs";
 import { User } from "discord.js";
 import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
-import Context from "../../model/context";
 import logger from "@/shared/infrastructure/logger";
 import db from "../../infrastructure/database/db";
 import { DB } from "../../infrastructure/database/dbTypes";
@@ -175,7 +174,7 @@ export interface FishyValueRange {
 
 function getFishyValueRange(catchable: CatchableType): FishyValueRange {
   // Exhaustive switch statement
-  // eslint-disable-next-line default-case
+
   switch (catchable) {
     case CatchableType.Anchovy:
       return { min: 5, max: 10, skew: 3 };
@@ -232,7 +231,6 @@ export interface FishyResponse {
 }
 
 export async function fishyForUser(
-  ctx: Context,
   invoker: User,
   target: User,
 ): Promise<FishyResponse | dayjs.Dayjs> {

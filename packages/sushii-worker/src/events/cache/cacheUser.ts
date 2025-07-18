@@ -1,6 +1,5 @@
 import { Events, Message } from "discord.js";
 import opentelemetry from "@opentelemetry/api";
-import Context from "../../model/context";
 import { EventHandlerFn } from "../EventHandler";
 import { upsertCachedUser } from "../../db/CachedUser/CachedUser.repository";
 import db from "../../infrastructure/database/db";

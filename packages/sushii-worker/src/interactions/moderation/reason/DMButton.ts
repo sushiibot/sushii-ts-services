@@ -7,7 +7,6 @@ import {
   EmbedBuilder,
 } from "discord.js";
 import { sleep } from "bun";
-import Context from "../../../model/context";
 import customIds from "../../customIds";
 import { ButtonHandler } from "../../handlers";
 import Color from "../../../utils/colors";
@@ -22,11 +21,7 @@ const logger = newModuleLogger("ModLog-DeleteDM-Button");
 export default class DeleteModLogDMButtonHandler extends ButtonHandler {
   customIDMatch = customIds.modLogDeleteReasonDM.match;
 
-  // eslint-disable-next-line class-methods-use-this
-  async handleInteraction(
-    ctx: Context,
-    interaction: ButtonInteraction,
-  ): Promise<void> {
+  async handleInteraction(interaction: ButtonInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not a guild interaction");
     }

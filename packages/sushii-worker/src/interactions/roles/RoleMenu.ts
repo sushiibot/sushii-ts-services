@@ -18,7 +18,6 @@ import {
 import { t } from "i18next";
 import { None, Option, Some } from "ts-results";
 import logger from "@/shared/infrastructure/logger";
-import Context from "../../model/context";
 import Color from "../../utils/colors";
 import parseEmoji from "../../utils/parseEmoji";
 import customIds from "../customIds";
@@ -303,10 +302,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("This command can only be used in a server.");
     }
@@ -314,32 +310,31 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     const subcommand = interaction.options.getSubcommand();
     switch (subcommand) {
       case "new":
-        return this.newHandler(ctx, interaction);
+        return this.newHandler(interaction);
       case "get":
-        return this.getHandler(ctx, interaction);
+        return this.getHandler(interaction);
       case "list":
-        return this.listHandler(ctx, interaction);
+        return this.listHandler(interaction);
       case "edit":
-        return this.editHandler(ctx, interaction);
+        return this.editHandler(interaction);
       case "editorder":
-        return this.editOrderHandler(ctx, interaction);
+        return this.editOrderHandler(interaction);
       case "addroles":
-        return this.addRolesHandler(ctx, interaction);
+        return this.addRolesHandler(interaction);
       case "removeroles":
-        return this.removeRolesHandler(ctx, interaction);
+        return this.removeRolesHandler(interaction);
       case "roleoptions":
-        return this.roleOptionsHandler(ctx, interaction);
+        return this.roleOptionsHandler(interaction);
       case "delete":
-        return this.deleteHandler(ctx, interaction);
+        return this.deleteHandler(interaction);
       case "send":
-        return this.sendHandler(ctx, interaction);
+        return this.sendHandler(interaction);
       default:
         throw new Error("Invalid subcommand.");
     }
   }
 
   private async newHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const name = interaction.options.getString(RoleMenuOption.Name);
@@ -351,7 +346,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     // Check if menu name already exists
 
     // Does not fetch message from Discord API, not needed
-    const menu = await this.getMenu(ctx, interaction, name);
+    const menu = await this.getMenu(interaction, name);
     if (menu.some) {
       await interaction.reply({
         content: t("rolemenu.new.error.name_already_exists", { name }),
@@ -413,7 +408,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   }
 
   private async getHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const name = interaction.options.getString(RoleMenuOption.Name);
@@ -421,7 +415,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No name provided.");
     }
 
-    const menu = await this.getMenu(ctx, interaction, name);
+    const menu = await this.getMenu(interaction, name);
     if (menu.none) {
       await interaction.reply({
         content: t("rolemenu.get.error.not_found", { name }),
@@ -490,7 +484,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   }
 
   private async listHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menus = await listRoleMenus(db, interaction.guildId);
@@ -515,7 +508,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   }
 
   private async editHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menuName = interaction.options.getString(RoleMenuOption.Name);
@@ -523,7 +515,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No name provided.");
     }
 
-    const roleMenu = await this.getMenu(ctx, interaction, menuName);
+    const roleMenu = await this.getMenu(interaction, menuName);
 
     if (roleMenu.none) {
       await interaction.reply({
@@ -537,7 +529,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
 
     const newName = interaction.options.getString(RoleMenuOption.NewName);
     if (newName) {
-      const newMenuNameExists = await this.getMenu(ctx, interaction, newName);
+      const newMenuNameExists = await this.getMenu(interaction, newName);
 
       if (newMenuNameExists.some) {
         await interaction.reply({
@@ -602,7 +594,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   }
 
   private async editOrderHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menuName = interaction.options.getString(RoleMenuOption.Name);
@@ -610,7 +601,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No menu name provided.");
     }
 
-    const roleMenu = await this.getMenu(ctx, interaction, menuName);
+    const roleMenu = await this.getMenu(interaction, menuName);
     if (roleMenu.none) {
       await interaction.reply({
         content: t("rolemenu.edit.error.menu_not_found"),
@@ -684,7 +675,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   }
 
   private async addRolesHandlerMenu(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menuName = interaction.options.getString(RoleMenuOption.Name);
@@ -692,7 +682,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No menu name provided.");
     }
 
-    const roleMenu = await this.getMenu(ctx, interaction, menuName);
+    const roleMenu = await this.getMenu(interaction, menuName);
     if (roleMenu.none) {
       await interaction.reply({
         content: t("rolemenu.edit.error.menu_not_found"),
@@ -743,7 +733,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   }
 
   private async addRolesHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menuName = interaction.options.getString(RoleMenuOption.Name);
@@ -751,7 +740,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No menu name provided.");
     }
 
-    const roleMenu = await this.getMenu(ctx, interaction, menuName);
+    const roleMenu = await this.getMenu(interaction, menuName);
     if (roleMenu.none) {
       await interaction.reply({
         content: t("rolemenu.edit.error.menu_not_found"),
@@ -835,7 +824,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   }
 
   private async removeRolesHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menuName = interaction.options.getString(RoleMenuOption.Name);
@@ -843,7 +831,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No name provided.");
     }
 
-    const roleMenu = await this.getMenu(ctx, interaction, menuName);
+    const roleMenu = await this.getMenu(interaction, menuName);
     if (roleMenu.none) {
       await interaction.reply({
         content: t("rolemenu.edit.error.menu_not_found"),
@@ -907,7 +895,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   }
 
   private async roleOptionsHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const menuName = interaction.options.getString(RoleMenuOption.Name);
@@ -915,7 +902,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
       throw new Error("No name provided.");
     }
 
-    const roleMenu = await this.getMenu(ctx, interaction, menuName);
+    const roleMenu = await this.getMenu(interaction, menuName);
     if (roleMenu.none) {
       await interaction.reply({
         content: t("rolemenu.edit.error.menu_not_found"),
@@ -1021,7 +1008,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   }
 
   private async deleteHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const name = interaction.options.getString(RoleMenuOption.Name);
@@ -1042,7 +1028,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   }
 
   private async sendHandler(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const name = interaction.options.getString(RoleMenuOption.Name);
@@ -1066,7 +1051,7 @@ export default class RoleMenuCommand extends SlashCommandHandler {
     // ------------------------------------------------------------
     // Get menu from db
 
-    const roleMenu = await this.getMenu(ctx, interaction, name);
+    const roleMenu = await this.getMenu(interaction, name);
     if (roleMenu.none) {
       await interaction.reply({
         content: t("rolemenu.edit.error.menu_not_found"),
@@ -1257,7 +1242,6 @@ export default class RoleMenuCommand extends SlashCommandHandler {
   }
 
   private async getMenu(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
     menuName: string,
   ): Promise<Option<RoleMenuRow>> {

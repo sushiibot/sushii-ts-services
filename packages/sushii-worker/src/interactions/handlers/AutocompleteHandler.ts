@@ -1,5 +1,4 @@
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
-import Context from "../../model/context";
 import InteractionHandler from "./InteractionHandler";
 
 export default abstract class AutocompleteHandler extends InteractionHandler {
@@ -14,7 +13,6 @@ export default abstract class AutocompleteHandler extends InteractionHandler {
   abstract readonly fullCommandNamePath: string | string[];
 
   abstract handler(
-    ctx: Context,
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void>;

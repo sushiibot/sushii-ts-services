@@ -10,7 +10,6 @@ import {
   InteractionContextType,
 } from "discord.js";
 import dayjs from "@/shared/domain/dayjs";
-import Context from "../../model/context";
 import { SlashCommandHandler } from "../handlers";
 import { getErrorMessage } from "../responses/error";
 import {
@@ -174,11 +173,7 @@ export default class GiveawayCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not in cached guild");
     }
@@ -186,19 +181,19 @@ export default class GiveawayCommand extends SlashCommandHandler {
     const subcommand = interaction.options.getSubcommand(true);
     switch (subcommand) {
       case GiveawaySubcommand.Create:
-        await this.createGiveaway(ctx, interaction);
+        await this.createGiveaway(interaction);
         break;
       case GiveawaySubcommand.List:
-        await this.listGiveaways(ctx, interaction);
+        await this.listGiveaways(interaction);
         break;
       case GiveawaySubcommand.Delete:
-        await this.deleteGiveaway(ctx, interaction);
+        await this.deleteGiveaway(interaction);
         break;
       case GiveawaySubcommand.End:
-        await this.endGiveaway(ctx, interaction);
+        await this.endGiveaway(interaction);
         break;
       case GiveawaySubcommand.Reroll:
-        await this.rerollGiveaway(ctx, interaction);
+        await this.rerollGiveaway(interaction);
         break;
       default:
         throw new Error("Invalid subcommand");
@@ -206,7 +201,6 @@ export default class GiveawayCommand extends SlashCommandHandler {
   }
 
   private async createGiveaway(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const durationStr = interaction.options.getString(
@@ -312,7 +306,6 @@ export default class GiveawayCommand extends SlashCommandHandler {
   }
 
   private async listGiveaways(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     // All giveaways
@@ -366,7 +359,6 @@ export default class GiveawayCommand extends SlashCommandHandler {
   }
 
   private async deleteGiveaway(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const giveawayId = interaction.options.getString(GiveawayOption.GiveawayID);
@@ -406,7 +398,6 @@ export default class GiveawayCommand extends SlashCommandHandler {
   }
 
   private async endGiveaway(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const giveawayId = interaction.options.getString(
@@ -474,7 +465,6 @@ export default class GiveawayCommand extends SlashCommandHandler {
   }
 
   private async rerollGiveaway(
-    ctx: Context,
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const giveawayId = interaction.options.getString(

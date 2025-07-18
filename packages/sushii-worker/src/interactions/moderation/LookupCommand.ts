@@ -6,16 +6,12 @@ import {
   User,
   InteractionContextType,
 } from "discord.js";
-import Context from "../../model/context";
 import db from "../../infrastructure/database/db";
 import { SlashCommandHandler } from "../handlers";
 import buildUserLookupEmbed, { UserLookupBan } from "./formatters/lookup";
 import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
 
-export async function getUserLookupData(
-  ctx: Context,
-  user: User,
-): Promise<UserLookupBan[]> {
+export async function getUserLookupData(user: User): Promise<UserLookupBan[]> {
   const bans = await db
     .selectFrom("app_public.guild_bans")
     .leftJoin("app_public.mod_logs as logs", (join) =>
@@ -60,14 +56,14 @@ export async function getUserLookupData(
       }
 
       try {
-        const guild = await ctx.client.guilds.fetch(ban.guild_id);
+        const guild = await user.client.guilds.fetch(ban.guild_id);
         return {
           ...ban,
           guild_name: guild.name,
           guild_features: guild.features,
           guild_members: guild.memberCount,
         };
-      } catch (err) {
+      } catch {
         return {
           ...ban,
           // Maybe sushii not in the server anymore, we can ignore these
@@ -103,10 +99,7 @@ export default class LookupCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
     }
@@ -126,11 +119,11 @@ export default class LookupCommand extends SlashCommandHandler {
     let member;
     try {
       member = await interaction.guild.members.fetch(user.id);
-    } catch (err) {
+    } catch {
       // Ignore, could be a user not in the server
     }
 
-    const bans = await getUserLookupData(ctx, user);
+    const bans = await getUserLookupData(user);
 
     const userEmbed = await buildUserLookupEmbed(
       user,

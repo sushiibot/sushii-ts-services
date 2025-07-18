@@ -4,7 +4,6 @@ import {
   DiscordAPIError,
 } from "discord.js";
 import { MessageFlags } from "discord.js";
-import Context from "../../model/context";
 import Color from "../../utils/colors";
 import customIds from "../customIds";
 import { SelectMenuHandler } from "../handlers";
@@ -14,9 +13,7 @@ import logger from "@/shared/infrastructure/logger";
 export default class RoleMenuSelectMenuHandler extends SelectMenuHandler {
   customIDMatch = customIds.roleMenuSelect.match;
 
-  // eslint-disable-next-line class-methods-use-this
   async handleInteraction(
-    ctx: Context,
     interaction: AnySelectMenuInteraction,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {

@@ -5,7 +5,7 @@ import {
   PermissionsBitField,
   InteractionContextType,
 } from "discord.js";
-import Context from "../../model/context";
+
 import timestampToUnixTime from "../../utils/timestampToUnixTime";
 import { SlashCommandHandler } from "../handlers";
 import buildUserHistoryEmbeds from "./formatters/history";
@@ -31,10 +31,7 @@ export default class HistoryCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Guild not cached");
     }

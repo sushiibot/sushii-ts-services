@@ -4,7 +4,6 @@ import {
   ChatInputCommandInteraction,
 } from "discord.js";
 import { t } from "i18next";
-import Context from "../../model/context";
 import Color from "../../utils/colors";
 import { SlashCommandHandler } from "../handlers";
 
@@ -21,11 +20,7 @@ export default class AvatarCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
-  async handler(
-    ctx: Context,
-    interaction: ChatInputCommandInteraction,
-  ): Promise<void> {
+  async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     const target =
       interaction.options.getUser("user", false) || interaction.user;
     const embeds = [];

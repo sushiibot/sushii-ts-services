@@ -1,7 +1,6 @@
 import { expect, describe, it } from "bun:test";
 // Need this to not fail on utc
 import "@/shared/domain/dayjs";
-
 import db from "../../infrastructure/database/db";
 import {
   deleteModLogsRange,
