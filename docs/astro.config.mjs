@@ -9,6 +9,9 @@ export default defineConfig({
     starlight({
       title: 'sushii',
       social: [{ icon: 'discord', label: 'Discord', href: 'https://discord.gg/Bz5Q2WfuE7' }],
+      components: {
+        Header: './src/components/Header.astro',
+      },
       sidebar: [
         {
           label: 'Guides',
