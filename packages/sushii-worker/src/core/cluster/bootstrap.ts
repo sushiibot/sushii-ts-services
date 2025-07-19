@@ -32,6 +32,7 @@ import {
   TagAdminCommand,
   TagAutocomplete,
   TagGetAutocomplete,
+  TagEditInteractionHandler,
 } from "@/features/tags/presentation";
 
 export async function initCore() {
@@ -112,9 +113,15 @@ export function registerFeatures(
     logger.child({ module: "tagAdminService" }),
   );
 
+  const tagEditInteractionHandler = new TagEditInteractionHandler(
+    tagService,
+    logger.child({ module: "tagEditInteractionHandler" }),
+  );
+
   const tagCommand = new TagCommand(
     tagService,
     tagSearchService,
+    tagEditInteractionHandler,
     logger.child({ module: "tagCommand" }),
   );
   const tagAddCommand = new TagAddCommand(

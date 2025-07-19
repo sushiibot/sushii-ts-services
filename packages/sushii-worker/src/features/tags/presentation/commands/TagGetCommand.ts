@@ -6,12 +6,10 @@ import {
 } from "discord.js";
 import { Logger } from "pino";
 import { SlashCommandHandler } from "@/interactions/handlers";
-import { TagService } from "../application/TagService";
-import { createTagNotFoundEmbed } from "./views/TagEmbedBuilder";
+import { TagService } from "../../application/TagService";
+import { createTagNotFoundEmbed } from "../views/TagEmbedBuilder";
 
 export class TagGetCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("t")
     .setDescription("Use a tag.")

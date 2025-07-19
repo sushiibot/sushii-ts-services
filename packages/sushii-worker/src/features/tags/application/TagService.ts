@@ -125,8 +125,13 @@ export class TagService {
       return Err("Must provide either new content or new attachment");
     }
 
-    const content = params.newContent !== undefined ? params.newContent : tag.getContent();
-    const attachment = params.newAttachment !== undefined ? params.newAttachment : tag.getAttachment();
+    const content =
+      params.newContent !== undefined ? params.newContent : tag.getContent();
+
+    const attachment =
+      params.newAttachment !== undefined
+        ? params.newAttachment
+        : tag.getAttachment();
 
     const updateResult = tag.updateContent(content, attachment);
     if (updateResult.err) {

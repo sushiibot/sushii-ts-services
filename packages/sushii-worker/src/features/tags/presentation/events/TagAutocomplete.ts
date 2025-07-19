@@ -2,10 +2,16 @@ import { ApplicationCommandOptionType } from "discord.js";
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import { Logger } from "pino";
 import { AutocompleteHandler } from "@/interactions/handlers";
-import { TagSearchService } from "../application/TagSearchService";
+import { TagSearchService } from "../../application/TagSearchService";
 
-export class TagGetAutocomplete extends AutocompleteHandler {
-  fullCommandNamePath = ["t"];
+export class TagAutocomplete extends AutocompleteHandler {
+  fullCommandNamePath = [
+    "tag.info",
+    "tag.rename",
+    "tag.edit",
+    "tag.delete",
+    "tagadmin.delete",
+  ];
 
   constructor(
     private readonly tagSearchService: TagSearchService,
@@ -14,33 +20,35 @@ export class TagGetAutocomplete extends AutocompleteHandler {
     super();
   }
 
-  async handler(
+  async handleAutocomplete(
     interaction: AutocompleteInteraction,
     option: AutocompleteFocusedOption,
   ): Promise<void> {
     if (!interaction.inCachedGuild()) {
-      return;
+      throw new Error("Not in cached guild");
     }
 
     if (option.type !== ApplicationCommandOptionType.String) {
-      return;
+      throw new Error("Option type must be string.");
     }
 
     try {
-      const tags = await this.tagSearchService.searchTags({
-        guildId: interaction.guildId,
-        startsWith: option.value,
-      });
+      const tags = await this.tagSearchService.getTagsForAutocomplete(
+        interaction.guildId,
+        option.value,
+      );
 
-      // searchTag already limits to 25, but just to be safe
       const choices = tags.slice(0, 25).map((tag) => ({
         name: tag.getName().getValue(),
         value: tag.getName().getValue(),
       }));
 
-      await interaction.respond(choices);
-    } catch (err) {
-      this.logger.error({ err }, "Error in tag get autocomplete");
+      await interaction.respond(choices || []);
+    } catch (error) {
+      this.logger.error(
+        { error, guildId: interaction.guildId, query: option.value },
+        "Error handling tag autocomplete",
+      );
       await interaction.respond([]);
     }
   }

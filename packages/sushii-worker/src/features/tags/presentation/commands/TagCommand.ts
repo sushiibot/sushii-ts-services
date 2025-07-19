@@ -4,59 +4,31 @@ import {
   ChatInputCommandInteraction,
   InteractionContextType,
   PermissionFlagsBits,
+  MessageFlags,
 } from "discord.js";
 import { Logger } from "pino";
 import { t } from "i18next";
 import Color from "@/utils/colors";
 import { SlashCommandHandler } from "@/interactions/handlers";
-import { TagService } from "../application/TagService";
-import { TagSearchService } from "../application/TagSearchService";
+import { TagService } from "../../application/TagService";
+import { TagSearchService } from "../../application/TagSearchService";
+import { TagEditInteractionHandler } from "./TagEditInteractionHandler";
 import {
   createTagInfoEmbed,
   createTagSuccessEmbed,
-  createTagDeleteSuccessEmbed,
+  createTagDeleteSuccessMessage,
   createTagErrorEmbed,
   createTagNotFoundEmbed,
-  processTagAttachment,
-} from "./views/TagEmbedBuilder";
+} from "../views/TagEmbedBuilder";
 import { interactionReplyErrorMessage } from "@/interactions/responses/error";
 import Paginator from "@/shared/presentation/Paginator";
-
-const NAME_STARTS_WITH = "name_starts_with";
-const NAME_CONTAINS = "name_contains";
+import { NAME_STARTS_WITH, NAME_CONTAINS } from "../TagConstants";
 
 export class TagCommand extends SlashCommandHandler {
-  serverOnly = true;
-
   command = new SlashCommandBuilder()
     .setName("tag")
     .setDescription("Create and use custom commands with custom responses.")
     .setContexts(InteractionContextType.Guild)
-    .addSubcommand((c) =>
-      c
-        .setName("add")
-        .setDescription("Create a new tag.")
-        .addStringOption((o) =>
-          o
-            .setName("name")
-            .setDescription("The tag name.")
-            .setRequired(true)
-            .setMinLength(1)
-            .setMaxLength(32),
-        )
-        .addStringOption((o) =>
-          o
-            .setName("content")
-            .setDescription("The content of the tag.")
-            .setRequired(false),
-        )
-        .addAttachmentOption((o) =>
-          o
-            .setName("attachment")
-            .setDescription("Optional tag attachment.")
-            .setRequired(false),
-        ),
-    )
     .addSubcommand((c) =>
       c
         .setName("random")
@@ -121,25 +93,13 @@ export class TagCommand extends SlashCommandHandler {
     .addSubcommand((c) =>
       c
         .setName("edit")
-        .setDescription("Edit a tag's content.")
+        .setDescription("Edit a tag's name, content, or delete it.")
         .addStringOption((o) =>
           o
             .setName("name")
             .setDescription("The tag name.")
             .setRequired(true)
             .setAutocomplete(true),
-        )
-        .addStringOption((o) =>
-          o
-            .setName("content")
-            .setDescription("The new content of the tag.")
-            .setRequired(false),
-        )
-        .addAttachmentOption((o) =>
-          o
-            .setName("attachment")
-            .setDescription("Optional tag attachment.")
-            .setRequired(false),
         ),
     )
     .addSubcommand((c) =>
@@ -177,6 +137,7 @@ export class TagCommand extends SlashCommandHandler {
   constructor(
     private readonly tagService: TagService,
     private readonly tagSearchService: TagSearchService,
+    private readonly editInteractionHandler: TagEditInteractionHandler,
     private readonly logger: Logger,
   ) {
     super();
@@ -189,8 +150,6 @@ export class TagCommand extends SlashCommandHandler {
 
     const subcommand = interaction.options.getSubcommand();
     switch (subcommand) {
-      case "add":
-        return this.addHandler(interaction);
       case "random":
         return this.randomHandler(interaction);
       case "info":
@@ -208,90 +167,6 @@ export class TagCommand extends SlashCommandHandler {
 
       default:
         throw new Error("Invalid subcommand.");
-    }
-  }
-
-  private async addHandler(
-    interaction: ChatInputCommandInteraction<"cached">,
-  ): Promise<void> {
-    const tagName = interaction.options.getString("name")?.toLowerCase();
-    if (!tagName) {
-      throw new Error("Missing tag name");
-    }
-
-    const tagContent = interaction.options.getString("content") || null;
-    const tagAttachment = interaction.options.getAttachment("attachment");
-
-    if (!tagContent && !tagAttachment) {
-      await interaction.reply({
-        embeds: [
-          createTagErrorEmbed(
-            "Missing Content",
-            t("tag.add.error.missing_content_and_attachment", {
-              ns: "commands",
-            }),
-          ).toJSON(),
-        ],
-      });
-      return;
-    }
-
-    const embedDataRes = await processTagAttachment(tagContent, tagAttachment);
-    if (!embedDataRes.success) {
-      await interactionReplyErrorMessage(interaction, embedDataRes.error);
-      return;
-    }
-
-    const { fields, files } = embedDataRes.data;
-
-    const embed = createTagSuccessEmbed(
-      t("tag.add.success.title", { ns: "commands", tagName }),
-      fields,
-      tagAttachment?.url,
-    );
-
-    await interaction.reply({
-      embeds: [embed.toJSON()],
-      files,
-    });
-
-    let attachmentUrl;
-    if (tagAttachment) {
-      try {
-        const replyMsg = await interaction.fetchReply();
-        attachmentUrl = replyMsg.attachments.at(0)?.url;
-      } catch {
-        await interaction.editReply({
-          embeds: [
-            createTagErrorEmbed(
-              t("tag.add.error.failed_title", { ns: "commands" }),
-              t("tag.add.error.failed_get_original_message", {
-                ns: "commands",
-              }),
-            ).toJSON(),
-          ],
-        });
-        return;
-      }
-    }
-
-    const result = await this.tagService.createTag({
-      name: tagName,
-      content: tagContent,
-      attachment: attachmentUrl || null,
-      guildId: interaction.guildId,
-      ownerId: interaction.user.id,
-    });
-
-    if (result.err) {
-      await interaction.editReply({
-        embeds: [
-          createTagErrorEmbed(
-            t("tag.add.error.failed_title", { ns: "commands" }),
-            result.val,
-          ).toJSON(),
-        ],
-      });
     }
   }
 
@@ -514,87 +389,34 @@ export class TagCommand extends SlashCommandHandler {
       throw new Error("Missing tag name.");
     }
 
-    const newContent = interaction.options.getString("content");
-    const newAttachment = interaction.options.getAttachment("attachment");
+    const tag = await this.tagService.getTag(tagName, interaction.guildId);
 
-    if (!newContent && !newAttachment) {
+    if (!tag) {
+      await interaction.reply({
+        embeds: [createTagNotFoundEmbed(tagName).toJSON()],
+      });
+      return;
+    }
+
+    const hasManageGuildPermission = interaction.member.permissions.has(
+      PermissionFlagsBits.ManageGuild,
+    );
+
+    if (!tag.canBeModifiedBy(interaction.user.id, hasManageGuildPermission)) {
       await interaction.reply({
         embeds: [
           createTagErrorEmbed(
-            t("tag.edit.error.title", { ns: "commands" }),
-            t("tag.edit.error.no_options", { ns: "commands" }),
+            "Permission Denied",
+            "You don't have permission to edit this tag",
           ).toJSON(),
         ],
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
 
-    const embedDataRes = await processTagAttachment(newContent, newAttachment);
-    if (!embedDataRes.success) {
-      await interactionReplyErrorMessage(interaction, embedDataRes.error);
-      return;
-    }
-
-    const { fields, files } = embedDataRes.data;
-
-    const embed = createTagSuccessEmbed(
-      t("tag.edit.success.title", { ns: "commands", tagName }),
-      fields,
-      newAttachment?.url,
-    );
-
-    if (newAttachment) {
-      embed.setFooter({
-        text: t("tag.edit.success.footer", { ns: "commands" }),
-      });
-    }
-
-    await interaction.reply({
-      embeds: [embed.toJSON()],
-      files,
-    });
-
-    let attachmentUrl;
-    if (newAttachment) {
-      try {
-        const replyMsg = await interaction.fetchReply();
-        attachmentUrl = replyMsg.attachments.at(0)?.url;
-      } catch {
-        await interaction.editReply({
-          embeds: [
-            createTagErrorEmbed(
-              t("tag.edit.error.failed_title", { ns: "commands" }),
-              t("tag.edit.error.failed_get_original_message", {
-                ns: "commands",
-              }),
-            ).toJSON(),
-          ],
-        });
-        return;
-      }
-    }
-
-    const result = await this.tagService.updateTag({
-      name: tagName,
-      guildId: interaction.guildId,
-      userId: interaction.user.id,
-      hasManageGuildPermission: interaction.member.permissions.has(
-        PermissionFlagsBits.ManageGuild,
-      ),
-      newContent,
-      newAttachment: attachmentUrl,
-    });
-
-    if (result.err) {
-      await interaction.editReply({
-        embeds: [
-          createTagErrorEmbed(
-            t("tag.edit.error.failed_title", { ns: "commands" }),
-            result.val,
-          ).toJSON(),
-        ],
-      });
-    }
+    // Delegate to the edit interaction handler
+    await this.editInteractionHandler.handleEditInterface(interaction, tag);
   }
 
   private async renameHandler(
@@ -668,10 +490,8 @@ export class TagCommand extends SlashCommandHandler {
     }
 
     const tag = result.val;
-    const embed = createTagDeleteSuccessEmbed(tag);
+    const message = createTagDeleteSuccessMessage(tag);
 
-    await interaction.reply({
-      embeds: [embed],
-    });
+    await interaction.reply(message);
   }
 }
