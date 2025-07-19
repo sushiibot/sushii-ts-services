@@ -188,16 +188,17 @@ export function createTagEditMessage(
     container.setAccentColor(Color.Info);
   }
 
-  contentTextContent += `**Tag Name**
+  contentTextContent += `**Name**
 ${tag.getName()}
 
 **Content**
-${tag.getContent() || "No content provided."}
+${tag.getContent() || "No content provided."}`;
 
-**Attachment**
-${tag.getAttachment() || "No attachment provided."}
+  if (tag.getAttachment()) {
+    contentTextContent += `\n\n**Attachment**\n${tag.getAttachment()}`;
+  }
 
-**Tag Owner**
+  contentTextContent += `\n\n**Tag Owner**
 <@${tag.getOwnerId()}>
 
 **Use Count**
