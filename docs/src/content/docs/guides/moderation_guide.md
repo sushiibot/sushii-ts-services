@@ -8,13 +8,12 @@ essential commands and recommendations for effective moderation.
 
 ## Setup
 
-- Ensure you have mod logs already configured
+- Ensure you have a mod log channel set up and configured with `/settings modlog`
 
-## Case Management
+## Cases
 
-Each moderation action has a **case number** (e.g., "case #895") that can be
-found in the footer of the action logged in your configured moderation logs
-channel.
+Each moderation action has a **case number** (e.g., "case #987") that can be
+found in the action logged in your configured moderation logs channel.
 
 :::tip{icon="heart"}
 All actions get logged in moderation logs, even if you don't use sushii
@@ -64,9 +63,9 @@ features are:
 - **`/reason`** - Edit the reason for a moderation action
   - You can also edit reasons in sushii-logs using the buttons if no reason was
     set when performing the command
-- **`/uncase`** - Delete a moderation action
+- **`/uncase`** - Delete a moderation action from a user's history and logs
 
 ### User Information Commands
 
-- **`/note`** - Add a note to a user's sushii profile
+- **`/note`** - Add a note to a user's sushii profile, private to moderators only.
 - **`/history`** - Check a user's moderation history
