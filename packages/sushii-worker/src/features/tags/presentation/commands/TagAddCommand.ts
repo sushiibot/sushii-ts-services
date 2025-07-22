@@ -90,7 +90,7 @@ export class TagAddCommand extends SlashCommandHandler {
     );
 
     await interaction.reply({
-      embeds: [embed.toJSON()],
+      embeds: [embed],
       files,
     });
 
@@ -107,7 +107,7 @@ export class TagAddCommand extends SlashCommandHandler {
               t("tag.add.error.failed_get_original_message", {
                 ns: "commands",
               }),
-            ).toJSON(),
+            ),
           ],
         });
         return;
@@ -128,7 +128,7 @@ export class TagAddCommand extends SlashCommandHandler {
           createTagErrorEmbed(
             t("tag.add.error.failed_title", { ns: "commands" }),
             result.val,
-          ).toJSON(),
+          ),
         ],
       });
     }

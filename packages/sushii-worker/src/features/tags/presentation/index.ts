@@ -1,6 +1,7 @@
-export { TagCommand } from "./commands/TagCommand";
+export { TagInfoCommand } from "./commands/TagInfoCommand";
 export { TagAddCommand } from "./commands/TagAddCommand";
 export { TagGetCommand } from "./commands/TagGetCommand";
+export { TagEditCommand } from "./commands/TagEditCommand";
 export { TagAdminCommand } from "./commands/TagAdminCommand";
 export { TagAutocomplete } from "./events/TagAutocomplete";
 export { TagGetAutocomplete } from "./events/TagGetAutocomplete";

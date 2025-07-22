@@ -44,7 +44,7 @@ export class TagGetCommand extends SlashCommandHandler {
 
     if (result.err) {
       await interaction.reply({
-        embeds: [createTagNotFoundEmbed(tagName).toJSON()],
+        embeds: [createTagNotFoundEmbed(tagName)],
         flags: MessageFlags.Ephemeral,
       });
       return;
