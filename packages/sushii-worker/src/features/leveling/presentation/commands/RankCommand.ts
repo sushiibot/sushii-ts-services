@@ -4,8 +4,8 @@ import {
   InteractionContextType,
 } from "discord.js";
 import { Logger } from "pino";
-import { SlashCommandHandler } from "../../../../interactions/handlers";
-import { getErrorMessage } from "../../../../interactions/responses/error";
+import { SlashCommandHandler } from "@/interactions/handlers";
+import { getErrorMessage } from "@/interactions/responses/error";
 import { GetUserRankService } from "../../application/GetUserRankService";
 import { formatRankCard } from "../views/RankDisplayView";
 
@@ -50,8 +50,8 @@ export default class RankCommand extends SlashCommandHandler {
       return;
     }
 
-    // Need to force fetch the user in order to get the avatar URL
-    const avatarURL = await interaction.member.displayAvatarURL({
+    // Target avatar
+    const avatarURL = target.displayAvatarURL({
       size: 512,
     });
 
