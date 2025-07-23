@@ -11,7 +11,7 @@ import {
   createTagSuccessEmbed,
   createTagErrorEmbed,
   processTagAttachment,
-} from "../views/TagEmbedBuilder";
+} from "../views/TagMessageBuilder";
 import { interactionReplyErrorMessage } from "@/interactions/responses/error";
 
 export class TagAddCommand extends SlashCommandHandler {

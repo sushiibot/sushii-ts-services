@@ -14,4 +14,4 @@ export {
   createTagNotFoundEmbed,
   processTagAttachment,
   type TagUpdateData,
-} from "./views/TagEmbedBuilder";
+} from "./views/TagMessageBuilder";

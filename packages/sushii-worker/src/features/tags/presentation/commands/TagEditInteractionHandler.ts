@@ -12,7 +12,7 @@ import {
   createTagErrorEmbed,
   createTagEditMessage,
   createTagDeleteConfirmationMessage,
-} from "../views/TagEmbedBuilder";
+} from "../views/TagMessageBuilder";
 import {
   createEditContentModal,
   createRenameModal,

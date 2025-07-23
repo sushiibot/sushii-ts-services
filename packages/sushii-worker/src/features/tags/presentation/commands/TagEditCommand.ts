@@ -12,7 +12,7 @@ import { TagEditInteractionHandler } from "./TagEditInteractionHandler";
 import {
   createTagErrorEmbed,
   createTagNotFoundEmbed,
-} from "../views/TagEmbedBuilder";
+} from "../views/TagMessageBuilder";
 
 export class TagEditCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()

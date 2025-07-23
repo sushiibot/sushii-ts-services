@@ -14,7 +14,8 @@ import {
   createTagInfoEmbed,
   createTagErrorEmbed,
   createTagNotFoundEmbed,
-} from "../views/TagEmbedBuilder";
+  createTagHelpMessage,
+} from "../views/TagMessageBuilder";
 import { interactionReplyErrorMessage } from "@/interactions/responses/error";
 import Paginator from "@/shared/presentation/Paginator";
 import { NAME_STARTS_WITH, NAME_CONTAINS } from "../TagConstants";
@@ -85,6 +86,9 @@ export class TagInfoCommand extends SlashCommandHandler {
             .setRequired(false),
         ),
     )
+    .addSubcommand((c) =>
+      c.setName("help").setDescription("Learn how to use tags."),
+    )
     .toJSON();
 
   constructor(
@@ -110,6 +114,8 @@ export class TagInfoCommand extends SlashCommandHandler {
         return this.searchHandler(interaction);
       case "random":
         return this.randomHandler(interaction);
+      case "help":
+        return this.helpHandler(interaction);
 
       default:
         throw new Error("Invalid subcommand.");
@@ -325,5 +331,11 @@ export class TagInfoCommand extends SlashCommandHandler {
         "Failed to get random tag",
       );
     }
+  }
+
+  private async helpHandler(
+    interaction: ChatInputCommandInteraction<"cached">,
+  ): Promise<void> {
+    await interaction.reply(createTagHelpMessage());
   }
 }

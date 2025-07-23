@@ -338,7 +338,7 @@ export function createTagHelpMessage(): InteractionReplyOptions & {
   const container = new ContainerBuilder().setAccentColor(Color.Info);
 
   const content = `### Tag Commands Help
-Tags are custom server messages that can be saved and used later.
+Tags are custom server messages that can be saved and shared by anyone.
 
 **Using Tags**
 \`/t <name>\` - Use a tag
@@ -353,7 +353,7 @@ Tags are custom server messages that can be saved and used later.
 \`/tag-add <name>\` - Create a new tag
 \`/tag-edit <name>\` - Edit an existing tag
 
-**Admin Commands** - Requires \`Manage Guild\` permission
+**Admin Commands**
 \`/tag-admin delete <name>\` - Delete a tag
 \`/tag-admin delete_user_tags <user>\` - Delete all user's tags`;
 

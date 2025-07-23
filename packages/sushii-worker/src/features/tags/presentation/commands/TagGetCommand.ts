@@ -7,7 +7,7 @@ import {
 import { Logger } from "pino";
 import { SlashCommandHandler } from "@/interactions/handlers";
 import { TagService } from "../../application/TagService";
-import { createTagNotFoundEmbed } from "../views/TagEmbedBuilder";
+import { createTagNotFoundEmbed } from "../views/TagMessageBuilder";
 
 export class TagGetCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()
