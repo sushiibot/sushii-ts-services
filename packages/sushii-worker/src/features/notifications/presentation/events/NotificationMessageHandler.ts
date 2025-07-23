@@ -28,10 +28,6 @@ export class NotificationMessageHandler extends EventHandler<Events.MessageCreat
     await tracer.startActiveSpan("notificationHandler", async (span) => {
       try {
         await this.messageService.processMessage(message);
-
-        sentNotificationsCounter.inc({
-          status: "success",
-        });
       } catch (error) {
         sentNotificationsCounter.inc({
           status: "failed",

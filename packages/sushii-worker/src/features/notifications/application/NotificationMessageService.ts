@@ -1,10 +1,19 @@
 import { Logger } from "pino";
-import { GuildMember, Message } from "discord.js";
+import {
+  DiscordAPIError,
+  GuildMember,
+  Message,
+  RESTJSONErrorCodes,
+} from "discord.js";
 import { Notification } from "../domain/entities/Notification";
 import { NotificationService } from "./NotificationService";
 import { createNotificationEmbed } from "../presentation/views/NotificationEmbedView";
+import { sentNotificationsCounter } from "@/infrastructure/metrics/metrics";
 
 export class NotificationMessageService {
+  private readonly dmFailureCount = new Map<string, number>();
+  private readonly MAX_DM_FAILURES = 3;
+
   constructor(
     private readonly notificationService: NotificationService,
     private readonly logger: Logger,
@@ -30,6 +39,10 @@ export class NotificationMessageService {
 
     const uniqueNotifications = this.deduplicateByUser(matchedNotifications);
     await this.sendNotifications(message, uniqueNotifications);
+
+    sentNotificationsCounter.inc({
+      status: "success",
+    });
   }
 
   private deduplicateByUser(notifications: Notification[]): Notification[] {
@@ -67,8 +80,8 @@ export class NotificationMessageService {
 
     try {
       member = await message.guild.members.fetch(notification.userId);
-    } catch {
-      await this.handleMemberNotFound(message, notification);
+    } catch (err) {
+      await this.handleMemberNotFound(message, notification, err);
       return;
     }
 
@@ -88,30 +101,89 @@ export class NotificationMessageService {
 
     try {
       await member.send({ embeds: [embed] });
+
+      // Reset failure count on successful send
+      this.dmFailureCount.delete(notification.userId);
+
       this.logger.debug(
         { userId: notification.userId, keyword: notification.keyword },
         "Sent notification",
       );
+
+      sentNotificationsCounter.inc({ status: "success" });
     } catch (error) {
-      this.logger.debug(
-        { userId: notification.userId, error },
-        "Failed to send DM notification",
+      await this.handleDmFailure(notification, error);
+    }
+  }
+
+  private async handleDmFailure(
+    notification: Notification,
+    error: unknown,
+  ): Promise<void> {
+    const currentFailures = this.dmFailureCount.get(notification.userId) || 0;
+    const newFailureCount = currentFailures + 1;
+
+    this.dmFailureCount.set(notification.userId, newFailureCount);
+
+    sentNotificationsCounter.inc({ status: "failed" });
+
+    this.logger.debug(
+      {
+        userId: notification.userId,
+        failureCount: newFailureCount,
+        failureMapSize: this.dmFailureCount.size,
+        error,
+      },
+      "Failed to send DM notification",
+    );
+
+    if (newFailureCount >= this.MAX_DM_FAILURES) {
+      this.logger.info(
+        {
+          userId: notification.userId,
+          guildId: notification.guildId,
+          failureCount: newFailureCount,
+        },
+        "Deleting all notifications for user due to repeated DM failures",
       );
+
+      await this.notificationService.cleanupMemberLeft(
+        notification.guildId,
+        notification.userId,
+      );
+
+      // Reset failure count after cleanup
+      this.dmFailureCount.delete(notification.userId);
     }
   }
 
   private async handleMemberNotFound(
     message: Message,
     notification: Notification,
+    err: unknown,
   ): Promise<void> {
-    this.logger.debug(
-      { guildId: message.guildId, userId: notification.userId },
-      "Member not found, cleaning up notification",
-    );
+    if (err instanceof DiscordAPIError) {
+      if (err.code === RESTJSONErrorCodes.UnknownMember) {
+        this.logger.debug(
+          { guildId: message.guildId, userId: notification.userId },
+          "Member left guild, cleaning up notification",
+        );
 
-    await this.notificationService.cleanupMemberLeft(
-      notification.guildId,
-      notification.userId,
+        await this.notificationService.cleanupMemberLeft(
+          notification.guildId,
+          notification.userId,
+        );
+        return;
+      }
+    }
+
+    this.logger.debug(
+      {
+        err,
+        guildId: message.guildId,
+        userId: notification.userId,
+      },
+      "Member not found, skipping notification",
     );
   }
 
