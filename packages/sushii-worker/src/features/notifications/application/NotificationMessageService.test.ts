@@ -1,11 +1,18 @@
 import { describe, expect, test, mock } from "bun:test";
 import { NotificationMessageService } from "./NotificationMessageService";
 import { Notification } from "../domain/entities/Notification";
+import { NotificationService } from "./NotificationService";
+import { Logger } from "pino";
+import { Message } from "discord.js";
 
 describe("NotificationMessageService", () => {
   const mockNotificationService = {
-    findMatchingNotifications: mock(() => Promise.resolve([])),
-    cleanupMemberLeft: mock(() => Promise.resolve()),
+    findMatchingNotifications: mock<
+      NotificationService["findMatchingNotifications"]
+    >(() => Promise.resolve([])),
+    cleanupMemberLeft: mock<NotificationService["cleanupMemberLeft"]>(() =>
+      Promise.resolve(),
+    ),
   };
 
   const mockLogger = {
@@ -14,8 +21,8 @@ describe("NotificationMessageService", () => {
   };
 
   const service = new NotificationMessageService(
-    mockNotificationService as any,
-    mockLogger as any,
+    mockNotificationService as unknown as NotificationService,
+    mockLogger as unknown as Logger,
   );
 
   test("ignores bot messages", async () => {
@@ -25,9 +32,11 @@ describe("NotificationMessageService", () => {
       content: "test message",
     };
 
-    await service.processMessage(mockMessage as any);
+    await service.processMessage(mockMessage as unknown as Message);
 
-    expect(mockNotificationService.findMatchingNotifications).not.toHaveBeenCalled();
+    expect(
+      mockNotificationService.findMatchingNotifications,
+    ).not.toHaveBeenCalled();
   });
 
   test("ignores DM messages", async () => {
@@ -37,9 +46,11 @@ describe("NotificationMessageService", () => {
       content: "test message",
     };
 
-    await service.processMessage(mockMessage as any);
+    await service.processMessage(mockMessage as unknown as Message);
 
-    expect(mockNotificationService.findMatchingNotifications).not.toHaveBeenCalled();
+    expect(
+      mockNotificationService.findMatchingNotifications,
+    ).not.toHaveBeenCalled();
   });
 
   test("ignores messages without content", async () => {
@@ -49,9 +60,11 @@ describe("NotificationMessageService", () => {
       content: "",
     };
 
-    await service.processMessage(mockMessage as any);
+    await service.processMessage(mockMessage as unknown as Message);
 
-    expect(mockNotificationService.findMatchingNotifications).not.toHaveBeenCalled();
+    expect(
+      mockNotificationService.findMatchingNotifications,
+    ).not.toHaveBeenCalled();
   });
 
   test("processes valid messages", async () => {
@@ -59,7 +72,9 @@ describe("NotificationMessageService", () => {
       Notification.create("guild1", "user1", "test"),
       Notification.create("guild1", "user2", "hello"),
     ];
-    mockNotificationService.findMatchingNotifications.mockResolvedValue(notifications);
+    mockNotificationService.findMatchingNotifications.mockResolvedValue(
+      notifications,
+    );
 
     const mockMessage = {
       inGuild: () => true,
@@ -70,14 +85,16 @@ describe("NotificationMessageService", () => {
       channel: { parentId: "category1" },
     };
 
-    await service.processMessage(mockMessage as any);
+    await service.processMessage(mockMessage as unknown as Message);
 
-    expect(mockNotificationService.findMatchingNotifications).toHaveBeenCalledWith(
+    expect(
+      mockNotificationService.findMatchingNotifications,
+    ).toHaveBeenCalledWith(
       "guild1",
-      "category1", 
+      "category1",
       "channel1",
       "author123",
-      "test hello world"
+      "test hello world",
     );
   });
 
@@ -87,7 +104,9 @@ describe("NotificationMessageService", () => {
       Notification.create("guild1", "user1", "hello"), // duplicate user
       Notification.create("guild1", "user2", "world"),
     ];
-    mockNotificationService.findMatchingNotifications.mockResolvedValue(notifications);
+    mockNotificationService.findMatchingNotifications.mockResolvedValue(
+      notifications,
+    );
 
     const mockGuild = {
       members: {
@@ -109,7 +128,7 @@ describe("NotificationMessageService", () => {
       content: "test hello world",
       guildId: "guild1",
       channelId: "channel1",
-      channel: { 
+      channel: {
         parentId: "category1",
         permissionsFor: mock(() => ({ has: () => true })),
       },
@@ -118,7 +137,7 @@ describe("NotificationMessageService", () => {
       member: { displayAvatarURL: () => "avatar.png" },
     };
 
-    await service.processMessage(mockMessage as any);
+    await service.processMessage(mockMessage as unknown as Message);
 
     // Should only fetch 2 unique users, not 3
     expect(mockGuild.members.fetch).toHaveBeenCalledTimes(2);
@@ -128,7 +147,9 @@ describe("NotificationMessageService", () => {
 
   test("cleans up notifications for missing members", async () => {
     const notifications = [Notification.create("guild1", "user1", "test")];
-    mockNotificationService.findMatchingNotifications.mockResolvedValue(notifications);
+    mockNotificationService.findMatchingNotifications.mockResolvedValue(
+      notifications,
+    );
 
     const mockGuild = {
       members: {
@@ -146,8 +167,11 @@ describe("NotificationMessageService", () => {
       guild: mockGuild,
     };
 
-    await service.processMessage(mockMessage as any);
+    await service.processMessage(mockMessage as unknown as Message);
 
-    expect(mockNotificationService.cleanupMemberLeft).toHaveBeenCalledWith("guild1", "user1");
+    expect(mockNotificationService.cleanupMemberLeft).toHaveBeenCalledWith(
+      "guild1",
+      "user1",
+    );
   });
 });
