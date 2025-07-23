@@ -33,7 +33,6 @@ import {
   memberLogJoinHandler,
   memberLogLeaveHandler,
 } from "@/events/MemberLog";
-import { notificationHandler } from "@/events/Notifications";
 import {
   memberJoinMessageHandler,
   memberLeaveMessageHandler,
@@ -443,7 +442,6 @@ export default function registerEventHandlers(
           Events.MessageCreate,
           {
             emojiStats: emojiStatsMsgHandler,
-            notification: notificationHandler,
             cacheUser: cacheUserHandler,
           },
           msg,

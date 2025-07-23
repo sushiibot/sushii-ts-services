@@ -52,20 +52,20 @@ enum EmojiTypeOption {
   Both = "both",
 }
 
-type EmojiStat = {
+interface EmojiStat {
   asset_id: string;
   total_count?: string | number | bigint;
   name: string;
   type: AppPublicGuildAssetType;
-};
+}
 
-type RequestOptions = {
+interface RequestOptions {
   group: GroupOption;
   order: OrderOption;
   server: ServerOption;
   assetType: AssetTypeOption;
   emojiType: EmojiTypeOption;
-};
+}
 
 async function getAllStats(
   interaction: ChatInputCommandInteraction,
@@ -421,7 +421,6 @@ export default class EmojiStatsCommand extends SlashCommandHandler {
     )
     .toJSON();
 
-  // eslint-disable-next-line class-methods-use-this
   async handler(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!interaction.inCachedGuild()) {
       throw new Error("Not in cached guild");

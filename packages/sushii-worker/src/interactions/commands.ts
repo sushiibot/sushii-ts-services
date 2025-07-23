@@ -7,8 +7,6 @@ import UserInfoHandler from "./moderation/context_lookup/LookupContextMenuHandle
 import StatusCommand from "../features/status/presentation/StatusCommand";
 import BanCommand from "./moderation/BanCommand";
 import KickCommand from "./moderation/KickCommand";
-import NotificationCommand from "./notifications/NotificationCommand";
-import NotificationListAutocomplete from "./notifications/Autocomplete";
 import ContextLookUpButtonHandler from "./moderation/context_lookup/LookupComponentHandler";
 import TimeoutCommand from "./moderation/TimeoutCommand";
 import ReminderDeleteAutocomplete from "./reminders/ReminderAutocomplete";
@@ -81,7 +79,6 @@ export default function registerInteractionHandlers(
     new EmojiStatsCommand(),
     new GiveawayCommand(),
 
-    new NotificationCommand(),
     new ReminderCommand(),
 
     new LeaderboardCommand(),
@@ -100,7 +97,6 @@ export default function registerInteractionHandlers(
   // ----------------------------------------
   // Autocomplete
   interactionRouter.addAutocompleteHandlers(
-    new NotificationListAutocomplete(),
     new ReminderDeleteAutocomplete(),
     new RoleMenuAutocomplete(),
     new ReasonAutocomplete(),

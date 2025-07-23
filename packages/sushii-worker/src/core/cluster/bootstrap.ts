@@ -35,6 +35,13 @@ import {
   TagGetAutocomplete,
   TagEditInteractionHandler,
 } from "@/features/tags/presentation";
+import { NotificationService } from "@/features/notifications/application/NotificationService";
+import { NotificationMessageService } from "@/features/notifications/application/NotificationMessageService";
+import { DrizzleNotificationRepository } from "@/features/notifications/infrastructure/DrizzleNotificationRepository";
+import { DrizzleNotificationBlockRepository } from "@/features/notifications/infrastructure/DrizzleNotificationBlockRepository";
+import { NotificationCommand } from "@/features/notifications/presentation/commands/NotificationCommand";
+import { NotificationAutocomplete } from "@/features/notifications/presentation/autocompletes/NotificationAutocomplete";
+import { NotificationMessageHandler } from "@/features/notifications/presentation/events/NotificationMessageHandler";
 
 export async function initCore() {
   // This just returns the global existing database for now, until we fully
@@ -153,9 +160,41 @@ export function registerFeatures(
     logger.child({ module: "tagGetAutocomplete" }),
   );
 
+  // Notification feature
+  const notificationRepository = new DrizzleNotificationRepository(db as any);
+  const notificationBlockRepository = new DrizzleNotificationBlockRepository(
+    db as any,
+  );
+  const notificationService = new NotificationService(
+    notificationRepository,
+    notificationBlockRepository,
+    logger.child({ module: "notificationService" }),
+  );
+  const notificationMessageService = new NotificationMessageService(
+    notificationService,
+    logger.child({ module: "notificationMessageService" }),
+  );
+
+  const notificationCommand = new NotificationCommand(notificationService);
+  const notificationAutocomplete = new NotificationAutocomplete(
+    notificationService,
+  );
+
   // Register commands and handlers on interaction router
-  interactionRouter.addCommands(rankCommand, tagInfoCommand, tagAddCommand, tagGetCommand, tagEditCommand, tagAdminCommand);
-  interactionRouter.addAutocompleteHandlers(tagAutocomplete, tagGetAutocomplete);
+  interactionRouter.addCommands(
+    rankCommand,
+    tagInfoCommand,
+    tagAddCommand,
+    tagGetCommand,
+    tagEditCommand,
+    tagAdminCommand,
+    notificationCommand,
+  );
+  interactionRouter.addAutocompleteHandlers(
+    tagAutocomplete,
+    tagGetAutocomplete,
+    notificationAutocomplete,
+  );
 
   // ---------------------------------------------------------------------------
   // Build event handlers
@@ -174,7 +213,17 @@ export function registerFeatures(
     logger,
   );
 
-  const handlers = [levelHandler, deploymentHandler];
+  // Notification handler
+  const notificationMessageHandler = new NotificationMessageHandler(
+    notificationMessageService,
+    notificationService,
+  );
+
+  const handlers = [
+    levelHandler,
+    deploymentHandler,
+    notificationMessageHandler,
+  ];
 
   // ---------------------------------------------------------------------------
   // Register event handlers
