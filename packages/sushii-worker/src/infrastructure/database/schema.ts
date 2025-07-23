@@ -158,9 +158,6 @@ export const guildConfigsInAppPublic = appPublic.table(
     leaveMsg: text("leave_msg"),
     leaveMsgEnabled: boolean("leave_msg_enabled").default(true).notNull(),
     msgChannel: bigint("msg_channel", { mode: "bigint" }),
-    roleChannel: bigint("role_channel", { mode: "bigint" }),
-    roleConfig: jsonb("role_config"),
-    roleEnabled: boolean("role_enabled").default(true).notNull(),
     logMsg: bigint("log_msg", { mode: "bigint" }),
     logMsgEnabled: boolean("log_msg_enabled").default(true).notNull(),
     logMod: bigint("log_mod", { mode: "bigint" }),
@@ -172,7 +169,6 @@ export const guildConfigsInAppPublic = appPublic.table(
     warnDmText: text("warn_dm_text"),
     warnDmEnabled: boolean("warn_dm_enabled").default(true).notNull(),
     disabledChannels: bigint("disabled_channels", { mode: "bigint" }).array(),
-    data: jsonb().default({}).notNull(),
     lookupDetailsOptIn: boolean("lookup_details_opt_in")
       .default(false)
       .notNull(),

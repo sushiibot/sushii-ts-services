@@ -36,6 +36,13 @@
       "when": 1751221765546,
       "tag": "0004_drop-levels-column",
       "breakpoints": false
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1753313288343,
+      "tag": "0005_drop-role-data-guild-config-columns",
+      "breakpoints": false
     }
   ]
 }
