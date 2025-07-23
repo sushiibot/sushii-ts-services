@@ -336,6 +336,10 @@ export class TagInfoCommand extends SlashCommandHandler {
   private async helpHandler(
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
-    await interaction.reply(createTagHelpMessage());
+    const hasManageGuildPermissions =
+      interaction.memberPermissions?.has("ManageGuild");
+
+    const msg = createTagHelpMessage(hasManageGuildPermissions);
+    await interaction.reply(msg);
   }
 }

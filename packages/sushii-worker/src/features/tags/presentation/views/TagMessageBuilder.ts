@@ -9,6 +9,7 @@ import {
   TextDisplayBuilder,
   MessageFlags,
   InteractionReplyOptions,
+  SeparatorBuilder,
 } from "discord.js";
 import { Tag } from "../../domain/entities/Tag";
 import dayjs from "@/shared/domain/dayjs";
@@ -332,19 +333,21 @@ Are you sure you want to delete the tag \`${tagName}\`? This cannot be undone.`;
   };
 }
 
-export function createTagHelpMessage(): InteractionReplyOptions & {
+export function createTagHelpMessage(
+  hasManageGuild: boolean,
+): InteractionReplyOptions & {
   flags: MessageFlags.IsComponentsV2;
 } {
   const container = new ContainerBuilder().setAccentColor(Color.Info);
 
   const content = `### Tag Commands Help
-Tags are custom server messages that can be saved and shared by anyone.
+Tags are custom server messages that can be saved and used later.
 
 **Using Tags**
 \`/t <name>\` - Use a tag
-\`/tag info <name>\` - Get tag information
 
 **Browsing Tags**
+\`/tag info <name>\` - Get tag information
 \`/tag list\` - Show all server tags
 \`/tag search\` - Search tags with filters
 \`/tag random\` - Get a random tag
@@ -353,12 +356,34 @@ Tags are custom server messages that can be saved and shared by anyone.
 \`/tag-add <name>\` - Create a new tag
 \`/tag-edit <name>\` - Edit an existing tag
 
-**Admin Commands**
+**Admin Commands** - Requires \`Manage Guild\` permission
 \`/tag-admin delete <name>\` - Delete a tag
 \`/tag-admin delete_user_tags <user>\` - Delete all user's tags`;
 
   const textDisplay = new TextDisplayBuilder().setContent(content);
   container.addTextDisplayComponents(textDisplay);
+
+  if (hasManageGuild) {
+    container.addSeparatorComponents(new SeparatorBuilder());
+
+    const contentFooter = `
+**Changing Command Permissions**
+In sushii's integration settings, you can set different permissions for each
+group of commands. This is also why they're separate commands in case you want
+to allow or deny access to specific commands, e.g. allow using tags but not
+allow adding tags.
+
+To modify permissions, select a command:
+\`Server Settings > Integrations > sushii > Commands > Tag Commands\`
+
+Then optionally set a role or member override to allow or deny access to
+specific commands.
+`;
+
+    container.addTextDisplayComponents(
+      new TextDisplayBuilder().setContent(contentFooter),
+    );
+  }
 
   return {
     components: [container],
