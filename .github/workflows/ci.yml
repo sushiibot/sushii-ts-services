@@ -58,6 +58,8 @@ jobs:
 
       - name: Test sushii-worker
         env:
+          # For some reason ryuk causes the testcontainer log wait to fail:
+          #  error: Log message "/.*Started.*/" not received after 60000ms
           TESTCONTAINERS_RYUK_DISABLED: true
         run: |
           cp ./packages/sushii-worker/.env.ci ./packages/sushii-worker/.env
