@@ -41,6 +41,70 @@ export function formatSuccessEmbed(
     .setColor(Color.Success);
 }
 
+export function formatJoinMessageSuccessEmbed(message: string): EmbedBuilder {
+  return new EmbedBuilder()
+    .setTitle("Join message set!")
+    .setDescription(message.replace("\\n", "\n"))
+    .setColor(Color.Success);
+}
+
+export function formatLeaveMessageSuccessEmbed(message: string): EmbedBuilder {
+  return new EmbedBuilder()
+    .setTitle("Leave message set!")
+    .setDescription(message.replace("\\n", "\n"))
+    .setColor(Color.Success);
+}
+
+export function formatChannelSetSuccessEmbed(
+  channelId: string,
+  type: "join/leave" | "mod log" | "member log" | "message log"
+): EmbedBuilder {
+  const titles = {
+    "join/leave": "Join/Leave channel set!",
+    "mod log": "Mod log channel set!",
+    "member log": "Member log channel set!", 
+    "message log": "Message log updated"
+  };
+
+  const descriptions = {
+    "join/leave": `Join/Leave messages will be sent to <#${channelId}>`,
+    "mod log": `Log messages will be sent to <#${channelId}>`,
+    "member log": `Log messages will be sent to <#${channelId}>`,
+    "message log": `<#${channelId}>`
+  };
+
+  return new EmbedBuilder()
+    .setTitle(titles[type])
+    .setDescription(descriptions[type])
+    .setColor(Color.Success);
+}
+
+export function formatIgnoreChannelSuccessEmbed(
+  channelId: string,
+  blockType: string
+): EmbedBuilder {
+  const typeDescription = blockType === "all" ? "edits and deletes" : `${blockType} only`;
+  
+  return new EmbedBuilder()
+    .setTitle("Added new message log ignore")
+    .setDescription(`ignoring ${typeDescription} in <#${channelId}>`)
+    .setColor(Color.Success);
+}
+
+export function formatUnignoreChannelSuccessEmbed(channelId: string): EmbedBuilder {
+  return new EmbedBuilder()
+    .setTitle("Channel message logs re-enabled")
+    .setDescription(`<#${channelId}>`)
+    .setColor(Color.Success);
+}
+
+export function formatButtonRejectionResponse(): { content: string; ephemeral: boolean } {
+  return {
+    content: "These buttons aren't for you! 😡",
+    ephemeral: true
+  };
+}
+
 export function formatIgnoredChannelsEmbed(
   blocks: MessageLogBlock[],
 ): EmbedBuilder {
