@@ -3,7 +3,7 @@ import { NotificationMessageService } from "./NotificationMessageService";
 import { Notification } from "../domain/entities/Notification";
 import { NotificationService } from "./NotificationService";
 import { Logger } from "pino";
-import { Message } from "discord.js";
+import { Message, DiscordAPIError, RESTJSONErrorCodes } from "discord.js";
 
 describe("NotificationMessageService", () => {
   const mockNotificationService = {
@@ -153,7 +153,20 @@ describe("NotificationMessageService", () => {
 
     const mockGuild = {
       members: {
-        fetch: mock(() => Promise.reject(new Error("Member not found"))),
+        fetch: mock(() => {
+          const error = new DiscordAPIError(
+            {
+              message: "Unknown Member",
+              code: RESTJSONErrorCodes.UnknownMember,
+            },
+            RESTJSONErrorCodes.UnknownMember,
+            404,
+            "GET",
+            "/guilds/guild1/members/user1",
+            {},
+          );
+          return Promise.reject(error);
+        }),
       },
     };
 
