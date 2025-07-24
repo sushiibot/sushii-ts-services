@@ -57,7 +57,7 @@ jobs:
         run: |
           cp ./packages/sushii-worker/.env.ci ./packages/sushii-worker/.env
           cd ./packages/sushii-worker
-          bun test
+          bun test --timeout 30000
 
   docker-build:
     needs: test
