@@ -57,26 +57,30 @@ export class GuildConfig {
     return new GuildConfig(
       guildId,
       null,
+      // Join and leave messages are enabled by default
       {
         joinMessage: null,
-        joinMessageEnabled: false,
+        joinMessageEnabled: true,
         leaveMessage: null,
-        leaveMessageEnabled: false,
+        leaveMessageEnabled: true,
         messageChannel: null,
       },
+      // Default logging are all enabled
       {
         modLogChannel: null,
-        modLogEnabled: false,
+        modLogEnabled: true,
         memberLogChannel: null,
-        memberLogEnabled: false,
+        memberLogEnabled: true,
         messageLogChannel: null,
-        messageLogEnabled: false,
+        messageLogEnabled: true,
       },
       {
         muteDmText: null,
-        muteDmEnabled: false,
+        muteDmEnabled: true,
         warnDmText: null,
-        warnDmEnabled: false,
+        warnDmEnabled: true,
+
+        // Lookup flags
         lookupDetailsOptIn: false,
         lookupPrompted: false,
       },

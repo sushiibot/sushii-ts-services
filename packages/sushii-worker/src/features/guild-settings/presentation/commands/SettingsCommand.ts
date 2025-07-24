@@ -1,51 +1,34 @@
 import { sleep } from "bun";
 import {
+  ButtonInteraction,
+  ChannelSelectMenuInteraction,
   ChatInputCommandInteraction,
-  ComponentType,
   InteractionContextType,
+  MessageComponentInteraction,
   PermissionFlagsBits,
   SlashCommandBuilder,
+  StringSelectMenuInteraction,
 } from "discord.js";
+import { ModalMessageModalSubmitInteraction } from "discord.js";
 import { Logger } from "pino";
 
-import customIds from "@/interactions/customIds";
 import { SlashCommandHandler } from "@/interactions/handlers";
 
 import { GuildSettingsService } from "../../application/GuildSettingsService";
 import { MessageLogService } from "../../application/MessageLogService";
-import { MessageLogBlockType } from "../../domain/entities/MessageLogBlock";
+import { ToggleableSetting } from "../../domain/entities/GuildConfig";
 import {
-  formatIgnoredChannelsEmbed,
-  formatLookupComponents,
-  formatLookupEmbed,
-  formatSettingsComponents,
-  formatSettingsEmbed,
-  formatJoinMessageSuccessEmbed,
-  formatLeaveMessageSuccessEmbed,
-  formatChannelSetSuccessEmbed,
-  formatIgnoreChannelSuccessEmbed,
-  formatUnignoreChannelSuccessEmbed,
+  createSettingsMessage,
   formatButtonRejectionResponse,
-} from "../views/GuildSettingsView";
+} from "../views/SettingsMessageBuilder";
 import {
-  ALLOWED_CHANNEL_TYPES,
-  BUTTON_REJECTION_DELAY,
-  BaseCommandName,
-  COLLECTOR_TIMEOUT,
-  LogType,
-  LookupCustomId,
-  MsgLogCommandName,
-  OptionName,
-  SETTING_FIELD_MAPPING,
-  SettingFieldName,
-  SubcommandGroupName,
-} from "./constants";
-
-const blockTypes: Record<string, MessageLogBlockType> = {
-  all: "all",
-  edits: "edits",
-  deletes: "deletes",
-};
+  createJoinMessageModal,
+  createLeaveMessageModal,
+} from "../views/components/SettingsComponents";
+import {
+  SETTINGS_CUSTOM_IDS,
+  SettingsPage,
+} from "../views/components/SettingsConstants";
 
 export default class SettingsCommand extends SlashCommandHandler {
   constructor(
@@ -61,128 +44,6 @@ export default class SettingsCommand extends SlashCommandHandler {
     .setDescription("Configure sushii server settings.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .setContexts(InteractionContextType.Guild)
-    .addSubcommand((c) =>
-      c.setName(BaseCommandName.List).setDescription("Show the current server settings."),
-    )
-    .addSubcommand((c) =>
-      c
-        .setName(BaseCommandName.JoinMessage)
-        .setDescription("Set the message for new members.")
-        .addStringOption((o) =>
-          o
-            .setName(OptionName.Message)
-            .setDescription(
-              "You can use <username>, <mention>, <server>, <member_number>",
-            )
-            .setRequired(true),
-        ),
-    )
-    .addSubcommand((c) =>
-      c
-        .setName(BaseCommandName.LeaveMessage)
-        .setDescription("Set the message for members leaving.")
-        .addStringOption((o) =>
-          o
-            .setName(OptionName.Message)
-            .setDescription("You can use <username>, <mention>, <server>")
-            .setRequired(true),
-        ),
-    )
-    .addSubcommand((c) =>
-      c
-        .setName(BaseCommandName.JoinLeaveChannel)
-        .setDescription("Set channel to send join/leave messages to.")
-        .addChannelOption((o) =>
-          o
-            .setName(OptionName.Channel)
-            .setDescription("Where to send the messages.")
-            .addChannelTypes(...ALLOWED_CHANNEL_TYPES)
-            .setRequired(true),
-        ),
-    )
-    .addSubcommand((c) =>
-      c
-        .setName(BaseCommandName.ModLog)
-        .setDescription("Set channel for mod logs.")
-        .addChannelOption((o) =>
-          o
-            .setName(OptionName.Channel)
-            .setDescription("Where to send mod logs to.")
-            .addChannelTypes(...ALLOWED_CHANNEL_TYPES)
-            .setRequired(true),
-        ),
-    )
-    .addSubcommand((c) =>
-      c
-        .setName(BaseCommandName.MemberLog)
-        .setDescription("Set channel for member logs.")
-        .addChannelOption((o) =>
-          o
-            .setName(OptionName.Channel)
-            .setDescription("Where to send member logs to.")
-            .addChannelTypes(...ALLOWED_CHANNEL_TYPES)
-            .setRequired(true),
-        ),
-    )
-    .addSubcommandGroup((g) =>
-      g
-        .setName(SubcommandGroupName.MessageLog)
-        .setDescription("Modify message log settings.")
-        .addSubcommand((c) =>
-          c
-            .setName(MsgLogCommandName.SetChannel)
-            .setDescription("Set the channel for message logs.")
-            .addChannelOption((o) =>
-              o
-                .setName(OptionName.Channel)
-                .setDescription("Channel to send message logs to.")
-                .addChannelTypes(...ALLOWED_CHANNEL_TYPES)
-                .setRequired(true),
-            ),
-        )
-        .addSubcommand((c) =>
-          c
-            .setName(MsgLogCommandName.Ignore)
-            .setDescription("Ignore a channel for deleted and edited message.")
-            .addChannelOption((o) =>
-              o
-                .setName(OptionName.Channel)
-                .setDescription("Channel to ignore.")
-                .setRequired(true),
-            )
-            .addStringOption((o) =>
-              o
-                .setName(OptionName.BlockType)
-                .setDescription(
-                  "What type of logs to ignore? By default all logs will be ignored.",
-                )
-                .addChoices(
-                  { name: "Edits", value: blockTypes.edits },
-                  { name: "Deletes", value: blockTypes.deletes },
-                  { name: "All", value: blockTypes.all },
-                ),
-            ),
-        )
-        .addSubcommand((c) =>
-          c
-            .setName(MsgLogCommandName.IgnoreList)
-            .setDescription("List channels that are ignored."),
-        )
-        .addSubcommand((c) =>
-          c
-            .setName(MsgLogCommandName.Unignore)
-            .setDescription("Re-enable message logs for an ignored channel.")
-            .addChannelOption((o) =>
-              o
-                .setName(OptionName.Channel)
-                .setDescription("Channel to un-ignore.")
-                .setRequired(true),
-            ),
-        ),
-    )
-    .addSubcommand((c) =>
-      c.setName(BaseCommandName.Lookup).setDescription("Modify lookup settings."),
-    )
     .toJSON();
 
   async handler(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -190,346 +51,392 @@ export default class SettingsCommand extends SlashCommandHandler {
       throw new Error("Guild not cached.");
     }
 
-    const subgroup = interaction.options.getSubcommandGroup();
-    const subcommand = interaction.options.getSubcommand();
-
-    switch (subgroup) {
-      case SubcommandGroupName.MessageLog:
-        return this.handleMsgLogCommands(interaction, subcommand);
-      case null:
-        return this.handleBaseCommands(interaction, subcommand);
-      default:
-        throw new Error("Invalid subcommand.");
-    }
+    return this.showSettingsPanel(interaction);
   }
 
-  private async handleMsgLogCommands(
-    interaction: ChatInputCommandInteraction<"cached">,
-    subcommand: string,
-  ): Promise<void> {
-    switch (subcommand) {
-      case MsgLogCommandName.SetChannel:
-        return this.msgLogSetHandler(interaction);
-      case MsgLogCommandName.Ignore:
-        return this.msgLogIgnoreHandler(interaction);
-      case MsgLogCommandName.IgnoreList:
-        return this.msgLogIgnoreListHandler(interaction);
-      case MsgLogCommandName.Unignore:
-        return this.msgLogUnignoreHandler(interaction);
-      default:
-        throw new Error("Invalid msglog subcommand.");
-    }
-  }
-
-  private async handleBaseCommands(
-    interaction: ChatInputCommandInteraction<"cached">,
-    subcommand: string,
-  ): Promise<void> {
-    switch (subcommand) {
-      case BaseCommandName.List:
-        return this.listHandler(interaction);
-      case BaseCommandName.JoinMessage:
-        return this.joinMsgHandler(interaction);
-      case BaseCommandName.LeaveMessage:
-        return this.leaveMsgHandler(interaction);
-      case BaseCommandName.JoinLeaveChannel:
-        return this.joinLeaveChannelHandler(interaction);
-      case BaseCommandName.ModLog:
-      case BaseCommandName.MemberLog:
-        return this.logChannelHandler(interaction);
-      case BaseCommandName.Lookup:
-        return this.lookupHandler(interaction);
-      default:
-        throw new Error("Invalid subcommand.");
-    }
-  }
-
-  private async listHandler(
+  private async showSettingsPanel(
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<void> {
     const config = await this.guildSettingsService.getGuildSettings(
       interaction.guildId,
     );
+    const messageLogBlocks = await this.messageLogService.getIgnoredChannels(
+      interaction.guildId,
+    );
 
-    const embed = formatSettingsEmbed(config);
-    const components = formatSettingsComponents(config);
+    let currentPage: SettingsPage = "logging";
 
-    const msg = await interaction.reply({
-      embeds: [embed],
-      components,
+    const settingsMessage = createSettingsMessage({
+      page: currentPage,
+      config,
+      messageLogBlocks,
+      disabled: false,
     });
 
+    const msg = await interaction.reply(settingsMessage);
+
     const collector = msg.createMessageComponentCollector({
-      componentType: ComponentType.Button,
-      time: 60000,
+      idle: 120000,
       dispose: true,
     });
 
     collector.on("collect", async (i) => {
       try {
+        this.logger.debug(
+          {
+            interactionId: i.id,
+            customId: i.customId,
+            userId: i.user.id,
+            guildId: interaction.guildId,
+          },
+          "Handling settings interaction",
+        );
+
         if (i.user.id !== interaction.user.id) {
           const replied = await i.reply(formatButtonRejectionResponse());
-
-          // Does not block other interactions
           await sleep(2500);
           await replied.delete();
-
           return;
         }
 
-        const match = customIds.settingsToggleButton.match(i.customId);
-        if (!match) {
-          throw new Error("Invalid custom ID.");
-        }
-
-        const { field } = match.params;
-        if (!field) {
-          throw new Error(`Invalid custom ID: ${i.customId}`);
-        }
-
-        const setting = SETTING_FIELD_MAPPING[field as SettingFieldName];
-        if (!setting) {
-          throw new Error(`Unknown setting field: ${field}`);
-        }
-
-        const newConfig = await this.guildSettingsService.toggleSetting(
+        // Handle component interactions (modal submissions are handled separately)
+        const updatedPage = await this.handleComponentInteraction(
+          i,
           interaction.guildId,
-          setting,
         );
 
-        const newEmbed = formatSettingsEmbed(newConfig);
-        const newComponents = formatSettingsComponents(newConfig);
-
-        await i.update({
-          embeds: [newEmbed],
-          components: newComponents,
-        });
+        if (updatedPage) {
+          currentPage = updatedPage;
+        }
       } catch (err) {
-        this.logger.error(err, "Failed to update settings collector.");
+        this.logger.error(err, "Failed to handle settings interaction.");
       }
     });
 
     collector.on("end", async () => {
       try {
-        await msg.edit({ components: [] });
+        const currentConfig = await this.guildSettingsService.getGuildSettings(
+          interaction.guildId,
+        );
+        const currentBlocks = await this.messageLogService.getIgnoredChannels(
+          interaction.guildId,
+        );
+
+        const disabledMessage = createSettingsMessage({
+          page: currentPage,
+          config: currentConfig,
+          messageLogBlocks: currentBlocks,
+          disabled: true,
+        });
+
+        await msg.edit(disabledMessage);
       } catch (err) {
-        this.logger.error(err, "Failed to end settings list collector.");
+        this.logger.error(err, "Failed to disable settings components.");
       }
     });
   }
 
-  private async joinMsgHandler(
-    interaction: ChatInputCommandInteraction<"cached">,
-  ): Promise<void> {
-    const message = interaction.options.getString(OptionName.Message, true);
+  private async handleComponentInteraction(
+    interaction: MessageComponentInteraction<"cached">,
+    guildId: string,
+  ): Promise<SettingsPage | undefined> {
+    if (interaction.isStringSelectMenu()) {
+      return this.handleStringSelectInteraction(interaction, guildId);
+    }
 
-    await this.guildSettingsService.updateJoinMessage(
-      interaction.guildId,
-      message,
-    );
+    if (interaction.isChannelSelectMenu()) {
+      return this.handleChannelSelectInteraction(interaction, guildId);
+    }
 
-    const embed = formatJoinMessageSuccessEmbed(message);
-
-    await interaction.reply({ embeds: [embed] });
+    if (interaction.isButton()) {
+      return this.handleButtonInteraction(interaction, guildId);
+    }
   }
 
-  private async leaveMsgHandler(
-    interaction: ChatInputCommandInteraction<"cached">,
-  ): Promise<void> {
-    const message = interaction.options.getString(OptionName.Message, true);
+  private async handleStringSelectInteraction(
+    interaction: StringSelectMenuInteraction<"cached">,
+    guildId: string,
+  ): Promise<SettingsPage | undefined> {
+    if (interaction.customId === SETTINGS_CUSTOM_IDS.NAVIGATION) {
+      const currentPage = interaction.values[0] as SettingsPage;
+      const currentConfig =
+        await this.guildSettingsService.getGuildSettings(guildId);
+      const messageLogBlocks =
+        await this.messageLogService.getIgnoredChannels(guildId);
 
-    await this.guildSettingsService.updateLeaveMessage(
-      interaction.guildId,
-      message,
-    );
+      const updatedMessage = createSettingsMessage({
+        page: currentPage,
+        config: currentConfig,
+        messageLogBlocks,
+        disabled: false,
+      });
 
-    const embed = formatLeaveMessageSuccessEmbed(message);
-
-    await interaction.reply({ embeds: [embed] });
+      await interaction.update(updatedMessage);
+      return currentPage;
+    }
   }
 
-  private async joinLeaveChannelHandler(
-    interaction: ChatInputCommandInteraction<"cached">,
-  ): Promise<void> {
-    const channel = interaction.options.getChannel(OptionName.Channel, true);
+  private async handleChannelSelectInteraction(
+    interaction: ChannelSelectMenuInteraction<"cached">,
+    guildId: string,
+  ): Promise<SettingsPage | undefined> {
+    // Handle multi-select message log ignore channels
+    if (
+      interaction.customId === SETTINGS_CUSTOM_IDS.MESSAGE_LOG_IGNORE_CHANNELS
+    ) {
+      await this.handleMessageLogIgnoreChannels(interaction, guildId);
+      return "logging";
+    }
 
-    await this.guildSettingsService.updateMessageChannel(
-      interaction.guildId,
-      channel.id,
-    );
-
-    const embed = formatChannelSetSuccessEmbed(channel.id, "join/leave");
-
-    await interaction.reply({ embeds: [embed] });
+    // Handle single-select channel menus for log channels
+    return this.handleLogChannelSelection(interaction, guildId);
   }
 
-  private async logChannelHandler(
-    interaction: ChatInputCommandInteraction<"cached">,
+  private async handleMessageLogIgnoreChannels(
+    interaction: ChannelSelectMenuInteraction<"cached">,
+    guildId: string,
   ): Promise<void> {
-    const subcommand = interaction.options.getSubcommand();
-    const channel = interaction.options.getChannel(OptionName.Channel, true);
+    const selectedChannelIds = interaction.values;
+    const currentBlocks =
+      await this.messageLogService.getIgnoredChannels(guildId);
+    const currentChannelIds = currentBlocks.map((block) => block.channelId);
 
-    let logType: LogType;
-    let channelType: "mod log" | "member log";
+    // Remove channels that are no longer selected
+    for (const block of currentBlocks) {
+      if (!selectedChannelIds.includes(block.channelId)) {
+        await this.messageLogService.removeIgnoredChannel(
+          guildId,
+          block.channelId,
+        );
+      }
+    }
 
-    switch (subcommand) {
-      case BaseCommandName.ModLog:
-        logType = LogType.Mod;
-        channelType = "mod log";
+    // Add newly selected channels
+    for (const channelId of selectedChannelIds) {
+      if (!currentChannelIds.includes(channelId)) {
+        await this.messageLogService.addIgnoredChannel(
+          guildId,
+          channelId,
+          "all",
+        );
+      }
+    }
+
+    const updatedConfig =
+      await this.guildSettingsService.getGuildSettings(guildId);
+    const updatedBlocks =
+      await this.messageLogService.getIgnoredChannels(guildId);
+
+    const updatedMessage = createSettingsMessage({
+      page: "logging",
+      config: updatedConfig,
+      messageLogBlocks: updatedBlocks,
+      disabled: false,
+    });
+
+    await interaction.update(updatedMessage);
+  }
+
+  private async handleLogChannelSelection(
+    interaction: ChannelSelectMenuInteraction<"cached">,
+    guildId: string,
+  ): Promise<SettingsPage> {
+    const channelId = interaction.values[0];
+    let logType: "mod" | "member" | "message" | "joinleave";
+    let currentPage: SettingsPage;
+
+    switch (interaction.customId) {
+      case SETTINGS_CUSTOM_IDS.SET_MOD_LOG_CHANNEL:
+        logType = "mod";
+        currentPage = "logging";
         break;
-      case BaseCommandName.MemberLog:
-        logType = LogType.Member;
-        channelType = "member log";
+      case SETTINGS_CUSTOM_IDS.SET_MEMBER_LOG_CHANNEL:
+        logType = "member";
+        currentPage = "logging";
+        break;
+      case SETTINGS_CUSTOM_IDS.SET_MESSAGE_LOG_CHANNEL:
+        logType = "message";
+        currentPage = "logging";
+        break;
+      case SETTINGS_CUSTOM_IDS.SET_JOIN_LEAVE_CHANNEL:
+        logType = "joinleave";
+        currentPage = "messages";
         break;
       default:
-        throw new Error("Invalid subcommand.");
+        throw new Error("Unknown channel select custom ID");
     }
 
-    await this.guildSettingsService.updateLogChannel(
-      interaction.guildId,
-      logType,
-      channel.id,
-    );
+    if (logType === "joinleave") {
+      await this.guildSettingsService.updateMessageChannel(guildId, channelId);
+    } else {
+      await this.guildSettingsService.updateLogChannel(
+        guildId,
+        logType,
+        channelId,
+      );
+    }
 
-    const embed = formatChannelSetSuccessEmbed(channel.id, channelType);
+    const updatedConfig =
+      await this.guildSettingsService.getGuildSettings(guildId);
+    const updatedBlocks =
+      await this.messageLogService.getIgnoredChannels(guildId);
 
-    await interaction.reply({ embeds: [embed] });
+    const updatedMessage = createSettingsMessage({
+      page: currentPage,
+      config: updatedConfig,
+      messageLogBlocks: updatedBlocks,
+      disabled: false,
+    });
+
+    await interaction.update(updatedMessage);
+    return currentPage;
   }
 
-  private async lookupHandler(
-    interaction: ChatInputCommandInteraction<"cached">,
-  ): Promise<void> {
-    let config = await this.guildSettingsService.getGuildSettings(
-      interaction.guildId,
-    );
+  private async handleButtonInteraction(
+    interaction: ButtonInteraction<"cached">,
+    guildId: string,
+  ): Promise<SettingsPage | undefined> {
+    const currentConfig =
+      await this.guildSettingsService.getGuildSettings(guildId);
 
-    const embed = formatLookupEmbed(config);
-    const components = formatLookupComponents(
-      config.moderationSettings.lookupDetailsOptIn,
-    );
+    // Handle modal-triggering buttons
+    if (interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_JOIN_MESSAGE) {
+      const modal = createJoinMessageModal(
+        currentConfig.messageSettings.joinMessage,
+      );
+      await interaction.showModal(modal);
 
-    const msg = await interaction.reply({
-      embeds: [embed],
-      components,
-    });
-
-    const collector = msg.createMessageComponentCollector({
-      componentType: ComponentType.Button,
-      time: COLLECTOR_TIMEOUT,
-      dispose: true,
-    });
-
-    collector.on("collect", async (i) => {
       try {
-        if (i.user.id !== interaction.user.id) {
-          const replied = await i.reply(formatButtonRejectionResponse());
-
-          await sleep(BUTTON_REJECTION_DELAY);
-          await replied.delete();
-
-          return;
-        }
-
-        const isValidCustomId =
-          i.customId === LookupCustomId.OptIn ||
-          i.customId === LookupCustomId.OptOut;
-        if (!isValidCustomId) {
-          throw new Error("Invalid custom ID.");
-        }
-
-        config = await this.guildSettingsService.toggleSetting(
-          interaction.guildId,
-          "lookupOptIn",
-        );
-
-        const newEmbed = formatLookupEmbed(config);
-        const newComponents = formatLookupComponents(
-          config.moderationSettings.lookupDetailsOptIn,
-        );
-
-        await i.update({
-          embeds: [newEmbed],
-          components: newComponents,
+        const modalSubmission = await interaction.awaitModalSubmit({
+          time: 120000, // 2 minutes
         });
-      } catch (err) {
-        this.logger.error(err, "Failed to update settings lookup collector.");
-      }
-    });
 
-    collector.on("end", async () => {
-      try {
-        const newComponents = formatLookupComponents(
-          config.moderationSettings.lookupDetailsOptIn,
-          true,
+        if (!modalSubmission.isFromMessage()) {
+          throw new Error("Modal submission is not from a message interaction");
+        }
+
+        await this.handleModalSubmissionDirect(modalSubmission, guildId);
+      } catch (err) {
+        this.logger.debug(
+          {
+            interactionId: interaction.id,
+            err,
+          },
+          "Join message modal submission timed out or failed",
         );
-
-        await msg.edit({ components: newComponents });
-      } catch (err) {
-        this.logger.error(err, "Failed to end settings lookup collector.");
       }
-    });
-  }
 
-  private async msgLogSetHandler(
-    interaction: ChatInputCommandInteraction<"cached">,
-  ): Promise<void> {
-    const channel = interaction.options.getChannel(OptionName.Channel, true);
-
-    await this.guildSettingsService.updateLogChannel(
-      interaction.guildId,
-      LogType.Message,
-      channel.id,
-    );
-
-    const embed = formatChannelSetSuccessEmbed(channel.id, "message log");
-
-    await interaction.reply({ embeds: [embed] });
-  }
-
-  private async msgLogIgnoreHandler(
-    interaction: ChatInputCommandInteraction<"cached">,
-  ): Promise<void> {
-    const channel = interaction.options.getChannel(OptionName.Channel, true);
-    const blockType = (interaction.options.getString(OptionName.BlockType) ||
-      blockTypes.all) as MessageLogBlockType;
-
-    if (!Object.values(blockTypes).includes(blockType)) {
-      throw new Error("Invalid block type.");
+      return undefined; // No page change for modal buttons
     }
 
-    await this.messageLogService.addIgnoredChannel(
-      interaction.guildId,
-      channel.id,
-      blockType,
+    if (interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_LEAVE_MESSAGE) {
+      const modal = createLeaveMessageModal(
+        currentConfig.messageSettings.leaveMessage,
+      );
+      await interaction.showModal(modal);
+
+      try {
+        const modalSubmission = await interaction.awaitModalSubmit({
+          time: 120000, // 2 minutes
+        });
+
+        if (!modalSubmission.isFromMessage()) {
+          throw new Error("Modal submission is not from a message interaction");
+        }
+
+        await this.handleModalSubmissionDirect(modalSubmission, guildId);
+      } catch (err) {
+        this.logger.debug(
+          {
+            interactionId: interaction.id,
+            err,
+          },
+          "Leave message modal submission timed out or failed",
+        );
+      }
+
+      return undefined; // No page change for modal buttons
+    }
+
+    // Handle toggle buttons
+    const { setting, page } = this.getSettingAndPageFromButton(
+      interaction.customId,
     );
 
-    const embed = formatIgnoreChannelSuccessEmbed(channel.id, blockType);
+    if (!setting) {
+      throw new Error("Unknown button custom ID");
+    }
 
-    await interaction.reply({ embeds: [embed] });
+    const updatedConfig = await this.guildSettingsService.toggleSetting(
+      guildId,
+      setting,
+    );
+    const messageLogBlocks =
+      await this.messageLogService.getIgnoredChannels(guildId);
+
+    const updatedMessage = createSettingsMessage({
+      page,
+      config: updatedConfig,
+      messageLogBlocks,
+      disabled: false,
+    });
+
+    await interaction.update(updatedMessage);
+    return page;
   }
 
-  private async msgLogIgnoreListHandler(
-    interaction: ChatInputCommandInteraction<"cached">,
-  ): Promise<void> {
-    const blocks = await this.messageLogService.getIgnoredChannels(
-      interaction.guildId,
-    );
-    const embed = formatIgnoredChannelsEmbed(blocks);
-    await interaction.reply({ embeds: [embed] });
+  private getSettingAndPageFromButton(customId: string): {
+    setting: ToggleableSetting | null;
+    page: SettingsPage;
+  } {
+    switch (customId) {
+      case SETTINGS_CUSTOM_IDS.TOGGLE_MOD_LOG:
+        return { setting: "modLog", page: "logging" };
+      case SETTINGS_CUSTOM_IDS.TOGGLE_MEMBER_LOG:
+        return { setting: "memberLog", page: "logging" };
+      case SETTINGS_CUSTOM_IDS.TOGGLE_MESSAGE_LOG:
+        return { setting: "messageLog", page: "logging" };
+      case SETTINGS_CUSTOM_IDS.TOGGLE_JOIN_MSG:
+        return { setting: "joinMessage", page: "messages" };
+      case SETTINGS_CUSTOM_IDS.TOGGLE_LEAVE_MSG:
+        return { setting: "leaveMessage", page: "messages" };
+      case SETTINGS_CUSTOM_IDS.TOGGLE_LOOKUP_OPT_IN:
+        return { setting: "lookupOptIn", page: "logging" };
+      default:
+        return { setting: null, page: "logging" };
+    }
   }
 
-  private async msgLogUnignoreHandler(
-    interaction: ChatInputCommandInteraction<"cached">,
+  private async handleModalSubmissionDirect(
+    interaction: ModalMessageModalSubmitInteraction<"cached">,
+    guildId: string,
   ): Promise<void> {
-    const channel = interaction.options.getChannel(OptionName.Channel, true);
+    if (interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_JOIN_MESSAGE) {
+      const newMessage =
+        interaction.fields.getTextInputValue("join_message_input");
+      await this.guildSettingsService.updateJoinMessage(guildId, newMessage);
+    } else if (
+      interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_LEAVE_MESSAGE
+    ) {
+      const newMessage = interaction.fields.getTextInputValue(
+        "leave_message_input",
+      );
+      await this.guildSettingsService.updateLeaveMessage(guildId, newMessage);
+    }
 
-    await this.messageLogService.removeIgnoredChannel(
-      interaction.guildId,
-      channel.id,
-    );
+    // Update the original settings panel with the new config
+    const updatedConfig =
+      await this.guildSettingsService.getGuildSettings(guildId);
+    const messageLogBlocks =
+      await this.messageLogService.getIgnoredChannels(guildId);
 
-    const embed = formatUnignoreChannelSuccessEmbed(channel.id);
+    const updatedMessage = createSettingsMessage({
+      page: "messages",
+      config: updatedConfig,
+      messageLogBlocks,
+      disabled: false,
+    });
 
-    await interaction.reply({ embeds: [embed] });
+    await interaction.update(updatedMessage);
   }
 }
