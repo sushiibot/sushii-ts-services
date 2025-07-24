@@ -1,13 +1,12 @@
-import { eq, and } from "drizzle-orm";
-import { Logger } from "pino";
-import { msgLogBlocksInAppPublic } from "@/infrastructure/database/schema";
-import {
-  MessageLogBlock,
-  MessageLogBlockType,
-} from "../domain/entities/MessageLogBlock";
-import { MessageLogBlockRepository } from "../domain/repositories/MessageLogBlockRepository";
+import { and, eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { Logger } from "pino";
+
+import { msgLogBlocksInAppPublic } from "@/infrastructure/database/schema";
 import * as schema from "@/infrastructure/database/schema";
+
+import { MessageLogBlock } from "../domain/entities/MessageLogBlock";
+import { MessageLogBlockRepository } from "../domain/repositories/MessageLogBlockRepository";
 
 export class DrizzleMessageLogBlockRepository
   implements MessageLogBlockRepository
@@ -27,37 +26,24 @@ export class DrizzleMessageLogBlockRepository
 
     return results.map(
       (row) =>
-        new MessageLogBlock(
-          row.guildId.toString(),
-          row.channelId.toString(),
-          row.blockType as MessageLogBlockType,
-        ),
+        new MessageLogBlock(row.guildId.toString(), row.channelId.toString()),
     );
   }
 
-  async addBlock(
-    guildId: string,
-    channelId: string,
-    blockType: MessageLogBlockType,
-  ): Promise<void> {
-    this.logger.debug(
-      { guildId, channelId, blockType },
-      "Adding message log block",
-    );
+  async addBlock(guildId: string, channelId: string): Promise<void> {
+    this.logger.debug({ guildId, channelId }, "Adding message log block");
 
     await this.db
       .insert(msgLogBlocksInAppPublic)
       .values({
         guildId: BigInt(guildId),
         channelId: BigInt(channelId),
-        blockType,
       })
-      .onConflictDoUpdate({
+      .onConflictDoNothing({
         target: [
           msgLogBlocksInAppPublic.guildId,
           msgLogBlocksInAppPublic.channelId,
         ],
-        set: { blockType },
       });
   }
 

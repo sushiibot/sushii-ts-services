@@ -1,8 +1,6 @@
 import { Logger } from "pino";
-import {
-  MessageLogBlock,
-  MessageLogBlockType,
-} from "../domain/entities/MessageLogBlock";
+
+import { MessageLogBlock } from "../domain/entities/MessageLogBlock";
 import { MessageLogBlockRepository } from "../domain/repositories/MessageLogBlockRepository";
 
 export class MessageLogService {
@@ -15,21 +13,10 @@ export class MessageLogService {
     return this.messageLogBlockRepository.findByGuildId(guildId);
   }
 
-  async addIgnoredChannel(
-    guildId: string,
-    channelId: string,
-    blockType: MessageLogBlockType = "all",
-  ): Promise<void> {
-    this.logger.info(
-      { guildId, channelId, blockType },
-      "Adding ignored channel",
-    );
+  async addIgnoredChannel(guildId: string, channelId: string): Promise<void> {
+    this.logger.info({ guildId, channelId }, "Adding ignored channel");
 
-    await this.messageLogBlockRepository.addBlock(
-      guildId,
-      channelId,
-      blockType,
-    );
+    await this.messageLogBlockRepository.addBlock(guildId, channelId);
   }
 
   async removeIgnoredChannel(

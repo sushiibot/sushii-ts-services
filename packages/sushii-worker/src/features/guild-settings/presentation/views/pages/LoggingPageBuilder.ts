@@ -14,7 +14,10 @@ import {
   formatLogSetting,
   formatToggleSetting,
 } from "../components/SettingsComponents";
-import { SETTINGS_CUSTOM_IDS, SettingsMessageOptions } from "../components/SettingsConstants";
+import {
+  SETTINGS_CUSTOM_IDS,
+  SettingsMessageOptions,
+} from "../components/SettingsConstants";
 
 export function addLoggingModerationContent(
   container: ContainerBuilder,
@@ -30,7 +33,7 @@ export function addLoggingModerationContent(
 
   // Logging Section
   let loggingContent = "### Logs\n";
-  loggingContent += "Track moderation, member, and message activity.\n";
+  loggingContent += "Track moderation, member, and message activity.\n\n";
 
   loggingContent += formatLogSetting(
     "Mod Logs",
@@ -172,8 +175,9 @@ export function addLoggingModerationContent(
   );
 
   let msgLogContent = "### Message Log Ignored Channels\n";
+  msgLogContent += "Some channels being too noisy in your message logs?\n";
   msgLogContent +=
-    "Some channels being too noisy in your message logs? You can ignore channels you don't want to show up in your message logs.\n\n";
+    "You can ignore channels you don't want to show up in your message logs.\n\n";
 
   if (options.messageLogBlocks && options.messageLogBlocks.length > 0) {
     msgLogContent += options.messageLogBlocks

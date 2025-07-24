@@ -12,7 +12,10 @@ import {
   createToggleButton,
   formatMessageSetting,
 } from "../components/SettingsComponents";
-import { SETTINGS_CUSTOM_IDS, SettingsMessageOptions } from "../components/SettingsConstants";
+import {
+  SETTINGS_CUSTOM_IDS,
+  SettingsMessageOptions,
+} from "../components/SettingsConstants";
 
 export function addMessagesContent(
   container: ContainerBuilder,
@@ -30,7 +33,7 @@ export function addMessagesContent(
   let messagesContent = "### Join/Leave Messages";
   messagesContent += "\n";
   messagesContent +=
-    "Send custom messages when members join or leave the server.\n";
+    "Send custom messages when members join or leave the server.\n\n";
 
   messagesContent += formatMessageSetting(
     "Join Message",

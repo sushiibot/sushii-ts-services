@@ -43,6 +43,13 @@
       "when": 1753313288343,
       "tag": "0005_drop-role-data-guild-config-columns",
       "breakpoints": false
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1753400473807,
+      "tag": "0006_drop-msg-log-block-type",
+      "breakpoints": false
     }
   ]
 }

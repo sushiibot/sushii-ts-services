@@ -1,30 +1,29 @@
 import {
+  APIMessage,
   AnyThreadChannel,
   EmbedBuilder,
   Events,
   GatewayDispatchEvents,
-  messageLink,
-  APIMessage,
   GatewayMessageDeleteBulkDispatchData,
   GatewayMessageDeleteDispatchData,
   GatewayMessageUpdateDispatchData,
+  messageLink,
 } from "discord.js";
-import { None, Option, Some } from "ts-results";
+import { Client } from "discord.js";
 import { Selectable } from "kysely";
-import {
-  AppPublicMessages,
-  AppPublicMsgLogBlocks,
-} from "../../infrastructure/database/dbTypes";
+import { None, Option, Some } from "ts-results";
+
+import { webhookErr } from "@/core/cluster/webhookLogger";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
+
+import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
+import db from "../../infrastructure/database/db";
+import { AppPublicMessages } from "../../infrastructure/database/dbTypes";
 import SushiiEmoji from "../../shared/presentation/SushiiEmoji";
+import { getAPIUserTag } from "../../utils/APIUser";
 import buildChunks from "../../utils/buildChunks";
 import Color from "../../utils/colors";
-import { newModuleLogger } from "@/shared/infrastructure/logger";
-import db from "../../infrastructure/database/db";
 import { EventHandlerFn } from "../EventHandler";
-import { getAPIUserTag } from "../../utils/APIUser";
-import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
-import { webhookErr } from "@/core/cluster/webhookLogger";
-import { Client } from "discord.js";
 
 const log = newModuleLogger("MsgLogHandler");
 
@@ -35,26 +34,6 @@ type EventData =
 
 function quoteMarkdownString(str: string): string {
   return str.split("\n").join("\n> ");
-}
-
-export function isChannelIgnored(
-  eventType: GatewayDispatchEvents,
-  blockType: Selectable<AppPublicMsgLogBlocks>["block_type"],
-): boolean {
-  if (
-    eventType === GatewayDispatchEvents.MessageDelete ||
-    eventType === GatewayDispatchEvents.MessageDeleteBulk
-  ) {
-    // True / blocked if block type is delete or all
-    return blockType === "deletes" || blockType === "all";
-  }
-
-  if (eventType === GatewayDispatchEvents.MessageUpdate) {
-    // True / blocked if block type is edit or all
-    return blockType === "edits" || blockType === "all";
-  }
-
-  return false;
 }
 
 function getMessageIDs(event: EventData): string[] {
@@ -315,7 +294,7 @@ export async function msgLogHandler(
     .where("channel_id", "=", payload.channel_id)
     .executeTakeFirst();
 
-  if (channelBlock && isChannelIgnored(eventType, channelBlock.block_type)) {
+  if (channelBlock) {
     return;
   }
 

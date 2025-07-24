@@ -27,8 +27,6 @@ export type AppPublicGuildAssetType = "emoji" | "sticker";
 
 export type AppPublicLevelRoleOverrideType = "block" | "grant";
 
-export type AppPublicMsgLogBlockType = "all" | "deletes" | "edits";
-
 export type AppPublicNotificationBlockType = "category" | "channel" | "user";
 
 export type Generated<T> =
@@ -580,7 +578,6 @@ export interface AppPublicModLogs {
 }
 
 export interface AppPublicMsgLogBlocks {
-  block_type: AppPublicMsgLogBlockType;
   channel_id: Int8;
   guild_id: Int8;
 }

@@ -1,6 +1,3 @@
-import * as schema from "@/infrastructure/database/schema";
-import { guildConfigsInAppPublic } from "@/infrastructure/database/schema";
-import { PostgresTestDatabase } from "@/test/PostgresTestDatabase";
 import {
   afterAll,
   beforeAll,
@@ -11,6 +8,11 @@ import {
 } from "bun:test";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Logger, pino } from "pino";
+
+import * as schema from "@/infrastructure/database/schema";
+import { guildConfigsInAppPublic } from "@/infrastructure/database/schema";
+import { PostgresTestDatabase } from "@/test/PostgresTestDatabase";
+
 import { GuildConfig } from "../domain/entities/GuildConfig";
 import { DrizzleGuildConfigurationRepository } from "./DrizzleGuildConfigurationRepository";
 
@@ -47,9 +49,9 @@ describe("DrizzleGuildConfigurationRepository (Integration)", () => {
     expect(config.guildId).toBe(guildId);
     expect(config.prefix).toBe(null);
     expect(config.messageSettings.joinMessage).toBe(null);
-    expect(config.messageSettings.joinMessageEnabled).toBe(false);
-    expect(config.loggingSettings.modLogEnabled).toBe(false);
-    expect(config.moderationSettings.muteDmEnabled).toBe(false);
+    expect(config.messageSettings.joinMessageEnabled).toBe(true);
+    expect(config.loggingSettings.modLogEnabled).toBe(true);
+    expect(config.moderationSettings.muteDmEnabled).toBe(true);
     expect(config.disabledChannels).toEqual([]);
   });
 

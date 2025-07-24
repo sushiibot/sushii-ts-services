@@ -1,20 +1,20 @@
+import { sql } from "drizzle-orm";
 import {
-  pgSchema,
-  pgPolicy,
   bigint,
-  text,
-  integer,
-  timestamp,
-  jsonb,
-  index,
-  foreignKey,
   boolean,
-  unique,
-  primaryKey,
   check,
+  foreignKey,
+  index,
+  integer,
+  jsonb,
+  pgPolicy,
+  pgSchema,
+  primaryKey,
+  text,
+  timestamp,
+  unique,
   varchar,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
 
 export const appPublic = pgSchema("app_public");
 export const appHidden = pgSchema("app_hidden");
@@ -44,11 +44,6 @@ export const giveawayNitroTypeInAppPublic = appPublic.enum(
 export const guildAssetTypeInAppPublic = appPublic.enum("guild_asset_type", [
   "emoji",
   "sticker",
-]);
-export const msgLogBlockTypeInAppPublic = appPublic.enum("msg_log_block_type", [
-  "edits",
-  "deletes",
-  "all",
 ]);
 export const notificationBlockTypeInAppPublic = appPublic.enum(
   "notification_block_type",
@@ -324,7 +319,6 @@ export const msgLogBlocksInAppPublic = appPublic.table(
   {
     guildId: bigint("guild_id", { mode: "bigint" }).notNull(),
     channelId: bigint("channel_id", { mode: "bigint" }).notNull(),
-    blockType: msgLogBlockTypeInAppPublic("block_type").notNull(),
   },
   (table) => [
     primaryKey({

@@ -5,6 +5,7 @@ import {
   GatewayMessageUpdateDispatchData,
 } from "discord.js";
 import { sql } from "kysely";
+
 import db from "../../infrastructure/database/db";
 
 type EventData =
@@ -55,7 +56,7 @@ export default async function msgLogCacheHandler(
 
   // Only prevent saving if *all* types are blocked. e.g.
   // If edits are not logged, we still want to keep track of edit events for deletes
-  if (channelBlock && channelBlock.block_type === "all") {
+  if (channelBlock) {
     return;
   }
 

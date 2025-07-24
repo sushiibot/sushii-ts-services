@@ -214,11 +214,7 @@ export default class SettingsCommand extends SlashCommandHandler {
     // Add newly selected channels
     for (const channelId of selectedChannelIds) {
       if (!currentChannelIds.includes(channelId)) {
-        await this.messageLogService.addIgnoredChannel(
-          guildId,
-          channelId,
-          "all",
-        );
+        await this.messageLogService.addIgnoredChannel(guildId, channelId);
       }
     }
 
