@@ -42,6 +42,11 @@ import { DrizzleNotificationBlockRepository } from "@/features/notifications/inf
 import { NotificationCommand } from "@/features/notifications/presentation/commands/NotificationCommand";
 import { NotificationAutocomplete } from "@/features/notifications/presentation/autocompletes/NotificationAutocomplete";
 import { NotificationMessageHandler } from "@/features/notifications/presentation/events/NotificationMessageHandler";
+import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
+import { MessageLogService } from "@/features/guild-settings/application/MessageLogService";
+import { DrizzleGuildConfigurationRepository } from "@/features/guild-settings/infrastructure/DrizzleGuildConfigurationRepository";
+import { DrizzleMessageLogBlockRepository } from "@/features/guild-settings/infrastructure/DrizzleMessageLogBlockRepository";
+import SettingsCommand from "@/features/guild-settings/presentation/commands/SettingsCommand";
 
 export async function initCore() {
   // This just returns the global existing database for now, until we fully
@@ -180,6 +185,30 @@ export function registerFeatures(
     notificationService,
   );
 
+  // Guild settings feature
+  const guildConfigurationRepository = new DrizzleGuildConfigurationRepository(
+    db,
+    logger.child({ module: "guildConfigurationRepository" }),
+  );
+  const messageLogBlockRepository = new DrizzleMessageLogBlockRepository(
+    db,
+    logger.child({ module: "messageLogBlockRepository" }),
+  );
+  const guildSettingsService = new GuildSettingsService(
+    guildConfigurationRepository,
+    logger.child({ module: "guildSettingsService" }),
+  );
+  const messageLogService = new MessageLogService(
+    messageLogBlockRepository,
+    logger.child({ module: "messageLogService" }),
+  );
+
+  const settingsCommand = new SettingsCommand(
+    guildSettingsService,
+    messageLogService,
+    logger.child({ module: "settingsCommand" }),
+  );
+
   // Register commands and handlers on interaction router
   interactionRouter.addCommands(
     rankCommand,
@@ -189,6 +218,7 @@ export function registerFeatures(
     tagEditCommand,
     tagAdminCommand,
     notificationCommand,
+    settingsCommand,
   );
   interactionRouter.addAutocompleteHandlers(
     tagAutocomplete,

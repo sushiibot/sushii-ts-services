@@ -1,0 +1,128 @@
+import { eq } from "drizzle-orm";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { Logger } from "pino";
+
+import { guildConfigsInAppPublic } from "@/infrastructure/database/schema";
+import * as schema from "@/infrastructure/database/schema";
+
+import { GuildConfig } from "../domain/entities/GuildConfig";
+import { GuildConfigurationRepository } from "../domain/repositories/GuildConfigurationRepository";
+
+export class DrizzleGuildConfigurationRepository
+  implements GuildConfigurationRepository
+{
+  constructor(
+    private readonly db: NodePgDatabase<typeof schema>,
+    private readonly logger: Logger,
+  ) {}
+
+  async findByGuildId(guildId: string): Promise<GuildConfig> {
+    this.logger.debug({ guildId }, "Finding guild configuration");
+
+    const result = await this.db
+      .select()
+      .from(guildConfigsInAppPublic)
+      .where(eq(guildConfigsInAppPublic.id, BigInt(guildId)))
+      .limit(1);
+
+    const config = result[0];
+
+    if (!config) {
+      this.logger.debug(
+        { guildId },
+        "No guild configuration found, returning default",
+      );
+      return GuildConfig.createDefault(guildId);
+    }
+
+    return this.mapToEntity(config);
+  }
+
+  async save(configuration: GuildConfig): Promise<GuildConfig> {
+    this.logger.debug(
+      { guildId: configuration.guildId },
+      "Saving guild configuration",
+    );
+
+    const data = this.mapToData(configuration);
+
+    const result = await this.db
+      .insert(guildConfigsInAppPublic)
+      .values(data)
+      .onConflictDoUpdate({
+        target: guildConfigsInAppPublic.id,
+        set: data,
+      })
+      .returning();
+
+    return this.mapToEntity(result[0]);
+  }
+
+  private mapToEntity(
+    data: typeof schema.guildConfigsInAppPublic.$inferSelect,
+  ): GuildConfig {
+    return new GuildConfig(
+      data.id.toString(),
+      data.prefix,
+      {
+        joinMessage: data.joinMsg,
+        joinMessageEnabled: data.joinMsgEnabled ?? false,
+        leaveMessage: data.leaveMsg,
+        leaveMessageEnabled: data.leaveMsgEnabled ?? false,
+        messageChannel: data.msgChannel ? data.msgChannel.toString() : null,
+      },
+      {
+        modLogChannel: data.logMod ? data.logMod.toString() : null,
+        modLogEnabled: data.logModEnabled ?? false,
+        memberLogChannel: data.logMember ? data.logMember.toString() : null,
+        memberLogEnabled: data.logMemberEnabled ?? false,
+        messageLogChannel: data.logMsg ? data.logMsg.toString() : null,
+        messageLogEnabled: data.logMsgEnabled ?? false,
+      },
+      {
+        muteDmText: data.muteDmText,
+        muteDmEnabled: data.muteDmEnabled ?? false,
+        warnDmText: data.warnDmText,
+        warnDmEnabled: data.warnDmEnabled ?? false,
+        lookupDetailsOptIn: data.lookupDetailsOptIn ?? false,
+        lookupPrompted: data.lookupPrompted ?? false,
+      },
+      data.disabledChannels?.map((id) => id.toString()) ?? [],
+    );
+  }
+
+  private mapToData(
+    config: GuildConfig,
+  ): typeof schema.guildConfigsInAppPublic.$inferInsert {
+    return {
+      id: BigInt(config.guildId),
+      prefix: config.prefix,
+      joinMsg: config.messageSettings.joinMessage,
+      joinMsgEnabled: config.messageSettings.joinMessageEnabled,
+      leaveMsg: config.messageSettings.leaveMessage,
+      leaveMsgEnabled: config.messageSettings.leaveMessageEnabled,
+      msgChannel: config.messageSettings.messageChannel
+        ? BigInt(config.messageSettings.messageChannel)
+        : null,
+      logMod: config.loggingSettings.modLogChannel
+        ? BigInt(config.loggingSettings.modLogChannel)
+        : null,
+      logModEnabled: config.loggingSettings.modLogEnabled,
+      logMember: config.loggingSettings.memberLogChannel
+        ? BigInt(config.loggingSettings.memberLogChannel)
+        : null,
+      logMemberEnabled: config.loggingSettings.memberLogEnabled,
+      logMsg: config.loggingSettings.messageLogChannel
+        ? BigInt(config.loggingSettings.messageLogChannel)
+        : null,
+      logMsgEnabled: config.loggingSettings.messageLogEnabled,
+      muteDmText: config.moderationSettings.muteDmText,
+      muteDmEnabled: config.moderationSettings.muteDmEnabled,
+      warnDmText: config.moderationSettings.warnDmText,
+      warnDmEnabled: config.moderationSettings.warnDmEnabled,
+      lookupDetailsOptIn: config.moderationSettings.lookupDetailsOptIn,
+      lookupPrompted: config.moderationSettings.lookupPrompted,
+      disabledChannels: config.disabledChannels.map(BigInt),
+    };
+  }
+}
