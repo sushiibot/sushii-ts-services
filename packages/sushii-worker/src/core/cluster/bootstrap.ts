@@ -1,52 +1,54 @@
-import { UpdateUserXpService } from "@/features/leveling/application/UpdateUserXpService";
-import { LevelRoleRepositoryImpl } from "@/features/leveling/infrastructure/LevelRoleRepositoryImpl";
-import { XpBlockRepositoryImpl } from "@/features/leveling/infrastructure/XpBlockRepositoryImpl";
-import { MessageLevelHandler } from "@/features/leveling/presentation/commands/MessageLevelHandler";
-import { GetUserRankService } from "@/features/leveling/application/GetUserRankService";
-import { UserProfileRepository } from "@/features/leveling/infrastructure/UserProfileRepository";
-import RankCommand from "@/features/leveling/presentation/commands/RankCommand";
-import { drizzleDb } from "@/infrastructure/database/db";
+import { Client } from "discord.js";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
+import { DeploymentChanged } from "@/features/deployment/domain/events/DeploymentChanged";
 import { PostgreSQLDeploymentRepository } from "@/features/deployment/infrastructure/PostgreSQLDeploymentRepository";
 import { DeploymentEventHandler } from "@/features/deployment/presentation/DeploymentEventHandler";
-import { SimpleEventBus } from "@/shared/infrastructure/SimpleEventBus";
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { Client } from "discord.js";
-import { EventHandler } from "./presentation/EventHandler";
-import InteractionRouter from "./discord/InteractionRouter";
-import { config } from "@/shared/infrastructure/config";
-import { DeploymentChanged } from "@/features/deployment/domain/events/DeploymentChanged";
-import * as schema from "@/infrastructure/database/schema";
-import logger from "@/shared/infrastructure/logger";
-import { UserLevelRepository } from "@/features/leveling/infrastructure/UserLevelRepository";
-import {
-  TagService,
-  TagSearchService,
-  TagAdminService,
-} from "@/features/tags/application";
-import { DrizzleTagRepository } from "@/features/tags/infrastructure";
-import {
-  TagInfoCommand,
-  TagAddCommand,
-  TagGetCommand,
-  TagEditCommand,
-  TagAdminCommand,
-  TagAutocomplete,
-  TagGetAutocomplete,
-  TagEditInteractionHandler,
-} from "@/features/tags/presentation";
-import { NotificationService } from "@/features/notifications/application/NotificationService";
-import { NotificationMessageService } from "@/features/notifications/application/NotificationMessageService";
-import { DrizzleNotificationRepository } from "@/features/notifications/infrastructure/DrizzleNotificationRepository";
-import { DrizzleNotificationBlockRepository } from "@/features/notifications/infrastructure/DrizzleNotificationBlockRepository";
-import { NotificationCommand } from "@/features/notifications/presentation/commands/NotificationCommand";
-import { NotificationAutocomplete } from "@/features/notifications/presentation/autocompletes/NotificationAutocomplete";
-import { NotificationMessageHandler } from "@/features/notifications/presentation/events/NotificationMessageHandler";
 import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
 import { MessageLogService } from "@/features/guild-settings/application/MessageLogService";
 import { DrizzleGuildConfigurationRepository } from "@/features/guild-settings/infrastructure/DrizzleGuildConfigurationRepository";
 import { DrizzleMessageLogBlockRepository } from "@/features/guild-settings/infrastructure/DrizzleMessageLogBlockRepository";
 import SettingsCommand from "@/features/guild-settings/presentation/commands/SettingsCommand";
+import { GetUserRankService } from "@/features/leveling/application/GetUserRankService";
+import { UpdateUserXpService } from "@/features/leveling/application/UpdateUserXpService";
+import { LevelRoleRepositoryImpl } from "@/features/leveling/infrastructure/LevelRoleRepositoryImpl";
+import { UserLevelRepository } from "@/features/leveling/infrastructure/UserLevelRepository";
+import { UserProfileRepository } from "@/features/leveling/infrastructure/UserProfileRepository";
+import { XpBlockRepositoryImpl } from "@/features/leveling/infrastructure/XpBlockRepositoryImpl";
+import { MessageLevelHandler } from "@/features/leveling/presentation/commands/MessageLevelHandler";
+import RankCommand from "@/features/leveling/presentation/commands/RankCommand";
+import { NotificationMessageService } from "@/features/notifications/application/NotificationMessageService";
+import { NotificationService } from "@/features/notifications/application/NotificationService";
+import { DrizzleNotificationBlockRepository } from "@/features/notifications/infrastructure/DrizzleNotificationBlockRepository";
+import { DrizzleNotificationRepository } from "@/features/notifications/infrastructure/DrizzleNotificationRepository";
+import { NotificationAutocomplete } from "@/features/notifications/presentation/autocompletes/NotificationAutocomplete";
+import { NotificationCommand } from "@/features/notifications/presentation/commands/NotificationCommand";
+import { NotificationMessageHandler } from "@/features/notifications/presentation/events/NotificationMessageHandler";
+import {
+  TagAdminService,
+  TagSearchService,
+  TagService,
+} from "@/features/tags/application";
+import { DrizzleTagRepository } from "@/features/tags/infrastructure";
+import {
+  TagAddCommand,
+  TagAdminCommand,
+  TagAutocomplete,
+  TagEditCommand,
+  TagEditInteractionHandler,
+  TagGetAutocomplete,
+  TagGetCommand,
+  TagInfoCommand,
+} from "@/features/tags/presentation";
+import { drizzleDb } from "@/infrastructure/database/db";
+import * as schema from "@/infrastructure/database/schema";
+import { SimpleEventBus } from "@/shared/infrastructure/SimpleEventBus";
+import { config } from "@/shared/infrastructure/config";
+import logger from "@/shared/infrastructure/logger";
+
+import InteractionRouter from "./discord/InteractionRouter";
+import { EventHandler } from "./presentation/EventHandler";
 
 export async function initCore() {
   // This just returns the global existing database for now, until we fully
@@ -166,9 +168,9 @@ export function registerFeatures(
   );
 
   // Notification feature
-  const notificationRepository = new DrizzleNotificationRepository(db as any);
+  const notificationRepository = new DrizzleNotificationRepository(db);
   const notificationBlockRepository = new DrizzleNotificationBlockRepository(
-    db as any,
+    db,
   );
   const notificationService = new NotificationService(
     notificationRepository,

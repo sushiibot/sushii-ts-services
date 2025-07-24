@@ -1,48 +1,48 @@
 import InteractionClient from "@/core/cluster/discord/InteractionRouter";
-import UserInfoCommand from "./user/userinfo";
-import FishyCommand from "./user/fishy";
-import RepCommand from "./user/rep";
-import AvatarCommand from "./user/avatar";
-import UserInfoHandler from "./moderation/context_lookup/LookupContextMenuHandler";
+import { config } from "@/shared/infrastructure/config";
+
+import LeaderboardCommand from "../features/leveling/presentation/commands/LeaderboardCommand";
+import LevelRoleCommand from "../features/leveling/presentation/commands/LevelRoleCommand";
+import XpCommand from "../features/leveling/presentation/commands/XpCommands";
 import StatusCommand from "../features/status/presentation/StatusCommand";
+import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
+import GiveawayAutocomplete from "./giveaway/Giveaway.autocomplete";
+import GiveawayButtonHandler from "./giveaway/Giveaway.button";
+import GiveawayCommand from "./giveaway/Giveaway.command";
 import BanCommand from "./moderation/BanCommand";
+import HistoryCommand from "./moderation/HistoryCommand";
 import KickCommand from "./moderation/KickCommand";
-import ContextLookUpButtonHandler from "./moderation/context_lookup/LookupComponentHandler";
+import LookupCommand from "./moderation/LookupCommand";
+import NoteCommand from "./moderation/NoteCommand";
+import PruneCommand from "./moderation/PruneCommand";
+import SlowmodeCommand from "./moderation/SlowmodeCommand";
+import TempbanCommand from "./moderation/TempbanCommand";
+import TempbanListCommand from "./moderation/TempbanListCommand";
 import TimeoutCommand from "./moderation/TimeoutCommand";
+import UnTimeoutCommand from "./moderation/UnTimeoutCommand";
+import UnbanCommand from "./moderation/UnbanCommand";
+import WarnCommand from "./moderation/WarnCommand";
+import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
+import BanPoolCommand from "./moderation/ban_pools/BanPool.command";
+import ContextLookUpButtonHandler from "./moderation/context_lookup/LookupComponentHandler";
+import UserInfoHandler from "./moderation/context_lookup/LookupContextMenuHandler";
+import DeleteModLogDMButtonHandler from "./moderation/reason/DMButton";
+import ReasonAutocomplete from "./moderation/reason/ReasonAutocomplete";
+import ModLogReasonButtonHandler from "./moderation/reason/ReasonButton";
+import ReasonCommand from "./moderation/reason/ReasonCommand";
+import ModLogReasonModalHandler from "./moderation/reason/ReasonModal";
+import UncaseCommand from "./moderation/reason/UncaseCommand";
 import ReminderDeleteAutocomplete from "./reminders/ReminderAutocomplete";
 import ReminderCommand from "./reminders/ReminderCommand";
-import WarnCommand from "./moderation/WarnCommand";
-import HistoryCommand from "./moderation/HistoryCommand";
 import RoleMenuCommand from "./roles/RoleMenu";
 import RoleMenuAutocomplete from "./roles/RoleMenuAutocomplete";
 import RoleMenuButtonHandler from "./roles/RoleMenuButtonHandler";
 import RoleMenuSelectMenuHandler from "./roles/RoleMenuSelectMenuHandler";
-import UnbanCommand from "./moderation/UnbanCommand";
-import PruneCommand from "./moderation/PruneCommand";
-import SlowmodeCommand from "./moderation/SlowmodeCommand";
-import NoteCommand from "./moderation/NoteCommand";
-import XpCommand from "../features/leveling/presentation/commands/XpCommands";
-import LevelRoleCommand from "../features/leveling/presentation/commands/LevelRoleCommand";
-import ModLogReasonButtonHandler from "./moderation/reason/ReasonButton";
-import ModLogReasonModalHandler from "./moderation/reason/ReasonModal";
-import ReasonCommand from "./moderation/reason/ReasonCommand";
-import ReasonAutocomplete from "./moderation/reason/ReasonAutocomplete";
-import UnTimeoutCommand from "./moderation/UnTimeoutCommand";
-import UncaseCommand from "./moderation/reason/UncaseCommand";
-import SettingsCommand from "./settings/SettingsCommand";
-import LookupCommand from "./moderation/LookupCommand";
-import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
-import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
-import { config } from "@/shared/infrastructure/config";
-import BanPoolCommand from "./moderation/ban_pools/BanPool.command";
+import AvatarCommand from "./user/avatar";
 import BannerCommand from "./user/banner";
-import GiveawayCommand from "./giveaway/Giveaway.command";
-import GiveawayButtonHandler from "./giveaway/Giveaway.button";
-import GiveawayAutocomplete from "./giveaway/Giveaway.autocomplete";
-import TempbanCommand from "./moderation/TempbanCommand";
-import TempbanListCommand from "./moderation/TempbanListCommand";
-import DeleteModLogDMButtonHandler from "./moderation/reason/DMButton";
-import LeaderboardCommand from "../features/leveling/presentation/commands/LeaderboardCommand";
+import FishyCommand from "./user/fishy";
+import RepCommand from "./user/rep";
+import UserInfoCommand from "./user/userinfo";
 
 export default function registerInteractionHandlers(
   interactionRouter: InteractionClient,
@@ -89,9 +89,6 @@ export default function registerInteractionHandlers(
     // XP
     new LevelRoleCommand(),
     new XpCommand(),
-
-    // Settings
-    new SettingsCommand(),
   );
 
   // ----------------------------------------
