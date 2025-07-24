@@ -57,6 +57,8 @@ jobs:
           bun run drizzle-kit migrate
 
       - name: Test sushii-worker
+        env:
+          TESTCONTAINERS_RYUK_DISABLED: true
         run: |
           cp ./packages/sushii-worker/.env.ci ./packages/sushii-worker/.env
           cd ./packages/sushii-worker
