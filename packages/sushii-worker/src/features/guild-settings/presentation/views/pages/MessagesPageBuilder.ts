@@ -29,35 +29,23 @@ export function addMessagesContent(
   );
   container.addTextDisplayComponents(headerText);
 
-  // Join/Leave Messages Section
-  let messagesContent = "### Join/Leave Messages";
-  messagesContent += "\n";
-  messagesContent +=
+  // Join/Leave Messages Section Header
+  let headerContent = "### Join/Leave Messages";
+  headerContent += "\n";
+  headerContent +=
     "Send custom messages when members join or leave the server.\n\n";
 
-  messagesContent += formatMessageSetting(
-    "Join Message",
-    config.messageSettings.joinMessage,
-    config.messageSettings.joinMessageEnabled,
-    "Message sent when new members join",
-  );
-  messagesContent += "\n";
-  messagesContent += formatMessageSetting(
-    "Leave Message",
-    config.messageSettings.leaveMessage,
-    config.messageSettings.leaveMessageEnabled,
-    "Message sent when members leave",
-  );
-  messagesContent += "\n\n";
-
+  // Current Channel Display
   if (config.messageSettings.messageChannel) {
-    messagesContent += `**Channel:** <#${config.messageSettings.messageChannel}>\n`;
+    headerContent += `**Channel:** <#${config.messageSettings.messageChannel}>`;
   } else {
-    messagesContent += "**Channel:** No channel set";
+    headerContent += "**Channel:** No channel set";
   }
 
-  const messagesText = new TextDisplayBuilder().setContent(messagesContent);
-  container.addTextDisplayComponents(messagesText);
+  headerContent += `\n> The channel join and leave messages will be sent to.`;
+
+  const headerText2 = new TextDisplayBuilder().setContent(headerContent);
+  container.addTextDisplayComponents(headerText2);
 
   // Channel Selection
   const channelRow =
@@ -70,29 +58,53 @@ export function addMessagesContent(
     );
   container.addActionRowComponents(channelRow);
 
-  // Message Edit Buttons
-  const editRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+  // Join Message Section
+  const joinMessageContent = formatMessageSetting(
+    "Join Message",
+    config.messageSettings.joinMessage,
+    config.messageSettings.joinMessageEnabled,
+    "Message sent when new members join",
+  );
+  const joinMessageText = new TextDisplayBuilder().setContent(
+    joinMessageContent,
+  );
+  container.addTextDisplayComponents(joinMessageText);
+
+  // Join Message Controls
+  const joinControlsRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder()
       .setCustomId(SETTINGS_CUSTOM_IDS.EDIT_JOIN_MESSAGE)
       .setLabel("Edit Join Message")
       .setStyle(ButtonStyle.Primary)
       .setDisabled(disabled),
-    new ButtonBuilder()
-      .setCustomId(SETTINGS_CUSTOM_IDS.EDIT_LEAVE_MESSAGE)
-      .setLabel("Edit Leave Message")
-      .setStyle(ButtonStyle.Primary)
-      .setDisabled(disabled),
-  );
-  container.addActionRowComponents(editRow);
-
-  // Toggle Buttons
-  const toggleRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
     createToggleButton(
       config.messageSettings.joinMessageEnabled,
       "Join Messages",
       SETTINGS_CUSTOM_IDS.TOGGLE_JOIN_MSG,
       disabled,
     ),
+  );
+  container.addActionRowComponents(joinControlsRow);
+
+  // Leave Message Section
+  const leaveMessageContent = formatMessageSetting(
+    "Leave Message",
+    config.messageSettings.leaveMessage,
+    config.messageSettings.leaveMessageEnabled,
+    "Message sent when members leave",
+  );
+  const leaveMessageText = new TextDisplayBuilder().setContent(
+    leaveMessageContent,
+  );
+  container.addTextDisplayComponents(leaveMessageText);
+
+  // Leave Message Controls
+  const leaveControlsRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder()
+      .setCustomId(SETTINGS_CUSTOM_IDS.EDIT_LEAVE_MESSAGE)
+      .setLabel("Edit Leave Message")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(disabled),
     createToggleButton(
       config.messageSettings.leaveMessageEnabled,
       "Leave Messages",
@@ -100,5 +112,5 @@ export function addMessagesContent(
       disabled,
     ),
   );
-  container.addActionRowComponents(toggleRow);
+  container.addActionRowComponents(leaveControlsRow);
 }

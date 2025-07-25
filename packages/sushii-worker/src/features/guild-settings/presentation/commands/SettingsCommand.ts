@@ -7,7 +7,6 @@ import {
   MessageComponentInteraction,
   PermissionFlagsBits,
   SlashCommandBuilder,
-  StringSelectMenuInteraction,
 } from "discord.js";
 import { ModalMessageModalSubmitInteraction } from "discord.js";
 import { Logger } from "pino";
@@ -140,39 +139,12 @@ export default class SettingsCommand extends SlashCommandHandler {
     interaction: MessageComponentInteraction<"cached">,
     guildId: string,
   ): Promise<SettingsPage | undefined> {
-    if (interaction.isStringSelectMenu()) {
-      return this.handleStringSelectInteraction(interaction, guildId);
-    }
-
     if (interaction.isChannelSelectMenu()) {
       return this.handleChannelSelectInteraction(interaction, guildId);
     }
 
     if (interaction.isButton()) {
       return this.handleButtonInteraction(interaction, guildId);
-    }
-  }
-
-  private async handleStringSelectInteraction(
-    interaction: StringSelectMenuInteraction<"cached">,
-    guildId: string,
-  ): Promise<SettingsPage | undefined> {
-    if (interaction.customId === SETTINGS_CUSTOM_IDS.NAVIGATION) {
-      const currentPage = interaction.values[0] as SettingsPage;
-      const currentConfig =
-        await this.guildSettingsService.getGuildSettings(guildId);
-      const messageLogBlocks =
-        await this.messageLogService.getIgnoredChannels(guildId);
-
-      const updatedMessage = createSettingsMessage({
-        page: currentPage,
-        config: currentConfig,
-        messageLogBlocks,
-        disabled: false,
-      });
-
-      await interaction.update(updatedMessage);
-      return currentPage;
     }
   }
 
@@ -295,6 +267,25 @@ export default class SettingsCommand extends SlashCommandHandler {
     const currentConfig =
       await this.guildSettingsService.getGuildSettings(guildId);
 
+    // Handle navigation buttons
+    const navigationPage = this.getPageFromNavigationButton(
+      interaction.customId,
+    );
+    if (navigationPage) {
+      const messageLogBlocks =
+        await this.messageLogService.getIgnoredChannels(guildId);
+
+      const updatedMessage = createSettingsMessage({
+        page: navigationPage,
+        config: currentConfig,
+        messageLogBlocks,
+        disabled: false,
+      });
+
+      await interaction.update(updatedMessage);
+      return navigationPage;
+    }
+
     // Handle modal-triggering buttons
     if (interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_JOIN_MESSAGE) {
       const modal = createJoinMessageModal(
@@ -381,6 +372,21 @@ export default class SettingsCommand extends SlashCommandHandler {
     return page;
   }
 
+  private getPageFromNavigationButton(customId: string): SettingsPage | null {
+    switch (customId) {
+      case SETTINGS_CUSTOM_IDS.NAVIGATION_LOGGING:
+        return "logging";
+      case SETTINGS_CUSTOM_IDS.NAVIGATION_MODERATION:
+        return "moderation";
+      case SETTINGS_CUSTOM_IDS.NAVIGATION_MESSAGES:
+        return "messages";
+      case SETTINGS_CUSTOM_IDS.NAVIGATION_ADVANCED:
+        return "advanced";
+      default:
+        return null;
+    }
+  }
+
   private getSettingAndPageFromButton(customId: string): {
     setting: ToggleableSetting | null;
     page: SettingsPage;
@@ -397,8 +403,12 @@ export default class SettingsCommand extends SlashCommandHandler {
       case SETTINGS_CUSTOM_IDS.TOGGLE_LEAVE_MSG:
         return { setting: "leaveMessage", page: "messages" };
       case SETTINGS_CUSTOM_IDS.TOGGLE_LOOKUP_OPT_IN:
-        return { setting: "lookupOptIn", page: "logging" };
+        return { setting: "lookupOptIn", page: "moderation" };
       default:
+        this.logger.warn(
+          { customId },
+          "Unknown button custom ID for toggle setting",
+        );
         return { setting: null, page: "logging" };
     }
   }

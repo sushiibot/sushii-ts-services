@@ -15,8 +15,9 @@ import {
 } from "./components/SettingsComponents";
 import { SettingsMessageOptions } from "./components/SettingsConstants";
 import { addAdvancedContent } from "./pages/AdvancedPageBuilder";
-import { addLoggingModerationContent } from "./pages/LoggingPageBuilder";
+import { addLoggingContent } from "./pages/LoggingPageBuilder";
 import { addMessagesContent } from "./pages/MessagesPageBuilder";
+import { addModerationContent } from "./pages/ModerationPageBuilder";
 
 export function createSettingsMessage(
   options: SettingsMessageOptions,
@@ -28,7 +29,10 @@ export function createSettingsMessage(
   // Add page-specific content
   switch (options.page) {
     case "logging":
-      addLoggingModerationContent(container, options);
+      addLoggingContent(container, options);
+      break;
+    case "moderation":
+      addModerationContent(container, options);
       break;
     case "messages":
       addMessagesContent(container, options);
@@ -43,7 +47,10 @@ export function createSettingsMessage(
     new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
   );
 
-  const navigationText = new TextDisplayBuilder().setContent("### Switch Page");
+  let navigationContent = `### Settings Page`;
+  navigationContent += `\nUse the buttons below to switch between settings pages.`;
+
+  const navigationText = new TextDisplayBuilder().setContent(navigationContent);
   container.addTextDisplayComponents(navigationText);
 
   const navigationRow = createNavigationRow(options.page, options.disabled);

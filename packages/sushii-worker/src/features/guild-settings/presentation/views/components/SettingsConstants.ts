@@ -1,7 +1,7 @@
 import { GuildConfig } from "@/features/guild-settings/domain/entities/GuildConfig";
 import { MessageLogBlock } from "@/features/guild-settings/domain/entities/MessageLogBlock";
 
-export type SettingsPage = "logging" | "messages" | "advanced";
+export type SettingsPage = "logging" | "moderation" | "messages" | "advanced";
 
 export interface SettingsMessageOptions {
   page: SettingsPage;
@@ -12,6 +12,10 @@ export interface SettingsMessageOptions {
 
 export const SETTINGS_CUSTOM_IDS = {
   NAVIGATION: "settings_nav",
+  NAVIGATION_LOGGING: "settings_nav_logging",
+  NAVIGATION_MODERATION: "settings_nav_moderation",
+  NAVIGATION_MESSAGES: "settings_nav_messages",
+  NAVIGATION_ADVANCED: "settings_nav_advanced",
   TOGGLE_MOD_LOG: "settings_toggle_mod_log",
   TOGGLE_MEMBER_LOG: "settings_toggle_member_log",
   TOGGLE_MESSAGE_LOG: "settings_toggle_message_log",

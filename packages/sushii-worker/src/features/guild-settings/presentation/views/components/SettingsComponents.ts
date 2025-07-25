@@ -3,13 +3,10 @@ import {
   ButtonBuilder,
   ButtonStyle,
   ModalBuilder,
-  StringSelectMenuBuilder,
   TextDisplayBuilder,
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
-
-import SushiiEmoji from "@/shared/presentation/SushiiEmoji";
 
 import { SETTINGS_CUSTOM_IDS, SettingsPage } from "./SettingsConstants";
 
@@ -17,7 +14,8 @@ export function createFooter(disabled = false): TextDisplayBuilder {
   let footerContent: string;
 
   if (disabled) {
-    footerContent = "-# Inputs expired, re-run command to make changes.";
+    footerContent =
+      "-# Inputs expired after 2 minutes of inactivity, re-run command to make changes.";
   } else {
     footerContent =
       "-# Inputs expire in 2 minutes of inactivity. Changes are saved automatically.";
@@ -29,32 +27,42 @@ export function createFooter(disabled = false): TextDisplayBuilder {
 export function createNavigationRow(
   currentPage: SettingsPage,
   disabled = false,
-): ActionRowBuilder<StringSelectMenuBuilder> {
-  return new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
-    new StringSelectMenuBuilder()
-      .setCustomId(SETTINGS_CUSTOM_IDS.NAVIGATION)
-      .setPlaceholder("Select settings category")
-      .setDisabled(disabled)
-      .addOptions([
-        {
-          label: "Logging & Moderation",
-          value: "logging",
-          description: "Configure server logs and moderation settings",
-          default: currentPage === "logging",
-        },
-        {
-          label: "Messages & Notifications",
-          value: "messages",
-          description: "Set up join/leave messages and channels",
-          default: currentPage === "messages",
-        },
-        {
-          label: "Advanced Settings",
-          value: "advanced",
-          description: "Additional server configuration options",
-          default: currentPage === "advanced",
-        },
-      ]),
+): ActionRowBuilder<ButtonBuilder> {
+  return new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder()
+      .setCustomId(SETTINGS_CUSTOM_IDS.NAVIGATION_LOGGING)
+      .setLabel("Logging")
+      .setStyle(
+        currentPage === "logging" ? ButtonStyle.Primary : ButtonStyle.Secondary,
+      )
+      .setDisabled(currentPage === "logging" || disabled),
+    new ButtonBuilder()
+      .setCustomId(SETTINGS_CUSTOM_IDS.NAVIGATION_MODERATION)
+      .setLabel("Moderation")
+      .setStyle(
+        currentPage === "moderation"
+          ? ButtonStyle.Primary
+          : ButtonStyle.Secondary,
+      )
+      .setDisabled(currentPage === "moderation" || disabled),
+    new ButtonBuilder()
+      .setCustomId(SETTINGS_CUSTOM_IDS.NAVIGATION_MESSAGES)
+      .setLabel("Messages")
+      .setStyle(
+        currentPage === "messages"
+          ? ButtonStyle.Primary
+          : ButtonStyle.Secondary,
+      )
+      .setDisabled(currentPage === "messages" || disabled),
+    new ButtonBuilder()
+      .setCustomId(SETTINGS_CUSTOM_IDS.NAVIGATION_ADVANCED)
+      .setLabel("Advanced")
+      .setStyle(
+        currentPage === "advanced"
+          ? ButtonStyle.Primary
+          : ButtonStyle.Secondary,
+      )
+      .setDisabled(currentPage === "advanced" || disabled),
   );
 }
 
@@ -79,9 +87,15 @@ export function formatMessageSetting(
   enabled: boolean,
   description: string,
 ): string {
-  const toggle = enabled ? SushiiEmoji.ToggleOn : SushiiEmoji.ToggleOff;
-  const content = message ? `"${message}"` : "No message set";
-  return `${toggle} **${name}**\n╰ ${content}\n╰ ${description}`;
+  let s = `**${name}**: `;
+  s += enabled ? "`Enabled`" : "`Disabled`";
+  s += `\n> ${description}`;
+
+  s += `\n\`\`\``;
+  s += `\n${message ? message : "No message set"}`;
+  s += `\n\`\`\`\n`;
+
+  return s;
 }
 
 export function formatToggleSetting(
@@ -89,8 +103,11 @@ export function formatToggleSetting(
   enabled: boolean,
   description: string,
 ): string {
-  const toggle = enabled ? SushiiEmoji.ToggleOn : SushiiEmoji.ToggleOff;
-  return `${toggle} **${name}**\n╰ ${description}`;
+  let s = `**${name}**: `;
+  s += enabled ? "`Enabled`" : "`Disabled`";
+  s += `\n> ${description}`;
+
+  return s;
 }
 
 export function createToggleButton(

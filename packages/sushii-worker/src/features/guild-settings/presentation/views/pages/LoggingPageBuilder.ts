@@ -12,23 +12,20 @@ import {
 import {
   createToggleButton,
   formatLogSetting,
-  formatToggleSetting,
 } from "../components/SettingsComponents";
 import {
   SETTINGS_CUSTOM_IDS,
   SettingsMessageOptions,
 } from "../components/SettingsConstants";
 
-export function addLoggingModerationContent(
+export function addLoggingContent(
   container: ContainerBuilder,
   options: SettingsMessageOptions,
 ): void {
   const { config, disabled = false } = options;
 
   // Header
-  const headerText = new TextDisplayBuilder().setContent(
-    "## Logging & Moderation Settings",
-  );
+  const headerText = new TextDisplayBuilder().setContent("## Logging Settings");
   container.addTextDisplayComponents(headerText);
 
   // Logging Section
@@ -136,40 +133,6 @@ export function addLoggingModerationContent(
   container.addActionRowComponents(toggleRow);
 
   // Separator
-  container.addSeparatorComponents(
-    new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
-  );
-
-  // Moderation Section
-  let moderationContent = "### Lookup Settings\n";
-  moderationContent +=
-    "With the lookup command, you can see bans from other servers.\n";
-  moderationContent +=
-    "You can either keep your server name and ban reasons private, or share them with other servers.\n\n";
-
-  moderationContent += formatToggleSetting(
-    "Lookup Data Sharing",
-    config.moderationSettings.lookupDetailsOptIn,
-    config.moderationSettings.lookupDetailsOptIn
-      ? "Sharing server name, ban reasons with other servers"
-      : "Only sharing ban timestamps (server name & reasons hidden)",
-  );
-
-  const moderationText = new TextDisplayBuilder().setContent(moderationContent);
-  container.addTextDisplayComponents(moderationText);
-
-  // Lookup Toggle Button
-  const lookupRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-    createToggleButton(
-      config.moderationSettings.lookupDetailsOptIn,
-      "Lookup Data Sharing",
-      SETTINGS_CUSTOM_IDS.TOGGLE_LOOKUP_OPT_IN,
-      disabled,
-    ),
-  );
-  container.addActionRowComponents(lookupRow);
-
-  // Message Log Management
   container.addSeparatorComponents(
     new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
   );

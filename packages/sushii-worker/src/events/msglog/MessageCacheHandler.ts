@@ -82,7 +82,7 @@ export default async function msgLogCacheHandler(
       guild_id: BigInt(event.guild_id),
       author_id: BigInt(event.author.id),
       content: event.content || "",
-      created: event.timestamp!,
+      created: event.timestamp,
       msg: sql`${eventStr}`,
     })
     .onConflict((oc) =>
