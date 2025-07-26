@@ -1,15 +1,19 @@
 import {
-  EmbedBuilder,
-  TimestampStyles,
-  Interaction,
-  RESTJSONErrorCodes,
-  Message,
-  User,
-  Guild,
   DiscordAPIError,
+  EmbedBuilder,
+  Guild,
+  Interaction,
+  Message,
+  RESTJSONErrorCodes,
+  TimestampStyles,
+  User,
 } from "discord.js";
-import dayjs from "@/shared/domain/dayjs";
 import { Err, Ok, Result } from "ts-results";
+
+import { MODERATION_DM_DEFAULTS } from "@/features/guild-settings/domain/constants/ModerationDefaults";
+import { GuildConfig } from "@/features/guild-settings/domain/entities/GuildConfig";
+import dayjs from "@/shared/domain/dayjs";
+
 import Color from "../../utils/colors";
 import toTimestamp from "../../utils/toTimestamp";
 import { ActionType } from "./ActionType";
@@ -21,6 +25,7 @@ export async function buildDMEmbed(
   shouldDMReason: boolean,
   reason: string | null,
   durationEnd: dayjs.Dayjs | null,
+  customText?: string | null,
 ): Promise<EmbedBuilder> {
   const fields = [];
 
@@ -42,10 +47,29 @@ export async function buildDMEmbed(
     });
   }
 
-  const title =
-    action === ActionType.TimeoutRemove
-      ? "Your timeout was removed"
-      : `You have been ${ActionType.toPastTense(action)}`;
+  // Use custom text if provided, otherwise fall back to defaults
+  let title: string;
+  if (customText) {
+    title = customText;
+  } else {
+    // Use defaults or fallback to original logic
+    switch (action) {
+      case ActionType.Timeout:
+        title = MODERATION_DM_DEFAULTS.TIMEOUT_DM_TEXT;
+        break;
+      case ActionType.Warn:
+        title = MODERATION_DM_DEFAULTS.WARN_DM_TEXT;
+        break;
+      case ActionType.Ban:
+        title = MODERATION_DM_DEFAULTS.BAN_DM_TEXT;
+        break;
+      case ActionType.TimeoutRemove:
+        title = "Your timeout was removed";
+        break;
+      default:
+        title = `You have been ${ActionType.toPastTense(action)}`;
+    }
+  }
 
   return new EmbedBuilder()
     .setTitle(title)
@@ -62,13 +86,32 @@ export default async function sendModActionDM(
   data: ModActionData,
   target: User,
   action: ActionType,
+  guildConfig?: GuildConfig,
+  customText?: string | null,
 ): Promise<Result<Message, string>> {
+  // Get custom text from guild config if not provided directly
+  let dmText = customText;
+  if (!dmText && guildConfig) {
+    switch (action) {
+      case ActionType.Timeout:
+        dmText = guildConfig.moderationSettings.timeoutDmText;
+        break;
+      case ActionType.Warn:
+        dmText = guildConfig.moderationSettings.warnDmText;
+        break;
+      case ActionType.Ban:
+        dmText = guildConfig.moderationSettings.banDmText;
+        break;
+    }
+  }
+
   const embed = await buildDMEmbed(
     interaction.guild,
     action,
-    data.shouldDMReason(action),
+    data.shouldDMReason(action, guildConfig),
     data.reason,
     data.durationEnd(),
+    dmText,
   );
 
   try {

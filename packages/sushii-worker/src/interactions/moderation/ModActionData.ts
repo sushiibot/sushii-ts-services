@@ -1,4 +1,3 @@
-import dayjs from "@/shared/domain/dayjs";
 import { Duration } from "dayjs/plugin/duration";
 import {
   Attachment,
@@ -8,7 +7,11 @@ import {
   User,
 } from "discord.js";
 import { Err, Ok, Result } from "ts-results";
+
+import { GuildConfig } from "@/features/guild-settings/domain/entities/GuildConfig";
+import dayjs from "@/shared/domain/dayjs";
 import logger from "@/shared/infrastructure/logger";
+
 import isGuildMember from "../../utils/isGuildMember";
 import parseDuration from "../../utils/parseDuration";
 import { ActionType } from "./ActionType";
@@ -91,9 +94,34 @@ export default class ModActionData {
    * Should DM user, whether it be reason or a custom dm message, or both
    *
    * @param actionType
+   * @param guildConfig Optional guild config to check guild-specific DM settings
    * @returns
    */
-  shouldDMReason(actionType: ActionType): boolean {
+  shouldDMReason(actionType: ActionType, guildConfig?: GuildConfig): boolean {
+    // Command-level dm_reason parameter takes highest priority
+    if (this.DMReason !== undefined) {
+      return this.DMReason;
+    }
+
+    // Check guild-specific settings if available
+    if (guildConfig) {
+      switch (actionType) {
+        case ActionType.Timeout:
+          // Use guild timeout command DM setting
+          return guildConfig.moderationSettings.timeoutCommandDmEnabled;
+        case ActionType.Ban:
+          // Use guild ban DM setting
+          return guildConfig.moderationSettings.banDmEnabled;
+        case ActionType.Warn:
+          // Warn ALWAYS DMs (not configurable, doesn't make sense not to)
+          return true;
+        case ActionType.BanRemove:
+          // Unban never sends DM - user can never receive it
+          return false;
+      }
+    }
+
+    // Fallback to original logic when no guild config provided
     // Warn always DMs, even if no reason provided
     if (actionType === ActionType.Warn) {
       return true;
@@ -265,14 +293,12 @@ export default class ModActionData {
 
     // Resolve all user fetches -- non-members
     const targetUsersResult = await Promise.allSettled(targetUserPromises);
-    for (let i = 0; i < targetUsersResult.length; i += 1) {
-      const result = targetUsersResult[i];
-
+    for (const result of targetUsersResult) {
       if (result.status === "fulfilled") {
         const user = result.value;
 
         // User will always exist if fetched from API (unless invalid id of course)
-        this.targets.set(user.id!, {
+        this.targets.set(user.id, {
           user,
           member: null,
         });

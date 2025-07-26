@@ -1,4 +1,4 @@
-import { ButtonStyle, AuditLogEvent } from "discord.js";
+import { AuditLogEvent, ButtonStyle } from "discord.js";
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -7,17 +7,21 @@ import {
   Guild,
   GuildAuditLogsEntry,
 } from "discord.js";
+
+import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
+import { GuildConfig } from "@/features/guild-settings/domain/entities/GuildConfig";
 import dayjs from "@/shared/domain/dayjs";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
-import { EventHandlerFn } from "./EventHandler";
-import { ActionType } from "../interactions/moderation/ActionType";
-import customIds from "../interactions/customIds";
-import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
-import buildModLogEmbed from "../features/moderation/presentation/buildModLogEmbed";
-import { buildDMEmbed } from "../interactions/moderation/sendDm";
-import db from "../infrastructure/database/db";
-import { insertModLog, upsertModLog } from "../db/ModLog/ModLog.repository";
+
 import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
+import { insertModLog, upsertModLog } from "../db/ModLog/ModLog.repository";
+import buildModLogEmbed from "../features/moderation/presentation/buildModLogEmbed";
+import db from "../infrastructure/database/db";
+import customIds from "../interactions/customIds";
+import { ActionType } from "../interactions/moderation/ActionType";
+import { buildDMEmbed } from "../interactions/moderation/sendDm";
+import { TimeoutChange, getTimeoutChangeData } from "../types/TimeoutChange";
+import { EventHandlerFn } from "./EventHandler";
 
 const log = newModuleLogger("ModLogHandler");
 
@@ -206,257 +210,281 @@ export function buildModLogComponents(
   return [row];
 }
 
-const modLogHandler: EventHandlerFn<Events.GuildAuditLogEntryCreate> = async (
-  event: GuildAuditLogsEntry,
-  guild: Guild,
-): Promise<void> => {
-  const actionTypeData = getActionTypeFromEvent(event);
-  if (!actionTypeData) {
-    return;
-  }
-
-  const { actionType, executorId, reason, timeoutChange } = actionTypeData;
-  log.debug(
-    {
-      guildId: guild.id,
-      actionType,
-      executorId,
-      reason,
-      timeoutChange,
-    },
-    "received mod log",
-  );
-
-  // Check event before fetching guild config
-  const conf = await getGuildConfig(db, guild.id);
-
-  // No guild config found, ignore
-  if (
-    !conf.log_mod || // No mod log set
-    !conf.log_mod_enabled // Mod log disabled
-  ) {
-    return;
-  }
-
-  // No target ID found in event, ignore
-  if (!event.targetId || event.targetType !== "User") {
-    // Unrelated audit log event
-    return;
-  }
-
-  // event.target is null, only event.targetId exists
-  const targetUser = await guild.client.users.fetch(event.targetId);
-
-  let matchingCase;
-  await db.transaction().execute(async (tx) => {
-    matchingCase = await tx
-      .selectFrom("app_public.mod_logs")
-      // Make sure to wait for the executeAction to finish before selecting
-      // Or the DM columns will be stale
-      .forUpdate()
-      .selectAll()
-      .where("guild_id", "=", guild.id)
-      .where("user_id", "=", event.targetId)
-      .where("action", "=", actionType)
-      .where("pending", "=", true)
-      .orderBy("action_time", "desc")
-      .executeTakeFirst();
-
-    if (matchingCase) {
-      log.debug(
-        matchingCase,
-        "Found pending case, checking if it is older than 1 minute",
-      );
+export function createModLogHandler(
+  guildSettingsService?: GuildSettingsService,
+): EventHandlerFn<Events.GuildAuditLogEntryCreate> {
+  return async (event: GuildAuditLogsEntry, guild: Guild): Promise<void> => {
+    const actionTypeData = getActionTypeFromEvent(event);
+    if (!actionTypeData) {
+      return;
     }
 
-    if (matchingCase) {
-      // Now - 1 minute
-      const minimumTime = dayjs.utc().subtract(1, "minute");
-      const actionTime = dayjs.utc(matchingCase.action_time);
-
-      // If action time is older than 1 minute
-      if (actionTime.isBefore(minimumTime)) {
-        log.debug(
-          {
-            guildId: guild.id,
-            caseId: matchingCase.case_id,
-          },
-          "Found pending case, but it is older than 1 minute, ignoring",
-        );
-        // Ignore if the action is more than 1 minute old
-        matchingCase = undefined;
-      }
-    }
-
-    // If there is a matching case AND if it was created in the last minute
-    if (matchingCase) {
-      // Mark case as not pending
-      const res = await tx
-        .updateTable("app_public.mod_logs")
-        .where("guild_id", "=", guild.id)
-        .where("case_id", "=", matchingCase.case_id)
-        // There is already executor ID if this was found
-        .set({
-          pending: false,
-        })
-        .executeTakeFirst();
-
-      log.debug(
-        { pendingUpdateResult: res },
-        "Marked pending case as not pending",
-      );
-    }
-  });
-
-  // If this is a native manual timeout, we want to DM the user the reason.
-  // ONLY DM if it is a **timeout,** ban reasons cannot be DM'd here
-  // No DM for adjust, since regular users cannot use it.
-  //
-  // Not necessary to check if the target is a member, since you cannot
-  // timeout a non-member.
-  const shouldDMReason =
-    matchingCase === undefined &&
-    (ActionType.Timeout === actionType ||
-      ActionType.TimeoutRemove === actionType);
-
-  // Create a new case if there isn't a pending case
-  if (!matchingCase) {
-    log.debug("No pending case found, creating new case");
-
-    // insertModLog will increment the case ID, may prevent race conditions
-    // with conflicting case IDs
-    const newModLog = await insertModLog(db, {
-      guild_id: guild.id,
-      action: actionType,
-      pending: false,
-      user_id: event.targetId,
-      user_tag: targetUser.tag,
-      executor_id: executorId,
-      action_time: dayjs().utc().toISOString(),
-      reason,
-      // This is set in the mod logger
-      msg_id: undefined,
-    });
-
-    if (!newModLog) {
-      throw new Error("Failed to create new mod log case");
-    }
-
-    log.debug({ newModLog }, "Created new mod log case");
-
-    matchingCase = newModLog;
-  }
-
-  log.debug(matchingCase, "Matching mod log case");
-
-  let shouldSaveModLog = false;
-
-  if (shouldDMReason && timeoutChange) {
-    shouldSaveModLog = true;
-
-    // DM the user the reason if it is a timeout
-    // Ignore cases where timeout is adjusted, since that can only done through a bot command.
-    // Users can only add or remove timeouts.
-
-    log.info(
+    const { actionType, executorId, reason, timeoutChange } = actionTypeData;
+    log.debug(
       {
+        guildId: guild.id,
         actionType,
+        executorId,
+        reason,
         timeoutChange,
       },
-      "Sending timeout DM to user",
+      "received mod log",
     );
 
-    const dmEmbed = await buildDMEmbed(
-      guild,
-      actionType,
-      true, // should dm reason
-      reason || null, // reason
-      timeoutChange.new || null,
-    );
+    // Check event before fetching guild config
+    const conf = await getGuildConfig(db, guild.id);
 
-    try {
-      const dmMsg = await targetUser.send({
-        embeds: [dmEmbed],
-      });
+    // No guild config found, ignore
+    if (
+      !conf.log_mod || // No mod log set
+      !conf.log_mod_enabled // Mod log disabled
+    ) {
+      return;
+    }
 
-      // modlog will be updated with the message ID later when saving message id
-      // of mod log
-      matchingCase.dm_channel_id = dmMsg.channel.id;
-      matchingCase.dm_message_id = dmMsg.id;
-    } catch (err) {
-      if (err instanceof DiscordAPIError) {
-        matchingCase.dm_message_error = err.message;
+    // No target ID found in event, ignore
+    if (!event.targetId || event.targetType !== "User") {
+      // Unrelated audit log event
+      return;
+    }
+
+    // event.target is null, only event.targetId exists
+    const targetUser = await guild.client.users.fetch(event.targetId);
+
+    let matchingCase;
+    await db.transaction().execute(async (tx) => {
+      matchingCase = await tx
+        .selectFrom("app_public.mod_logs")
+        // Make sure to wait for the executeAction to finish before selecting
+        // Or the DM columns will be stale
+        .forUpdate()
+        .selectAll()
+        .where("guild_id", "=", guild.id)
+        .where("user_id", "=", event.targetId)
+        .where("action", "=", actionType)
+        .where("pending", "=", true)
+        .orderBy("action_time", "desc")
+        .executeTakeFirst();
+
+      if (matchingCase) {
+        log.debug(
+          matchingCase,
+          "Found pending case, checking if it is older than 1 minute",
+        );
       }
 
-      log.debug(
+      if (matchingCase) {
+        // Now - 1 minute
+        const minimumTime = dayjs.utc().subtract(1, "minute");
+        const actionTime = dayjs.utc(matchingCase.action_time);
+
+        // If action time is older than 1 minute
+        if (actionTime.isBefore(minimumTime)) {
+          log.debug(
+            {
+              guildId: guild.id,
+              caseId: matchingCase.case_id,
+            },
+            "Found pending case, but it is older than 1 minute, ignoring",
+          );
+          // Ignore if the action is more than 1 minute old
+          matchingCase = undefined;
+        }
+      }
+
+      // If there is a matching case AND if it was created in the last minute
+      if (matchingCase) {
+        // Mark case as not pending
+        const res = await tx
+          .updateTable("app_public.mod_logs")
+          .where("guild_id", "=", guild.id)
+          .where("case_id", "=", matchingCase.case_id)
+          // There is already executor ID if this was found
+          .set({
+            pending: false,
+          })
+          .executeTakeFirst();
+
+        log.debug(
+          { pendingUpdateResult: res },
+          "Marked pending case as not pending",
+        );
+      }
+    });
+
+    // If this is a native manual timeout, we want to DM the user the reason.
+    // ONLY DM if it is a **timeout,** ban reasons cannot be DM'd here
+    // No DM for adjust, since regular users cannot use it.
+    //
+    // Not necessary to check if the target is a member, since you cannot
+    // timeout a non-member.
+    let shouldDMReason =
+      matchingCase === undefined &&
+      (ActionType.Timeout === actionType ||
+        ActionType.TimeoutRemove === actionType);
+
+    // Check guild settings for native timeout DM preference
+    let guildConfig: GuildConfig | undefined;
+    if (shouldDMReason && guildSettingsService) {
+      try {
+        guildConfig = await guildSettingsService.getGuildSettings(guild.id);
+        // Only DM if guild has enabled native timeout DMs
+        shouldDMReason =
+          shouldDMReason &&
+          guildConfig.moderationSettings.timeoutNativeDmEnabled;
+      } catch (err) {
+        log.warn(
+          { err, guildId: guild.id },
+          "Failed to fetch guild settings for native timeout DM, using default",
+        );
+      }
+    }
+
+    // Create a new case if there isn't a pending case
+    if (!matchingCase) {
+      log.debug("No pending case found, creating new case");
+
+      // insertModLog will increment the case ID, may prevent race conditions
+      // with conflicting case IDs
+      const newModLog = await insertModLog(db, {
+        guild_id: guild.id,
+        action: actionType,
+        pending: false,
+        user_id: event.targetId,
+        user_tag: targetUser.tag,
+        executor_id: executorId,
+        action_time: dayjs().utc().toISOString(),
+        reason,
+        // This is set in the mod logger
+        msg_id: undefined,
+      });
+
+      if (!newModLog) {
+        throw new Error("Failed to create new mod log case");
+      }
+
+      log.debug({ newModLog }, "Created new mod log case");
+
+      matchingCase = newModLog;
+    }
+
+    log.debug(matchingCase, "Matching mod log case");
+
+    let shouldSaveModLog = false;
+
+    if (shouldDMReason && timeoutChange) {
+      shouldSaveModLog = true;
+
+      // DM the user the reason if it is a timeout
+      // Ignore cases where timeout is adjusted, since that can only done through a bot command.
+      // Users can only add or remove timeouts.
+
+      log.info(
         {
           actionType,
           timeoutChange,
+        },
+        "Sending timeout DM to user",
+      );
+
+      // Get custom timeout DM text if available
+      const customText = guildConfig?.moderationSettings.timeoutDmText || null;
+
+      const dmEmbed = await buildDMEmbed(
+        guild,
+        actionType,
+        true, // should dm reason
+        reason || null, // reason
+        timeoutChange.new || null,
+        customText,
+      );
+
+      try {
+        const dmMsg = await targetUser.send({
+          embeds: [dmEmbed],
+        });
+
+        // modlog will be updated with the message ID later when saving message id
+        // of mod log
+        matchingCase.dm_channel_id = dmMsg.channel.id;
+        matchingCase.dm_message_id = dmMsg.id;
+      } catch (err) {
+        if (err instanceof DiscordAPIError) {
+          matchingCase.dm_message_error = err.message;
+        }
+
+        log.debug(
+          {
+            actionType,
+            timeoutChange,
+            eventTarget: event.target,
+            err,
+          },
+          "Failed to send timeout DM to user",
+        );
+      }
+    }
+
+    const embed = await buildModLogEmbed(
+      guild.client,
+      actionType,
+      targetUser,
+      matchingCase,
+      timeoutChange,
+    );
+    const components = buildModLogComponents(actionType, matchingCase);
+
+    let channel;
+    try {
+      channel = await guild.channels.fetch(conf.log_mod);
+    } catch (err) {
+      log.error(
+        {
+          guildId: guild.id,
+          modLogChannelId: conf.log_mod,
+          err,
+        },
+        "Failed to fetch mod log channel",
+      );
+
+      return;
+    }
+
+    if (!channel?.isTextBased()) {
+      throw new Error("Mod log channel is not text based");
+    }
+
+    let sentMsg;
+    try {
+      shouldSaveModLog = true;
+
+      sentMsg = await channel.send({
+        embeds: [embed.toJSON()],
+        components,
+      });
+    } catch (err) {
+      log.debug(
+        {
+          actionType,
           eventTarget: event.target,
           err,
         },
-        "Failed to send timeout DM to user",
+        "Failed to send mod log message",
       );
     }
-  }
 
-  const embed = await buildModLogEmbed(
-    guild.client,
-    actionType,
-    targetUser,
-    matchingCase,
-    timeoutChange,
-  );
-  const components = buildModLogComponents(actionType, matchingCase);
+    if (sentMsg) {
+      // Update message ID in db
+      matchingCase.msg_id = sentMsg.id;
+    }
 
-  let channel;
-  try {
-    channel = await guild.channels.fetch(conf.log_mod);
-  } catch (err) {
-    log.error(
-      {
-        guildId: guild.id,
-        modLogChannelId: conf.log_mod,
-        err,
-      },
-      "Failed to fetch mod log channel",
-    );
+    // Save mod log if it was updated
+    if (shouldSaveModLog) {
+      await upsertModLog(db, matchingCase);
+    }
+  };
+}
 
-    return;
-  }
-
-  if (!channel?.isTextBased()) {
-    throw new Error("Mod log channel is not text based");
-  }
-
-  let sentMsg;
-  try {
-    shouldSaveModLog = true;
-
-    sentMsg = await channel.send({
-      embeds: [embed.toJSON()],
-      components,
-    });
-  } catch (err) {
-    log.debug(
-      {
-        actionType,
-        eventTarget: event.target,
-        err,
-      },
-      "Failed to send mod log message",
-    );
-  }
-
-  if (sentMsg) {
-    // Update message ID in db
-    matchingCase.msg_id = sentMsg.id;
-  }
-
-  // Save mod log if it was updated
-  if (shouldSaveModLog) {
-    await upsertModLog(db, matchingCase);
-  }
-};
-
+// For backward compatibility, export a default handler without GuildSettingsService
+const modLogHandler = createModLogHandler();
 export default modLogHandler;

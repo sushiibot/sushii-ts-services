@@ -32,6 +32,8 @@ import {
   deleteTempBan,
   upsertTempBan,
 } from "../../db/TempBan/TempBan.repository";
+import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
+import { GuildConfig } from "@/features/guild-settings/domain/entities/GuildConfig";
 
 const log = logger.child({ module: "executeAction" });
 const tracer = opentelemetry.trace.getTracer("sushii-worker");
@@ -47,6 +49,7 @@ function buildResponseEmbed(
   content: string,
   triedDMNonMemberCount: number,
   failedDMCount: number,
+  guildConfig?: GuildConfig,
 ): EmbedBuilder {
   const fields = [];
 
@@ -84,7 +87,7 @@ function buildResponseEmbed(
     if (data.targets.size === failedDMCount) {
       userDMValue =
         "❌ Failed to DM reason to users, their privacy settings do not allow me to DM or they have blocked me :(";
-    } else if (data.shouldDMReason(action)) {
+    } else if (data.shouldDMReason(action, guildConfig)) {
       userDMValue = "📬 Reason sent to member in DMs";
     }
 
@@ -318,6 +321,7 @@ async function executeActionUser(
   data: ModActionData,
   target: ModActionTarget,
   incomingActionType: ActionType,
+  guildConfig?: GuildConfig,
 ): Promise<Result<ExecuteActionUserResult, ActionError>> {
   if (!interaction.inGuild()) {
     throw new Error("Not in guild");
@@ -398,10 +402,10 @@ async function executeActionUser(
     );
 
     // Only DM if (dm_reason true or has dm_message) AND if target is in the server.
-    const shouldDM = data.shouldDMReason(actionType) && target.member !== null;
+    const shouldDM = data.shouldDMReason(actionType, guildConfig) && target.member !== null;
 
     const triedDMNonMember =
-      data.shouldDMReason(actionType) && target.member === null;
+      data.shouldDMReason(actionType, guildConfig) && target.member === null;
 
     log.debug({
       shouldDM,
@@ -429,6 +433,7 @@ async function executeActionUser(
           data,
           target.user,
           actionType,
+          guildConfig,
         );
       }
 
@@ -443,6 +448,7 @@ async function executeActionUser(
           data,
           target.user,
           actionType,
+          guildConfig,
         );
       }
 
@@ -520,12 +526,23 @@ export default async function executeAction(
   interaction: ChatInputCommandInteraction<"cached">,
   data: ModActionData,
   actionType: ActionType,
+  guildSettingsService?: GuildSettingsService,
 ): Promise<Result<EmbedBuilder, Error>> {
   if (!interaction.guildId) {
     return Err(new Error("Guild ID is missing"));
   }
 
   return startCaughtActiveSpan(tracer, "executeAction", async () => {
+    // Fetch guild config for DM settings if service is available
+    let guildConfig;
+    if (guildSettingsService) {
+      try {
+        guildConfig = await guildSettingsService.getGuildSettings(interaction.guildId);
+      } catch (err) {
+        log.warn({ err, guildId: interaction.guildId }, "Failed to fetch guild settings, using defaults");
+      }
+    }
+
     let msg = "";
 
     // If executor wants to DM, but target is not a member
@@ -549,6 +566,7 @@ export default async function executeAction(
         data,
         target,
         actionType,
+        guildConfig,
       );
 
       if (res.err) {
@@ -589,6 +607,7 @@ export default async function executeAction(
         msg,
         triedDMNonMemberCount,
         failedDMCount,
+        guildConfig,
       ),
     );
   });

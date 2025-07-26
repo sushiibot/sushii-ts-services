@@ -92,7 +92,7 @@ export function registerFeatures(
   client: Client,
   deploymentService: DeploymentService,
   interactionRouter: InteractionRouter,
-) {
+): { guildSettingsService: GuildSettingsService } {
   // --------------------------------------------------------------------------
   // Build commands
 
@@ -333,4 +333,6 @@ export function registerFeatures(
       }
     });
   }
+
+  return { guildSettingsService };
 }

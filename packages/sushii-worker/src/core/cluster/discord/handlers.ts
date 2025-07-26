@@ -12,7 +12,8 @@ import InteractionClient from "./InteractionRouter";
 import { EventHandlerFn } from "@/events/EventHandler";
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 import legacyModLogNotifierHandler from "@/events/GuildBanAdd/LegacyModLogNotifier";
-import modLogHandler from "@/events/ModLogHandler";
+import modLogHandler, { createModLogHandler } from "@/events/ModLogHandler";
+import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
 import { msgLogHandler } from "@/events/msglog/MsgLogHandler";
 import msgLogCacheHandler from "@/events/msglog/MessageCacheHandler";
 import Color from "@/utils/colors";
@@ -118,6 +119,7 @@ export default function registerEventHandlers(
   client: Client,
   interactionHandler: InteractionClient,
   deploymentService: DeploymentService,
+  guildSettingsService?: GuildSettingsService,
 ): void {
   client.once(Events.ClientReady, async (c) => {
     logger.info(
@@ -374,9 +376,14 @@ export default function registerEventHandlers(
     await tracer.startActiveSpan(
       prefixSpanName(Events.GuildAuditLogEntryCreate),
       async (span: Span) => {
+        // Use factory function to create modLogHandler with dependencies
+        const modLogHandlerWithDeps = guildSettingsService 
+          ? createModLogHandler(guildSettingsService)
+          : modLogHandler;
+
         await handleEvent(
           Events.GuildAuditLogEntryCreate,
-          { modLog: modLogHandler },
+          { modLog: modLogHandlerWithDeps },
           entry,
           guild,
         );
