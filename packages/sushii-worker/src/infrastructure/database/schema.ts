@@ -159,10 +159,25 @@ export const guildConfigsInAppPublic = appPublic.table(
     logModEnabled: boolean("log_mod_enabled").default(true).notNull(),
     logMember: bigint("log_member", { mode: "bigint" }),
     logMemberEnabled: boolean("log_member_enabled").default(true).notNull(),
-    muteDmText: text("mute_dm_text"),
-    muteDmEnabled: boolean("mute_dm_enabled").default(true).notNull(),
+
+    // Moderation action default behavior
+    timeoutDmText: text("timeout_dm_text"),
+    // Via /timeout command
+    timeoutCommandDmEnabled: boolean("timeout_dm_enabled")
+      .default(true)
+      .notNull(),
+    // Via right click timeout
+    timeoutNativeDmEnabled: boolean("timeout_native_dm_enabled")
+      .default(true)
+      .notNull(),
+
     warnDmText: text("warn_dm_text"),
-    warnDmEnabled: boolean("warn_dm_enabled").default(true).notNull(),
+    // No warnDmEnabled, since it doesn't make sense to warn without a DM
+
+    banDmText: text("ban_dm_text"),
+    banDmEnabled: boolean("ban_dm_enabled").default(true).notNull(),
+
+    // Other
     disabledChannels: bigint("disabled_channels", { mode: "bigint" }).array(),
     lookupDetailsOptIn: boolean("lookup_details_opt_in")
       .default(false)

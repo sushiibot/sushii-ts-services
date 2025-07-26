@@ -16,10 +16,16 @@ export interface LoggingSettings {
 }
 
 export interface ModerationSettings {
-  muteDmText: string | null;
-  muteDmEnabled: boolean;
+  timeoutDmText: string | null;
+  timeoutCommandDmEnabled: boolean;
+  timeoutNativeDmEnabled: boolean;
+
+  // Warn always dms
   warnDmText: string | null;
-  warnDmEnabled: boolean;
+
+  banDmText: string | null;
+  banDmEnabled: boolean;
+
   lookupDetailsOptIn: boolean;
   lookupPrompted: boolean;
 }
@@ -30,7 +36,10 @@ export type ToggleableSetting =
   | "modLog"
   | "memberLog"
   | "messageLog"
-  | "lookupOptIn";
+  | "lookupOptIn"
+  | "timeoutCommandDm"
+  | "timeoutNativeDm"
+  | "banDm";
 
 export class GuildConfig {
   constructor(
@@ -75,10 +84,14 @@ export class GuildConfig {
         messageLogEnabled: true,
       },
       {
-        muteDmText: null,
-        muteDmEnabled: true,
+        timeoutDmText: null,
+        timeoutCommandDmEnabled: true,
+        timeoutNativeDmEnabled: true,
+
         warnDmText: null,
-        warnDmEnabled: true,
+
+        banDmText: null,
+        banDmEnabled: true,
 
         // Lookup flags
         lookupDetailsOptIn: false,
@@ -109,6 +122,39 @@ export class GuildConfig {
     }
 
     config.messageSettings.leaveMessage = message;
+    return config;
+  }
+
+  updateTimeoutDmText(text: string): GuildConfig {
+    const config = this.clone();
+    if (text === "") {
+      config.moderationSettings.timeoutDmText = null;
+      return config;
+    }
+
+    config.moderationSettings.timeoutDmText = text;
+    return config;
+  }
+
+  updateWarnDmText(text: string): GuildConfig {
+    const config = this.clone();
+    if (text === "") {
+      config.moderationSettings.warnDmText = null;
+      return config;
+    }
+
+    config.moderationSettings.warnDmText = text;
+    return config;
+  }
+
+  updateBanDmText(text: string): GuildConfig {
+    const config = this.clone();
+    if (text === "") {
+      config.moderationSettings.banDmText = null;
+      return config;
+    }
+
+    config.moderationSettings.banDmText = text;
     return config;
   }
 
@@ -199,6 +245,27 @@ export class GuildConfig {
     const config = this.clone();
     config.moderationSettings.lookupDetailsOptIn =
       !config.moderationSettings.lookupDetailsOptIn;
+    return config;
+  }
+
+  toggleTimeoutCommandDm(): GuildConfig {
+    const config = this.clone();
+    config.moderationSettings.timeoutCommandDmEnabled =
+      !config.moderationSettings.timeoutCommandDmEnabled;
+    return config;
+  }
+
+  toggleTimeoutNativeDm(): GuildConfig {
+    const config = this.clone();
+    config.moderationSettings.timeoutNativeDmEnabled =
+      !config.moderationSettings.timeoutNativeDmEnabled;
+    return config;
+  }
+
+  toggleBanDm(): GuildConfig {
+    const config = this.clone();
+    config.moderationSettings.banDmEnabled =
+      !config.moderationSettings.banDmEnabled;
     return config;
   }
 }

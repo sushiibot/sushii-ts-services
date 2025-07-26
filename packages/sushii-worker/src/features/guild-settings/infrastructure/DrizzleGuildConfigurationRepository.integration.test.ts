@@ -51,7 +51,7 @@ describe("DrizzleGuildConfigurationRepository (Integration)", () => {
     expect(config.messageSettings.joinMessage).toBe(null);
     expect(config.messageSettings.joinMessageEnabled).toBe(true);
     expect(config.loggingSettings.modLogEnabled).toBe(true);
-    expect(config.moderationSettings.muteDmEnabled).toBe(true);
+    expect(config.moderationSettings.timeoutCommandDmEnabled).toBe(true);
     expect(config.disabledChannels).toEqual([]);
   });
 
@@ -76,10 +76,12 @@ describe("DrizzleGuildConfigurationRepository (Integration)", () => {
         messageLogEnabled: true,
       },
       {
-        muteDmText: "You have been muted",
-        muteDmEnabled: true,
+        timeoutDmText: "You have been muted",
+        timeoutCommandDmEnabled: true,
+        timeoutNativeDmEnabled: true,
         warnDmText: "Warning!",
-        warnDmEnabled: false,
+        banDmText: null,
+        banDmEnabled: true,
         lookupDetailsOptIn: true,
         lookupPrompted: false,
       },
@@ -96,7 +98,7 @@ describe("DrizzleGuildConfigurationRepository (Integration)", () => {
     expect(savedConfig.messageSettings.joinMessageEnabled).toBe(true);
     expect(savedConfig.loggingSettings.modLogChannel).toBe("111222333");
     expect(savedConfig.loggingSettings.modLogEnabled).toBe(true);
-    expect(savedConfig.moderationSettings.muteDmEnabled).toBe(true);
+    expect(savedConfig.moderationSettings.timeoutCommandDmEnabled).toBe(true);
     expect(savedConfig.disabledChannels).toEqual(["123", "456", "789"]);
 
     // Verify retrieved config matches
@@ -126,10 +128,12 @@ describe("DrizzleGuildConfigurationRepository (Integration)", () => {
         messageLogEnabled: false,
       },
       {
-        muteDmText: null,
-        muteDmEnabled: false,
+        timeoutDmText: null,
+        timeoutCommandDmEnabled: false,
+        timeoutNativeDmEnabled: false,
         warnDmText: null,
-        warnDmEnabled: false,
+        banDmText: null,
+        banDmEnabled: false,
         lookupDetailsOptIn: false,
         lookupPrompted: false,
       },
@@ -158,10 +162,12 @@ describe("DrizzleGuildConfigurationRepository (Integration)", () => {
         messageLogEnabled: false,
       },
       {
-        muteDmText: "Muted!",
-        muteDmEnabled: true,
+        timeoutDmText: "Muted!",
+        timeoutCommandDmEnabled: true,
+        timeoutNativeDmEnabled: true,
         warnDmText: null,
-        warnDmEnabled: false,
+        banDmText: null,
+        banDmEnabled: true,
         lookupDetailsOptIn: true,
         lookupPrompted: true,
       },
@@ -175,7 +181,7 @@ describe("DrizzleGuildConfigurationRepository (Integration)", () => {
     expect(savedConfig.messageSettings.joinMessage).toBe("Updated message");
     expect(savedConfig.messageSettings.joinMessageEnabled).toBe(true);
     expect(savedConfig.loggingSettings.modLogChannel).toBe("789012");
-    expect(savedConfig.moderationSettings.muteDmText).toBe("Muted!");
+    expect(savedConfig.moderationSettings.timeoutDmText).toBe("Muted!");
     expect(savedConfig.disabledChannels).toEqual(["999"]);
 
     expect(retrievedConfig).toEqual(savedConfig);
@@ -202,10 +208,12 @@ describe("DrizzleGuildConfigurationRepository (Integration)", () => {
         messageLogEnabled: false,
       },
       {
-        muteDmText: null,
-        muteDmEnabled: false,
+        timeoutDmText: null,
+        timeoutCommandDmEnabled: false,
+        timeoutNativeDmEnabled: false,
         warnDmText: null,
-        warnDmEnabled: false,
+        banDmText: null,
+        banDmEnabled: false,
         lookupDetailsOptIn: false,
         lookupPrompted: false,
       },
@@ -219,7 +227,7 @@ describe("DrizzleGuildConfigurationRepository (Integration)", () => {
     expect(savedConfig.messageSettings.joinMessage).toBe(null);
     expect(savedConfig.messageSettings.messageChannel).toBe(null);
     expect(savedConfig.loggingSettings.modLogChannel).toBe(null);
-    expect(savedConfig.moderationSettings.muteDmText).toBe(null);
+    expect(savedConfig.moderationSettings.timeoutDmText).toBe(null);
     expect(savedConfig.disabledChannels).toEqual([]);
 
     expect(retrievedConfig).toEqual(savedConfig);
@@ -263,10 +271,12 @@ describe("DrizzleGuildConfigurationRepository (Integration)", () => {
         messageLogEnabled: false,
       },
       {
-        muteDmText: null,
-        muteDmEnabled: false,
+        timeoutDmText: null,
+        timeoutCommandDmEnabled: false,
+        timeoutNativeDmEnabled: false,
         warnDmText: null,
-        warnDmEnabled: false,
+        banDmText: null,
+        banDmEnabled: false,
         lookupDetailsOptIn: false,
         lookupPrompted: false,
       },

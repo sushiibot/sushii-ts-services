@@ -8,6 +8,7 @@ import {
   TextInputStyle,
 } from "discord.js";
 
+import { MODERATION_DM_DEFAULTS } from "../../../domain/constants/ModerationDefaults";
 import { SETTINGS_CUSTOM_IDS, SettingsPage } from "./SettingsConstants";
 
 export function createFooter(disabled = false): TextDisplayBuilder {
@@ -81,18 +82,47 @@ export function formatLogSetting(
   return text;
 }
 
-export function formatMessageSetting(
+export function formatToggleMessageSetting(
   name: string,
   message: string | null,
   enabled: boolean,
   description: string,
+  defaultMessage?: string,
 ): string {
   let s = `**${name}** — `;
   s += enabled ? "`✅ Enabled`" : "`❌ Disabled`";
   s += `\n> ${description}`;
 
   s += `\n\`\`\``;
-  s += `\n${message ? message : "No message set"}`;
+  if (message) {
+    s += `\n${message}`;
+  } else if (defaultMessage) {
+    s += `\nDefault: ${defaultMessage}`;
+  } else {
+    s += `\nNo message set`;
+  }
+  s += `\n\`\`\`\n`;
+
+  return s;
+}
+
+export function formatMessageSetting(
+  name: string,
+  message: string | null,
+  description: string,
+  defaultMessage?: string,
+): string {
+  let s = `**${name}**`;
+  s += `\n> ${description}`;
+
+  s += `\n\`\`\``;
+  if (message) {
+    s += `\n${message}`;
+  } else if (defaultMessage) {
+    s += `\nDefault: ${defaultMessage}`;
+  } else {
+    s += `\nNo message set`;
+  }
   s += `\n\`\`\`\n`;
 
   return s;
@@ -177,6 +207,88 @@ export function createLeaveMessageModal(
 
   const actionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(
     messageInput,
+  );
+  modal.addComponents(actionRow);
+
+  return modal;
+}
+
+export function createTimeoutDmTextModal(
+  currentText: string | null,
+): ModalBuilder {
+  const modal = new ModalBuilder()
+    .setCustomId(SETTINGS_CUSTOM_IDS.EDIT_TIMEOUT_DM_TEXT)
+    .setTitle("Edit Timeout DM Text");
+
+  const textInput = new TextInputBuilder()
+    .setCustomId("timeout_dm_text_input")
+    .setLabel("Timeout DM Text")
+    .setStyle(TextInputStyle.Paragraph)
+    .setValue(currentText || "")
+    .setPlaceholder(MODERATION_DM_DEFAULTS.TIMEOUT_DM_TEXT)
+    .setRequired(false)
+    .setMaxLength(1000);
+
+  if (currentText) {
+    textInput.setValue(currentText);
+  }
+
+  const actionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(
+    textInput,
+  );
+  modal.addComponents(actionRow);
+
+  return modal;
+}
+
+export function createWarnDmTextModal(
+  currentText: string | null,
+): ModalBuilder {
+  const modal = new ModalBuilder()
+    .setCustomId(SETTINGS_CUSTOM_IDS.EDIT_WARN_DM_TEXT)
+    .setTitle("Edit Warn DM Text");
+
+  const textInput = new TextInputBuilder()
+    .setCustomId("warn_dm_text_input")
+    .setLabel("Warn DM Text")
+    .setStyle(TextInputStyle.Paragraph)
+    .setValue(currentText || "")
+    .setPlaceholder(MODERATION_DM_DEFAULTS.WARN_DM_TEXT)
+    .setRequired(false)
+    .setMaxLength(1000);
+
+  if (currentText) {
+    textInput.setValue(currentText);
+  }
+
+  const actionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(
+    textInput,
+  );
+  modal.addComponents(actionRow);
+
+  return modal;
+}
+
+export function createBanDmTextModal(currentText: string | null): ModalBuilder {
+  const modal = new ModalBuilder()
+    .setCustomId(SETTINGS_CUSTOM_IDS.EDIT_BAN_DM_TEXT)
+    .setTitle("Edit Ban DM Text");
+
+  const textInput = new TextInputBuilder()
+    .setCustomId("ban_dm_text_input")
+    .setLabel("Ban DM Text")
+    .setStyle(TextInputStyle.Paragraph)
+    .setValue(currentText || "")
+    .setPlaceholder(MODERATION_DM_DEFAULTS.BAN_DM_TEXT)
+    .setRequired(false)
+    .setMaxLength(1000);
+
+  if (currentText) {
+    textInput.setValue(currentText);
+  }
+
+  const actionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(
+    textInput,
   );
   modal.addComponents(actionRow);
 

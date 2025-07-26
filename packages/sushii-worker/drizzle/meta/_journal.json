@@ -50,6 +50,13 @@
       "when": 1753400473807,
       "tag": "0006_drop-msg-log-block-type",
       "breakpoints": false
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1753491397115,
+      "tag": "0007_guild-config-default-mod-action-dms",
+      "breakpoints": false
     }
   ]
 }

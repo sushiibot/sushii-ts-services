@@ -36,6 +36,42 @@ export class GuildSettingsService {
     return this.guildConfigRepository.save(updatedConfig);
   }
 
+  async updateTimeoutDmText(
+    guildId: string,
+    text: string,
+  ): Promise<GuildConfig> {
+    this.logger.info({ guildId, text }, "Updating timeout DM text");
+
+    const config = await this.guildConfigRepository.findByGuildId(guildId);
+    const updatedConfig = config.updateTimeoutDmText(text);
+
+    return this.guildConfigRepository.save(updatedConfig);
+  }
+
+  async updateWarnDmText(
+    guildId: string,
+    text: string,
+  ): Promise<GuildConfig> {
+    this.logger.info({ guildId, text }, "Updating warn DM text");
+
+    const config = await this.guildConfigRepository.findByGuildId(guildId);
+    const updatedConfig = config.updateWarnDmText(text);
+
+    return this.guildConfigRepository.save(updatedConfig);
+  }
+
+  async updateBanDmText(
+    guildId: string,
+    text: string,
+  ): Promise<GuildConfig> {
+    this.logger.info({ guildId, text }, "Updating ban DM text");
+
+    const config = await this.guildConfigRepository.findByGuildId(guildId);
+    const updatedConfig = config.updateBanDmText(text);
+
+    return this.guildConfigRepository.save(updatedConfig);
+  }
+
   async updateMessageChannel(
     guildId: string,
     channelId: string,
@@ -88,6 +124,15 @@ export class GuildSettingsService {
         break;
       case "lookupOptIn":
         updatedConfig = config.toggleLookupOptIn();
+        break;
+      case "timeoutCommandDm":
+        updatedConfig = config.toggleTimeoutCommandDm();
+        break;
+      case "timeoutNativeDm":
+        updatedConfig = config.toggleTimeoutNativeDm();
+        break;
+      case "banDm":
+        updatedConfig = config.toggleBanDm();
         break;
     }
 

@@ -21,8 +21,11 @@ import {
   formatButtonRejectionResponse,
 } from "../views/SettingsMessageBuilder";
 import {
+  createBanDmTextModal,
   createJoinMessageModal,
   createLeaveMessageModal,
+  createTimeoutDmTextModal,
+  createWarnDmTextModal,
 } from "../views/components/SettingsComponents";
 import {
   SETTINGS_CUSTOM_IDS,
@@ -345,6 +348,93 @@ export default class SettingsCommand extends SlashCommandHandler {
       return undefined; // No page change for modal buttons
     }
 
+    if (interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_TIMEOUT_DM_TEXT) {
+      const modal = createTimeoutDmTextModal(
+        currentConfig.moderationSettings.timeoutDmText,
+      );
+      await interaction.showModal(modal);
+
+      try {
+        const modalSubmission = await interaction.awaitModalSubmit({
+          time: 120000, // 2 minutes
+        });
+
+        if (!modalSubmission.isFromMessage()) {
+          throw new Error("Modal submission is not from a message interaction");
+        }
+
+        await this.handleModalSubmissionDirect(modalSubmission, guildId);
+      } catch (err) {
+        this.logger.debug(
+          {
+            interactionId: interaction.id,
+            err,
+          },
+          "Timeout DM text modal submission timed out or failed",
+        );
+      }
+
+      return undefined; // No page change for modal buttons
+    }
+
+    if (interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_WARN_DM_TEXT) {
+      const modal = createWarnDmTextModal(
+        currentConfig.moderationSettings.warnDmText,
+      );
+      await interaction.showModal(modal);
+
+      try {
+        const modalSubmission = await interaction.awaitModalSubmit({
+          time: 120000, // 2 minutes
+        });
+
+        if (!modalSubmission.isFromMessage()) {
+          throw new Error("Modal submission is not from a message interaction");
+        }
+
+        await this.handleModalSubmissionDirect(modalSubmission, guildId);
+      } catch (err) {
+        this.logger.debug(
+          {
+            interactionId: interaction.id,
+            err,
+          },
+          "Warn DM text modal submission timed out or failed",
+        );
+      }
+
+      return undefined; // No page change for modal buttons
+    }
+
+    if (interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_BAN_DM_TEXT) {
+      const modal = createBanDmTextModal(
+        currentConfig.moderationSettings.banDmText,
+      );
+      await interaction.showModal(modal);
+
+      try {
+        const modalSubmission = await interaction.awaitModalSubmit({
+          time: 120000, // 2 minutes
+        });
+
+        if (!modalSubmission.isFromMessage()) {
+          throw new Error("Modal submission is not from a message interaction");
+        }
+
+        await this.handleModalSubmissionDirect(modalSubmission, guildId);
+      } catch (err) {
+        this.logger.debug(
+          {
+            interactionId: interaction.id,
+            err,
+          },
+          "Ban DM text modal submission timed out or failed",
+        );
+      }
+
+      return undefined; // No page change for modal buttons
+    }
+
     // Handle toggle buttons
     const { setting, page } = this.getSettingAndPageFromButton(
       interaction.customId,
@@ -404,6 +494,12 @@ export default class SettingsCommand extends SlashCommandHandler {
         return { setting: "leaveMessage", page: "messages" };
       case SETTINGS_CUSTOM_IDS.TOGGLE_LOOKUP_OPT_IN:
         return { setting: "lookupOptIn", page: "moderation" };
+      case SETTINGS_CUSTOM_IDS.TOGGLE_TIMEOUT_COMMAND_DM:
+        return { setting: "timeoutCommandDm", page: "moderation" };
+      case SETTINGS_CUSTOM_IDS.TOGGLE_TIMEOUT_NATIVE_DM:
+        return { setting: "timeoutNativeDm", page: "moderation" };
+      case SETTINGS_CUSTOM_IDS.TOGGLE_BAN_DM:
+        return { setting: "banDm", page: "moderation" };
       default:
         this.logger.warn(
           { customId },
@@ -417,10 +513,13 @@ export default class SettingsCommand extends SlashCommandHandler {
     interaction: ModalMessageModalSubmitInteraction<"cached">,
     guildId: string,
   ): Promise<void> {
+    let targetPage: SettingsPage = "messages";
+
     if (interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_JOIN_MESSAGE) {
       const newMessage =
         interaction.fields.getTextInputValue("join_message_input");
       await this.guildSettingsService.updateJoinMessage(guildId, newMessage);
+      targetPage = "messages";
     } else if (
       interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_LEAVE_MESSAGE
     ) {
@@ -428,6 +527,23 @@ export default class SettingsCommand extends SlashCommandHandler {
         "leave_message_input",
       );
       await this.guildSettingsService.updateLeaveMessage(guildId, newMessage);
+      targetPage = "messages";
+    } else if (
+      interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_TIMEOUT_DM_TEXT
+    ) {
+      const newText = interaction.fields.getTextInputValue(
+        "timeout_dm_text_input",
+      );
+      await this.guildSettingsService.updateTimeoutDmText(guildId, newText);
+      targetPage = "moderation";
+    } else if (interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_WARN_DM_TEXT) {
+      const newText = interaction.fields.getTextInputValue("warn_dm_text_input");
+      await this.guildSettingsService.updateWarnDmText(guildId, newText);
+      targetPage = "moderation";
+    } else if (interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_BAN_DM_TEXT) {
+      const newText = interaction.fields.getTextInputValue("ban_dm_text_input");
+      await this.guildSettingsService.updateBanDmText(guildId, newText);
+      targetPage = "moderation";
     }
 
     // Update the original settings panel with the new config
@@ -437,7 +553,7 @@ export default class SettingsCommand extends SlashCommandHandler {
       await this.messageLogService.getIgnoredChannels(guildId);
 
     const updatedMessage = createSettingsMessage({
-      page: "messages",
+      page: targetPage,
       config: updatedConfig,
       messageLogBlocks,
       disabled: false,

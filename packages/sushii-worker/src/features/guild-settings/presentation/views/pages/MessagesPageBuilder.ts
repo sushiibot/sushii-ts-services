@@ -12,7 +12,7 @@ import { SeparatorSpacingSize } from "discord.js";
 
 import {
   createToggleButton,
-  formatMessageSetting,
+  formatToggleMessageSetting,
 } from "../components/SettingsComponents";
 import {
   SETTINGS_CUSTOM_IDS,
@@ -69,7 +69,7 @@ export function addMessagesContent(
   );
 
   // Join Message Section
-  const joinMessageContent = formatMessageSetting(
+  const joinMessageContent = formatToggleMessageSetting(
     "👋 Join Message",
     config.messageSettings.joinMessage,
     config.messageSettings.joinMessageEnabled,
@@ -100,7 +100,7 @@ export function addMessagesContent(
   );
 
   // Leave Message Section
-  const leaveMessageContent = formatMessageSetting(
+  const leaveMessageContent = formatToggleMessageSetting(
     "🚪 Leave Message",
     config.messageSettings.leaveMessage,
     config.messageSettings.leaveMessageEnabled,
