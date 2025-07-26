@@ -1,6 +1,6 @@
-import { z } from "zod";
 import * as dotenv from "dotenv";
 import pino from "pino";
+import { z } from "zod";
 
 dotenv.config();
 
@@ -58,12 +58,6 @@ const envSchema = z.object({
     .optional()
     .default(false),
   SKIP_COMMAND_REGISTRATION: z
-    .preprocess((x) => x === "true", z.boolean())
-    .optional()
-    .default(false),
-
-  // Feature flags
-  BAN_POOL_ENABLED: z
     .preprocess((x) => x === "true", z.boolean())
     .optional()
     .default(false),

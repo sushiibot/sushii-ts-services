@@ -1,5 +1,4 @@
 import InteractionClient from "@/core/cluster/discord/InteractionRouter";
-import { config } from "@/shared/infrastructure/config";
 
 import LeaderboardCommand from "../features/leveling/presentation/commands/LeaderboardCommand";
 import LevelRoleCommand from "../features/leveling/presentation/commands/LevelRoleCommand";
@@ -22,8 +21,6 @@ import TimeoutCommand from "./moderation/TimeoutCommand";
 import UnTimeoutCommand from "./moderation/UnTimeoutCommand";
 import UnbanCommand from "./moderation/UnbanCommand";
 import WarnCommand from "./moderation/WarnCommand";
-import BanPoolAutocomplete from "./moderation/ban_pools/BanPool.autocomplete";
-import BanPoolCommand from "./moderation/ban_pools/BanPool.command";
 import ContextLookUpButtonHandler from "./moderation/context_lookup/LookupComponentHandler";
 import UserInfoHandler from "./moderation/context_lookup/LookupContextMenuHandler";
 import DeleteModLogDMButtonHandler from "./moderation/reason/DMButton";
@@ -121,12 +118,4 @@ export default function registerInteractionHandlers(
   // ----------------------------------------
   // Modals
   interactionRouter.addModalHandlers(new ModLogReasonModalHandler());
-
-  // ----------------------------------------
-  // Feature flagged commands
-
-  if (config.features.banPoolEnabled) {
-    interactionRouter.addCommand(new BanPoolCommand());
-    interactionRouter.addAutocompleteHandlers(new BanPoolAutocomplete());
-  }
 }

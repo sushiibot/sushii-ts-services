@@ -1,3 +1,5 @@
+import opentelemetry, { Span } from "@opentelemetry/api";
+import * as Sentry from "@sentry/node";
 import {
   Client,
   ClientEvents,
@@ -5,47 +7,47 @@ import {
   GatewayDispatchEvents,
   GatewayDispatchPayload,
 } from "discord.js";
-import * as Sentry from "@sentry/node";
-import opentelemetry, { Span } from "@opentelemetry/api";
-import logger from "@/shared/infrastructure/logger";
-import InteractionClient from "./InteractionRouter";
-import { EventHandlerFn } from "@/events/EventHandler";
-import { DeploymentService } from "@/features/deployment/application/DeploymentService";
-import legacyModLogNotifierHandler from "@/events/GuildBanAdd/LegacyModLogNotifier";
-import modLogHandler, { createModLogHandler } from "@/events/ModLogHandler";
-import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
-import { msgLogHandler } from "@/events/msglog/MsgLogHandler";
-import msgLogCacheHandler from "@/events/msglog/MessageCacheHandler";
-import Color from "@/utils/colors";
-import { StatName, updateStat } from "@/tasks/StatsTask";
+
+import webhookLog, { webhookActivity } from "@/core/cluster/webhookLogger";
 import {
   banCacheBanHandler,
   banCacheUnbanHandler,
   banReadyHandler,
 } from "@/events/BanCache";
 import {
+  emojiAndStickerStatsReadyHandler,
   emojiStatsMsgHandler,
   emojiStatsReactHandler,
-  emojiAndStickerStatsReadyHandler,
 } from "@/events/EmojiStatsHandler";
-import { banPoolOnBanHandler } from "@/events/ban_pool/BanPoolHandler";
-import { config } from "@/shared/infrastructure/config";
-import {
-  memberLogJoinHandler,
-  memberLogLeaveHandler,
-} from "@/events/MemberLog";
+import { EventHandlerFn } from "@/events/EventHandler";
+import legacyModLogNotifierHandler from "@/events/GuildBanAdd/LegacyModLogNotifier";
 import {
   memberJoinMessageHandler,
   memberLeaveMessageHandler,
 } from "@/events/JoinLeaveMessage";
-import { updateGatewayDispatchEventMetrics } from "@/infrastructure/metrics/gatewayMetrics";
-import { cacheUserHandler } from "@/events/cache/cacheUser";
+import {
+  memberLogJoinHandler,
+  memberLogLeaveHandler,
+} from "@/events/MemberLog";
+import modLogHandler, { createModLogHandler } from "@/events/ModLogHandler";
 import {
   cacheGuildCreateHandler,
   cacheGuildUpdateHandler,
 } from "@/events/cache/cacheGuild";
+import { cacheUserHandler } from "@/events/cache/cacheUser";
+import msgLogCacheHandler from "@/events/msglog/MessageCacheHandler";
+import { msgLogHandler } from "@/events/msglog/MsgLogHandler";
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
+import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
+import { updateGatewayDispatchEventMetrics } from "@/infrastructure/metrics/gatewayMetrics";
+import { config } from "@/shared/infrastructure/config";
+import logger from "@/shared/infrastructure/logger";
+import { StatName, updateStat } from "@/tasks/StatsTask";
 import startTasks from "@/tasks/startTasks";
-import webhookLog, { webhookActivity } from "@/core/cluster/webhookLogger";
+import Color from "@/utils/colors";
+
+import InteractionClient from "./InteractionRouter";
+
 // import { mentionTagHandler } from "./events/TagsMention";
 
 const tracerName = "event-handler";
@@ -377,7 +379,7 @@ export default function registerEventHandlers(
       prefixSpanName(Events.GuildAuditLogEntryCreate),
       async (span: Span) => {
         // Use factory function to create modLogHandler with dependencies
-        const modLogHandlerWithDeps = guildSettingsService 
+        const modLogHandlerWithDeps = guildSettingsService
           ? createModLogHandler(guildSettingsService)
           : modLogHandler;
 
@@ -405,11 +407,6 @@ export default function registerEventHandlers(
           legacyModLogNotifier: legacyModLogNotifierHandler,
           banCache: banCacheBanHandler,
         };
-
-        // Only handle ban pool events if the flag is enabled
-        if (config.features.banPoolEnabled) {
-          handlers.banPoolOnBan = banPoolOnBanHandler;
-        }
 
         await handleEvent(Events.GuildBanAdd, handlers, guildBan);
 

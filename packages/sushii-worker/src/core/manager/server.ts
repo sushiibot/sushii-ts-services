@@ -1,13 +1,14 @@
-import { register } from "prom-client";
-import { Hono, MiddlewareHandler } from "hono";
-import { routePath } from "hono/route";
-import { HTTPException } from "hono/http-exception";
 import { Server } from "bun";
-import { RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
-import { newModuleLogger } from "@/shared/infrastructure/logger";
-import { config } from "@/shared/infrastructure/config";
 import { Child, ClusterManager } from "discord-hybrid-sharding";
+import { RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
+import { Hono, MiddlewareHandler } from "hono";
+import { HTTPException } from "hono/http-exception";
+import { routePath } from "hono/route";
+import { register } from "prom-client";
+
 import { updateShardMetrics } from "@/infrastructure/metrics/gatewayMetrics";
+import { config } from "@/shared/infrastructure/config";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
 
 // Reverse mapping of the Status enum to get the name
 export const ShardStatusToName = {
@@ -112,7 +113,6 @@ function createMonitoringServer(
         },
         tracingSamplePercentage: config.tracing.samplePercentage,
         disableBanFetchOnReady: config.features.disableBanFetchOnReady,
-        banPoolEnabled: config.features.banPoolEnabled,
       },
       clusters: manager.clusters.values().map((cluster) => ({
         id: cluster.id,

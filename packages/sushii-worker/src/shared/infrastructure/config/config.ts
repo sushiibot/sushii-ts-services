@@ -1,4 +1,4 @@
-import { env, type Env } from "./env";
+import { type Env, env } from "./env";
 
 export class DatabaseConfig {
   constructor(readonly url: string) {}
@@ -104,7 +104,6 @@ export class DeploymentConfig {
 
 export class FeatureFlags {
   constructor(
-    readonly banPoolEnabled: boolean,
     readonly disableBanFetchOnReady: boolean,
     readonly skipCommandRegistration: boolean,
   ) {}
@@ -171,7 +170,6 @@ export class Config {
       env.E2E_WEBHOOK_URL,
     );
     this.features = new FeatureFlags(
-      env.BAN_POOL_ENABLED,
       env.DISABLE_BAN_FETCH_ON_READY,
       env.SKIP_COMMAND_REGISTRATION,
     );
