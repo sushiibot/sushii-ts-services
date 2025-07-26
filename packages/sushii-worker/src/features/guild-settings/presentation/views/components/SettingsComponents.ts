@@ -72,10 +72,10 @@ export function formatLogSetting(
   enabled: boolean,
   description: string,
 ): string {
-  const toggle = enabled ? "`[ON ]`" : "`[OFF]`";
+  const status = enabled ? "`✅ Enabled`" : "`❌ Disabled`";
   const channel = channelId ? `<#${channelId}>` : "No channel set";
 
-  let text = `${toggle} **${name}** — ${channel}\n`;
+  let text = `**${name}** — ${status} (${channel})\n`;
   text += `> ${description}\n`;
 
   return text;
@@ -87,8 +87,8 @@ export function formatMessageSetting(
   enabled: boolean,
   description: string,
 ): string {
-  let s = `**${name}**: `;
-  s += enabled ? "`Enabled`" : "`Disabled`";
+  let s = `**${name}** — `;
+  s += enabled ? "`✅ Enabled`" : "`❌ Disabled`";
   s += `\n> ${description}`;
 
   s += `\n\`\`\``;
@@ -103,8 +103,8 @@ export function formatToggleSetting(
   enabled: boolean,
   description: string,
 ): string {
-  let s = `**${name}**: `;
-  s += enabled ? "`Enabled`" : "`Disabled`";
+  let s = `**${name}** — `;
+  s += enabled ? "`✅ Enabled`" : "`❌ Disabled`";
   s += `\n> ${description}`;
 
   return s;
@@ -140,7 +140,7 @@ export function createJoinMessageModal(
     .setPlaceholder(
       "Welcome <username> to <server>! You are member #<member_number>",
     )
-    .setRequired(true)
+    .setRequired(false)
     .setMaxLength(1000);
 
   if (currentMessage) {
@@ -168,7 +168,7 @@ export function createLeaveMessageModal(
     .setStyle(TextInputStyle.Paragraph)
     .setValue(currentMessage || "")
     .setPlaceholder("<username> has left <server>")
-    .setRequired(true)
+    .setRequired(false)
     .setMaxLength(1000);
 
   if (currentMessage) {

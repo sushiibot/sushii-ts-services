@@ -5,8 +5,10 @@ import {
   ChannelSelectMenuBuilder,
   ChannelType,
   ContainerBuilder,
+  SeparatorBuilder,
   TextDisplayBuilder,
 } from "discord.js";
+import { SeparatorSpacingSize } from "discord.js";
 
 import {
   createToggleButton,
@@ -37,9 +39,9 @@ export function addMessagesContent(
 
   // Current Channel Display
   if (config.messageSettings.messageChannel) {
-    headerContent += `**Channel:** <#${config.messageSettings.messageChannel}>`;
+    headerContent += `🗨️ **Channel:** <#${config.messageSettings.messageChannel}>`;
   } else {
-    headerContent += "**Channel:** No channel set";
+    headerContent += "🗨️ **Channel:** No channel set";
   }
 
   headerContent += `\n> The channel join and leave messages will be sent to.`;
@@ -53,14 +55,22 @@ export function addMessagesContent(
       new ChannelSelectMenuBuilder()
         .setCustomId(SETTINGS_CUSTOM_IDS.SET_JOIN_LEAVE_CHANNEL)
         .setPlaceholder("Set join/leave messages channel")
+        .setDefaultChannels(
+          config.messageSettings.messageChannel
+            ? [config.messageSettings.messageChannel]
+            : [],
+        )
         .setChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
         .setDisabled(disabled),
     );
   container.addActionRowComponents(channelRow);
+  container.addSeparatorComponents(
+    new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+  );
 
   // Join Message Section
   const joinMessageContent = formatMessageSetting(
-    "Join Message",
+    "👋 Join Message",
     config.messageSettings.joinMessage,
     config.messageSettings.joinMessageEnabled,
     "Message sent when new members join",
@@ -85,10 +95,13 @@ export function addMessagesContent(
     ),
   );
   container.addActionRowComponents(joinControlsRow);
+  container.addSeparatorComponents(
+    new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+  );
 
   // Leave Message Section
   const leaveMessageContent = formatMessageSetting(
-    "Leave Message",
+    "🚪 Leave Message",
     config.messageSettings.leaveMessage,
     config.messageSettings.leaveMessageEnabled,
     "Message sent when members leave",

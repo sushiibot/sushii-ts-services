@@ -33,21 +33,21 @@ export function addLoggingContent(
   loggingContent += "Track moderation, member, and message activity.\n\n";
 
   loggingContent += formatLogSetting(
-    "Mod Logs",
+    "🛡️ Mod Logs",
     config.loggingSettings.modLogChannel,
     config.loggingSettings.modLogEnabled,
     "Logs moderation actions like bans, kicks, warnings",
   );
   loggingContent += "\n";
   loggingContent += formatLogSetting(
-    "Member Logs",
+    "👥 Member Logs",
     config.loggingSettings.memberLogChannel,
     config.loggingSettings.memberLogEnabled,
     "Logs member joins, leaves, role changes",
   );
   loggingContent += "\n";
   loggingContent += formatLogSetting(
-    "Message Logs",
+    "📝 Message Logs",
     config.loggingSettings.messageLogChannel,
     config.loggingSettings.messageLogEnabled,
     "Logs message edits and deletions",
@@ -143,9 +143,13 @@ export function addLoggingContent(
     "You can ignore channels you don't want to show up in your message logs.\n\n";
 
   if (options.messageLogBlocks && options.messageLogBlocks.length > 0) {
+    msgLogContent +=
+      "The following channels are currently ignored for message logs:\n";
+    msgLogContent += "> ";
+
     msgLogContent += options.messageLogBlocks
       .map((block) => `<#${block.channelId}>`)
-      .join("\n");
+      .join(", ");
   } else {
     msgLogContent += "No channels are currently ignored for message logs.";
   }

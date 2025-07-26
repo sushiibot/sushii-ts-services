@@ -90,12 +90,24 @@ export class GuildConfig {
 
   updateJoinMessage(message: string): GuildConfig {
     const config = this.clone();
+    if (message === "") {
+      // Should not be empty string
+      config.messageSettings.leaveMessage = null;
+      return config;
+    }
+
     config.messageSettings.joinMessage = message;
     return config;
   }
 
   updateLeaveMessage(message: string): GuildConfig {
     const config = this.clone();
+    if (message === "") {
+      // Should not be empty string
+      config.messageSettings.leaveMessage = null;
+      return config;
+    }
+
     config.messageSettings.leaveMessage = message;
     return config;
   }
