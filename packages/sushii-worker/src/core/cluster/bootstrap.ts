@@ -5,42 +5,11 @@ import { DeploymentService } from "@/features/deployment/application/DeploymentS
 import { DeploymentChanged } from "@/features/deployment/domain/events/DeploymentChanged";
 import { PostgreSQLDeploymentRepository } from "@/features/deployment/infrastructure/PostgreSQLDeploymentRepository";
 import { DeploymentEventHandler } from "@/features/deployment/presentation/DeploymentEventHandler";
-import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
-import { MessageLogService } from "@/features/guild-settings/application/MessageLogService";
-import { DrizzleGuildConfigurationRepository } from "@/features/guild-settings/infrastructure/DrizzleGuildConfigurationRepository";
-import { DrizzleMessageLogBlockRepository } from "@/features/guild-settings/infrastructure/DrizzleMessageLogBlockRepository";
-import SettingsCommand from "@/features/guild-settings/presentation/commands/SettingsCommand";
-import { GetUserRankService } from "@/features/leveling/application/GetUserRankService";
-import { UpdateUserXpService } from "@/features/leveling/application/UpdateUserXpService";
-import { LevelRoleRepositoryImpl } from "@/features/leveling/infrastructure/LevelRoleRepositoryImpl";
-import { UserLevelRepository } from "@/features/leveling/infrastructure/UserLevelRepository";
-import { UserProfileRepository } from "@/features/leveling/infrastructure/UserProfileRepository";
-import { XpBlockRepositoryImpl } from "@/features/leveling/infrastructure/XpBlockRepositoryImpl";
-import { MessageLevelHandler } from "@/features/leveling/presentation/commands/MessageLevelHandler";
-import RankCommand from "@/features/leveling/presentation/commands/RankCommand";
-import { NotificationMessageService } from "@/features/notifications/application/NotificationMessageService";
-import { NotificationService } from "@/features/notifications/application/NotificationService";
-import { DrizzleNotificationBlockRepository } from "@/features/notifications/infrastructure/DrizzleNotificationBlockRepository";
-import { DrizzleNotificationRepository } from "@/features/notifications/infrastructure/DrizzleNotificationRepository";
-import { NotificationAutocomplete } from "@/features/notifications/presentation/autocompletes/NotificationAutocomplete";
-import { NotificationCommand } from "@/features/notifications/presentation/commands/NotificationCommand";
-import { NotificationMessageHandler } from "@/features/notifications/presentation/events/NotificationMessageHandler";
-import {
-  TagAdminService,
-  TagSearchService,
-  TagService,
-} from "@/features/tags/application";
-import { DrizzleTagRepository } from "@/features/tags/infrastructure";
-import {
-  TagAddCommand,
-  TagAdminCommand,
-  TagAutocomplete,
-  TagEditCommand,
-  TagEditInteractionHandler,
-  TagGetAutocomplete,
-  TagGetCommand,
-  TagInfoCommand,
-} from "@/features/tags/presentation";
+import { setupGuildSettingsFeature } from "@/features/guild-settings/setup";
+import { setupLevelingFeature } from "@/features/leveling/setup";
+import { setupModerationFeature } from "@/features/moderation/setup";
+import { setupNotificationFeature } from "@/features/notifications/setup";
+import { setupTagFeature } from "@/features/tags/setup";
 import { drizzleDb } from "@/infrastructure/database/db";
 import * as schema from "@/infrastructure/database/schema";
 import { SimpleEventBus } from "@/shared/infrastructure/SimpleEventBus";
@@ -92,152 +61,40 @@ export function registerFeatures(
   client: Client,
   deploymentService: DeploymentService,
   interactionRouter: InteractionRouter,
-): { guildSettingsService: GuildSettingsService } {
+) {
   // --------------------------------------------------------------------------
   // Build commands
 
   // Leveling feature
-  const userProfileRepository = new UserProfileRepository(db);
-  const userLevelRepository = new UserLevelRepository(db);
-
-  const getUserRankService = new GetUserRankService(
-    userProfileRepository,
-    userLevelRepository,
-  );
-
-  const rankCommand = new RankCommand(
-    getUserRankService,
-    logger.child({ module: "rank" }),
-  );
+  const levelingFeature = setupLevelingFeature({ db, logger });
 
   // Tags feature
-  const tagRepository = new DrizzleTagRepository(
-    db,
-    logger.child({ module: "tags" }),
-  );
-  const tagService = new TagService(
-    tagRepository,
-    logger.child({ module: "tagService" }),
-  );
-  const tagSearchService = new TagSearchService(
-    tagRepository,
-    logger.child({ module: "tagSearchService" }),
-  );
-  const tagAdminService = new TagAdminService(
-    tagRepository,
-    logger.child({ module: "tagAdminService" }),
-  );
-
-  const tagEditInteractionHandler = new TagEditInteractionHandler(
-    tagService,
-    logger.child({ module: "tagEditInteractionHandler" }),
-  );
-
-  const tagInfoCommand = new TagInfoCommand(
-    tagService,
-    tagSearchService,
-    logger.child({ module: "tagInfoCommand" }),
-  );
-
-  const tagEditCommand = new TagEditCommand(
-    tagService,
-    tagEditInteractionHandler,
-    logger.child({ module: "tagEditCommand" }),
-  );
-  const tagAddCommand = new TagAddCommand(
-    tagService,
-    logger.child({ module: "tagAddCommand" }),
-  );
-  const tagGetCommand = new TagGetCommand(
-    tagService,
-    logger.child({ module: "tagGetCommand" }),
-  );
-
-  const tagAdminCommand = new TagAdminCommand(
-    tagAdminService,
-    logger.child({ module: "tagAdminCommand" }),
-  );
-
-  const tagAutocomplete = new TagAutocomplete(
-    tagSearchService,
-    logger.child({ module: "tagAutocomplete" }),
-  );
-  const tagGetAutocomplete = new TagGetAutocomplete(
-    tagSearchService,
-    logger.child({ module: "tagGetAutocomplete" }),
-  );
+  const tagFeature = setupTagFeature({ db, logger });
 
   // Notification feature
-  const notificationRepository = new DrizzleNotificationRepository(db);
-  const notificationBlockRepository = new DrizzleNotificationBlockRepository(
-    db,
-  );
-  const notificationService = new NotificationService(
-    notificationRepository,
-    notificationBlockRepository,
-    logger.child({ module: "notificationService" }),
-  );
-  const notificationMessageService = new NotificationMessageService(
-    notificationService,
-    logger.child({ module: "notificationMessageService" }),
-  );
-
-  const notificationCommand = new NotificationCommand(notificationService);
-  const notificationAutocomplete = new NotificationAutocomplete(
-    notificationService,
-  );
+  const notificationFeature = setupNotificationFeature({ db, logger });
 
   // Guild settings feature
-  const guildConfigurationRepository = new DrizzleGuildConfigurationRepository(
-    db,
-    logger.child({ module: "guildConfigurationRepository" }),
-  );
-  const messageLogBlockRepository = new DrizzleMessageLogBlockRepository(
-    db,
-    logger.child({ module: "messageLogBlockRepository" }),
-  );
-  const guildSettingsService = new GuildSettingsService(
-    guildConfigurationRepository,
-    logger.child({ module: "guildSettingsService" }),
-  );
-  const messageLogService = new MessageLogService(
-    messageLogBlockRepository,
-    logger.child({ module: "messageLogService" }),
-  );
+  const guildSettingsFeature = setupGuildSettingsFeature({ db, logger });
 
-  const settingsCommand = new SettingsCommand(
-    guildSettingsService,
-    messageLogService,
-    logger.child({ module: "settingsCommand" }),
-  );
+  // Moderation feature
+  const moderationFeature = setupModerationFeature({ db, client, logger });
 
   // Register commands and handlers on interaction router
   interactionRouter.addCommands(
-    rankCommand,
-    tagInfoCommand,
-    tagAddCommand,
-    tagGetCommand,
-    tagEditCommand,
-    tagAdminCommand,
-    notificationCommand,
-    settingsCommand,
+    ...levelingFeature.commands,
+    ...tagFeature.commands,
+    ...notificationFeature.commands,
+    ...guildSettingsFeature.commands,
+    ...moderationFeature.commands,
   );
   interactionRouter.addAutocompleteHandlers(
-    tagAutocomplete,
-    tagGetAutocomplete,
-    notificationAutocomplete,
+    ...tagFeature.autocompletes,
+    ...notificationFeature.autocompletes,
   );
 
   // ---------------------------------------------------------------------------
   // Build event handlers
-
-  // Leveling handler
-  const levelService = new UpdateUserXpService(
-    userLevelRepository,
-    new LevelRoleRepositoryImpl(db),
-    new XpBlockRepositoryImpl(db),
-  );
-  const levelHandler = new MessageLevelHandler(levelService);
 
   // Deployment handler
   const deploymentHandler = new DeploymentEventHandler(
@@ -245,16 +102,10 @@ export function registerFeatures(
     logger,
   );
 
-  // Notification handler
-  const notificationMessageHandler = new NotificationMessageHandler(
-    notificationMessageService,
-    notificationService,
-  );
-
   const handlers = [
-    levelHandler,
+    ...levelingFeature.eventHandlers,
     deploymentHandler,
-    notificationMessageHandler,
+    ...notificationFeature.eventHandlers,
   ];
 
   // ---------------------------------------------------------------------------
@@ -334,5 +185,7 @@ export function registerFeatures(
     });
   }
 
-  return { guildSettingsService };
+  return {
+    guildSettingsService: guildSettingsFeature.services.guildSettingsService,
+  };
 }

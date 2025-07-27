@@ -57,7 +57,7 @@ export const cachedUsersInAppPublic = appPublic.table(
     avatarUrl: text("avatar_url").notNull(),
     name: text().notNull(),
     discriminator: integer().notNull(),
-    lastChecked: timestamp("last_checked", { mode: "string" }).notNull(),
+    lastChecked: timestamp("last_checked", { mode: "date" }).notNull(),
   },
   () => [
     pgPolicy("select_all", {
@@ -669,7 +669,7 @@ export const modLogsInAppPublic = appPublic.table(
     guildId: bigint("guild_id", { mode: "bigint" }).notNull(),
     caseId: bigint("case_id", { mode: "bigint" }).notNull(),
     action: text().notNull(),
-    actionTime: timestamp("action_time", { mode: "string" }).notNull(),
+    actionTime: timestamp("action_time", { mode: "date" }).notNull(),
     pending: boolean().notNull(),
     userId: bigint("user_id", { mode: "bigint" }).notNull(),
     userTag: text("user_tag").notNull(),
