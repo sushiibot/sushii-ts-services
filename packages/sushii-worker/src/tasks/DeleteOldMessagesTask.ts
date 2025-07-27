@@ -1,10 +1,12 @@
+import { Client } from "discord.js";
+
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 import dayjs from "@/shared/domain/dayjs";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
-import { Client } from "discord.js";
+
 import { deleteMessagesBefore } from "../db/Message/Message.repository";
 import db from "../infrastructure/database/db";
 import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
-import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 
 const RETAIN_DURATION = dayjs.duration({
   days: 7,

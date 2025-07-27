@@ -1,5 +1,6 @@
 import { Client } from "discord.js";
 import { Logger } from "pino";
+
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 
 export abstract class AbstractBackgroundTask {

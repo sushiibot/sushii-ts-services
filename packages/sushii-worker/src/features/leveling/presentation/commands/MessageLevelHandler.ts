@@ -1,14 +1,16 @@
+import opentelemetry, { Span } from "@opentelemetry/api";
 import {
   DiscordAPIError,
   Events,
   Message,
   RESTJSONErrorCodes,
 } from "discord.js";
-import opentelemetry, { Span } from "@opentelemetry/api";
+
+import { EventHandler } from "@/core/cluster/presentation/EventHandler";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
 import { startCaughtActiveSpan } from "@/shared/infrastructure/tracing";
+
 import { UpdateUserXpService } from "../../application/UpdateUserXpService";
-import { EventHandler } from "@/core/cluster/presentation/EventHandler";
 
 const tracer = opentelemetry.trace.getTracer("message-level-handler");
 const log = newModuleLogger("messageLevelHandler");

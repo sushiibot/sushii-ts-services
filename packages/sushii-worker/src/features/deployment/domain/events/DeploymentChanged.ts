@@ -1,10 +1,10 @@
-import { DeploymentName } from "../entities/Deployment";
 import { DomainEvent } from "../../../../shared/domain/DomainEvent";
+import { DeploymentName } from "../entities/Deployment";
 
 export class DeploymentChanged extends DomainEvent {
   constructor(
     public readonly previousDeployment: DeploymentName,
-    public readonly newDeployment: DeploymentName
+    public readonly newDeployment: DeploymentName,
   ) {
     super();
   }

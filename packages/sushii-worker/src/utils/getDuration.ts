@@ -1,5 +1,6 @@
-import dayjs from "@/shared/domain/dayjs";
 import { Duration } from "dayjs/plugin/duration";
+
+import dayjs from "@/shared/domain/dayjs";
 
 export default function getDuration(a: dayjs.Dayjs, b: dayjs.Dayjs): Duration {
   const ms = a.diff(b);

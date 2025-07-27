@@ -14,22 +14,25 @@ interface GuildSettingsDependencies {
   logger: Logger;
 }
 
-export function createGuildSettingsServices({ db, logger }: GuildSettingsDependencies) {
+export function createGuildSettingsServices({
+  db,
+  logger,
+}: GuildSettingsDependencies) {
   const guildConfigurationRepository = new DrizzleGuildConfigurationRepository(
     db,
     logger.child({ module: "guildConfigurationRepository" }),
   );
-  
+
   const messageLogBlockRepository = new DrizzleMessageLogBlockRepository(
     db,
     logger.child({ module: "messageLogBlockRepository" }),
   );
-  
+
   const guildSettingsService = new GuildSettingsService(
     guildConfigurationRepository,
     logger.child({ module: "guildSettingsService" }),
   );
-  
+
   const messageLogService = new MessageLogService(
     messageLogBlockRepository,
     logger.child({ module: "messageLogService" }),
@@ -73,7 +76,10 @@ export function createGuildSettingsEventHandlers(
   };
 }
 
-export function setupGuildSettingsFeature({ db, logger }: GuildSettingsDependencies) {
+export function setupGuildSettingsFeature({
+  db,
+  logger,
+}: GuildSettingsDependencies) {
   const services = createGuildSettingsServices({ db, logger });
   const commands = createGuildSettingsCommands(services, logger);
   const events = createGuildSettingsEventHandlers(services, logger);

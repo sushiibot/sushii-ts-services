@@ -1,8 +1,10 @@
 import { Events, GuildMember, PartialGuildMember } from "discord.js";
-import { EventHandlerFn } from "./EventHandler";
-import db from "../infrastructure/database/db";
-import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
+
 import { newModuleLogger } from "@/shared/infrastructure/logger";
+
+import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
+import db from "../infrastructure/database/db";
+import { EventHandlerFn } from "./EventHandler";
 
 const log = newModuleLogger("joinLeaveMessageHandler");
 

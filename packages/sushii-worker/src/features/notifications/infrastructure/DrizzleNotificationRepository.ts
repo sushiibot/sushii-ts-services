@@ -1,23 +1,25 @@
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import {
-  eq,
   and,
+  count,
+  eq,
+  exists,
+  inArray,
   like,
   ne,
-  inArray,
-  exists,
-  or,
   not,
-  count,
+  or,
 } from "drizzle-orm";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+
 import {
-  notificationsInAppPublic,
   notificationBlocksInAppPublic,
+  notificationsInAppPublic,
 } from "@/infrastructure/database/schema";
+import * as schema from "@/infrastructure/database/schema";
+
 import { Notification } from "../domain/entities/Notification";
 import { NotificationRepository } from "../domain/repositories/NotificationRepository";
 import { MessageParser } from "../domain/services/MessageParser";
-import * as schema from "@/infrastructure/database/schema";
 
 export class DrizzleNotificationRepository implements NotificationRepository {
   constructor(private readonly db: NodePgDatabase<typeof schema>) {}

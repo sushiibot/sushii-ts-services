@@ -1,14 +1,16 @@
-import { Logger } from "pino";
 import {
   DiscordAPIError,
   GuildMember,
   Message,
   RESTJSONErrorCodes,
 } from "discord.js";
-import { Notification } from "../domain/entities/Notification";
-import { NotificationService } from "./NotificationService";
-import { createNotificationEmbed } from "../presentation/views/NotificationEmbedView";
+import { Logger } from "pino";
+
 import { sentNotificationsCounter } from "@/infrastructure/metrics/metrics";
+
+import { Notification } from "../domain/entities/Notification";
+import { createNotificationEmbed } from "../presentation/views/NotificationEmbedView";
+import { NotificationService } from "./NotificationService";
 
 export class NotificationMessageService {
   private readonly dmFailureCount = new Map<string, number>();

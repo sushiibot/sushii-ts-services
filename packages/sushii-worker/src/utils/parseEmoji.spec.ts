@@ -1,5 +1,7 @@
-import "@/shared/domain/dayjs";
 import { describe, expect, test } from "bun:test";
+
+import "@/shared/domain/dayjs";
+
 import parseEmoji from "./parseEmoji";
 
 describe("parseEmoji", () => {

@@ -1,9 +1,11 @@
 import { EmbedBuilder, Message } from "discord.js";
-import { Notification } from "../../domain/entities/Notification";
-import Color from "@/utils/colors";
+
 import SushiiEmoji from "@/shared/presentation/SushiiEmoji";
+import Color from "@/utils/colors";
 import { quoteMarkdownString } from "@/utils/markdown";
 import { getUserString } from "@/utils/userString";
+
+import { Notification } from "../../domain/entities/Notification";
 
 export function createNotificationEmbed(
   message: Message,

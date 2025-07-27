@@ -1,6 +1,7 @@
-import dayjs from "@/shared/domain/dayjs";
 import { Duration } from "dayjs/plugin/duration";
 import parse from "parse-duration";
+
+import dayjs from "@/shared/domain/dayjs";
 
 /**
  * Parses a human string duration as a day.js Duration.

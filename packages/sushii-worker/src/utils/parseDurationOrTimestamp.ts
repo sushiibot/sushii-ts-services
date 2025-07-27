@@ -1,5 +1,7 @@
 import { Duration } from "dayjs/plugin/duration";
+
 import dayjs from "@/shared/domain/dayjs";
+
 import parseDuration from "./parseDuration";
 
 const TIMESTAMP_RE = /<t:(\d{10,}):\w>/;

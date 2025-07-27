@@ -1,15 +1,17 @@
 import {
-  SlashCommandBuilder,
-  EmbedBuilder,
-  MessageFlags,
-  ChatInputCommandInteraction,
   ChannelType,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
   InteractionContextType,
+  MessageFlags,
+  SlashCommandBuilder,
 } from "discord.js";
 import { t } from "i18next";
+
 import { SlashCommandHandler } from "@/interactions/handlers";
-import { NotificationService } from "../../application/NotificationService";
 import Color from "@/utils/colors";
+
+import { NotificationService } from "../../application/NotificationService";
 
 const ID_REGEX = /\d{17,20}/g;
 
@@ -189,7 +191,9 @@ export class NotificationCommand extends SlashCommandHandler {
     } catch (error) {
       const embed = new EmbedBuilder()
         .setTitle("Failed to add notification")
-        .setDescription(error instanceof Error ? error.message : "Unknown error")
+        .setDescription(
+          error instanceof Error ? error.message : "Unknown error",
+        )
         .setColor(Color.Error);
 
       await interaction.reply({
@@ -380,9 +384,15 @@ export class NotificationCommand extends SlashCommandHandler {
       return `ID: \`${blockId}\` - <#${blockId}>`;
     };
 
-    const blockedUsersStr = blockedUsers?.map((b) => formatBlock(b.blockId, b.blockType));
-    const blockedChannelsStr = blockedChannels?.map((b) => formatBlock(b.blockId, b.blockType));
-    let blockedCategoriesStr = blockedCategories?.map((b) => formatBlock(b.blockId, b.blockType));
+    const blockedUsersStr = blockedUsers?.map((b) =>
+      formatBlock(b.blockId, b.blockType),
+    );
+    const blockedChannelsStr = blockedChannels?.map((b) =>
+      formatBlock(b.blockId, b.blockType),
+    );
+    let blockedCategoriesStr = blockedCategories?.map((b) =>
+      formatBlock(b.blockId, b.blockType),
+    );
 
     if (blockedCategoriesStr) {
       blockedCategoriesStr.push(

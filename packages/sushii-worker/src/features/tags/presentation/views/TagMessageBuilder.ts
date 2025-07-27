@@ -1,20 +1,22 @@
 import {
-  EmbedBuilder,
   APIEmbedField,
-  AttachmentBuilder,
   ActionRowBuilder,
+  AttachmentBuilder,
   ButtonBuilder,
   ButtonStyle,
   ContainerBuilder,
-  TextDisplayBuilder,
-  MessageFlags,
+  EmbedBuilder,
   InteractionReplyOptions,
+  MessageFlags,
   SeparatorBuilder,
+  TextDisplayBuilder,
 } from "discord.js";
-import { Tag } from "../../domain/entities/Tag";
+import { t } from "i18next";
+
 import dayjs from "@/shared/domain/dayjs";
 import Color from "@/utils/colors";
-import { t } from "i18next";
+
+import { Tag } from "../../domain/entities/Tag";
 import { CUSTOM_IDS } from "../TagConstants";
 
 export interface TagUpdateData {

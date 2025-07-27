@@ -1,20 +1,22 @@
 import { ChannelType, Client } from "discord.js";
-import { newModuleLogger } from "@/shared/infrastructure/logger";
-import db from "../infrastructure/database/db";
-import {
-  countAllActiveGiveaways,
-  getAndEndPendingGiveaways,
-} from "../db/Giveaway/Giveaway.repository";
-import {
-  endGiveaway,
-  updateGiveawayMessage,
-} from "../interactions/giveaway/Giveaway.service";
+
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 import {
   activeGiveawaysGauge,
   endedGiveawaysCounter,
 } from "@/infrastructure/metrics/metrics";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
+
+import {
+  countAllActiveGiveaways,
+  getAndEndPendingGiveaways,
+} from "../db/Giveaway/Giveaway.repository";
+import db from "../infrastructure/database/db";
+import {
+  endGiveaway,
+  updateGiveawayMessage,
+} from "../interactions/giveaway/Giveaway.service";
 import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
-import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 
 export class GiveawayTask extends AbstractBackgroundTask {
   readonly name = "Check for expired giveaways";

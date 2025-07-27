@@ -1,10 +1,11 @@
-import { describe, test, expect, beforeEach } from "bun:test";
-import { DeploymentService } from "./DeploymentService";
-import { Deployment } from "../domain/entities/Deployment";
-import { DeploymentRepository } from "../domain/repositories/DeploymentRepository";
-import { DeploymentChanged } from "../domain/events/DeploymentChanged";
-import { DeploymentConfig } from "../../../shared/infrastructure/config/config";
+import { beforeEach, describe, expect, test } from "bun:test";
 import pino from "pino";
+
+import { DeploymentConfig } from "../../../shared/infrastructure/config/config";
+import { Deployment } from "../domain/entities/Deployment";
+import { DeploymentChanged } from "../domain/events/DeploymentChanged";
+import { DeploymentRepository } from "../domain/repositories/DeploymentRepository";
+import { DeploymentService } from "./DeploymentService";
 
 // Mock repository for testing
 class MockDeploymentRepository implements DeploymentRepository {
@@ -151,9 +152,9 @@ describe("DeploymentService", () => {
     });
 
     test("should throw when not initialized", async () => {
-      await expect(deploymentService.setActiveDeployment("blue")).rejects.toThrow(
-        "Deployment service not initialized",
-      );
+      await expect(
+        deploymentService.setActiveDeployment("blue"),
+      ).rejects.toThrow("Deployment service not initialized");
     });
 
     test("should handle repository errors during set", async () => {
@@ -211,7 +212,12 @@ describe("DeploymentService", () => {
   describe("channel exemptions", () => {
     test("should return true when channel is exempt", async () => {
       const exemptChannels = new Set(["12345", "67890"]);
-      const configWithExemptions = new DeploymentConfig("blue", undefined, undefined, exemptChannels);
+      const configWithExemptions = new DeploymentConfig(
+        "blue",
+        undefined,
+        undefined,
+        exemptChannels,
+      );
       const serviceWithExemptions = new DeploymentService(
         mockRepository,
         testLogger,
@@ -221,20 +227,33 @@ describe("DeploymentService", () => {
 
       await serviceWithExemptions.start();
 
-      expect(serviceWithExemptions.isChannelExemptFromDeploymentCheck("12345")).toBe(true);
-      expect(serviceWithExemptions.isChannelExemptFromDeploymentCheck("67890")).toBe(true);
-      expect(serviceWithExemptions.isChannelExemptFromDeploymentCheck("99999")).toBe(false);
+      expect(
+        serviceWithExemptions.isChannelExemptFromDeploymentCheck("12345"),
+      ).toBe(true);
+      expect(
+        serviceWithExemptions.isChannelExemptFromDeploymentCheck("67890"),
+      ).toBe(true);
+      expect(
+        serviceWithExemptions.isChannelExemptFromDeploymentCheck("99999"),
+      ).toBe(false);
     });
 
     test("should return false when no exempt channels configured", async () => {
       await deploymentService.start();
 
-      expect(deploymentService.isChannelExemptFromDeploymentCheck("12345")).toBe(false);
+      expect(
+        deploymentService.isChannelExemptFromDeploymentCheck("12345"),
+      ).toBe(false);
     });
 
     test("should return false when channel ID is undefined", async () => {
       const exemptChannels = new Set(["12345"]);
-      const configWithExemptions = new DeploymentConfig("blue", undefined, undefined, exemptChannels);
+      const configWithExemptions = new DeploymentConfig(
+        "blue",
+        undefined,
+        undefined,
+        exemptChannels,
+      );
       const serviceWithExemptions = new DeploymentService(
         mockRepository,
         testLogger,
@@ -244,12 +263,19 @@ describe("DeploymentService", () => {
 
       await serviceWithExemptions.start();
 
-      expect(serviceWithExemptions.isChannelExemptFromDeploymentCheck(undefined)).toBe(false);
+      expect(
+        serviceWithExemptions.isChannelExemptFromDeploymentCheck(undefined),
+      ).toBe(false);
     });
 
     test("should allow processing when deployment is inactive but channel is exempt", async () => {
       const exemptChannels = new Set(["12345"]);
-      const configWithExemptions = new DeploymentConfig("blue", undefined, undefined, exemptChannels);
+      const configWithExemptions = new DeploymentConfig(
+        "blue",
+        undefined,
+        undefined,
+        exemptChannels,
+      );
       const serviceWithExemptions = new DeploymentService(
         mockRepository,
         testLogger,
@@ -265,17 +291,26 @@ describe("DeploymentService", () => {
 
       // Should be false without exempt channel
       expect(serviceWithExemptions.isCurrentDeploymentActive()).toBe(false);
-      
+
       // Should be true with exempt channel
-      expect(serviceWithExemptions.isCurrentDeploymentActive("12345")).toBe(true);
-      
+      expect(serviceWithExemptions.isCurrentDeploymentActive("12345")).toBe(
+        true,
+      );
+
       // Should be false with non-exempt channel
-      expect(serviceWithExemptions.isCurrentDeploymentActive("99999")).toBe(false);
+      expect(serviceWithExemptions.isCurrentDeploymentActive("99999")).toBe(
+        false,
+      );
     });
 
     test("should follow normal deployment logic when channel is not exempt", async () => {
       const exemptChannels = new Set(["12345"]);
-      const configWithExemptions = new DeploymentConfig("blue", undefined, undefined, exemptChannels);
+      const configWithExemptions = new DeploymentConfig(
+        "blue",
+        undefined,
+        undefined,
+        exemptChannels,
+      );
       const serviceWithExemptions = new DeploymentService(
         mockRepository,
         testLogger,
@@ -290,8 +325,12 @@ describe("DeploymentService", () => {
       await serviceWithExemptions.start();
 
       // Should be true for active deployment, regardless of channel
-      expect(serviceWithExemptions.isCurrentDeploymentActive("99999")).toBe(true);
-      expect(serviceWithExemptions.isCurrentDeploymentActive("12345")).toBe(true);
+      expect(serviceWithExemptions.isCurrentDeploymentActive("99999")).toBe(
+        true,
+      );
+      expect(serviceWithExemptions.isCurrentDeploymentActive("12345")).toBe(
+        true,
+      );
     });
   });
 });

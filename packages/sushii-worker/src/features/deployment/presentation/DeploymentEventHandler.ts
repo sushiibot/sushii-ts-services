@@ -1,11 +1,13 @@
+import { Duration } from "dayjs/plugin/duration";
 import { Events, Message } from "discord.js";
 import { Logger } from "pino";
+
+import { EventHandler } from "@/core/cluster/presentation/EventHandler";
 import dayjs from "@/shared/domain/dayjs";
-import { DeploymentService } from "../application/DeploymentService";
 import { config } from "@/shared/infrastructure/config";
 import toTimestamp from "@/utils/toTimestamp";
-import { EventHandler } from "@/core/cluster/presentation/EventHandler";
-import { Duration } from "dayjs/plugin/duration";
+
+import { DeploymentService } from "../application/DeploymentService";
 
 export class DeploymentEventHandler extends EventHandler<Events.MessageCreate> {
   readonly eventType = Events.MessageCreate;

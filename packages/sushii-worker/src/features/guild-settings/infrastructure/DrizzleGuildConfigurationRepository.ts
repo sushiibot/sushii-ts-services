@@ -119,7 +119,8 @@ export class DrizzleGuildConfigurationRepository
         : null,
       logMsgEnabled: config.loggingSettings.messageLogEnabled,
       timeoutDmText: config.moderationSettings.timeoutDmText,
-      timeoutCommandDmEnabled: config.moderationSettings.timeoutCommandDmEnabled,
+      timeoutCommandDmEnabled:
+        config.moderationSettings.timeoutCommandDmEnabled,
       timeoutNativeDmEnabled: config.moderationSettings.timeoutNativeDmEnabled,
       warnDmText: config.moderationSettings.warnDmText,
       banDmText: config.moderationSettings.banDmText,

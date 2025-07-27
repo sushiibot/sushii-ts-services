@@ -1,6 +1,8 @@
 import { Events, Message } from "discord.js";
 import { Logger } from "pino";
+
 import { EventHandler } from "@/core/cluster/presentation/EventHandler";
+
 import { TagService } from "../../application/TagService";
 
 export class TagMentionHandler extends EventHandler<Events.MessageCreate> {

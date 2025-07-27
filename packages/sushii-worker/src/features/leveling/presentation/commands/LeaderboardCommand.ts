@@ -1,24 +1,26 @@
 import {
-  SlashCommandBuilder,
   ChatInputCommandInteraction,
   InteractionContextType,
+  SlashCommandBuilder,
 } from "discord.js";
-import Color from "@/utils/colors";
-import { SlashCommandHandler } from "@/interactions/handlers";
+
+import {
+  TimeFrameSchema,
+  getGuildLeaderboardPage,
+  getUserGuildLevel,
+  guildUserCountInTimeFrame,
+  timeframeToString,
+  userGuildTimeframeRank,
+} from "@/db/UserLevel/UserLevel.repository";
 import db from "@/infrastructure/database/db";
+import { SlashCommandHandler } from "@/interactions/handlers";
 import Paginator, {
   EmbedModifierFn,
   GetPageFn,
   GetTotalEntriesFn,
 } from "@/shared/presentation/Paginator";
-import {
-  getGuildLeaderboardPage,
-  getUserGuildLevel,
-  guildUserCountInTimeFrame,
-  TimeFrameSchema,
-  timeframeToString,
-  userGuildTimeframeRank,
-} from "@/db/UserLevel/UserLevel.repository";
+import Color from "@/utils/colors";
+
 import {
   calculateLevel,
   calculateLevelProgress,

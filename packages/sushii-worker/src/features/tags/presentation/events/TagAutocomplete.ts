@@ -1,7 +1,9 @@
 import { ApplicationCommandOptionType } from "discord.js";
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
 import { Logger } from "pino";
+
 import { AutocompleteHandler } from "@/interactions/handlers";
+
 import { TagSearchService } from "../../application/TagSearchService";
 
 export class TagAutocomplete extends AutocompleteHandler {

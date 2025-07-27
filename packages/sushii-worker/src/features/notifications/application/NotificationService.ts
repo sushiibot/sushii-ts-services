@@ -1,8 +1,9 @@
 import { Logger } from "pino";
+
 import { Notification } from "../domain/entities/Notification";
-import { NotificationRepository } from "../domain/repositories/NotificationRepository";
-import { NotificationBlockRepository } from "../domain/repositories/NotificationBlockRepository";
 import { NotificationBlock } from "../domain/entities/NotificationBlock";
+import { NotificationBlockRepository } from "../domain/repositories/NotificationBlockRepository";
+import { NotificationRepository } from "../domain/repositories/NotificationRepository";
 
 export class NotificationService {
   constructor(

@@ -1,10 +1,12 @@
-import logger from "@/shared/infrastructure/logger";
 import { Client } from "discord.js";
-import db from "../infrastructure/database/db";
-import { guildGauge, membersGauge } from "@/infrastructure/metrics/metrics";
-import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
+
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
+import { guildGauge, membersGauge } from "@/infrastructure/metrics/metrics";
+import logger from "@/shared/infrastructure/logger";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
+
+import db from "../infrastructure/database/db";
+import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
 
 export enum StatName {
   GuildCount = "guild_count",

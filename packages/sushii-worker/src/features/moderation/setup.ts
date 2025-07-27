@@ -14,11 +14,7 @@ import {
   DrizzleGuildConfigRepository,
   DrizzleModerationCaseRepository,
 } from "./infrastructure";
-import {
-  BanCommand,
-  LookupCommand,
-  WarnCommand,
-} from "./presentation";
+import { BanCommand, LookupCommand, WarnCommand } from "./presentation";
 
 interface ModerationDependencies {
   db: NodePgDatabase<typeof schema>;
@@ -26,7 +22,11 @@ interface ModerationDependencies {
   logger: Logger;
 }
 
-export function createModerationServices({ db, client, logger }: ModerationDependencies) {
+export function createModerationServices({
+  db,
+  client,
+  logger,
+}: ModerationDependencies) {
   const moderationCaseRepository = new DrizzleModerationCaseRepository(
     db,
     logger.child({ module: "moderationCaseRepository" }),
@@ -68,7 +68,8 @@ export function createModerationCommands(
   services: ReturnType<typeof createModerationServices>,
   logger: Logger,
 ) {
-  const { moderationService, lookupUserService, targetResolutionService } = services;
+  const { moderationService, lookupUserService, targetResolutionService } =
+    services;
 
   const commands = [
     new BanCommand(
@@ -103,7 +104,11 @@ export function createModerationEventHandlers(
   };
 }
 
-export function setupModerationFeature({ db, client, logger }: ModerationDependencies) {
+export function setupModerationFeature({
+  db,
+  client,
+  logger,
+}: ModerationDependencies) {
   const services = createModerationServices({ db, client, logger });
   const commands = createModerationCommands(services, logger);
   const events = createModerationEventHandlers(services, logger);

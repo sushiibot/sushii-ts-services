@@ -1,11 +1,13 @@
-import dayjs from "@/shared/domain/dayjs";
 import { Client } from "discord.js";
+
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
+import dayjs from "@/shared/domain/dayjs";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
+
 import { getAndDeleteExpiredTempBans } from "../db/TempBan/TempBan.repository";
 import db from "../infrastructure/database/db";
-import { newModuleLogger } from "@/shared/infrastructure/logger";
 import toTimestamp from "../utils/toTimestamp";
 import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
-import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 
 export class TempbanTask extends AbstractBackgroundTask {
   readonly name = "Unban expired tempbans";

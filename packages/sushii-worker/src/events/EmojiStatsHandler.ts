@@ -1,3 +1,4 @@
+import opentelemetry from "@opentelemetry/api";
 import {
   Client,
   Events,
@@ -9,18 +10,19 @@ import {
   Sticker,
   User,
 } from "discord.js";
-import dayjs from "@/shared/domain/dayjs";
 import { InsertObject } from "kysely/dist/cjs/parser/insert-values-parser";
-import opentelemetry from "@opentelemetry/api";
-import { EventHandlerFn } from "./EventHandler";
+
+import dayjs from "@/shared/domain/dayjs";
+import { newModuleLogger } from "@/shared/infrastructure/logger";
+import { startCaughtActiveSpan } from "@/shared/infrastructure/tracing";
+
 import db from "../infrastructure/database/db";
 import {
   AppPublicEmojiStickerActionType,
   AppPublicGuildAssetType,
   DB,
 } from "../infrastructure/database/dbTypes";
-import { newModuleLogger } from "@/shared/infrastructure/logger";
-import { startCaughtActiveSpan } from "@/shared/infrastructure/tracing";
+import { EventHandlerFn } from "./EventHandler";
 
 const logger = newModuleLogger("EmojiStatsHandler");
 

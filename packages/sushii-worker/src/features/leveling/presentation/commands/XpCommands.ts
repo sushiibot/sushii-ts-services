@@ -1,19 +1,20 @@
 import {
-  SlashCommandBuilder,
-  EmbedBuilder,
   ChatInputCommandInteraction,
+  EmbedBuilder,
   InteractionContextType,
+  SlashCommandBuilder,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord.js";
-import Color from "@/utils/colors";
-import { SlashCommandHandler } from "@/interactions/handlers";
-import { interactionReplyErrorPlainMessage } from "@/interactions/responses/error";
+
 import {
   deleteXpBlock,
   getXpBlocks,
   upsertXpBlock,
 } from "@//db/XpBlock/XpBlock.repository";
 import db from "@//infrastructure/database/db";
+import { SlashCommandHandler } from "@/interactions/handlers";
+import { interactionReplyErrorPlainMessage } from "@/interactions/responses/error";
+import Color from "@/utils/colors";
 
 enum XpGroupName {
   Block = "block",

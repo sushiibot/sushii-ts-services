@@ -1,13 +1,14 @@
-import { Client } from "pg";
+import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { sql } from "drizzle-orm";
-import { activeDeploymentInAppPrivate } from "../../../infrastructure/database/schema";
-import { Deployment, DeploymentName } from "../domain/entities/Deployment";
-import { DeploymentRepository } from "../domain/repositories/DeploymentRepository";
-import { DeploymentChanged } from "../domain/events/DeploymentChanged";
+import { Client } from "pg";
 import { Logger } from "pino";
+
+import { activeDeploymentInAppPrivate } from "../../../infrastructure/database/schema";
 import { EventBus } from "../../../shared/interfaces";
+import { Deployment, DeploymentName } from "../domain/entities/Deployment";
+import { DeploymentChanged } from "../domain/events/DeploymentChanged";
+import { DeploymentRepository } from "../domain/repositories/DeploymentRepository";
 
 export class PostgreSQLDeploymentRepository implements DeploymentRepository {
   private client: Client;

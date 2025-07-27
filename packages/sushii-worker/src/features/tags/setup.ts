@@ -3,11 +3,7 @@ import { Logger } from "pino";
 
 import * as schema from "@/infrastructure/database/schema";
 
-import {
-  TagAdminService,
-  TagSearchService,
-  TagService,
-} from "./application";
+import { TagAdminService, TagSearchService, TagService } from "./application";
 import { DrizzleTagRepository } from "./infrastructure";
 import {
   TagAddCommand,
@@ -30,17 +26,17 @@ export function createTagServices({ db, logger }: TagDependencies) {
     db,
     logger.child({ module: "tags" }),
   );
-  
+
   const tagService = new TagService(
     tagRepository,
     logger.child({ module: "tagService" }),
   );
-  
+
   const tagSearchService = new TagSearchService(
     tagRepository,
     logger.child({ module: "tagSearchService" }),
   );
-  
+
   const tagAdminService = new TagAdminService(
     tagRepository,
     logger.child({ module: "tagAdminService" }),
@@ -76,14 +72,8 @@ export function createTagCommands(
       tagEditInteractionHandler,
       logger.child({ module: "tagEditCommand" }),
     ),
-    new TagAddCommand(
-      tagService,
-      logger.child({ module: "tagAddCommand" }),
-    ),
-    new TagGetCommand(
-      tagService,
-      logger.child({ module: "tagGetCommand" }),
-    ),
+    new TagAddCommand(tagService, logger.child({ module: "tagAddCommand" })),
+    new TagGetCommand(tagService, logger.child({ module: "tagGetCommand" })),
     new TagAdminCommand(
       tagAdminService,
       logger.child({ module: "tagAdminCommand" }),

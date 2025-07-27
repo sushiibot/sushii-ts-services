@@ -1,5 +1,6 @@
+import { Err, Ok, Result } from "ts-results";
+
 import { TagName } from "../value-objects/TagName";
-import { Result, Ok, Err } from "ts-results";
 
 export interface TagData {
   name: string;

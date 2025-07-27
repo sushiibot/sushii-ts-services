@@ -1,14 +1,16 @@
-import { CronJob } from "cron";
 import * as Sentry from "@sentry/node";
-import logger from "@/shared/infrastructure/logger";
+import { CronJob } from "cron";
 import { Client } from "discord.js";
+
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
+import logger from "@/shared/infrastructure/logger";
+
 import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
 import { DeleteOldMessagesTask } from "./DeleteOldMessagesTask";
-import { StatsTask } from "./StatsTask";
 import { DeleteStaleEmojiStatsRateLimit } from "./DeleteStaleEmojiStatsRateLimit";
-import { RemindersTask } from "./RemindersTask";
 import { GiveawayTask } from "./GiveawayTask";
+import { RemindersTask } from "./RemindersTask";
+import { StatsTask } from "./StatsTask";
 import { TempbanTask } from "./TempbanTask";
 
 export default async function startTasks(

@@ -1,10 +1,11 @@
 import {
-  match,
-  compile,
   MatchFunction,
-  PathFunction,
   MatchResult,
+  PathFunction,
+  compile,
+  match,
 } from "path-to-regexp";
+
 import { ActionType } from "./moderation/ActionType";
 
 enum Paths {

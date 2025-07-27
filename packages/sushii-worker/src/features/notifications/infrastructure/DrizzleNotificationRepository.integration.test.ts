@@ -1,17 +1,22 @@
 import {
-  describe,
-  expect,
-  test,
   afterAll,
   beforeAll,
   beforeEach,
+  describe,
+  expect,
+  test,
 } from "bun:test";
-import { DrizzleNotificationRepository } from "./DrizzleNotificationRepository";
-import { Notification } from "../domain/entities/Notification";
-import { PostgresTestDatabase } from "@/test/PostgresTestDatabase";
-import { notificationBlocksInAppPublic, notificationsInAppPublic } from "@/infrastructure/database/schema";
-import * as schema from "@/infrastructure/database/schema";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
+
+import {
+  notificationBlocksInAppPublic,
+  notificationsInAppPublic,
+} from "@/infrastructure/database/schema";
+import * as schema from "@/infrastructure/database/schema";
+import { PostgresTestDatabase } from "@/test/PostgresTestDatabase";
+
+import { Notification } from "../domain/entities/Notification";
+import { DrizzleNotificationRepository } from "./DrizzleNotificationRepository";
 
 describe("DrizzleNotificationRepository (Integration)", () => {
   let testDb: PostgresTestDatabase;

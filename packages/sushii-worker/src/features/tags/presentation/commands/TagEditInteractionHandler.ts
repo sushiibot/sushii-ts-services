@@ -6,24 +6,25 @@ import {
   PermissionFlagsBits,
 } from "discord.js";
 import { Logger } from "pino";
+
 import { TagService } from "../../application/TagService";
 import { Tag } from "../../domain/entities/Tag";
 import {
-  createTagErrorEmbed,
-  createTagEditMessage,
+  CUSTOM_IDS,
+  DELETE_CONFIRMATION_TIMEOUT,
+  EDIT_INTERFACE_TIMEOUT,
+  MODAL_FIELDS,
+  MODAL_SUBMISSION_TIMEOUT,
+} from "../TagConstants";
+import {
   createTagDeleteConfirmationMessage,
+  createTagEditMessage,
+  createTagErrorEmbed,
 } from "../views/TagMessageBuilder";
 import {
   createEditContentModal,
   createRenameModal,
 } from "../views/TagModalBuilder";
-import {
-  EDIT_INTERFACE_TIMEOUT,
-  DELETE_CONFIRMATION_TIMEOUT,
-  MODAL_SUBMISSION_TIMEOUT,
-  CUSTOM_IDS,
-  MODAL_FIELDS,
-} from "../TagConstants";
 
 export class TagEditInteractionHandler {
   constructor(

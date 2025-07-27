@@ -1,6 +1,13 @@
-import { EmbedBuilder, Client } from "discord.js";
+import { Client, EmbedBuilder } from "discord.js";
+
+import { DeploymentService } from "@/features/deployment/application/DeploymentService";
+import {
+  pendingRemindersGauge,
+  sentRemindersCounter,
+} from "@/infrastructure/metrics/metrics";
 import dayjs from "@/shared/domain/dayjs";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
+
 import {
   countAllPendingReminders,
   getAndDeleteExpiredReminders,
@@ -8,12 +15,7 @@ import {
 import db from "../infrastructure/database/db";
 import Color from "../utils/colors";
 import toTimestamp from "../utils/toTimestamp";
-import {
-  pendingRemindersGauge,
-  sentRemindersCounter,
-} from "@/infrastructure/metrics/metrics";
 import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
-import { DeploymentService } from "@/features/deployment/application/DeploymentService";
 
 export class RemindersTask extends AbstractBackgroundTask {
   readonly name = "Check for expired reminders";

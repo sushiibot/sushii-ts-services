@@ -4,9 +4,9 @@ import {
 } from "@testcontainers/postgresql";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { Client } from "pg";
 import * as fs from "fs";
 import * as path from "path";
+import { Client } from "pg";
 import { Wait } from "testcontainers";
 
 export class PostgresTestDatabase {

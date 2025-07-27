@@ -1,13 +1,14 @@
 import {
-  SlashCommandBuilder,
-  EmbedBuilder,
   ChatInputCommandInteraction,
+  EmbedBuilder,
+  SlashCommandBuilder,
 } from "discord.js";
 import { t } from "i18next";
 import { sql } from "kysely";
+
 import db from "@/infrastructure/database/db";
-import Color from "@/utils/colors";
 import { SlashCommandHandler } from "@/interactions/handlers";
+import Color from "@/utils/colors";
 
 export default class PingCommand extends SlashCommandHandler {
   serverOnly = false;

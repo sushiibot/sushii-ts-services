@@ -1,20 +1,21 @@
 import {
-  SlashCommandBuilder,
-  EmbedBuilder,
   ChatInputCommandInteraction,
+  EmbedBuilder,
   InteractionContextType,
+  SlashCommandBuilder,
 } from "discord.js";
 import { PermissionFlagsBits } from "discord.js";
-import Color from "@/utils/colors";
-import { SlashCommandHandler } from "@/interactions/handlers";
-import { interactionReplyErrorPlainMessage } from "@/interactions/responses/error";
-import canAddRole from "@/utils/canAddRole";
+
 import {
   deleteLevelRole,
   getAllLevelRoles,
   upsertLevelRole,
 } from "@/db/LevelRole/LevelRole.repository";
 import db from "@/infrastructure/database/db";
+import { SlashCommandHandler } from "@/interactions/handlers";
+import { interactionReplyErrorPlainMessage } from "@/interactions/responses/error";
+import canAddRole from "@/utils/canAddRole";
+import Color from "@/utils/colors";
 
 enum CommandName {
   LevelRoleNew = "new",

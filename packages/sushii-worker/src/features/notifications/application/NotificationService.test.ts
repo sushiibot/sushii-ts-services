@@ -1,8 +1,9 @@
-import { describe, expect, test, mock } from "bun:test";
-import { NotificationService } from "./NotificationService";
-import { NotificationBlock } from "../domain/entities/NotificationBlock";
+import { describe, expect, mock, test } from "bun:test";
 import { Logger } from "pino";
+
+import { NotificationBlock } from "../domain/entities/NotificationBlock";
 import { NotificationBlockRepository } from "../domain/repositories/NotificationBlockRepository";
+import { NotificationService } from "./NotificationService";
 
 describe("NotificationService", () => {
   const mockNotificationRepo = {

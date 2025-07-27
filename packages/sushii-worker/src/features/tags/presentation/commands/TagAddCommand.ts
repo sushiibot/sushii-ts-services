@@ -1,18 +1,20 @@
 import {
-  SlashCommandBuilder,
   ChatInputCommandInteraction,
   InteractionContextType,
+  SlashCommandBuilder,
 } from "discord.js";
-import { Logger } from "pino";
 import { t } from "i18next";
+import { Logger } from "pino";
+
 import { SlashCommandHandler } from "@/interactions/handlers";
+import { interactionReplyErrorMessage } from "@/interactions/responses/error";
+
 import { TagService } from "../../application/TagService";
 import {
-  createTagSuccessEmbed,
   createTagErrorEmbed,
+  createTagSuccessEmbed,
   processTagAttachment,
 } from "../views/TagMessageBuilder";
-import { interactionReplyErrorMessage } from "@/interactions/responses/error";
 
 export class TagAddCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()

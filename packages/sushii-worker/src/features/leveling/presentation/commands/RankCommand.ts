@@ -1,11 +1,13 @@
 import {
-  SlashCommandBuilder,
   ChatInputCommandInteraction,
   InteractionContextType,
+  SlashCommandBuilder,
 } from "discord.js";
 import { Logger } from "pino";
+
 import { SlashCommandHandler } from "@/interactions/handlers";
 import { getErrorMessage } from "@/interactions/responses/error";
+
 import { GetUserRankService } from "../../application/GetUserRankService";
 import { formatRankCard } from "../views/RankDisplayView";
 

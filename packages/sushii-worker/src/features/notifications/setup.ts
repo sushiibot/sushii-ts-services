@@ -16,16 +16,21 @@ interface NotificationDependencies {
   logger: Logger;
 }
 
-export function createNotificationServices({ db, logger }: NotificationDependencies) {
+export function createNotificationServices({
+  db,
+  logger,
+}: NotificationDependencies) {
   const notificationRepository = new DrizzleNotificationRepository(db);
-  const notificationBlockRepository = new DrizzleNotificationBlockRepository(db);
-  
+  const notificationBlockRepository = new DrizzleNotificationBlockRepository(
+    db,
+  );
+
   const notificationService = new NotificationService(
     notificationRepository,
     notificationBlockRepository,
     logger.child({ module: "notificationService" }),
   );
-  
+
   const notificationMessageService = new NotificationMessageService(
     notificationService,
     logger.child({ module: "notificationMessageService" }),
@@ -45,13 +50,9 @@ export function createNotificationCommands(
 ) {
   const { notificationService } = services;
 
-  const commands = [
-    new NotificationCommand(notificationService),
-  ];
+  const commands = [new NotificationCommand(notificationService)];
 
-  const autocompletes = [
-    new NotificationAutocomplete(notificationService),
-  ];
+  const autocompletes = [new NotificationAutocomplete(notificationService)];
 
   return {
     commands,
@@ -77,7 +78,10 @@ export function createNotificationEventHandlers(
   };
 }
 
-export function setupNotificationFeature({ db, logger }: NotificationDependencies) {
+export function setupNotificationFeature({
+  db,
+  logger,
+}: NotificationDependencies) {
   const services = createNotificationServices({ db, logger });
   const commands = createNotificationCommands(services, logger);
   const events = createNotificationEventHandlers(services, logger);

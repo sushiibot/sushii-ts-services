@@ -1,9 +1,11 @@
 import { eq } from "drizzle-orm";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { levelRolesInAppPublic } from "src/infrastructure/database/schema";
+
+import * as schema from "@/infrastructure/database/schema";
+
 import { LevelRole } from "../domain/entities/LevelRole";
 import { LevelRoleRepository } from "../domain/repositories/LevelRoleRepository";
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import * as schema from "@/infrastructure/database/schema";
 
 export class LevelRoleRepositoryImpl implements LevelRoleRepository {
   constructor(private readonly db: NodePgDatabase<typeof schema>) {}

@@ -1,4 +1,4 @@
-import { Result, Ok, Err } from "ts-results";
+import { Err, Ok, Result } from "ts-results";
 
 export class Reason {
   private constructor(private readonly _value: string) {}

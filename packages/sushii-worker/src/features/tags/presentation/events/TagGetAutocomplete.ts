@@ -1,7 +1,9 @@
 import { AutocompleteFocusedOption, AutocompleteInteraction } from "discord.js";
-import { AutocompleteHandler } from "@/interactions/handlers";
-import { TagSearchService } from "../../application/TagSearchService";
 import { Logger } from "pino";
+
+import { AutocompleteHandler } from "@/interactions/handlers";
+
+import { TagSearchService } from "../../application/TagSearchService";
 
 export class TagGetAutocomplete extends AutocompleteHandler {
   fullCommandNamePath = ["t"];

@@ -1,6 +1,6 @@
 import { Tag } from "../entities/Tag";
-import { TagName } from "../value-objects/TagName";
 import { TagFilters } from "../value-objects/TagFilters";
+import { TagName } from "../value-objects/TagName";
 
 export interface TagRepository {
   save(tag: Tag): Promise<void>;

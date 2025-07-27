@@ -1,6 +1,7 @@
-import { describe, expect, test, afterAll } from "bun:test";
-import { PostgresTestDatabase } from "./PostgresTestDatabase";
+import { afterAll, describe, expect, test } from "bun:test";
 import { sql } from "drizzle-orm";
+
+import { PostgresTestDatabase } from "./PostgresTestDatabase";
 
 describe("PostgresTestDatabase", () => {
   let testDb: PostgresTestDatabase;

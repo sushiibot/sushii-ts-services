@@ -1,4 +1,5 @@
 import { Logger } from "pino";
+
 import { GuildConfig, ToggleableSetting } from "../domain/entities/GuildConfig";
 import { GuildConfigurationRepository } from "../domain/repositories/GuildConfigurationRepository";
 
@@ -48,10 +49,7 @@ export class GuildSettingsService {
     return this.guildConfigRepository.save(updatedConfig);
   }
 
-  async updateWarnDmText(
-    guildId: string,
-    text: string,
-  ): Promise<GuildConfig> {
+  async updateWarnDmText(guildId: string, text: string): Promise<GuildConfig> {
     this.logger.info({ guildId, text }, "Updating warn DM text");
 
     const config = await this.guildConfigRepository.findByGuildId(guildId);
@@ -60,10 +58,7 @@ export class GuildSettingsService {
     return this.guildConfigRepository.save(updatedConfig);
   }
 
-  async updateBanDmText(
-    guildId: string,
-    text: string,
-  ): Promise<GuildConfig> {
+  async updateBanDmText(guildId: string, text: string): Promise<GuildConfig> {
     this.logger.info({ guildId, text }, "Updating ban DM text");
 
     const config = await this.guildConfigRepository.findByGuildId(guildId);

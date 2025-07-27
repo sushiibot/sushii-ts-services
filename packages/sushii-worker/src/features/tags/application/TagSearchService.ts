@@ -1,7 +1,8 @@
 import { Logger } from "pino";
+
 import { Tag } from "../domain/entities/Tag";
-import { TagFilters, TagFiltersData } from "../domain/value-objects/TagFilters";
 import { TagRepository } from "../domain/repositories/TagRepository";
+import { TagFilters, TagFiltersData } from "../domain/value-objects/TagFilters";
 
 export class TagSearchService {
   constructor(

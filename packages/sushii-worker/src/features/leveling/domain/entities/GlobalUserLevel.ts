@@ -1,5 +1,5 @@
-import { BaseUserLevel } from "./BaseUserLevel";
 import { XpAmount } from "../value-objects/XpAmount";
+import { BaseUserLevel } from "./BaseUserLevel";
 
 export class GlobalUserLevel extends BaseUserLevel {
   static create(userId: string, totalXp: bigint | number): GlobalUserLevel {

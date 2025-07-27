@@ -1,6 +1,6 @@
+import { Err, Ok, Result } from "ts-results";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
-import { Err, Ok, Result } from "ts-results";
 
 const VALID_TAG_NAME_REGEX = /^[a-z0-9_-]+$/i;
 

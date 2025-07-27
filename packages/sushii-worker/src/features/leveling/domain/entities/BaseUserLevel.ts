@@ -1,7 +1,7 @@
 import {
+  LevelProgress,
   calculateLevel,
   calculateLevelProgress,
-  LevelProgress,
 } from "../utils/LevelCalculations";
 import { ProgressBar } from "../value-objects/ProgressBar";
 import { XpAmount } from "../value-objects/XpAmount";

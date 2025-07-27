@@ -1,5 +1,5 @@
-import { BaseUserLevel } from "./BaseUserLevel";
 import { XpAmount } from "../value-objects/XpAmount";
+import { BaseUserLevel } from "./BaseUserLevel";
 
 export class UserLevel extends BaseUserLevel {
   constructor(

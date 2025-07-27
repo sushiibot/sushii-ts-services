@@ -1,24 +1,26 @@
 import {
-  SlashCommandBuilder,
-  EmbedBuilder,
   ChatInputCommandInteraction,
+  EmbedBuilder,
   InteractionContextType,
+  SlashCommandBuilder,
 } from "discord.js";
-import { Logger } from "pino";
 import { t } from "i18next";
-import Color from "@/utils/colors";
+import { Logger } from "pino";
+
 import { SlashCommandHandler } from "@/interactions/handlers";
-import { TagService } from "../../application/TagService";
-import { TagSearchService } from "../../application/TagSearchService";
-import {
-  createTagInfoEmbed,
-  createTagErrorEmbed,
-  createTagNotFoundEmbed,
-  createTagHelpMessage,
-} from "../views/TagMessageBuilder";
 import { interactionReplyErrorMessage } from "@/interactions/responses/error";
 import Paginator from "@/shared/presentation/Paginator";
-import { NAME_STARTS_WITH, NAME_CONTAINS } from "../TagConstants";
+import Color from "@/utils/colors";
+
+import { TagSearchService } from "../../application/TagSearchService";
+import { TagService } from "../../application/TagService";
+import { NAME_CONTAINS, NAME_STARTS_WITH } from "../TagConstants";
+import {
+  createTagErrorEmbed,
+  createTagHelpMessage,
+  createTagInfoEmbed,
+  createTagNotFoundEmbed,
+} from "../views/TagMessageBuilder";
 
 export class TagInfoCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()

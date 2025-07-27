@@ -1,11 +1,12 @@
 import {
+  ActionRowBuilder,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
-  ActionRowBuilder,
 } from "discord.js";
+
 import { Tag } from "../../domain/entities/Tag";
-import { MODAL_IDS, MODAL_FIELDS } from "../TagConstants";
+import { MODAL_FIELDS, MODAL_IDS } from "../TagConstants";
 
 export function createEditContentModal(tag: Tag): ModalBuilder {
   const tagData = tag.toData();

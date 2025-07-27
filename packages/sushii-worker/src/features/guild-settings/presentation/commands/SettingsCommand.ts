@@ -537,7 +537,8 @@ export default class SettingsCommand extends SlashCommandHandler {
       await this.guildSettingsService.updateTimeoutDmText(guildId, newText);
       targetPage = "moderation";
     } else if (interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_WARN_DM_TEXT) {
-      const newText = interaction.fields.getTextInputValue("warn_dm_text_input");
+      const newText =
+        interaction.fields.getTextInputValue("warn_dm_text_input");
       await this.guildSettingsService.updateWarnDmText(guildId, newText);
       targetPage = "moderation";
     } else if (interaction.customId === SETTINGS_CUSTOM_IDS.EDIT_BAN_DM_TEXT) {

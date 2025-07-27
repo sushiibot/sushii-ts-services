@@ -1,11 +1,13 @@
-import { eq, and, ilike, sql, count, desc } from "drizzle-orm";
+import { and, count, desc, eq, ilike, sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Logger } from "pino";
+
 import * as schema from "@/infrastructure/database/schema";
+
 import { Tag, TagData } from "../domain/entities/Tag";
-import { TagName } from "../domain/value-objects/TagName";
-import { TagFilters } from "../domain/value-objects/TagFilters";
 import { TagRepository } from "../domain/repositories/TagRepository";
+import { TagFilters } from "../domain/value-objects/TagFilters";
+import { TagName } from "../domain/value-objects/TagName";
 
 type DbType = NodePgDatabase<typeof schema>;
 

@@ -1,10 +1,12 @@
 import { APIEmbedField, EmbedBuilder, TimestampStyles, User } from "discord.js";
-import path from "path";
-import { ActionType } from "../../../interactions/moderation/ActionType";
-import logger from "@/shared/infrastructure/logger";
-import toTimestamp from "../../../utils/toTimestamp";
-import { TimeoutChange } from "../../../types/TimeoutChange";
 import { Client } from "discord.js";
+import path from "path";
+
+import logger from "@/shared/infrastructure/logger";
+
+import { ActionType } from "../../../interactions/moderation/ActionType";
+import { TimeoutChange } from "../../../types/TimeoutChange";
+import toTimestamp from "../../../utils/toTimestamp";
 
 interface ModCase {
   case_id: string;

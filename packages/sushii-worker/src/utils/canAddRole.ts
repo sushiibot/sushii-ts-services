@@ -1,5 +1,5 @@
-import { Err, Ok, Result } from "ts-results";
 import { ChatInputCommandInteraction, Role } from "discord.js";
+import { Err, Ok, Result } from "ts-results";
 
 export default async function canAddRole(
   interaction: ChatInputCommandInteraction<"cached">,

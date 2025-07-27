@@ -1,12 +1,13 @@
 import { ModerationAction } from "../domain/entities/ModerationAction";
 import { ModerationTarget } from "../domain/entities/ModerationTarget";
 import { GuildConfigRepository } from "../domain/repositories/GuildConfigRepository";
-import { ActionType, actionTypeSupportsDM } from "../domain/value-objects/ActionType";
+import {
+  ActionType,
+  actionTypeSupportsDM,
+} from "../domain/value-objects/ActionType";
 
 export class DMPolicyService {
-  constructor(
-    private readonly guildConfigRepository: GuildConfigRepository,
-  ) {}
+  constructor(private readonly guildConfigRepository: GuildConfigRepository) {}
 
   async shouldSendDM(
     timing: "before" | "after",

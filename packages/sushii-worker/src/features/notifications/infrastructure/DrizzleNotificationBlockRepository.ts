@@ -1,15 +1,17 @@
+import { and, eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { eq, and } from "drizzle-orm";
+
 import {
-  notificationBlocksInAppPublic,
   notificationBlockTypeInAppPublic,
+  notificationBlocksInAppPublic,
 } from "@/infrastructure/database/schema";
+import * as schema from "@/infrastructure/database/schema";
+
 import {
-  NotificationBlock,
   BlockType,
+  NotificationBlock,
 } from "../domain/entities/NotificationBlock";
 import { NotificationBlockRepository } from "../domain/repositories/NotificationBlockRepository";
-import * as schema from "@/infrastructure/database/schema";
 
 export class DrizzleNotificationBlockRepository
   implements NotificationBlockRepository

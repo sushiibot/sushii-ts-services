@@ -1,22 +1,27 @@
-import { Result, Ok, Err } from "ts-results";
 import { Duration as DayjsDuration } from "dayjs/plugin/duration";
-import parseDuration from "@/utils/parseDuration";
+import { Err, Ok, Result } from "ts-results";
+
 import dayjs from "@/shared/domain/dayjs";
+import parseDuration from "@/utils/parseDuration";
 
 export class Duration {
   private constructor(
     private readonly _value: DayjsDuration,
-    private readonly _originalString: string
+    private readonly _originalString: string,
   ) {}
 
-  static create(durationString: string | null): Result<Duration | null, string> {
+  static create(
+    durationString: string | null,
+  ): Result<Duration | null, string> {
     if (!durationString) {
       return Ok(null);
     }
 
     const parsedDuration = parseDuration(durationString);
     if (!parsedDuration) {
-      return Err("Invalid duration! Please use a valid duration such as 1d, 6h, etc.");
+      return Err(
+        "Invalid duration! Please use a valid duration such as 1d, 6h, etc.",
+      );
     }
 
     return Ok(new Duration(parsedDuration, durationString));

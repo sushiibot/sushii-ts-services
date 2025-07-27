@@ -1,5 +1,7 @@
-import dayjs from "@/shared/domain/dayjs";
 import { describe, expect, test } from "bun:test";
+
+import dayjs from "@/shared/domain/dayjs";
+
 import parseDuration from "./parseDuration";
 
 describe("parseDuration", () => {

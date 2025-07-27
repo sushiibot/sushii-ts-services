@@ -3,7 +3,9 @@ import {
   AutocompleteFocusedOption,
   AutocompleteInteraction,
 } from "discord.js";
+
 import { AutocompleteHandler } from "@/interactions/handlers";
+
 import { NotificationService } from "../../application/NotificationService";
 
 export class NotificationAutocomplete extends AutocompleteHandler {

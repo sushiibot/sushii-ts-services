@@ -1,5 +1,5 @@
-import { TimeFrame } from "../value-objects/TimeFrame";
 import { RankPosition } from "../value-objects/RankPosition";
+import { TimeFrame } from "../value-objects/TimeFrame";
 
 export interface TimeFrameRankings {
   day: RankPosition;
