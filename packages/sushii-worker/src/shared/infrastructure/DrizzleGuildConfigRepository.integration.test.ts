@@ -14,19 +14,19 @@ import { guildConfigsInAppPublic } from "@/infrastructure/database/schema";
 import { PostgresTestDatabase } from "@/test/PostgresTestDatabase";
 
 import { GuildConfig } from "../domain/entities/GuildConfig";
-import { DrizzleGuildConfigurationRepository } from "./DrizzleGuildConfigurationRepository";
+import { DrizzleGuildConfigRepository } from "./DrizzleGuildConfigRepository";
 
-describe("DrizzleGuildConfigurationRepository (Integration)", () => {
+describe("DrizzleGuildConfigRepository (Integration)", () => {
   let testDb: PostgresTestDatabase;
   let db: ReturnType<typeof import("drizzle-orm/node-postgres").drizzle>;
-  let repo: DrizzleGuildConfigurationRepository;
+  let repo: DrizzleGuildConfigRepository;
   let logger: Logger;
 
   beforeAll(async () => {
     testDb = new PostgresTestDatabase();
     db = await testDb.initialize();
     logger = pino({ level: "silent" }); // Silent logger for tests
-    repo = new DrizzleGuildConfigurationRepository(
+    repo = new DrizzleGuildConfigRepository(
       db as unknown as NodePgDatabase<typeof schema>,
       logger,
     );

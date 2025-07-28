@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, test } from "bun:test";
 import { GuildMember, User } from "discord.js";
 
-import { GuildConfig } from "@/features/guild-settings/domain/entities/GuildConfig";
+import { GuildConfig } from "@/shared/domain/entities/GuildConfig";
+import { GuildConfigRepository } from "@/shared/domain/repositories/GuildConfigRepository";
 
 import {
   BanAction,
@@ -12,7 +13,6 @@ import {
   WarnAction,
 } from "../domain/entities/ModerationAction";
 import { ModerationTarget } from "../domain/entities/ModerationTarget";
-import { GuildConfigRepository } from "../domain/repositories/GuildConfigRepository";
 import { Duration } from "../domain/value-objects/Duration";
 import { Reason } from "../domain/value-objects/Reason";
 import { DMPolicyService } from "./DMPolicyService";
@@ -36,6 +36,11 @@ class MockGuildConfigRepository implements GuildConfigRepository {
 
   setTimeoutCommandDmEnabled(enabled: boolean): void {
     this.timeoutCommandDmEnabled = enabled;
+  }
+
+  async save(configuration: GuildConfig): Promise<GuildConfig> {
+    // Mock save implementation
+    return configuration;
   }
 }
 
@@ -95,6 +100,7 @@ describe("DMPolicyService", () => {
       const action = new KickAction(
         mockGuildId,
         createMockUser(),
+        null, // executorMember
         createMockReason(),
         "unspecified",
       );
@@ -114,6 +120,7 @@ describe("DMPolicyService", () => {
       const action = new NoteAction(
         mockGuildId,
         createMockUser(),
+        null, // executorMember
         createMockReason(),
         "unspecified",
       );
@@ -135,6 +142,7 @@ describe("DMPolicyService", () => {
       const action = new KickAction(
         mockGuildId,
         createMockUser(),
+        null, // executorMember
         createMockReason(),
         "unspecified",
       );
@@ -154,6 +162,7 @@ describe("DMPolicyService", () => {
       const action = new BanAction(
         mockGuildId,
         createMockUser(),
+        null, // executorMember
         createMockReason(),
         "unspecified",
       );
@@ -173,6 +182,7 @@ describe("DMPolicyService", () => {
       const action = new BanAction(
         mockGuildId,
         createMockUser(),
+        null, // executorMember
         createMockReason(),
         "unspecified",
       );
@@ -194,7 +204,8 @@ describe("DMPolicyService", () => {
       const action = new KickAction(
         mockGuildId,
         createMockUser(),
-        null,
+        null, // executorMember
+        null, // reason
         "unspecified",
       );
 
@@ -215,6 +226,7 @@ describe("DMPolicyService", () => {
       const action = new WarnAction(
         mockGuildId,
         createMockUser(),
+        null, // executorMember
         createMockReason(),
         "unspecified",
       );
@@ -236,6 +248,7 @@ describe("DMPolicyService", () => {
       const action = new KickAction(
         mockGuildId,
         createMockUser(),
+        null, // executorMember
         createMockReason(),
         "yes_dm",
       );
@@ -255,6 +268,7 @@ describe("DMPolicyService", () => {
       const action = new KickAction(
         mockGuildId,
         createMockUser(),
+        null, // executorMember
         createMockReason(),
         "no_dm",
       );
@@ -276,6 +290,7 @@ describe("DMPolicyService", () => {
       const action = new UnbanAction(
         mockGuildId,
         createMockUser(),
+        null, // executorMember
         createMockReason(),
         "unspecified",
       );
@@ -297,6 +312,7 @@ describe("DMPolicyService", () => {
       const action = new BanAction(
         mockGuildId,
         createMockUser(),
+        null, // executorMember
         createMockReason(),
         "unspecified",
       );
@@ -327,6 +343,7 @@ describe("DMPolicyService", () => {
       const action = new TimeoutAction(
         mockGuildId,
         createMockUser(),
+        null, // executorMember
         createMockReason(),
         "unspecified",
         null,
@@ -359,6 +376,7 @@ describe("DMPolicyService", () => {
       const action = new KickAction(
         mockGuildId,
         createMockUser(),
+        null, // executorMember
         createMockReason(),
         "unspecified",
       );

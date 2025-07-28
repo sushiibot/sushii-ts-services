@@ -1,39 +1,41 @@
-import {
-  EmbedBuilder,
-  RESTJSONErrorCodes,
-  ChatInputCommandInteraction,
-  Message,
-  User,
-  DiscordAPIError,
-} from "discord.js";
-import dayjs from "@/shared/domain/dayjs";
-import { Err, Ok, Result } from "ts-results";
-import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import opentelemetry, { SpanStatusCode } from "@opentelemetry/api";
+import {
+  ChatInputCommandInteraction,
+  DiscordAPIError,
+  EmbedBuilder,
+  Message,
+  RESTJSONErrorCodes,
+  User,
+} from "discord.js";
+import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
+import { Err, Ok, Result } from "ts-results";
+
+import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
+import dayjs from "@/shared/domain/dayjs";
+import { GuildConfig } from "@/shared/domain/entities/GuildConfig";
 import logger from "@/shared/infrastructure/logger";
-import Color from "../../utils/colors";
-import toSentenceCase from "../../utils/toSentenceCase";
-import { ActionType } from "./ActionType";
-import hasPermissionTargetingMember from "../../utils/hasPermission";
-import ModActionData, { ModActionTarget } from "./ModActionData";
-import sendModActionDM from "./sendDm";
-import buildModLogEmbed from "../../features/moderation/presentation/buildModLogEmbed";
-import db from "../../infrastructure/database/db";
-import { buildModLogComponents } from "../../events/ModLogHandler";
-import { DB } from "../../infrastructure/database/dbTypes";
+import { startCaughtActiveSpan } from "@/shared/infrastructure/tracing";
+
+import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
 import {
   deleteModLog,
   getNextCaseId,
   upsertModLog,
 } from "../../db/ModLog/ModLog.repository";
-import { getGuildConfig } from "../../db/GuildConfig/GuildConfig.repository";
-import { startCaughtActiveSpan } from "@/shared/infrastructure/tracing";
 import {
   deleteTempBan,
   upsertTempBan,
 } from "../../db/TempBan/TempBan.repository";
-import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
-import { GuildConfig } from "@/features/guild-settings/domain/entities/GuildConfig";
+import { buildModLogComponents } from "../../events/ModLogHandler";
+import buildModLogEmbed from "../../features/moderation/presentation/buildModLogEmbed";
+import db from "../../infrastructure/database/db";
+import { DB } from "../../infrastructure/database/dbTypes";
+import Color from "../../utils/colors";
+import hasPermissionTargetingMember from "../../utils/hasPermission";
+import toSentenceCase from "../../utils/toSentenceCase";
+import { ActionType } from "./ActionType";
+import ModActionData, { ModActionTarget } from "./ModActionData";
+import sendModActionDM from "./sendDm";
 
 const log = logger.child({ module: "executeAction" });
 const tracer = opentelemetry.trace.getTracer("sushii-worker");
@@ -402,7 +404,8 @@ async function executeActionUser(
     );
 
     // Only DM if (dm_reason true or has dm_message) AND if target is in the server.
-    const shouldDM = data.shouldDMReason(actionType, guildConfig) && target.member !== null;
+    const shouldDM =
+      data.shouldDMReason(actionType, guildConfig) && target.member !== null;
 
     const triedDMNonMember =
       data.shouldDMReason(actionType, guildConfig) && target.member === null;
@@ -537,9 +540,14 @@ export default async function executeAction(
     let guildConfig;
     if (guildSettingsService) {
       try {
-        guildConfig = await guildSettingsService.getGuildSettings(interaction.guildId);
+        guildConfig = await guildSettingsService.getGuildSettings(
+          interaction.guildId,
+        );
       } catch (err) {
-        log.warn({ err, guildId: interaction.guildId }, "Failed to fetch guild settings, using defaults");
+        log.warn(
+          { err, guildId: interaction.guildId },
+          "Failed to fetch guild settings, using defaults",
+        );
       }
     }
 

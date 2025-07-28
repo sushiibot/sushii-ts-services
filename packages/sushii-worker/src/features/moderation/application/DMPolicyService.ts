@@ -1,6 +1,7 @@
+import { GuildConfigRepository } from "@/shared/domain/repositories/GuildConfigRepository";
+
 import { ModerationAction } from "../domain/entities/ModerationAction";
 import { ModerationTarget } from "../domain/entities/ModerationTarget";
-import { GuildConfigRepository } from "../domain/repositories/GuildConfigRepository";
 import {
   ActionType,
   actionTypeSupportsDM,

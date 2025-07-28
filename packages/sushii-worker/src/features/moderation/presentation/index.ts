@@ -1,4 +1,4 @@
 // Commands
-export * from "./commands/BanCommand";
-export * from "./commands/WarnCommand";
+export * from "./commands/ModerationCommand";
+export * from "./commands/ModerationCommandConstants";
 export * from "./commands/LookupCommand";

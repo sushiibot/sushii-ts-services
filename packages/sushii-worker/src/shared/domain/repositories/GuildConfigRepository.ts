@@ -1,6 +1,6 @@
 import { GuildConfig } from "../entities/GuildConfig";
 
-export interface GuildConfigurationRepository {
+export interface GuildConfigRepository {
   findByGuildId(guildId: string): Promise<GuildConfig>;
   save(configuration: GuildConfig): Promise<GuildConfig>;
 }

@@ -3,6 +3,7 @@ import { CronJob } from "cron";
 import { Client } from "discord.js";
 
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
+import { TempBanRepository } from "@/features/moderation/domain/repositories/TempBanRepository";
 import logger from "@/shared/infrastructure/logger";
 
 import { AbstractBackgroundTask } from "./AbstractBackgroundTask";
@@ -16,6 +17,7 @@ import { TempbanTask } from "./TempbanTask";
 export default async function startTasks(
   client: Client,
   deploymentService: DeploymentService,
+  tempBanRepository?: TempBanRepository,
 ): Promise<void> {
   const isCluster0 = client.cluster.shardList.includes(0);
 
@@ -47,7 +49,9 @@ export default async function startTasks(
     new DeleteStaleEmojiStatsRateLimit(client, deploymentService),
     new RemindersTask(client, deploymentService),
     new GiveawayTask(client, deploymentService),
-    new TempbanTask(client, deploymentService),
+    // TODO: For now, skip TempbanTask if no repository provided (during transition)
+    // In the future, this should always be provided
+    ...(tempBanRepository ? [new TempbanTask(client, deploymentService, tempBanRepository)] : []),
   ];
 
   for (const task of tasks) {

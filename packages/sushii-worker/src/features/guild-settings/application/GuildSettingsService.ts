@@ -1,11 +1,14 @@
 import { Logger } from "pino";
 
-import { GuildConfig, ToggleableSetting } from "../domain/entities/GuildConfig";
-import { GuildConfigurationRepository } from "../domain/repositories/GuildConfigurationRepository";
+import {
+  GuildConfig,
+  ToggleableSetting,
+} from "../../../shared/domain/entities/GuildConfig";
+import { GuildConfigRepository } from "../../../shared/domain/repositories/GuildConfigRepository";
 
 export class GuildSettingsService {
   constructor(
-    private readonly guildConfigRepository: GuildConfigurationRepository,
+    private readonly guildConfigRepository: GuildConfigRepository,
     private readonly logger: Logger,
   ) {}
 

@@ -9,8 +9,8 @@ import {
 } from "discord.js";
 
 import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
-import { GuildConfig } from "@/features/guild-settings/domain/entities/GuildConfig";
 import dayjs from "@/shared/domain/dayjs";
+import { GuildConfig } from "@/shared/domain/entities/GuildConfig";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
 
 import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";

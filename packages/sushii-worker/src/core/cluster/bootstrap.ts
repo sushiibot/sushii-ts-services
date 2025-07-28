@@ -79,6 +79,7 @@ export function registerFeatures(
 
   // Moderation feature
   const moderationFeature = setupModerationFeature({ db, client, logger });
+  const { tempBanRepository } = moderationFeature.services;
 
   // Register commands and handlers on interaction router
   interactionRouter.addCommands(
@@ -187,5 +188,6 @@ export function registerFeatures(
 
   return {
     guildSettingsService: guildSettingsFeature.services.guildSettingsService,
+    tempBanRepository,
   };
 }

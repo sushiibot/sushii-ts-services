@@ -7,12 +7,13 @@ import {
 import { Err, Ok, Result } from "ts-results";
 
 import { ModerationTarget } from "../domain/entities/ModerationTarget";
+import { OPTION_NAMES } from "../presentation/commands/ModerationCommandConstants";
 
 export class TargetResolutionService {
   async fetchTargets(
     interaction: ChatInputCommandInteraction<"cached">,
   ): Promise<Result<ModerationTarget[], string>> {
-    const targetsString = interaction.options.getString("users");
+    const targetsString = interaction.options.getString(OPTION_NAMES.USERS);
     if (!targetsString) {
       return Err("No target users provided");
     }

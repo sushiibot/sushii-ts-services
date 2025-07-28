@@ -11,8 +11,8 @@ import {
 import { Err, Ok, Result } from "ts-results";
 
 import { MODERATION_DM_DEFAULTS } from "@/features/guild-settings/domain/constants/ModerationDefaults";
-import { GuildConfig } from "@/features/guild-settings/domain/entities/GuildConfig";
 import dayjs from "@/shared/domain/dayjs";
+import { GuildConfig } from "@/shared/domain/entities/GuildConfig";
 
 import Color from "../../utils/colors";
 import toTimestamp from "../../utils/toTimestamp";

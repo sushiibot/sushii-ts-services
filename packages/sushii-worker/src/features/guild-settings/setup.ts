@@ -3,9 +3,9 @@ import { Logger } from "pino";
 
 import * as schema from "@/infrastructure/database/schema";
 
+import { DrizzleGuildConfigRepository } from "../../shared/infrastructure/DrizzleGuildConfigRepository";
 import { GuildSettingsService } from "./application/GuildSettingsService";
 import { MessageLogService } from "./application/MessageLogService";
-import { DrizzleGuildConfigurationRepository } from "./infrastructure/DrizzleGuildConfigurationRepository";
 import { DrizzleMessageLogBlockRepository } from "./infrastructure/DrizzleMessageLogBlockRepository";
 import SettingsCommand from "./presentation/commands/SettingsCommand";
 
@@ -18,7 +18,7 @@ export function createGuildSettingsServices({
   db,
   logger,
 }: GuildSettingsDependencies) {
-  const guildConfigurationRepository = new DrizzleGuildConfigurationRepository(
+  const guildConfigurationRepository = new DrizzleGuildConfigRepository(
     db,
     logger.child({ module: "guildConfigurationRepository" }),
   );

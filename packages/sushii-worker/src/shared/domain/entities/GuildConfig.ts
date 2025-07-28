@@ -105,7 +105,7 @@ export class GuildConfig {
     const config = this.clone();
     if (message === "") {
       // Should not be empty string
-      config.messageSettings.leaveMessage = null;
+      config.messageSettings.joinMessage = null;
       return config;
     }
 

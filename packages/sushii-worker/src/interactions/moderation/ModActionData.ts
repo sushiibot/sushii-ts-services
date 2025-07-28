@@ -8,8 +8,8 @@ import {
 } from "discord.js";
 import { Err, Ok, Result } from "ts-results";
 
-import { GuildConfig } from "@/features/guild-settings/domain/entities/GuildConfig";
 import dayjs from "@/shared/domain/dayjs";
+import { GuildConfig } from "@/shared/domain/entities/GuildConfig";
 import logger from "@/shared/infrastructure/logger";
 
 import isGuildMember from "../../utils/isGuildMember";

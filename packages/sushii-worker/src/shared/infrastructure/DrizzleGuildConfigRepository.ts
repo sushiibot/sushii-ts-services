@@ -6,11 +6,9 @@ import { guildConfigsInAppPublic } from "@/infrastructure/database/schema";
 import * as schema from "@/infrastructure/database/schema";
 
 import { GuildConfig } from "../domain/entities/GuildConfig";
-import { GuildConfigurationRepository } from "../domain/repositories/GuildConfigurationRepository";
+import { GuildConfigRepository } from "../domain/repositories/GuildConfigRepository";
 
-export class DrizzleGuildConfigurationRepository
-  implements GuildConfigurationRepository
-{
+export class DrizzleGuildConfigRepository implements GuildConfigRepository {
   constructor(
     private readonly db: NodePgDatabase<typeof schema>,
     private readonly logger: Logger,

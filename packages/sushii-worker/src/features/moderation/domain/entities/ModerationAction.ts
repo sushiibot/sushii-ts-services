@@ -1,4 +1,4 @@
-import { Attachment, User } from "discord.js";
+import { Attachment, GuildMember, User } from "discord.js";
 import { Err, Ok, Result } from "ts-results";
 
 import { ActionType } from "../value-objects/ActionType";
@@ -11,6 +11,7 @@ export abstract class ModerationAction {
     private readonly _actionType: ActionType,
     private readonly _guildId: string,
     private readonly _executor: User,
+    private readonly _executorMember: GuildMember | null,
     private readonly _reason: Reason | null,
     private readonly _dmChoice: DMChoice,
     private readonly _attachment: Attachment | null = null,
@@ -26,6 +27,10 @@ export abstract class ModerationAction {
 
   get executor(): User {
     return this._executor;
+  }
+
+  get executorMember(): GuildMember | null {
+    return this._executorMember;
   }
 
   get reason(): Reason | null {
@@ -72,12 +77,21 @@ export class BanAction extends ModerationAction {
   constructor(
     guildId: string,
     executor: User,
+    executorMember: GuildMember | null,
     reason: Reason | null,
     dmChoice: DMChoice,
     attachment: Attachment | null = null,
     private readonly _deleteMessageDays?: number,
   ) {
-    super(ActionType.Ban, guildId, executor, reason, dmChoice, attachment);
+    super(
+      ActionType.Ban,
+      guildId,
+      executor,
+      executorMember,
+      reason,
+      dmChoice,
+      attachment,
+    );
   }
 
   get deleteMessageDays(): number | undefined {
@@ -104,13 +118,22 @@ export class TempBanAction extends ModerationAction {
   constructor(
     guildId: string,
     executor: User,
+    executorMember: GuildMember | null,
     reason: Reason | null,
     dmChoice: DMChoice,
     private readonly _duration: Duration,
     attachment: Attachment | null = null,
     private readonly _deleteMessageDays?: number,
   ) {
-    super(ActionType.TempBan, guildId, executor, reason, dmChoice, attachment);
+    super(
+      ActionType.TempBan,
+      guildId,
+      executor,
+      executorMember,
+      reason,
+      dmChoice,
+      attachment,
+    );
   }
 
   get duration(): Duration {
@@ -141,6 +164,7 @@ export class UnbanAction extends ModerationAction {
   constructor(
     guildId: string,
     executor: User,
+    executorMember: GuildMember | null,
     reason: Reason | null,
     dmChoice: DMChoice,
     attachment: Attachment | null = null,
@@ -149,6 +173,7 @@ export class UnbanAction extends ModerationAction {
       ActionType.BanRemove,
       guildId,
       executor,
+      executorMember,
       reason,
       dmChoice,
       attachment,
@@ -169,11 +194,20 @@ export class KickAction extends ModerationAction {
   constructor(
     guildId: string,
     executor: User,
+    executorMember: GuildMember | null,
     reason: Reason | null,
     dmChoice: DMChoice,
     attachment: Attachment | null = null,
   ) {
-    super(ActionType.Kick, guildId, executor, reason, dmChoice, attachment);
+    super(
+      ActionType.Kick,
+      guildId,
+      executor,
+      executorMember,
+      reason,
+      dmChoice,
+      attachment,
+    );
   }
 
   validate(): Result<void, string> {
@@ -190,12 +224,21 @@ export class TimeoutAction extends ModerationAction {
   constructor(
     guildId: string,
     executor: User,
+    executorMember: GuildMember | null,
     reason: Reason | null,
     dmChoice: DMChoice,
     attachment: Attachment | null = null,
     private readonly _duration: Duration,
   ) {
-    super(ActionType.Timeout, guildId, executor, reason, dmChoice, attachment);
+    super(
+      ActionType.Timeout,
+      guildId,
+      executor,
+      executorMember,
+      reason,
+      dmChoice,
+      attachment,
+    );
   }
 
   get duration(): Duration {
@@ -216,6 +259,7 @@ export class UnTimeoutAction extends ModerationAction {
   constructor(
     guildId: string,
     executor: User,
+    executorMember: GuildMember | null,
     reason: Reason | null,
     dmChoice: DMChoice,
     attachment: Attachment | null = null,
@@ -224,6 +268,7 @@ export class UnTimeoutAction extends ModerationAction {
       ActionType.TimeoutRemove,
       guildId,
       executor,
+      executorMember,
       reason,
       dmChoice,
       attachment,
@@ -244,11 +289,20 @@ export class WarnAction extends ModerationAction {
   constructor(
     guildId: string,
     executor: User,
+    executorMember: GuildMember | null,
     reason: Reason | null,
     dmChoice: DMChoice,
     attachment: Attachment | null = null,
   ) {
-    super(ActionType.Warn, guildId, executor, reason, dmChoice, attachment);
+    super(
+      ActionType.Warn,
+      guildId,
+      executor,
+      executorMember,
+      reason,
+      dmChoice,
+      attachment,
+    );
   }
 
   validate(): Result<void, string> {
@@ -265,11 +319,20 @@ export class NoteAction extends ModerationAction {
   constructor(
     guildId: string,
     executor: User,
+    executorMember: GuildMember | null,
     reason: Reason | null,
     dmChoice: DMChoice,
     attachment: Attachment | null = null,
   ) {
-    super(ActionType.Note, guildId, executor, reason, dmChoice, attachment);
+    super(
+      ActionType.Note,
+      guildId,
+      executor,
+      executorMember,
+      reason,
+      dmChoice,
+      attachment,
+    );
   }
 
   validate(): Result<void, string> {

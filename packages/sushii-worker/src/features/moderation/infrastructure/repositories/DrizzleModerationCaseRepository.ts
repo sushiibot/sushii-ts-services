@@ -19,11 +19,15 @@ export class DrizzleModerationCaseRepository
     private readonly logger: Logger,
   ) {}
 
-  async save(moderationCase: ModerationCase): Promise<Result<void, string>> {
+  async save(
+    moderationCase: ModerationCase,
+    tx?: NodePgDatabase<typeof schema>,
+  ): Promise<Result<void, string>> {
+    const db = tx || this.db;
     try {
       const dmResult = moderationCase.dmResult;
 
-      await this.db.insert(modLogsInAppPublic).values({
+      await db.insert(modLogsInAppPublic).values({
         guildId: BigInt(moderationCase.guildId),
         caseId: BigInt(moderationCase.caseId),
         action: moderationCase.actionType,
@@ -52,9 +56,11 @@ export class DrizzleModerationCaseRepository
   async findById(
     guildId: string,
     caseId: string,
+    tx?: NodePgDatabase<typeof schema>,
   ): Promise<Result<ModerationCase | null, string>> {
+    const db = tx || this.db;
     try {
-      const result = await this.db
+      const result = await db
         .select()
         .from(modLogsInAppPublic)
         .where(
@@ -84,9 +90,11 @@ export class DrizzleModerationCaseRepository
   async findByUserId(
     guildId: string,
     userId: string,
+    tx?: NodePgDatabase<typeof schema>,
   ): Promise<Result<ModerationCase[], string>> {
+    const db = tx || this.db;
     try {
-      const results = await this.db
+      const results = await db
         .select()
         .from(modLogsInAppPublic)
         .where(
@@ -112,9 +120,11 @@ export class DrizzleModerationCaseRepository
     guildId: string,
     limit = 50,
     offset = 0,
+    tx?: NodePgDatabase<typeof schema>,
   ): Promise<Result<ModerationCase[], string>> {
+    const db = tx || this.db;
     try {
-      const results = await this.db
+      const results = await db
         .select()
         .from(modLogsInAppPublic)
         .where(eq(modLogsInAppPublic.guildId, BigInt(guildId)))
@@ -133,14 +143,19 @@ export class DrizzleModerationCaseRepository
     }
   }
 
-  async getNextCaseNumber(guildId: string): Promise<Result<bigint, string>> {
+  async getNextCaseNumber(
+    guildId: string,
+    tx?: NodePgDatabase<typeof schema>,
+  ): Promise<Result<bigint, string>> {
+    const db = tx || this.db;
     try {
-      const result = await this.db
+      const result = await db
         .select({ maxCaseId: modLogsInAppPublic.caseId })
         .from(modLogsInAppPublic)
         .where(eq(modLogsInAppPublic.guildId, BigInt(guildId)))
         .orderBy(desc(modLogsInAppPublic.caseId))
-        .limit(1);
+        .limit(1)
+        .for('update'); // Row locking for concurrent safety
 
       const nextCaseNumber = result.length > 0 ? result[0].maxCaseId + 1n : 1n;
       return Ok(nextCaseNumber);
@@ -150,11 +165,15 @@ export class DrizzleModerationCaseRepository
     }
   }
 
-  async update(moderationCase: ModerationCase): Promise<Result<void, string>> {
+  async update(
+    moderationCase: ModerationCase,
+    tx?: NodePgDatabase<typeof schema>,
+  ): Promise<Result<void, string>> {
+    const db = tx || this.db;
     try {
       const dmResult = moderationCase.dmResult;
 
-      await this.db
+      await db
         .update(modLogsInAppPublic)
         .set({
           action: moderationCase.actionType,
@@ -185,9 +204,14 @@ export class DrizzleModerationCaseRepository
     }
   }
 
-  async delete(guildId: string, caseId: string): Promise<Result<void, string>> {
+  async delete(
+    guildId: string,
+    caseId: string,
+    tx?: NodePgDatabase<typeof schema>,
+  ): Promise<Result<void, string>> {
+    const db = tx || this.db;
     try {
-      await this.db
+      await db
         .delete(modLogsInAppPublic)
         .where(
           and(

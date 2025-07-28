@@ -13,9 +13,9 @@ import { Logger } from "pino";
 
 import { SlashCommandHandler } from "@/interactions/handlers";
 
+import { ToggleableSetting } from "../../../../shared/domain/entities/GuildConfig";
 import { GuildSettingsService } from "../../application/GuildSettingsService";
 import { MessageLogService } from "../../application/MessageLogService";
-import { ToggleableSetting } from "../../domain/entities/GuildConfig";
 import {
   createSettingsMessage,
   formatButtonRejectionResponse,

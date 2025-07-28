@@ -1,5 +1,5 @@
-import { GuildConfig } from "@/features/guild-settings/domain/entities/GuildConfig";
 import { MessageLogBlock } from "@/features/guild-settings/domain/entities/MessageLogBlock";
+import { GuildConfig } from "@/shared/domain/entities/GuildConfig";
 
 export type SettingsPage = "logging" | "moderation" | "messages" | "advanced";
 
