@@ -4,7 +4,7 @@ import { GuildAuditLogsEntry } from "discord.js";
 
 import logger from "@/shared/infrastructure/logger";
 
-import { ActionType } from "../interactions/moderation/ActionType";
+import { ActionType } from "@/features/moderation/shared/domain/value-objects/ActionType";
 import { findTimeoutChange } from "./ModLogEventData";
 
 export type TimeoutChange =

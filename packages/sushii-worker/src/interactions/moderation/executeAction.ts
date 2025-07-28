@@ -11,6 +11,7 @@ import { AllSelection } from "kysely/dist/cjs/parser/select-parser";
 import { Err, Ok, Result } from "ts-results";
 
 import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
+import buildModLogEmbed from "@/features/moderation/shared/presentation/buildModLogEmbed";
 import dayjs from "@/shared/domain/dayjs";
 import { GuildConfig } from "@/shared/domain/entities/GuildConfig";
 import logger from "@/shared/infrastructure/logger";
@@ -27,7 +28,6 @@ import {
   upsertTempBan,
 } from "../../db/TempBan/TempBan.repository";
 import { buildModLogComponents } from "../../events/ModLogHandler";
-import buildModLogEmbed from "../../features/moderation/presentation/buildModLogEmbed";
 import db from "../../infrastructure/database/db";
 import { DB } from "../../infrastructure/database/dbTypes";
 import Color from "../../utils/colors";

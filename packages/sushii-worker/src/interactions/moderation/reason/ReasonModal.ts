@@ -1,11 +1,12 @@
 import { ModalSubmitInteraction } from "discord.js";
+
+import { getModLog, upsertModLog } from "../../../db/ModLog/ModLog.repository";
+import buildModLogEmbed from "@/features/moderation/shared/presentation/buildModLogEmbed";
+import db from "../../../infrastructure/database/db";
 import customIds from "../../customIds";
 import { ModalHandler } from "../../handlers";
 import { interactionReplyErrorPlainMessage } from "../../responses/error";
-import buildModLogEmbed from "../../../features/moderation/presentation/buildModLogEmbed";
 import { ActionType } from "../ActionType";
-import db from "../../../infrastructure/database/db";
-import { getModLog, upsertModLog } from "../../../db/ModLog/ModLog.repository";
 
 // When modal submitted, update mod log message and save the reason
 export default class ModLogReasonModalHandler extends ModalHandler {

@@ -9,13 +9,13 @@ import {
 } from "discord.js";
 
 import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
+import buildModLogEmbed from "@/features/moderation/shared/presentation/buildModLogEmbed";
 import dayjs from "@/shared/domain/dayjs";
 import { GuildConfig } from "@/shared/domain/entities/GuildConfig";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
 
 import { getGuildConfig } from "../db/GuildConfig/GuildConfig.repository";
 import { insertModLog, upsertModLog } from "../db/ModLog/ModLog.repository";
-import buildModLogEmbed from "../features/moderation/presentation/buildModLogEmbed";
 import db from "../infrastructure/database/db";
 import customIds from "../interactions/customIds";
 import { ActionType } from "../interactions/moderation/ActionType";

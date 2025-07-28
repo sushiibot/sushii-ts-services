@@ -1,7 +1,7 @@
 import { Client } from "discord.js";
 
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
-import { TempBanRepository } from "@/features/moderation/domain/repositories/TempBanRepository";
+import { TempBanRepository } from "@/features/moderation/shared/domain/repositories/TempBanRepository";
 import dayjs from "@/shared/domain/dayjs";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
 

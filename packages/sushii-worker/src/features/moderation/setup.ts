@@ -6,34 +6,40 @@ import * as schema from "@/infrastructure/database/schema";
 import { SlashCommandHandler } from "@/interactions/handlers";
 import { DrizzleGuildConfigRepository } from "@/shared/infrastructure/DrizzleGuildConfigRepository";
 
+// Actions sub-feature
 import {
-  CaseDeletionService,
   DMPolicyService,
-  HistoryService,
-  LookupUserService,
   ModerationExecutionPipeline,
   ModerationService,
-  SlowmodeService,
   TargetResolutionService,
-  TempBanListService,
-} from "./application";
-import { TimeoutDetectionService } from "./domain/services/TimeoutDetectionService";
+} from "./actions/application";
+import { ModerationCommand } from "./actions/presentation";
+// Cases sub-feature
+import {
+  CaseDeletionService,
+  CaseRangeAutocompleteService,
+  LookupUserService,
+  ReasonUpdateService,
+} from "./cases/application";
+import {
+  HistoryCommand,
+  LookupCommand,
+  ReasonCommand,
+  UncaseCommand,
+} from "./cases/presentation";
+// Management sub-feature
+import { SlowmodeService, TempBanListService } from "./management/application";
+import { SlowmodeCommand, TempbanListCommand } from "./management/presentation";
+// Shared components
+import { TimeoutDetectionService } from "./shared/domain/services/TimeoutDetectionService";
 import {
   DiscordChannelService,
   DiscordModLogService,
   DiscordPermissionValidationService,
   DrizzleModerationCaseRepository,
   DrizzleTempBanRepository,
-} from "./infrastructure";
-import {
-  COMMAND_CONFIGS,
-  HistoryCommand,
-  LookupCommand,
-  ModerationCommand,
-  SlowmodeCommand,
-  TempbanListCommand,
-  UncaseCommand,
-} from "./presentation";
+} from "./shared/infrastructure";
+import { COMMAND_CONFIGS, ReasonAutocomplete } from "./shared/presentation";
 
 interface ModerationDependencies {
   db: NodePgDatabase<typeof schema>;
@@ -96,12 +102,6 @@ export function createModerationServices({
 
   const targetResolutionService = new TargetResolutionService();
 
-  const historyService = new HistoryService(
-    client,
-    moderationCaseRepository,
-    logger.child({ module: "historyService" }),
-  );
-
   // New utility services
   const tempBanListService = new TempBanListService(
     tempBanRepository,
@@ -126,6 +126,18 @@ export function createModerationServices({
     logger.child({ module: "caseDeletionService" }),
   );
 
+  const reasonUpdateService = new ReasonUpdateService(
+    moderationCaseRepository,
+    guildConfigRepository,
+    client,
+    logger.child({ module: "reasonUpdateService" }),
+  );
+
+  const caseRangeAutocompleteService = new CaseRangeAutocompleteService(
+    moderationCaseRepository,
+    logger.child({ module: "caseRangeAutocompleteService" }),
+  );
+
   return {
     moderationCaseRepository,
     guildConfigRepository,
@@ -134,11 +146,12 @@ export function createModerationServices({
     moderationService,
     lookupUserService,
     targetResolutionService,
-    historyService,
     tempBanListService,
     channelService,
     slowmodeService,
     caseDeletionService,
+    reasonUpdateService,
+    caseRangeAutocompleteService,
   };
 }
 
@@ -150,10 +163,11 @@ export function createModerationCommands(
     moderationService,
     lookupUserService,
     targetResolutionService,
-    historyService,
     tempBanListService,
     slowmodeService,
     caseDeletionService,
+    reasonUpdateService,
+    caseRangeAutocompleteService,
   } = services;
 
   // Iterate over all COMMAND_CONFIGS and build commands
@@ -163,7 +177,6 @@ export function createModerationCommands(
         config,
         moderationService,
         targetResolutionService,
-        logger.child({ commandHandler: config.actionType }),
       );
     },
   );
@@ -174,7 +187,7 @@ export function createModerationCommands(
       logger.child({ commandHandler: "lookup" }),
     ),
     new HistoryCommand(
-      historyService,
+      lookupUserService,
       logger.child({ commandHandler: "history" }),
     ),
     // Utility commands
@@ -190,11 +203,22 @@ export function createModerationCommands(
       caseDeletionService,
       logger.child({ commandHandler: "uncase" }),
     ),
+    new ReasonCommand(
+      reasonUpdateService,
+      logger.child({ commandHandler: "reason" }),
+    ),
   );
+
+  const autocompletes = [
+    new ReasonAutocomplete(
+      caseRangeAutocompleteService,
+      logger.child({ autocompleteHandler: "reason" }),
+    ),
+  ];
 
   return {
     commands,
-    autocompletes: [],
+    autocompletes,
   };
 }
 
