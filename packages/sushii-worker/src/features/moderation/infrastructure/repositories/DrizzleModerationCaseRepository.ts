@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, between, desc, eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Logger } from "pino";
 import { Err, Ok, Result } from "ts-results";
@@ -259,5 +259,79 @@ export class DrizzleModerationCaseRepository
       dmResult,
       row.pending,
     );
+  }
+
+  async deleteRange(
+    guildId: string,
+    startCaseId: number,
+    endCaseId: number,
+    tx?: NodePgDatabase<typeof schema>,
+  ): Promise<Result<ModerationCase[], string>> {
+    const db = tx || this.db;
+    try {
+      const result = await db
+        .delete(modLogsInAppPublic)
+        .where(
+          and(
+            eq(modLogsInAppPublic.guildId, BigInt(guildId)),
+            between(
+              modLogsInAppPublic.caseId,
+              BigInt(startCaseId),
+              BigInt(endCaseId),
+            ),
+          ),
+        )
+        .returning();
+
+      const deletedCases = result.map((row) =>
+        this.mapRowToModerationCase(row),
+      );
+
+      this.logger.debug(
+        {
+          guildId,
+          startCaseId,
+          endCaseId,
+          deletedCount: deletedCases.length,
+        },
+        "Deleted case range",
+      );
+
+      return Ok(deletedCases);
+    } catch (error) {
+      this.logger.error(
+        { error, guildId, startCaseId, endCaseId },
+        "Failed to delete case range",
+      );
+      return Err(`Failed to delete case range: ${error}`);
+    }
+  }
+
+  async exists(
+    guildId: string,
+    caseId: string,
+    tx?: NodePgDatabase<typeof schema>,
+  ): Promise<Result<boolean, string>> {
+    const db = tx || this.db;
+    try {
+      const result = await db
+        .select({ caseId: modLogsInAppPublic.caseId })
+        .from(modLogsInAppPublic)
+        .where(
+          and(
+            eq(modLogsInAppPublic.guildId, BigInt(guildId)),
+            eq(modLogsInAppPublic.caseId, BigInt(caseId)),
+          ),
+        )
+        .limit(1);
+
+      return Ok(result.length > 0);
+    } catch (error) {
+      this.logger.error(
+        { error, guildId, caseId },
+        "Failed to check case existence",
+      );
+      return Err(`Failed to check case existence: ${error}`);
+    }
   }
 }

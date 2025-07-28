@@ -5,3 +5,6 @@ export * from "./LookupUserService";
 export * from "./TargetResolutionService";
 export * from "./DMPolicyService";
 export * from "./HistoryService";
+export * from "./TempBanListService";
+export * from "./SlowmodeService";
+export * from "./CaseDeletionService";

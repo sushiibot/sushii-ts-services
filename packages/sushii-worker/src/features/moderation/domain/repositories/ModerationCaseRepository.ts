@@ -49,4 +49,25 @@ export interface ModerationCaseRepository {
     caseId: string,
     tx?: NodePgDatabase<typeof schema>,
   ): Promise<Result<void, string>>;
+
+  /**
+   * Delete multiple cases by case ID range and return the deleted cases
+   * Used by UncaseCommand for bulk deletion
+   */
+  deleteRange(
+    guildId: string,
+    startCaseId: number,
+    endCaseId: number,
+    tx?: NodePgDatabase<typeof schema>,
+  ): Promise<Result<ModerationCase[], string>>;
+
+  /**
+   * Check if a case exists by case ID
+   * Used for validation before operations
+   */
+  exists(
+    guildId: string,
+    caseId: string,
+    tx?: NodePgDatabase<typeof schema>,
+  ): Promise<Result<boolean, string>>;
 }

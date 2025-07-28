@@ -51,7 +51,9 @@ export default async function startTasks(
     new GiveawayTask(client, deploymentService),
     // TODO: For now, skip TempbanTask if no repository provided (during transition)
     // In the future, this should always be provided
-    ...(tempBanRepository ? [new TempbanTask(client, deploymentService, tempBanRepository)] : []),
+    ...(tempBanRepository
+      ? [new TempbanTask(client, deploymentService, tempBanRepository)]
+      : []),
   ];
 
   for (const task of tasks) {

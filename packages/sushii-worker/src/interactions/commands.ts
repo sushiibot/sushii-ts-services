@@ -9,8 +9,6 @@ import GiveawayAutocomplete from "./giveaway/Giveaway.autocomplete";
 import GiveawayButtonHandler from "./giveaway/Giveaway.button";
 import GiveawayCommand from "./giveaway/Giveaway.command";
 import PruneCommand from "./moderation/PruneCommand";
-import SlowmodeCommand from "./moderation/SlowmodeCommand";
-import TempbanListCommand from "./moderation/TempbanListCommand";
 import ContextLookUpButtonHandler from "./moderation/context_lookup/LookupComponentHandler";
 import UserInfoHandler from "./moderation/context_lookup/LookupContextMenuHandler";
 import DeleteModLogDMButtonHandler from "./moderation/reason/DMButton";
@@ -18,7 +16,6 @@ import ReasonAutocomplete from "./moderation/reason/ReasonAutocomplete";
 import ModLogReasonButtonHandler from "./moderation/reason/ReasonButton";
 import ReasonCommand from "./moderation/reason/ReasonCommand";
 import ModLogReasonModalHandler from "./moderation/reason/ReasonModal";
-import UncaseCommand from "./moderation/reason/UncaseCommand";
 import ReminderDeleteAutocomplete from "./reminders/ReminderAutocomplete";
 import ReminderCommand from "./reminders/ReminderCommand";
 import RoleMenuCommand from "./roles/RoleMenu";
@@ -46,11 +43,8 @@ export default function registerInteractionHandlers(
     new StatusCommand(),
 
     // Moderation (legacy commands not yet migrated to DDD)
-    new TempbanListCommand(),
     new ReasonCommand(),
-    new UncaseCommand(),
     new PruneCommand(),
-    new SlowmodeCommand(),
 
     // Guild
     new EmojiStatsCommand(),

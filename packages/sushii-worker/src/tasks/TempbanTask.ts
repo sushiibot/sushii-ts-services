@@ -22,7 +22,7 @@ export class TempbanTask extends AbstractBackgroundTask {
 
   protected async execute(): Promise<void> {
     const tempBansResult = await this.tempBanRepository.deleteExpired();
-    
+
     if (!tempBansResult.ok) {
       this.logger.error(
         { error: tempBansResult.val },
@@ -61,7 +61,7 @@ export class TempbanTask extends AbstractBackgroundTask {
           tempBan.userId,
           `Tempban from ${ts} expired.`,
         );
-        
+
         this.logger.info(
           {
             guildId: tempBan.guildId,

@@ -7,15 +7,19 @@ import { SlashCommandHandler } from "@/interactions/handlers";
 import { DrizzleGuildConfigRepository } from "@/shared/infrastructure/DrizzleGuildConfigRepository";
 
 import {
+  CaseDeletionService,
   DMPolicyService,
   HistoryService,
   LookupUserService,
   ModerationExecutionPipeline,
   ModerationService,
+  SlowmodeService,
   TargetResolutionService,
+  TempBanListService,
 } from "./application";
 import { TimeoutDetectionService } from "./domain/services/TimeoutDetectionService";
 import {
+  DiscordChannelService,
   DiscordModLogService,
   DiscordPermissionValidationService,
   DrizzleModerationCaseRepository,
@@ -26,6 +30,9 @@ import {
   HistoryCommand,
   LookupCommand,
   ModerationCommand,
+  SlowmodeCommand,
+  TempbanListCommand,
+  UncaseCommand,
 } from "./presentation";
 
 interface ModerationDependencies {
@@ -95,6 +102,30 @@ export function createModerationServices({
     logger.child({ module: "historyService" }),
   );
 
+  // New utility services
+  const tempBanListService = new TempBanListService(
+    tempBanRepository,
+    logger.child({ module: "tempBanListService" }),
+  );
+
+  const channelService = new DiscordChannelService(
+    client,
+    logger.child({ module: "channelService" }),
+  );
+
+  const slowmodeService = new SlowmodeService(
+    channelService,
+    logger.child({ module: "slowmodeService" }),
+  );
+
+  const caseDeletionService = new CaseDeletionService(
+    db,
+    moderationCaseRepository,
+    guildConfigRepository,
+    client,
+    logger.child({ module: "caseDeletionService" }),
+  );
+
   return {
     moderationCaseRepository,
     guildConfigRepository,
@@ -104,6 +135,10 @@ export function createModerationServices({
     lookupUserService,
     targetResolutionService,
     historyService,
+    tempBanListService,
+    channelService,
+    slowmodeService,
+    caseDeletionService,
   };
 }
 
@@ -116,6 +151,9 @@ export function createModerationCommands(
     lookupUserService,
     targetResolutionService,
     historyService,
+    tempBanListService,
+    slowmodeService,
+    caseDeletionService,
   } = services;
 
   // Iterate over all COMMAND_CONFIGS and build commands
@@ -138,6 +176,19 @@ export function createModerationCommands(
     new HistoryCommand(
       historyService,
       logger.child({ commandHandler: "history" }),
+    ),
+    // Utility commands
+    new TempbanListCommand(
+      tempBanListService,
+      logger.child({ commandHandler: "tempban-list" }),
+    ),
+    new SlowmodeCommand(
+      slowmodeService,
+      logger.child({ commandHandler: "slowmode" }),
+    ),
+    new UncaseCommand(
+      caseDeletionService,
+      logger.child({ commandHandler: "uncase" }),
     ),
   );
 
