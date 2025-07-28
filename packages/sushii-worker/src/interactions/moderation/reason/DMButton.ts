@@ -13,7 +13,7 @@ import Color from "../../../utils/colors";
 import { getModLog } from "../../../db/ModLog/ModLog.repository";
 import db from "../../../infrastructure/database/db";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
-import { buildModLogComponents } from "../../../events/ModLogHandler";
+import { buildModLogComponents } from "@/features/moderation/audit-logs";
 import { ActionType } from "../ActionType";
 
 const logger = newModuleLogger("ModLog-DeleteDM-Button");

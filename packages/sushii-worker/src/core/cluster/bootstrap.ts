@@ -76,9 +76,14 @@ export function registerFeatures(
 
   // Guild settings feature
   const guildSettingsFeature = setupGuildSettingsFeature({ db, logger });
+  const { guildSettingsService } = guildSettingsFeature.services;
 
   // Moderation feature
-  const moderationFeature = setupModerationFeature({ db, client, logger });
+  const moderationFeature = setupModerationFeature({ 
+    db, 
+    client, 
+    logger, 
+  });
   const { tempBanRepository } = moderationFeature.services;
 
   // Register commands and handlers on interaction router
@@ -189,5 +194,6 @@ export function registerFeatures(
   return {
     guildSettingsService: guildSettingsFeature.services.guildSettingsService,
     tempBanRepository,
+    moderationEventHandlers: moderationFeature.eventHandlers,
   };
 }

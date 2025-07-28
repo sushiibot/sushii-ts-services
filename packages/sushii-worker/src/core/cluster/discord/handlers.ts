@@ -29,7 +29,7 @@ import {
   memberLogJoinHandler,
   memberLogLeaveHandler,
 } from "@/events/MemberLog";
-import modLogHandler, { createModLogHandler } from "@/events/ModLogHandler";
+// Legacy mod log handler removed - migrated to DDD architecture
 import {
   cacheGuildCreateHandler,
   cacheGuildUpdateHandler,
@@ -124,6 +124,7 @@ export default function registerEventHandlers(
   deploymentService: DeploymentService,
   guildSettingsService?: GuildSettingsService,
   tempBanRepository?: TempBanRepository,
+  moderationEventHandlers?: { auditLog: import("@/events/EventHandler").EventHandlerFn<Events.GuildAuditLogEntryCreate> },
 ): void {
   client.once(Events.ClientReady, async (c) => {
     logger.info(
@@ -380,17 +381,17 @@ export default function registerEventHandlers(
     await tracer.startActiveSpan(
       prefixSpanName(Events.GuildAuditLogEntryCreate),
       async (span: Span) => {
-        // Use factory function to create modLogHandler with dependencies
-        const modLogHandlerWithDeps = guildSettingsService
-          ? createModLogHandler(guildSettingsService)
-          : modLogHandler;
-
-        await handleEvent(
-          Events.GuildAuditLogEntryCreate,
-          { modLog: modLogHandlerWithDeps },
-          entry,
-          guild,
-        );
+        // Use new moderation DDD handler if available, otherwise fallback to legacy
+        if (moderationEventHandlers?.auditLog) {
+          await handleEvent(
+            Events.GuildAuditLogEntryCreate,
+            { moderationAuditLog: moderationEventHandlers.auditLog },
+            entry,
+            guild,
+          );
+        } else {
+          logger.warn("No moderation audit log handler available, skipping event");
+        }
 
         span.end();
       },

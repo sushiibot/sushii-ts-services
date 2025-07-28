@@ -14,6 +14,15 @@ import {
   TargetResolutionService,
 } from "./actions/application";
 import { ModerationCommand } from "./actions/presentation";
+// Audit logs sub-feature
+import {
+  AuditLogProcessingService,
+  NativeTimeoutDMService,
+  ModLogPostingService,
+  AuditLogOrchestrationService,
+} from "./audit-logs/application";
+import { DiscordAuditLogService } from "./audit-logs/infrastructure";
+import { createAuditLogEventHandler } from "./audit-logs/presentation";
 // Cases sub-feature
 import {
   CaseDeletionService,
@@ -37,6 +46,7 @@ import {
   DiscordModLogService,
   DiscordPermissionValidationService,
   DrizzleModerationCaseRepository,
+  DrizzleModLogRepository,
   DrizzleTempBanRepository,
 } from "./shared/infrastructure";
 import { COMMAND_CONFIGS, ReasonAutocomplete } from "./shared/presentation";
@@ -55,6 +65,11 @@ export function createModerationServices({
   const moderationCaseRepository = new DrizzleModerationCaseRepository(
     db,
     logger.child({ module: "moderationCaseRepository" }),
+  );
+
+  const modLogRepository = new DrizzleModLogRepository(
+    db,
+    logger.child({ module: "modLogRepository" }),
   );
 
   const guildConfigRepository = new DrizzleGuildConfigRepository(
@@ -138,8 +153,37 @@ export function createModerationServices({
     logger.child({ module: "caseRangeAutocompleteService" }),
   );
 
+  // Audit log services
+  const auditLogProcessingService = new AuditLogProcessingService(
+    modLogRepository,
+    guildConfigRepository,
+    logger.child({ module: "auditLogProcessingService" }),
+  );
+
+  const nativeTimeoutDMService = new NativeTimeoutDMService(
+    logger.child({ module: "nativeTimeoutDMService" }),
+  );
+
+  const modLogPostingService = new ModLogPostingService(
+    logger.child({ module: "modLogPostingService" }),
+  );
+
+  const auditLogOrchestrationService = new AuditLogOrchestrationService(
+    auditLogProcessingService,
+    nativeTimeoutDMService,
+    modLogPostingService,
+    guildConfigRepository,
+    logger.child({ module: "auditLogOrchestrationService" }),
+  );
+
+  const discordAuditLogService = new DiscordAuditLogService(
+    auditLogOrchestrationService,
+    logger.child({ module: "discordAuditLogService" }),
+  );
+
   return {
     moderationCaseRepository,
+    modLogRepository,
     guildConfigRepository,
     tempBanRepository,
     dmPolicyService,
@@ -152,6 +196,12 @@ export function createModerationServices({
     caseDeletionService,
     reasonUpdateService,
     caseRangeAutocompleteService,
+    // Audit log services
+    auditLogProcessingService,
+    nativeTimeoutDMService,
+    modLogPostingService,
+    auditLogOrchestrationService,
+    discordAuditLogService,
   };
 }
 
@@ -226,9 +276,17 @@ export function createModerationEventHandlers(
   services: ReturnType<typeof createModerationServices>,
   logger: Logger,
 ) {
-  // Moderation feature doesn't have event handlers currently
+  const { discordAuditLogService } = services;
+
+  const auditLogEventHandler = createAuditLogEventHandler(
+    discordAuditLogService,
+    logger.child({ eventHandler: "auditLog" }),
+  );
+
   return {
-    eventHandlers: [],
+    eventHandlers: {
+      auditLog: auditLogEventHandler,
+    },
   };
 }
 

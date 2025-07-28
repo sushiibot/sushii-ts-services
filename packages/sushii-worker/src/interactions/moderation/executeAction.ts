@@ -27,7 +27,7 @@ import {
   deleteTempBan,
   upsertTempBan,
 } from "../../db/TempBan/TempBan.repository";
-import { buildModLogComponents } from "../../events/ModLogHandler";
+import { buildModLogComponents } from "@/features/moderation/audit-logs";
 import db from "../../infrastructure/database/db";
 import { DB } from "../../infrastructure/database/dbTypes";
 import Color from "../../utils/colors";
