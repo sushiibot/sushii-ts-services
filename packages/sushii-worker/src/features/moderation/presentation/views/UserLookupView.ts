@@ -3,10 +3,8 @@ import { EmbedBuilder, GuildMember, User } from "discord.js";
 import Color from "@/utils/colors";
 import timestampToUnixTime from "@/utils/timestampToUnixTime";
 
-import {
-  UserInfo,
-  UserLookupResult,
-} from "../../application/LookupUserService";
+import { UserLookupResult } from "../../application/LookupUserService";
+import { UserInfo } from "../../domain/types/UserInfo";
 import { ModerationCase } from "../../domain/entities/ModerationCase";
 import {
   formatActionTypeAsSentence,

@@ -7,26 +7,26 @@ import { ModerationCase } from "../domain/entities/ModerationCase";
 import { ModerationCaseRepository } from "../domain/repositories/ModerationCaseRepository";
 import { UserInfo } from "../domain/types/UserInfo";
 
-export interface UserLookupResult {
+export interface UserHistoryResult {
   userInfo: UserInfo;
   moderationHistory: ModerationCase[];
   totalCases: number;
 }
 
-export class LookupUserService {
+export class HistoryService {
   constructor(
     private readonly client: Client,
     private readonly caseRepository: ModerationCaseRepository,
     private readonly logger: Logger,
   ) {}
 
-  async lookupUser(
+  async getUserHistory(
     guildId: string,
     userId: string,
-  ): Promise<Result<UserLookupResult, string>> {
+  ): Promise<Result<UserHistoryResult, string>> {
     const log = this.logger.child({ guildId, userId });
 
-    log.info("Looking up user information");
+    log.info("Looking up user moderation history");
 
     const guild = this.client.guilds.cache.get(guildId);
     if (!guild) {
@@ -63,7 +63,7 @@ export class LookupUserService {
       return Err(moderationHistoryResult.val);
     }
 
-    const result: UserLookupResult = {
+    const result: UserHistoryResult = {
       userInfo: {
         id: user.id,
         username: user.username,
@@ -76,7 +76,7 @@ export class LookupUserService {
       totalCases: moderationHistoryResult.val.length,
     };
 
-    log.info({ totalCases: result.totalCases }, "User lookup completed");
+    log.info({ totalCases: result.totalCases }, "User history lookup completed");
     return Ok(result);
   }
 }

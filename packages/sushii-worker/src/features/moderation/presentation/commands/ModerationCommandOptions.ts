@@ -58,3 +58,13 @@ export function addDurationOption(option: SlashCommandStringOption) {
     .setDescription("Duration (e.g., 1h, 30m, 1d)")
     .setRequired(true);
 }
+
+export function addNoteOption(
+  option: SlashCommandStringOption,
+  required: boolean = true,
+) {
+  return option
+    .setName("note")
+    .setDescription("Note to add to the user.")
+    .setRequired(required);
+}

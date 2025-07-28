@@ -8,6 +8,7 @@ import { DrizzleGuildConfigRepository } from "@/shared/infrastructure/DrizzleGui
 
 import {
   DMPolicyService,
+  HistoryService,
   LookupUserService,
   ModerationExecutionPipeline,
   ModerationService,
@@ -22,6 +23,7 @@ import {
 } from "./infrastructure";
 import {
   COMMAND_CONFIGS,
+  HistoryCommand,
   LookupCommand,
   ModerationCommand,
 } from "./presentation";
@@ -87,6 +89,12 @@ export function createModerationServices({
 
   const targetResolutionService = new TargetResolutionService();
 
+  const historyService = new HistoryService(
+    client,
+    moderationCaseRepository,
+    logger.child({ module: "historyService" }),
+  );
+
   return {
     moderationCaseRepository,
     guildConfigRepository,
@@ -95,6 +103,7 @@ export function createModerationServices({
     moderationService,
     lookupUserService,
     targetResolutionService,
+    historyService,
   };
 }
 
@@ -102,8 +111,12 @@ export function createModerationCommands(
   services: ReturnType<typeof createModerationServices>,
   logger: Logger,
 ) {
-  const { moderationService, lookupUserService, targetResolutionService } =
-    services;
+  const {
+    moderationService,
+    lookupUserService,
+    targetResolutionService,
+    historyService,
+  } = services;
 
   // Iterate over all COMMAND_CONFIGS and build commands
   const commands: SlashCommandHandler[] = Object.values(COMMAND_CONFIGS).map(
@@ -121,6 +134,10 @@ export function createModerationCommands(
     new LookupCommand(
       lookupUserService,
       logger.child({ commandHandler: "lookup" }),
+    ),
+    new HistoryCommand(
+      historyService,
+      logger.child({ commandHandler: "history" }),
     ),
   );
 

@@ -8,19 +8,9 @@ import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
 import GiveawayAutocomplete from "./giveaway/Giveaway.autocomplete";
 import GiveawayButtonHandler from "./giveaway/Giveaway.button";
 import GiveawayCommand from "./giveaway/Giveaway.command";
-import BanCommand from "./moderation/BanCommand";
-import HistoryCommand from "./moderation/HistoryCommand";
-import KickCommand from "./moderation/KickCommand";
-import LookupCommand from "./moderation/LookupCommand";
-import NoteCommand from "./moderation/NoteCommand";
 import PruneCommand from "./moderation/PruneCommand";
 import SlowmodeCommand from "./moderation/SlowmodeCommand";
-import TempbanCommand from "./moderation/TempbanCommand";
 import TempbanListCommand from "./moderation/TempbanListCommand";
-import TimeoutCommand from "./moderation/TimeoutCommand";
-import UnTimeoutCommand from "./moderation/UnTimeoutCommand";
-import UnbanCommand from "./moderation/UnbanCommand";
-import WarnCommand from "./moderation/WarnCommand";
 import ContextLookUpButtonHandler from "./moderation/context_lookup/LookupComponentHandler";
 import UserInfoHandler from "./moderation/context_lookup/LookupContextMenuHandler";
 import DeleteModLogDMButtonHandler from "./moderation/reason/DMButton";
@@ -55,22 +45,12 @@ export default function registerInteractionHandlers(
     // Meta
     new StatusCommand(),
 
-    // Moderation
-    new BanCommand(),
-    new UnbanCommand(),
-    new TempbanCommand(),
+    // Moderation (legacy commands not yet migrated to DDD)
     new TempbanListCommand(),
-    new KickCommand(),
-    new TimeoutCommand(),
-    new UnTimeoutCommand(),
-    new WarnCommand(),
-    new NoteCommand(),
-    new HistoryCommand(),
     new ReasonCommand(),
     new UncaseCommand(),
     new PruneCommand(),
     new SlowmodeCommand(),
-    new LookupCommand(),
 
     // Guild
     new EmojiStatsCommand(),

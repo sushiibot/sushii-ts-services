@@ -11,6 +11,7 @@ import {
   addDaysToDeleteOption,
   addDmReasonOption,
   addDurationOption,
+  addNoteOption,
   addReasonOption,
   addUsersOption,
 } from "./ModerationCommandOptions";
@@ -23,6 +24,7 @@ export const OPTION_NAMES = {
   DAYS_TO_DELETE: "days_to_delete",
   DURATION: "duration",
   CHANNEL: "channel",
+  NOTE: "note",
 } as const;
 
 export const COMMAND_METADATA = {
@@ -45,6 +47,18 @@ export const COMMAND_METADATA = {
   TIMEOUT: {
     name: "timeout",
     description: "Timeout users",
+  },
+  UNBAN: {
+    name: "unban",
+    description: "Unban users",
+  },
+  UNTIMEOUT: {
+    name: "untimeout",
+    description: "Remove timeout from users",
+  },
+  NOTE: {
+    name: "note",
+    description: "Add an internal note to users",
   },
 } as const;
 
@@ -113,5 +127,35 @@ export const COMMAND_CONFIGS: Record<string, ModerationCommandConfig> = {
         .addStringOption(addReasonOption)
         .addAttachmentOption(addAttachmentOption)
         .addStringOption(addDmReasonOption),
+  },
+  UNBAN: {
+    actionType: ActionType.BanRemove,
+    name: COMMAND_METADATA.UNBAN.name,
+    description: COMMAND_METADATA.UNBAN.description,
+    permissions: PermissionFlagsBits.BanMembers,
+    options: (builder: SlashCommandBuilder) =>
+      builder.addStringOption(addUsersOption).addStringOption(addReasonOption),
+  },
+  UNTIMEOUT: {
+    actionType: ActionType.TimeoutRemove,
+    name: COMMAND_METADATA.UNTIMEOUT.name,
+    description: COMMAND_METADATA.UNTIMEOUT.description,
+    permissions: PermissionFlagsBits.ModerateMembers,
+    options: (builder: SlashCommandBuilder) =>
+      builder
+        .addStringOption(addUsersOption)
+        .addStringOption(addReasonOption)
+        .addStringOption(addDmReasonOption),
+  },
+  NOTE: {
+    actionType: ActionType.Note,
+    name: COMMAND_METADATA.NOTE.name,
+    description: COMMAND_METADATA.NOTE.description,
+    permissions: PermissionFlagsBits.BanMembers,
+    options: (builder: SlashCommandBuilder) =>
+      builder
+        .addStringOption(addUsersOption)
+        .addStringOption(addNoteOption)
+        .addAttachmentOption(addAttachmentOption),
   },
 };
