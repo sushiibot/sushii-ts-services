@@ -3,7 +3,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "disc
 import Color from "@/utils/colors";
 import customIds from "@/interactions/customIds";
 
-import { ModerationCase } from "../../domain/entities/ModerationCase";
+import { ModerationCase } from "../../../shared/domain/entities/ModerationCase";
 import { ReasonUpdateResult } from "@/features/moderation/cases/application/ReasonUpdateService";
 
 export function reasonWarningView(

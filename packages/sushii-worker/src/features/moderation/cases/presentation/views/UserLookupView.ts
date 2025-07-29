@@ -4,12 +4,12 @@ import { UserLookupResult } from "@/features/moderation/cases/application/Lookup
 import Color from "@/utils/colors";
 import timestampToUnixTime from "@/utils/timestampToUnixTime";
 
-import { ModerationCase } from "../../domain/entities/ModerationCase";
-import { UserInfo } from "../../domain/types/UserInfo";
+import { ModerationCase } from "../../../shared/domain/entities/ModerationCase";
+import { UserInfo } from "../../../shared/domain/types/UserInfo";
 import {
   formatActionTypeAsSentence,
   getActionTypeEmoji,
-} from "./ActionTypeFormatter";
+} from "../../../shared/presentation/views/ActionTypeFormatter";
 
 interface LookupOptions {
   botHasBanPermission: boolean;

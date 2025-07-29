@@ -1,10 +1,11 @@
-import { DiscordAPIError, Guild, User } from "discord.js";
+import { Guild, User } from "discord.js";
 import { Logger } from "pino";
 import { Err, Ok, Result } from "ts-results";
 
-import { buildDMEmbed } from "@/interactions/moderation/sendDm";
 import { GuildConfig } from "@/shared/domain/entities/GuildConfig";
 
+import { DMNotificationService } from "../../shared/application/DMNotificationService";
+import { Reason } from "../../shared/domain/value-objects/Reason";
 import { AuditLogEvent } from "../domain/entities";
 
 /**
@@ -12,7 +13,10 @@ import { AuditLogEvent } from "../domain/entities";
  * Handles the business logic for when and how to send timeout DMs.
  */
 export class NativeTimeoutDMService {
-  constructor(private readonly logger: Logger) {}
+  constructor(
+    private readonly dmNotificationService: DMNotificationService,
+    private readonly logger: Logger,
+  ) {}
 
   /**
    * Determines if a DM should be sent for this audit log event.
@@ -70,37 +74,43 @@ export class NativeTimeoutDMService {
         "Sending timeout DM to user",
       );
 
-      // Get custom timeout DM text if available
-      const customText = guildConfig?.moderationSettings.timeoutDmText || null;
+      // Convert string reason to domain value object
+      let reason: Reason | null = null;
+      if (auditLogEvent.reason) {
+        const reasonResult = Reason.create(auditLogEvent.reason);
+        if (reasonResult.ok) {
+          reason = reasonResult.val;
+        }
+      }
 
-      const dmEmbed = await buildDMEmbed(
+      // Use the DM notification service
+      const dmResult = await this.dmNotificationService.sendModerationDM(
+        targetUser,
         guild,
         auditLogEvent.actionType,
         true, // should dm reason
-        auditLogEvent.reason || null,
+        reason,
         auditLogEvent.timeoutChange.newTimestamp || null,
-        customText,
+        guildConfig,
       );
 
-      const dmMessage = await targetUser.send({
-        embeds: [dmEmbed],
-      });
+      if (!dmResult.ok) {
+        return Err(dmResult.val);
+      }
+
+      const dmSentResult = dmResult.val;
 
       this.logger.debug(
         {
           targetUserId: targetUser.id,
           guildId: guild.id,
-          dmChannelId: dmMessage.channel.id,
-          dmMessageId: dmMessage.id,
+          dmChannelId: dmSentResult.channelId,
+          dmMessageId: dmSentResult.messageId,
         },
         "Successfully sent timeout DM",
       );
 
-      return Ok({
-        channelId: dmMessage.channel.id,
-        messageId: dmMessage.id,
-        error: null,
-      });
+      return Ok(dmSentResult);
     } catch (error) {
       this.logger.debug(
         {
@@ -113,8 +123,7 @@ export class NativeTimeoutDMService {
         "Failed to send timeout DM to user",
       );
 
-      const errorMessage =
-        error instanceof DiscordAPIError ? error.message : String(error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
 
       return Ok({
         channelId: null,

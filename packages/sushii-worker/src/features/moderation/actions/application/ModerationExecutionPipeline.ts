@@ -16,6 +16,7 @@ import {
   ActionType,
   actionTypeRequiresDiscordAction,
 } from "../../shared/domain/value-objects/ActionType";
+import { DMNotificationService } from "../../shared/application/DMNotificationService";
 import { formatActionTypeAsPastTense } from "../../shared/presentation/views/ActionTypeFormatter";
 import { DMPolicyService } from "./DMPolicyService";
 import { 
@@ -40,6 +41,7 @@ export class ModerationExecutionPipeline {
     private readonly tempBanRepository: TempBanRepository,
     private readonly modLogService: ModLogService,
     private readonly dmPolicyService: DMPolicyService,
+    private readonly dmNotificationService: DMNotificationService,
     private readonly client: Client,
     private readonly logger: Logger,
   ) {}
@@ -427,7 +429,7 @@ export class ModerationExecutionPipeline {
   }
 
   /**
-   * Helper method to send DM to target user.
+   * Helper method to send DM to target user using the DM notification service.
    */
   private async sendDM(
     guildId: string,
@@ -435,52 +437,56 @@ export class ModerationExecutionPipeline {
     action: ModerationAction,
     target: ModerationTarget,
   ): Promise<{ channelId?: string; messageId?: string; error?: string }> {
-    try {
-      const guild = this.client.guilds.cache.get(guildId);
-      const guildName = guild ? guild.name : "Unknown Guild";
+    const guild = this.client.guilds.cache.get(guildId);
+    if (!guild) {
+      return { error: "Guild not found" };
+    }
 
-      const dmChannel = await target.user.createDM();
+    // Determine duration end time for temporal actions
+    const durationEnd = action.isTemporalAction() ? action.duration.endTime() : null;
 
-      let dmContent = `You have been ${formatActionTypeAsPastTense(action.actionType)} in **${guildName}**`;
+    // Use the DM notification service
+    const dmResult = await this.dmNotificationService.sendModerationDM(
+      target.user,
+      guild,
+      action.actionType,
+      true, // should DM reason - this is handled by DMPolicyService
+      action.reason,
+      durationEnd,
+    );
 
-      if (action.reason) {
-        dmContent += `\n**Reason:** ${action.reason.value}`;
-      }
-
-      if (action.isTemporalAction()) {
-        dmContent += `\n**Duration:** ${action.duration.originalString}`;
-        dmContent += `\n**Expires:** <t:${Math.floor(action.duration.endTime().unix())}:f>`;
-      }
-
-      const message = await dmChannel.send(dmContent);
-
-      this.logger.info(
-        {
-          caseId: caseId.toString(),
-          targetId: target.id,
-          messageId: message.id,
-        },
-        "DM sent successfully",
-      );
-
-      return {
-        channelId: dmChannel.id,
-        messageId: message.id,
-      };
-    } catch (error) {
+    if (!dmResult.ok) {
       this.logger.warn(
         {
           caseId: caseId.toString(),
           targetId: target.id,
-          err: error,
+          error: dmResult.val,
         },
-        "Failed to send DM",
+        "Failed to send DM via notification service",
       );
 
       return {
-        error: String(error),
+        error: dmResult.val,
       };
     }
+
+    const dmSentResult = dmResult.val;
+
+    this.logger.info(
+      {
+        caseId: caseId.toString(),
+        targetId: target.id,
+        messageId: dmSentResult.messageId,
+        channelId: dmSentResult.channelId,
+      },
+      "DM sent successfully via notification service",
+    );
+
+    return {
+      channelId: dmSentResult.channelId || undefined,
+      messageId: dmSentResult.messageId || undefined,
+      error: dmSentResult.error || undefined,
+    };
   }
 
   /**

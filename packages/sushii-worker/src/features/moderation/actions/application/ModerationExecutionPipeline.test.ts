@@ -29,6 +29,7 @@ import { type ModLogService } from "../../shared/domain/services/ModLogService";
 import { ActionType } from "../../shared/domain/value-objects/ActionType";
 import { Duration } from "../../shared/domain/value-objects/Duration";
 import { Reason } from "../../shared/domain/value-objects/Reason";
+import { type DMNotificationService } from "../../shared/application/DMNotificationService";
 import { type DMPolicyService } from "./DMPolicyService";
 import {
   CompleteExecutionContext,
@@ -141,6 +142,7 @@ describe("ModerationExecutionPipeline", () => {
   let mockTempBanRepository: TempBanRepository;
   let mockModLogService: ModLogService;
   let mockDMPolicyService: DMPolicyService;
+  let mockDMNotificationService: DMNotificationService;
   let mockClient: Client;
 
   beforeEach(() => {
@@ -181,6 +183,10 @@ describe("ModerationExecutionPipeline", () => {
       shouldSendDM: mock(() => Promise.resolve(false)),
     } as unknown as DMPolicyService;
 
+    mockDMNotificationService = {
+      sendModerationDM: mock(() => Promise.resolve(Ok({ channelId: "dm-channel-id", messageId: "message-id", error: null }))),
+    } as unknown as DMNotificationService;
+
     mockClient = createMockClient();
 
     pipeline = new ModerationExecutionPipeline(
@@ -188,6 +194,7 @@ describe("ModerationExecutionPipeline", () => {
       mockTempBanRepository,
       mockModLogService,
       mockDMPolicyService,
+      mockDMNotificationService,
       mockClient,
       testLogger,
     );
@@ -446,6 +453,7 @@ describe("ModerationExecutionPipeline", () => {
         mockTempBanRepository,
         mockModLogService,
         mockDMPolicyService,
+        mockDMNotificationService,
         mockClientWithError,
         testLogger,
       );
@@ -604,6 +612,7 @@ describe("ModerationExecutionPipeline", () => {
         mockTempBanRepository,
         mockModLogService,
         mockDMPolicyService,
+        mockDMNotificationService,
         mockClientWithError,
         testLogger,
       );
@@ -667,6 +676,7 @@ describe("ModerationExecutionPipeline", () => {
         mockTempBanRepository,
         mockModLogService,
         mockDMPolicyService,
+        mockDMNotificationService,
         mockClientWithError,
         testLogger,
       );

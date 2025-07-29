@@ -7,11 +7,11 @@ import timestampToUnixTime from "@/utils/timestampToUnixTime";
 import { getUserString } from "@/utils/userString";
 
 import { UserLookupResult } from "@/features/moderation/cases/application/LookupUserService";
-import { ModerationCase } from "../../domain/entities/ModerationCase";
+import { ModerationCase } from "../../../shared/domain/entities/ModerationCase";
 import {
   formatActionTypeAsSentence,
   getActionTypeEmoji,
-} from "./ActionTypeFormatter";
+} from "../../../shared/presentation/views/ActionTypeFormatter";
 
 export function buildUserHistoryEmbeds(
   targetUser: User,

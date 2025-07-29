@@ -22,7 +22,7 @@ import {
   reasonNoCasesView,
   reasonSuccessView,
   reasonWarningView,
-} from "../../../shared/presentation/views/ReasonView";
+} from "../views/ReasonView";
 
 export class ReasonCommand extends SlashCommandHandler {
   command = new SlashCommandBuilder()

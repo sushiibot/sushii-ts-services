@@ -13,6 +13,8 @@ import {
   ModerationService,
   TargetResolutionService,
 } from "./actions/application";
+// Shared components
+import { DMNotificationService } from "./shared/application";
 import { ModerationCommand } from "./actions/presentation";
 // Audit logs sub-feature
 import {
@@ -33,12 +35,13 @@ import {
 import {
   HistoryCommand,
   LookupCommand,
+  LookupContextMenuHandler,
   ReasonCommand,
   UncaseCommand,
 } from "./cases/presentation";
 // Management sub-feature
-import { SlowmodeService, TempBanListService } from "./management/application";
-import { SlowmodeCommand, TempbanListCommand } from "./management/presentation";
+import { PruneMessageService, SlowmodeService, TempBanListService } from "./management/application";
+import { PruneCommand, SlowmodeCommand, TempbanListCommand } from "./management/presentation";
 // Shared components
 import { TimeoutDetectionService } from "./shared/domain/services/TimeoutDetectionService";
 import {
@@ -83,6 +86,9 @@ export function createModerationServices({
   );
 
   const dmPolicyService = new DMPolicyService(guildConfigRepository);
+  const dmNotificationService = new DMNotificationService(
+    logger.child({ module: "dmNotificationService" }),
+  );
 
   const permissionService = new DiscordPermissionValidationService();
   const timeoutDetectionService = new TimeoutDetectionService();
@@ -97,6 +103,7 @@ export function createModerationServices({
     tempBanRepository,
     modLogService,
     dmPolicyService,
+    dmNotificationService,
     client,
     logger.child({ module: "moderationExecutionPipeline" }),
   );
@@ -133,6 +140,11 @@ export function createModerationServices({
     logger.child({ module: "slowmodeService" }),
   );
 
+  const pruneMessageService = new PruneMessageService(
+    client,
+    logger.child({ module: "pruneMessageService" }),
+  );
+
   const caseDeletionService = new CaseDeletionService(
     db,
     moderationCaseRepository,
@@ -161,6 +173,7 @@ export function createModerationServices({
   );
 
   const nativeTimeoutDMService = new NativeTimeoutDMService(
+    dmNotificationService,
     logger.child({ module: "nativeTimeoutDMService" }),
   );
 
@@ -187,12 +200,14 @@ export function createModerationServices({
     guildConfigRepository,
     tempBanRepository,
     dmPolicyService,
+    dmNotificationService,
     moderationService,
     lookupUserService,
     targetResolutionService,
     tempBanListService,
     channelService,
     slowmodeService,
+    pruneMessageService,
     caseDeletionService,
     reasonUpdateService,
     caseRangeAutocompleteService,
@@ -215,6 +230,7 @@ export function createModerationCommands(
     targetResolutionService,
     tempBanListService,
     slowmodeService,
+    pruneMessageService,
     caseDeletionService,
     reasonUpdateService,
     caseRangeAutocompleteService,
@@ -249,6 +265,10 @@ export function createModerationCommands(
       slowmodeService,
       logger.child({ commandHandler: "slowmode" }),
     ),
+    new PruneCommand(
+      pruneMessageService,
+      logger.child({ commandHandler: "prune" }),
+    ),
     new UncaseCommand(
       caseDeletionService,
       logger.child({ commandHandler: "uncase" }),
@@ -266,9 +286,17 @@ export function createModerationCommands(
     ),
   ];
 
+  const contextMenuHandlers = [
+    new LookupContextMenuHandler(
+      lookupUserService,
+      logger.child({ contextMenuHandler: "lookupContextMenu" }),
+    ),
+  ];
+
   return {
     commands,
     autocompletes,
+    contextMenuHandlers,
   };
 }
 

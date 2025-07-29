@@ -76,13 +76,12 @@ export function registerFeatures(
 
   // Guild settings feature
   const guildSettingsFeature = setupGuildSettingsFeature({ db, logger });
-  const { guildSettingsService } = guildSettingsFeature.services;
 
   // Moderation feature
-  const moderationFeature = setupModerationFeature({ 
-    db, 
-    client, 
-    logger, 
+  const moderationFeature = setupModerationFeature({
+    db,
+    client,
+    logger,
   });
   const { tempBanRepository } = moderationFeature.services;
 
@@ -98,6 +97,13 @@ export function registerFeatures(
     ...tagFeature.autocompletes,
     ...notificationFeature.autocompletes,
   );
+  
+  // Context menu handlers
+  if (moderationFeature.contextMenuHandlers) {
+    moderationFeature.contextMenuHandlers.forEach(handler => {
+      interactionRouter.addContextMenu(handler);
+    });
+  }
 
   // ---------------------------------------------------------------------------
   // Build event handlers

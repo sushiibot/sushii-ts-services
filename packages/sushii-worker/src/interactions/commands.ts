@@ -8,9 +8,6 @@ import EmojiStatsCommand from "./emojis/EmojiStatsCommands";
 import GiveawayAutocomplete from "./giveaway/Giveaway.autocomplete";
 import GiveawayButtonHandler from "./giveaway/Giveaway.button";
 import GiveawayCommand from "./giveaway/Giveaway.command";
-import PruneCommand from "./moderation/PruneCommand";
-import ContextLookUpButtonHandler from "./moderation/context_lookup/LookupComponentHandler";
-import UserInfoHandler from "./moderation/context_lookup/LookupContextMenuHandler";
 import DeleteModLogDMButtonHandler from "./moderation/reason/DMButton";
 import ReasonAutocomplete from "./moderation/reason/ReasonAutocomplete";
 import ModLogReasonButtonHandler from "./moderation/reason/ReasonButton";
@@ -44,7 +41,6 @@ export default function registerInteractionHandlers(
 
     // Moderation (legacy commands not yet migrated to DDD)
     new ReasonCommand(),
-    new PruneCommand(),
 
     // Guild
     new EmojiStatsCommand(),
@@ -73,12 +69,11 @@ export default function registerInteractionHandlers(
 
   // ----------------------------------------
   // Context menus
-  interactionRouter.addContextMenu(new UserInfoHandler());
+  // Note: Context menus now handled by DDD features in bootstrap
 
   // ----------------------------------------
   // Buttons
   interactionRouter.addButtons(
-    new ContextLookUpButtonHandler(),
     new RoleMenuButtonHandler(),
     new ModLogReasonButtonHandler(),
     new DeleteModLogDMButtonHandler(),

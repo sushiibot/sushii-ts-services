@@ -10,7 +10,7 @@ import { Logger } from "pino";
 import { SlashCommandHandler } from "@/interactions/handlers";
 
 import { LookupUserService } from "../../application/LookupUserService";
-import { buildUserHistoryEmbeds } from "../../../shared/presentation/views/HistoryView";
+import { buildUserHistoryEmbeds } from "../views/HistoryView";
 
 export class HistoryCommand extends SlashCommandHandler {
   requiredBotPermissions = new PermissionsBitField();
