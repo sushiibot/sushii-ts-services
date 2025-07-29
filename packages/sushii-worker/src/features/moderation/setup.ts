@@ -13,18 +13,16 @@ import {
   ModerationService,
   TargetResolutionService,
 } from "./actions/application";
-// Shared components
-import { DMNotificationService } from "./shared/application";
 import { ModerationCommand } from "./actions/presentation";
+import { AuditLogEventHandler } from "./audit-logs";
 // Audit logs sub-feature
 import {
-  AuditLogProcessingService,
-  NativeTimeoutDMService,
-  ModLogPostingService,
   AuditLogOrchestrationService,
+  AuditLogProcessingService,
+  ModLogPostingService,
+  NativeTimeoutDMService,
 } from "./audit-logs/application";
 import { DiscordAuditLogService } from "./audit-logs/infrastructure";
-import { createAuditLogEventHandler } from "./audit-logs/presentation";
 // Cases sub-feature
 import {
   CaseDeletionService,
@@ -40,16 +38,26 @@ import {
   UncaseCommand,
 } from "./cases/presentation";
 // Management sub-feature
-import { PruneMessageService, SlowmodeService, TempBanListService } from "./management/application";
-import { PruneCommand, SlowmodeCommand, TempbanListCommand } from "./management/presentation";
+import {
+  PruneMessageService,
+  SlowmodeService,
+  TempBanListService,
+} from "./management/application";
+import {
+  PruneCommand,
+  SlowmodeCommand,
+  TempbanListCommand,
+} from "./management/presentation";
+// Shared components
+import { DMNotificationService } from "./shared/application";
 // Shared components
 import { TimeoutDetectionService } from "./shared/domain/services/TimeoutDetectionService";
 import {
   DiscordChannelService,
   DiscordModLogService,
   DiscordPermissionValidationService,
-  DrizzleModerationCaseRepository,
   DrizzleModLogRepository,
+  DrizzleModerationCaseRepository,
   DrizzleTempBanRepository,
 } from "./shared/infrastructure";
 import { COMMAND_CONFIGS, ReasonAutocomplete } from "./shared/presentation";
@@ -99,6 +107,7 @@ export function createModerationServices({
 
   // Create execution pipeline with focused dependencies
   const moderationExecutionPipeline = new ModerationExecutionPipeline(
+    db,
     moderationCaseRepository,
     tempBanRepository,
     modLogService,
@@ -306,15 +315,13 @@ export function createModerationEventHandlers(
 ) {
   const { discordAuditLogService } = services;
 
-  const auditLogEventHandler = createAuditLogEventHandler(
+  const auditLogEventHandler = new AuditLogEventHandler(
     discordAuditLogService,
     logger.child({ eventHandler: "auditLog" }),
   );
 
   return {
-    eventHandlers: {
-      auditLog: auditLogEventHandler,
-    },
+    eventHandlers: [auditLogEventHandler],
   };
 }
 

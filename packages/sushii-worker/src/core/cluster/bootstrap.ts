@@ -7,6 +7,7 @@ import { PostgreSQLDeploymentRepository } from "@/features/deployment/infrastruc
 import { DeploymentEventHandler } from "@/features/deployment/presentation/DeploymentEventHandler";
 import { setupGuildSettingsFeature } from "@/features/guild-settings/setup";
 import { setupLevelingFeature } from "@/features/leveling/setup";
+import { AuditLogEventHandler } from "@/features/moderation/audit-logs";
 import { setupModerationFeature } from "@/features/moderation/setup";
 import { setupNotificationFeature } from "@/features/notifications/setup";
 import { setupTagFeature } from "@/features/tags/setup";
@@ -97,10 +98,10 @@ export function registerFeatures(
     ...tagFeature.autocompletes,
     ...notificationFeature.autocompletes,
   );
-  
+
   // Context menu handlers
   if (moderationFeature.contextMenuHandlers) {
-    moderationFeature.contextMenuHandlers.forEach(handler => {
+    moderationFeature.contextMenuHandlers.forEach((handler) => {
       interactionRouter.addContextMenu(handler);
     });
   }
@@ -118,6 +119,7 @@ export function registerFeatures(
     ...levelingFeature.eventHandlers,
     deploymentHandler,
     ...notificationFeature.eventHandlers,
+    ...moderationFeature.eventHandlers,
   ];
 
   // ---------------------------------------------------------------------------
@@ -196,10 +198,4 @@ export function registerFeatures(
       }
     });
   }
-
-  return {
-    guildSettingsService: guildSettingsFeature.services.guildSettingsService,
-    tempBanRepository,
-    moderationEventHandlers: moderationFeature.eventHandlers,
-  };
 }

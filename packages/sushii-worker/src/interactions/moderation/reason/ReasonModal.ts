@@ -6,7 +6,7 @@ import db from "../../../infrastructure/database/db";
 import customIds from "../../customIds";
 import { ModalHandler } from "../../handlers";
 import { interactionReplyErrorPlainMessage } from "../../responses/error";
-import { ActionType } from "../ActionType";
+import { ActionType, actionTypeFromString } from "@/features/moderation/shared/domain/value-objects/ActionType";
 
 // When modal submitted, update mod log message and save the reason
 export default class ModLogReasonModalHandler extends ModalHandler {
@@ -80,7 +80,7 @@ export default class ModLogReasonModalHandler extends ModalHandler {
     // Rebuild embed with new mod case with included reason and executor
     const newEmbed = await buildModLogEmbed(
       interaction.client,
-      ActionType.fromString(modCase.action),
+      actionTypeFromString(modCase.action),
       targetUser,
       updatedModCase,
     );

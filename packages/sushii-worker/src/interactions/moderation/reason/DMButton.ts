@@ -14,9 +14,37 @@ import { getModLog } from "../../../db/ModLog/ModLog.repository";
 import db from "../../../infrastructure/database/db";
 import { newModuleLogger } from "@/shared/infrastructure/logger";
 import { buildModLogComponents } from "@/features/moderation/audit-logs";
-import { ActionType } from "../ActionType";
+import { ActionType, actionTypeFromString } from "@/features/moderation/shared/domain/value-objects/ActionType";
+import { ModerationCase } from "@/features/moderation/shared/domain/entities/ModerationCase";
+import { Reason } from "@/features/moderation/shared/domain/value-objects/Reason";
+import { Ok } from "ts-results";
 
 const logger = newModuleLogger("ModLog-DeleteDM-Button");
+
+function convertLegacyModLogToModerationCase(modLog: any): ModerationCase {
+  const actionType = actionTypeFromString(modLog.action);
+  const reasonResult = modLog.reason ? Reason.create(modLog.reason) : Ok(null);
+  const reason = reasonResult.unwrap();
+  
+  return new ModerationCase(
+    modLog.guild_id,
+    modLog.case_id,
+    actionType,
+    modLog.action_time,
+    modLog.user_id,
+    modLog.user_tag,
+    modLog.executor_id,
+    reason,
+    modLog.msg_id,
+    modLog.attachments,
+    modLog.dm_channel_id || modLog.dm_message_id || modLog.dm_message_error ? {
+      channelId: modLog.dm_channel_id,
+      messageId: modLog.dm_message_id,
+      error: modLog.dm_message_error,
+    } : null,
+    modLog.pending,
+  );
+}
 
 export default class DeleteModLogDMButtonHandler extends ButtonHandler {
   customIDMatch = customIds.modLogDeleteReasonDM.match;
@@ -159,8 +187,8 @@ export default class DeleteModLogDMButtonHandler extends ButtonHandler {
     }
 
     const components = buildModLogComponents(
-      ActionType.fromString(modCase.action),
-      modCase,
+      actionTypeFromString(modCase.action),
+      convertLegacyModLogToModerationCase(modCase),
       true,
     );
 

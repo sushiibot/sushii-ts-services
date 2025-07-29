@@ -122,9 +122,7 @@ export default function registerEventHandlers(
   client: Client,
   interactionHandler: InteractionClient,
   deploymentService: DeploymentService,
-  guildSettingsService?: GuildSettingsService,
   tempBanRepository?: TempBanRepository,
-  moderationEventHandlers?: { auditLog: import("@/events/EventHandler").EventHandlerFn<Events.GuildAuditLogEntryCreate> },
 ): void {
   client.once(Events.ClientReady, async (c) => {
     logger.info(
@@ -367,31 +365,6 @@ export default function registerEventHandlers(
       async (span: Span) => {
         await interactionHandler.handleAPIInteraction(interaction);
         await updateStat(StatName.CommandCount, 1, "add");
-
-        span.end();
-      },
-    );
-  });
-
-  client.on(Events.GuildAuditLogEntryCreate, async (entry, guild) => {
-    if (!deploymentService.isCurrentDeploymentActive()) {
-      return;
-    }
-
-    await tracer.startActiveSpan(
-      prefixSpanName(Events.GuildAuditLogEntryCreate),
-      async (span: Span) => {
-        // Use new moderation DDD handler if available, otherwise fallback to legacy
-        if (moderationEventHandlers?.auditLog) {
-          await handleEvent(
-            Events.GuildAuditLogEntryCreate,
-            { moderationAuditLog: moderationEventHandlers.auditLog },
-            entry,
-            guild,
-          );
-        } else {
-          logger.warn("No moderation audit log handler available, skipping event");
-        }
 
         span.end();
       },

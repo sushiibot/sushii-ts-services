@@ -1,15 +1,17 @@
-import "../../shared/domain/dayjs";
 import * as Sentry from "@sentry/node";
-import { Client, GatewayIntentBits, Options, Partials } from "discord.js";
-import log from "../../shared/infrastructure/logger";
-import InteractionRouter from "@/core/cluster/discord/InteractionRouter";
-import initI18next from "../../shared/infrastructure/i18next";
-import registerInteractionHandlers from "../../interactions/commands";
-import sdk from "@/shared/infrastructure/tracing";
-import { config } from "@/shared/infrastructure/config";
-import registerEventHandlers from "@/core/cluster/discord/handlers";
-import { initCore, registerFeatures } from "./bootstrap";
 import { ClusterClient, getInfo } from "discord-hybrid-sharding";
+import { Client, GatewayIntentBits, Options, Partials } from "discord.js";
+
+import InteractionRouter from "@/core/cluster/discord/InteractionRouter";
+import registerEventHandlers from "@/core/cluster/discord/handlers";
+import { config } from "@/shared/infrastructure/config";
+import sdk from "@/shared/infrastructure/tracing";
+
+import registerInteractionHandlers from "../../interactions/commands";
+import "../../shared/domain/dayjs";
+import initI18next from "../../shared/infrastructure/i18next";
+import log from "../../shared/infrastructure/logger";
+import { initCore, registerFeatures } from "./bootstrap";
 
 Error.stackTraceLimit = 50;
 
@@ -65,7 +67,7 @@ async function initializeShard(): Promise<void> {
   registerInteractionHandlers(interactionRouter);
 
   // New registration of features -- also adds commands to the router
-  const { guildSettingsService, tempBanRepository, moderationEventHandlers } = registerFeatures(db, client, deploymentService, interactionRouter);
+  registerFeatures(db, client, deploymentService, interactionRouter);
 
   // AFTER features are registered (includes registering commands)
 
@@ -87,14 +89,7 @@ async function initializeShard(): Promise<void> {
   }
 
   // Legacy registration of event handlers with new moderation audit log handler
-  registerEventHandlers(
-    client, 
-    interactionRouter, 
-    deploymentService, 
-    guildSettingsService, 
-    tempBanRepository,
-    moderationEventHandlers,
-  );
+  registerEventHandlers(client, interactionRouter, deploymentService);
 
   process.on("SIGTERM", async () => {
     log.info("SIGTERM received, shutting down shard gracefully");

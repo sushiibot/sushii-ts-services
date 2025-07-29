@@ -17,7 +17,7 @@ import { SlashCommandHandler } from "../../handlers";
 import { interactionReplyErrorPlainMessage } from "../../responses/error";
 import { caseSpecCount, getCaseRange, parseCaseId } from "./caseId";
 import { invalidCaseRangeEmbed } from "./Messages";
-import { ActionType } from "../ActionType";
+import { ActionType, actionTypeFromString } from "@/features/moderation/shared/domain/value-objects/ActionType";
 import customIds from "../../customIds";
 import logger from "@/shared/infrastructure/logger";
 import db from "../../../infrastructure/database/db";
@@ -332,9 +332,9 @@ export default class ReasonCommand extends SlashCommandHandler {
       cases
         .filter((c) => c.reason !== null)
         .map((c) => {
-          const actionType = ActionType.fromString(c.action);
+          const actionType = actionTypeFromString(c.action);
 
-          let s = `\`#${c.case_id}\` - **${ActionType.toString(actionType)}**`;
+          let s = `\`#${c.case_id}\` - **${actionType}**`;
           s += ` - <@${c.user_id}>\n`;
           s += `┗ **Reason:** ${c.reason}`;
 

@@ -1,1 +1,1 @@
-export { AuditLogEventHandler, createAuditLogEventHandler } from "./AuditLogEventHandler";
+export { AuditLogEventHandler } from "./AuditLogEventHandler";
