@@ -38,7 +38,6 @@ import { cacheUserHandler } from "@/events/cache/cacheUser";
 import msgLogCacheHandler from "@/events/msglog/MessageCacheHandler";
 import { msgLogHandler } from "@/events/msglog/MsgLogHandler";
 import { DeploymentService } from "@/features/deployment/application/DeploymentService";
-import { GuildSettingsService } from "@/features/guild-settings/application/GuildSettingsService";
 import { TempBanRepository } from "@/features/moderation/shared/domain/repositories/TempBanRepository";
 import { updateGatewayDispatchEventMetrics } from "@/infrastructure/metrics/gatewayMetrics";
 import { config } from "@/shared/infrastructure/config";

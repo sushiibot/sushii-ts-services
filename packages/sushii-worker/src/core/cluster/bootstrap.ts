@@ -7,7 +7,6 @@ import { PostgreSQLDeploymentRepository } from "@/features/deployment/infrastruc
 import { DeploymentEventHandler } from "@/features/deployment/presentation/DeploymentEventHandler";
 import { setupGuildSettingsFeature } from "@/features/guild-settings/setup";
 import { setupLevelingFeature } from "@/features/leveling/setup";
-import { AuditLogEventHandler } from "@/features/moderation/audit-logs";
 import { setupModerationFeature } from "@/features/moderation/setup";
 import { setupNotificationFeature } from "@/features/notifications/setup";
 import { setupTagFeature } from "@/features/tags/setup";
@@ -84,7 +83,6 @@ export function registerFeatures(
     client,
     logger,
   });
-  const { tempBanRepository } = moderationFeature.services;
 
   // Register commands and handlers on interaction router
   interactionRouter.addCommands(
