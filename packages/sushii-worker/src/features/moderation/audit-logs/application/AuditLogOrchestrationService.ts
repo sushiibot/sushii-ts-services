@@ -51,6 +51,7 @@ export class AuditLogOrchestrationService {
         processedLog.targetUser,
         guild,
         processedLog.modLogCase.caseId,
+        processedLog.wasPendingCase,
       );
       if (dmResult.err) {
         this.logger?.warn(
@@ -102,6 +103,7 @@ export class AuditLogOrchestrationService {
     targetUser: User,
     guild: Guild,
     caseId: string,
+    wasPendingCase: boolean,
   ): Promise<Result<void, string>> {
     // Check if we should send a DM for this event
     let guildConfig: GuildConfig | undefined;
@@ -116,7 +118,7 @@ export class AuditLogOrchestrationService {
 
     const shouldSend = this.nativeTimeoutDMService.shouldSendDM(
       auditLogEvent,
-      false, // We already know this is a new case (not pending)
+      wasPendingCase,
       guildConfig,
     );
 

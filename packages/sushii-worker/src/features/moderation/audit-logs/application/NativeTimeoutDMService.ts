@@ -6,7 +6,6 @@ import { buildDMEmbed } from "@/interactions/moderation/sendDm";
 import { GuildConfig } from "@/shared/domain/entities/GuildConfig";
 
 import { AuditLogEvent } from "../domain/entities";
-import { TimeoutChange } from "../domain/value-objects";
 
 /**
  * Application service for sending DM notifications for native Discord timeouts.
@@ -23,7 +22,7 @@ export class NativeTimeoutDMService {
     hasPendingCase: boolean,
     guildConfig?: GuildConfig,
   ): boolean {
-    // Only send DM for manual timeouts/removals (not from bot commands)
+    // Was invoked via command, so there was already a DM sent.
     if (hasPendingCase) {
       return false;
     }

@@ -76,7 +76,7 @@ export class AuditLogProcessingService {
       const targetUser = await guild.client.users.fetch(entry.targetId);
 
       // Find or create mod log case
-      const modLogCase = await this.findOrCreateModLogCase(
+      const { modLogCase, wasPendingCase } = await this.findOrCreateModLogCase(
         auditLogEvent,
         targetUser,
       );
@@ -88,6 +88,7 @@ export class AuditLogProcessingService {
         guildConfig: {
           modLogChannelId: guildConfig.loggingSettings.modLogChannel,
         },
+        wasPendingCase,
       });
     } catch (error) {
       this.logger.error(
@@ -104,11 +105,12 @@ export class AuditLogProcessingService {
 
   /**
    * Finds an existing pending mod log case or creates a new one.
+   * Returns the moderation case and whether it was a pending case.
    */
   private async findOrCreateModLogCase(
     auditLogEvent: AuditLogEvent,
     targetUser: User,
-  ): Promise<ModerationCase> {
+  ): Promise<{ modLogCase: ModerationCase; wasPendingCase: boolean }> {
     // Look for pending case created in the last minute
     const pendingCaseResult = await this.modLogRepository.findPendingCase(
       auditLogEvent.guildId,
@@ -139,7 +141,10 @@ export class AuditLogProcessingService {
         );
       }
 
-      return pendingCase.withPending(false);
+      return {
+        modLogCase: pendingCase.withPending(false),
+        wasPendingCase: true,
+      };
     }
 
     // Create new case if no matching case found
@@ -176,7 +181,10 @@ export class AuditLogProcessingService {
       "Created new mod log case",
     );
 
-    return createdCase;
+    return {
+      modLogCase: createdCase,
+      wasPendingCase: false,
+    };
   }
 
   /**
@@ -254,4 +262,5 @@ export interface ProcessedAuditLog {
   guildConfig: {
     modLogChannelId: string;
   };
+  wasPendingCase: boolean;
 }
