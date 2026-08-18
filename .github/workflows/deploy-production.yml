@@ -22,14 +22,15 @@ jobs:
         run: echo "sha_short=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
       - name: Checkout sushii-ansible
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: sushiibot/sushii-ansible
           token: ${{ secrets.ANSIBLE_REPO_TOKEN }}
           path: sushii-ansible
+          persist-credentials: false
 
       - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
 
@@ -40,11 +41,12 @@ jobs:
       - name: Pre-deploy summary
         env:
           GH_TOKEN: ${{ github.token }}
-        run: bun run sushii-ansible/scripts/deploy-sushii-bot.ts --summary --sha ${{ steps.sha.outputs.sha_short }}
+          STEPS_SHA_OUTPUTS_SHA_SHORT: ${{ steps.sha.outputs.sha_short }}
+        run: bun run sushii-ansible/scripts/deploy-sushii-bot.ts --summary --sha ${STEPS_SHA_OUTPUTS_SHA_SHORT}
 
   deploy:
     needs: pre-deploy-summary
-    uses: sushiibot/sushii-workflows/.github/workflows/deploy-blue-green.yml@main
+    uses: sushiibot/sushii-workflows/.github/workflows/deploy-blue-green.yml@main # zizmor: ignore[unpinned-uses] first-party, tracked at @main by design
     with:
       image_version: ${{ needs.pre-deploy-summary.outputs.sha_short }}
       environment: production
